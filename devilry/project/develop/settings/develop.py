@@ -140,6 +140,14 @@ IEVVTASKS_BUILDSTATIC_APPS = ievvbuildstatic.config.Apps(
             ievvbuildstatic.mediacopy.Plugin(),
         ]
     ),
+    ievvbuildstatic.config.App(
+        appname='devilry_statistics',
+        version=devilry.__version__,
+        plugins=[
+            ievvbuildstatic.npmrun_jsbuild.Plugin(),
+            # ievvbuildstatic.mediacopy.Plugin(),
+        ]
+    ),
 )
 
 

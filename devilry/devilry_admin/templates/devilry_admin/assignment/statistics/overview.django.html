@@ -1,0 +1,90 @@
+{% extends "django_cradmin/base.django.html" %}
+{% load static %}
+{% load i18n %}
+{% load humanize %}
+{% load cradmin_tags %}
+
+{% block title %}
+    {{ assignment.get_path }}
+{% endblock title %}
+
+{% block pageheader-inner %}
+    <h1>
+        {% trans "Statistics" context "devilry_admin assignment statistics" %}
+    </h1>
+{% endblock pageheader-inner %}
+
+{% block jsimports %}
+{#    {{ block.super }}#}
+{#    <script src="{% static 'Chart_bundle.js' %}"></script>#}
+    <script src="{% static 'devilry_statistics/3.4.1/devilry_statistics_all.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="container devilry-dashboard-container">
+        <h2 class="h3">
+            {% trans "Points (average)" %}
+        </h2>
+        <br>
+        <p class="text-muted">
+            {% blocktrans trimmed %}
+                Average points given by each examiner registered on the assignment. The points are calculated by the
+                last published feedback, this means that points awared from previous attemps are not used.
+            {% endblocktrans %}
+        </p>
+        {% if not examiners_with_published_feedbackset_exist %}
+            <p>
+                {% trans "No data available. This may be because" %}:
+            </p>
+            -&nbsp;<strong>{% trans "There are no examiners assigned to any groups." %}</strong>
+            <br>
+            -&nbsp;<strong>{% trans "No feedbacks have been given yet." %}</strong>
+        {% else %}
+            <div data-ievv-jsbase-widget="examiner-average-grading-points"
+                 data-ievv-jsbase-widget-config='{{ ievv_jsbase_widget_config|safe }}'></div>
+        {% endif %}
+    </div>
+
+    <div class="container devilry-dashboard-container">
+        <h2 class="h3">
+            {% trans "Result/Progress" %}
+        </h2>
+        <br>
+        <p class="text-muted">
+            {% blocktrans trimmed %}
+                The feedback progress in percentages. How many deliveries has the examiner passed, failed and not yet
+                corrected.
+            {% endblocktrans %}
+        </p>
+        {% if not examiners_with_published_feedbackset_exist %}
+            <p>
+                {% trans "No data available. This may be because" %}:
+            </p>
+            -&nbsp;<strong>{% trans "There are no examiners assigned to any groups." %}</strong>
+            <br>
+            -&nbsp;<strong>{% trans "No feedbacks have been given yet." %}</strong>
+        {% else %}
+            <div data-ievv-jsbase-widget="examiner-group-results"
+                 data-ievv-jsbase-widget-config='{{ ievv_jsbase_widget_config|safe }}'></div>
+        {% endif %}
+    </div>
+
+{#    <div class="container devilry-dashboard-container">#}
+{#        <h2 class="h3">#}
+{#            {% trans "Details" %}#}
+{#        </h2>#}
+{#        <br>#}
+{#        <p class="text-muted">#}
+{#            {% blocktrans trimmed %}#}
+{#                Detailed statistics about each examiner.#}
+{#            {% endblocktrans %}#}
+{#        </p>#}
+{#        {% for related_examiner in related_examiners_details %}#}
+{#            <h3>{{ related_examiner.user.get_full_name }}</h3>#}
+{#            <br>#}
+{#            {% trans "Corrected groups" %}#}
+{#            {{ related_examiner.corrected_groups }}/{{ related_examiner.total_group_count }}#}
+{#            <br><br><br>#}
+{#        {% endfor %}#}
+{#    </div>#}
+{% endblock content %}

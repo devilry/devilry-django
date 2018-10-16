@@ -2,15 +2,14 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 10.3
--- Dumped by pg_dump version 10.3
+-- Dumped from database version 10.1
+-- Dumped by pg_dump version 10.1
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 SET row_security = off;
@@ -29,11 +28,13 @@ CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
 
+SET search_path = public, pg_catalog;
+
 --
 -- Name: devilry__assignment_first_deadline_update(); Type: FUNCTION; Schema: public; Owner: dbdev
 --
 
-CREATE FUNCTION public.devilry__assignment_first_deadline_update() RETURNS trigger
+CREATE FUNCTION devilry__assignment_first_deadline_update() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
@@ -64,7 +65,7 @@ ALTER FUNCTION public.devilry__assignment_first_deadline_update() OWNER TO dbdev
 -- Name: devilry__collect_groupcachedata(integer); Type: FUNCTION; Schema: public; Owner: dbdev
 --
 
-CREATE FUNCTION public.devilry__collect_groupcachedata(param_group_id integer) RETURNS record
+CREATE FUNCTION devilry__collect_groupcachedata(param_group_id integer) RETURNS record
     LANGUAGE plpgsql
     AS $$
 DECLARE
@@ -81,7 +82,11 @@ BEGIN
         (
             SELECT id
             FROM devilry_group_feedbackset AS last_feedbackset
-            WHERE group_id = param_group_id
+            WHERE group_id = param_group_id and (
+              last_feedbackset.feedbackset_type = 'first_attempt' OR
+              last_feedbackset.feedbackset_type = 'new_attempt' OR
+              last_feedbackset.feedbackset_type = 're_edit'
+            )
             ORDER BY deadline_datetime DESC NULLS LAST
             LIMIT 1
         ) AS last_feedbackset_id,
@@ -100,6 +105,8 @@ BEGIN
             FROM devilry_group_feedbackset
             WHERE
                 group_id = param_group_id
+                AND
+                feedbackset_type not like 'merge_%'
                 AND
                 feedbackset_type = 'new_attempt'
         ) AS new_attempt_count,
@@ -124,6 +131,8 @@ BEGIN
                 devilry_group_feedbackset.group_id = param_group_id
                 AND
                 devilry_group_groupcomment.visibility = 'visible-to-everyone'
+                AND
+                devilry_comment_comment.text != ''
                 AND
                 devilry_comment_comment.user_role = 'student'
         ) AS public_student_comment_count,
@@ -315,7 +324,7 @@ ALTER FUNCTION public.devilry__collect_groupcachedata(param_group_id integer) OW
 -- Name: devilry__create_first_feedbackset_in_group(integer, integer); Type: FUNCTION; Schema: public; Owner: dbdev
 --
 
-CREATE FUNCTION public.devilry__create_first_feedbackset_in_group(param_group_id integer, param_assignment_id integer) RETURNS void
+CREATE FUNCTION devilry__create_first_feedbackset_in_group(param_group_id integer, param_assignment_id integer) RETURNS void
     LANGUAGE plpgsql
     AS $$
 DECLARE
@@ -352,7 +361,7 @@ ALTER FUNCTION public.devilry__create_first_feedbackset_in_group(param_group_id 
 -- Name: devilry__get_group_id_from_comment_id(integer); Type: FUNCTION; Schema: public; Owner: dbdev
 --
 
-CREATE FUNCTION public.devilry__get_group_id_from_comment_id(param_comment_id integer) RETURNS integer
+CREATE FUNCTION devilry__get_group_id_from_comment_id(param_comment_id integer) RETURNS integer
     LANGUAGE plpgsql
     AS $$
 DECLARE
@@ -381,7 +390,7 @@ ALTER FUNCTION public.devilry__get_group_id_from_comment_id(param_comment_id int
 -- Name: devilry__get_group_id_from_feedbackset_id(integer); Type: FUNCTION; Schema: public; Owner: dbdev
 --
 
-CREATE FUNCTION public.devilry__get_group_id_from_feedbackset_id(param_feedbackset_id integer) RETURNS integer
+CREATE FUNCTION devilry__get_group_id_from_feedbackset_id(param_feedbackset_id integer) RETURNS integer
     LANGUAGE plpgsql
     AS $$
 DECLARE
@@ -403,7 +412,7 @@ ALTER FUNCTION public.devilry__get_group_id_from_feedbackset_id(param_feedbackse
 -- Name: devilry__largest_datetime(timestamp with time zone, timestamp with time zone); Type: FUNCTION; Schema: public; Owner: dbdev
 --
 
-CREATE FUNCTION public.devilry__largest_datetime(param_datetime1 timestamp with time zone, param_datetime2 timestamp with time zone) RETURNS timestamp with time zone
+CREATE FUNCTION devilry__largest_datetime(param_datetime1 timestamp with time zone, param_datetime2 timestamp with time zone) RETURNS timestamp with time zone
     LANGUAGE plpgsql
     AS $$
 BEGIN
@@ -427,7 +436,7 @@ ALTER FUNCTION public.devilry__largest_datetime(param_datetime1 timestamp with t
 -- Name: devilry__on_candidate_after_delete(); Type: FUNCTION; Schema: public; Owner: dbdev
 --
 
-CREATE FUNCTION public.devilry__on_candidate_after_delete() RETURNS trigger
+CREATE FUNCTION devilry__on_candidate_after_delete() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
@@ -443,7 +452,7 @@ ALTER FUNCTION public.devilry__on_candidate_after_delete() OWNER TO dbdev;
 -- Name: devilry__on_candidate_after_insert_or_update(); Type: FUNCTION; Schema: public; Owner: dbdev
 --
 
-CREATE FUNCTION public.devilry__on_candidate_after_insert_or_update() RETURNS trigger
+CREATE FUNCTION devilry__on_candidate_after_insert_or_update() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
@@ -462,7 +471,7 @@ ALTER FUNCTION public.devilry__on_candidate_after_insert_or_update() OWNER TO db
 -- Name: devilry__on_candidate_delete_add_history(); Type: FUNCTION; Schema: public; Owner: dbdev
 --
 
-CREATE FUNCTION public.devilry__on_candidate_delete_add_history() RETURNS trigger
+CREATE FUNCTION devilry__on_candidate_delete_add_history() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 DECLARE
@@ -503,7 +512,7 @@ ALTER FUNCTION public.devilry__on_candidate_delete_add_history() OWNER TO dbdev;
 -- Name: devilry__on_candidate_insert_add_history(); Type: FUNCTION; Schema: public; Owner: dbdev
 --
 
-CREATE FUNCTION public.devilry__on_candidate_insert_add_history() RETURNS trigger
+CREATE FUNCTION devilry__on_candidate_insert_add_history() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 DECLARE
@@ -536,7 +545,7 @@ ALTER FUNCTION public.devilry__on_candidate_insert_add_history() OWNER TO dbdev;
 -- Name: devilry__on_candidate_update_add_history(); Type: FUNCTION; Schema: public; Owner: dbdev
 --
 
-CREATE FUNCTION public.devilry__on_candidate_update_add_history() RETURNS trigger
+CREATE FUNCTION devilry__on_candidate_update_add_history() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 DECLARE
@@ -580,10 +589,50 @@ $$;
 ALTER FUNCTION public.devilry__on_candidate_update_add_history() OWNER TO dbdev;
 
 --
+-- Name: devilry__on_comment_text_update(); Type: FUNCTION; Schema: public; Owner: dbdev
+--
+
+CREATE FUNCTION devilry__on_comment_text_update() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    var_existing_commentedithistory_id INTEGER;
+BEGIN
+    IF OLD.id != NEW.id THEN
+        RAISE EXCEPTION 'OLD.id #% != NEW.id #%', OLD.id, NEW.id;
+    END IF;
+
+    SELECT id
+    FROM devilry_comment_commentedithistory
+    WHERE edited_datetime = now() AND comment_id = NEW.id
+    INTO var_existing_commentedithistory_id;
+
+    IF TG_OP = 'UPDATE' AND var_existing_commentedithistory_id IS NULL THEN
+        INSERT INTO devilry_comment_commentedithistory (
+            comment_id,
+            edited_by_id,
+            edited_datetime,
+            pre_edit_text,
+            post_edit_text)
+        VALUES (
+            NEW.id,
+            NEW.user_id,
+            now(),
+            OLD.text,
+            NEW.text);
+    END IF;
+    RETURN NEW;
+END
+$$;
+
+
+ALTER FUNCTION public.devilry__on_comment_text_update() OWNER TO dbdev;
+
+--
 -- Name: devilry__on_commentfile_after_delete(); Type: FUNCTION; Schema: public; Owner: dbdev
 --
 
-CREATE FUNCTION public.devilry__on_commentfile_after_delete() RETURNS trigger
+CREATE FUNCTION devilry__on_commentfile_after_delete() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 DECLARE
@@ -604,7 +653,7 @@ ALTER FUNCTION public.devilry__on_commentfile_after_delete() OWNER TO dbdev;
 -- Name: devilry__on_commentfile_after_insert_or_update(); Type: FUNCTION; Schema: public; Owner: dbdev
 --
 
-CREATE FUNCTION public.devilry__on_commentfile_after_insert_or_update() RETURNS trigger
+CREATE FUNCTION devilry__on_commentfile_after_insert_or_update() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 DECLARE
@@ -625,7 +674,7 @@ ALTER FUNCTION public.devilry__on_commentfile_after_insert_or_update() OWNER TO 
 -- Name: devilry__on_examiner_after_delete(); Type: FUNCTION; Schema: public; Owner: dbdev
 --
 
-CREATE FUNCTION public.devilry__on_examiner_after_delete() RETURNS trigger
+CREATE FUNCTION devilry__on_examiner_after_delete() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
@@ -641,7 +690,7 @@ ALTER FUNCTION public.devilry__on_examiner_after_delete() OWNER TO dbdev;
 -- Name: devilry__on_examiner_after_insert_or_update(); Type: FUNCTION; Schema: public; Owner: dbdev
 --
 
-CREATE FUNCTION public.devilry__on_examiner_after_insert_or_update() RETURNS trigger
+CREATE FUNCTION devilry__on_examiner_after_insert_or_update() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
@@ -660,7 +709,7 @@ ALTER FUNCTION public.devilry__on_examiner_after_insert_or_update() OWNER TO dbd
 -- Name: devilry__on_examiner_delete_add_history(); Type: FUNCTION; Schema: public; Owner: dbdev
 --
 
-CREATE FUNCTION public.devilry__on_examiner_delete_add_history() RETURNS trigger
+CREATE FUNCTION devilry__on_examiner_delete_add_history() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 DECLARE
@@ -701,7 +750,7 @@ ALTER FUNCTION public.devilry__on_examiner_delete_add_history() OWNER TO dbdev;
 -- Name: devilry__on_examiner_insert_add_history(); Type: FUNCTION; Schema: public; Owner: dbdev
 --
 
-CREATE FUNCTION public.devilry__on_examiner_insert_add_history() RETURNS trigger
+CREATE FUNCTION devilry__on_examiner_insert_add_history() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 DECLARE
@@ -734,7 +783,7 @@ ALTER FUNCTION public.devilry__on_examiner_insert_add_history() OWNER TO dbdev;
 -- Name: devilry__on_examiner_update_add_history(); Type: FUNCTION; Schema: public; Owner: dbdev
 --
 
-CREATE FUNCTION public.devilry__on_examiner_update_add_history() RETURNS trigger
+CREATE FUNCTION devilry__on_examiner_update_add_history() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 DECLARE
@@ -781,7 +830,7 @@ ALTER FUNCTION public.devilry__on_examiner_update_add_history() OWNER TO dbdev;
 -- Name: devilry__on_feedbackset_after_delete(); Type: FUNCTION; Schema: public; Owner: dbdev
 --
 
-CREATE FUNCTION public.devilry__on_feedbackset_after_delete() RETURNS trigger
+CREATE FUNCTION devilry__on_feedbackset_after_delete() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
@@ -797,7 +846,7 @@ ALTER FUNCTION public.devilry__on_feedbackset_after_delete() OWNER TO dbdev;
 -- Name: devilry__on_feedbackset_after_insert_or_update(); Type: FUNCTION; Schema: public; Owner: dbdev
 --
 
-CREATE FUNCTION public.devilry__on_feedbackset_after_insert_or_update() RETURNS trigger
+CREATE FUNCTION devilry__on_feedbackset_after_insert_or_update() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
@@ -813,7 +862,7 @@ ALTER FUNCTION public.devilry__on_feedbackset_after_insert_or_update() OWNER TO 
 -- Name: devilry__on_feedbackset_before_insert_or_update(); Type: FUNCTION; Schema: public; Owner: dbdev
 --
 
-CREATE FUNCTION public.devilry__on_feedbackset_before_insert_or_update() RETURNS trigger
+CREATE FUNCTION devilry__on_feedbackset_before_insert_or_update() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
@@ -834,7 +883,7 @@ ALTER FUNCTION public.devilry__on_feedbackset_before_insert_or_update() OWNER TO
 -- Name: devilry__on_feedbackset_deadline_update(); Type: FUNCTION; Schema: public; Owner: dbdev
 --
 
-CREATE FUNCTION public.devilry__on_feedbackset_deadline_update() RETURNS trigger
+CREATE FUNCTION devilry__on_feedbackset_deadline_update() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
@@ -863,7 +912,7 @@ ALTER FUNCTION public.devilry__on_feedbackset_deadline_update() OWNER TO dbdev;
 -- Name: devilry__on_feedbackset_grading_update(); Type: FUNCTION; Schema: public; Owner: dbdev
 --
 
-CREATE FUNCTION public.devilry__on_feedbackset_grading_update() RETURNS trigger
+CREATE FUNCTION devilry__on_feedbackset_grading_update() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
@@ -877,7 +926,7 @@ BEGIN
             old_grading_published_datetime)
         VALUES (
             NEW.id,
-            NEW.grading_published_by_id,
+            NEW.last_updated_by_id,
             now(),
             OLD.grading_points,
             OLD.grading_published_by_id,
@@ -891,10 +940,46 @@ $$;
 ALTER FUNCTION public.devilry__on_feedbackset_grading_update() OWNER TO dbdev;
 
 --
+-- Name: devilry__on_group_comment_text_update(); Type: FUNCTION; Schema: public; Owner: dbdev
+--
+
+CREATE FUNCTION devilry__on_group_comment_text_update() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    var_comment_edit_history_id INTEGER;
+BEGIN
+    IF OLD.comment_ptr_id != NEW.comment_ptr_id THEN
+        RAISE EXCEPTION 'OLD.comment_ptr_id #% != NEW.comment_ptr_id #%', OLD.comment_ptr_id, NEW.comment_ptr_id;
+    END IF;
+
+    SELECT id
+    FROM devilry_comment_commentedithistory
+    WHERE comment_id = NEW.comment_ptr_id AND edited_datetime = now()
+    INTO var_comment_edit_history_id;
+
+    IF TG_OP = 'UPDATE' AND var_comment_edit_history_id IS NOT NULL THEN
+        INSERT INTO devilry_group_groupcommentedithistory (
+            commentedithistory_ptr_id,
+            group_comment_id,
+            visibility)
+        VALUES (
+            var_comment_edit_history_id,
+            OLD.comment_ptr_id,
+            OLD.VISIBILITY);
+    END IF;
+    RETURN NEW;
+END
+$$;
+
+
+ALTER FUNCTION public.devilry__on_group_comment_text_update() OWNER TO dbdev;
+
+--
 -- Name: devilry__on_groupcomment_after_delete(); Type: FUNCTION; Schema: public; Owner: dbdev
 --
 
-CREATE FUNCTION public.devilry__on_groupcomment_after_delete() RETURNS trigger
+CREATE FUNCTION devilry__on_groupcomment_after_delete() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 DECLARE
@@ -913,7 +998,7 @@ ALTER FUNCTION public.devilry__on_groupcomment_after_delete() OWNER TO dbdev;
 -- Name: devilry__on_groupcomment_after_insert_or_update(); Type: FUNCTION; Schema: public; Owner: dbdev
 --
 
-CREATE FUNCTION public.devilry__on_groupcomment_after_insert_or_update() RETURNS trigger
+CREATE FUNCTION devilry__on_groupcomment_after_insert_or_update() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 DECLARE
@@ -932,7 +1017,7 @@ ALTER FUNCTION public.devilry__on_groupcomment_after_insert_or_update() OWNER TO
 -- Name: devilry__on_imageannotationcomment_after_delete(); Type: FUNCTION; Schema: public; Owner: dbdev
 --
 
-CREATE FUNCTION public.devilry__on_imageannotationcomment_after_delete() RETURNS trigger
+CREATE FUNCTION devilry__on_imageannotationcomment_after_delete() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 DECLARE
@@ -951,7 +1036,7 @@ ALTER FUNCTION public.devilry__on_imageannotationcomment_after_delete() OWNER TO
 -- Name: devilry__on_imageannotationcomment_after_insert_or_update(); Type: FUNCTION; Schema: public; Owner: dbdev
 --
 
-CREATE FUNCTION public.devilry__on_imageannotationcomment_after_insert_or_update() RETURNS trigger
+CREATE FUNCTION devilry__on_imageannotationcomment_after_insert_or_update() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 DECLARE
@@ -970,7 +1055,7 @@ ALTER FUNCTION public.devilry__on_imageannotationcomment_after_insert_or_update(
 -- Name: devilry__rebuild_assignmentgroupcacheddata(integer); Type: FUNCTION; Schema: public; Owner: dbdev
 --
 
-CREATE FUNCTION public.devilry__rebuild_assignmentgroupcacheddata(param_group_id integer) RETURNS void
+CREATE FUNCTION devilry__rebuild_assignmentgroupcacheddata(param_group_id integer) RETURNS void
     LANGUAGE plpgsql
     AS $$
 DECLARE
@@ -1050,7 +1135,7 @@ ALTER FUNCTION public.devilry__rebuild_assignmentgroupcacheddata(param_group_id 
 -- Name: devilry__rebuild_assignmentgroupcacheddata_for_period(integer); Type: FUNCTION; Schema: public; Owner: dbdev
 --
 
-CREATE FUNCTION public.devilry__rebuild_assignmentgroupcacheddata_for_period(param_period_id integer) RETURNS void
+CREATE FUNCTION devilry__rebuild_assignmentgroupcacheddata_for_period(param_period_id integer) RETURNS void
     LANGUAGE plpgsql
     AS $$
 DECLARE
@@ -1085,7 +1170,7 @@ SET default_with_oids = false;
 -- Name: devilry_group_feedbackset; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.devilry_group_feedbackset (
+CREATE TABLE devilry_group_feedbackset (
     id integer NOT NULL,
     grading_points integer,
     created_datetime timestamp with time zone NOT NULL,
@@ -1104,13 +1189,13 @@ CREATE TABLE public.devilry_group_feedbackset (
 );
 
 
-ALTER TABLE public.devilry_group_feedbackset OWNER TO dbdev;
+ALTER TABLE devilry_group_feedbackset OWNER TO dbdev;
 
 --
--- Name: devilry__validate_feedbackset_change(public.devilry_group_feedbackset, text); Type: FUNCTION; Schema: public; Owner: dbdev
+-- Name: devilry__validate_feedbackset_change(devilry_group_feedbackset, text); Type: FUNCTION; Schema: public; Owner: dbdev
 --
 
-CREATE FUNCTION public.devilry__validate_feedbackset_change(param_feedbackset public.devilry_group_feedbackset, param_tg_op text) RETURNS void
+CREATE FUNCTION devilry__validate_feedbackset_change(param_feedbackset devilry_group_feedbackset, param_tg_op text) RETURNS void
     LANGUAGE plpgsql
     AS $$
 -- DECLARE
@@ -1153,13 +1238,13 @@ END
 $$;
 
 
-ALTER FUNCTION public.devilry__validate_feedbackset_change(param_feedbackset public.devilry_group_feedbackset, param_tg_op text) OWNER TO dbdev;
+ALTER FUNCTION public.devilry__validate_feedbackset_change(param_feedbackset devilry_group_feedbackset, param_tg_op text) OWNER TO dbdev;
 
 --
 -- Name: devilry_dbcache_on_assignmentgroup_insert(); Type: FUNCTION; Schema: public; Owner: dbdev
 --
 
-CREATE FUNCTION public.devilry_dbcache_on_assignmentgroup_insert() RETURNS trigger
+CREATE FUNCTION devilry_dbcache_on_assignmentgroup_insert() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
@@ -1175,7 +1260,7 @@ ALTER FUNCTION public.devilry_dbcache_on_assignmentgroup_insert() OWNER TO dbdev
 -- Name: account_emailaddress; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.account_emailaddress (
+CREATE TABLE account_emailaddress (
     id integer NOT NULL,
     email character varying(254) NOT NULL,
     verified boolean NOT NULL,
@@ -1184,13 +1269,13 @@ CREATE TABLE public.account_emailaddress (
 );
 
 
-ALTER TABLE public.account_emailaddress OWNER TO dbdev;
+ALTER TABLE account_emailaddress OWNER TO dbdev;
 
 --
 -- Name: account_emailaddress_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.account_emailaddress_id_seq
+CREATE SEQUENCE account_emailaddress_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -1199,20 +1284,20 @@ CREATE SEQUENCE public.account_emailaddress_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.account_emailaddress_id_seq OWNER TO dbdev;
+ALTER TABLE account_emailaddress_id_seq OWNER TO dbdev;
 
 --
 -- Name: account_emailaddress_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.account_emailaddress_id_seq OWNED BY public.account_emailaddress.id;
+ALTER SEQUENCE account_emailaddress_id_seq OWNED BY account_emailaddress.id;
 
 
 --
 -- Name: account_emailconfirmation; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.account_emailconfirmation (
+CREATE TABLE account_emailconfirmation (
     id integer NOT NULL,
     created timestamp with time zone NOT NULL,
     sent timestamp with time zone,
@@ -1221,13 +1306,13 @@ CREATE TABLE public.account_emailconfirmation (
 );
 
 
-ALTER TABLE public.account_emailconfirmation OWNER TO dbdev;
+ALTER TABLE account_emailconfirmation OWNER TO dbdev;
 
 --
 -- Name: account_emailconfirmation_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.account_emailconfirmation_id_seq
+CREATE SEQUENCE account_emailconfirmation_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -1236,32 +1321,32 @@ CREATE SEQUENCE public.account_emailconfirmation_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.account_emailconfirmation_id_seq OWNER TO dbdev;
+ALTER TABLE account_emailconfirmation_id_seq OWNER TO dbdev;
 
 --
 -- Name: account_emailconfirmation_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.account_emailconfirmation_id_seq OWNED BY public.account_emailconfirmation.id;
+ALTER SEQUENCE account_emailconfirmation_id_seq OWNED BY account_emailconfirmation.id;
 
 
 --
 -- Name: auth_group; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.auth_group (
+CREATE TABLE auth_group (
     id integer NOT NULL,
     name character varying(80) NOT NULL
 );
 
 
-ALTER TABLE public.auth_group OWNER TO dbdev;
+ALTER TABLE auth_group OWNER TO dbdev;
 
 --
 -- Name: auth_group_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.auth_group_id_seq
+CREATE SEQUENCE auth_group_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1269,33 +1354,33 @@ CREATE SEQUENCE public.auth_group_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.auth_group_id_seq OWNER TO dbdev;
+ALTER TABLE auth_group_id_seq OWNER TO dbdev;
 
 --
 -- Name: auth_group_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.auth_group_id_seq OWNED BY public.auth_group.id;
+ALTER SEQUENCE auth_group_id_seq OWNED BY auth_group.id;
 
 
 --
 -- Name: auth_group_permissions; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.auth_group_permissions (
+CREATE TABLE auth_group_permissions (
     id integer NOT NULL,
     group_id integer NOT NULL,
     permission_id integer NOT NULL
 );
 
 
-ALTER TABLE public.auth_group_permissions OWNER TO dbdev;
+ALTER TABLE auth_group_permissions OWNER TO dbdev;
 
 --
 -- Name: auth_group_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.auth_group_permissions_id_seq
+CREATE SEQUENCE auth_group_permissions_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1303,20 +1388,20 @@ CREATE SEQUENCE public.auth_group_permissions_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.auth_group_permissions_id_seq OWNER TO dbdev;
+ALTER TABLE auth_group_permissions_id_seq OWNER TO dbdev;
 
 --
 -- Name: auth_group_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.auth_group_permissions_id_seq OWNED BY public.auth_group_permissions.id;
+ALTER SEQUENCE auth_group_permissions_id_seq OWNED BY auth_group_permissions.id;
 
 
 --
 -- Name: auth_permission; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.auth_permission (
+CREATE TABLE auth_permission (
     id integer NOT NULL,
     name character varying(255) NOT NULL,
     content_type_id integer NOT NULL,
@@ -1324,13 +1409,13 @@ CREATE TABLE public.auth_permission (
 );
 
 
-ALTER TABLE public.auth_permission OWNER TO dbdev;
+ALTER TABLE auth_permission OWNER TO dbdev;
 
 --
 -- Name: auth_permission_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.auth_permission_id_seq
+CREATE SEQUENCE auth_permission_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1338,20 +1423,20 @@ CREATE SEQUENCE public.auth_permission_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.auth_permission_id_seq OWNER TO dbdev;
+ALTER TABLE auth_permission_id_seq OWNER TO dbdev;
 
 --
 -- Name: auth_permission_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.auth_permission_id_seq OWNED BY public.auth_permission.id;
+ALTER SEQUENCE auth_permission_id_seq OWNED BY auth_permission.id;
 
 
 --
 -- Name: core_assignment; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.core_assignment (
+CREATE TABLE core_assignment (
     id integer NOT NULL,
     short_name character varying(20) NOT NULL,
     long_name character varying(100) NOT NULL,
@@ -1381,26 +1466,26 @@ CREATE TABLE public.core_assignment (
 );
 
 
-ALTER TABLE public.core_assignment OWNER TO dbdev;
+ALTER TABLE core_assignment OWNER TO dbdev;
 
 --
 -- Name: core_assignment_admins; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.core_assignment_admins (
+CREATE TABLE core_assignment_admins (
     id integer NOT NULL,
     assignment_id integer NOT NULL,
     user_id integer NOT NULL
 );
 
 
-ALTER TABLE public.core_assignment_admins OWNER TO dbdev;
+ALTER TABLE core_assignment_admins OWNER TO dbdev;
 
 --
 -- Name: core_assignment_admins_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.core_assignment_admins_id_seq
+CREATE SEQUENCE core_assignment_admins_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1408,20 +1493,20 @@ CREATE SEQUENCE public.core_assignment_admins_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.core_assignment_admins_id_seq OWNER TO dbdev;
+ALTER TABLE core_assignment_admins_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_assignment_admins_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.core_assignment_admins_id_seq OWNED BY public.core_assignment_admins.id;
+ALTER SEQUENCE core_assignment_admins_id_seq OWNED BY core_assignment_admins.id;
 
 
 --
 -- Name: core_assignment_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.core_assignment_id_seq
+CREATE SEQUENCE core_assignment_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1429,20 +1514,20 @@ CREATE SEQUENCE public.core_assignment_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.core_assignment_id_seq OWNER TO dbdev;
+ALTER TABLE core_assignment_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_assignment_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.core_assignment_id_seq OWNED BY public.core_assignment.id;
+ALTER SEQUENCE core_assignment_id_seq OWNED BY core_assignment.id;
 
 
 --
 -- Name: core_assignmentgroup; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.core_assignmentgroup (
+CREATE TABLE core_assignmentgroup (
     id integer NOT NULL,
     name character varying(30) NOT NULL,
     is_open boolean NOT NULL,
@@ -1458,13 +1543,13 @@ CREATE TABLE public.core_assignmentgroup (
 );
 
 
-ALTER TABLE public.core_assignmentgroup OWNER TO dbdev;
+ALTER TABLE core_assignmentgroup OWNER TO dbdev;
 
 --
 -- Name: core_assignmentgroup_examiners; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.core_assignmentgroup_examiners (
+CREATE TABLE core_assignmentgroup_examiners (
     id integer NOT NULL,
     assignmentgroup_id integer NOT NULL,
     old_reference_not_in_use_user_id integer,
@@ -1472,13 +1557,13 @@ CREATE TABLE public.core_assignmentgroup_examiners (
 );
 
 
-ALTER TABLE public.core_assignmentgroup_examiners OWNER TO dbdev;
+ALTER TABLE core_assignmentgroup_examiners OWNER TO dbdev;
 
 --
 -- Name: core_assignmentgroup_examiners_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.core_assignmentgroup_examiners_id_seq
+CREATE SEQUENCE core_assignmentgroup_examiners_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1486,20 +1571,20 @@ CREATE SEQUENCE public.core_assignmentgroup_examiners_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.core_assignmentgroup_examiners_id_seq OWNER TO dbdev;
+ALTER TABLE core_assignmentgroup_examiners_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_assignmentgroup_examiners_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.core_assignmentgroup_examiners_id_seq OWNED BY public.core_assignmentgroup_examiners.id;
+ALTER SEQUENCE core_assignmentgroup_examiners_id_seq OWNED BY core_assignmentgroup_examiners.id;
 
 
 --
 -- Name: core_assignmentgroup_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.core_assignmentgroup_id_seq
+CREATE SEQUENCE core_assignmentgroup_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1507,33 +1592,33 @@ CREATE SEQUENCE public.core_assignmentgroup_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.core_assignmentgroup_id_seq OWNER TO dbdev;
+ALTER TABLE core_assignmentgroup_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_assignmentgroup_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.core_assignmentgroup_id_seq OWNED BY public.core_assignmentgroup.id;
+ALTER SEQUENCE core_assignmentgroup_id_seq OWNED BY core_assignmentgroup.id;
 
 
 --
 -- Name: core_assignmentgrouphistory; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.core_assignmentgrouphistory (
+CREATE TABLE core_assignmentgrouphistory (
     id integer NOT NULL,
     merge_history_json text NOT NULL,
     assignment_group_id integer NOT NULL
 );
 
 
-ALTER TABLE public.core_assignmentgrouphistory OWNER TO dbdev;
+ALTER TABLE core_assignmentgrouphistory OWNER TO dbdev;
 
 --
 -- Name: core_assignmentgrouphistory_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.core_assignmentgrouphistory_id_seq
+CREATE SEQUENCE core_assignmentgrouphistory_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1541,33 +1626,33 @@ CREATE SEQUENCE public.core_assignmentgrouphistory_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.core_assignmentgrouphistory_id_seq OWNER TO dbdev;
+ALTER TABLE core_assignmentgrouphistory_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_assignmentgrouphistory_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.core_assignmentgrouphistory_id_seq OWNED BY public.core_assignmentgrouphistory.id;
+ALTER SEQUENCE core_assignmentgrouphistory_id_seq OWNED BY core_assignmentgrouphistory.id;
 
 
 --
 -- Name: core_assignmentgrouptag; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.core_assignmentgrouptag (
+CREATE TABLE core_assignmentgrouptag (
     id integer NOT NULL,
     tag character varying(20) NOT NULL,
     assignment_group_id integer NOT NULL
 );
 
 
-ALTER TABLE public.core_assignmentgrouptag OWNER TO dbdev;
+ALTER TABLE core_assignmentgrouptag OWNER TO dbdev;
 
 --
 -- Name: core_assignmentgrouptag_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.core_assignmentgrouptag_id_seq
+CREATE SEQUENCE core_assignmentgrouptag_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1575,20 +1660,20 @@ CREATE SEQUENCE public.core_assignmentgrouptag_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.core_assignmentgrouptag_id_seq OWNER TO dbdev;
+ALTER TABLE core_assignmentgrouptag_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_assignmentgrouptag_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.core_assignmentgrouptag_id_seq OWNED BY public.core_assignmentgrouptag.id;
+ALTER SEQUENCE core_assignmentgrouptag_id_seq OWNED BY core_assignmentgrouptag.id;
 
 
 --
 -- Name: core_candidate; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.core_candidate (
+CREATE TABLE core_candidate (
     id integer NOT NULL,
     candidate_id character varying(30),
     assignment_group_id integer NOT NULL,
@@ -1597,13 +1682,13 @@ CREATE TABLE public.core_candidate (
 );
 
 
-ALTER TABLE public.core_candidate OWNER TO dbdev;
+ALTER TABLE core_candidate OWNER TO dbdev;
 
 --
 -- Name: core_candidate_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.core_candidate_id_seq
+CREATE SEQUENCE core_candidate_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1611,20 +1696,20 @@ CREATE SEQUENCE public.core_candidate_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.core_candidate_id_seq OWNER TO dbdev;
+ALTER TABLE core_candidate_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_candidate_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.core_candidate_id_seq OWNED BY public.core_candidate.id;
+ALTER SEQUENCE core_candidate_id_seq OWNED BY core_candidate.id;
 
 
 --
 -- Name: core_candidateassignmentgrouphistory; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.core_candidateassignmentgrouphistory (
+CREATE TABLE core_candidateassignmentgrouphistory (
     id integer NOT NULL,
     created_datetime timestamp with time zone NOT NULL,
     is_add boolean NOT NULL,
@@ -1633,13 +1718,13 @@ CREATE TABLE public.core_candidateassignmentgrouphistory (
 );
 
 
-ALTER TABLE public.core_candidateassignmentgrouphistory OWNER TO dbdev;
+ALTER TABLE core_candidateassignmentgrouphistory OWNER TO dbdev;
 
 --
 -- Name: core_candidateassignmentgrouphistory_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.core_candidateassignmentgrouphistory_id_seq
+CREATE SEQUENCE core_candidateassignmentgrouphistory_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -1648,20 +1733,20 @@ CREATE SEQUENCE public.core_candidateassignmentgrouphistory_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.core_candidateassignmentgrouphistory_id_seq OWNER TO dbdev;
+ALTER TABLE core_candidateassignmentgrouphistory_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_candidateassignmentgrouphistory_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.core_candidateassignmentgrouphistory_id_seq OWNED BY public.core_candidateassignmentgrouphistory.id;
+ALTER SEQUENCE core_candidateassignmentgrouphistory_id_seq OWNED BY core_candidateassignmentgrouphistory.id;
 
 
 --
 -- Name: core_deadline; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.core_deadline (
+CREATE TABLE core_deadline (
     id integer NOT NULL,
     deadline timestamp with time zone NOT NULL,
     text text,
@@ -1672,13 +1757,13 @@ CREATE TABLE public.core_deadline (
 );
 
 
-ALTER TABLE public.core_deadline OWNER TO dbdev;
+ALTER TABLE core_deadline OWNER TO dbdev;
 
 --
 -- Name: core_deadline_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.core_deadline_id_seq
+CREATE SEQUENCE core_deadline_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1686,20 +1771,20 @@ CREATE SEQUENCE public.core_deadline_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.core_deadline_id_seq OWNER TO dbdev;
+ALTER TABLE core_deadline_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_deadline_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.core_deadline_id_seq OWNED BY public.core_deadline.id;
+ALTER SEQUENCE core_deadline_id_seq OWNED BY core_deadline.id;
 
 
 --
 -- Name: core_delivery; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.core_delivery (
+CREATE TABLE core_delivery (
     id integer NOT NULL,
     delivery_type integer NOT NULL,
     time_of_delivery timestamp with time zone NOT NULL,
@@ -1715,13 +1800,13 @@ CREATE TABLE public.core_delivery (
 );
 
 
-ALTER TABLE public.core_delivery OWNER TO dbdev;
+ALTER TABLE core_delivery OWNER TO dbdev;
 
 --
 -- Name: core_delivery_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.core_delivery_id_seq
+CREATE SEQUENCE core_delivery_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1729,20 +1814,20 @@ CREATE SEQUENCE public.core_delivery_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.core_delivery_id_seq OWNER TO dbdev;
+ALTER TABLE core_delivery_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_delivery_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.core_delivery_id_seq OWNED BY public.core_delivery.id;
+ALTER SEQUENCE core_delivery_id_seq OWNED BY core_delivery.id;
 
 
 --
 -- Name: core_devilryuserprofile; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.core_devilryuserprofile (
+CREATE TABLE core_devilryuserprofile (
     id integer NOT NULL,
     full_name character varying(300),
     languagecode character varying(100),
@@ -1750,13 +1835,13 @@ CREATE TABLE public.core_devilryuserprofile (
 );
 
 
-ALTER TABLE public.core_devilryuserprofile OWNER TO dbdev;
+ALTER TABLE core_devilryuserprofile OWNER TO dbdev;
 
 --
 -- Name: core_devilryuserprofile_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.core_devilryuserprofile_id_seq
+CREATE SEQUENCE core_devilryuserprofile_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1764,20 +1849,20 @@ CREATE SEQUENCE public.core_devilryuserprofile_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.core_devilryuserprofile_id_seq OWNER TO dbdev;
+ALTER TABLE core_devilryuserprofile_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_devilryuserprofile_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.core_devilryuserprofile_id_seq OWNED BY public.core_devilryuserprofile.id;
+ALTER SEQUENCE core_devilryuserprofile_id_seq OWNED BY core_devilryuserprofile.id;
 
 
 --
 -- Name: core_examinerassignmentgrouphistory; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.core_examinerassignmentgrouphistory (
+CREATE TABLE core_examinerassignmentgrouphistory (
     id integer NOT NULL,
     created_datetime timestamp with time zone NOT NULL,
     is_add boolean NOT NULL,
@@ -1786,13 +1871,13 @@ CREATE TABLE public.core_examinerassignmentgrouphistory (
 );
 
 
-ALTER TABLE public.core_examinerassignmentgrouphistory OWNER TO dbdev;
+ALTER TABLE core_examinerassignmentgrouphistory OWNER TO dbdev;
 
 --
 -- Name: core_examinerassignmentgrouphistory_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.core_examinerassignmentgrouphistory_id_seq
+CREATE SEQUENCE core_examinerassignmentgrouphistory_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -1801,20 +1886,20 @@ CREATE SEQUENCE public.core_examinerassignmentgrouphistory_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.core_examinerassignmentgrouphistory_id_seq OWNER TO dbdev;
+ALTER TABLE core_examinerassignmentgrouphistory_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_examinerassignmentgrouphistory_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.core_examinerassignmentgrouphistory_id_seq OWNED BY public.core_examinerassignmentgrouphistory.id;
+ALTER SEQUENCE core_examinerassignmentgrouphistory_id_seq OWNED BY core_examinerassignmentgrouphistory.id;
 
 
 --
 -- Name: core_filemeta; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.core_filemeta (
+CREATE TABLE core_filemeta (
     id integer NOT NULL,
     filename character varying(255) NOT NULL,
     size integer NOT NULL,
@@ -1822,13 +1907,13 @@ CREATE TABLE public.core_filemeta (
 );
 
 
-ALTER TABLE public.core_filemeta OWNER TO dbdev;
+ALTER TABLE core_filemeta OWNER TO dbdev;
 
 --
 -- Name: core_filemeta_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.core_filemeta_id_seq
+CREATE SEQUENCE core_filemeta_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1836,20 +1921,20 @@ CREATE SEQUENCE public.core_filemeta_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.core_filemeta_id_seq OWNER TO dbdev;
+ALTER TABLE core_filemeta_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_filemeta_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.core_filemeta_id_seq OWNED BY public.core_filemeta.id;
+ALTER SEQUENCE core_filemeta_id_seq OWNED BY core_filemeta.id;
 
 
 --
 -- Name: core_groupinvite; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.core_groupinvite (
+CREATE TABLE core_groupinvite (
     id integer NOT NULL,
     sent_datetime timestamp with time zone NOT NULL,
     accepted boolean,
@@ -1860,13 +1945,13 @@ CREATE TABLE public.core_groupinvite (
 );
 
 
-ALTER TABLE public.core_groupinvite OWNER TO dbdev;
+ALTER TABLE core_groupinvite OWNER TO dbdev;
 
 --
 -- Name: core_groupinvite_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.core_groupinvite_id_seq
+CREATE SEQUENCE core_groupinvite_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1874,20 +1959,20 @@ CREATE SEQUENCE public.core_groupinvite_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.core_groupinvite_id_seq OWNER TO dbdev;
+ALTER TABLE core_groupinvite_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_groupinvite_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.core_groupinvite_id_seq OWNED BY public.core_groupinvite.id;
+ALTER SEQUENCE core_groupinvite_id_seq OWNED BY core_groupinvite.id;
 
 
 --
 -- Name: core_period; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.core_period (
+CREATE TABLE core_period (
     id integer NOT NULL,
     short_name character varying(20) NOT NULL,
     long_name character varying(100) NOT NULL,
@@ -1898,26 +1983,26 @@ CREATE TABLE public.core_period (
 );
 
 
-ALTER TABLE public.core_period OWNER TO dbdev;
+ALTER TABLE core_period OWNER TO dbdev;
 
 --
 -- Name: core_period_admins; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.core_period_admins (
+CREATE TABLE core_period_admins (
     id integer NOT NULL,
     period_id integer NOT NULL,
     user_id integer NOT NULL
 );
 
 
-ALTER TABLE public.core_period_admins OWNER TO dbdev;
+ALTER TABLE core_period_admins OWNER TO dbdev;
 
 --
 -- Name: core_period_admins_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.core_period_admins_id_seq
+CREATE SEQUENCE core_period_admins_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1925,20 +2010,20 @@ CREATE SEQUENCE public.core_period_admins_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.core_period_admins_id_seq OWNER TO dbdev;
+ALTER TABLE core_period_admins_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_period_admins_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.core_period_admins_id_seq OWNED BY public.core_period_admins.id;
+ALTER SEQUENCE core_period_admins_id_seq OWNED BY core_period_admins.id;
 
 
 --
 -- Name: core_period_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.core_period_id_seq
+CREATE SEQUENCE core_period_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1946,20 +2031,20 @@ CREATE SEQUENCE public.core_period_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.core_period_id_seq OWNER TO dbdev;
+ALTER TABLE core_period_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_period_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.core_period_id_seq OWNED BY public.core_period.id;
+ALTER SEQUENCE core_period_id_seq OWNED BY core_period.id;
 
 
 --
 -- Name: core_periodapplicationkeyvalue; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.core_periodapplicationkeyvalue (
+CREATE TABLE core_periodapplicationkeyvalue (
     id integer NOT NULL,
     application character varying(300) NOT NULL,
     key character varying(300) NOT NULL,
@@ -1968,13 +2053,13 @@ CREATE TABLE public.core_periodapplicationkeyvalue (
 );
 
 
-ALTER TABLE public.core_periodapplicationkeyvalue OWNER TO dbdev;
+ALTER TABLE core_periodapplicationkeyvalue OWNER TO dbdev;
 
 --
 -- Name: core_periodapplicationkeyvalue_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.core_periodapplicationkeyvalue_id_seq
+CREATE SEQUENCE core_periodapplicationkeyvalue_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1982,20 +2067,20 @@ CREATE SEQUENCE public.core_periodapplicationkeyvalue_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.core_periodapplicationkeyvalue_id_seq OWNER TO dbdev;
+ALTER TABLE core_periodapplicationkeyvalue_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_periodapplicationkeyvalue_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.core_periodapplicationkeyvalue_id_seq OWNED BY public.core_periodapplicationkeyvalue.id;
+ALTER SEQUENCE core_periodapplicationkeyvalue_id_seq OWNED BY core_periodapplicationkeyvalue.id;
 
 
 --
 -- Name: core_periodtag; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.core_periodtag (
+CREATE TABLE core_periodtag (
     id integer NOT NULL,
     prefix character varying(30) NOT NULL,
     tag text NOT NULL,
@@ -2006,13 +2091,13 @@ CREATE TABLE public.core_periodtag (
 );
 
 
-ALTER TABLE public.core_periodtag OWNER TO dbdev;
+ALTER TABLE core_periodtag OWNER TO dbdev;
 
 --
 -- Name: core_periodtag_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.core_periodtag_id_seq
+CREATE SEQUENCE core_periodtag_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2020,33 +2105,33 @@ CREATE SEQUENCE public.core_periodtag_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.core_periodtag_id_seq OWNER TO dbdev;
+ALTER TABLE core_periodtag_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_periodtag_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.core_periodtag_id_seq OWNED BY public.core_periodtag.id;
+ALTER SEQUENCE core_periodtag_id_seq OWNED BY core_periodtag.id;
 
 
 --
 -- Name: core_periodtag_relatedexaminers; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.core_periodtag_relatedexaminers (
+CREATE TABLE core_periodtag_relatedexaminers (
     id integer NOT NULL,
     periodtag_id integer NOT NULL,
     relatedexaminer_id integer NOT NULL
 );
 
 
-ALTER TABLE public.core_periodtag_relatedexaminers OWNER TO dbdev;
+ALTER TABLE core_periodtag_relatedexaminers OWNER TO dbdev;
 
 --
 -- Name: core_periodtag_relatedexaminers_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.core_periodtag_relatedexaminers_id_seq
+CREATE SEQUENCE core_periodtag_relatedexaminers_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2054,33 +2139,33 @@ CREATE SEQUENCE public.core_periodtag_relatedexaminers_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.core_periodtag_relatedexaminers_id_seq OWNER TO dbdev;
+ALTER TABLE core_periodtag_relatedexaminers_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_periodtag_relatedexaminers_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.core_periodtag_relatedexaminers_id_seq OWNED BY public.core_periodtag_relatedexaminers.id;
+ALTER SEQUENCE core_periodtag_relatedexaminers_id_seq OWNED BY core_periodtag_relatedexaminers.id;
 
 
 --
 -- Name: core_periodtag_relatedstudents; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.core_periodtag_relatedstudents (
+CREATE TABLE core_periodtag_relatedstudents (
     id integer NOT NULL,
     periodtag_id integer NOT NULL,
     relatedstudent_id integer NOT NULL
 );
 
 
-ALTER TABLE public.core_periodtag_relatedstudents OWNER TO dbdev;
+ALTER TABLE core_periodtag_relatedstudents OWNER TO dbdev;
 
 --
 -- Name: core_periodtag_relatedstudents_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.core_periodtag_relatedstudents_id_seq
+CREATE SEQUENCE core_periodtag_relatedstudents_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2088,20 +2173,20 @@ CREATE SEQUENCE public.core_periodtag_relatedstudents_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.core_periodtag_relatedstudents_id_seq OWNER TO dbdev;
+ALTER TABLE core_periodtag_relatedstudents_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_periodtag_relatedstudents_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.core_periodtag_relatedstudents_id_seq OWNED BY public.core_periodtag_relatedstudents.id;
+ALTER SEQUENCE core_periodtag_relatedstudents_id_seq OWNED BY core_periodtag_relatedstudents.id;
 
 
 --
 -- Name: core_pointrangetograde; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.core_pointrangetograde (
+CREATE TABLE core_pointrangetograde (
     id integer NOT NULL,
     minimum_points integer NOT NULL,
     maximum_points integer NOT NULL,
@@ -2112,13 +2197,13 @@ CREATE TABLE public.core_pointrangetograde (
 );
 
 
-ALTER TABLE public.core_pointrangetograde OWNER TO dbdev;
+ALTER TABLE core_pointrangetograde OWNER TO dbdev;
 
 --
 -- Name: core_pointrangetograde_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.core_pointrangetograde_id_seq
+CREATE SEQUENCE core_pointrangetograde_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2126,33 +2211,33 @@ CREATE SEQUENCE public.core_pointrangetograde_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.core_pointrangetograde_id_seq OWNER TO dbdev;
+ALTER TABLE core_pointrangetograde_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_pointrangetograde_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.core_pointrangetograde_id_seq OWNED BY public.core_pointrangetograde.id;
+ALTER SEQUENCE core_pointrangetograde_id_seq OWNED BY core_pointrangetograde.id;
 
 
 --
 -- Name: core_pointtogrademap; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.core_pointtogrademap (
+CREATE TABLE core_pointtogrademap (
     id integer NOT NULL,
     invalid boolean NOT NULL,
     assignment_id integer NOT NULL
 );
 
 
-ALTER TABLE public.core_pointtogrademap OWNER TO dbdev;
+ALTER TABLE core_pointtogrademap OWNER TO dbdev;
 
 --
 -- Name: core_pointtogrademap_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.core_pointtogrademap_id_seq
+CREATE SEQUENCE core_pointtogrademap_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2160,20 +2245,20 @@ CREATE SEQUENCE public.core_pointtogrademap_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.core_pointtogrademap_id_seq OWNER TO dbdev;
+ALTER TABLE core_pointtogrademap_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_pointtogrademap_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.core_pointtogrademap_id_seq OWNED BY public.core_pointtogrademap.id;
+ALTER SEQUENCE core_pointtogrademap_id_seq OWNED BY core_pointtogrademap.id;
 
 
 --
 -- Name: core_relatedexaminer; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.core_relatedexaminer (
+CREATE TABLE core_relatedexaminer (
     id integer NOT NULL,
     tags text,
     period_id integer NOT NULL,
@@ -2183,13 +2268,13 @@ CREATE TABLE public.core_relatedexaminer (
 );
 
 
-ALTER TABLE public.core_relatedexaminer OWNER TO dbdev;
+ALTER TABLE core_relatedexaminer OWNER TO dbdev;
 
 --
 -- Name: core_relatedexaminer_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.core_relatedexaminer_id_seq
+CREATE SEQUENCE core_relatedexaminer_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2197,20 +2282,20 @@ CREATE SEQUENCE public.core_relatedexaminer_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.core_relatedexaminer_id_seq OWNER TO dbdev;
+ALTER TABLE core_relatedexaminer_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_relatedexaminer_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.core_relatedexaminer_id_seq OWNED BY public.core_relatedexaminer.id;
+ALTER SEQUENCE core_relatedexaminer_id_seq OWNED BY core_relatedexaminer.id;
 
 
 --
 -- Name: core_relatedstudent; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.core_relatedstudent (
+CREATE TABLE core_relatedstudent (
     id integer NOT NULL,
     tags text,
     candidate_id character varying(30),
@@ -2221,13 +2306,13 @@ CREATE TABLE public.core_relatedstudent (
 );
 
 
-ALTER TABLE public.core_relatedstudent OWNER TO dbdev;
+ALTER TABLE core_relatedstudent OWNER TO dbdev;
 
 --
 -- Name: core_relatedstudent_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.core_relatedstudent_id_seq
+CREATE SEQUENCE core_relatedstudent_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2235,20 +2320,20 @@ CREATE SEQUENCE public.core_relatedstudent_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.core_relatedstudent_id_seq OWNER TO dbdev;
+ALTER TABLE core_relatedstudent_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_relatedstudent_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.core_relatedstudent_id_seq OWNED BY public.core_relatedstudent.id;
+ALTER SEQUENCE core_relatedstudent_id_seq OWNED BY core_relatedstudent.id;
 
 
 --
 -- Name: core_relatedstudentkeyvalue; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.core_relatedstudentkeyvalue (
+CREATE TABLE core_relatedstudentkeyvalue (
     id integer NOT NULL,
     application character varying(300) NOT NULL,
     key character varying(300) NOT NULL,
@@ -2258,13 +2343,13 @@ CREATE TABLE public.core_relatedstudentkeyvalue (
 );
 
 
-ALTER TABLE public.core_relatedstudentkeyvalue OWNER TO dbdev;
+ALTER TABLE core_relatedstudentkeyvalue OWNER TO dbdev;
 
 --
 -- Name: core_relatedstudentkeyvalue_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.core_relatedstudentkeyvalue_id_seq
+CREATE SEQUENCE core_relatedstudentkeyvalue_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2272,20 +2357,20 @@ CREATE SEQUENCE public.core_relatedstudentkeyvalue_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.core_relatedstudentkeyvalue_id_seq OWNER TO dbdev;
+ALTER TABLE core_relatedstudentkeyvalue_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_relatedstudentkeyvalue_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.core_relatedstudentkeyvalue_id_seq OWNED BY public.core_relatedstudentkeyvalue.id;
+ALTER SEQUENCE core_relatedstudentkeyvalue_id_seq OWNED BY core_relatedstudentkeyvalue.id;
 
 
 --
 -- Name: core_staticfeedback; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.core_staticfeedback (
+CREATE TABLE core_staticfeedback (
     id integer NOT NULL,
     rendered_view text NOT NULL,
     grade character varying(12) NOT NULL,
@@ -2298,13 +2383,13 @@ CREATE TABLE public.core_staticfeedback (
 );
 
 
-ALTER TABLE public.core_staticfeedback OWNER TO dbdev;
+ALTER TABLE core_staticfeedback OWNER TO dbdev;
 
 --
 -- Name: core_staticfeedback_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.core_staticfeedback_id_seq
+CREATE SEQUENCE core_staticfeedback_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2312,20 +2397,20 @@ CREATE SEQUENCE public.core_staticfeedback_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.core_staticfeedback_id_seq OWNER TO dbdev;
+ALTER TABLE core_staticfeedback_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_staticfeedback_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.core_staticfeedback_id_seq OWNED BY public.core_staticfeedback.id;
+ALTER SEQUENCE core_staticfeedback_id_seq OWNED BY core_staticfeedback.id;
 
 
 --
 -- Name: core_staticfeedbackfileattachment; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.core_staticfeedbackfileattachment (
+CREATE TABLE core_staticfeedbackfileattachment (
     id integer NOT NULL,
     filename text NOT NULL,
     file character varying(100) NOT NULL,
@@ -2333,13 +2418,13 @@ CREATE TABLE public.core_staticfeedbackfileattachment (
 );
 
 
-ALTER TABLE public.core_staticfeedbackfileattachment OWNER TO dbdev;
+ALTER TABLE core_staticfeedbackfileattachment OWNER TO dbdev;
 
 --
 -- Name: core_staticfeedbackfileattachment_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.core_staticfeedbackfileattachment_id_seq
+CREATE SEQUENCE core_staticfeedbackfileattachment_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2347,20 +2432,20 @@ CREATE SEQUENCE public.core_staticfeedbackfileattachment_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.core_staticfeedbackfileattachment_id_seq OWNER TO dbdev;
+ALTER TABLE core_staticfeedbackfileattachment_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_staticfeedbackfileattachment_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.core_staticfeedbackfileattachment_id_seq OWNED BY public.core_staticfeedbackfileattachment.id;
+ALTER SEQUENCE core_staticfeedbackfileattachment_id_seq OWNED BY core_staticfeedbackfileattachment.id;
 
 
 --
 -- Name: core_subject; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.core_subject (
+CREATE TABLE core_subject (
     id integer NOT NULL,
     short_name character varying(20) NOT NULL,
     long_name character varying(100) NOT NULL,
@@ -2368,26 +2453,26 @@ CREATE TABLE public.core_subject (
 );
 
 
-ALTER TABLE public.core_subject OWNER TO dbdev;
+ALTER TABLE core_subject OWNER TO dbdev;
 
 --
 -- Name: core_subject_admins; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.core_subject_admins (
+CREATE TABLE core_subject_admins (
     id integer NOT NULL,
     subject_id integer NOT NULL,
     user_id integer NOT NULL
 );
 
 
-ALTER TABLE public.core_subject_admins OWNER TO dbdev;
+ALTER TABLE core_subject_admins OWNER TO dbdev;
 
 --
 -- Name: core_subject_admins_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.core_subject_admins_id_seq
+CREATE SEQUENCE core_subject_admins_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2395,20 +2480,20 @@ CREATE SEQUENCE public.core_subject_admins_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.core_subject_admins_id_seq OWNER TO dbdev;
+ALTER TABLE core_subject_admins_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_subject_admins_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.core_subject_admins_id_seq OWNED BY public.core_subject_admins.id;
+ALTER SEQUENCE core_subject_admins_id_seq OWNED BY core_subject_admins.id;
 
 
 --
 -- Name: core_subject_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.core_subject_id_seq
+CREATE SEQUENCE core_subject_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2416,20 +2501,20 @@ CREATE SEQUENCE public.core_subject_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.core_subject_id_seq OWNER TO dbdev;
+ALTER TABLE core_subject_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_subject_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.core_subject_id_seq OWNED BY public.core_subject.id;
+ALTER SEQUENCE core_subject_id_seq OWNED BY core_subject.id;
 
 
 --
 -- Name: cradmin_generic_token_with_metadata_generictokenwithmetadata; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.cradmin_generic_token_with_metadata_generictokenwithmetadata (
+CREATE TABLE cradmin_generic_token_with_metadata_generictokenwithmetadata (
     id integer NOT NULL,
     app character varying(255) NOT NULL,
     token character varying(100) NOT NULL,
@@ -2443,13 +2528,13 @@ CREATE TABLE public.cradmin_generic_token_with_metadata_generictokenwithmetadata
 );
 
 
-ALTER TABLE public.cradmin_generic_token_with_metadata_generictokenwithmetadata OWNER TO dbdev;
+ALTER TABLE cradmin_generic_token_with_metadata_generictokenwithmetadata OWNER TO dbdev;
 
 --
 -- Name: cradmin_generic_token_with_metadata_generictokenwithmeta_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.cradmin_generic_token_with_metadata_generictokenwithmeta_id_seq
+CREATE SEQUENCE cradmin_generic_token_with_metadata_generictokenwithmeta_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2457,20 +2542,20 @@ CREATE SEQUENCE public.cradmin_generic_token_with_metadata_generictokenwithmeta_
     CACHE 1;
 
 
-ALTER TABLE public.cradmin_generic_token_with_metadata_generictokenwithmeta_id_seq OWNER TO dbdev;
+ALTER TABLE cradmin_generic_token_with_metadata_generictokenwithmeta_id_seq OWNER TO dbdev;
 
 --
 -- Name: cradmin_generic_token_with_metadata_generictokenwithmeta_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.cradmin_generic_token_with_metadata_generictokenwithmeta_id_seq OWNED BY public.cradmin_generic_token_with_metadata_generictokenwithmetadata.id;
+ALTER SEQUENCE cradmin_generic_token_with_metadata_generictokenwithmeta_id_seq OWNED BY cradmin_generic_token_with_metadata_generictokenwithmetadata.id;
 
 
 --
 -- Name: cradmin_temporaryfileuploadstore_temporaryfile; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.cradmin_temporaryfileuploadstore_temporaryfile (
+CREATE TABLE cradmin_temporaryfileuploadstore_temporaryfile (
     id integer NOT NULL,
     filename text NOT NULL,
     file character varying(100) NOT NULL,
@@ -2479,13 +2564,13 @@ CREATE TABLE public.cradmin_temporaryfileuploadstore_temporaryfile (
 );
 
 
-ALTER TABLE public.cradmin_temporaryfileuploadstore_temporaryfile OWNER TO dbdev;
+ALTER TABLE cradmin_temporaryfileuploadstore_temporaryfile OWNER TO dbdev;
 
 --
 -- Name: cradmin_temporaryfileuploadstore_temporaryfile_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.cradmin_temporaryfileuploadstore_temporaryfile_id_seq
+CREATE SEQUENCE cradmin_temporaryfileuploadstore_temporaryfile_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2493,20 +2578,20 @@ CREATE SEQUENCE public.cradmin_temporaryfileuploadstore_temporaryfile_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.cradmin_temporaryfileuploadstore_temporaryfile_id_seq OWNER TO dbdev;
+ALTER TABLE cradmin_temporaryfileuploadstore_temporaryfile_id_seq OWNER TO dbdev;
 
 --
 -- Name: cradmin_temporaryfileuploadstore_temporaryfile_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.cradmin_temporaryfileuploadstore_temporaryfile_id_seq OWNED BY public.cradmin_temporaryfileuploadstore_temporaryfile.id;
+ALTER SEQUENCE cradmin_temporaryfileuploadstore_temporaryfile_id_seq OWNED BY cradmin_temporaryfileuploadstore_temporaryfile.id;
 
 
 --
 -- Name: cradmin_temporaryfileuploadstore_temporaryfilecollection; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.cradmin_temporaryfileuploadstore_temporaryfilecollection (
+CREATE TABLE cradmin_temporaryfileuploadstore_temporaryfilecollection (
     id integer NOT NULL,
     created_datetime timestamp with time zone NOT NULL,
     minutes_to_live integer NOT NULL,
@@ -2521,13 +2606,13 @@ CREATE TABLE public.cradmin_temporaryfileuploadstore_temporaryfilecollection (
 );
 
 
-ALTER TABLE public.cradmin_temporaryfileuploadstore_temporaryfilecollection OWNER TO dbdev;
+ALTER TABLE cradmin_temporaryfileuploadstore_temporaryfilecollection OWNER TO dbdev;
 
 --
 -- Name: cradmin_temporaryfileuploadstore_temporaryfilecollection_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.cradmin_temporaryfileuploadstore_temporaryfilecollection_id_seq
+CREATE SEQUENCE cradmin_temporaryfileuploadstore_temporaryfilecollection_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2535,33 +2620,33 @@ CREATE SEQUENCE public.cradmin_temporaryfileuploadstore_temporaryfilecollection_
     CACHE 1;
 
 
-ALTER TABLE public.cradmin_temporaryfileuploadstore_temporaryfilecollection_id_seq OWNER TO dbdev;
+ALTER TABLE cradmin_temporaryfileuploadstore_temporaryfilecollection_id_seq OWNER TO dbdev;
 
 --
 -- Name: cradmin_temporaryfileuploadstore_temporaryfilecollection_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.cradmin_temporaryfileuploadstore_temporaryfilecollection_id_seq OWNED BY public.cradmin_temporaryfileuploadstore_temporaryfilecollection.id;
+ALTER SEQUENCE cradmin_temporaryfileuploadstore_temporaryfilecollection_id_seq OWNED BY cradmin_temporaryfileuploadstore_temporaryfilecollection.id;
 
 
 --
 -- Name: devilry_account_periodpermissiongroup; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.devilry_account_periodpermissiongroup (
+CREATE TABLE devilry_account_periodpermissiongroup (
     id integer NOT NULL,
     period_id integer NOT NULL,
     permissiongroup_id integer NOT NULL
 );
 
 
-ALTER TABLE public.devilry_account_periodpermissiongroup OWNER TO dbdev;
+ALTER TABLE devilry_account_periodpermissiongroup OWNER TO dbdev;
 
 --
 -- Name: devilry_account_periodpermissiongroup_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.devilry_account_periodpermissiongroup_id_seq
+CREATE SEQUENCE devilry_account_periodpermissiongroup_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2569,20 +2654,20 @@ CREATE SEQUENCE public.devilry_account_periodpermissiongroup_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.devilry_account_periodpermissiongroup_id_seq OWNER TO dbdev;
+ALTER TABLE devilry_account_periodpermissiongroup_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_account_periodpermissiongroup_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.devilry_account_periodpermissiongroup_id_seq OWNED BY public.devilry_account_periodpermissiongroup.id;
+ALTER SEQUENCE devilry_account_periodpermissiongroup_id_seq OWNED BY devilry_account_periodpermissiongroup.id;
 
 
 --
 -- Name: devilry_account_permissiongroup; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.devilry_account_permissiongroup (
+CREATE TABLE devilry_account_permissiongroup (
     id integer NOT NULL,
     name character varying(255) NOT NULL,
     created_datetime timestamp with time zone NOT NULL,
@@ -2593,13 +2678,13 @@ CREATE TABLE public.devilry_account_permissiongroup (
 );
 
 
-ALTER TABLE public.devilry_account_permissiongroup OWNER TO dbdev;
+ALTER TABLE devilry_account_permissiongroup OWNER TO dbdev;
 
 --
 -- Name: devilry_account_permissiongroup_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.devilry_account_permissiongroup_id_seq
+CREATE SEQUENCE devilry_account_permissiongroup_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2607,33 +2692,33 @@ CREATE SEQUENCE public.devilry_account_permissiongroup_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.devilry_account_permissiongroup_id_seq OWNER TO dbdev;
+ALTER TABLE devilry_account_permissiongroup_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_account_permissiongroup_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.devilry_account_permissiongroup_id_seq OWNED BY public.devilry_account_permissiongroup.id;
+ALTER SEQUENCE devilry_account_permissiongroup_id_seq OWNED BY devilry_account_permissiongroup.id;
 
 
 --
 -- Name: devilry_account_permissiongroupuser; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.devilry_account_permissiongroupuser (
+CREATE TABLE devilry_account_permissiongroupuser (
     id integer NOT NULL,
     permissiongroup_id integer NOT NULL,
     user_id integer NOT NULL
 );
 
 
-ALTER TABLE public.devilry_account_permissiongroupuser OWNER TO dbdev;
+ALTER TABLE devilry_account_permissiongroupuser OWNER TO dbdev;
 
 --
 -- Name: devilry_account_permissiongroupuser_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.devilry_account_permissiongroupuser_id_seq
+CREATE SEQUENCE devilry_account_permissiongroupuser_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2641,33 +2726,33 @@ CREATE SEQUENCE public.devilry_account_permissiongroupuser_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.devilry_account_permissiongroupuser_id_seq OWNER TO dbdev;
+ALTER TABLE devilry_account_permissiongroupuser_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_account_permissiongroupuser_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.devilry_account_permissiongroupuser_id_seq OWNED BY public.devilry_account_permissiongroupuser.id;
+ALTER SEQUENCE devilry_account_permissiongroupuser_id_seq OWNED BY devilry_account_permissiongroupuser.id;
 
 
 --
 -- Name: devilry_account_subjectpermissiongroup; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.devilry_account_subjectpermissiongroup (
+CREATE TABLE devilry_account_subjectpermissiongroup (
     id integer NOT NULL,
     permissiongroup_id integer NOT NULL,
     subject_id integer NOT NULL
 );
 
 
-ALTER TABLE public.devilry_account_subjectpermissiongroup OWNER TO dbdev;
+ALTER TABLE devilry_account_subjectpermissiongroup OWNER TO dbdev;
 
 --
 -- Name: devilry_account_subjectpermissiongroup_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.devilry_account_subjectpermissiongroup_id_seq
+CREATE SEQUENCE devilry_account_subjectpermissiongroup_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2675,20 +2760,20 @@ CREATE SEQUENCE public.devilry_account_subjectpermissiongroup_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.devilry_account_subjectpermissiongroup_id_seq OWNER TO dbdev;
+ALTER TABLE devilry_account_subjectpermissiongroup_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_account_subjectpermissiongroup_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.devilry_account_subjectpermissiongroup_id_seq OWNED BY public.devilry_account_subjectpermissiongroup.id;
+ALTER SEQUENCE devilry_account_subjectpermissiongroup_id_seq OWNED BY devilry_account_subjectpermissiongroup.id;
 
 
 --
 -- Name: devilry_account_user; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.devilry_account_user (
+CREATE TABLE devilry_account_user (
     id integer NOT NULL,
     password character varying(128) NOT NULL,
     last_login timestamp with time zone,
@@ -2703,13 +2788,13 @@ CREATE TABLE public.devilry_account_user (
 );
 
 
-ALTER TABLE public.devilry_account_user OWNER TO dbdev;
+ALTER TABLE devilry_account_user OWNER TO dbdev;
 
 --
 -- Name: devilry_account_user_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.devilry_account_user_id_seq
+CREATE SEQUENCE devilry_account_user_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2717,20 +2802,20 @@ CREATE SEQUENCE public.devilry_account_user_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.devilry_account_user_id_seq OWNER TO dbdev;
+ALTER TABLE devilry_account_user_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_account_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.devilry_account_user_id_seq OWNED BY public.devilry_account_user.id;
+ALTER SEQUENCE devilry_account_user_id_seq OWNED BY devilry_account_user.id;
 
 
 --
 -- Name: devilry_account_useremail; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.devilry_account_useremail (
+CREATE TABLE devilry_account_useremail (
     id integer NOT NULL,
     created_datetime timestamp with time zone NOT NULL,
     last_updated_datetime timestamp with time zone NOT NULL,
@@ -2741,13 +2826,13 @@ CREATE TABLE public.devilry_account_useremail (
 );
 
 
-ALTER TABLE public.devilry_account_useremail OWNER TO dbdev;
+ALTER TABLE devilry_account_useremail OWNER TO dbdev;
 
 --
 -- Name: devilry_account_useremail_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.devilry_account_useremail_id_seq
+CREATE SEQUENCE devilry_account_useremail_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2755,20 +2840,20 @@ CREATE SEQUENCE public.devilry_account_useremail_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.devilry_account_useremail_id_seq OWNER TO dbdev;
+ALTER TABLE devilry_account_useremail_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_account_useremail_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.devilry_account_useremail_id_seq OWNED BY public.devilry_account_useremail.id;
+ALTER SEQUENCE devilry_account_useremail_id_seq OWNED BY devilry_account_useremail.id;
 
 
 --
 -- Name: devilry_account_username; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.devilry_account_username (
+CREATE TABLE devilry_account_username (
     id integer NOT NULL,
     created_datetime timestamp with time zone NOT NULL,
     last_updated_datetime timestamp with time zone NOT NULL,
@@ -2778,13 +2863,13 @@ CREATE TABLE public.devilry_account_username (
 );
 
 
-ALTER TABLE public.devilry_account_username OWNER TO dbdev;
+ALTER TABLE devilry_account_username OWNER TO dbdev;
 
 --
 -- Name: devilry_account_username_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.devilry_account_username_id_seq
+CREATE SEQUENCE devilry_account_username_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2792,20 +2877,20 @@ CREATE SEQUENCE public.devilry_account_username_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.devilry_account_username_id_seq OWNER TO dbdev;
+ALTER TABLE devilry_account_username_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_account_username_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.devilry_account_username_id_seq OWNED BY public.devilry_account_username.id;
+ALTER SEQUENCE devilry_account_username_id_seq OWNED BY devilry_account_username.id;
 
 
 --
 -- Name: devilry_comment_comment; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.devilry_comment_comment (
+CREATE TABLE devilry_comment_comment (
     id integer NOT NULL,
     text text NOT NULL,
     created_datetime timestamp with time zone NOT NULL,
@@ -2818,13 +2903,13 @@ CREATE TABLE public.devilry_comment_comment (
 );
 
 
-ALTER TABLE public.devilry_comment_comment OWNER TO dbdev;
+ALTER TABLE devilry_comment_comment OWNER TO dbdev;
 
 --
 -- Name: devilry_comment_comment_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.devilry_comment_comment_id_seq
+CREATE SEQUENCE devilry_comment_comment_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2832,20 +2917,58 @@ CREATE SEQUENCE public.devilry_comment_comment_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.devilry_comment_comment_id_seq OWNER TO dbdev;
+ALTER TABLE devilry_comment_comment_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_comment_comment_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.devilry_comment_comment_id_seq OWNED BY public.devilry_comment_comment.id;
+ALTER SEQUENCE devilry_comment_comment_id_seq OWNED BY devilry_comment_comment.id;
+
+
+--
+-- Name: devilry_comment_commentedithistory; Type: TABLE; Schema: public; Owner: dbdev
+--
+
+CREATE TABLE devilry_comment_commentedithistory (
+    id integer NOT NULL,
+    edited_datetime timestamp with time zone NOT NULL,
+    post_edit_text text NOT NULL,
+    pre_edit_text text NOT NULL,
+    comment_id integer NOT NULL,
+    edited_by_id integer
+);
+
+
+ALTER TABLE devilry_comment_commentedithistory OWNER TO dbdev;
+
+--
+-- Name: devilry_comment_commentedithistory_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
+--
+
+CREATE SEQUENCE devilry_comment_commentedithistory_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE devilry_comment_commentedithistory_id_seq OWNER TO dbdev;
+
+--
+-- Name: devilry_comment_commentedithistory_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
+--
+
+ALTER SEQUENCE devilry_comment_commentedithistory_id_seq OWNED BY devilry_comment_commentedithistory.id;
 
 
 --
 -- Name: devilry_comment_commentfile; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.devilry_comment_commentfile (
+CREATE TABLE devilry_comment_commentfile (
     id integer NOT NULL,
     mimetype character varying(255) NOT NULL,
     file character varying(512) NOT NULL,
@@ -2861,13 +2984,13 @@ CREATE TABLE public.devilry_comment_commentfile (
 );
 
 
-ALTER TABLE public.devilry_comment_commentfile OWNER TO dbdev;
+ALTER TABLE devilry_comment_commentfile OWNER TO dbdev;
 
 --
 -- Name: devilry_comment_commentfile_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.devilry_comment_commentfile_id_seq
+CREATE SEQUENCE devilry_comment_commentfile_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2875,20 +2998,20 @@ CREATE SEQUENCE public.devilry_comment_commentfile_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.devilry_comment_commentfile_id_seq OWNER TO dbdev;
+ALTER TABLE devilry_comment_commentfile_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_comment_commentfile_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.devilry_comment_commentfile_id_seq OWNED BY public.devilry_comment_commentfile.id;
+ALTER SEQUENCE devilry_comment_commentfile_id_seq OWNED BY devilry_comment_commentfile.id;
 
 
 --
 -- Name: devilry_comment_commentfileimage; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.devilry_comment_commentfileimage (
+CREATE TABLE devilry_comment_commentfileimage (
     id integer NOT NULL,
     image character varying(512) NOT NULL,
     image_width integer NOT NULL,
@@ -2904,13 +3027,13 @@ CREATE TABLE public.devilry_comment_commentfileimage (
 );
 
 
-ALTER TABLE public.devilry_comment_commentfileimage OWNER TO dbdev;
+ALTER TABLE devilry_comment_commentfileimage OWNER TO dbdev;
 
 --
 -- Name: devilry_comment_commentfileimage_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.devilry_comment_commentfileimage_id_seq
+CREATE SEQUENCE devilry_comment_commentfileimage_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2918,42 +3041,42 @@ CREATE SEQUENCE public.devilry_comment_commentfileimage_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.devilry_comment_commentfileimage_id_seq OWNER TO dbdev;
+ALTER TABLE devilry_comment_commentfileimage_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_comment_commentfileimage_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.devilry_comment_commentfileimage_id_seq OWNED BY public.devilry_comment_commentfileimage.id;
+ALTER SEQUENCE devilry_comment_commentfileimage_id_seq OWNED BY devilry_comment_commentfileimage.id;
 
 
 --
 -- Name: devilry_compressionutil_compressedarchivemeta; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.devilry_compressionutil_compressedarchivemeta (
+CREATE TABLE devilry_compressionutil_compressedarchivemeta (
     id integer NOT NULL,
     content_object_id integer NOT NULL,
     created_datetime timestamp with time zone NOT NULL,
     archive_name character varying(200) NOT NULL,
     archive_path character varying(200) NOT NULL,
-    archive_size integer NOT NULL,
+    archive_size bigint NOT NULL,
     content_type_id integer NOT NULL,
     backend_id character varying(100) NOT NULL,
     deleted_datetime timestamp with time zone,
     created_by_id integer,
-    CONSTRAINT devilry_compressionutil_compressedarchi_content_object_id_check CHECK ((content_object_id >= 0)),
-    CONSTRAINT devilry_compressionutil_compressedarchivemet_archive_size_check CHECK ((archive_size >= 0))
+    created_by_role character varying(255) NOT NULL,
+    CONSTRAINT devilry_compressionutil_compressedarchi_content_object_id_check CHECK ((content_object_id >= 0))
 );
 
 
-ALTER TABLE public.devilry_compressionutil_compressedarchivemeta OWNER TO dbdev;
+ALTER TABLE devilry_compressionutil_compressedarchivemeta OWNER TO dbdev;
 
 --
 -- Name: devilry_compressionutil_compressedarchivemeta_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.devilry_compressionutil_compressedarchivemeta_id_seq
+CREATE SEQUENCE devilry_compressionutil_compressedarchivemeta_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2961,20 +3084,20 @@ CREATE SEQUENCE public.devilry_compressionutil_compressedarchivemeta_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.devilry_compressionutil_compressedarchivemeta_id_seq OWNER TO dbdev;
+ALTER TABLE devilry_compressionutil_compressedarchivemeta_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_compressionutil_compressedarchivemeta_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.devilry_compressionutil_compressedarchivemeta_id_seq OWNED BY public.devilry_compressionutil_compressedarchivemeta.id;
+ALTER SEQUENCE devilry_compressionutil_compressedarchivemeta_id_seq OWNED BY devilry_compressionutil_compressedarchivemeta.id;
 
 
 --
 -- Name: devilry_dbcache_assignmentgroupcacheddata; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.devilry_dbcache_assignmentgroupcacheddata (
+CREATE TABLE devilry_dbcache_assignmentgroupcacheddata (
     id integer NOT NULL,
     new_attempt_count integer NOT NULL,
     public_total_comment_count integer NOT NULL,
@@ -3001,13 +3124,13 @@ CREATE TABLE public.devilry_dbcache_assignmentgroupcacheddata (
 );
 
 
-ALTER TABLE public.devilry_dbcache_assignmentgroupcacheddata OWNER TO dbdev;
+ALTER TABLE devilry_dbcache_assignmentgroupcacheddata OWNER TO dbdev;
 
 --
 -- Name: devilry_dbcache_assignmentgroupcacheddata_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.devilry_dbcache_assignmentgroupcacheddata_id_seq
+CREATE SEQUENCE devilry_dbcache_assignmentgroupcacheddata_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -3015,20 +3138,20 @@ CREATE SEQUENCE public.devilry_dbcache_assignmentgroupcacheddata_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.devilry_dbcache_assignmentgroupcacheddata_id_seq OWNER TO dbdev;
+ALTER TABLE devilry_dbcache_assignmentgroupcacheddata_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_dbcache_assignmentgroupcacheddata_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.devilry_dbcache_assignmentgroupcacheddata_id_seq OWNED BY public.devilry_dbcache_assignmentgroupcacheddata.id;
+ALTER SEQUENCE devilry_dbcache_assignmentgroupcacheddata_id_seq OWNED BY devilry_dbcache_assignmentgroupcacheddata.id;
 
 
 --
 -- Name: devilry_gradingsystem_feedbackdraft; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.devilry_gradingsystem_feedbackdraft (
+CREATE TABLE devilry_gradingsystem_feedbackdraft (
     id integer NOT NULL,
     feedbacktext_editor character varying(20) NOT NULL,
     feedbacktext_raw text,
@@ -3043,13 +3166,13 @@ CREATE TABLE public.devilry_gradingsystem_feedbackdraft (
 );
 
 
-ALTER TABLE public.devilry_gradingsystem_feedbackdraft OWNER TO dbdev;
+ALTER TABLE devilry_gradingsystem_feedbackdraft OWNER TO dbdev;
 
 --
 -- Name: devilry_gradingsystem_feedbackdraft_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.devilry_gradingsystem_feedbackdraft_id_seq
+CREATE SEQUENCE devilry_gradingsystem_feedbackdraft_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -3057,20 +3180,20 @@ CREATE SEQUENCE public.devilry_gradingsystem_feedbackdraft_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.devilry_gradingsystem_feedbackdraft_id_seq OWNER TO dbdev;
+ALTER TABLE devilry_gradingsystem_feedbackdraft_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_gradingsystem_feedbackdraft_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.devilry_gradingsystem_feedbackdraft_id_seq OWNED BY public.devilry_gradingsystem_feedbackdraft.id;
+ALTER SEQUENCE devilry_gradingsystem_feedbackdraft_id_seq OWNED BY devilry_gradingsystem_feedbackdraft.id;
 
 
 --
 -- Name: devilry_gradingsystem_feedbackdraftfile; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.devilry_gradingsystem_feedbackdraftfile (
+CREATE TABLE devilry_gradingsystem_feedbackdraftfile (
     id integer NOT NULL,
     filename text NOT NULL,
     file character varying(100) NOT NULL,
@@ -3079,13 +3202,13 @@ CREATE TABLE public.devilry_gradingsystem_feedbackdraftfile (
 );
 
 
-ALTER TABLE public.devilry_gradingsystem_feedbackdraftfile OWNER TO dbdev;
+ALTER TABLE devilry_gradingsystem_feedbackdraftfile OWNER TO dbdev;
 
 --
 -- Name: devilry_gradingsystem_feedbackdraftfile_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.devilry_gradingsystem_feedbackdraftfile_id_seq
+CREATE SEQUENCE devilry_gradingsystem_feedbackdraftfile_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -3093,20 +3216,20 @@ CREATE SEQUENCE public.devilry_gradingsystem_feedbackdraftfile_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.devilry_gradingsystem_feedbackdraftfile_id_seq OWNER TO dbdev;
+ALTER TABLE devilry_gradingsystem_feedbackdraftfile_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_gradingsystem_feedbackdraftfile_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.devilry_gradingsystem_feedbackdraftfile_id_seq OWNED BY public.devilry_gradingsystem_feedbackdraftfile.id;
+ALTER SEQUENCE devilry_gradingsystem_feedbackdraftfile_id_seq OWNED BY devilry_gradingsystem_feedbackdraftfile.id;
 
 
 --
 -- Name: devilry_group_feedbackset_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.devilry_group_feedbackset_id_seq
+CREATE SEQUENCE devilry_group_feedbackset_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -3114,20 +3237,20 @@ CREATE SEQUENCE public.devilry_group_feedbackset_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.devilry_group_feedbackset_id_seq OWNER TO dbdev;
+ALTER TABLE devilry_group_feedbackset_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_group_feedbackset_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.devilry_group_feedbackset_id_seq OWNED BY public.devilry_group_feedbackset.id;
+ALTER SEQUENCE devilry_group_feedbackset_id_seq OWNED BY devilry_group_feedbackset.id;
 
 
 --
 -- Name: devilry_group_feedbacksetdeadlinehistory; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.devilry_group_feedbacksetdeadlinehistory (
+CREATE TABLE devilry_group_feedbacksetdeadlinehistory (
     id integer NOT NULL,
     changed_datetime timestamp with time zone NOT NULL,
     deadline_old timestamp with time zone NOT NULL,
@@ -3137,13 +3260,13 @@ CREATE TABLE public.devilry_group_feedbacksetdeadlinehistory (
 );
 
 
-ALTER TABLE public.devilry_group_feedbacksetdeadlinehistory OWNER TO dbdev;
+ALTER TABLE devilry_group_feedbacksetdeadlinehistory OWNER TO dbdev;
 
 --
 -- Name: devilry_group_feedbacksetdeadlinehistory_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.devilry_group_feedbacksetdeadlinehistory_id_seq
+CREATE SEQUENCE devilry_group_feedbacksetdeadlinehistory_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -3151,20 +3274,20 @@ CREATE SEQUENCE public.devilry_group_feedbacksetdeadlinehistory_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.devilry_group_feedbacksetdeadlinehistory_id_seq OWNER TO dbdev;
+ALTER TABLE devilry_group_feedbacksetdeadlinehistory_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_group_feedbacksetdeadlinehistory_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.devilry_group_feedbacksetdeadlinehistory_id_seq OWNED BY public.devilry_group_feedbacksetdeadlinehistory.id;
+ALTER SEQUENCE devilry_group_feedbacksetdeadlinehistory_id_seq OWNED BY devilry_group_feedbacksetdeadlinehistory.id;
 
 
 --
 -- Name: devilry_group_feedbacksetgradingupdatehistory; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.devilry_group_feedbacksetgradingupdatehistory (
+CREATE TABLE devilry_group_feedbacksetgradingupdatehistory (
     id integer NOT NULL,
     updated_datetime timestamp with time zone NOT NULL,
     old_grading_points integer NOT NULL,
@@ -3176,13 +3299,13 @@ CREATE TABLE public.devilry_group_feedbacksetgradingupdatehistory (
 );
 
 
-ALTER TABLE public.devilry_group_feedbacksetgradingupdatehistory OWNER TO dbdev;
+ALTER TABLE devilry_group_feedbacksetgradingupdatehistory OWNER TO dbdev;
 
 --
 -- Name: devilry_group_feedbacksetgradingupdatehistory_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.devilry_group_feedbacksetgradingupdatehistory_id_seq
+CREATE SEQUENCE devilry_group_feedbacksetgradingupdatehistory_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -3191,20 +3314,20 @@ CREATE SEQUENCE public.devilry_group_feedbacksetgradingupdatehistory_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.devilry_group_feedbacksetgradingupdatehistory_id_seq OWNER TO dbdev;
+ALTER TABLE devilry_group_feedbacksetgradingupdatehistory_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_group_feedbacksetgradingupdatehistory_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.devilry_group_feedbacksetgradingupdatehistory_id_seq OWNED BY public.devilry_group_feedbacksetgradingupdatehistory.id;
+ALTER SEQUENCE devilry_group_feedbacksetgradingupdatehistory_id_seq OWNED BY devilry_group_feedbacksetgradingupdatehistory.id;
 
 
 --
 -- Name: devilry_group_feedbacksetpassedpreviousperiod; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.devilry_group_feedbacksetpassedpreviousperiod (
+CREATE TABLE devilry_group_feedbacksetpassedpreviousperiod (
     id integer NOT NULL,
     assignment_short_name character varying(20) NOT NULL,
     assignment_long_name character varying(100) NOT NULL,
@@ -3227,13 +3350,13 @@ CREATE TABLE public.devilry_group_feedbacksetpassedpreviousperiod (
 );
 
 
-ALTER TABLE public.devilry_group_feedbacksetpassedpreviousperiod OWNER TO dbdev;
+ALTER TABLE devilry_group_feedbacksetpassedpreviousperiod OWNER TO dbdev;
 
 --
 -- Name: devilry_group_feedbacksetpassedpreviousperiod_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.devilry_group_feedbacksetpassedpreviousperiod_id_seq
+CREATE SEQUENCE devilry_group_feedbacksetpassedpreviousperiod_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -3241,20 +3364,20 @@ CREATE SEQUENCE public.devilry_group_feedbacksetpassedpreviousperiod_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.devilry_group_feedbacksetpassedpreviousperiod_id_seq OWNER TO dbdev;
+ALTER TABLE devilry_group_feedbacksetpassedpreviousperiod_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_group_feedbacksetpassedpreviousperiod_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.devilry_group_feedbacksetpassedpreviousperiod_id_seq OWNED BY public.devilry_group_feedbacksetpassedpreviousperiod.id;
+ALTER SEQUENCE devilry_group_feedbacksetpassedpreviousperiod_id_seq OWNED BY devilry_group_feedbacksetpassedpreviousperiod.id;
 
 
 --
 -- Name: devilry_group_groupcomment; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.devilry_group_groupcomment (
+CREATE TABLE devilry_group_groupcomment (
     comment_ptr_id integer NOT NULL,
     feedback_set_id integer NOT NULL,
     part_of_grading boolean NOT NULL,
@@ -3263,13 +3386,26 @@ CREATE TABLE public.devilry_group_groupcomment (
 );
 
 
-ALTER TABLE public.devilry_group_groupcomment OWNER TO dbdev;
+ALTER TABLE devilry_group_groupcomment OWNER TO dbdev;
+
+--
+-- Name: devilry_group_groupcommentedithistory; Type: TABLE; Schema: public; Owner: dbdev
+--
+
+CREATE TABLE devilry_group_groupcommentedithistory (
+    commentedithistory_ptr_id integer NOT NULL,
+    visibility character varying(50) NOT NULL,
+    group_comment_id integer NOT NULL
+);
+
+
+ALTER TABLE devilry_group_groupcommentedithistory OWNER TO dbdev;
 
 --
 -- Name: devilry_group_imageannotationcomment; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.devilry_group_imageannotationcomment (
+CREATE TABLE devilry_group_imageannotationcomment (
     comment_ptr_id integer NOT NULL,
     x_coordinate integer NOT NULL,
     y_coordinate integer NOT NULL,
@@ -3282,13 +3418,13 @@ CREATE TABLE public.devilry_group_imageannotationcomment (
 );
 
 
-ALTER TABLE public.devilry_group_imageannotationcomment OWNER TO dbdev;
+ALTER TABLE devilry_group_imageannotationcomment OWNER TO dbdev;
 
 --
 -- Name: devilry_import_v2database_importedmodel; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.devilry_import_v2database_importedmodel (
+CREATE TABLE devilry_import_v2database_importedmodel (
     id integer NOT NULL,
     content_object_id integer NOT NULL,
     data jsonb NOT NULL,
@@ -3297,13 +3433,13 @@ CREATE TABLE public.devilry_import_v2database_importedmodel (
 );
 
 
-ALTER TABLE public.devilry_import_v2database_importedmodel OWNER TO dbdev;
+ALTER TABLE devilry_import_v2database_importedmodel OWNER TO dbdev;
 
 --
 -- Name: devilry_import_v2database_importedmodel_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.devilry_import_v2database_importedmodel_id_seq
+CREATE SEQUENCE devilry_import_v2database_importedmodel_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -3312,33 +3448,33 @@ CREATE SEQUENCE public.devilry_import_v2database_importedmodel_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.devilry_import_v2database_importedmodel_id_seq OWNER TO dbdev;
+ALTER TABLE devilry_import_v2database_importedmodel_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_import_v2database_importedmodel_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.devilry_import_v2database_importedmodel_id_seq OWNED BY public.devilry_import_v2database_importedmodel.id;
+ALTER SEQUENCE devilry_import_v2database_importedmodel_id_seq OWNED BY devilry_import_v2database_importedmodel.id;
 
 
 --
 -- Name: devilry_qualifiesforexam_deadlinetag; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.devilry_qualifiesforexam_deadlinetag (
+CREATE TABLE devilry_qualifiesforexam_deadlinetag (
     id integer NOT NULL,
     "timestamp" timestamp with time zone NOT NULL,
     tag character varying(30)
 );
 
 
-ALTER TABLE public.devilry_qualifiesforexam_deadlinetag OWNER TO dbdev;
+ALTER TABLE devilry_qualifiesforexam_deadlinetag OWNER TO dbdev;
 
 --
 -- Name: devilry_qualifiesforexam_deadlinetag_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.devilry_qualifiesforexam_deadlinetag_id_seq
+CREATE SEQUENCE devilry_qualifiesforexam_deadlinetag_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -3346,32 +3482,32 @@ CREATE SEQUENCE public.devilry_qualifiesforexam_deadlinetag_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.devilry_qualifiesforexam_deadlinetag_id_seq OWNER TO dbdev;
+ALTER TABLE devilry_qualifiesforexam_deadlinetag_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_qualifiesforexam_deadlinetag_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.devilry_qualifiesforexam_deadlinetag_id_seq OWNED BY public.devilry_qualifiesforexam_deadlinetag.id;
+ALTER SEQUENCE devilry_qualifiesforexam_deadlinetag_id_seq OWNED BY devilry_qualifiesforexam_deadlinetag.id;
 
 
 --
 -- Name: devilry_qualifiesforexam_periodtag; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.devilry_qualifiesforexam_periodtag (
+CREATE TABLE devilry_qualifiesforexam_periodtag (
     period_id integer NOT NULL,
     deadlinetag_id integer NOT NULL
 );
 
 
-ALTER TABLE public.devilry_qualifiesforexam_periodtag OWNER TO dbdev;
+ALTER TABLE devilry_qualifiesforexam_periodtag OWNER TO dbdev;
 
 --
 -- Name: devilry_qualifiesforexam_qualifiesforfinalexam; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.devilry_qualifiesforexam_qualifiesforfinalexam (
+CREATE TABLE devilry_qualifiesforexam_qualifiesforfinalexam (
     id integer NOT NULL,
     qualifies boolean,
     relatedstudent_id integer NOT NULL,
@@ -3379,13 +3515,13 @@ CREATE TABLE public.devilry_qualifiesforexam_qualifiesforfinalexam (
 );
 
 
-ALTER TABLE public.devilry_qualifiesforexam_qualifiesforfinalexam OWNER TO dbdev;
+ALTER TABLE devilry_qualifiesforexam_qualifiesforfinalexam OWNER TO dbdev;
 
 --
 -- Name: devilry_qualifiesforexam_qualifiesforfinalexam_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.devilry_qualifiesforexam_qualifiesforfinalexam_id_seq
+CREATE SEQUENCE devilry_qualifiesforexam_qualifiesforfinalexam_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -3393,20 +3529,20 @@ CREATE SEQUENCE public.devilry_qualifiesforexam_qualifiesforfinalexam_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.devilry_qualifiesforexam_qualifiesforfinalexam_id_seq OWNER TO dbdev;
+ALTER TABLE devilry_qualifiesforexam_qualifiesforfinalexam_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_qualifiesforexam_qualifiesforfinalexam_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.devilry_qualifiesforexam_qualifiesforfinalexam_id_seq OWNED BY public.devilry_qualifiesforexam_qualifiesforfinalexam.id;
+ALTER SEQUENCE devilry_qualifiesforexam_qualifiesforfinalexam_id_seq OWNED BY devilry_qualifiesforexam_qualifiesforfinalexam.id;
 
 
 --
 -- Name: devilry_qualifiesforexam_status; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.devilry_qualifiesforexam_status (
+CREATE TABLE devilry_qualifiesforexam_status (
     id integer NOT NULL,
     status character varying(30) NOT NULL,
     createtime timestamp with time zone NOT NULL,
@@ -3418,13 +3554,13 @@ CREATE TABLE public.devilry_qualifiesforexam_status (
 );
 
 
-ALTER TABLE public.devilry_qualifiesforexam_status OWNER TO dbdev;
+ALTER TABLE devilry_qualifiesforexam_status OWNER TO dbdev;
 
 --
 -- Name: devilry_qualifiesforexam_status_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.devilry_qualifiesforexam_status_id_seq
+CREATE SEQUENCE devilry_qualifiesforexam_status_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -3432,20 +3568,20 @@ CREATE SEQUENCE public.devilry_qualifiesforexam_status_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.devilry_qualifiesforexam_status_id_seq OWNER TO dbdev;
+ALTER TABLE devilry_qualifiesforexam_status_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_qualifiesforexam_status_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.devilry_qualifiesforexam_status_id_seq OWNED BY public.devilry_qualifiesforexam_status.id;
+ALTER SEQUENCE devilry_qualifiesforexam_status_id_seq OWNED BY devilry_qualifiesforexam_status.id;
 
 
 --
 -- Name: devilry_student_uploadeddeliveryfile; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.devilry_student_uploadeddeliveryfile (
+CREATE TABLE devilry_student_uploadeddeliveryfile (
     id integer NOT NULL,
     uploaded_datetime timestamp with time zone NOT NULL,
     uploaded_file character varying(100) NOT NULL,
@@ -3455,13 +3591,13 @@ CREATE TABLE public.devilry_student_uploadeddeliveryfile (
 );
 
 
-ALTER TABLE public.devilry_student_uploadeddeliveryfile OWNER TO dbdev;
+ALTER TABLE devilry_student_uploadeddeliveryfile OWNER TO dbdev;
 
 --
 -- Name: devilry_student_uploadeddeliveryfile_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.devilry_student_uploadeddeliveryfile_id_seq
+CREATE SEQUENCE devilry_student_uploadeddeliveryfile_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -3469,20 +3605,20 @@ CREATE SEQUENCE public.devilry_student_uploadeddeliveryfile_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.devilry_student_uploadeddeliveryfile_id_seq OWNER TO dbdev;
+ALTER TABLE devilry_student_uploadeddeliveryfile_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_student_uploadeddeliveryfile_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.devilry_student_uploadeddeliveryfile_id_seq OWNED BY public.devilry_student_uploadeddeliveryfile.id;
+ALTER SEQUENCE devilry_student_uploadeddeliveryfile_id_seq OWNED BY devilry_student_uploadeddeliveryfile.id;
 
 
 --
 -- Name: django_admin_log; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.django_admin_log (
+CREATE TABLE django_admin_log (
     id integer NOT NULL,
     action_time timestamp with time zone NOT NULL,
     object_id text,
@@ -3495,13 +3631,13 @@ CREATE TABLE public.django_admin_log (
 );
 
 
-ALTER TABLE public.django_admin_log OWNER TO dbdev;
+ALTER TABLE django_admin_log OWNER TO dbdev;
 
 --
 -- Name: django_admin_log_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.django_admin_log_id_seq
+CREATE SEQUENCE django_admin_log_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -3509,33 +3645,33 @@ CREATE SEQUENCE public.django_admin_log_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.django_admin_log_id_seq OWNER TO dbdev;
+ALTER TABLE django_admin_log_id_seq OWNER TO dbdev;
 
 --
 -- Name: django_admin_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.django_admin_log_id_seq OWNED BY public.django_admin_log.id;
+ALTER SEQUENCE django_admin_log_id_seq OWNED BY django_admin_log.id;
 
 
 --
 -- Name: django_content_type; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.django_content_type (
+CREATE TABLE django_content_type (
     id integer NOT NULL,
     app_label character varying(100) NOT NULL,
     model character varying(100) NOT NULL
 );
 
 
-ALTER TABLE public.django_content_type OWNER TO dbdev;
+ALTER TABLE django_content_type OWNER TO dbdev;
 
 --
 -- Name: django_content_type_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.django_content_type_id_seq
+CREATE SEQUENCE django_content_type_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -3543,20 +3679,20 @@ CREATE SEQUENCE public.django_content_type_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.django_content_type_id_seq OWNER TO dbdev;
+ALTER TABLE django_content_type_id_seq OWNER TO dbdev;
 
 --
 -- Name: django_content_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.django_content_type_id_seq OWNED BY public.django_content_type.id;
+ALTER SEQUENCE django_content_type_id_seq OWNED BY django_content_type.id;
 
 
 --
 -- Name: django_migrations; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.django_migrations (
+CREATE TABLE django_migrations (
     id integer NOT NULL,
     app character varying(255) NOT NULL,
     name character varying(255) NOT NULL,
@@ -3564,13 +3700,13 @@ CREATE TABLE public.django_migrations (
 );
 
 
-ALTER TABLE public.django_migrations OWNER TO dbdev;
+ALTER TABLE django_migrations OWNER TO dbdev;
 
 --
 -- Name: django_migrations_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.django_migrations_id_seq
+CREATE SEQUENCE django_migrations_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -3578,46 +3714,46 @@ CREATE SEQUENCE public.django_migrations_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.django_migrations_id_seq OWNER TO dbdev;
+ALTER TABLE django_migrations_id_seq OWNER TO dbdev;
 
 --
 -- Name: django_migrations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.django_migrations_id_seq OWNED BY public.django_migrations.id;
+ALTER SEQUENCE django_migrations_id_seq OWNED BY django_migrations.id;
 
 
 --
 -- Name: django_session; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.django_session (
+CREATE TABLE django_session (
     session_key character varying(40) NOT NULL,
     session_data text NOT NULL,
     expire_date timestamp with time zone NOT NULL
 );
 
 
-ALTER TABLE public.django_session OWNER TO dbdev;
+ALTER TABLE django_session OWNER TO dbdev;
 
 --
 -- Name: django_site; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.django_site (
+CREATE TABLE django_site (
     id integer NOT NULL,
     domain character varying(100) NOT NULL,
     name character varying(50) NOT NULL
 );
 
 
-ALTER TABLE public.django_site OWNER TO dbdev;
+ALTER TABLE django_site OWNER TO dbdev;
 
 --
 -- Name: django_site_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.django_site_id_seq
+CREATE SEQUENCE django_site_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -3626,20 +3762,20 @@ CREATE SEQUENCE public.django_site_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.django_site_id_seq OWNER TO dbdev;
+ALTER TABLE django_site_id_seq OWNER TO dbdev;
 
 --
 -- Name: django_site_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.django_site_id_seq OWNED BY public.django_site.id;
+ALTER SEQUENCE django_site_id_seq OWNED BY django_site.id;
 
 
 --
 -- Name: ievv_batchframework_batchoperation; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.ievv_batchframework_batchoperation (
+CREATE TABLE ievv_batchframework_batchoperation (
     id integer NOT NULL,
     created_datetime timestamp with time zone NOT NULL,
     started_running_datetime timestamp with time zone,
@@ -3656,13 +3792,13 @@ CREATE TABLE public.ievv_batchframework_batchoperation (
 );
 
 
-ALTER TABLE public.ievv_batchframework_batchoperation OWNER TO dbdev;
+ALTER TABLE ievv_batchframework_batchoperation OWNER TO dbdev;
 
 --
 -- Name: ievv_batchframework_batchoperation_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.ievv_batchframework_batchoperation_id_seq
+CREATE SEQUENCE ievv_batchframework_batchoperation_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -3670,20 +3806,58 @@ CREATE SEQUENCE public.ievv_batchframework_batchoperation_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.ievv_batchframework_batchoperation_id_seq OWNER TO dbdev;
+ALTER TABLE ievv_batchframework_batchoperation_id_seq OWNER TO dbdev;
 
 --
 -- Name: ievv_batchframework_batchoperation_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.ievv_batchframework_batchoperation_id_seq OWNED BY public.ievv_batchframework_batchoperation.id;
+ALTER SEQUENCE ievv_batchframework_batchoperation_id_seq OWNED BY ievv_batchframework_batchoperation.id;
+
+
+--
+-- Name: ievv_developemail_developemail; Type: TABLE; Schema: public; Owner: dbdev
+--
+
+CREATE TABLE ievv_developemail_developemail (
+    id integer NOT NULL,
+    created_datetime timestamp with time zone NOT NULL,
+    subject text NOT NULL,
+    from_email text NOT NULL,
+    to_emails text NOT NULL,
+    raw_message text NOT NULL
+);
+
+
+ALTER TABLE ievv_developemail_developemail OWNER TO dbdev;
+
+--
+-- Name: ievv_developemail_developemail_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
+--
+
+CREATE SEQUENCE ievv_developemail_developemail_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE ievv_developemail_developemail_id_seq OWNER TO dbdev;
+
+--
+-- Name: ievv_developemail_developemail_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
+--
+
+ALTER SEQUENCE ievv_developemail_developemail_id_seq OWNED BY ievv_developemail_developemail.id;
 
 
 --
 -- Name: socialaccount_socialaccount; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.socialaccount_socialaccount (
+CREATE TABLE socialaccount_socialaccount (
     id integer NOT NULL,
     provider character varying(30) NOT NULL,
     uid character varying(191) NOT NULL,
@@ -3694,13 +3868,13 @@ CREATE TABLE public.socialaccount_socialaccount (
 );
 
 
-ALTER TABLE public.socialaccount_socialaccount OWNER TO dbdev;
+ALTER TABLE socialaccount_socialaccount OWNER TO dbdev;
 
 --
 -- Name: socialaccount_socialaccount_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.socialaccount_socialaccount_id_seq
+CREATE SEQUENCE socialaccount_socialaccount_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -3709,20 +3883,20 @@ CREATE SEQUENCE public.socialaccount_socialaccount_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.socialaccount_socialaccount_id_seq OWNER TO dbdev;
+ALTER TABLE socialaccount_socialaccount_id_seq OWNER TO dbdev;
 
 --
 -- Name: socialaccount_socialaccount_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.socialaccount_socialaccount_id_seq OWNED BY public.socialaccount_socialaccount.id;
+ALTER SEQUENCE socialaccount_socialaccount_id_seq OWNED BY socialaccount_socialaccount.id;
 
 
 --
 -- Name: socialaccount_socialapp; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.socialaccount_socialapp (
+CREATE TABLE socialaccount_socialapp (
     id integer NOT NULL,
     provider character varying(30) NOT NULL,
     name character varying(40) NOT NULL,
@@ -3732,13 +3906,13 @@ CREATE TABLE public.socialaccount_socialapp (
 );
 
 
-ALTER TABLE public.socialaccount_socialapp OWNER TO dbdev;
+ALTER TABLE socialaccount_socialapp OWNER TO dbdev;
 
 --
 -- Name: socialaccount_socialapp_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.socialaccount_socialapp_id_seq
+CREATE SEQUENCE socialaccount_socialapp_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -3747,33 +3921,33 @@ CREATE SEQUENCE public.socialaccount_socialapp_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.socialaccount_socialapp_id_seq OWNER TO dbdev;
+ALTER TABLE socialaccount_socialapp_id_seq OWNER TO dbdev;
 
 --
 -- Name: socialaccount_socialapp_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.socialaccount_socialapp_id_seq OWNED BY public.socialaccount_socialapp.id;
+ALTER SEQUENCE socialaccount_socialapp_id_seq OWNED BY socialaccount_socialapp.id;
 
 
 --
 -- Name: socialaccount_socialapp_sites; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.socialaccount_socialapp_sites (
+CREATE TABLE socialaccount_socialapp_sites (
     id integer NOT NULL,
     socialapp_id integer NOT NULL,
     site_id integer NOT NULL
 );
 
 
-ALTER TABLE public.socialaccount_socialapp_sites OWNER TO dbdev;
+ALTER TABLE socialaccount_socialapp_sites OWNER TO dbdev;
 
 --
 -- Name: socialaccount_socialapp_sites_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.socialaccount_socialapp_sites_id_seq
+CREATE SEQUENCE socialaccount_socialapp_sites_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -3782,20 +3956,20 @@ CREATE SEQUENCE public.socialaccount_socialapp_sites_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.socialaccount_socialapp_sites_id_seq OWNER TO dbdev;
+ALTER TABLE socialaccount_socialapp_sites_id_seq OWNER TO dbdev;
 
 --
 -- Name: socialaccount_socialapp_sites_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.socialaccount_socialapp_sites_id_seq OWNED BY public.socialaccount_socialapp_sites.id;
+ALTER SEQUENCE socialaccount_socialapp_sites_id_seq OWNED BY socialaccount_socialapp_sites.id;
 
 
 --
 -- Name: socialaccount_socialtoken; Type: TABLE; Schema: public; Owner: dbdev
 --
 
-CREATE TABLE public.socialaccount_socialtoken (
+CREATE TABLE socialaccount_socialtoken (
     id integer NOT NULL,
     token text NOT NULL,
     token_secret text NOT NULL,
@@ -3805,13 +3979,13 @@ CREATE TABLE public.socialaccount_socialtoken (
 );
 
 
-ALTER TABLE public.socialaccount_socialtoken OWNER TO dbdev;
+ALTER TABLE socialaccount_socialtoken OWNER TO dbdev;
 
 --
 -- Name: socialaccount_socialtoken_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
-CREATE SEQUENCE public.socialaccount_socialtoken_id_seq
+CREATE SEQUENCE socialaccount_socialtoken_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -3820,503 +3994,517 @@ CREATE SEQUENCE public.socialaccount_socialtoken_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.socialaccount_socialtoken_id_seq OWNER TO dbdev;
+ALTER TABLE socialaccount_socialtoken_id_seq OWNER TO dbdev;
 
 --
 -- Name: socialaccount_socialtoken_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
 --
 
-ALTER SEQUENCE public.socialaccount_socialtoken_id_seq OWNED BY public.socialaccount_socialtoken.id;
+ALTER SEQUENCE socialaccount_socialtoken_id_seq OWNED BY socialaccount_socialtoken.id;
 
 
 --
 -- Name: account_emailaddress id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.account_emailaddress ALTER COLUMN id SET DEFAULT nextval('public.account_emailaddress_id_seq'::regclass);
+ALTER TABLE ONLY account_emailaddress ALTER COLUMN id SET DEFAULT nextval('account_emailaddress_id_seq'::regclass);
 
 
 --
 -- Name: account_emailconfirmation id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.account_emailconfirmation ALTER COLUMN id SET DEFAULT nextval('public.account_emailconfirmation_id_seq'::regclass);
+ALTER TABLE ONLY account_emailconfirmation ALTER COLUMN id SET DEFAULT nextval('account_emailconfirmation_id_seq'::regclass);
 
 
 --
 -- Name: auth_group id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.auth_group ALTER COLUMN id SET DEFAULT nextval('public.auth_group_id_seq'::regclass);
+ALTER TABLE ONLY auth_group ALTER COLUMN id SET DEFAULT nextval('auth_group_id_seq'::regclass);
 
 
 --
 -- Name: auth_group_permissions id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.auth_group_permissions ALTER COLUMN id SET DEFAULT nextval('public.auth_group_permissions_id_seq'::regclass);
+ALTER TABLE ONLY auth_group_permissions ALTER COLUMN id SET DEFAULT nextval('auth_group_permissions_id_seq'::regclass);
 
 
 --
 -- Name: auth_permission id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.auth_permission ALTER COLUMN id SET DEFAULT nextval('public.auth_permission_id_seq'::regclass);
+ALTER TABLE ONLY auth_permission ALTER COLUMN id SET DEFAULT nextval('auth_permission_id_seq'::regclass);
 
 
 --
 -- Name: core_assignment id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_assignment ALTER COLUMN id SET DEFAULT nextval('public.core_assignment_id_seq'::regclass);
+ALTER TABLE ONLY core_assignment ALTER COLUMN id SET DEFAULT nextval('core_assignment_id_seq'::regclass);
 
 
 --
 -- Name: core_assignment_admins id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_assignment_admins ALTER COLUMN id SET DEFAULT nextval('public.core_assignment_admins_id_seq'::regclass);
+ALTER TABLE ONLY core_assignment_admins ALTER COLUMN id SET DEFAULT nextval('core_assignment_admins_id_seq'::regclass);
 
 
 --
 -- Name: core_assignmentgroup id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_assignmentgroup ALTER COLUMN id SET DEFAULT nextval('public.core_assignmentgroup_id_seq'::regclass);
+ALTER TABLE ONLY core_assignmentgroup ALTER COLUMN id SET DEFAULT nextval('core_assignmentgroup_id_seq'::regclass);
 
 
 --
 -- Name: core_assignmentgroup_examiners id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_assignmentgroup_examiners ALTER COLUMN id SET DEFAULT nextval('public.core_assignmentgroup_examiners_id_seq'::regclass);
+ALTER TABLE ONLY core_assignmentgroup_examiners ALTER COLUMN id SET DEFAULT nextval('core_assignmentgroup_examiners_id_seq'::regclass);
 
 
 --
 -- Name: core_assignmentgrouphistory id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_assignmentgrouphistory ALTER COLUMN id SET DEFAULT nextval('public.core_assignmentgrouphistory_id_seq'::regclass);
+ALTER TABLE ONLY core_assignmentgrouphistory ALTER COLUMN id SET DEFAULT nextval('core_assignmentgrouphistory_id_seq'::regclass);
 
 
 --
 -- Name: core_assignmentgrouptag id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_assignmentgrouptag ALTER COLUMN id SET DEFAULT nextval('public.core_assignmentgrouptag_id_seq'::regclass);
+ALTER TABLE ONLY core_assignmentgrouptag ALTER COLUMN id SET DEFAULT nextval('core_assignmentgrouptag_id_seq'::regclass);
 
 
 --
 -- Name: core_candidate id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_candidate ALTER COLUMN id SET DEFAULT nextval('public.core_candidate_id_seq'::regclass);
+ALTER TABLE ONLY core_candidate ALTER COLUMN id SET DEFAULT nextval('core_candidate_id_seq'::regclass);
 
 
 --
 -- Name: core_candidateassignmentgrouphistory id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_candidateassignmentgrouphistory ALTER COLUMN id SET DEFAULT nextval('public.core_candidateassignmentgrouphistory_id_seq'::regclass);
+ALTER TABLE ONLY core_candidateassignmentgrouphistory ALTER COLUMN id SET DEFAULT nextval('core_candidateassignmentgrouphistory_id_seq'::regclass);
 
 
 --
 -- Name: core_deadline id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_deadline ALTER COLUMN id SET DEFAULT nextval('public.core_deadline_id_seq'::regclass);
+ALTER TABLE ONLY core_deadline ALTER COLUMN id SET DEFAULT nextval('core_deadline_id_seq'::regclass);
 
 
 --
 -- Name: core_delivery id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_delivery ALTER COLUMN id SET DEFAULT nextval('public.core_delivery_id_seq'::regclass);
+ALTER TABLE ONLY core_delivery ALTER COLUMN id SET DEFAULT nextval('core_delivery_id_seq'::regclass);
 
 
 --
 -- Name: core_devilryuserprofile id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_devilryuserprofile ALTER COLUMN id SET DEFAULT nextval('public.core_devilryuserprofile_id_seq'::regclass);
+ALTER TABLE ONLY core_devilryuserprofile ALTER COLUMN id SET DEFAULT nextval('core_devilryuserprofile_id_seq'::regclass);
 
 
 --
 -- Name: core_examinerassignmentgrouphistory id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_examinerassignmentgrouphistory ALTER COLUMN id SET DEFAULT nextval('public.core_examinerassignmentgrouphistory_id_seq'::regclass);
+ALTER TABLE ONLY core_examinerassignmentgrouphistory ALTER COLUMN id SET DEFAULT nextval('core_examinerassignmentgrouphistory_id_seq'::regclass);
 
 
 --
 -- Name: core_filemeta id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_filemeta ALTER COLUMN id SET DEFAULT nextval('public.core_filemeta_id_seq'::regclass);
+ALTER TABLE ONLY core_filemeta ALTER COLUMN id SET DEFAULT nextval('core_filemeta_id_seq'::regclass);
 
 
 --
 -- Name: core_groupinvite id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_groupinvite ALTER COLUMN id SET DEFAULT nextval('public.core_groupinvite_id_seq'::regclass);
+ALTER TABLE ONLY core_groupinvite ALTER COLUMN id SET DEFAULT nextval('core_groupinvite_id_seq'::regclass);
 
 
 --
 -- Name: core_period id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_period ALTER COLUMN id SET DEFAULT nextval('public.core_period_id_seq'::regclass);
+ALTER TABLE ONLY core_period ALTER COLUMN id SET DEFAULT nextval('core_period_id_seq'::regclass);
 
 
 --
 -- Name: core_period_admins id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_period_admins ALTER COLUMN id SET DEFAULT nextval('public.core_period_admins_id_seq'::regclass);
+ALTER TABLE ONLY core_period_admins ALTER COLUMN id SET DEFAULT nextval('core_period_admins_id_seq'::regclass);
 
 
 --
 -- Name: core_periodapplicationkeyvalue id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_periodapplicationkeyvalue ALTER COLUMN id SET DEFAULT nextval('public.core_periodapplicationkeyvalue_id_seq'::regclass);
+ALTER TABLE ONLY core_periodapplicationkeyvalue ALTER COLUMN id SET DEFAULT nextval('core_periodapplicationkeyvalue_id_seq'::regclass);
 
 
 --
 -- Name: core_periodtag id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_periodtag ALTER COLUMN id SET DEFAULT nextval('public.core_periodtag_id_seq'::regclass);
+ALTER TABLE ONLY core_periodtag ALTER COLUMN id SET DEFAULT nextval('core_periodtag_id_seq'::regclass);
 
 
 --
 -- Name: core_periodtag_relatedexaminers id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_periodtag_relatedexaminers ALTER COLUMN id SET DEFAULT nextval('public.core_periodtag_relatedexaminers_id_seq'::regclass);
+ALTER TABLE ONLY core_periodtag_relatedexaminers ALTER COLUMN id SET DEFAULT nextval('core_periodtag_relatedexaminers_id_seq'::regclass);
 
 
 --
 -- Name: core_periodtag_relatedstudents id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_periodtag_relatedstudents ALTER COLUMN id SET DEFAULT nextval('public.core_periodtag_relatedstudents_id_seq'::regclass);
+ALTER TABLE ONLY core_periodtag_relatedstudents ALTER COLUMN id SET DEFAULT nextval('core_periodtag_relatedstudents_id_seq'::regclass);
 
 
 --
 -- Name: core_pointrangetograde id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_pointrangetograde ALTER COLUMN id SET DEFAULT nextval('public.core_pointrangetograde_id_seq'::regclass);
+ALTER TABLE ONLY core_pointrangetograde ALTER COLUMN id SET DEFAULT nextval('core_pointrangetograde_id_seq'::regclass);
 
 
 --
 -- Name: core_pointtogrademap id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_pointtogrademap ALTER COLUMN id SET DEFAULT nextval('public.core_pointtogrademap_id_seq'::regclass);
+ALTER TABLE ONLY core_pointtogrademap ALTER COLUMN id SET DEFAULT nextval('core_pointtogrademap_id_seq'::regclass);
 
 
 --
 -- Name: core_relatedexaminer id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_relatedexaminer ALTER COLUMN id SET DEFAULT nextval('public.core_relatedexaminer_id_seq'::regclass);
+ALTER TABLE ONLY core_relatedexaminer ALTER COLUMN id SET DEFAULT nextval('core_relatedexaminer_id_seq'::regclass);
 
 
 --
 -- Name: core_relatedstudent id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_relatedstudent ALTER COLUMN id SET DEFAULT nextval('public.core_relatedstudent_id_seq'::regclass);
+ALTER TABLE ONLY core_relatedstudent ALTER COLUMN id SET DEFAULT nextval('core_relatedstudent_id_seq'::regclass);
 
 
 --
 -- Name: core_relatedstudentkeyvalue id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_relatedstudentkeyvalue ALTER COLUMN id SET DEFAULT nextval('public.core_relatedstudentkeyvalue_id_seq'::regclass);
+ALTER TABLE ONLY core_relatedstudentkeyvalue ALTER COLUMN id SET DEFAULT nextval('core_relatedstudentkeyvalue_id_seq'::regclass);
 
 
 --
 -- Name: core_staticfeedback id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_staticfeedback ALTER COLUMN id SET DEFAULT nextval('public.core_staticfeedback_id_seq'::regclass);
+ALTER TABLE ONLY core_staticfeedback ALTER COLUMN id SET DEFAULT nextval('core_staticfeedback_id_seq'::regclass);
 
 
 --
 -- Name: core_staticfeedbackfileattachment id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_staticfeedbackfileattachment ALTER COLUMN id SET DEFAULT nextval('public.core_staticfeedbackfileattachment_id_seq'::regclass);
+ALTER TABLE ONLY core_staticfeedbackfileattachment ALTER COLUMN id SET DEFAULT nextval('core_staticfeedbackfileattachment_id_seq'::regclass);
 
 
 --
 -- Name: core_subject id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_subject ALTER COLUMN id SET DEFAULT nextval('public.core_subject_id_seq'::regclass);
+ALTER TABLE ONLY core_subject ALTER COLUMN id SET DEFAULT nextval('core_subject_id_seq'::regclass);
 
 
 --
 -- Name: core_subject_admins id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_subject_admins ALTER COLUMN id SET DEFAULT nextval('public.core_subject_admins_id_seq'::regclass);
+ALTER TABLE ONLY core_subject_admins ALTER COLUMN id SET DEFAULT nextval('core_subject_admins_id_seq'::regclass);
 
 
 --
 -- Name: cradmin_generic_token_with_metadata_generictokenwithmetadata id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.cradmin_generic_token_with_metadata_generictokenwithmetadata ALTER COLUMN id SET DEFAULT nextval('public.cradmin_generic_token_with_metadata_generictokenwithmeta_id_seq'::regclass);
+ALTER TABLE ONLY cradmin_generic_token_with_metadata_generictokenwithmetadata ALTER COLUMN id SET DEFAULT nextval('cradmin_generic_token_with_metadata_generictokenwithmeta_id_seq'::regclass);
 
 
 --
 -- Name: cradmin_temporaryfileuploadstore_temporaryfile id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.cradmin_temporaryfileuploadstore_temporaryfile ALTER COLUMN id SET DEFAULT nextval('public.cradmin_temporaryfileuploadstore_temporaryfile_id_seq'::regclass);
+ALTER TABLE ONLY cradmin_temporaryfileuploadstore_temporaryfile ALTER COLUMN id SET DEFAULT nextval('cradmin_temporaryfileuploadstore_temporaryfile_id_seq'::regclass);
 
 
 --
 -- Name: cradmin_temporaryfileuploadstore_temporaryfilecollection id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.cradmin_temporaryfileuploadstore_temporaryfilecollection ALTER COLUMN id SET DEFAULT nextval('public.cradmin_temporaryfileuploadstore_temporaryfilecollection_id_seq'::regclass);
+ALTER TABLE ONLY cradmin_temporaryfileuploadstore_temporaryfilecollection ALTER COLUMN id SET DEFAULT nextval('cradmin_temporaryfileuploadstore_temporaryfilecollection_id_seq'::regclass);
 
 
 --
 -- Name: devilry_account_periodpermissiongroup id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_account_periodpermissiongroup ALTER COLUMN id SET DEFAULT nextval('public.devilry_account_periodpermissiongroup_id_seq'::regclass);
+ALTER TABLE ONLY devilry_account_periodpermissiongroup ALTER COLUMN id SET DEFAULT nextval('devilry_account_periodpermissiongroup_id_seq'::regclass);
 
 
 --
 -- Name: devilry_account_permissiongroup id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_account_permissiongroup ALTER COLUMN id SET DEFAULT nextval('public.devilry_account_permissiongroup_id_seq'::regclass);
+ALTER TABLE ONLY devilry_account_permissiongroup ALTER COLUMN id SET DEFAULT nextval('devilry_account_permissiongroup_id_seq'::regclass);
 
 
 --
 -- Name: devilry_account_permissiongroupuser id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_account_permissiongroupuser ALTER COLUMN id SET DEFAULT nextval('public.devilry_account_permissiongroupuser_id_seq'::regclass);
+ALTER TABLE ONLY devilry_account_permissiongroupuser ALTER COLUMN id SET DEFAULT nextval('devilry_account_permissiongroupuser_id_seq'::regclass);
 
 
 --
 -- Name: devilry_account_subjectpermissiongroup id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_account_subjectpermissiongroup ALTER COLUMN id SET DEFAULT nextval('public.devilry_account_subjectpermissiongroup_id_seq'::regclass);
+ALTER TABLE ONLY devilry_account_subjectpermissiongroup ALTER COLUMN id SET DEFAULT nextval('devilry_account_subjectpermissiongroup_id_seq'::regclass);
 
 
 --
 -- Name: devilry_account_user id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_account_user ALTER COLUMN id SET DEFAULT nextval('public.devilry_account_user_id_seq'::regclass);
+ALTER TABLE ONLY devilry_account_user ALTER COLUMN id SET DEFAULT nextval('devilry_account_user_id_seq'::regclass);
 
 
 --
 -- Name: devilry_account_useremail id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_account_useremail ALTER COLUMN id SET DEFAULT nextval('public.devilry_account_useremail_id_seq'::regclass);
+ALTER TABLE ONLY devilry_account_useremail ALTER COLUMN id SET DEFAULT nextval('devilry_account_useremail_id_seq'::regclass);
 
 
 --
 -- Name: devilry_account_username id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_account_username ALTER COLUMN id SET DEFAULT nextval('public.devilry_account_username_id_seq'::regclass);
+ALTER TABLE ONLY devilry_account_username ALTER COLUMN id SET DEFAULT nextval('devilry_account_username_id_seq'::regclass);
 
 
 --
 -- Name: devilry_comment_comment id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_comment_comment ALTER COLUMN id SET DEFAULT nextval('public.devilry_comment_comment_id_seq'::regclass);
+ALTER TABLE ONLY devilry_comment_comment ALTER COLUMN id SET DEFAULT nextval('devilry_comment_comment_id_seq'::regclass);
+
+
+--
+-- Name: devilry_comment_commentedithistory id; Type: DEFAULT; Schema: public; Owner: dbdev
+--
+
+ALTER TABLE ONLY devilry_comment_commentedithistory ALTER COLUMN id SET DEFAULT nextval('devilry_comment_commentedithistory_id_seq'::regclass);
 
 
 --
 -- Name: devilry_comment_commentfile id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_comment_commentfile ALTER COLUMN id SET DEFAULT nextval('public.devilry_comment_commentfile_id_seq'::regclass);
+ALTER TABLE ONLY devilry_comment_commentfile ALTER COLUMN id SET DEFAULT nextval('devilry_comment_commentfile_id_seq'::regclass);
 
 
 --
 -- Name: devilry_comment_commentfileimage id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_comment_commentfileimage ALTER COLUMN id SET DEFAULT nextval('public.devilry_comment_commentfileimage_id_seq'::regclass);
+ALTER TABLE ONLY devilry_comment_commentfileimage ALTER COLUMN id SET DEFAULT nextval('devilry_comment_commentfileimage_id_seq'::regclass);
 
 
 --
 -- Name: devilry_compressionutil_compressedarchivemeta id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_compressionutil_compressedarchivemeta ALTER COLUMN id SET DEFAULT nextval('public.devilry_compressionutil_compressedarchivemeta_id_seq'::regclass);
+ALTER TABLE ONLY devilry_compressionutil_compressedarchivemeta ALTER COLUMN id SET DEFAULT nextval('devilry_compressionutil_compressedarchivemeta_id_seq'::regclass);
 
 
 --
 -- Name: devilry_dbcache_assignmentgroupcacheddata id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_dbcache_assignmentgroupcacheddata ALTER COLUMN id SET DEFAULT nextval('public.devilry_dbcache_assignmentgroupcacheddata_id_seq'::regclass);
+ALTER TABLE ONLY devilry_dbcache_assignmentgroupcacheddata ALTER COLUMN id SET DEFAULT nextval('devilry_dbcache_assignmentgroupcacheddata_id_seq'::regclass);
 
 
 --
 -- Name: devilry_gradingsystem_feedbackdraft id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_gradingsystem_feedbackdraft ALTER COLUMN id SET DEFAULT nextval('public.devilry_gradingsystem_feedbackdraft_id_seq'::regclass);
+ALTER TABLE ONLY devilry_gradingsystem_feedbackdraft ALTER COLUMN id SET DEFAULT nextval('devilry_gradingsystem_feedbackdraft_id_seq'::regclass);
 
 
 --
 -- Name: devilry_gradingsystem_feedbackdraftfile id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_gradingsystem_feedbackdraftfile ALTER COLUMN id SET DEFAULT nextval('public.devilry_gradingsystem_feedbackdraftfile_id_seq'::regclass);
+ALTER TABLE ONLY devilry_gradingsystem_feedbackdraftfile ALTER COLUMN id SET DEFAULT nextval('devilry_gradingsystem_feedbackdraftfile_id_seq'::regclass);
 
 
 --
 -- Name: devilry_group_feedbackset id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_group_feedbackset ALTER COLUMN id SET DEFAULT nextval('public.devilry_group_feedbackset_id_seq'::regclass);
+ALTER TABLE ONLY devilry_group_feedbackset ALTER COLUMN id SET DEFAULT nextval('devilry_group_feedbackset_id_seq'::regclass);
 
 
 --
 -- Name: devilry_group_feedbacksetdeadlinehistory id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_group_feedbacksetdeadlinehistory ALTER COLUMN id SET DEFAULT nextval('public.devilry_group_feedbacksetdeadlinehistory_id_seq'::regclass);
+ALTER TABLE ONLY devilry_group_feedbacksetdeadlinehistory ALTER COLUMN id SET DEFAULT nextval('devilry_group_feedbacksetdeadlinehistory_id_seq'::regclass);
 
 
 --
 -- Name: devilry_group_feedbacksetgradingupdatehistory id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_group_feedbacksetgradingupdatehistory ALTER COLUMN id SET DEFAULT nextval('public.devilry_group_feedbacksetgradingupdatehistory_id_seq'::regclass);
+ALTER TABLE ONLY devilry_group_feedbacksetgradingupdatehistory ALTER COLUMN id SET DEFAULT nextval('devilry_group_feedbacksetgradingupdatehistory_id_seq'::regclass);
 
 
 --
 -- Name: devilry_group_feedbacksetpassedpreviousperiod id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_group_feedbacksetpassedpreviousperiod ALTER COLUMN id SET DEFAULT nextval('public.devilry_group_feedbacksetpassedpreviousperiod_id_seq'::regclass);
+ALTER TABLE ONLY devilry_group_feedbacksetpassedpreviousperiod ALTER COLUMN id SET DEFAULT nextval('devilry_group_feedbacksetpassedpreviousperiod_id_seq'::regclass);
 
 
 --
 -- Name: devilry_import_v2database_importedmodel id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_import_v2database_importedmodel ALTER COLUMN id SET DEFAULT nextval('public.devilry_import_v2database_importedmodel_id_seq'::regclass);
+ALTER TABLE ONLY devilry_import_v2database_importedmodel ALTER COLUMN id SET DEFAULT nextval('devilry_import_v2database_importedmodel_id_seq'::regclass);
 
 
 --
 -- Name: devilry_qualifiesforexam_deadlinetag id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_qualifiesforexam_deadlinetag ALTER COLUMN id SET DEFAULT nextval('public.devilry_qualifiesforexam_deadlinetag_id_seq'::regclass);
+ALTER TABLE ONLY devilry_qualifiesforexam_deadlinetag ALTER COLUMN id SET DEFAULT nextval('devilry_qualifiesforexam_deadlinetag_id_seq'::regclass);
 
 
 --
 -- Name: devilry_qualifiesforexam_qualifiesforfinalexam id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_qualifiesforexam_qualifiesforfinalexam ALTER COLUMN id SET DEFAULT nextval('public.devilry_qualifiesforexam_qualifiesforfinalexam_id_seq'::regclass);
+ALTER TABLE ONLY devilry_qualifiesforexam_qualifiesforfinalexam ALTER COLUMN id SET DEFAULT nextval('devilry_qualifiesforexam_qualifiesforfinalexam_id_seq'::regclass);
 
 
 --
 -- Name: devilry_qualifiesforexam_status id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_qualifiesforexam_status ALTER COLUMN id SET DEFAULT nextval('public.devilry_qualifiesforexam_status_id_seq'::regclass);
+ALTER TABLE ONLY devilry_qualifiesforexam_status ALTER COLUMN id SET DEFAULT nextval('devilry_qualifiesforexam_status_id_seq'::regclass);
 
 
 --
 -- Name: devilry_student_uploadeddeliveryfile id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_student_uploadeddeliveryfile ALTER COLUMN id SET DEFAULT nextval('public.devilry_student_uploadeddeliveryfile_id_seq'::regclass);
+ALTER TABLE ONLY devilry_student_uploadeddeliveryfile ALTER COLUMN id SET DEFAULT nextval('devilry_student_uploadeddeliveryfile_id_seq'::regclass);
 
 
 --
 -- Name: django_admin_log id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.django_admin_log ALTER COLUMN id SET DEFAULT nextval('public.django_admin_log_id_seq'::regclass);
+ALTER TABLE ONLY django_admin_log ALTER COLUMN id SET DEFAULT nextval('django_admin_log_id_seq'::regclass);
 
 
 --
 -- Name: django_content_type id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.django_content_type ALTER COLUMN id SET DEFAULT nextval('public.django_content_type_id_seq'::regclass);
+ALTER TABLE ONLY django_content_type ALTER COLUMN id SET DEFAULT nextval('django_content_type_id_seq'::regclass);
 
 
 --
 -- Name: django_migrations id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.django_migrations ALTER COLUMN id SET DEFAULT nextval('public.django_migrations_id_seq'::regclass);
+ALTER TABLE ONLY django_migrations ALTER COLUMN id SET DEFAULT nextval('django_migrations_id_seq'::regclass);
 
 
 --
 -- Name: django_site id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.django_site ALTER COLUMN id SET DEFAULT nextval('public.django_site_id_seq'::regclass);
+ALTER TABLE ONLY django_site ALTER COLUMN id SET DEFAULT nextval('django_site_id_seq'::regclass);
 
 
 --
 -- Name: ievv_batchframework_batchoperation id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.ievv_batchframework_batchoperation ALTER COLUMN id SET DEFAULT nextval('public.ievv_batchframework_batchoperation_id_seq'::regclass);
+ALTER TABLE ONLY ievv_batchframework_batchoperation ALTER COLUMN id SET DEFAULT nextval('ievv_batchframework_batchoperation_id_seq'::regclass);
+
+
+--
+-- Name: ievv_developemail_developemail id; Type: DEFAULT; Schema: public; Owner: dbdev
+--
+
+ALTER TABLE ONLY ievv_developemail_developemail ALTER COLUMN id SET DEFAULT nextval('ievv_developemail_developemail_id_seq'::regclass);
 
 
 --
 -- Name: socialaccount_socialaccount id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.socialaccount_socialaccount ALTER COLUMN id SET DEFAULT nextval('public.socialaccount_socialaccount_id_seq'::regclass);
+ALTER TABLE ONLY socialaccount_socialaccount ALTER COLUMN id SET DEFAULT nextval('socialaccount_socialaccount_id_seq'::regclass);
 
 
 --
 -- Name: socialaccount_socialapp id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.socialaccount_socialapp ALTER COLUMN id SET DEFAULT nextval('public.socialaccount_socialapp_id_seq'::regclass);
+ALTER TABLE ONLY socialaccount_socialapp ALTER COLUMN id SET DEFAULT nextval('socialaccount_socialapp_id_seq'::regclass);
 
 
 --
 -- Name: socialaccount_socialapp_sites id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.socialaccount_socialapp_sites ALTER COLUMN id SET DEFAULT nextval('public.socialaccount_socialapp_sites_id_seq'::regclass);
+ALTER TABLE ONLY socialaccount_socialapp_sites ALTER COLUMN id SET DEFAULT nextval('socialaccount_socialapp_sites_id_seq'::regclass);
 
 
 --
 -- Name: socialaccount_socialtoken id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.socialaccount_socialtoken ALTER COLUMN id SET DEFAULT nextval('public.socialaccount_socialtoken_id_seq'::regclass);
+ALTER TABLE ONLY socialaccount_socialtoken ALTER COLUMN id SET DEFAULT nextval('socialaccount_socialtoken_id_seq'::regclass);
 
 
 --
 -- Data for Name: account_emailaddress; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.account_emailaddress (id, email, verified, "primary", user_id) FROM stdin;
+COPY account_emailaddress (id, email, verified, "primary", user_id) FROM stdin;
 \.
 
 
@@ -4324,7 +4512,7 @@ COPY public.account_emailaddress (id, email, verified, "primary", user_id) FROM 
 -- Data for Name: account_emailconfirmation; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.account_emailconfirmation (id, created, sent, key, email_address_id) FROM stdin;
+COPY account_emailconfirmation (id, created, sent, key, email_address_id) FROM stdin;
 \.
 
 
@@ -4332,7 +4520,7 @@ COPY public.account_emailconfirmation (id, created, sent, key, email_address_id)
 -- Data for Name: auth_group; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.auth_group (id, name) FROM stdin;
+COPY auth_group (id, name) FROM stdin;
 \.
 
 
@@ -4340,7 +4528,7 @@ COPY public.auth_group (id, name) FROM stdin;
 -- Data for Name: auth_group_permissions; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.auth_group_permissions (id, group_id, permission_id) FROM stdin;
+COPY auth_group_permissions (id, group_id, permission_id) FROM stdin;
 \.
 
 
@@ -4348,7 +4536,7 @@ COPY public.auth_group_permissions (id, group_id, permission_id) FROM stdin;
 -- Data for Name: auth_permission; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
+COPY auth_permission (id, name, content_type_id, codename) FROM stdin;
 1	Can add session	1	add_session
 2	Can change session	1	change_session
 3	Can delete session	1	delete_session
@@ -4556,6 +4744,15 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 214	Can add feedback set grading update history	72	add_feedbacksetgradingupdatehistory
 215	Can change feedback set grading update history	72	change_feedbacksetgradingupdatehistory
 216	Can delete feedback set grading update history	72	delete_feedbacksetgradingupdatehistory
+217	Can add develop email	73	add_developemail
+218	Can change develop email	73	change_developemail
+219	Can delete develop email	73	delete_developemail
+220	Can add group comment edit history	74	add_groupcommentedithistory
+221	Can change group comment edit history	74	change_groupcommentedithistory
+222	Can delete group comment edit history	74	delete_groupcommentedithistory
+223	Can add comment edit history	75	add_commentedithistory
+224	Can change comment edit history	75	change_commentedithistory
+225	Can delete comment edit history	75	delete_commentedithistory
 \.
 
 
@@ -4563,7 +4760,7 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 -- Data for Name: core_assignment; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.core_assignment (id, short_name, long_name, publishing_time, deprecated_field_anonymous, students_can_see_points, delivery_types, deadline_handling, scale_points_percent, first_deadline, max_points, passing_grade_min_points, points_to_grade_mapper, grading_system_plugin_id, students_can_create_groups, students_can_not_create_groups_after, feedback_workflow, parentnode_id, gradeform_setup_json, anonymizationmode, uses_custom_candidate_ids) FROM stdin;
+COPY core_assignment (id, short_name, long_name, publishing_time, deprecated_field_anonymous, students_can_see_points, delivery_types, deadline_handling, scale_points_percent, first_deadline, max_points, passing_grade_min_points, points_to_grade_mapper, grading_system_plugin_id, students_can_create_groups, students_can_not_create_groups_after, feedback_workflow, parentnode_id, gradeform_setup_json, anonymizationmode, uses_custom_candidate_ids) FROM stdin;
 1	assignment1	Assignment 1	2015-12-27 03:35:27.525662+01	f	t	0	0	100	2040-01-31 12:30:00+01	1	1	passed-failed	devilry_gradingsystemplugin_approved	f	\N		1	\N	off	f
 2	assignment2	Assignment 2	2016-01-03 04:41:40.730958+01	f	t	0	0	100	2040-02-14 12:30:00+01	1	1	passed-failed	devilry_gradingsystemplugin_approved	f	\N		1	\N	off	f
 4	fully-anonymous-exam	Fully anonymous exam	2016-01-20 00:20:00+01	f	f	0	0	100	2040-03-15 23:59:00+01	100	30	custom-table	devilry_gradingsystemplugin_points	f	\N		1		fully_anonymous	f
@@ -4576,7 +4773,7 @@ COPY public.core_assignment (id, short_name, long_name, publishing_time, depreca
 -- Data for Name: core_assignment_admins; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.core_assignment_admins (id, assignment_id, user_id) FROM stdin;
+COPY core_assignment_admins (id, assignment_id, user_id) FROM stdin;
 \.
 
 
@@ -4584,7 +4781,7 @@ COPY public.core_assignment_admins (id, assignment_id, user_id) FROM stdin;
 -- Data for Name: core_assignmentgroup; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.core_assignmentgroup (id, name, is_open, etag, delivery_status, created_datetime, copied_from_id, feedback_id, last_deadline_id, parentnode_id, batchoperation_id, internal_is_being_deleted) FROM stdin;
+COPY core_assignmentgroup (id, name, is_open, etag, delivery_status, created_datetime, copied_from_id, feedback_id, last_deadline_id, parentnode_id, batchoperation_id, internal_is_being_deleted) FROM stdin;
 3		t	2016-01-20 11:17:01.689683+01	\N	2016-01-20 11:17:01.689159+01	\N	\N	\N	1	1	f
 4		t	2016-01-20 11:17:01.689714+01	\N	2016-01-20 11:17:01.689207+01	\N	\N	\N	1	1	f
 5		t	2016-01-20 11:17:01.689744+01	\N	2016-01-20 11:17:01.689254+01	\N	\N	\N	1	1	f
@@ -4614,7 +4811,7 @@ COPY public.core_assignmentgroup (id, name, is_open, etag, delivery_status, crea
 -- Data for Name: core_assignmentgroup_examiners; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.core_assignmentgroup_examiners (id, assignmentgroup_id, old_reference_not_in_use_user_id, relatedexaminer_id) FROM stdin;
+COPY core_assignmentgroup_examiners (id, assignmentgroup_id, old_reference_not_in_use_user_id, relatedexaminer_id) FROM stdin;
 17	3	\N	3
 18	4	\N	3
 19	7	\N	3
@@ -4623,17 +4820,17 @@ COPY public.core_assignmentgroup_examiners (id, assignmentgroup_id, old_referenc
 22	6	\N	2
 23	8	\N	2
 24	12	\N	3
-26	14	\N	3
-27	15	\N	3
-28	16	\N	3
-29	17	\N	3
-30	18	\N	3
-31	19	\N	3
-32	20	\N	3
-33	21	\N	3
-34	22	\N	3
-35	23	\N	3
-36	24	\N	3
+37	14	\N	3
+38	18	\N	3
+39	21	\N	3
+40	25	\N	3
+41	15	\N	2
+42	17	\N	2
+43	19	\N	2
+44	20	\N	2
+45	16	\N	4
+46	22	\N	4
+47	23	\N	4
 \.
 
 
@@ -4641,7 +4838,7 @@ COPY public.core_assignmentgroup_examiners (id, assignmentgroup_id, old_referenc
 -- Data for Name: core_assignmentgrouphistory; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.core_assignmentgrouphistory (id, merge_history_json, assignment_group_id) FROM stdin;
+COPY core_assignmentgrouphistory (id, merge_history_json, assignment_group_id) FROM stdin;
 \.
 
 
@@ -4649,7 +4846,7 @@ COPY public.core_assignmentgrouphistory (id, merge_history_json, assignment_grou
 -- Data for Name: core_assignmentgrouptag; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.core_assignmentgrouptag (id, tag, assignment_group_id) FROM stdin;
+COPY core_assignmentgrouptag (id, tag, assignment_group_id) FROM stdin;
 \.
 
 
@@ -4657,7 +4854,7 @@ COPY public.core_assignmentgrouptag (id, tag, assignment_group_id) FROM stdin;
 -- Data for Name: core_candidate; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.core_candidate (id, candidate_id, assignment_group_id, old_reference_not_in_use_student_id, relatedstudent_id) FROM stdin;
+COPY core_candidate (id, candidate_id, assignment_group_id, old_reference_not_in_use_student_id, relatedstudent_id) FROM stdin;
 3	\N	3	\N	3
 4	\N	4	\N	4
 5	\N	5	\N	5
@@ -4687,7 +4884,7 @@ COPY public.core_candidate (id, candidate_id, assignment_group_id, old_reference
 -- Data for Name: core_candidateassignmentgrouphistory; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.core_candidateassignmentgrouphistory (id, created_datetime, is_add, assignment_group_id, user_id) FROM stdin;
+COPY core_candidateassignmentgrouphistory (id, created_datetime, is_add, assignment_group_id, user_id) FROM stdin;
 \.
 
 
@@ -4695,7 +4892,7 @@ COPY public.core_candidateassignmentgrouphistory (id, created_datetime, is_add, 
 -- Data for Name: core_deadline; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.core_deadline (id, deadline, text, deliveries_available_before_deadline, why_created, added_by_id, assignment_group_id) FROM stdin;
+COPY core_deadline (id, deadline, text, deliveries_available_before_deadline, why_created, added_by_id, assignment_group_id) FROM stdin;
 \.
 
 
@@ -4703,7 +4900,7 @@ COPY public.core_deadline (id, deadline, text, deliveries_available_before_deadl
 -- Data for Name: core_delivery; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.core_delivery (id, delivery_type, time_of_delivery, number, successful, alias_delivery_id, copy_of_id, deadline_id, delivered_by_id, last_feedback_id) FROM stdin;
+COPY core_delivery (id, delivery_type, time_of_delivery, number, successful, alias_delivery_id, copy_of_id, deadline_id, delivered_by_id, last_feedback_id) FROM stdin;
 \.
 
 
@@ -4711,7 +4908,7 @@ COPY public.core_delivery (id, delivery_type, time_of_delivery, number, successf
 -- Data for Name: core_devilryuserprofile; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.core_devilryuserprofile (id, full_name, languagecode, user_id) FROM stdin;
+COPY core_devilryuserprofile (id, full_name, languagecode, user_id) FROM stdin;
 \.
 
 
@@ -4719,7 +4916,29 @@ COPY public.core_devilryuserprofile (id, full_name, languagecode, user_id) FROM 
 -- Data for Name: core_examinerassignmentgrouphistory; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.core_examinerassignmentgrouphistory (id, created_datetime, is_add, assignment_group_id, user_id) FROM stdin;
+COPY core_examinerassignmentgrouphistory (id, created_datetime, is_add, assignment_group_id, user_id) FROM stdin;
+1	2018-10-15 11:52:22.277483+02	f	14	13
+2	2018-10-15 11:52:22.277483+02	f	15	13
+3	2018-10-15 11:52:22.277483+02	f	16	13
+4	2018-10-15 11:52:22.277483+02	f	17	13
+5	2018-10-15 11:52:22.277483+02	f	18	13
+6	2018-10-15 11:52:22.277483+02	f	19	13
+7	2018-10-15 11:52:22.277483+02	f	20	13
+8	2018-10-15 11:52:22.277483+02	f	21	13
+9	2018-10-15 11:52:22.277483+02	f	22	13
+10	2018-10-15 11:52:22.277483+02	f	23	13
+11	2018-10-15 11:52:22.277483+02	f	24	13
+12	2018-10-15 11:52:31.89498+02	t	14	13
+13	2018-10-15 11:52:31.89498+02	t	18	13
+14	2018-10-15 11:52:31.89498+02	t	21	13
+15	2018-10-15 11:52:31.89498+02	t	25	13
+16	2018-10-15 11:52:53.60067+02	t	15	12
+17	2018-10-15 11:52:53.60067+02	t	17	12
+18	2018-10-15 11:52:53.60067+02	t	19	12
+19	2018-10-15 11:52:53.60067+02	t	20	12
+20	2018-10-15 11:53:32.391664+02	t	16	14
+21	2018-10-15 11:53:32.391664+02	t	22	14
+22	2018-10-15 11:53:32.391664+02	t	23	14
 \.
 
 
@@ -4727,7 +4946,7 @@ COPY public.core_examinerassignmentgrouphistory (id, created_datetime, is_add, a
 -- Data for Name: core_filemeta; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.core_filemeta (id, filename, size, delivery_id) FROM stdin;
+COPY core_filemeta (id, filename, size, delivery_id) FROM stdin;
 \.
 
 
@@ -4735,7 +4954,7 @@ COPY public.core_filemeta (id, filename, size, delivery_id) FROM stdin;
 -- Data for Name: core_groupinvite; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.core_groupinvite (id, sent_datetime, accepted, responded_datetime, group_id, sent_by_id, sent_to_id) FROM stdin;
+COPY core_groupinvite (id, sent_datetime, accepted, responded_datetime, group_id, sent_by_id, sent_to_id) FROM stdin;
 \.
 
 
@@ -4743,7 +4962,7 @@ COPY public.core_groupinvite (id, sent_datetime, accepted, responded_datetime, g
 -- Data for Name: core_period; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.core_period (id, short_name, long_name, start_time, end_time, etag, parentnode_id) FROM stdin;
+COPY core_period (id, short_name, long_name, start_time, end_time, etag, parentnode_id) FROM stdin;
 1	springaaaa	Spring AAAA	2015-01-01 00:00:00+01	2080-12-31 23:59:00+01	2015-12-26 21:31:34.148678+01	1
 2	springoooo	Spring OOOO	2000-01-01 00:05:00+01	2010-12-31 23:59:00+01	2016-02-02 12:41:49.921204+01	1
 3	springffff	Spring FFFF	2050-01-01 01:35:00+01	2144-12-31 20:10:00+01	2016-02-02 12:43:03.846893+01	1
@@ -4756,7 +4975,7 @@ COPY public.core_period (id, short_name, long_name, start_time, end_time, etag, 
 -- Data for Name: core_period_admins; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.core_period_admins (id, period_id, user_id) FROM stdin;
+COPY core_period_admins (id, period_id, user_id) FROM stdin;
 \.
 
 
@@ -4764,7 +4983,7 @@ COPY public.core_period_admins (id, period_id, user_id) FROM stdin;
 -- Data for Name: core_periodapplicationkeyvalue; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.core_periodapplicationkeyvalue (id, application, key, value, period_id) FROM stdin;
+COPY core_periodapplicationkeyvalue (id, application, key, value, period_id) FROM stdin;
 \.
 
 
@@ -4772,7 +4991,7 @@ COPY public.core_periodapplicationkeyvalue (id, application, key, value, period_
 -- Data for Name: core_periodtag; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.core_periodtag (id, prefix, tag, is_hidden, created_datetime, modified_datetime, period_id) FROM stdin;
+COPY core_periodtag (id, prefix, tag, is_hidden, created_datetime, modified_datetime, period_id) FROM stdin;
 \.
 
 
@@ -4780,7 +4999,7 @@ COPY public.core_periodtag (id, prefix, tag, is_hidden, created_datetime, modifi
 -- Data for Name: core_periodtag_relatedexaminers; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.core_periodtag_relatedexaminers (id, periodtag_id, relatedexaminer_id) FROM stdin;
+COPY core_periodtag_relatedexaminers (id, periodtag_id, relatedexaminer_id) FROM stdin;
 \.
 
 
@@ -4788,7 +5007,7 @@ COPY public.core_periodtag_relatedexaminers (id, periodtag_id, relatedexaminer_i
 -- Data for Name: core_periodtag_relatedstudents; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.core_periodtag_relatedstudents (id, periodtag_id, relatedstudent_id) FROM stdin;
+COPY core_periodtag_relatedstudents (id, periodtag_id, relatedstudent_id) FROM stdin;
 \.
 
 
@@ -4796,7 +5015,7 @@ COPY public.core_periodtag_relatedstudents (id, periodtag_id, relatedstudent_id)
 -- Data for Name: core_pointrangetograde; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.core_pointrangetograde (id, minimum_points, maximum_points, grade, point_to_grade_map_id) FROM stdin;
+COPY core_pointrangetograde (id, minimum_points, maximum_points, grade, point_to_grade_map_id) FROM stdin;
 1	0	30	F	1
 2	31	45	E	1
 3	46	60	D	1
@@ -4810,7 +5029,7 @@ COPY public.core_pointrangetograde (id, minimum_points, maximum_points, grade, p
 -- Data for Name: core_pointtogrademap; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.core_pointtogrademap (id, invalid, assignment_id) FROM stdin;
+COPY core_pointtogrademap (id, invalid, assignment_id) FROM stdin;
 1	t	4
 \.
 
@@ -4819,10 +5038,11 @@ COPY public.core_pointtogrademap (id, invalid, assignment_id) FROM stdin;
 -- Data for Name: core_relatedexaminer; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.core_relatedexaminer (id, tags, period_id, user_id, automatic_anonymous_id, active) FROM stdin;
+COPY core_relatedexaminer (id, tags, period_id, user_id, automatic_anonymous_id, active) FROM stdin;
 1		1	1		t
 2	\N	1	12		t
 3	\N	1	13		t
+4	\N	1	14		t
 \.
 
 
@@ -4830,7 +5050,7 @@ COPY public.core_relatedexaminer (id, tags, period_id, user_id, automatic_anonym
 -- Data for Name: core_relatedstudent; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.core_relatedstudent (id, tags, candidate_id, automatic_anonymous_id, period_id, user_id, active) FROM stdin;
+COPY core_relatedstudent (id, tags, candidate_id, automatic_anonymous_id, period_id, user_id, active) FROM stdin;
 1				1	5	t
 2				1	2	t
 3				1	6	t
@@ -4852,7 +5072,7 @@ COPY public.core_relatedstudent (id, tags, candidate_id, automatic_anonymous_id,
 -- Data for Name: core_relatedstudentkeyvalue; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.core_relatedstudentkeyvalue (id, application, key, value, student_can_read, relatedstudent_id) FROM stdin;
+COPY core_relatedstudentkeyvalue (id, application, key, value, student_can_read, relatedstudent_id) FROM stdin;
 \.
 
 
@@ -4860,7 +5080,7 @@ COPY public.core_relatedstudentkeyvalue (id, application, key, value, student_ca
 -- Data for Name: core_staticfeedback; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.core_staticfeedback (id, rendered_view, grade, points, is_passing_grade, save_timestamp, delivery_id, saved_by_id) FROM stdin;
+COPY core_staticfeedback (id, rendered_view, grade, points, is_passing_grade, save_timestamp, delivery_id, saved_by_id) FROM stdin;
 \.
 
 
@@ -4868,7 +5088,7 @@ COPY public.core_staticfeedback (id, rendered_view, grade, points, is_passing_gr
 -- Data for Name: core_staticfeedbackfileattachment; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.core_staticfeedbackfileattachment (id, filename, file, staticfeedback_id) FROM stdin;
+COPY core_staticfeedbackfileattachment (id, filename, file, staticfeedback_id) FROM stdin;
 \.
 
 
@@ -4876,7 +5096,7 @@ COPY public.core_staticfeedbackfileattachment (id, filename, file, staticfeedbac
 -- Data for Name: core_subject; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.core_subject (id, short_name, long_name, etag) FROM stdin;
+COPY core_subject (id, short_name, long_name, etag) FROM stdin;
 1	duck1010	DUCK1010 - Object Oriented Programming	2015-12-22 19:57:16.969003+01
 2	duck1100	DUCK1100 - Mathematical programming	2015-12-22 19:58:18.525346+01
 \.
@@ -4886,7 +5106,7 @@ COPY public.core_subject (id, short_name, long_name, etag) FROM stdin;
 -- Data for Name: core_subject_admins; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.core_subject_admins (id, subject_id, user_id) FROM stdin;
+COPY core_subject_admins (id, subject_id, user_id) FROM stdin;
 \.
 
 
@@ -4894,7 +5114,7 @@ COPY public.core_subject_admins (id, subject_id, user_id) FROM stdin;
 -- Data for Name: cradmin_generic_token_with_metadata_generictokenwithmetadata; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.cradmin_generic_token_with_metadata_generictokenwithmetadata (id, app, token, created_datetime, expiration_datetime, single_use, metadata_json, object_id, content_type_id) FROM stdin;
+COPY cradmin_generic_token_with_metadata_generictokenwithmetadata (id, app, token, created_datetime, expiration_datetime, single_use, metadata_json, object_id, content_type_id) FROM stdin;
 \.
 
 
@@ -4902,7 +5122,7 @@ COPY public.cradmin_generic_token_with_metadata_generictokenwithmetadata (id, ap
 -- Data for Name: cradmin_temporaryfileuploadstore_temporaryfile; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.cradmin_temporaryfileuploadstore_temporaryfile (id, filename, file, mimetype, collection_id) FROM stdin;
+COPY cradmin_temporaryfileuploadstore_temporaryfile (id, filename, file, mimetype, collection_id) FROM stdin;
 \.
 
 
@@ -4910,7 +5130,7 @@ COPY public.cradmin_temporaryfileuploadstore_temporaryfile (id, filename, file, 
 -- Data for Name: cradmin_temporaryfileuploadstore_temporaryfilecollection; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.cradmin_temporaryfileuploadstore_temporaryfilecollection (id, created_datetime, minutes_to_live, accept, max_filename_length, unique_filenames, user_id, singlemode, max_filesize_bytes) FROM stdin;
+COPY cradmin_temporaryfileuploadstore_temporaryfilecollection (id, created_datetime, minutes_to_live, accept, max_filename_length, unique_filenames, user_id, singlemode, max_filesize_bytes) FROM stdin;
 \.
 
 
@@ -4918,7 +5138,7 @@ COPY public.cradmin_temporaryfileuploadstore_temporaryfilecollection (id, create
 -- Data for Name: devilry_account_periodpermissiongroup; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.devilry_account_periodpermissiongroup (id, period_id, permissiongroup_id) FROM stdin;
+COPY devilry_account_periodpermissiongroup (id, period_id, permissiongroup_id) FROM stdin;
 1	1	2
 2	1	4
 \.
@@ -4928,7 +5148,7 @@ COPY public.devilry_account_periodpermissiongroup (id, period_id, permissiongrou
 -- Data for Name: devilry_account_permissiongroup; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.devilry_account_permissiongroup (id, name, created_datetime, updated_datetime, syncsystem_update_datetime, grouptype, is_custom_manageable) FROM stdin;
+COPY devilry_account_permissiongroup (id, name, created_datetime, updated_datetime, syncsystem_update_datetime, grouptype, is_custom_manageable) FROM stdin;
 1	The grandmas	2015-12-22 20:28:12.198719+01	2015-12-29 18:36:56.731725+01	\N	departmentadmin	f
 2	duck1010.springaaaa admins	2016-01-20 04:17:30.493374+01	2016-01-20 04:18:08.798354+01	\N	periodadmin	f
 3	duck1010 administrators	2016-01-20 04:19:42.353192+01	2016-01-20 04:19:42.353219+01	\N	subjectadmin	f
@@ -4940,7 +5160,7 @@ COPY public.devilry_account_permissiongroup (id, name, created_datetime, updated
 -- Data for Name: devilry_account_permissiongroupuser; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.devilry_account_permissiongroupuser (id, permissiongroup_id, user_id) FROM stdin;
+COPY devilry_account_permissiongroupuser (id, permissiongroup_id, user_id) FROM stdin;
 1	1	1
 2	2	12
 3	3	14
@@ -4952,7 +5172,7 @@ COPY public.devilry_account_permissiongroupuser (id, permissiongroup_id, user_id
 -- Data for Name: devilry_account_subjectpermissiongroup; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.devilry_account_subjectpermissiongroup (id, permissiongroup_id, subject_id) FROM stdin;
+COPY devilry_account_subjectpermissiongroup (id, permissiongroup_id, subject_id) FROM stdin;
 1	1	1
 2	1	2
 3	3	1
@@ -4963,7 +5183,7 @@ COPY public.devilry_account_subjectpermissiongroup (id, permissiongroup_id, subj
 -- Data for Name: devilry_account_user; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.devilry_account_user (id, password, last_login, is_superuser, shortname, fullname, lastname, datetime_joined, suspended_datetime, suspended_reason, languagecode) FROM stdin;
+COPY devilry_account_user (id, password, last_login, is_superuser, shortname, fullname, lastname, datetime_joined, suspended_datetime, suspended_reason, languagecode) FROM stdin;
 2	md5$3KRT0BYBVYuO$94583357915e72f337fcd49100121ffe	\N	f	dewey@example.com	Dewey Duck	Duck	2016-01-03 00:01:23.904395+01	\N		
 3	md5$4kh8cjMMXX2M$7ebf58c36489254b715d79608c022101	\N	f	louie@example.com	Louie Duck	Duck	2016-01-03 00:01:23.920971+01	\N		
 4	md5$EC1N1bbdDH1I$f178f7136b3691e18906166ee0efe5ca	\N	f	huey@example.com	Huey Duck	Duck	2016-01-03 00:01:23.924138+01	\N		
@@ -4977,11 +5197,11 @@ COPY public.devilry_account_user (id, password, last_login, is_superuser, shortn
 16	md5$IwVKSAdD2ueB$5e32c9a5bfa4092cdb4b4bda8a0e122e	\N	f	scrooge@example.com	Scrooge McDuck	McDuck	2016-01-03 00:03:59.432752+01	\N		
 17	md5$VNqEOHzoWJLP$742f1d1b4d56fb6f51cdb76efc2105fa	\N	f	noname@example.com			2016-01-04 15:08:14.258809+01	\N		
 18	md5$smoA02BvKYtp$17bc79166daf9d1c3de87d695e9708f9	\N	f	missingname@example.com			2016-01-04 15:25:10.473858+01	\N		
-14	md5$ot0qeIMptbS0$736743011a752ac3929d119435424766	2016-01-20 04:29:49.250064+01	f	odin@example.com	The "All Father"	Father"	2016-01-03 00:01:23.951457+01	\N		
-12	md5$tT0zXYv0Zsuo$2b9bfb86f295cfd461b0ce2bb6ea2096	2016-02-06 18:04:02.493233+01	f	loki@example.com	Trickster and god of Mischief	Mischief	2016-01-03 00:01:23.945768+01	\N		
 5	md5$t9KMIxJyNWXg$7136c7c30e463d0c9525f4744ef624b4	2016-02-08 20:20:46.753706+01	f	april@example.com	April Duck	Duck	2016-01-03 00:01:23.92689+01	\N		
-13	md5$BVeSKhUc4Gkg$c5cfb847e6ef2a84bf2a0a3ab0424e8d	2016-02-08 20:21:32.438362+01	f	thor@example.com	God of thunder and Battle	Battle	2016-01-03 00:01:23.948728+01	\N		
-1	md5$wqtfXF0fIxXj$894c06ca065b6dfa906004e40da2e9a4	2016-08-06 14:34:40.180078+02	t	grandma@example.com			2015-12-21 18:01:21.212212+01	\N		
+1	md5$wqtfXF0fIxXj$894c06ca065b6dfa906004e40da2e9a4	2018-10-15 11:45:11.357639+02	t	grandma@example.com			2015-12-21 18:01:21.212212+01	\N		
+13	md5$BVeSKhUc4Gkg$c5cfb847e6ef2a84bf2a0a3ab0424e8d	2018-10-15 11:53:46.91748+02	f	thor@example.com	God of thunder and Battle	Battle	2016-01-03 00:01:23.948728+01	\N		
+14	md5$ot0qeIMptbS0$736743011a752ac3929d119435424766	2018-10-15 11:54:48.177013+02	f	odin@example.com	The "All Father"	Father"	2016-01-03 00:01:23.951457+01	\N		
+12	md5$tT0zXYv0Zsuo$2b9bfb86f295cfd461b0ce2bb6ea2096	2018-10-15 11:55:13.707392+02	f	loki@example.com	Trickster and god of Mischief	Mischief	2016-01-03 00:01:23.945768+01	\N		
 \.
 
 
@@ -4989,7 +5209,7 @@ COPY public.devilry_account_user (id, password, last_login, is_superuser, shortn
 -- Data for Name: devilry_account_useremail; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.devilry_account_useremail (id, created_datetime, last_updated_datetime, email, use_for_notifications, is_primary, user_id) FROM stdin;
+COPY devilry_account_useremail (id, created_datetime, last_updated_datetime, email, use_for_notifications, is_primary, user_id) FROM stdin;
 1	2015-12-21 18:01:21.217373+01	2015-12-21 18:01:21.217387+01	grandma@example.com	t	t	1
 2	2016-01-03 00:01:23.917396+01	2016-01-03 00:01:23.917407+01	dewey@example.com	t	t	2
 3	2016-01-03 00:01:23.923218+01	2016-01-03 00:01:23.923227+01	louie@example.com	t	t	3
@@ -5015,7 +5235,7 @@ COPY public.devilry_account_useremail (id, created_datetime, last_updated_dateti
 -- Data for Name: devilry_account_username; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.devilry_account_username (id, created_datetime, last_updated_datetime, username, is_primary, user_id) FROM stdin;
+COPY devilry_account_username (id, created_datetime, last_updated_datetime, username, is_primary, user_id) FROM stdin;
 \.
 
 
@@ -5023,9 +5243,32 @@ COPY public.devilry_account_username (id, created_datetime, last_updated_datetim
 -- Data for Name: devilry_comment_comment; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.devilry_comment_comment (id, text, created_datetime, published_datetime, user_role, comment_type, parent_id, user_id, draft_text) FROM stdin;
+COPY devilry_comment_comment (id, text, created_datetime, published_datetime, user_role, comment_type, parent_id, user_id, draft_text) FROM stdin;
 1	Here is my delivery :)	2016-02-08 11:26:30.912519+01	2016-02-08 11:25:23.021072+01	student	groupcomment	\N	5	
 2	Very good work.	2016-02-08 11:28:23.712892+01	2016-02-08 11:27:11.75299+01	examiner	groupcomment	\N	13	
+3	Nice	2018-10-15 11:54:00.846717+02	2018-10-15 11:54:00+02	examiner	groupcomment	\N	13	
+4	Bad	2018-10-15 11:54:11.801794+02	2018-10-15 11:54:11+02	examiner	groupcomment	\N	13	
+5	Nice	2018-10-15 11:54:21.464666+02	2018-10-15 11:54:21+02	examiner	groupcomment	\N	13	
+6	Bad	2018-10-15 11:54:31.218192+02	2018-10-15 11:54:31+02	examiner	groupcomment	\N	13	
+7	Delivery has been corrected.	2018-10-15 11:55:03.797507+02	2018-10-15 11:55:03+02	examiner	groupcomment	\N	14	
+8	Delivery has been corrected.	2018-10-15 11:55:03.816266+02	2018-10-15 11:55:03+02	examiner	groupcomment	\N	14	
+9	Delivery has been corrected.	2018-10-15 11:55:03.830782+02	2018-10-15 11:55:03+02	examiner	groupcomment	\N	14	
+10	Delivery has been corrected.	2018-10-15 11:55:29.424082+02	2018-10-15 11:55:29+02	examiner	groupcomment	\N	12	
+11	Delivery has been corrected.	2018-10-15 11:55:29.442387+02	2018-10-15 11:55:29+02	examiner	groupcomment	\N	12	
+12	Delivery has been corrected.	2018-10-15 11:55:29.457167+02	2018-10-15 11:55:29+02	examiner	groupcomment	\N	12	
+13	Delivery has been corrected.	2018-10-15 11:55:29.471886+02	2018-10-15 11:55:29+02	examiner	groupcomment	\N	12	
+\.
+
+
+--
+-- Data for Name: devilry_comment_commentedithistory; Type: TABLE DATA; Schema: public; Owner: dbdev
+--
+
+COPY devilry_comment_commentedithistory (id, edited_datetime, post_edit_text, pre_edit_text, comment_id, edited_by_id) FROM stdin;
+1	2018-10-15 11:54:00.96895+02	Nice	Nice	3	13
+2	2018-10-15 11:54:11.922541+02	Bad	Bad	4	13
+3	2018-10-15 11:54:21.579822+02	Nice	Nice	5	13
+4	2018-10-15 11:54:31.337457+02	Bad	Bad	6	13
 \.
 
 
@@ -5033,7 +5276,7 @@ COPY public.devilry_comment_comment (id, text, created_datetime, published_datet
 -- Data for Name: devilry_comment_commentfile; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.devilry_comment_commentfile (id, mimetype, file, filename, filesize, processing_started_datetime, processing_completed_datetime, processing_successful, comment_id, created_datetime, v2_id) FROM stdin;
+COPY devilry_comment_commentfile (id, mimetype, file, filename, filesize, processing_started_datetime, processing_completed_datetime, processing_successful, comment_id, created_datetime, v2_id) FROM stdin;
 \.
 
 
@@ -5041,7 +5284,7 @@ COPY public.devilry_comment_commentfile (id, mimetype, file, filename, filesize,
 -- Data for Name: devilry_comment_commentfileimage; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.devilry_comment_commentfileimage (id, image, image_width, image_height, thumbnail, thumbnail_width, thumbnail_height, comment_file_id) FROM stdin;
+COPY devilry_comment_commentfileimage (id, image, image_width, image_height, thumbnail, thumbnail_width, thumbnail_height, comment_file_id) FROM stdin;
 \.
 
 
@@ -5049,7 +5292,7 @@ COPY public.devilry_comment_commentfileimage (id, image, image_width, image_heig
 -- Data for Name: devilry_compressionutil_compressedarchivemeta; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.devilry_compressionutil_compressedarchivemeta (id, content_object_id, created_datetime, archive_name, archive_path, archive_size, content_type_id, backend_id, deleted_datetime, created_by_id) FROM stdin;
+COPY devilry_compressionutil_compressedarchivemeta (id, content_object_id, created_datetime, archive_name, archive_path, archive_size, content_type_id, backend_id, deleted_datetime, created_by_id, created_by_role) FROM stdin;
 \.
 
 
@@ -5057,29 +5300,29 @@ COPY public.devilry_compressionutil_compressedarchivemeta (id, content_object_id
 -- Data for Name: devilry_dbcache_assignmentgroupcacheddata; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.devilry_dbcache_assignmentgroupcacheddata (id, new_attempt_count, public_total_comment_count, public_student_comment_count, public_examiner_comment_count, public_admin_comment_count, public_student_file_upload_count, first_feedbackset_id, group_id, last_feedbackset_id, last_published_feedbackset_id, last_public_comment_by_examiner_datetime, last_public_comment_by_student_datetime, candidate_count, examiner_count) FROM stdin;
-67	0	0	0	0	0	0	3	3	3	\N	\N	\N	1	1
-68	0	0	0	0	0	0	4	4	4	\N	\N	\N	1	1
-69	0	0	0	0	0	0	5	5	5	\N	\N	\N	1	1
-70	0	0	0	0	0	0	6	6	6	\N	\N	\N	1	1
-71	0	0	0	0	0	0	7	7	7	\N	\N	\N	1	1
-72	0	0	0	0	0	0	8	8	8	\N	\N	\N	1	1
-73	0	2	1	1	0	0	9	9	9	9	2016-02-08 11:27:11.75299+01	2016-02-08 11:25:23.021072+01	1	1
-74	0	0	0	0	0	0	10	10	10	\N	\N	\N	1	0
-75	0	0	0	0	0	0	11	11	11	\N	\N	\N	1	0
-76	0	0	0	0	0	0	12	12	12	12	\N	\N	1	1
-77	0	0	0	0	0	0	13	14	13	\N	\N	\N	1	1
-78	0	0	0	0	0	0	14	15	14	\N	\N	\N	1	1
-79	0	0	0	0	0	0	15	16	15	\N	\N	\N	1	1
-80	0	0	0	0	0	0	16	17	16	\N	\N	\N	1	1
-81	0	0	0	0	0	0	17	18	17	\N	\N	\N	1	1
-82	0	0	0	0	0	0	18	19	18	\N	\N	\N	1	1
-83	0	0	0	0	0	0	19	20	19	\N	\N	\N	1	1
-84	0	0	0	0	0	0	20	21	20	\N	\N	\N	1	1
-85	0	0	0	0	0	0	21	22	21	\N	\N	\N	1	1
-86	0	0	0	0	0	0	22	23	22	\N	\N	\N	1	1
-87	0	0	0	0	0	0	23	24	23	\N	\N	\N	1	1
-88	0	0	0	0	0	0	24	25	24	\N	\N	\N	1	0
+COPY devilry_dbcache_assignmentgroupcacheddata (id, new_attempt_count, public_total_comment_count, public_student_comment_count, public_examiner_comment_count, public_admin_comment_count, public_student_file_upload_count, first_feedbackset_id, group_id, last_feedbackset_id, last_published_feedbackset_id, last_public_comment_by_examiner_datetime, last_public_comment_by_student_datetime, candidate_count, examiner_count) FROM stdin;
+100	0	1	0	1	0	0	14	15	14	14	2018-10-15 11:55:29+02	\N	1	1
+102	0	1	0	1	0	0	16	17	16	16	2018-10-15 11:55:29+02	\N	1	1
+104	0	1	0	1	0	0	18	19	18	18	2018-10-15 11:55:29+02	\N	1	1
+105	0	1	0	1	0	0	19	20	19	19	2018-10-15 11:55:29+02	\N	1	1
+89	0	0	0	0	0	0	3	3	3	\N	\N	\N	1	1
+90	0	0	0	0	0	0	4	4	4	\N	\N	\N	1	1
+91	0	0	0	0	0	0	5	5	5	\N	\N	\N	1	1
+92	0	0	0	0	0	0	6	6	6	\N	\N	\N	1	1
+93	0	0	0	0	0	0	7	7	7	\N	\N	\N	1	1
+94	0	0	0	0	0	0	8	8	8	\N	\N	\N	1	1
+95	0	2	1	1	0	0	9	9	9	9	2016-02-08 11:27:11.75299+01	2016-02-08 11:25:23.021072+01	1	1
+96	0	0	0	0	0	0	10	10	10	\N	\N	\N	1	0
+97	0	0	0	0	0	0	11	11	11	\N	\N	\N	1	0
+98	0	0	0	0	0	0	12	12	12	12	\N	\N	1	1
+109	0	0	0	0	0	0	23	24	23	\N	\N	\N	1	0
+110	0	1	0	1	0	0	24	25	24	24	2018-10-15 11:54:00+02	\N	1	1
+99	0	1	0	1	0	0	13	14	13	13	2018-10-15 11:54:11+02	\N	1	1
+106	0	1	0	1	0	0	20	21	20	20	2018-10-15 11:54:21+02	\N	1	1
+103	0	1	0	1	0	0	17	18	17	17	2018-10-15 11:54:31+02	\N	1	1
+101	0	1	0	1	0	0	15	16	15	15	2018-10-15 11:55:03+02	\N	1	1
+107	0	1	0	1	0	0	21	22	21	21	2018-10-15 11:55:03+02	\N	1	1
+108	0	1	0	1	0	0	22	23	22	22	2018-10-15 11:55:03+02	\N	1	1
 \.
 
 
@@ -5087,7 +5330,7 @@ COPY public.devilry_dbcache_assignmentgroupcacheddata (id, new_attempt_count, pu
 -- Data for Name: devilry_gradingsystem_feedbackdraft; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.devilry_gradingsystem_feedbackdraft (id, feedbacktext_editor, feedbacktext_raw, feedbacktext_html, points, published, save_timestamp, delivery_id, saved_by_id, staticfeedback_id) FROM stdin;
+COPY devilry_gradingsystem_feedbackdraft (id, feedbacktext_editor, feedbacktext_raw, feedbacktext_html, points, published, save_timestamp, delivery_id, saved_by_id, staticfeedback_id) FROM stdin;
 \.
 
 
@@ -5095,7 +5338,7 @@ COPY public.devilry_gradingsystem_feedbackdraft (id, feedbacktext_editor, feedba
 -- Data for Name: devilry_gradingsystem_feedbackdraftfile; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.devilry_gradingsystem_feedbackdraftfile (id, filename, file, delivery_id, saved_by_id) FROM stdin;
+COPY devilry_gradingsystem_feedbackdraftfile (id, filename, file, delivery_id, saved_by_id) FROM stdin;
 \.
 
 
@@ -5103,7 +5346,7 @@ COPY public.devilry_gradingsystem_feedbackdraftfile (id, filename, file, deliver
 -- Data for Name: devilry_group_feedbackset; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.devilry_group_feedbackset (id, grading_points, created_datetime, grading_published_datetime, deadline_datetime, created_by_id, group_id, grading_published_by_id, gradeform_data_json, feedbackset_type, ignored, ignored_reason, ignored_datetime, last_updated_by_id) FROM stdin;
+COPY devilry_group_feedbackset (id, grading_points, created_datetime, grading_published_datetime, deadline_datetime, created_by_id, group_id, grading_published_by_id, gradeform_data_json, feedbackset_type, ignored, ignored_reason, ignored_datetime, last_updated_by_id) FROM stdin;
 10	\N	2016-02-06 15:10:23.06143+01	\N	2040-02-14 12:30:00+01	1	10	\N		first_attempt	f		\N	\N
 11	\N	2016-02-06 15:10:32.192129+01	\N	2040-03-15 23:59:00+01	1	11	\N		first_attempt	f		\N	\N
 9	1	2016-02-06 14:29:23.932176+01	2016-02-08 11:28:00+01	2040-01-31 12:30:00+01	1	9	13		first_attempt	f		\N	\N
@@ -5114,18 +5357,18 @@ COPY public.devilry_group_feedbackset (id, grading_points, created_datetime, gra
 6	\N	2016-01-20 11:17:01.702492+01	\N	2040-01-31 12:30:00+01	1	6	\N		first_attempt	f		\N	\N
 7	\N	2016-01-20 11:17:01.702533+01	\N	2040-01-31 12:30:00+01	1	7	\N		first_attempt	f		\N	\N
 8	\N	2016-01-20 11:17:01.702574+01	\N	2040-01-31 12:30:00+01	1	8	\N		first_attempt	f		\N	\N
-13	\N	2016-02-08 20:55:47.543902+01	\N	2016-02-08 20:00:00+01	1	14	\N		first_attempt	f		\N	\N
-14	\N	2016-02-08 20:55:47.544012+01	\N	2016-02-08 20:00:00+01	1	15	\N		first_attempt	f		\N	\N
-15	\N	2016-02-08 20:55:47.544065+01	\N	2016-02-08 20:00:00+01	1	16	\N		first_attempt	f		\N	\N
-16	\N	2016-02-08 20:55:47.544145+01	\N	2016-02-08 20:00:00+01	1	17	\N		first_attempt	f		\N	\N
-17	\N	2016-02-08 20:55:47.544193+01	\N	2016-02-08 20:00:00+01	1	18	\N		first_attempt	f		\N	\N
-18	\N	2016-02-08 20:55:47.544262+01	\N	2016-02-08 20:00:00+01	1	19	\N		first_attempt	f		\N	\N
-19	\N	2016-02-08 20:55:47.544383+01	\N	2016-02-08 20:00:00+01	1	20	\N		first_attempt	f		\N	\N
-20	\N	2016-02-08 20:55:47.544461+01	\N	2016-02-08 20:00:00+01	1	21	\N		first_attempt	f		\N	\N
-21	\N	2016-02-08 20:55:47.544541+01	\N	2016-02-08 20:00:00+01	1	22	\N		first_attempt	f		\N	\N
-22	\N	2016-02-08 20:55:47.544574+01	\N	2016-02-08 20:00:00+01	1	23	\N		first_attempt	f		\N	\N
 23	\N	2016-02-08 20:55:47.544612+01	\N	2016-02-08 20:00:00+01	1	24	\N		first_attempt	f		\N	\N
-24	\N	2016-02-08 21:02:42.643666+01	\N	2016-02-08 20:00:00+01	1	25	\N		first_attempt	f		\N	\N
+24	1	2016-02-08 21:02:42.643666+01	2018-10-15 11:54:00.000002+02	2016-02-08 20:00:00+01	1	25	13		first_attempt	f		\N	\N
+13	0	2016-02-08 20:55:47.543902+01	2018-10-15 11:54:11.000002+02	2016-02-08 20:00:00+01	1	14	13		first_attempt	f		\N	\N
+20	1	2016-02-08 20:55:47.544461+01	2018-10-15 11:54:21.000002+02	2016-02-08 20:00:00+01	1	21	13		first_attempt	f		\N	\N
+17	0	2016-02-08 20:55:47.544193+01	2018-10-15 11:54:31.000002+02	2016-02-08 20:00:00+01	1	18	13		first_attempt	f		\N	\N
+15	1	2016-02-08 20:55:47.544065+01	2018-10-15 11:55:03.000001+02	2016-02-08 20:00:00+01	1	16	14		first_attempt	f		\N	\N
+21	1	2016-02-08 20:55:47.544541+01	2018-10-15 11:55:03.000001+02	2016-02-08 20:00:00+01	1	22	14		first_attempt	f		\N	\N
+22	1	2016-02-08 20:55:47.544574+01	2018-10-15 11:55:03.000001+02	2016-02-08 20:00:00+01	1	23	14		first_attempt	f		\N	\N
+14	0	2016-02-08 20:55:47.544012+01	2018-10-15 11:55:29.000001+02	2016-02-08 20:00:00+01	1	15	12		first_attempt	f		\N	\N
+16	0	2016-02-08 20:55:47.544145+01	2018-10-15 11:55:29.000001+02	2016-02-08 20:00:00+01	1	17	12		first_attempt	f		\N	\N
+18	0	2016-02-08 20:55:47.544262+01	2018-10-15 11:55:29.000001+02	2016-02-08 20:00:00+01	1	19	12		first_attempt	f		\N	\N
+19	0	2016-02-08 20:55:47.544383+01	2018-10-15 11:55:29.000001+02	2016-02-08 20:00:00+01	1	20	12		first_attempt	f		\N	\N
 \.
 
 
@@ -5133,7 +5376,7 @@ COPY public.devilry_group_feedbackset (id, grading_points, created_datetime, gra
 -- Data for Name: devilry_group_feedbacksetdeadlinehistory; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.devilry_group_feedbacksetdeadlinehistory (id, changed_datetime, deadline_old, deadline_new, changed_by_id, feedback_set_id) FROM stdin;
+COPY devilry_group_feedbacksetdeadlinehistory (id, changed_datetime, deadline_old, deadline_new, changed_by_id, feedback_set_id) FROM stdin;
 \.
 
 
@@ -5141,7 +5384,7 @@ COPY public.devilry_group_feedbacksetdeadlinehistory (id, changed_datetime, dead
 -- Data for Name: devilry_group_feedbacksetgradingupdatehistory; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.devilry_group_feedbacksetgradingupdatehistory (id, updated_datetime, old_grading_points, old_grading_published_datetime, feedback_set_id, old_grading_published_by_id, updated_by_id) FROM stdin;
+COPY devilry_group_feedbacksetgradingupdatehistory (id, updated_datetime, old_grading_points, old_grading_published_datetime, feedback_set_id, old_grading_published_by_id, updated_by_id) FROM stdin;
 \.
 
 
@@ -5149,7 +5392,7 @@ COPY public.devilry_group_feedbacksetgradingupdatehistory (id, updated_datetime,
 -- Data for Name: devilry_group_feedbacksetpassedpreviousperiod; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.devilry_group_feedbacksetpassedpreviousperiod (id, assignment_short_name, assignment_long_name, assignment_max_points, assignment_passing_grade_min_points, period_short_name, period_long_name, period_start_time, period_end_time, grading_points, grading_published_datetime, feedbackset_id, grading_published_by_id, created_by_id, created_datetime, passed_previous_period_type) FROM stdin;
+COPY devilry_group_feedbacksetpassedpreviousperiod (id, assignment_short_name, assignment_long_name, assignment_max_points, assignment_passing_grade_min_points, period_short_name, period_long_name, period_start_time, period_end_time, grading_points, grading_published_datetime, feedbackset_id, grading_published_by_id, created_by_id, created_datetime, passed_previous_period_type) FROM stdin;
 \.
 
 
@@ -5157,9 +5400,32 @@ COPY public.devilry_group_feedbacksetpassedpreviousperiod (id, assignment_short_
 -- Data for Name: devilry_group_groupcomment; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.devilry_group_groupcomment (comment_ptr_id, feedback_set_id, part_of_grading, visibility, v2_id) FROM stdin;
+COPY devilry_group_groupcomment (comment_ptr_id, feedback_set_id, part_of_grading, visibility, v2_id) FROM stdin;
 1	9	f	visible-to-everyone	
 2	9	t	visible-to-everyone	
+3	24	t	visible-to-everyone	
+4	13	t	visible-to-everyone	
+5	20	t	visible-to-everyone	
+6	17	t	visible-to-everyone	
+7	15	t	visible-to-everyone	
+8	21	t	visible-to-everyone	
+9	22	t	visible-to-everyone	
+10	14	t	visible-to-everyone	
+11	16	t	visible-to-everyone	
+12	18	t	visible-to-everyone	
+13	19	t	visible-to-everyone	
+\.
+
+
+--
+-- Data for Name: devilry_group_groupcommentedithistory; Type: TABLE DATA; Schema: public; Owner: dbdev
+--
+
+COPY devilry_group_groupcommentedithistory (commentedithistory_ptr_id, visibility, group_comment_id) FROM stdin;
+1	private	3
+2	private	4
+3	private	5
+4	private	6
 \.
 
 
@@ -5167,7 +5433,7 @@ COPY public.devilry_group_groupcomment (comment_ptr_id, feedback_set_id, part_of
 -- Data for Name: devilry_group_imageannotationcomment; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.devilry_group_imageannotationcomment (comment_ptr_id, x_coordinate, y_coordinate, feedback_set_id, image_id, part_of_grading, visibility) FROM stdin;
+COPY devilry_group_imageannotationcomment (comment_ptr_id, x_coordinate, y_coordinate, feedback_set_id, image_id, part_of_grading, visibility) FROM stdin;
 \.
 
 
@@ -5175,7 +5441,7 @@ COPY public.devilry_group_imageannotationcomment (comment_ptr_id, x_coordinate, 
 -- Data for Name: devilry_import_v2database_importedmodel; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.devilry_import_v2database_importedmodel (id, content_object_id, data, content_type_id) FROM stdin;
+COPY devilry_import_v2database_importedmodel (id, content_object_id, data, content_type_id) FROM stdin;
 \.
 
 
@@ -5183,7 +5449,7 @@ COPY public.devilry_import_v2database_importedmodel (id, content_object_id, data
 -- Data for Name: devilry_qualifiesforexam_deadlinetag; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.devilry_qualifiesforexam_deadlinetag (id, "timestamp", tag) FROM stdin;
+COPY devilry_qualifiesforexam_deadlinetag (id, "timestamp", tag) FROM stdin;
 \.
 
 
@@ -5191,7 +5457,7 @@ COPY public.devilry_qualifiesforexam_deadlinetag (id, "timestamp", tag) FROM std
 -- Data for Name: devilry_qualifiesforexam_periodtag; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.devilry_qualifiesforexam_periodtag (period_id, deadlinetag_id) FROM stdin;
+COPY devilry_qualifiesforexam_periodtag (period_id, deadlinetag_id) FROM stdin;
 \.
 
 
@@ -5199,7 +5465,7 @@ COPY public.devilry_qualifiesforexam_periodtag (period_id, deadlinetag_id) FROM 
 -- Data for Name: devilry_qualifiesforexam_qualifiesforfinalexam; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.devilry_qualifiesforexam_qualifiesforfinalexam (id, qualifies, relatedstudent_id, status_id) FROM stdin;
+COPY devilry_qualifiesforexam_qualifiesforfinalexam (id, qualifies, relatedstudent_id, status_id) FROM stdin;
 \.
 
 
@@ -5207,7 +5473,7 @@ COPY public.devilry_qualifiesforexam_qualifiesforfinalexam (id, qualifies, relat
 -- Data for Name: devilry_qualifiesforexam_status; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.devilry_qualifiesforexam_status (id, status, createtime, message, plugin, exported_timestamp, period_id, user_id) FROM stdin;
+COPY devilry_qualifiesforexam_status (id, status, createtime, message, plugin, exported_timestamp, period_id, user_id) FROM stdin;
 \.
 
 
@@ -5215,7 +5481,7 @@ COPY public.devilry_qualifiesforexam_status (id, status, createtime, message, pl
 -- Data for Name: devilry_student_uploadeddeliveryfile; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.devilry_student_uploadeddeliveryfile (id, uploaded_datetime, uploaded_file, filename, deadline_id, user_id) FROM stdin;
+COPY devilry_student_uploadeddeliveryfile (id, uploaded_datetime, uploaded_file, filename, deadline_id, user_id) FROM stdin;
 \.
 
 
@@ -5223,7 +5489,7 @@ COPY public.devilry_student_uploadeddeliveryfile (id, uploaded_datetime, uploade
 -- Data for Name: django_admin_log; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) FROM stdin;
+COPY django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) FROM stdin;
 \.
 
 
@@ -5231,7 +5497,7 @@ COPY public.django_admin_log (id, action_time, object_id, object_repr, action_fl
 -- Data for Name: django_content_type; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.django_content_type (id, app_label, model) FROM stdin;
+COPY django_content_type (id, app_label, model) FROM stdin;
 1	sessions	session
 2	auth	permission
 3	auth	group
@@ -5301,6 +5567,9 @@ COPY public.django_content_type (id, app_label, model) FROM stdin;
 70	core	candidateassignmentgrouphistory
 71	core	examinerassignmentgrouphistory
 72	devilry_group	feedbacksetgradingupdatehistory
+73	ievv_developemail	developemail
+74	devilry_group	groupcommentedithistory
+75	devilry_comment	commentedithistory
 \.
 
 
@@ -5308,7 +5577,7 @@ COPY public.django_content_type (id, app_label, model) FROM stdin;
 -- Data for Name: django_migrations; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.django_migrations (id, app, name, applied) FROM stdin;
+COPY django_migrations (id, app, name, applied) FROM stdin;
 1	devilry_account	0001_initial	2015-12-21 17:44:43.106078+01
 2	contenttypes	0001_initial	2015-12-21 17:44:43.126407+01
 3	admin	0001_initial	2015-12-21 17:44:43.149901+01
@@ -5449,6 +5718,12 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 138	devilry_group	0032_auto_20180214_1654	2018-04-09 14:35:17.71991+02
 139	devilry_group	0033_feedbacksetgradingupdatehistory	2018-04-09 14:35:17.807989+02
 140	devilry_group	0034_feedbackset_last_updated_by	2018-04-09 14:35:17.889712+02
+141	devilry_comment	0009_auto_20180509_1528	2018-10-15 11:44:59.641584+02
+142	devilry_comment	0010_commentedithistory	2018-10-15 11:44:59.763116+02
+143	devilry_compressionutil	0006_compressedarchivemeta_created_by_role	2018-10-15 11:44:59.861162+02
+144	devilry_compressionutil	0007_auto_20181002_1053	2018-10-15 11:44:59.962584+02
+145	devilry_group	0035_groupcommentedithistory	2018-10-15 11:45:00.081119+02
+146	ievv_developemail	0001_initial	2018-10-15 11:45:00.106411+02
 \.
 
 
@@ -5456,7 +5731,7 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 -- Data for Name: django_session; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.django_session (session_key, session_data, expire_date) FROM stdin;
+COPY django_session (session_key, session_data, expire_date) FROM stdin;
 wa141zb8nabz6ki0bgfqjn2bj9h9kfzt	YzU4YTcxNTM2MzJjNDU3MzJiNzJjZGQ0ODBmY2Y4MDVhNTE1ZDhiYjp7Il9hdXRoX3VzZXJfaGFzaCI6IjgyZjlkZGFiMzllZTc1MjAwMjRhZGNhMGUyNTNiMmFkNTVkMGQxMTMiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkZXZpbHJ5LmRldmlscnlfYWNjb3VudC5hdXRoYmFja2VuZC5kZWZhdWx0LkVtYWlsQXV0aEJhY2tlbmQiLCJfYXV0aF91c2VyX2lkIjoiMSJ9	2016-01-04 18:01:46.760409+01
 j0jnngoym8g5pm6rmx0mckp9n36qtd78	YzU4YTcxNTM2MzJjNDU3MzJiNzJjZGQ0ODBmY2Y4MDVhNTE1ZDhiYjp7Il9hdXRoX3VzZXJfaGFzaCI6IjgyZjlkZGFiMzllZTc1MjAwMjRhZGNhMGUyNTNiMmFkNTVkMGQxMTMiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkZXZpbHJ5LmRldmlscnlfYWNjb3VudC5hdXRoYmFja2VuZC5kZWZhdWx0LkVtYWlsQXV0aEJhY2tlbmQiLCJfYXV0aF91c2VyX2lkIjoiMSJ9	2016-01-05 19:38:59.556246+01
 2nzg0111f2w6vke3qqqmflhw9gn4wq6a	NDJiYzE0MzEyNjdjM2E0NGQ0ODY3OWUzZGQ2MzkyNjIxZjljNTFjZDp7Il9hdXRoX3VzZXJfaGFzaCI6IjViMjA4NzZkYjI5ZGY2ZmJlNDE4N2U1YjE1ZTAzZTIyMGRiYjBiN2QiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkZXZpbHJ5LmRldmlscnlfYWNjb3VudC5hdXRoYmFja2VuZC5kZWZhdWx0LkVtYWlsQXV0aEJhY2tlbmQiLCJfYXV0aF91c2VyX2lkIjoiMSJ9	2016-02-03 04:16:53.965856+01
@@ -5469,6 +5744,10 @@ b7f56fzonivzzldphn6dzbk84lnqwzz1	YWVlMWMzY2UwODBjYmZiOTRhNDRmZDVmNTRhNTI3OTFiMjQ
 i2m531v3ae0tk0bc8iqt3shjekhipet7	NGZmOGZlZWUzMTAyN2RhODYyNmZmNTIyZmVjMmEwYmFlOWY5ZmM2Mjp7Il9hdXRoX3VzZXJfaGFzaCI6ImMzYmE2MTgxYWExNjc4YmI0YzhiMDZiMzc3NDNiNWRmOTJhNTFkZTYiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkZXZpbHJ5LmRldmlscnlfYWNjb3VudC5hdXRoYmFja2VuZC5kZWZhdWx0LkVtYWlsQXV0aEJhY2tlbmQiLCJfYXV0aF91c2VyX2lkIjoiMTMifQ==	2016-02-22 20:21:32.441645+01
 njzxgphcbque9ci5jvpdwqi1btswmeor	NDJiYzE0MzEyNjdjM2E0NGQ0ODY3OWUzZGQ2MzkyNjIxZjljNTFjZDp7Il9hdXRoX3VzZXJfaGFzaCI6IjViMjA4NzZkYjI5ZGY2ZmJlNDE4N2U1YjE1ZTAzZTIyMGRiYjBiN2QiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkZXZpbHJ5LmRldmlscnlfYWNjb3VudC5hdXRoYmFja2VuZC5kZWZhdWx0LkVtYWlsQXV0aEJhY2tlbmQiLCJfYXV0aF91c2VyX2lkIjoiMSJ9	2016-02-22 20:24:20.873582+01
 vetesjwpl7lf4cg2xdur1esdv2rgu1yk	NDJiYzE0MzEyNjdjM2E0NGQ0ODY3OWUzZGQ2MzkyNjIxZjljNTFjZDp7Il9hdXRoX3VzZXJfaGFzaCI6IjViMjA4NzZkYjI5ZGY2ZmJlNDE4N2U1YjE1ZTAzZTIyMGRiYjBiN2QiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkZXZpbHJ5LmRldmlscnlfYWNjb3VudC5hdXRoYmFja2VuZC5kZWZhdWx0LkVtYWlsQXV0aEJhY2tlbmQiLCJfYXV0aF91c2VyX2lkIjoiMSJ9	2016-08-20 14:34:40.183926+02
+5jlmwud9l9rfsx5koc11ogxjn6xmubh5	NDJiYzE0MzEyNjdjM2E0NGQ0ODY3OWUzZGQ2MzkyNjIxZjljNTFjZDp7Il9hdXRoX3VzZXJfaGFzaCI6IjViMjA4NzZkYjI5ZGY2ZmJlNDE4N2U1YjE1ZTAzZTIyMGRiYjBiN2QiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkZXZpbHJ5LmRldmlscnlfYWNjb3VudC5hdXRoYmFja2VuZC5kZWZhdWx0LkVtYWlsQXV0aEJhY2tlbmQiLCJfYXV0aF91c2VyX2lkIjoiMSJ9	2018-10-29 10:45:11.366386+01
+y57wv1xi201u53k81ux3p3ikvmoingnd	NGZmOGZlZWUzMTAyN2RhODYyNmZmNTIyZmVjMmEwYmFlOWY5ZmM2Mjp7Il9hdXRoX3VzZXJfaGFzaCI6ImMzYmE2MTgxYWExNjc4YmI0YzhiMDZiMzc3NDNiNWRmOTJhNTFkZTYiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkZXZpbHJ5LmRldmlscnlfYWNjb3VudC5hdXRoYmFja2VuZC5kZWZhdWx0LkVtYWlsQXV0aEJhY2tlbmQiLCJfYXV0aF91c2VyX2lkIjoiMTMifQ==	2018-10-29 10:53:46.924582+01
+r6omvn9yt1zeovokq7xitv5whwwt7aye	YjZiOTUzMzEwOGYyNDlkNWZmZDdkOGFlMTEwZGI2ZGE4MGIwNDZlNDp7Il9hdXRoX3VzZXJfaGFzaCI6IjI1OWE4ODA1YTUyOGU1NTExMzc0ZTk2YjBlYTdmZTRiMzQwMTI3ZGIiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkZXZpbHJ5LmRldmlscnlfYWNjb3VudC5hdXRoYmFja2VuZC5kZWZhdWx0LkVtYWlsQXV0aEJhY2tlbmQiLCJfYXV0aF91c2VyX2lkIjoiMTQifQ==	2018-10-29 10:54:48.183565+01
+q7dtzrm2ucdskl0qupy0qz9hdmu5codc	NDc0YWYzYzRmOTJhNzJhZDczYjM5NjA4ZmUyNWM5NmE3OWU2NjRmMjp7Il9hdXRoX3VzZXJfaGFzaCI6IjkzZWZkMGU4YjA1ZjNmYmU2ZGUwYzY2OTUxNDY3MmM4MzA0ZDRjMjQiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkZXZpbHJ5LmRldmlscnlfYWNjb3VudC5hdXRoYmFja2VuZC5kZWZhdWx0LkVtYWlsQXV0aEJhY2tlbmQiLCJfYXV0aF91c2VyX2lkIjoiMTIifQ==	2018-10-29 10:55:13.715883+01
 \.
 
 
@@ -5476,7 +5755,7 @@ vetesjwpl7lf4cg2xdur1esdv2rgu1yk	NDJiYzE0MzEyNjdjM2E0NGQ0ODY3OWUzZGQ2MzkyNjIxZjl
 -- Data for Name: django_site; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.django_site (id, domain, name) FROM stdin;
+COPY django_site (id, domain, name) FROM stdin;
 1	devilry.test:8000	Primary domain
 \.
 
@@ -5485,7 +5764,7 @@ COPY public.django_site (id, domain, name) FROM stdin;
 -- Data for Name: ievv_batchframework_batchoperation; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.ievv_batchframework_batchoperation (id, created_datetime, started_running_datetime, finished_datetime, context_object_id, operationtype, status, result, input_data_json, output_data_json, context_content_type_id, started_by_id) FROM stdin;
+COPY ievv_batchframework_batchoperation (id, created_datetime, started_running_datetime, finished_datetime, context_object_id, operationtype, status, result, input_data_json, output_data_json, context_content_type_id, started_by_id) FROM stdin;
 1	2016-01-20 11:17:01.683541+01	2016-01-20 11:17:01.681915+01	2016-01-20 11:17:01.708512+01	1	create-groups-with-candidate-and-feedbackset	running	successful			18	\N
 2	2016-02-06 14:29:23.908585+01	2016-02-06 14:29:23.900239+01	2016-02-06 14:29:23.938409+01	1	create-groups-with-candidate-and-feedbackset	running	successful			18	\N
 3	2016-02-06 15:10:23.040357+01	2016-02-06 15:10:23.03399+01	2016-02-06 15:10:23.067831+01	2	create-groups-with-candidate-and-feedbackset	running	successful			18	\N
@@ -5497,10 +5776,29 @@ COPY public.ievv_batchframework_batchoperation (id, created_datetime, started_ru
 
 
 --
+-- Data for Name: ievv_developemail_developemail; Type: TABLE DATA; Schema: public; Owner: dbdev
+--
+
+COPY ievv_developemail_developemail (id, created_datetime, subject, from_email, to_emails, raw_message) FROM stdin;
+1	2018-10-15 11:54:01.350945+02	[Devilry] Feedback for Assignment 0	devilry-support@example.com	april@example.com	Content-Type: multipart/alternative;\n boundary="===============4578215951615561901=="\nMIME-Version: 1.0\nSubject: [Devilry] Feedback for Assignment 0\nFrom: devilry-support@example.com\nTo: april@example.com\nDate: Mon, 15 Oct 2018 09:54:01 -0000\nMessage-ID: <20181015095401.4876.65718@Stians-MacBook-Pro.local>\n\n--===============4578215951615561901==\nContent-Type: text/plain; charset="utf-8"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\n\nResult: passed  \nCorrected datetime: Monday October 15, 2018, 11:54  \nDeadline datetime: Monday February 8, 2016, 20:00  \nAssignment: Assignment 0  \nSubject: DUCK1010 - Object Oriented Programming  \nSee the delivery feed for more details:\n<http://thor.test:8000/devilry_group/student/25/feedbackfeed/>  \n  \n\\--  \nThis is a message from the Devilry assignment delivery system. Please do not\nrespond to this email.\n\n\n--===============4578215951615561901==\nContent-Type: text/html; charset="utf-8"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\n\n\n\n\n<span class="devilry_email_feedback_result">\n    Result: passed\n</span>\n\n<br>\n<span class="devilry_email_feedback_corrected_datetime">\n    Corrected datetime: Monday October 15, 2018, 11:54\n</span>\n\n<br>\n<span class="devilry_email_feedback_deadline_datetime">\n    Deadline datetime: Monday February 8, 2016, 20:00\n</span>\n\n<br>\n<span class="devilry_email_feedback_assignment">\n    Assignment: Assignment 0\n</span>\n\n<br>\n<span class="devilry_email_feedback_subject">\n    Subject: DUCK1010 - Object Oriented Programming\n</span>\n\n<br>\n<span class="devilry_email_feedback_detail_text">\n    See the delivery feed for more details:\n</span>\n<span class="devilry_email_feedback_detail_url"><a href="http://thor.test:8000/devilry_group/student/25/feedbackfeed/">http://thor.test:8000/devilry_group/student/25/feedbackfeed/</a></span>\n<br><br>--<br>This is a message from the Devilry assignment delivery system. Please do not respond to this email.\n--===============4578215951615561901==--\n
+2	2018-10-15 11:54:12.052415+02	[Devilry] Feedback for Assignment 0	devilry-support@example.com	dewey@example.com	Content-Type: multipart/alternative;\n boundary="===============4028887874929833982=="\nMIME-Version: 1.0\nSubject: [Devilry] Feedback for Assignment 0\nFrom: devilry-support@example.com\nTo: dewey@example.com\nDate: Mon, 15 Oct 2018 09:54:12 -0000\nMessage-ID: <20181015095412.4884.44271@Stians-MacBook-Pro.local>\n\n--===============4028887874929833982==\nContent-Type: text/plain; charset="utf-8"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\n\nResult: failed  \nCorrected datetime: Monday October 15, 2018, 11:54  \nDeadline datetime: Monday February 8, 2016, 20:00  \nAssignment: Assignment 0  \nSubject: DUCK1010 - Object Oriented Programming  \nSee the delivery feed for more details:\n<http://thor.test:8000/devilry_group/student/14/feedbackfeed/>  \n  \n\\--  \nThis is a message from the Devilry assignment delivery system. Please do not\nrespond to this email.\n\n\n--===============4028887874929833982==\nContent-Type: text/html; charset="utf-8"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\n\n\n\n\n<span class="devilry_email_feedback_result">\n    Result: failed\n</span>\n\n<br>\n<span class="devilry_email_feedback_corrected_datetime">\n    Corrected datetime: Monday October 15, 2018, 11:54\n</span>\n\n<br>\n<span class="devilry_email_feedback_deadline_datetime">\n    Deadline datetime: Monday February 8, 2016, 20:00\n</span>\n\n<br>\n<span class="devilry_email_feedback_assignment">\n    Assignment: Assignment 0\n</span>\n\n<br>\n<span class="devilry_email_feedback_subject">\n    Subject: DUCK1010 - Object Oriented Programming\n</span>\n\n<br>\n<span class="devilry_email_feedback_detail_text">\n    See the delivery feed for more details:\n</span>\n<span class="devilry_email_feedback_detail_url"><a href="http://thor.test:8000/devilry_group/student/14/feedbackfeed/">http://thor.test:8000/devilry_group/student/14/feedbackfeed/</a></span>\n<br><br>--<br>This is a message from the Devilry assignment delivery system. Please do not respond to this email.\n--===============4028887874929833982==--\n
+3	2018-10-15 11:54:21.715808+02	[Devilry] Feedback for Assignment 0	devilry-support@example.com	donald@example.com	Content-Type: multipart/alternative;\n boundary="===============5382767832481345423=="\nMIME-Version: 1.0\nSubject: [Devilry] Feedback for Assignment 0\nFrom: devilry-support@example.com\nTo: donald@example.com\nDate: Mon, 15 Oct 2018 09:54:21 -0000\nMessage-ID: <20181015095421.4893.85432@Stians-MacBook-Pro.local>\n\n--===============5382767832481345423==\nContent-Type: text/plain; charset="utf-8"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\n\nResult: passed  \nCorrected datetime: Monday October 15, 2018, 11:54  \nDeadline datetime: Monday February 8, 2016, 20:00  \nAssignment: Assignment 0  \nSubject: DUCK1010 - Object Oriented Programming  \nSee the delivery feed for more details:\n<http://thor.test:8000/devilry_group/student/21/feedbackfeed/>  \n  \n\\--  \nThis is a message from the Devilry assignment delivery system. Please do not\nrespond to this email.\n\n\n--===============5382767832481345423==\nContent-Type: text/html; charset="utf-8"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\n\n\n\n\n<span class="devilry_email_feedback_result">\n    Result: passed\n</span>\n\n<br>\n<span class="devilry_email_feedback_corrected_datetime">\n    Corrected datetime: Monday October 15, 2018, 11:54\n</span>\n\n<br>\n<span class="devilry_email_feedback_deadline_datetime">\n    Deadline datetime: Monday February 8, 2016, 20:00\n</span>\n\n<br>\n<span class="devilry_email_feedback_assignment">\n    Assignment: Assignment 0\n</span>\n\n<br>\n<span class="devilry_email_feedback_subject">\n    Subject: DUCK1010 - Object Oriented Programming\n</span>\n\n<br>\n<span class="devilry_email_feedback_detail_text">\n    See the delivery feed for more details:\n</span>\n<span class="devilry_email_feedback_detail_url"><a href="http://thor.test:8000/devilry_group/student/21/feedbackfeed/">http://thor.test:8000/devilry_group/student/21/feedbackfeed/</a></span>\n<br><br>--<br>This is a message from the Devilry assignment delivery system. Please do not respond to this email.\n--===============5382767832481345423==--\n
+4	2018-10-15 11:54:31.466136+02	[Devilry] Feedback for Assignment 0	devilry-support@example.com	baldr@example.com	Content-Type: multipart/alternative;\n boundary="===============7632835851092272038=="\nMIME-Version: 1.0\nSubject: [Devilry] Feedback for Assignment 0\nFrom: devilry-support@example.com\nTo: baldr@example.com\nDate: Mon, 15 Oct 2018 09:54:31 -0000\nMessage-ID: <20181015095431.4903.7918@Stians-MacBook-Pro.local>\n\n--===============7632835851092272038==\nContent-Type: text/plain; charset="utf-8"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\n\nResult: failed  \nCorrected datetime: Monday October 15, 2018, 11:54  \nDeadline datetime: Monday February 8, 2016, 20:00  \nAssignment: Assignment 0  \nSubject: DUCK1010 - Object Oriented Programming  \nSee the delivery feed for more details:\n<http://thor.test:8000/devilry_group/student/18/feedbackfeed/>  \n  \n\\--  \nThis is a message from the Devilry assignment delivery system. Please do not\nrespond to this email.\n\n\n--===============7632835851092272038==\nContent-Type: text/html; charset="utf-8"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\n\n\n\n\n<span class="devilry_email_feedback_result">\n    Result: failed\n</span>\n\n<br>\n<span class="devilry_email_feedback_corrected_datetime">\n    Corrected datetime: Monday October 15, 2018, 11:54\n</span>\n\n<br>\n<span class="devilry_email_feedback_deadline_datetime">\n    Deadline datetime: Monday February 8, 2016, 20:00\n</span>\n\n<br>\n<span class="devilry_email_feedback_assignment">\n    Assignment: Assignment 0\n</span>\n\n<br>\n<span class="devilry_email_feedback_subject">\n    Subject: DUCK1010 - Object Oriented Programming\n</span>\n\n<br>\n<span class="devilry_email_feedback_detail_text">\n    See the delivery feed for more details:\n</span>\n<span class="devilry_email_feedback_detail_url"><a href="http://thor.test:8000/devilry_group/student/18/feedbackfeed/">http://thor.test:8000/devilry_group/student/18/feedbackfeed/</a></span>\n<br><br>--<br>This is a message from the Devilry assignment delivery system. Please do not respond to this email.\n--===============7632835851092272038==--\n
+5	2018-10-15 11:55:04.212908+02	[Devilry] Feedback for Assignment 0	devilry-support@example.com	june@example.com	Content-Type: multipart/alternative;\n boundary="===============4568666112183036233=="\nMIME-Version: 1.0\nSubject: [Devilry] Feedback for Assignment 0\nFrom: devilry-support@example.com\nTo: june@example.com\nDate: Mon, 15 Oct 2018 09:55:04 -0000\nMessage-ID: <20181015095504.4924.60765@Stians-MacBook-Pro.local>\n\n--===============4568666112183036233==\nContent-Type: text/plain; charset="utf-8"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\n\nResult: passed  \nCorrected datetime: Oct. 15, 2018, 11:55 a.m.  \nDeadline datetime: Feb. 8, 2016, 8 p.m.  \nAssignment: Assignment 0  \nSubject: DUCK1010 - Object Oriented Programming  \nSee the delivery feed for more details:\n<http://odin.test:8000/devilry_group/student/16/feedbackfeed/>  \n  \n\\--  \nThis is a message from the Devilry assignment delivery system. Please do not\nrespond to this email.\n\n\n--===============4568666112183036233==\nContent-Type: text/html; charset="utf-8"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\n\n\n\n\n<span class="devilry_email_feedback_result">\n    Result: passed\n</span>\n\n<br>\n<span class="devilry_email_feedback_corrected_datetime">\n    Corrected datetime: Oct. 15, 2018, 11:55 a.m.\n</span>\n\n<br>\n<span class="devilry_email_feedback_deadline_datetime">\n    Deadline datetime: Feb. 8, 2016, 8 p.m.\n</span>\n\n<br>\n<span class="devilry_email_feedback_assignment">\n    Assignment: Assignment 0\n</span>\n\n<br>\n<span class="devilry_email_feedback_subject">\n    Subject: DUCK1010 - Object Oriented Programming\n</span>\n\n<br>\n<span class="devilry_email_feedback_detail_text">\n    See the delivery feed for more details:\n</span>\n<span class="devilry_email_feedback_detail_url"><a href="http://odin.test:8000/devilry_group/student/16/feedbackfeed/">http://odin.test:8000/devilry_group/student/16/feedbackfeed/</a></span>\n<br><br>--<br>This is a message from the Devilry assignment delivery system. Please do not respond to this email.\n--===============4568666112183036233==--\n
+6	2018-10-15 11:55:04.254317+02	[Devilry] Feedback for Assignment 0	devilry-support@example.com	scrooge@example.com	Content-Type: multipart/alternative;\n boundary="===============5335110649855291189=="\nMIME-Version: 1.0\nSubject: [Devilry] Feedback for Assignment 0\nFrom: devilry-support@example.com\nTo: scrooge@example.com\nDate: Mon, 15 Oct 2018 09:55:04 -0000\nMessage-ID: <20181015095504.4926.90983@Stians-MacBook-Pro.local>\n\n--===============5335110649855291189==\nContent-Type: text/plain; charset="utf-8"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\n\nResult: passed  \nCorrected datetime: Oct. 15, 2018, 11:55 a.m.  \nDeadline datetime: Feb. 8, 2016, 8 p.m.  \nAssignment: Assignment 0  \nSubject: DUCK1010 - Object Oriented Programming  \nSee the delivery feed for more details:\n<http://odin.test:8000/devilry_group/student/22/feedbackfeed/>  \n  \n\\--  \nThis is a message from the Devilry assignment delivery system. Please do not\nrespond to this email.\n\n\n--===============5335110649855291189==\nContent-Type: text/html; charset="utf-8"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\n\n\n\n\n<span class="devilry_email_feedback_result">\n    Result: passed\n</span>\n\n<br>\n<span class="devilry_email_feedback_corrected_datetime">\n    Corrected datetime: Oct. 15, 2018, 11:55 a.m.\n</span>\n\n<br>\n<span class="devilry_email_feedback_deadline_datetime">\n    Deadline datetime: Feb. 8, 2016, 8 p.m.\n</span>\n\n<br>\n<span class="devilry_email_feedback_assignment">\n    Assignment: Assignment 0\n</span>\n\n<br>\n<span class="devilry_email_feedback_subject">\n    Subject: DUCK1010 - Object Oriented Programming\n</span>\n\n<br>\n<span class="devilry_email_feedback_detail_text">\n    See the delivery feed for more details:\n</span>\n<span class="devilry_email_feedback_detail_url"><a href="http://odin.test:8000/devilry_group/student/22/feedbackfeed/">http://odin.test:8000/devilry_group/student/22/feedbackfeed/</a></span>\n<br><br>--<br>This is a message from the Devilry assignment delivery system. Please do not respond to this email.\n--===============5335110649855291189==--\n
+7	2018-10-15 11:55:04.296823+02	[Devilry] Feedback for Assignment 0	devilry-support@example.com	noname@example.com	Content-Type: multipart/alternative;\n boundary="===============3180773209921931295=="\nMIME-Version: 1.0\nSubject: [Devilry] Feedback for Assignment 0\nFrom: devilry-support@example.com\nTo: noname@example.com\nDate: Mon, 15 Oct 2018 09:55:04 -0000\nMessage-ID: <20181015095504.4928.74255@Stians-MacBook-Pro.local>\n\n--===============3180773209921931295==\nContent-Type: text/plain; charset="utf-8"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\n\nResult: passed  \nCorrected datetime: Oct. 15, 2018, 11:55 a.m.  \nDeadline datetime: Feb. 8, 2016, 8 p.m.  \nAssignment: Assignment 0  \nSubject: DUCK1010 - Object Oriented Programming  \nSee the delivery feed for more details:\n<http://odin.test:8000/devilry_group/student/23/feedbackfeed/>  \n  \n\\--  \nThis is a message from the Devilry assignment delivery system. Please do not\nrespond to this email.\n\n\n--===============3180773209921931295==\nContent-Type: text/html; charset="utf-8"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\n\n\n\n\n<span class="devilry_email_feedback_result">\n    Result: passed\n</span>\n\n<br>\n<span class="devilry_email_feedback_corrected_datetime">\n    Corrected datetime: Oct. 15, 2018, 11:55 a.m.\n</span>\n\n<br>\n<span class="devilry_email_feedback_deadline_datetime">\n    Deadline datetime: Feb. 8, 2016, 8 p.m.\n</span>\n\n<br>\n<span class="devilry_email_feedback_assignment">\n    Assignment: Assignment 0\n</span>\n\n<br>\n<span class="devilry_email_feedback_subject">\n    Subject: DUCK1010 - Object Oriented Programming\n</span>\n\n<br>\n<span class="devilry_email_feedback_detail_text">\n    See the delivery feed for more details:\n</span>\n<span class="devilry_email_feedback_detail_url"><a href="http://odin.test:8000/devilry_group/student/23/feedbackfeed/">http://odin.test:8000/devilry_group/student/23/feedbackfeed/</a></span>\n<br><br>--<br>This is a message from the Devilry assignment delivery system. Please do not respond to this email.\n--===============3180773209921931295==--\n
+8	2018-10-15 11:55:29.875851+02	[Devilry] Feedback for Assignment 0	devilry-support@example.com	huey@example.com	Content-Type: multipart/alternative;\n boundary="===============7812806904017256756=="\nMIME-Version: 1.0\nSubject: [Devilry] Feedback for Assignment 0\nFrom: devilry-support@example.com\nTo: huey@example.com\nDate: Mon, 15 Oct 2018 09:55:29 -0000\nMessage-ID: <20181015095529.4953.97156@Stians-MacBook-Pro.local>\n\n--===============7812806904017256756==\nContent-Type: text/plain; charset="utf-8"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\n\nResult: failed  \nCorrected datetime: Oct. 15, 2018, 11:55 a.m.  \nDeadline datetime: Feb. 8, 2016, 8 p.m.  \nAssignment: Assignment 0  \nSubject: DUCK1010 - Object Oriented Programming  \nSee the delivery feed for more details:\n<http://loki.test:8000/devilry_group/student/15/feedbackfeed/>  \n  \n\\--  \nThis is a message from the Devilry assignment delivery system. Please do not\nrespond to this email.\n\n\n--===============7812806904017256756==\nContent-Type: text/html; charset="utf-8"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\n\n\n\n\n<span class="devilry_email_feedback_result">\n    Result: failed\n</span>\n\n<br>\n<span class="devilry_email_feedback_corrected_datetime">\n    Corrected datetime: Oct. 15, 2018, 11:55 a.m.\n</span>\n\n<br>\n<span class="devilry_email_feedback_deadline_datetime">\n    Deadline datetime: Feb. 8, 2016, 8 p.m.\n</span>\n\n<br>\n<span class="devilry_email_feedback_assignment">\n    Assignment: Assignment 0\n</span>\n\n<br>\n<span class="devilry_email_feedback_subject">\n    Subject: DUCK1010 - Object Oriented Programming\n</span>\n\n<br>\n<span class="devilry_email_feedback_detail_text">\n    See the delivery feed for more details:\n</span>\n<span class="devilry_email_feedback_detail_url"><a href="http://loki.test:8000/devilry_group/student/15/feedbackfeed/">http://loki.test:8000/devilry_group/student/15/feedbackfeed/</a></span>\n<br><br>--<br>This is a message from the Devilry assignment delivery system. Please do not respond to this email.\n--===============7812806904017256756==--\n
+9	2018-10-15 11:55:29.919454+02	[Devilry] Feedback for Assignment 0	devilry-support@example.com	july@example.com	Content-Type: multipart/alternative;\n boundary="===============2319111864300599081=="\nMIME-Version: 1.0\nSubject: [Devilry] Feedback for Assignment 0\nFrom: devilry-support@example.com\nTo: july@example.com\nDate: Mon, 15 Oct 2018 09:55:29 -0000\nMessage-ID: <20181015095529.4955.26700@Stians-MacBook-Pro.local>\n\n--===============2319111864300599081==\nContent-Type: text/plain; charset="utf-8"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\n\nResult: failed  \nCorrected datetime: Oct. 15, 2018, 11:55 a.m.  \nDeadline datetime: Feb. 8, 2016, 8 p.m.  \nAssignment: Assignment 0  \nSubject: DUCK1010 - Object Oriented Programming  \nSee the delivery feed for more details:\n<http://loki.test:8000/devilry_group/student/17/feedbackfeed/>  \n  \n\\--  \nThis is a message from the Devilry assignment delivery system. Please do not\nrespond to this email.\n\n\n--===============2319111864300599081==\nContent-Type: text/html; charset="utf-8"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\n\n\n\n\n<span class="devilry_email_feedback_result">\n    Result: failed\n</span>\n\n<br>\n<span class="devilry_email_feedback_corrected_datetime">\n    Corrected datetime: Oct. 15, 2018, 11:55 a.m.\n</span>\n\n<br>\n<span class="devilry_email_feedback_deadline_datetime">\n    Deadline datetime: Feb. 8, 2016, 8 p.m.\n</span>\n\n<br>\n<span class="devilry_email_feedback_assignment">\n    Assignment: Assignment 0\n</span>\n\n<br>\n<span class="devilry_email_feedback_subject">\n    Subject: DUCK1010 - Object Oriented Programming\n</span>\n\n<br>\n<span class="devilry_email_feedback_detail_text">\n    See the delivery feed for more details:\n</span>\n<span class="devilry_email_feedback_detail_url"><a href="http://loki.test:8000/devilry_group/student/17/feedbackfeed/">http://loki.test:8000/devilry_group/student/17/feedbackfeed/</a></span>\n<br><br>--<br>This is a message from the Devilry assignment delivery system. Please do not respond to this email.\n--===============2319111864300599081==--\n
+10	2018-10-15 11:55:29.95864+02	[Devilry] Feedback for Assignment 0	devilry-support@example.com	freyja@example.com	Content-Type: multipart/alternative;\n boundary="===============5753589789946783123=="\nMIME-Version: 1.0\nSubject: [Devilry] Feedback for Assignment 0\nFrom: devilry-support@example.com\nTo: freyja@example.com\nDate: Mon, 15 Oct 2018 09:55:29 -0000\nMessage-ID: <20181015095529.4957.59834@Stians-MacBook-Pro.local>\n\n--===============5753589789946783123==\nContent-Type: text/plain; charset="utf-8"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\n\nResult: failed  \nCorrected datetime: Oct. 15, 2018, 11:55 a.m.  \nDeadline datetime: Feb. 8, 2016, 8 p.m.  \nAssignment: Assignment 0  \nSubject: DUCK1010 - Object Oriented Programming  \nSee the delivery feed for more details:\n<http://loki.test:8000/devilry_group/student/19/feedbackfeed/>  \n  \n\\--  \nThis is a message from the Devilry assignment delivery system. Please do not\nrespond to this email.\n\n\n--===============5753589789946783123==\nContent-Type: text/html; charset="utf-8"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\n\n\n\n\n<span class="devilry_email_feedback_result">\n    Result: failed\n</span>\n\n<br>\n<span class="devilry_email_feedback_corrected_datetime">\n    Corrected datetime: Oct. 15, 2018, 11:55 a.m.\n</span>\n\n<br>\n<span class="devilry_email_feedback_deadline_datetime">\n    Deadline datetime: Feb. 8, 2016, 8 p.m.\n</span>\n\n<br>\n<span class="devilry_email_feedback_assignment">\n    Assignment: Assignment 0\n</span>\n\n<br>\n<span class="devilry_email_feedback_subject">\n    Subject: DUCK1010 - Object Oriented Programming\n</span>\n\n<br>\n<span class="devilry_email_feedback_detail_text">\n    See the delivery feed for more details:\n</span>\n<span class="devilry_email_feedback_detail_url"><a href="http://loki.test:8000/devilry_group/student/19/feedbackfeed/">http://loki.test:8000/devilry_group/student/19/feedbackfeed/</a></span>\n<br><br>--<br>This is a message from the Devilry assignment delivery system. Please do not respond to this email.\n--===============5753589789946783123==--\n
+11	2018-10-15 11:55:29.997476+02	[Devilry] Feedback for Assignment 0	devilry-support@example.com	freyr@example.com	Content-Type: multipart/alternative;\n boundary="===============2240908055631145015=="\nMIME-Version: 1.0\nSubject: [Devilry] Feedback for Assignment 0\nFrom: devilry-support@example.com\nTo: freyr@example.com\nDate: Mon, 15 Oct 2018 09:55:29 -0000\nMessage-ID: <20181015095529.4959.29269@Stians-MacBook-Pro.local>\n\n--===============2240908055631145015==\nContent-Type: text/plain; charset="utf-8"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\n\nResult: failed  \nCorrected datetime: Oct. 15, 2018, 11:55 a.m.  \nDeadline datetime: Feb. 8, 2016, 8 p.m.  \nAssignment: Assignment 0  \nSubject: DUCK1010 - Object Oriented Programming  \nSee the delivery feed for more details:\n<http://loki.test:8000/devilry_group/student/20/feedbackfeed/>  \n  \n\\--  \nThis is a message from the Devilry assignment delivery system. Please do not\nrespond to this email.\n\n\n--===============2240908055631145015==\nContent-Type: text/html; charset="utf-8"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\n\n\n\n\n<span class="devilry_email_feedback_result">\n    Result: failed\n</span>\n\n<br>\n<span class="devilry_email_feedback_corrected_datetime">\n    Corrected datetime: Oct. 15, 2018, 11:55 a.m.\n</span>\n\n<br>\n<span class="devilry_email_feedback_deadline_datetime">\n    Deadline datetime: Feb. 8, 2016, 8 p.m.\n</span>\n\n<br>\n<span class="devilry_email_feedback_assignment">\n    Assignment: Assignment 0\n</span>\n\n<br>\n<span class="devilry_email_feedback_subject">\n    Subject: DUCK1010 - Object Oriented Programming\n</span>\n\n<br>\n<span class="devilry_email_feedback_detail_text">\n    See the delivery feed for more details:\n</span>\n<span class="devilry_email_feedback_detail_url"><a href="http://loki.test:8000/devilry_group/student/20/feedbackfeed/">http://loki.test:8000/devilry_group/student/20/feedbackfeed/</a></span>\n<br><br>--<br>This is a message from the Devilry assignment delivery system. Please do not respond to this email.\n--===============2240908055631145015==--\n
+\.
+
+
+--
 -- Data for Name: socialaccount_socialaccount; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.socialaccount_socialaccount (id, provider, uid, last_login, date_joined, extra_data, user_id) FROM stdin;
+COPY socialaccount_socialaccount (id, provider, uid, last_login, date_joined, extra_data, user_id) FROM stdin;
 \.
 
 
@@ -5508,7 +5806,7 @@ COPY public.socialaccount_socialaccount (id, provider, uid, last_login, date_joi
 -- Data for Name: socialaccount_socialapp; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.socialaccount_socialapp (id, provider, name, client_id, secret, key) FROM stdin;
+COPY socialaccount_socialapp (id, provider, name, client_id, secret, key) FROM stdin;
 \.
 
 
@@ -5516,7 +5814,7 @@ COPY public.socialaccount_socialapp (id, provider, name, client_id, secret, key)
 -- Data for Name: socialaccount_socialapp_sites; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.socialaccount_socialapp_sites (id, socialapp_id, site_id) FROM stdin;
+COPY socialaccount_socialapp_sites (id, socialapp_id, site_id) FROM stdin;
 \.
 
 
@@ -5524,7 +5822,7 @@ COPY public.socialaccount_socialapp_sites (id, socialapp_id, site_id) FROM stdin
 -- Data for Name: socialaccount_socialtoken; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY public.socialaccount_socialtoken (id, token, token_secret, expires_at, account_id, app_id) FROM stdin;
+COPY socialaccount_socialtoken (id, token, token_secret, expires_at, account_id, app_id) FROM stdin;
 \.
 
 
@@ -5532,490 +5830,504 @@ COPY public.socialaccount_socialtoken (id, token, token_secret, expires_at, acco
 -- Name: account_emailaddress_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.account_emailaddress_id_seq', 1, false);
+SELECT pg_catalog.setval('account_emailaddress_id_seq', 1, false);
 
 
 --
 -- Name: account_emailconfirmation_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.account_emailconfirmation_id_seq', 1, false);
+SELECT pg_catalog.setval('account_emailconfirmation_id_seq', 1, false);
 
 
 --
 -- Name: auth_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.auth_group_id_seq', 1, false);
+SELECT pg_catalog.setval('auth_group_id_seq', 1, false);
 
 
 --
 -- Name: auth_group_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.auth_group_permissions_id_seq', 1, false);
+SELECT pg_catalog.setval('auth_group_permissions_id_seq', 1, false);
 
 
 --
 -- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.auth_permission_id_seq', 216, true);
+SELECT pg_catalog.setval('auth_permission_id_seq', 225, true);
 
 
 --
 -- Name: core_assignment_admins_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.core_assignment_admins_id_seq', 1, false);
+SELECT pg_catalog.setval('core_assignment_admins_id_seq', 1, false);
 
 
 --
 -- Name: core_assignment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.core_assignment_id_seq', 5, true);
+SELECT pg_catalog.setval('core_assignment_id_seq', 5, true);
 
 
 --
 -- Name: core_assignmentgroup_examiners_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.core_assignmentgroup_examiners_id_seq', 36, true);
+SELECT pg_catalog.setval('core_assignmentgroup_examiners_id_seq', 47, true);
 
 
 --
 -- Name: core_assignmentgroup_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.core_assignmentgroup_id_seq', 25, true);
+SELECT pg_catalog.setval('core_assignmentgroup_id_seq', 25, true);
 
 
 --
 -- Name: core_assignmentgrouphistory_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.core_assignmentgrouphistory_id_seq', 1, false);
+SELECT pg_catalog.setval('core_assignmentgrouphistory_id_seq', 1, false);
 
 
 --
 -- Name: core_assignmentgrouptag_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.core_assignmentgrouptag_id_seq', 1, false);
+SELECT pg_catalog.setval('core_assignmentgrouptag_id_seq', 1, false);
 
 
 --
 -- Name: core_candidate_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.core_candidate_id_seq', 25, true);
+SELECT pg_catalog.setval('core_candidate_id_seq', 25, true);
 
 
 --
 -- Name: core_candidateassignmentgrouphistory_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.core_candidateassignmentgrouphistory_id_seq', 1, false);
+SELECT pg_catalog.setval('core_candidateassignmentgrouphistory_id_seq', 1, false);
 
 
 --
 -- Name: core_deadline_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.core_deadline_id_seq', 1, false);
+SELECT pg_catalog.setval('core_deadline_id_seq', 1, false);
 
 
 --
 -- Name: core_delivery_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.core_delivery_id_seq', 1, false);
+SELECT pg_catalog.setval('core_delivery_id_seq', 1, false);
 
 
 --
 -- Name: core_devilryuserprofile_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.core_devilryuserprofile_id_seq', 1, false);
+SELECT pg_catalog.setval('core_devilryuserprofile_id_seq', 1, false);
 
 
 --
 -- Name: core_examinerassignmentgrouphistory_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.core_examinerassignmentgrouphistory_id_seq', 1, false);
+SELECT pg_catalog.setval('core_examinerassignmentgrouphistory_id_seq', 22, true);
 
 
 --
 -- Name: core_filemeta_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.core_filemeta_id_seq', 1, false);
+SELECT pg_catalog.setval('core_filemeta_id_seq', 1, false);
 
 
 --
 -- Name: core_groupinvite_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.core_groupinvite_id_seq', 1, false);
+SELECT pg_catalog.setval('core_groupinvite_id_seq', 1, false);
 
 
 --
 -- Name: core_period_admins_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.core_period_admins_id_seq', 1, false);
+SELECT pg_catalog.setval('core_period_admins_id_seq', 1, false);
 
 
 --
 -- Name: core_period_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.core_period_id_seq', 5, true);
+SELECT pg_catalog.setval('core_period_id_seq', 5, true);
 
 
 --
 -- Name: core_periodapplicationkeyvalue_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.core_periodapplicationkeyvalue_id_seq', 1, false);
+SELECT pg_catalog.setval('core_periodapplicationkeyvalue_id_seq', 1, false);
 
 
 --
 -- Name: core_periodtag_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.core_periodtag_id_seq', 1, false);
+SELECT pg_catalog.setval('core_periodtag_id_seq', 1, false);
 
 
 --
 -- Name: core_periodtag_relatedexaminers_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.core_periodtag_relatedexaminers_id_seq', 1, false);
+SELECT pg_catalog.setval('core_periodtag_relatedexaminers_id_seq', 1, false);
 
 
 --
 -- Name: core_periodtag_relatedstudents_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.core_periodtag_relatedstudents_id_seq', 1, false);
+SELECT pg_catalog.setval('core_periodtag_relatedstudents_id_seq', 1, false);
 
 
 --
 -- Name: core_pointrangetograde_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.core_pointrangetograde_id_seq', 6, true);
+SELECT pg_catalog.setval('core_pointrangetograde_id_seq', 6, true);
 
 
 --
 -- Name: core_pointtogrademap_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.core_pointtogrademap_id_seq', 1, true);
+SELECT pg_catalog.setval('core_pointtogrademap_id_seq', 1, true);
 
 
 --
 -- Name: core_relatedexaminer_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.core_relatedexaminer_id_seq', 3, true);
+SELECT pg_catalog.setval('core_relatedexaminer_id_seq', 4, true);
 
 
 --
 -- Name: core_relatedstudent_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.core_relatedstudent_id_seq', 14, true);
+SELECT pg_catalog.setval('core_relatedstudent_id_seq', 14, true);
 
 
 --
 -- Name: core_relatedstudentkeyvalue_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.core_relatedstudentkeyvalue_id_seq', 1, false);
+SELECT pg_catalog.setval('core_relatedstudentkeyvalue_id_seq', 1, false);
 
 
 --
 -- Name: core_staticfeedback_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.core_staticfeedback_id_seq', 1, false);
+SELECT pg_catalog.setval('core_staticfeedback_id_seq', 1, false);
 
 
 --
 -- Name: core_staticfeedbackfileattachment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.core_staticfeedbackfileattachment_id_seq', 1, false);
+SELECT pg_catalog.setval('core_staticfeedbackfileattachment_id_seq', 1, false);
 
 
 --
 -- Name: core_subject_admins_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.core_subject_admins_id_seq', 3, true);
+SELECT pg_catalog.setval('core_subject_admins_id_seq', 3, true);
 
 
 --
 -- Name: core_subject_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.core_subject_id_seq', 2, true);
+SELECT pg_catalog.setval('core_subject_id_seq', 2, true);
 
 
 --
 -- Name: cradmin_generic_token_with_metadata_generictokenwithmeta_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.cradmin_generic_token_with_metadata_generictokenwithmeta_id_seq', 1, false);
+SELECT pg_catalog.setval('cradmin_generic_token_with_metadata_generictokenwithmeta_id_seq', 1, false);
 
 
 --
 -- Name: cradmin_temporaryfileuploadstore_temporaryfile_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.cradmin_temporaryfileuploadstore_temporaryfile_id_seq', 1, false);
+SELECT pg_catalog.setval('cradmin_temporaryfileuploadstore_temporaryfile_id_seq', 1, false);
 
 
 --
 -- Name: cradmin_temporaryfileuploadstore_temporaryfilecollection_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.cradmin_temporaryfileuploadstore_temporaryfilecollection_id_seq', 1, false);
+SELECT pg_catalog.setval('cradmin_temporaryfileuploadstore_temporaryfilecollection_id_seq', 1, false);
 
 
 --
 -- Name: devilry_account_periodpermissiongroup_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.devilry_account_periodpermissiongroup_id_seq', 2, true);
+SELECT pg_catalog.setval('devilry_account_periodpermissiongroup_id_seq', 2, true);
 
 
 --
 -- Name: devilry_account_permissiongroup_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.devilry_account_permissiongroup_id_seq', 4, true);
+SELECT pg_catalog.setval('devilry_account_permissiongroup_id_seq', 4, true);
 
 
 --
 -- Name: devilry_account_permissiongroupuser_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.devilry_account_permissiongroupuser_id_seq', 4, true);
+SELECT pg_catalog.setval('devilry_account_permissiongroupuser_id_seq', 4, true);
 
 
 --
 -- Name: devilry_account_subjectpermissiongroup_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.devilry_account_subjectpermissiongroup_id_seq', 3, true);
+SELECT pg_catalog.setval('devilry_account_subjectpermissiongroup_id_seq', 3, true);
 
 
 --
 -- Name: devilry_account_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.devilry_account_user_id_seq', 18, true);
+SELECT pg_catalog.setval('devilry_account_user_id_seq', 18, true);
 
 
 --
 -- Name: devilry_account_useremail_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.devilry_account_useremail_id_seq', 18, true);
+SELECT pg_catalog.setval('devilry_account_useremail_id_seq', 18, true);
 
 
 --
 -- Name: devilry_account_username_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.devilry_account_username_id_seq', 1, false);
+SELECT pg_catalog.setval('devilry_account_username_id_seq', 1, false);
 
 
 --
 -- Name: devilry_comment_comment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.devilry_comment_comment_id_seq', 2, true);
+SELECT pg_catalog.setval('devilry_comment_comment_id_seq', 13, true);
+
+
+--
+-- Name: devilry_comment_commentedithistory_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
+--
+
+SELECT pg_catalog.setval('devilry_comment_commentedithistory_id_seq', 4, true);
 
 
 --
 -- Name: devilry_comment_commentfile_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.devilry_comment_commentfile_id_seq', 1, false);
+SELECT pg_catalog.setval('devilry_comment_commentfile_id_seq', 1, false);
 
 
 --
 -- Name: devilry_comment_commentfileimage_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.devilry_comment_commentfileimage_id_seq', 1, false);
+SELECT pg_catalog.setval('devilry_comment_commentfileimage_id_seq', 1, false);
 
 
 --
 -- Name: devilry_compressionutil_compressedarchivemeta_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.devilry_compressionutil_compressedarchivemeta_id_seq', 1, false);
+SELECT pg_catalog.setval('devilry_compressionutil_compressedarchivemeta_id_seq', 1, false);
 
 
 --
 -- Name: devilry_dbcache_assignmentgroupcacheddata_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.devilry_dbcache_assignmentgroupcacheddata_id_seq', 88, true);
+SELECT pg_catalog.setval('devilry_dbcache_assignmentgroupcacheddata_id_seq', 158, true);
 
 
 --
 -- Name: devilry_gradingsystem_feedbackdraft_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.devilry_gradingsystem_feedbackdraft_id_seq', 1, false);
+SELECT pg_catalog.setval('devilry_gradingsystem_feedbackdraft_id_seq', 1, false);
 
 
 --
 -- Name: devilry_gradingsystem_feedbackdraftfile_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.devilry_gradingsystem_feedbackdraftfile_id_seq', 1, false);
+SELECT pg_catalog.setval('devilry_gradingsystem_feedbackdraftfile_id_seq', 1, false);
 
 
 --
 -- Name: devilry_group_feedbackset_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.devilry_group_feedbackset_id_seq', 24, true);
+SELECT pg_catalog.setval('devilry_group_feedbackset_id_seq', 24, true);
 
 
 --
 -- Name: devilry_group_feedbacksetdeadlinehistory_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.devilry_group_feedbacksetdeadlinehistory_id_seq', 1, false);
+SELECT pg_catalog.setval('devilry_group_feedbacksetdeadlinehistory_id_seq', 1, false);
 
 
 --
 -- Name: devilry_group_feedbacksetgradingupdatehistory_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.devilry_group_feedbacksetgradingupdatehistory_id_seq', 1, false);
+SELECT pg_catalog.setval('devilry_group_feedbacksetgradingupdatehistory_id_seq', 1, false);
 
 
 --
 -- Name: devilry_group_feedbacksetpassedpreviousperiod_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.devilry_group_feedbacksetpassedpreviousperiod_id_seq', 1, false);
+SELECT pg_catalog.setval('devilry_group_feedbacksetpassedpreviousperiod_id_seq', 1, false);
 
 
 --
 -- Name: devilry_import_v2database_importedmodel_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.devilry_import_v2database_importedmodel_id_seq', 1, false);
+SELECT pg_catalog.setval('devilry_import_v2database_importedmodel_id_seq', 1, false);
 
 
 --
 -- Name: devilry_qualifiesforexam_deadlinetag_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.devilry_qualifiesforexam_deadlinetag_id_seq', 1, false);
+SELECT pg_catalog.setval('devilry_qualifiesforexam_deadlinetag_id_seq', 1, false);
 
 
 --
 -- Name: devilry_qualifiesforexam_qualifiesforfinalexam_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.devilry_qualifiesforexam_qualifiesforfinalexam_id_seq', 1, false);
+SELECT pg_catalog.setval('devilry_qualifiesforexam_qualifiesforfinalexam_id_seq', 1, false);
 
 
 --
 -- Name: devilry_qualifiesforexam_status_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.devilry_qualifiesforexam_status_id_seq', 1, false);
+SELECT pg_catalog.setval('devilry_qualifiesforexam_status_id_seq', 1, false);
 
 
 --
 -- Name: devilry_student_uploadeddeliveryfile_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.devilry_student_uploadeddeliveryfile_id_seq', 1, false);
+SELECT pg_catalog.setval('devilry_student_uploadeddeliveryfile_id_seq', 1, false);
 
 
 --
 -- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.django_admin_log_id_seq', 1, false);
+SELECT pg_catalog.setval('django_admin_log_id_seq', 1, false);
 
 
 --
 -- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.django_content_type_id_seq', 72, true);
+SELECT pg_catalog.setval('django_content_type_id_seq', 75, true);
 
 
 --
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.django_migrations_id_seq', 140, true);
+SELECT pg_catalog.setval('django_migrations_id_seq', 146, true);
 
 
 --
 -- Name: django_site_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.django_site_id_seq', 1, true);
+SELECT pg_catalog.setval('django_site_id_seq', 1, true);
 
 
 --
 -- Name: ievv_batchframework_batchoperation_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.ievv_batchframework_batchoperation_id_seq', 7, true);
+SELECT pg_catalog.setval('ievv_batchframework_batchoperation_id_seq', 7, true);
+
+
+--
+-- Name: ievv_developemail_developemail_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
+--
+
+SELECT pg_catalog.setval('ievv_developemail_developemail_id_seq', 11, true);
 
 
 --
 -- Name: socialaccount_socialaccount_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.socialaccount_socialaccount_id_seq', 1, false);
+SELECT pg_catalog.setval('socialaccount_socialaccount_id_seq', 1, false);
 
 
 --
 -- Name: socialaccount_socialapp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.socialaccount_socialapp_id_seq', 1, false);
+SELECT pg_catalog.setval('socialaccount_socialapp_id_seq', 1, false);
 
 
 --
 -- Name: socialaccount_socialapp_sites_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.socialaccount_socialapp_sites_id_seq', 1, false);
+SELECT pg_catalog.setval('socialaccount_socialapp_sites_id_seq', 1, false);
 
 
 --
 -- Name: socialaccount_socialtoken_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('public.socialaccount_socialtoken_id_seq', 1, false);
+SELECT pg_catalog.setval('socialaccount_socialtoken_id_seq', 1, false);
 
 
 --
 -- Name: account_emailaddress account_emailaddress_email_key; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.account_emailaddress
+ALTER TABLE ONLY account_emailaddress
     ADD CONSTRAINT account_emailaddress_email_key UNIQUE (email);
 
 
@@ -6023,7 +6335,7 @@ ALTER TABLE ONLY public.account_emailaddress
 -- Name: account_emailaddress account_emailaddress_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.account_emailaddress
+ALTER TABLE ONLY account_emailaddress
     ADD CONSTRAINT account_emailaddress_pkey PRIMARY KEY (id);
 
 
@@ -6031,7 +6343,7 @@ ALTER TABLE ONLY public.account_emailaddress
 -- Name: account_emailconfirmation account_emailconfirmation_key_key; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.account_emailconfirmation
+ALTER TABLE ONLY account_emailconfirmation
     ADD CONSTRAINT account_emailconfirmation_key_key UNIQUE (key);
 
 
@@ -6039,7 +6351,7 @@ ALTER TABLE ONLY public.account_emailconfirmation
 -- Name: account_emailconfirmation account_emailconfirmation_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.account_emailconfirmation
+ALTER TABLE ONLY account_emailconfirmation
     ADD CONSTRAINT account_emailconfirmation_pkey PRIMARY KEY (id);
 
 
@@ -6047,7 +6359,7 @@ ALTER TABLE ONLY public.account_emailconfirmation
 -- Name: auth_group auth_group_name_key; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.auth_group
+ALTER TABLE ONLY auth_group
     ADD CONSTRAINT auth_group_name_key UNIQUE (name);
 
 
@@ -6055,7 +6367,7 @@ ALTER TABLE ONLY public.auth_group
 -- Name: auth_group_permissions auth_group_permissions_group_id_permission_id_key; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.auth_group_permissions
+ALTER TABLE ONLY auth_group_permissions
     ADD CONSTRAINT auth_group_permissions_group_id_permission_id_key UNIQUE (group_id, permission_id);
 
 
@@ -6063,7 +6375,7 @@ ALTER TABLE ONLY public.auth_group_permissions
 -- Name: auth_group_permissions auth_group_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.auth_group_permissions
+ALTER TABLE ONLY auth_group_permissions
     ADD CONSTRAINT auth_group_permissions_pkey PRIMARY KEY (id);
 
 
@@ -6071,7 +6383,7 @@ ALTER TABLE ONLY public.auth_group_permissions
 -- Name: auth_group auth_group_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.auth_group
+ALTER TABLE ONLY auth_group
     ADD CONSTRAINT auth_group_pkey PRIMARY KEY (id);
 
 
@@ -6079,7 +6391,7 @@ ALTER TABLE ONLY public.auth_group
 -- Name: auth_permission auth_permission_content_type_id_codename_key; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.auth_permission
+ALTER TABLE ONLY auth_permission
     ADD CONSTRAINT auth_permission_content_type_id_codename_key UNIQUE (content_type_id, codename);
 
 
@@ -6087,7 +6399,7 @@ ALTER TABLE ONLY public.auth_permission
 -- Name: auth_permission auth_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.auth_permission
+ALTER TABLE ONLY auth_permission
     ADD CONSTRAINT auth_permission_pkey PRIMARY KEY (id);
 
 
@@ -6095,7 +6407,7 @@ ALTER TABLE ONLY public.auth_permission
 -- Name: core_assignment_admins core_assignment_admins_assignment_id_user_id_key; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_assignment_admins
+ALTER TABLE ONLY core_assignment_admins
     ADD CONSTRAINT core_assignment_admins_assignment_id_user_id_key UNIQUE (assignment_id, user_id);
 
 
@@ -6103,7 +6415,7 @@ ALTER TABLE ONLY public.core_assignment_admins
 -- Name: core_assignment_admins core_assignment_admins_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_assignment_admins
+ALTER TABLE ONLY core_assignment_admins
     ADD CONSTRAINT core_assignment_admins_pkey PRIMARY KEY (id);
 
 
@@ -6111,7 +6423,7 @@ ALTER TABLE ONLY public.core_assignment_admins
 -- Name: core_assignment core_assignment_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_assignment
+ALTER TABLE ONLY core_assignment
     ADD CONSTRAINT core_assignment_pkey PRIMARY KEY (id);
 
 
@@ -6119,7 +6431,7 @@ ALTER TABLE ONLY public.core_assignment
 -- Name: core_assignment core_assignment_short_name_1370cecf97cfafd_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_assignment
+ALTER TABLE ONLY core_assignment
     ADD CONSTRAINT core_assignment_short_name_1370cecf97cfafd_uniq UNIQUE (short_name, parentnode_id);
 
 
@@ -6127,7 +6439,7 @@ ALTER TABLE ONLY public.core_assignment
 -- Name: core_assignmentgroup_examiners core_assignmentgroup_e_relatedexaminer_id_74db942d2f73e0d1_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_assignmentgroup_examiners
+ALTER TABLE ONLY core_assignmentgroup_examiners
     ADD CONSTRAINT core_assignmentgroup_e_relatedexaminer_id_74db942d2f73e0d1_uniq UNIQUE (relatedexaminer_id, assignmentgroup_id);
 
 
@@ -6135,7 +6447,7 @@ ALTER TABLE ONLY public.core_assignmentgroup_examiners
 -- Name: core_assignmentgroup_examiners core_assignmentgroup_examiners_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_assignmentgroup_examiners
+ALTER TABLE ONLY core_assignmentgroup_examiners
     ADD CONSTRAINT core_assignmentgroup_examiners_pkey PRIMARY KEY (id);
 
 
@@ -6143,7 +6455,7 @@ ALTER TABLE ONLY public.core_assignmentgroup_examiners
 -- Name: core_assignmentgroup core_assignmentgroup_feedback_id_key; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_assignmentgroup
+ALTER TABLE ONLY core_assignmentgroup
     ADD CONSTRAINT core_assignmentgroup_feedback_id_key UNIQUE (feedback_id);
 
 
@@ -6151,7 +6463,7 @@ ALTER TABLE ONLY public.core_assignmentgroup
 -- Name: core_assignmentgroup core_assignmentgroup_last_deadline_id_key; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_assignmentgroup
+ALTER TABLE ONLY core_assignmentgroup
     ADD CONSTRAINT core_assignmentgroup_last_deadline_id_key UNIQUE (last_deadline_id);
 
 
@@ -6159,7 +6471,7 @@ ALTER TABLE ONLY public.core_assignmentgroup
 -- Name: core_assignmentgroup core_assignmentgroup_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_assignmentgroup
+ALTER TABLE ONLY core_assignmentgroup
     ADD CONSTRAINT core_assignmentgroup_pkey PRIMARY KEY (id);
 
 
@@ -6167,7 +6479,7 @@ ALTER TABLE ONLY public.core_assignmentgroup
 -- Name: core_assignmentgrouphistory core_assignmentgrouphistory_assignment_group_id_key; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_assignmentgrouphistory
+ALTER TABLE ONLY core_assignmentgrouphistory
     ADD CONSTRAINT core_assignmentgrouphistory_assignment_group_id_key UNIQUE (assignment_group_id);
 
 
@@ -6175,7 +6487,7 @@ ALTER TABLE ONLY public.core_assignmentgrouphistory
 -- Name: core_assignmentgrouphistory core_assignmentgrouphistory_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_assignmentgrouphistory
+ALTER TABLE ONLY core_assignmentgrouphistory
     ADD CONSTRAINT core_assignmentgrouphistory_pkey PRIMARY KEY (id);
 
 
@@ -6183,7 +6495,7 @@ ALTER TABLE ONLY public.core_assignmentgrouphistory
 -- Name: core_assignmentgrouptag core_assignmentgroupt_assignment_group_id_27c175c3d5f47442_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_assignmentgrouptag
+ALTER TABLE ONLY core_assignmentgrouptag
     ADD CONSTRAINT core_assignmentgroupt_assignment_group_id_27c175c3d5f47442_uniq UNIQUE (assignment_group_id, tag);
 
 
@@ -6191,7 +6503,7 @@ ALTER TABLE ONLY public.core_assignmentgrouptag
 -- Name: core_assignmentgrouptag core_assignmentgrouptag_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_assignmentgrouptag
+ALTER TABLE ONLY core_assignmentgrouptag
     ADD CONSTRAINT core_assignmentgrouptag_pkey PRIMARY KEY (id);
 
 
@@ -6199,7 +6511,7 @@ ALTER TABLE ONLY public.core_assignmentgrouptag
 -- Name: core_candidate core_candidate_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_candidate
+ALTER TABLE ONLY core_candidate
     ADD CONSTRAINT core_candidate_pkey PRIMARY KEY (id);
 
 
@@ -6207,7 +6519,7 @@ ALTER TABLE ONLY public.core_candidate
 -- Name: core_candidateassignmentgrouphistory core_candidateassignmentgrouphistory_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_candidateassignmentgrouphistory
+ALTER TABLE ONLY core_candidateassignmentgrouphistory
     ADD CONSTRAINT core_candidateassignmentgrouphistory_pkey PRIMARY KEY (id);
 
 
@@ -6215,7 +6527,7 @@ ALTER TABLE ONLY public.core_candidateassignmentgrouphistory
 -- Name: core_deadline core_deadline_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_deadline
+ALTER TABLE ONLY core_deadline
     ADD CONSTRAINT core_deadline_pkey PRIMARY KEY (id);
 
 
@@ -6223,7 +6535,7 @@ ALTER TABLE ONLY public.core_deadline
 -- Name: core_delivery core_delivery_last_feedback_id_key; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_delivery
+ALTER TABLE ONLY core_delivery
     ADD CONSTRAINT core_delivery_last_feedback_id_key UNIQUE (last_feedback_id);
 
 
@@ -6231,7 +6543,7 @@ ALTER TABLE ONLY public.core_delivery
 -- Name: core_delivery core_delivery_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_delivery
+ALTER TABLE ONLY core_delivery
     ADD CONSTRAINT core_delivery_pkey PRIMARY KEY (id);
 
 
@@ -6239,7 +6551,7 @@ ALTER TABLE ONLY public.core_delivery
 -- Name: core_devilryuserprofile core_devilryuserprofile_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_devilryuserprofile
+ALTER TABLE ONLY core_devilryuserprofile
     ADD CONSTRAINT core_devilryuserprofile_pkey PRIMARY KEY (id);
 
 
@@ -6247,7 +6559,7 @@ ALTER TABLE ONLY public.core_devilryuserprofile
 -- Name: core_devilryuserprofile core_devilryuserprofile_user_id_key; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_devilryuserprofile
+ALTER TABLE ONLY core_devilryuserprofile
     ADD CONSTRAINT core_devilryuserprofile_user_id_key UNIQUE (user_id);
 
 
@@ -6255,7 +6567,7 @@ ALTER TABLE ONLY public.core_devilryuserprofile
 -- Name: core_examinerassignmentgrouphistory core_examinerassignmentgrouphistory_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_examinerassignmentgrouphistory
+ALTER TABLE ONLY core_examinerassignmentgrouphistory
     ADD CONSTRAINT core_examinerassignmentgrouphistory_pkey PRIMARY KEY (id);
 
 
@@ -6263,7 +6575,7 @@ ALTER TABLE ONLY public.core_examinerassignmentgrouphistory
 -- Name: core_filemeta core_filemeta_delivery_id_1954e8947150727e_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_filemeta
+ALTER TABLE ONLY core_filemeta
     ADD CONSTRAINT core_filemeta_delivery_id_1954e8947150727e_uniq UNIQUE (delivery_id, filename);
 
 
@@ -6271,7 +6583,7 @@ ALTER TABLE ONLY public.core_filemeta
 -- Name: core_filemeta core_filemeta_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_filemeta
+ALTER TABLE ONLY core_filemeta
     ADD CONSTRAINT core_filemeta_pkey PRIMARY KEY (id);
 
 
@@ -6279,7 +6591,7 @@ ALTER TABLE ONLY public.core_filemeta
 -- Name: core_groupinvite core_groupinvite_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_groupinvite
+ALTER TABLE ONLY core_groupinvite
     ADD CONSTRAINT core_groupinvite_pkey PRIMARY KEY (id);
 
 
@@ -6287,7 +6599,7 @@ ALTER TABLE ONLY public.core_groupinvite
 -- Name: core_period_admins core_period_admins_period_id_user_id_key; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_period_admins
+ALTER TABLE ONLY core_period_admins
     ADD CONSTRAINT core_period_admins_period_id_user_id_key UNIQUE (period_id, user_id);
 
 
@@ -6295,7 +6607,7 @@ ALTER TABLE ONLY public.core_period_admins
 -- Name: core_period_admins core_period_admins_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_period_admins
+ALTER TABLE ONLY core_period_admins
     ADD CONSTRAINT core_period_admins_pkey PRIMARY KEY (id);
 
 
@@ -6303,7 +6615,7 @@ ALTER TABLE ONLY public.core_period_admins
 -- Name: core_period core_period_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_period
+ALTER TABLE ONLY core_period
     ADD CONSTRAINT core_period_pkey PRIMARY KEY (id);
 
 
@@ -6311,7 +6623,7 @@ ALTER TABLE ONLY public.core_period
 -- Name: core_period core_period_short_name_7f17bb6a11b77159_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_period
+ALTER TABLE ONLY core_period
     ADD CONSTRAINT core_period_short_name_7f17bb6a11b77159_uniq UNIQUE (short_name, parentnode_id);
 
 
@@ -6319,7 +6631,7 @@ ALTER TABLE ONLY public.core_period
 -- Name: core_periodapplicationkeyvalue core_periodapplicationkeyvalue_period_id_1d119cce7d7c3cc9_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_periodapplicationkeyvalue
+ALTER TABLE ONLY core_periodapplicationkeyvalue
     ADD CONSTRAINT core_periodapplicationkeyvalue_period_id_1d119cce7d7c3cc9_uniq UNIQUE (period_id, application, key);
 
 
@@ -6327,7 +6639,7 @@ ALTER TABLE ONLY public.core_periodapplicationkeyvalue
 -- Name: core_periodapplicationkeyvalue core_periodapplicationkeyvalue_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_periodapplicationkeyvalue
+ALTER TABLE ONLY core_periodapplicationkeyvalue
     ADD CONSTRAINT core_periodapplicationkeyvalue_pkey PRIMARY KEY (id);
 
 
@@ -6335,7 +6647,7 @@ ALTER TABLE ONLY public.core_periodapplicationkeyvalue
 -- Name: core_periodtag core_periodtag_period_id_85a8db44_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_periodtag
+ALTER TABLE ONLY core_periodtag
     ADD CONSTRAINT core_periodtag_period_id_85a8db44_uniq UNIQUE (period_id, prefix, tag);
 
 
@@ -6343,7 +6655,7 @@ ALTER TABLE ONLY public.core_periodtag
 -- Name: core_periodtag core_periodtag_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_periodtag
+ALTER TABLE ONLY core_periodtag
     ADD CONSTRAINT core_periodtag_pkey PRIMARY KEY (id);
 
 
@@ -6351,7 +6663,7 @@ ALTER TABLE ONLY public.core_periodtag
 -- Name: core_periodtag_relatedexaminers core_periodtag_relatedexaminers_periodtag_id_a5a9b5ab_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_periodtag_relatedexaminers
+ALTER TABLE ONLY core_periodtag_relatedexaminers
     ADD CONSTRAINT core_periodtag_relatedexaminers_periodtag_id_a5a9b5ab_uniq UNIQUE (periodtag_id, relatedexaminer_id);
 
 
@@ -6359,7 +6671,7 @@ ALTER TABLE ONLY public.core_periodtag_relatedexaminers
 -- Name: core_periodtag_relatedexaminers core_periodtag_relatedexaminers_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_periodtag_relatedexaminers
+ALTER TABLE ONLY core_periodtag_relatedexaminers
     ADD CONSTRAINT core_periodtag_relatedexaminers_pkey PRIMARY KEY (id);
 
 
@@ -6367,7 +6679,7 @@ ALTER TABLE ONLY public.core_periodtag_relatedexaminers
 -- Name: core_periodtag_relatedstudents core_periodtag_relatedstudents_periodtag_id_91082554_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_periodtag_relatedstudents
+ALTER TABLE ONLY core_periodtag_relatedstudents
     ADD CONSTRAINT core_periodtag_relatedstudents_periodtag_id_91082554_uniq UNIQUE (periodtag_id, relatedstudent_id);
 
 
@@ -6375,7 +6687,7 @@ ALTER TABLE ONLY public.core_periodtag_relatedstudents
 -- Name: core_periodtag_relatedstudents core_periodtag_relatedstudents_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_periodtag_relatedstudents
+ALTER TABLE ONLY core_periodtag_relatedstudents
     ADD CONSTRAINT core_periodtag_relatedstudents_pkey PRIMARY KEY (id);
 
 
@@ -6383,7 +6695,7 @@ ALTER TABLE ONLY public.core_periodtag_relatedstudents
 -- Name: core_pointrangetograde core_pointrangetogr_point_to_grade_map_id_11d9dec2e994579b_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_pointrangetograde
+ALTER TABLE ONLY core_pointrangetograde
     ADD CONSTRAINT core_pointrangetogr_point_to_grade_map_id_11d9dec2e994579b_uniq UNIQUE (point_to_grade_map_id, grade);
 
 
@@ -6391,7 +6703,7 @@ ALTER TABLE ONLY public.core_pointrangetograde
 -- Name: core_pointrangetograde core_pointrangetograde_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_pointrangetograde
+ALTER TABLE ONLY core_pointrangetograde
     ADD CONSTRAINT core_pointrangetograde_pkey PRIMARY KEY (id);
 
 
@@ -6399,7 +6711,7 @@ ALTER TABLE ONLY public.core_pointrangetograde
 -- Name: core_pointtogrademap core_pointtogrademap_assignment_id_key; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_pointtogrademap
+ALTER TABLE ONLY core_pointtogrademap
     ADD CONSTRAINT core_pointtogrademap_assignment_id_key UNIQUE (assignment_id);
 
 
@@ -6407,7 +6719,7 @@ ALTER TABLE ONLY public.core_pointtogrademap
 -- Name: core_pointtogrademap core_pointtogrademap_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_pointtogrademap
+ALTER TABLE ONLY core_pointtogrademap
     ADD CONSTRAINT core_pointtogrademap_pkey PRIMARY KEY (id);
 
 
@@ -6415,7 +6727,7 @@ ALTER TABLE ONLY public.core_pointtogrademap
 -- Name: core_relatedexaminer core_relatedexaminer_period_id_686024ad5991feee_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_relatedexaminer
+ALTER TABLE ONLY core_relatedexaminer
     ADD CONSTRAINT core_relatedexaminer_period_id_686024ad5991feee_uniq UNIQUE (period_id, user_id);
 
 
@@ -6423,7 +6735,7 @@ ALTER TABLE ONLY public.core_relatedexaminer
 -- Name: core_relatedexaminer core_relatedexaminer_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_relatedexaminer
+ALTER TABLE ONLY core_relatedexaminer
     ADD CONSTRAINT core_relatedexaminer_pkey PRIMARY KEY (id);
 
 
@@ -6431,7 +6743,7 @@ ALTER TABLE ONLY public.core_relatedexaminer
 -- Name: core_relatedstudent core_relatedstudent_period_id_7bcf68a574802ebf_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_relatedstudent
+ALTER TABLE ONLY core_relatedstudent
     ADD CONSTRAINT core_relatedstudent_period_id_7bcf68a574802ebf_uniq UNIQUE (period_id, user_id);
 
 
@@ -6439,7 +6751,7 @@ ALTER TABLE ONLY public.core_relatedstudent
 -- Name: core_relatedstudent core_relatedstudent_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_relatedstudent
+ALTER TABLE ONLY core_relatedstudent
     ADD CONSTRAINT core_relatedstudent_pkey PRIMARY KEY (id);
 
 
@@ -6447,7 +6759,7 @@ ALTER TABLE ONLY public.core_relatedstudent
 -- Name: core_relatedstudentkeyvalue core_relatedstudentkeyv_relatedstudent_id_1b3fefef6a62d342_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_relatedstudentkeyvalue
+ALTER TABLE ONLY core_relatedstudentkeyvalue
     ADD CONSTRAINT core_relatedstudentkeyv_relatedstudent_id_1b3fefef6a62d342_uniq UNIQUE (relatedstudent_id, application, key);
 
 
@@ -6455,7 +6767,7 @@ ALTER TABLE ONLY public.core_relatedstudentkeyvalue
 -- Name: core_relatedstudentkeyvalue core_relatedstudentkeyvalue_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_relatedstudentkeyvalue
+ALTER TABLE ONLY core_relatedstudentkeyvalue
     ADD CONSTRAINT core_relatedstudentkeyvalue_pkey PRIMARY KEY (id);
 
 
@@ -6463,7 +6775,7 @@ ALTER TABLE ONLY public.core_relatedstudentkeyvalue
 -- Name: core_staticfeedback core_staticfeedback_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_staticfeedback
+ALTER TABLE ONLY core_staticfeedback
     ADD CONSTRAINT core_staticfeedback_pkey PRIMARY KEY (id);
 
 
@@ -6471,7 +6783,7 @@ ALTER TABLE ONLY public.core_staticfeedback
 -- Name: core_staticfeedbackfileattachment core_staticfeedbackfileattachment_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_staticfeedbackfileattachment
+ALTER TABLE ONLY core_staticfeedbackfileattachment
     ADD CONSTRAINT core_staticfeedbackfileattachment_pkey PRIMARY KEY (id);
 
 
@@ -6479,7 +6791,7 @@ ALTER TABLE ONLY public.core_staticfeedbackfileattachment
 -- Name: core_subject_admins core_subject_admins_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_subject_admins
+ALTER TABLE ONLY core_subject_admins
     ADD CONSTRAINT core_subject_admins_pkey PRIMARY KEY (id);
 
 
@@ -6487,7 +6799,7 @@ ALTER TABLE ONLY public.core_subject_admins
 -- Name: core_subject_admins core_subject_admins_subject_id_user_id_key; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_subject_admins
+ALTER TABLE ONLY core_subject_admins
     ADD CONSTRAINT core_subject_admins_subject_id_user_id_key UNIQUE (subject_id, user_id);
 
 
@@ -6495,7 +6807,7 @@ ALTER TABLE ONLY public.core_subject_admins
 -- Name: core_subject core_subject_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_subject
+ALTER TABLE ONLY core_subject
     ADD CONSTRAINT core_subject_pkey PRIMARY KEY (id);
 
 
@@ -6503,7 +6815,7 @@ ALTER TABLE ONLY public.core_subject
 -- Name: core_subject core_subject_short_name_key; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_subject
+ALTER TABLE ONLY core_subject
     ADD CONSTRAINT core_subject_short_name_key UNIQUE (short_name);
 
 
@@ -6511,7 +6823,7 @@ ALTER TABLE ONLY public.core_subject
 -- Name: cradmin_generic_token_with_metadata_generictokenwithmetadata cradmin_generic_token_with_metadata_generictokenwithm_token_key; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.cradmin_generic_token_with_metadata_generictokenwithmetadata
+ALTER TABLE ONLY cradmin_generic_token_with_metadata_generictokenwithmetadata
     ADD CONSTRAINT cradmin_generic_token_with_metadata_generictokenwithm_token_key UNIQUE (token);
 
 
@@ -6519,7 +6831,7 @@ ALTER TABLE ONLY public.cradmin_generic_token_with_metadata_generictokenwithmeta
 -- Name: cradmin_generic_token_with_metadata_generictokenwithmetadata cradmin_generic_token_with_metadata_generictokenwithmetada_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.cradmin_generic_token_with_metadata_generictokenwithmetadata
+ALTER TABLE ONLY cradmin_generic_token_with_metadata_generictokenwithmetadata
     ADD CONSTRAINT cradmin_generic_token_with_metadata_generictokenwithmetada_pkey PRIMARY KEY (id);
 
 
@@ -6527,7 +6839,7 @@ ALTER TABLE ONLY public.cradmin_generic_token_with_metadata_generictokenwithmeta
 -- Name: cradmin_temporaryfileuploadstore_temporaryfile cradmin_temporaryfileuploadstore_temporaryfile_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.cradmin_temporaryfileuploadstore_temporaryfile
+ALTER TABLE ONLY cradmin_temporaryfileuploadstore_temporaryfile
     ADD CONSTRAINT cradmin_temporaryfileuploadstore_temporaryfile_pkey PRIMARY KEY (id);
 
 
@@ -6535,7 +6847,7 @@ ALTER TABLE ONLY public.cradmin_temporaryfileuploadstore_temporaryfile
 -- Name: cradmin_temporaryfileuploadstore_temporaryfilecollection cradmin_temporaryfileuploadstore_temporaryfilecollection_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.cradmin_temporaryfileuploadstore_temporaryfilecollection
+ALTER TABLE ONLY cradmin_temporaryfileuploadstore_temporaryfilecollection
     ADD CONSTRAINT cradmin_temporaryfileuploadstore_temporaryfilecollection_pkey PRIMARY KEY (id);
 
 
@@ -6543,7 +6855,7 @@ ALTER TABLE ONLY public.cradmin_temporaryfileuploadstore_temporaryfilecollection
 -- Name: devilry_account_periodpermissiongroup devilry_account_period_permissiongroup_id_4a6525c29ab05fdc_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_account_periodpermissiongroup
+ALTER TABLE ONLY devilry_account_periodpermissiongroup
     ADD CONSTRAINT devilry_account_period_permissiongroup_id_4a6525c29ab05fdc_uniq UNIQUE (permissiongroup_id, period_id);
 
 
@@ -6551,7 +6863,7 @@ ALTER TABLE ONLY public.devilry_account_periodpermissiongroup
 -- Name: devilry_account_periodpermissiongroup devilry_account_periodpermissiongroup_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_account_periodpermissiongroup
+ALTER TABLE ONLY devilry_account_periodpermissiongroup
     ADD CONSTRAINT devilry_account_periodpermissiongroup_pkey PRIMARY KEY (id);
 
 
@@ -6559,7 +6871,7 @@ ALTER TABLE ONLY public.devilry_account_periodpermissiongroup
 -- Name: devilry_account_permissiongroupuser devilry_account_permis_permissiongroup_id_76525f84be59e6f6_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_account_permissiongroupuser
+ALTER TABLE ONLY devilry_account_permissiongroupuser
     ADD CONSTRAINT devilry_account_permis_permissiongroup_id_76525f84be59e6f6_uniq UNIQUE (permissiongroup_id, user_id);
 
 
@@ -6567,7 +6879,7 @@ ALTER TABLE ONLY public.devilry_account_permissiongroupuser
 -- Name: devilry_account_permissiongroup devilry_account_permissiongroup_name_key; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_account_permissiongroup
+ALTER TABLE ONLY devilry_account_permissiongroup
     ADD CONSTRAINT devilry_account_permissiongroup_name_key UNIQUE (name);
 
 
@@ -6575,7 +6887,7 @@ ALTER TABLE ONLY public.devilry_account_permissiongroup
 -- Name: devilry_account_permissiongroup devilry_account_permissiongroup_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_account_permissiongroup
+ALTER TABLE ONLY devilry_account_permissiongroup
     ADD CONSTRAINT devilry_account_permissiongroup_pkey PRIMARY KEY (id);
 
 
@@ -6583,7 +6895,7 @@ ALTER TABLE ONLY public.devilry_account_permissiongroup
 -- Name: devilry_account_permissiongroupuser devilry_account_permissiongroupuser_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_account_permissiongroupuser
+ALTER TABLE ONLY devilry_account_permissiongroupuser
     ADD CONSTRAINT devilry_account_permissiongroupuser_pkey PRIMARY KEY (id);
 
 
@@ -6591,7 +6903,7 @@ ALTER TABLE ONLY public.devilry_account_permissiongroupuser
 -- Name: devilry_account_subjectpermissiongroup devilry_account_subjec_permissiongroup_id_66aead092f6c883a_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_account_subjectpermissiongroup
+ALTER TABLE ONLY devilry_account_subjectpermissiongroup
     ADD CONSTRAINT devilry_account_subjec_permissiongroup_id_66aead092f6c883a_uniq UNIQUE (permissiongroup_id, subject_id);
 
 
@@ -6599,7 +6911,7 @@ ALTER TABLE ONLY public.devilry_account_subjectpermissiongroup
 -- Name: devilry_account_subjectpermissiongroup devilry_account_subjectpermissiongroup_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_account_subjectpermissiongroup
+ALTER TABLE ONLY devilry_account_subjectpermissiongroup
     ADD CONSTRAINT devilry_account_subjectpermissiongroup_pkey PRIMARY KEY (id);
 
 
@@ -6607,7 +6919,7 @@ ALTER TABLE ONLY public.devilry_account_subjectpermissiongroup
 -- Name: devilry_account_user devilry_account_user_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_account_user
+ALTER TABLE ONLY devilry_account_user
     ADD CONSTRAINT devilry_account_user_pkey PRIMARY KEY (id);
 
 
@@ -6615,7 +6927,7 @@ ALTER TABLE ONLY public.devilry_account_user
 -- Name: devilry_account_user devilry_account_user_shortname_key; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_account_user
+ALTER TABLE ONLY devilry_account_user
     ADD CONSTRAINT devilry_account_user_shortname_key UNIQUE (shortname);
 
 
@@ -6623,7 +6935,7 @@ ALTER TABLE ONLY public.devilry_account_user
 -- Name: devilry_account_useremail devilry_account_useremail_email_key; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_account_useremail
+ALTER TABLE ONLY devilry_account_useremail
     ADD CONSTRAINT devilry_account_useremail_email_key UNIQUE (email);
 
 
@@ -6631,7 +6943,7 @@ ALTER TABLE ONLY public.devilry_account_useremail
 -- Name: devilry_account_useremail devilry_account_useremail_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_account_useremail
+ALTER TABLE ONLY devilry_account_useremail
     ADD CONSTRAINT devilry_account_useremail_pkey PRIMARY KEY (id);
 
 
@@ -6639,7 +6951,7 @@ ALTER TABLE ONLY public.devilry_account_useremail
 -- Name: devilry_account_useremail devilry_account_useremail_user_id_5536c616df78a7e9_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_account_useremail
+ALTER TABLE ONLY devilry_account_useremail
     ADD CONSTRAINT devilry_account_useremail_user_id_5536c616df78a7e9_uniq UNIQUE (user_id, is_primary);
 
 
@@ -6647,7 +6959,7 @@ ALTER TABLE ONLY public.devilry_account_useremail
 -- Name: devilry_account_username devilry_account_username_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_account_username
+ALTER TABLE ONLY devilry_account_username
     ADD CONSTRAINT devilry_account_username_pkey PRIMARY KEY (id);
 
 
@@ -6655,7 +6967,7 @@ ALTER TABLE ONLY public.devilry_account_username
 -- Name: devilry_account_username devilry_account_username_user_id_760100dbbc33fc25_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_account_username
+ALTER TABLE ONLY devilry_account_username
     ADD CONSTRAINT devilry_account_username_user_id_760100dbbc33fc25_uniq UNIQUE (user_id, is_primary);
 
 
@@ -6663,7 +6975,7 @@ ALTER TABLE ONLY public.devilry_account_username
 -- Name: devilry_account_username devilry_account_username_username_key; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_account_username
+ALTER TABLE ONLY devilry_account_username
     ADD CONSTRAINT devilry_account_username_username_key UNIQUE (username);
 
 
@@ -6671,15 +6983,23 @@ ALTER TABLE ONLY public.devilry_account_username
 -- Name: devilry_comment_comment devilry_comment_comment_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_comment_comment
+ALTER TABLE ONLY devilry_comment_comment
     ADD CONSTRAINT devilry_comment_comment_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: devilry_comment_commentedithistory devilry_comment_commentedithistory_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
+--
+
+ALTER TABLE ONLY devilry_comment_commentedithistory
+    ADD CONSTRAINT devilry_comment_commentedithistory_pkey PRIMARY KEY (id);
 
 
 --
 -- Name: devilry_comment_commentfile devilry_comment_commentfile_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_comment_commentfile
+ALTER TABLE ONLY devilry_comment_commentfile
     ADD CONSTRAINT devilry_comment_commentfile_pkey PRIMARY KEY (id);
 
 
@@ -6687,7 +7007,7 @@ ALTER TABLE ONLY public.devilry_comment_commentfile
 -- Name: devilry_comment_commentfileimage devilry_comment_commentfileimage_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_comment_commentfileimage
+ALTER TABLE ONLY devilry_comment_commentfileimage
     ADD CONSTRAINT devilry_comment_commentfileimage_pkey PRIMARY KEY (id);
 
 
@@ -6695,7 +7015,7 @@ ALTER TABLE ONLY public.devilry_comment_commentfileimage
 -- Name: devilry_compressionutil_compressedarchivemeta devilry_compressionutil_compressedarchivemeta_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_compressionutil_compressedarchivemeta
+ALTER TABLE ONLY devilry_compressionutil_compressedarchivemeta
     ADD CONSTRAINT devilry_compressionutil_compressedarchivemeta_pkey PRIMARY KEY (id);
 
 
@@ -6703,7 +7023,7 @@ ALTER TABLE ONLY public.devilry_compressionutil_compressedarchivemeta
 -- Name: devilry_dbcache_assignmentgroupcacheddata devilry_dbcache_assignmentgroupcacheddata_group_id_key; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_dbcache_assignmentgroupcacheddata
+ALTER TABLE ONLY devilry_dbcache_assignmentgroupcacheddata
     ADD CONSTRAINT devilry_dbcache_assignmentgroupcacheddata_group_id_key UNIQUE (group_id);
 
 
@@ -6711,7 +7031,7 @@ ALTER TABLE ONLY public.devilry_dbcache_assignmentgroupcacheddata
 -- Name: devilry_dbcache_assignmentgroupcacheddata devilry_dbcache_assignmentgroupcacheddata_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_dbcache_assignmentgroupcacheddata
+ALTER TABLE ONLY devilry_dbcache_assignmentgroupcacheddata
     ADD CONSTRAINT devilry_dbcache_assignmentgroupcacheddata_pkey PRIMARY KEY (id);
 
 
@@ -6719,7 +7039,7 @@ ALTER TABLE ONLY public.devilry_dbcache_assignmentgroupcacheddata
 -- Name: devilry_gradingsystem_feedbackdraft devilry_gradingsystem_feedbackdraft_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_gradingsystem_feedbackdraft
+ALTER TABLE ONLY devilry_gradingsystem_feedbackdraft
     ADD CONSTRAINT devilry_gradingsystem_feedbackdraft_pkey PRIMARY KEY (id);
 
 
@@ -6727,7 +7047,7 @@ ALTER TABLE ONLY public.devilry_gradingsystem_feedbackdraft
 -- Name: devilry_gradingsystem_feedbackdraft devilry_gradingsystem_feedbackdraft_staticfeedback_id_key; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_gradingsystem_feedbackdraft
+ALTER TABLE ONLY devilry_gradingsystem_feedbackdraft
     ADD CONSTRAINT devilry_gradingsystem_feedbackdraft_staticfeedback_id_key UNIQUE (staticfeedback_id);
 
 
@@ -6735,7 +7055,7 @@ ALTER TABLE ONLY public.devilry_gradingsystem_feedbackdraft
 -- Name: devilry_gradingsystem_feedbackdraftfile devilry_gradingsystem_feedbackdraftfile_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_gradingsystem_feedbackdraftfile
+ALTER TABLE ONLY devilry_gradingsystem_feedbackdraftfile
     ADD CONSTRAINT devilry_gradingsystem_feedbackdraftfile_pkey PRIMARY KEY (id);
 
 
@@ -6743,7 +7063,7 @@ ALTER TABLE ONLY public.devilry_gradingsystem_feedbackdraftfile
 -- Name: devilry_group_feedbacksetpassedpreviousperiod devilry_group_feedbackse_feedbackset_id_2c6e12d3_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_group_feedbacksetpassedpreviousperiod
+ALTER TABLE ONLY devilry_group_feedbacksetpassedpreviousperiod
     ADD CONSTRAINT devilry_group_feedbackse_feedbackset_id_2c6e12d3_uniq UNIQUE (feedbackset_id);
 
 
@@ -6751,7 +7071,7 @@ ALTER TABLE ONLY public.devilry_group_feedbacksetpassedpreviousperiod
 -- Name: devilry_group_feedbackset devilry_group_feedbackset_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_group_feedbackset
+ALTER TABLE ONLY devilry_group_feedbackset
     ADD CONSTRAINT devilry_group_feedbackset_pkey PRIMARY KEY (id);
 
 
@@ -6759,7 +7079,7 @@ ALTER TABLE ONLY public.devilry_group_feedbackset
 -- Name: devilry_group_feedbacksetdeadlinehistory devilry_group_feedbacksetdeadlinehistory_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_group_feedbacksetdeadlinehistory
+ALTER TABLE ONLY devilry_group_feedbacksetdeadlinehistory
     ADD CONSTRAINT devilry_group_feedbacksetdeadlinehistory_pkey PRIMARY KEY (id);
 
 
@@ -6767,7 +7087,7 @@ ALTER TABLE ONLY public.devilry_group_feedbacksetdeadlinehistory
 -- Name: devilry_group_feedbacksetgradingupdatehistory devilry_group_feedbacksetgradingupdatehistory_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_group_feedbacksetgradingupdatehistory
+ALTER TABLE ONLY devilry_group_feedbacksetgradingupdatehistory
     ADD CONSTRAINT devilry_group_feedbacksetgradingupdatehistory_pkey PRIMARY KEY (id);
 
 
@@ -6775,7 +7095,7 @@ ALTER TABLE ONLY public.devilry_group_feedbacksetgradingupdatehistory
 -- Name: devilry_group_feedbacksetpassedpreviousperiod devilry_group_feedbacksetpassedpreviousperiod_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_group_feedbacksetpassedpreviousperiod
+ALTER TABLE ONLY devilry_group_feedbacksetpassedpreviousperiod
     ADD CONSTRAINT devilry_group_feedbacksetpassedpreviousperiod_pkey PRIMARY KEY (id);
 
 
@@ -6783,15 +7103,23 @@ ALTER TABLE ONLY public.devilry_group_feedbacksetpassedpreviousperiod
 -- Name: devilry_group_groupcomment devilry_group_groupcomment_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_group_groupcomment
+ALTER TABLE ONLY devilry_group_groupcomment
     ADD CONSTRAINT devilry_group_groupcomment_pkey PRIMARY KEY (comment_ptr_id);
+
+
+--
+-- Name: devilry_group_groupcommentedithistory devilry_group_groupcommentedithistory_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
+--
+
+ALTER TABLE ONLY devilry_group_groupcommentedithistory
+    ADD CONSTRAINT devilry_group_groupcommentedithistory_pkey PRIMARY KEY (commentedithistory_ptr_id);
 
 
 --
 -- Name: devilry_group_imageannotationcomment devilry_group_imageannotationcomment_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_group_imageannotationcomment
+ALTER TABLE ONLY devilry_group_imageannotationcomment
     ADD CONSTRAINT devilry_group_imageannotationcomment_pkey PRIMARY KEY (comment_ptr_id);
 
 
@@ -6799,7 +7127,7 @@ ALTER TABLE ONLY public.devilry_group_imageannotationcomment
 -- Name: devilry_import_v2database_importedmodel devilry_import_v2database_importedmodel_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_import_v2database_importedmodel
+ALTER TABLE ONLY devilry_import_v2database_importedmodel
     ADD CONSTRAINT devilry_import_v2database_importedmodel_pkey PRIMARY KEY (id);
 
 
@@ -6807,7 +7135,7 @@ ALTER TABLE ONLY public.devilry_import_v2database_importedmodel
 -- Name: devilry_qualifiesforexam_qualifiesforfinalexam devilry_qualifiesforexa_relatedstudent_id_487c8f68cac82075_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_qualifiesforexam_qualifiesforfinalexam
+ALTER TABLE ONLY devilry_qualifiesforexam_qualifiesforfinalexam
     ADD CONSTRAINT devilry_qualifiesforexa_relatedstudent_id_487c8f68cac82075_uniq UNIQUE (relatedstudent_id, status_id);
 
 
@@ -6815,7 +7143,7 @@ ALTER TABLE ONLY public.devilry_qualifiesforexam_qualifiesforfinalexam
 -- Name: devilry_qualifiesforexam_deadlinetag devilry_qualifiesforexam_deadlinetag_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_qualifiesforexam_deadlinetag
+ALTER TABLE ONLY devilry_qualifiesforexam_deadlinetag
     ADD CONSTRAINT devilry_qualifiesforexam_deadlinetag_pkey PRIMARY KEY (id);
 
 
@@ -6823,7 +7151,7 @@ ALTER TABLE ONLY public.devilry_qualifiesforexam_deadlinetag
 -- Name: devilry_qualifiesforexam_periodtag devilry_qualifiesforexam_periodtag_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_qualifiesforexam_periodtag
+ALTER TABLE ONLY devilry_qualifiesforexam_periodtag
     ADD CONSTRAINT devilry_qualifiesforexam_periodtag_pkey PRIMARY KEY (period_id);
 
 
@@ -6831,7 +7159,7 @@ ALTER TABLE ONLY public.devilry_qualifiesforexam_periodtag
 -- Name: devilry_qualifiesforexam_qualifiesforfinalexam devilry_qualifiesforexam_qualifiesforfinalexam_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_qualifiesforexam_qualifiesforfinalexam
+ALTER TABLE ONLY devilry_qualifiesforexam_qualifiesforfinalexam
     ADD CONSTRAINT devilry_qualifiesforexam_qualifiesforfinalexam_pkey PRIMARY KEY (id);
 
 
@@ -6839,7 +7167,7 @@ ALTER TABLE ONLY public.devilry_qualifiesforexam_qualifiesforfinalexam
 -- Name: devilry_qualifiesforexam_status devilry_qualifiesforexam_status_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_qualifiesforexam_status
+ALTER TABLE ONLY devilry_qualifiesforexam_status
     ADD CONSTRAINT devilry_qualifiesforexam_status_pkey PRIMARY KEY (id);
 
 
@@ -6847,7 +7175,7 @@ ALTER TABLE ONLY public.devilry_qualifiesforexam_status
 -- Name: devilry_student_uploadeddeliveryfile devilry_student_uploadeddeliv_deadline_id_5ceb94959540ad73_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_student_uploadeddeliveryfile
+ALTER TABLE ONLY devilry_student_uploadeddeliveryfile
     ADD CONSTRAINT devilry_student_uploadeddeliv_deadline_id_5ceb94959540ad73_uniq UNIQUE (deadline_id, user_id, filename);
 
 
@@ -6855,7 +7183,7 @@ ALTER TABLE ONLY public.devilry_student_uploadeddeliveryfile
 -- Name: devilry_student_uploadeddeliveryfile devilry_student_uploadeddeliveryfile_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_student_uploadeddeliveryfile
+ALTER TABLE ONLY devilry_student_uploadeddeliveryfile
     ADD CONSTRAINT devilry_student_uploadeddeliveryfile_pkey PRIMARY KEY (id);
 
 
@@ -6863,7 +7191,7 @@ ALTER TABLE ONLY public.devilry_student_uploadeddeliveryfile
 -- Name: django_admin_log django_admin_log_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.django_admin_log
+ALTER TABLE ONLY django_admin_log
     ADD CONSTRAINT django_admin_log_pkey PRIMARY KEY (id);
 
 
@@ -6871,7 +7199,7 @@ ALTER TABLE ONLY public.django_admin_log
 -- Name: django_content_type django_content_type_app_label_45f3b1d93ec8c61c_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.django_content_type
+ALTER TABLE ONLY django_content_type
     ADD CONSTRAINT django_content_type_app_label_45f3b1d93ec8c61c_uniq UNIQUE (app_label, model);
 
 
@@ -6879,7 +7207,7 @@ ALTER TABLE ONLY public.django_content_type
 -- Name: django_content_type django_content_type_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.django_content_type
+ALTER TABLE ONLY django_content_type
     ADD CONSTRAINT django_content_type_pkey PRIMARY KEY (id);
 
 
@@ -6887,7 +7215,7 @@ ALTER TABLE ONLY public.django_content_type
 -- Name: django_migrations django_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.django_migrations
+ALTER TABLE ONLY django_migrations
     ADD CONSTRAINT django_migrations_pkey PRIMARY KEY (id);
 
 
@@ -6895,7 +7223,7 @@ ALTER TABLE ONLY public.django_migrations
 -- Name: django_session django_session_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.django_session
+ALTER TABLE ONLY django_session
     ADD CONSTRAINT django_session_pkey PRIMARY KEY (session_key);
 
 
@@ -6903,7 +7231,7 @@ ALTER TABLE ONLY public.django_session
 -- Name: django_site django_site_domain_a2e37b91_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.django_site
+ALTER TABLE ONLY django_site
     ADD CONSTRAINT django_site_domain_a2e37b91_uniq UNIQUE (domain);
 
 
@@ -6911,7 +7239,7 @@ ALTER TABLE ONLY public.django_site
 -- Name: django_site django_site_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.django_site
+ALTER TABLE ONLY django_site
     ADD CONSTRAINT django_site_pkey PRIMARY KEY (id);
 
 
@@ -6919,15 +7247,23 @@ ALTER TABLE ONLY public.django_site
 -- Name: ievv_batchframework_batchoperation ievv_batchframework_batchoperation_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.ievv_batchframework_batchoperation
+ALTER TABLE ONLY ievv_batchframework_batchoperation
     ADD CONSTRAINT ievv_batchframework_batchoperation_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: ievv_developemail_developemail ievv_developemail_developemail_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
+--
+
+ALTER TABLE ONLY ievv_developemail_developemail
+    ADD CONSTRAINT ievv_developemail_developemail_pkey PRIMARY KEY (id);
 
 
 --
 -- Name: socialaccount_socialaccount socialaccount_socialaccount_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.socialaccount_socialaccount
+ALTER TABLE ONLY socialaccount_socialaccount
     ADD CONSTRAINT socialaccount_socialaccount_pkey PRIMARY KEY (id);
 
 
@@ -6935,7 +7271,7 @@ ALTER TABLE ONLY public.socialaccount_socialaccount
 -- Name: socialaccount_socialaccount socialaccount_socialaccount_provider_fc810c6e_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.socialaccount_socialaccount
+ALTER TABLE ONLY socialaccount_socialaccount
     ADD CONSTRAINT socialaccount_socialaccount_provider_fc810c6e_uniq UNIQUE (provider, uid);
 
 
@@ -6943,7 +7279,7 @@ ALTER TABLE ONLY public.socialaccount_socialaccount
 -- Name: socialaccount_socialapp socialaccount_socialapp_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.socialaccount_socialapp
+ALTER TABLE ONLY socialaccount_socialapp
     ADD CONSTRAINT socialaccount_socialapp_pkey PRIMARY KEY (id);
 
 
@@ -6951,7 +7287,7 @@ ALTER TABLE ONLY public.socialaccount_socialapp
 -- Name: socialaccount_socialapp_sites socialaccount_socialapp_sites_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.socialaccount_socialapp_sites
+ALTER TABLE ONLY socialaccount_socialapp_sites
     ADD CONSTRAINT socialaccount_socialapp_sites_pkey PRIMARY KEY (id);
 
 
@@ -6959,7 +7295,7 @@ ALTER TABLE ONLY public.socialaccount_socialapp_sites
 -- Name: socialaccount_socialapp_sites socialaccount_socialapp_sites_socialapp_id_71a9a768_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.socialaccount_socialapp_sites
+ALTER TABLE ONLY socialaccount_socialapp_sites
     ADD CONSTRAINT socialaccount_socialapp_sites_socialapp_id_71a9a768_uniq UNIQUE (socialapp_id, site_id);
 
 
@@ -6967,7 +7303,7 @@ ALTER TABLE ONLY public.socialaccount_socialapp_sites
 -- Name: socialaccount_socialtoken socialaccount_socialtoken_app_id_fca4e0ac_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.socialaccount_socialtoken
+ALTER TABLE ONLY socialaccount_socialtoken
     ADD CONSTRAINT socialaccount_socialtoken_app_id_fca4e0ac_uniq UNIQUE (app_id, account_id);
 
 
@@ -6975,7 +7311,7 @@ ALTER TABLE ONLY public.socialaccount_socialtoken
 -- Name: socialaccount_socialtoken socialaccount_socialtoken_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.socialaccount_socialtoken
+ALTER TABLE ONLY socialaccount_socialtoken
     ADD CONSTRAINT socialaccount_socialtoken_pkey PRIMARY KEY (id);
 
 
@@ -6983,2254 +7319,2349 @@ ALTER TABLE ONLY public.socialaccount_socialtoken
 -- Name: account_emailaddress_e8701ad4; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX account_emailaddress_e8701ad4 ON public.account_emailaddress USING btree (user_id);
+CREATE INDEX account_emailaddress_e8701ad4 ON account_emailaddress USING btree (user_id);
 
 
 --
 -- Name: account_emailaddress_email_03be32b2_like; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX account_emailaddress_email_03be32b2_like ON public.account_emailaddress USING btree (email varchar_pattern_ops);
+CREATE INDEX account_emailaddress_email_03be32b2_like ON account_emailaddress USING btree (email varchar_pattern_ops);
 
 
 --
 -- Name: account_emailconfirmation_6f1edeac; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX account_emailconfirmation_6f1edeac ON public.account_emailconfirmation USING btree (email_address_id);
+CREATE INDEX account_emailconfirmation_6f1edeac ON account_emailconfirmation USING btree (email_address_id);
 
 
 --
 -- Name: account_emailconfirmation_key_f43612bd_like; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX account_emailconfirmation_key_f43612bd_like ON public.account_emailconfirmation USING btree (key varchar_pattern_ops);
+CREATE INDEX account_emailconfirmation_key_f43612bd_like ON account_emailconfirmation USING btree (key varchar_pattern_ops);
 
 
 --
 -- Name: auth_group_name_253ae2a6331666e8_like; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX auth_group_name_253ae2a6331666e8_like ON public.auth_group USING btree (name varchar_pattern_ops);
+CREATE INDEX auth_group_name_253ae2a6331666e8_like ON auth_group USING btree (name varchar_pattern_ops);
 
 
 --
 -- Name: auth_group_permissions_0e939a4f; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX auth_group_permissions_0e939a4f ON public.auth_group_permissions USING btree (group_id);
+CREATE INDEX auth_group_permissions_0e939a4f ON auth_group_permissions USING btree (group_id);
 
 
 --
 -- Name: auth_group_permissions_8373b171; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX auth_group_permissions_8373b171 ON public.auth_group_permissions USING btree (permission_id);
+CREATE INDEX auth_group_permissions_8373b171 ON auth_group_permissions USING btree (permission_id);
 
 
 --
 -- Name: auth_permission_417f1b1c; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX auth_permission_417f1b1c ON public.auth_permission USING btree (content_type_id);
+CREATE INDEX auth_permission_417f1b1c ON auth_permission USING btree (content_type_id);
 
 
 --
 -- Name: core_assignment_2fc6351a; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_assignment_2fc6351a ON public.core_assignment USING btree (long_name);
+CREATE INDEX core_assignment_2fc6351a ON core_assignment USING btree (long_name);
 
 
 --
 -- Name: core_assignment_4698bac7; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_assignment_4698bac7 ON public.core_assignment USING btree (short_name);
+CREATE INDEX core_assignment_4698bac7 ON core_assignment USING btree (short_name);
 
 
 --
 -- Name: core_assignment_admins_93c4899b; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_assignment_admins_93c4899b ON public.core_assignment_admins USING btree (assignment_id);
+CREATE INDEX core_assignment_admins_93c4899b ON core_assignment_admins USING btree (assignment_id);
 
 
 --
 -- Name: core_assignment_admins_e8701ad4; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_assignment_admins_e8701ad4 ON public.core_assignment_admins USING btree (user_id);
+CREATE INDEX core_assignment_admins_e8701ad4 ON core_assignment_admins USING btree (user_id);
 
 
 --
 -- Name: core_assignment_b25d0d2b; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_assignment_b25d0d2b ON public.core_assignment USING btree (parentnode_id);
+CREATE INDEX core_assignment_b25d0d2b ON core_assignment USING btree (parentnode_id);
 
 
 --
 -- Name: core_assignment_ed066e54; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_assignment_ed066e54 ON public.core_assignment USING btree (anonymizationmode);
+CREATE INDEX core_assignment_ed066e54 ON core_assignment USING btree (anonymizationmode);
 
 
 --
 -- Name: core_assignment_long_name_74ff61759131213c_like; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_assignment_long_name_74ff61759131213c_like ON public.core_assignment USING btree (long_name varchar_pattern_ops);
+CREATE INDEX core_assignment_long_name_74ff61759131213c_like ON core_assignment USING btree (long_name varchar_pattern_ops);
 
 
 --
 -- Name: core_assignment_short_name_5a022141fd10855d_like; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_assignment_short_name_5a022141fd10855d_like ON public.core_assignment USING btree (short_name varchar_pattern_ops);
+CREATE INDEX core_assignment_short_name_5a022141fd10855d_like ON core_assignment USING btree (short_name varchar_pattern_ops);
 
 
 --
 -- Name: core_assignmentgroup_3850dbd3; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_assignmentgroup_3850dbd3 ON public.core_assignmentgroup USING btree (batchoperation_id);
+CREATE INDEX core_assignmentgroup_3850dbd3 ON core_assignmentgroup USING btree (batchoperation_id);
 
 
 --
 -- Name: core_assignmentgroup_3dce5c8d; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_assignmentgroup_3dce5c8d ON public.core_assignmentgroup USING btree (copied_from_id);
+CREATE INDEX core_assignmentgroup_3dce5c8d ON core_assignmentgroup USING btree (copied_from_id);
 
 
 --
 -- Name: core_assignmentgroup_b25d0d2b; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_assignmentgroup_b25d0d2b ON public.core_assignmentgroup USING btree (parentnode_id);
+CREATE INDEX core_assignmentgroup_b25d0d2b ON core_assignmentgroup USING btree (parentnode_id);
 
 
 --
 -- Name: core_assignmentgroup_examiners_5a4dbbf9; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_assignmentgroup_examiners_5a4dbbf9 ON public.core_assignmentgroup_examiners USING btree (assignmentgroup_id);
+CREATE INDEX core_assignmentgroup_examiners_5a4dbbf9 ON core_assignmentgroup_examiners USING btree (assignmentgroup_id);
 
 
 --
 -- Name: core_assignmentgroup_examiners_769693bb; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_assignmentgroup_examiners_769693bb ON public.core_assignmentgroup_examiners USING btree (relatedexaminer_id);
+CREATE INDEX core_assignmentgroup_examiners_769693bb ON core_assignmentgroup_examiners USING btree (relatedexaminer_id);
 
 
 --
 -- Name: core_assignmentgroup_examiners_e8701ad4; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_assignmentgroup_examiners_e8701ad4 ON public.core_assignmentgroup_examiners USING btree (old_reference_not_in_use_user_id);
+CREATE INDEX core_assignmentgroup_examiners_e8701ad4 ON core_assignmentgroup_examiners USING btree (old_reference_not_in_use_user_id);
 
 
 --
 -- Name: core_assignmentgrouptag_3f3b3700; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_assignmentgrouptag_3f3b3700 ON public.core_assignmentgrouptag USING btree (assignment_group_id);
+CREATE INDEX core_assignmentgrouptag_3f3b3700 ON core_assignmentgrouptag USING btree (assignment_group_id);
 
 
 --
 -- Name: core_assignmentgrouptag_e4d23e84; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_assignmentgrouptag_e4d23e84 ON public.core_assignmentgrouptag USING btree (tag);
+CREATE INDEX core_assignmentgrouptag_e4d23e84 ON core_assignmentgrouptag USING btree (tag);
 
 
 --
 -- Name: core_assignmentgrouptag_tag_445a27de8f965a31_like; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_assignmentgrouptag_tag_445a27de8f965a31_like ON public.core_assignmentgrouptag USING btree (tag varchar_pattern_ops);
+CREATE INDEX core_assignmentgrouptag_tag_445a27de8f965a31_like ON core_assignmentgrouptag USING btree (tag varchar_pattern_ops);
 
 
 --
 -- Name: core_candidate_30a811f6; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_candidate_30a811f6 ON public.core_candidate USING btree (old_reference_not_in_use_student_id);
+CREATE INDEX core_candidate_30a811f6 ON core_candidate USING btree (old_reference_not_in_use_student_id);
 
 
 --
 -- Name: core_candidate_39cb6676; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_candidate_39cb6676 ON public.core_candidate USING btree (relatedstudent_id);
+CREATE INDEX core_candidate_39cb6676 ON core_candidate USING btree (relatedstudent_id);
 
 
 --
 -- Name: core_candidate_3f3b3700; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_candidate_3f3b3700 ON public.core_candidate USING btree (assignment_group_id);
+CREATE INDEX core_candidate_3f3b3700 ON core_candidate USING btree (assignment_group_id);
 
 
 --
 -- Name: core_candidateassignmentgr_assignment_group_id_98c373a5; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_candidateassignmentgr_assignment_group_id_98c373a5 ON public.core_candidateassignmentgrouphistory USING btree (assignment_group_id);
+CREATE INDEX core_candidateassignmentgr_assignment_group_id_98c373a5 ON core_candidateassignmentgrouphistory USING btree (assignment_group_id);
 
 
 --
 -- Name: core_candidateassignmentgrouphistory_user_id_7a3668f9; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_candidateassignmentgrouphistory_user_id_7a3668f9 ON public.core_candidateassignmentgrouphistory USING btree (user_id);
+CREATE INDEX core_candidateassignmentgrouphistory_user_id_7a3668f9 ON core_candidateassignmentgrouphistory USING btree (user_id);
 
 
 --
 -- Name: core_deadline_0c5d7d4e; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_deadline_0c5d7d4e ON public.core_deadline USING btree (added_by_id);
+CREATE INDEX core_deadline_0c5d7d4e ON core_deadline USING btree (added_by_id);
 
 
 --
 -- Name: core_deadline_3f3b3700; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_deadline_3f3b3700 ON public.core_deadline USING btree (assignment_group_id);
+CREATE INDEX core_deadline_3f3b3700 ON core_deadline USING btree (assignment_group_id);
 
 
 --
 -- Name: core_delivery_13a4f9cc; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_delivery_13a4f9cc ON public.core_delivery USING btree (deadline_id);
+CREATE INDEX core_delivery_13a4f9cc ON core_delivery USING btree (deadline_id);
 
 
 --
 -- Name: core_delivery_37b4f50c; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_delivery_37b4f50c ON public.core_delivery USING btree (delivered_by_id);
+CREATE INDEX core_delivery_37b4f50c ON core_delivery USING btree (delivered_by_id);
 
 
 --
 -- Name: core_delivery_51ce87c1; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_delivery_51ce87c1 ON public.core_delivery USING btree (alias_delivery_id);
+CREATE INDEX core_delivery_51ce87c1 ON core_delivery USING btree (alias_delivery_id);
 
 
 --
 -- Name: core_delivery_8ea1f7aa; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_delivery_8ea1f7aa ON public.core_delivery USING btree (copy_of_id);
+CREATE INDEX core_delivery_8ea1f7aa ON core_delivery USING btree (copy_of_id);
 
 
 --
 -- Name: core_examinerassignmentgro_assignment_group_id_eb832a6e; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_examinerassignmentgro_assignment_group_id_eb832a6e ON public.core_examinerassignmentgrouphistory USING btree (assignment_group_id);
+CREATE INDEX core_examinerassignmentgro_assignment_group_id_eb832a6e ON core_examinerassignmentgrouphistory USING btree (assignment_group_id);
 
 
 --
 -- Name: core_examinerassignmentgrouphistory_user_id_1636fd1b; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_examinerassignmentgrouphistory_user_id_1636fd1b ON public.core_examinerassignmentgrouphistory USING btree (user_id);
+CREATE INDEX core_examinerassignmentgrouphistory_user_id_1636fd1b ON core_examinerassignmentgrouphistory USING btree (user_id);
 
 
 --
 -- Name: core_filemeta_7c4b99fe; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_filemeta_7c4b99fe ON public.core_filemeta USING btree (delivery_id);
+CREATE INDEX core_filemeta_7c4b99fe ON core_filemeta USING btree (delivery_id);
 
 
 --
 -- Name: core_groupinvite_0e939a4f; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_groupinvite_0e939a4f ON public.core_groupinvite USING btree (group_id);
+CREATE INDEX core_groupinvite_0e939a4f ON core_groupinvite USING btree (group_id);
 
 
 --
 -- Name: core_groupinvite_a39b5ebd; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_groupinvite_a39b5ebd ON public.core_groupinvite USING btree (sent_to_id);
+CREATE INDEX core_groupinvite_a39b5ebd ON core_groupinvite USING btree (sent_to_id);
 
 
 --
 -- Name: core_groupinvite_d7ed4f1d; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_groupinvite_d7ed4f1d ON public.core_groupinvite USING btree (sent_by_id);
+CREATE INDEX core_groupinvite_d7ed4f1d ON core_groupinvite USING btree (sent_by_id);
 
 
 --
 -- Name: core_period_2fc6351a; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_period_2fc6351a ON public.core_period USING btree (long_name);
+CREATE INDEX core_period_2fc6351a ON core_period USING btree (long_name);
 
 
 --
 -- Name: core_period_4698bac7; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_period_4698bac7 ON public.core_period USING btree (short_name);
+CREATE INDEX core_period_4698bac7 ON core_period USING btree (short_name);
 
 
 --
 -- Name: core_period_admins_b1efa79f; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_period_admins_b1efa79f ON public.core_period_admins USING btree (period_id);
+CREATE INDEX core_period_admins_b1efa79f ON core_period_admins USING btree (period_id);
 
 
 --
 -- Name: core_period_admins_e8701ad4; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_period_admins_e8701ad4 ON public.core_period_admins USING btree (user_id);
+CREATE INDEX core_period_admins_e8701ad4 ON core_period_admins USING btree (user_id);
 
 
 --
 -- Name: core_period_b25d0d2b; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_period_b25d0d2b ON public.core_period USING btree (parentnode_id);
+CREATE INDEX core_period_b25d0d2b ON core_period USING btree (parentnode_id);
 
 
 --
 -- Name: core_period_long_name_5770388f6d0c1ee0_like; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_period_long_name_5770388f6d0c1ee0_like ON public.core_period USING btree (long_name varchar_pattern_ops);
+CREATE INDEX core_period_long_name_5770388f6d0c1ee0_like ON core_period USING btree (long_name varchar_pattern_ops);
 
 
 --
 -- Name: core_period_short_name_1e673681e8719241_like; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_period_short_name_1e673681e8719241_like ON public.core_period USING btree (short_name varchar_pattern_ops);
+CREATE INDEX core_period_short_name_1e673681e8719241_like ON core_period USING btree (short_name varchar_pattern_ops);
 
 
 --
 -- Name: core_periodapplicationkeyvalu_application_195ab7f853d68bd7_like; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_periodapplicationkeyvalu_application_195ab7f853d68bd7_like ON public.core_periodapplicationkeyvalue USING btree (application varchar_pattern_ops);
+CREATE INDEX core_periodapplicationkeyvalu_application_195ab7f853d68bd7_like ON core_periodapplicationkeyvalue USING btree (application varchar_pattern_ops);
 
 
 --
 -- Name: core_periodapplicationkeyvalue_2063c160; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_periodapplicationkeyvalue_2063c160 ON public.core_periodapplicationkeyvalue USING btree (value);
+CREATE INDEX core_periodapplicationkeyvalue_2063c160 ON core_periodapplicationkeyvalue USING btree (value);
 
 
 --
 -- Name: core_periodapplicationkeyvalue_3676d55f; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_periodapplicationkeyvalue_3676d55f ON public.core_periodapplicationkeyvalue USING btree (application);
+CREATE INDEX core_periodapplicationkeyvalue_3676d55f ON core_periodapplicationkeyvalue USING btree (application);
 
 
 --
 -- Name: core_periodapplicationkeyvalue_3c6e0b8a; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_periodapplicationkeyvalue_3c6e0b8a ON public.core_periodapplicationkeyvalue USING btree (key);
+CREATE INDEX core_periodapplicationkeyvalue_3c6e0b8a ON core_periodapplicationkeyvalue USING btree (key);
 
 
 --
 -- Name: core_periodapplicationkeyvalue_b1efa79f; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_periodapplicationkeyvalue_b1efa79f ON public.core_periodapplicationkeyvalue USING btree (period_id);
+CREATE INDEX core_periodapplicationkeyvalue_b1efa79f ON core_periodapplicationkeyvalue USING btree (period_id);
 
 
 --
 -- Name: core_periodapplicationkeyvalue_key_7329f2bf53861cf8_like; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_periodapplicationkeyvalue_key_7329f2bf53861cf8_like ON public.core_periodapplicationkeyvalue USING btree (key varchar_pattern_ops);
+CREATE INDEX core_periodapplicationkeyvalue_key_7329f2bf53861cf8_like ON core_periodapplicationkeyvalue USING btree (key varchar_pattern_ops);
 
 
 --
 -- Name: core_periodapplicationkeyvalue_value_3c6e96e7ba7f6690_like; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_periodapplicationkeyvalue_value_3c6e96e7ba7f6690_like ON public.core_periodapplicationkeyvalue USING btree (value text_pattern_ops);
+CREATE INDEX core_periodapplicationkeyvalue_value_3c6e96e7ba7f6690_like ON core_periodapplicationkeyvalue USING btree (value text_pattern_ops);
 
 
 --
 -- Name: core_periodtag_b1efa79f; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_periodtag_b1efa79f ON public.core_periodtag USING btree (period_id);
+CREATE INDEX core_periodtag_b1efa79f ON core_periodtag USING btree (period_id);
 
 
 --
 -- Name: core_periodtag_e4d23e84; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_periodtag_e4d23e84 ON public.core_periodtag USING btree (tag);
+CREATE INDEX core_periodtag_e4d23e84 ON core_periodtag USING btree (tag);
 
 
 --
 -- Name: core_periodtag_relatedexaminers_769693bb; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_periodtag_relatedexaminers_769693bb ON public.core_periodtag_relatedexaminers USING btree (relatedexaminer_id);
+CREATE INDEX core_periodtag_relatedexaminers_769693bb ON core_periodtag_relatedexaminers USING btree (relatedexaminer_id);
 
 
 --
 -- Name: core_periodtag_relatedexaminers_97a799e1; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_periodtag_relatedexaminers_97a799e1 ON public.core_periodtag_relatedexaminers USING btree (periodtag_id);
+CREATE INDEX core_periodtag_relatedexaminers_97a799e1 ON core_periodtag_relatedexaminers USING btree (periodtag_id);
 
 
 --
 -- Name: core_periodtag_relatedstudents_39cb6676; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_periodtag_relatedstudents_39cb6676 ON public.core_periodtag_relatedstudents USING btree (relatedstudent_id);
+CREATE INDEX core_periodtag_relatedstudents_39cb6676 ON core_periodtag_relatedstudents USING btree (relatedstudent_id);
 
 
 --
 -- Name: core_periodtag_relatedstudents_97a799e1; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_periodtag_relatedstudents_97a799e1 ON public.core_periodtag_relatedstudents USING btree (periodtag_id);
+CREATE INDEX core_periodtag_relatedstudents_97a799e1 ON core_periodtag_relatedstudents USING btree (periodtag_id);
 
 
 --
 -- Name: core_periodtag_tag_b42bbccb_like; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_periodtag_tag_b42bbccb_like ON public.core_periodtag USING btree (tag varchar_pattern_ops);
+CREATE INDEX core_periodtag_tag_b42bbccb_like ON core_periodtag USING btree (tag varchar_pattern_ops);
 
 
 --
 -- Name: core_pointrangetograde_326d17f1; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_pointrangetograde_326d17f1 ON public.core_pointrangetograde USING btree (point_to_grade_map_id);
+CREATE INDEX core_pointrangetograde_326d17f1 ON core_pointrangetograde USING btree (point_to_grade_map_id);
 
 
 --
 -- Name: core_relatedexaminer_b1efa79f; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_relatedexaminer_b1efa79f ON public.core_relatedexaminer USING btree (period_id);
+CREATE INDEX core_relatedexaminer_b1efa79f ON core_relatedexaminer USING btree (period_id);
 
 
 --
 -- Name: core_relatedexaminer_e8701ad4; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_relatedexaminer_e8701ad4 ON public.core_relatedexaminer USING btree (user_id);
+CREATE INDEX core_relatedexaminer_e8701ad4 ON core_relatedexaminer USING btree (user_id);
 
 
 --
 -- Name: core_relatedstudent_b1efa79f; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_relatedstudent_b1efa79f ON public.core_relatedstudent USING btree (period_id);
+CREATE INDEX core_relatedstudent_b1efa79f ON core_relatedstudent USING btree (period_id);
 
 
 --
 -- Name: core_relatedstudent_e8701ad4; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_relatedstudent_e8701ad4 ON public.core_relatedstudent USING btree (user_id);
+CREATE INDEX core_relatedstudent_e8701ad4 ON core_relatedstudent USING btree (user_id);
 
 
 --
 -- Name: core_relatedstudentkeyvalue_2063c160; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_relatedstudentkeyvalue_2063c160 ON public.core_relatedstudentkeyvalue USING btree (value);
+CREATE INDEX core_relatedstudentkeyvalue_2063c160 ON core_relatedstudentkeyvalue USING btree (value);
 
 
 --
 -- Name: core_relatedstudentkeyvalue_3676d55f; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_relatedstudentkeyvalue_3676d55f ON public.core_relatedstudentkeyvalue USING btree (application);
+CREATE INDEX core_relatedstudentkeyvalue_3676d55f ON core_relatedstudentkeyvalue USING btree (application);
 
 
 --
 -- Name: core_relatedstudentkeyvalue_39cb6676; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_relatedstudentkeyvalue_39cb6676 ON public.core_relatedstudentkeyvalue USING btree (relatedstudent_id);
+CREATE INDEX core_relatedstudentkeyvalue_39cb6676 ON core_relatedstudentkeyvalue USING btree (relatedstudent_id);
 
 
 --
 -- Name: core_relatedstudentkeyvalue_3c6e0b8a; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_relatedstudentkeyvalue_3c6e0b8a ON public.core_relatedstudentkeyvalue USING btree (key);
+CREATE INDEX core_relatedstudentkeyvalue_3c6e0b8a ON core_relatedstudentkeyvalue USING btree (key);
 
 
 --
 -- Name: core_relatedstudentkeyvalue_application_485c1d338d75ced_like; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_relatedstudentkeyvalue_application_485c1d338d75ced_like ON public.core_relatedstudentkeyvalue USING btree (application varchar_pattern_ops);
+CREATE INDEX core_relatedstudentkeyvalue_application_485c1d338d75ced_like ON core_relatedstudentkeyvalue USING btree (application varchar_pattern_ops);
 
 
 --
 -- Name: core_relatedstudentkeyvalue_key_4d695a35117794a4_like; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_relatedstudentkeyvalue_key_4d695a35117794a4_like ON public.core_relatedstudentkeyvalue USING btree (key varchar_pattern_ops);
+CREATE INDEX core_relatedstudentkeyvalue_key_4d695a35117794a4_like ON core_relatedstudentkeyvalue USING btree (key varchar_pattern_ops);
 
 
 --
 -- Name: core_relatedstudentkeyvalue_value_2e6d2220af915c34_like; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_relatedstudentkeyvalue_value_2e6d2220af915c34_like ON public.core_relatedstudentkeyvalue USING btree (value text_pattern_ops);
+CREATE INDEX core_relatedstudentkeyvalue_value_2e6d2220af915c34_like ON core_relatedstudentkeyvalue USING btree (value text_pattern_ops);
 
 
 --
 -- Name: core_staticfeedback_7c4b99fe; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_staticfeedback_7c4b99fe ON public.core_staticfeedback USING btree (delivery_id);
+CREATE INDEX core_staticfeedback_7c4b99fe ON core_staticfeedback USING btree (delivery_id);
 
 
 --
 -- Name: core_staticfeedback_bc7c970b; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_staticfeedback_bc7c970b ON public.core_staticfeedback USING btree (saved_by_id);
+CREATE INDEX core_staticfeedback_bc7c970b ON core_staticfeedback USING btree (saved_by_id);
 
 
 --
 -- Name: core_staticfeedbackfileattachment_a869bd9a; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_staticfeedbackfileattachment_a869bd9a ON public.core_staticfeedbackfileattachment USING btree (staticfeedback_id);
+CREATE INDEX core_staticfeedbackfileattachment_a869bd9a ON core_staticfeedbackfileattachment USING btree (staticfeedback_id);
 
 
 --
 -- Name: core_subject_2fc6351a; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_subject_2fc6351a ON public.core_subject USING btree (long_name);
+CREATE INDEX core_subject_2fc6351a ON core_subject USING btree (long_name);
 
 
 --
 -- Name: core_subject_admins_e8701ad4; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_subject_admins_e8701ad4 ON public.core_subject_admins USING btree (user_id);
+CREATE INDEX core_subject_admins_e8701ad4 ON core_subject_admins USING btree (user_id);
 
 
 --
 -- Name: core_subject_admins_ffaba1d1; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_subject_admins_ffaba1d1 ON public.core_subject_admins USING btree (subject_id);
+CREATE INDEX core_subject_admins_ffaba1d1 ON core_subject_admins USING btree (subject_id);
 
 
 --
 -- Name: core_subject_long_name_19cff4d64a1d8f4c_like; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_subject_long_name_19cff4d64a1d8f4c_like ON public.core_subject USING btree (long_name varchar_pattern_ops);
+CREATE INDEX core_subject_long_name_19cff4d64a1d8f4c_like ON core_subject USING btree (long_name varchar_pattern_ops);
 
 
 --
 -- Name: core_subject_short_name_619954c9668d7b05_like; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX core_subject_short_name_619954c9668d7b05_like ON public.core_subject USING btree (short_name varchar_pattern_ops);
+CREATE INDEX core_subject_short_name_619954c9668d7b05_like ON core_subject USING btree (short_name varchar_pattern_ops);
 
 
 --
 -- Name: cradmin_generic_token_with_metadata_g_app_4f5ee45a2fa39c00_like; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX cradmin_generic_token_with_metadata_g_app_4f5ee45a2fa39c00_like ON public.cradmin_generic_token_with_metadata_generictokenwithmetadata USING btree (app varchar_pattern_ops);
+CREATE INDEX cradmin_generic_token_with_metadata_g_app_4f5ee45a2fa39c00_like ON cradmin_generic_token_with_metadata_generictokenwithmetadata USING btree (app varchar_pattern_ops);
 
 
 --
 -- Name: cradmin_generic_token_with_metadata_generictokenwithmetadatcb1d; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX cradmin_generic_token_with_metadata_generictokenwithmetadatcb1d ON public.cradmin_generic_token_with_metadata_generictokenwithmetadata USING btree (app);
+CREATE INDEX cradmin_generic_token_with_metadata_generictokenwithmetadatcb1d ON cradmin_generic_token_with_metadata_generictokenwithmetadata USING btree (app);
 
 
 --
 -- Name: cradmin_generic_token_with_metadata_generictokenwithmetadatf2be; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX cradmin_generic_token_with_metadata_generictokenwithmetadatf2be ON public.cradmin_generic_token_with_metadata_generictokenwithmetadata USING btree (content_type_id);
+CREATE INDEX cradmin_generic_token_with_metadata_generictokenwithmetadatf2be ON cradmin_generic_token_with_metadata_generictokenwithmetadata USING btree (content_type_id);
 
 
 --
 -- Name: cradmin_generic_token_with_metadata_token_4c62e4a4d20b64c8_like; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX cradmin_generic_token_with_metadata_token_4c62e4a4d20b64c8_like ON public.cradmin_generic_token_with_metadata_generictokenwithmetadata USING btree (token varchar_pattern_ops);
+CREATE INDEX cradmin_generic_token_with_metadata_token_4c62e4a4d20b64c8_like ON cradmin_generic_token_with_metadata_generictokenwithmetadata USING btree (token varchar_pattern_ops);
 
 
 --
 -- Name: cradmin_temporaryfileuploadstore_filename_3ca12967fd9be7b2_like; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX cradmin_temporaryfileuploadstore_filename_3ca12967fd9be7b2_like ON public.cradmin_temporaryfileuploadstore_temporaryfile USING btree (filename text_pattern_ops);
+CREATE INDEX cradmin_temporaryfileuploadstore_filename_3ca12967fd9be7b2_like ON cradmin_temporaryfileuploadstore_temporaryfile USING btree (filename text_pattern_ops);
 
 
 --
 -- Name: cradmin_temporaryfileuploadstore_temporaryfile_0a1a4dd8; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX cradmin_temporaryfileuploadstore_temporaryfile_0a1a4dd8 ON public.cradmin_temporaryfileuploadstore_temporaryfile USING btree (collection_id);
+CREATE INDEX cradmin_temporaryfileuploadstore_temporaryfile_0a1a4dd8 ON cradmin_temporaryfileuploadstore_temporaryfile USING btree (collection_id);
 
 
 --
 -- Name: cradmin_temporaryfileuploadstore_temporaryfile_435ed7e9; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX cradmin_temporaryfileuploadstore_temporaryfile_435ed7e9 ON public.cradmin_temporaryfileuploadstore_temporaryfile USING btree (filename);
+CREATE INDEX cradmin_temporaryfileuploadstore_temporaryfile_435ed7e9 ON cradmin_temporaryfileuploadstore_temporaryfile USING btree (filename);
 
 
 --
 -- Name: cradmin_temporaryfileuploadstore_temporaryfilecollection_e8a4df; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX cradmin_temporaryfileuploadstore_temporaryfilecollection_e8a4df ON public.cradmin_temporaryfileuploadstore_temporaryfilecollection USING btree (user_id);
+CREATE INDEX cradmin_temporaryfileuploadstore_temporaryfilecollection_e8a4df ON cradmin_temporaryfileuploadstore_temporaryfilecollection USING btree (user_id);
 
 
 --
 -- Name: devilry_account_periodpermissiongroup_3e7065db; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_account_periodpermissiongroup_3e7065db ON public.devilry_account_periodpermissiongroup USING btree (permissiongroup_id);
+CREATE INDEX devilry_account_periodpermissiongroup_3e7065db ON devilry_account_periodpermissiongroup USING btree (permissiongroup_id);
 
 
 --
 -- Name: devilry_account_periodpermissiongroup_b1efa79f; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_account_periodpermissiongroup_b1efa79f ON public.devilry_account_periodpermissiongroup USING btree (period_id);
+CREATE INDEX devilry_account_periodpermissiongroup_b1efa79f ON devilry_account_periodpermissiongroup USING btree (period_id);
 
 
 --
 -- Name: devilry_account_permissiongroup_name_ef79acb69a7dd49_like; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_account_permissiongroup_name_ef79acb69a7dd49_like ON public.devilry_account_permissiongroup USING btree (name varchar_pattern_ops);
+CREATE INDEX devilry_account_permissiongroup_name_ef79acb69a7dd49_like ON devilry_account_permissiongroup USING btree (name varchar_pattern_ops);
 
 
 --
 -- Name: devilry_account_permissiongroupuser_3e7065db; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_account_permissiongroupuser_3e7065db ON public.devilry_account_permissiongroupuser USING btree (permissiongroup_id);
+CREATE INDEX devilry_account_permissiongroupuser_3e7065db ON devilry_account_permissiongroupuser USING btree (permissiongroup_id);
 
 
 --
 -- Name: devilry_account_permissiongroupuser_e8701ad4; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_account_permissiongroupuser_e8701ad4 ON public.devilry_account_permissiongroupuser USING btree (user_id);
+CREATE INDEX devilry_account_permissiongroupuser_e8701ad4 ON devilry_account_permissiongroupuser USING btree (user_id);
 
 
 --
 -- Name: devilry_account_subjectpermissiongroup_3e7065db; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_account_subjectpermissiongroup_3e7065db ON public.devilry_account_subjectpermissiongroup USING btree (permissiongroup_id);
+CREATE INDEX devilry_account_subjectpermissiongroup_3e7065db ON devilry_account_subjectpermissiongroup USING btree (permissiongroup_id);
 
 
 --
 -- Name: devilry_account_subjectpermissiongroup_ffaba1d1; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_account_subjectpermissiongroup_ffaba1d1 ON public.devilry_account_subjectpermissiongroup USING btree (subject_id);
+CREATE INDEX devilry_account_subjectpermissiongroup_ffaba1d1 ON devilry_account_subjectpermissiongroup USING btree (subject_id);
 
 
 --
 -- Name: devilry_account_user_shortname_343b9f8ebd9bbcb0_like; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_account_user_shortname_343b9f8ebd9bbcb0_like ON public.devilry_account_user USING btree (shortname varchar_pattern_ops);
+CREATE INDEX devilry_account_user_shortname_343b9f8ebd9bbcb0_like ON devilry_account_user USING btree (shortname varchar_pattern_ops);
 
 
 --
 -- Name: devilry_account_useremail_e8701ad4; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_account_useremail_e8701ad4 ON public.devilry_account_useremail USING btree (user_id);
+CREATE INDEX devilry_account_useremail_e8701ad4 ON devilry_account_useremail USING btree (user_id);
 
 
 --
 -- Name: devilry_account_useremail_email_1db096b7c69382_like; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_account_useremail_email_1db096b7c69382_like ON public.devilry_account_useremail USING btree (email varchar_pattern_ops);
+CREATE INDEX devilry_account_useremail_email_1db096b7c69382_like ON devilry_account_useremail USING btree (email varchar_pattern_ops);
 
 
 --
 -- Name: devilry_account_username_e8701ad4; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_account_username_e8701ad4 ON public.devilry_account_username USING btree (user_id);
+CREATE INDEX devilry_account_username_e8701ad4 ON devilry_account_username USING btree (user_id);
 
 
 --
 -- Name: devilry_account_username_username_107726b2079e7651_like; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_account_username_username_107726b2079e7651_like ON public.devilry_account_username USING btree (username varchar_pattern_ops);
+CREATE INDEX devilry_account_username_username_107726b2079e7651_like ON devilry_account_username USING btree (username varchar_pattern_ops);
 
 
 --
 -- Name: devilry_comment_comment_6be37982; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_comment_comment_6be37982 ON public.devilry_comment_comment USING btree (parent_id);
+CREATE INDEX devilry_comment_comment_6be37982 ON devilry_comment_comment USING btree (parent_id);
 
 
 --
 -- Name: devilry_comment_comment_e8701ad4; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_comment_comment_e8701ad4 ON public.devilry_comment_comment USING btree (user_id);
+CREATE INDEX devilry_comment_comment_e8701ad4 ON devilry_comment_comment USING btree (user_id);
+
+
+--
+-- Name: devilry_comment_commentedithistory_comment_id_91baeb5a; Type: INDEX; Schema: public; Owner: dbdev
+--
+
+CREATE INDEX devilry_comment_commentedithistory_comment_id_91baeb5a ON devilry_comment_commentedithistory USING btree (comment_id);
+
+
+--
+-- Name: devilry_comment_commentedithistory_edited_by_id_2e51be6c; Type: INDEX; Schema: public; Owner: dbdev
+--
+
+CREATE INDEX devilry_comment_commentedithistory_edited_by_id_2e51be6c ON devilry_comment_commentedithistory USING btree (edited_by_id);
 
 
 --
 -- Name: devilry_comment_commentfile_69b97d17; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_comment_commentfile_69b97d17 ON public.devilry_comment_commentfile USING btree (comment_id);
+CREATE INDEX devilry_comment_commentfile_69b97d17 ON devilry_comment_commentfile USING btree (comment_id);
 
 
 --
 -- Name: devilry_comment_commentfileimage_b009b360; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_comment_commentfileimage_b009b360 ON public.devilry_comment_commentfileimage USING btree (comment_file_id);
+CREATE INDEX devilry_comment_commentfileimage_b009b360 ON devilry_comment_commentfileimage USING btree (comment_file_id);
 
 
 --
 -- Name: devilry_compressionutil_co_created_by_id_edfcbf68; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_compressionutil_co_created_by_id_edfcbf68 ON public.devilry_compressionutil_compressedarchivemeta USING btree (created_by_id);
+CREATE INDEX devilry_compressionutil_co_created_by_id_edfcbf68 ON devilry_compressionutil_compressedarchivemeta USING btree (created_by_id);
 
 
 --
 -- Name: devilry_compressionutil_compressedarchivemeta_417f1b1c; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_compressionutil_compressedarchivemeta_417f1b1c ON public.devilry_compressionutil_compressedarchivemeta USING btree (content_type_id);
+CREATE INDEX devilry_compressionutil_compressedarchivemeta_417f1b1c ON devilry_compressionutil_compressedarchivemeta USING btree (content_type_id);
 
 
 --
 -- Name: devilry_dbcache_assignmentgroupcacheddata_1f1b65ab; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_dbcache_assignmentgroupcacheddata_1f1b65ab ON public.devilry_dbcache_assignmentgroupcacheddata USING btree (last_published_feedbackset_id);
+CREATE INDEX devilry_dbcache_assignmentgroupcacheddata_1f1b65ab ON devilry_dbcache_assignmentgroupcacheddata USING btree (last_published_feedbackset_id);
 
 
 --
 -- Name: devilry_dbcache_assignmentgroupcacheddata_5da8f6f1; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_dbcache_assignmentgroupcacheddata_5da8f6f1 ON public.devilry_dbcache_assignmentgroupcacheddata USING btree (first_feedbackset_id);
+CREATE INDEX devilry_dbcache_assignmentgroupcacheddata_5da8f6f1 ON devilry_dbcache_assignmentgroupcacheddata USING btree (first_feedbackset_id);
 
 
 --
 -- Name: devilry_dbcache_assignmentgroupcacheddata_ce0430ee; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_dbcache_assignmentgroupcacheddata_ce0430ee ON public.devilry_dbcache_assignmentgroupcacheddata USING btree (last_feedbackset_id);
+CREATE INDEX devilry_dbcache_assignmentgroupcacheddata_ce0430ee ON devilry_dbcache_assignmentgroupcacheddata USING btree (last_feedbackset_id);
 
 
 --
 -- Name: devilry_gradingsystem_feedbackdraft_7c4b99fe; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_gradingsystem_feedbackdraft_7c4b99fe ON public.devilry_gradingsystem_feedbackdraft USING btree (delivery_id);
+CREATE INDEX devilry_gradingsystem_feedbackdraft_7c4b99fe ON devilry_gradingsystem_feedbackdraft USING btree (delivery_id);
 
 
 --
 -- Name: devilry_gradingsystem_feedbackdraft_bc7c970b; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_gradingsystem_feedbackdraft_bc7c970b ON public.devilry_gradingsystem_feedbackdraft USING btree (saved_by_id);
+CREATE INDEX devilry_gradingsystem_feedbackdraft_bc7c970b ON devilry_gradingsystem_feedbackdraft USING btree (saved_by_id);
 
 
 --
 -- Name: devilry_gradingsystem_feedbackdraftfile_7c4b99fe; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_gradingsystem_feedbackdraftfile_7c4b99fe ON public.devilry_gradingsystem_feedbackdraftfile USING btree (delivery_id);
+CREATE INDEX devilry_gradingsystem_feedbackdraftfile_7c4b99fe ON devilry_gradingsystem_feedbackdraftfile USING btree (delivery_id);
 
 
 --
 -- Name: devilry_gradingsystem_feedbackdraftfile_bc7c970b; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_gradingsystem_feedbackdraftfile_bc7c970b ON public.devilry_gradingsystem_feedbackdraftfile USING btree (saved_by_id);
+CREATE INDEX devilry_gradingsystem_feedbackdraftfile_bc7c970b ON devilry_gradingsystem_feedbackdraftfile USING btree (saved_by_id);
 
 
 --
 -- Name: devilry_group_feedbackset_0069413d; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_group_feedbackset_0069413d ON public.devilry_group_feedbackset USING btree (feedbackset_type);
+CREATE INDEX devilry_group_feedbackset_0069413d ON devilry_group_feedbackset USING btree (feedbackset_type);
 
 
 --
 -- Name: devilry_group_feedbackset_0e939a4f; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_group_feedbackset_0e939a4f ON public.devilry_group_feedbackset USING btree (group_id);
+CREATE INDEX devilry_group_feedbackset_0e939a4f ON devilry_group_feedbackset USING btree (group_id);
 
 
 --
 -- Name: devilry_group_feedbackset_7dbe6d4c; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_group_feedbackset_7dbe6d4c ON public.devilry_group_feedbackset USING btree (grading_published_by_id);
+CREATE INDEX devilry_group_feedbackset_7dbe6d4c ON devilry_group_feedbackset USING btree (grading_published_by_id);
 
 
 --
 -- Name: devilry_group_feedbackset_e93cb7eb; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_group_feedbackset_e93cb7eb ON public.devilry_group_feedbackset USING btree (created_by_id);
+CREATE INDEX devilry_group_feedbackset_e93cb7eb ON devilry_group_feedbackset USING btree (created_by_id);
 
 
 --
 -- Name: devilry_group_feedbackset_last_updated_by_id_960089c6; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_group_feedbackset_last_updated_by_id_960089c6 ON public.devilry_group_feedbackset USING btree (last_updated_by_id);
+CREATE INDEX devilry_group_feedbackset_last_updated_by_id_960089c6 ON devilry_group_feedbackset USING btree (last_updated_by_id);
 
 
 --
 -- Name: devilry_group_feedbacksetdeadlinehistory_4e893a26; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_group_feedbacksetdeadlinehistory_4e893a26 ON public.devilry_group_feedbacksetdeadlinehistory USING btree (changed_by_id);
+CREATE INDEX devilry_group_feedbacksetdeadlinehistory_4e893a26 ON devilry_group_feedbacksetdeadlinehistory USING btree (changed_by_id);
 
 
 --
 -- Name: devilry_group_feedbacksetdeadlinehistory_c08198b8; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_group_feedbacksetdeadlinehistory_c08198b8 ON public.devilry_group_feedbacksetdeadlinehistory USING btree (feedback_set_id);
+CREATE INDEX devilry_group_feedbacksetdeadlinehistory_c08198b8 ON devilry_group_feedbacksetdeadlinehistory USING btree (feedback_set_id);
 
 
 --
 -- Name: devilry_group_feedbacksetg_feedback_set_id_24f4c349; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_group_feedbacksetg_feedback_set_id_24f4c349 ON public.devilry_group_feedbacksetgradingupdatehistory USING btree (feedback_set_id);
+CREATE INDEX devilry_group_feedbacksetg_feedback_set_id_24f4c349 ON devilry_group_feedbacksetgradingupdatehistory USING btree (feedback_set_id);
 
 
 --
 -- Name: devilry_group_feedbacksetg_old_grading_published_by_i_f855818b; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_group_feedbacksetg_old_grading_published_by_i_f855818b ON public.devilry_group_feedbacksetgradingupdatehistory USING btree (old_grading_published_by_id);
+CREATE INDEX devilry_group_feedbacksetg_old_grading_published_by_i_f855818b ON devilry_group_feedbacksetgradingupdatehistory USING btree (old_grading_published_by_id);
 
 
 --
 -- Name: devilry_group_feedbacksetg_updated_by_id_5aa2ab0f; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_group_feedbacksetg_updated_by_id_5aa2ab0f ON public.devilry_group_feedbacksetgradingupdatehistory USING btree (updated_by_id);
+CREATE INDEX devilry_group_feedbacksetg_updated_by_id_5aa2ab0f ON devilry_group_feedbacksetgradingupdatehistory USING btree (updated_by_id);
 
 
 --
 -- Name: devilry_group_feedbacksetp_created_by_id_b8572995; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_group_feedbacksetp_created_by_id_b8572995 ON public.devilry_group_feedbacksetpassedpreviousperiod USING btree (created_by_id);
+CREATE INDEX devilry_group_feedbacksetp_created_by_id_b8572995 ON devilry_group_feedbacksetpassedpreviousperiod USING btree (created_by_id);
 
 
 --
 -- Name: devilry_group_feedbacksetpa_assignment_short_name_be9f985a_like; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_group_feedbacksetpa_assignment_short_name_be9f985a_like ON public.devilry_group_feedbacksetpassedpreviousperiod USING btree (assignment_short_name varchar_pattern_ops);
+CREATE INDEX devilry_group_feedbacksetpa_assignment_short_name_be9f985a_like ON devilry_group_feedbacksetpassedpreviousperiod USING btree (assignment_short_name varchar_pattern_ops);
 
 
 --
 -- Name: devilry_group_feedbacksetpas_assignment_long_name_adac6ed1_like; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_group_feedbacksetpas_assignment_long_name_adac6ed1_like ON public.devilry_group_feedbacksetpassedpreviousperiod USING btree (assignment_long_name varchar_pattern_ops);
+CREATE INDEX devilry_group_feedbacksetpas_assignment_long_name_adac6ed1_like ON devilry_group_feedbacksetpassedpreviousperiod USING btree (assignment_long_name varchar_pattern_ops);
 
 
 --
 -- Name: devilry_group_feedbacksetpassed_period_short_name_a541d96e_like; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_group_feedbacksetpassed_period_short_name_a541d96e_like ON public.devilry_group_feedbacksetpassedpreviousperiod USING btree (period_short_name varchar_pattern_ops);
+CREATE INDEX devilry_group_feedbacksetpassed_period_short_name_a541d96e_like ON devilry_group_feedbacksetpassedpreviousperiod USING btree (period_short_name varchar_pattern_ops);
 
 
 --
 -- Name: devilry_group_feedbacksetpassedp_period_long_name_c7d4b92b_like; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_group_feedbacksetpassedp_period_long_name_c7d4b92b_like ON public.devilry_group_feedbacksetpassedpreviousperiod USING btree (period_long_name varchar_pattern_ops);
+CREATE INDEX devilry_group_feedbacksetpassedp_period_long_name_c7d4b92b_like ON devilry_group_feedbacksetpassedpreviousperiod USING btree (period_long_name varchar_pattern_ops);
 
 
 --
 -- Name: devilry_group_feedbacksetpassedpreviousperiod_054dba96; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_group_feedbacksetpassedpreviousperiod_054dba96 ON public.devilry_group_feedbacksetpassedpreviousperiod USING btree (assignment_short_name);
+CREATE INDEX devilry_group_feedbacksetpassedpreviousperiod_054dba96 ON devilry_group_feedbacksetpassedpreviousperiod USING btree (assignment_short_name);
 
 
 --
 -- Name: devilry_group_feedbacksetpassedpreviousperiod_1336f3d8; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_group_feedbacksetpassedpreviousperiod_1336f3d8 ON public.devilry_group_feedbacksetpassedpreviousperiod USING btree (assignment_long_name);
+CREATE INDEX devilry_group_feedbacksetpassedpreviousperiod_1336f3d8 ON devilry_group_feedbacksetpassedpreviousperiod USING btree (assignment_long_name);
 
 
 --
 -- Name: devilry_group_feedbacksetpassedpreviousperiod_134162fd; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_group_feedbacksetpassedpreviousperiod_134162fd ON public.devilry_group_feedbacksetpassedpreviousperiod USING btree (period_long_name);
+CREATE INDEX devilry_group_feedbacksetpassedpreviousperiod_134162fd ON devilry_group_feedbacksetpassedpreviousperiod USING btree (period_long_name);
 
 
 --
 -- Name: devilry_group_feedbacksetpassedpreviousperiod_c74421d4; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_group_feedbacksetpassedpreviousperiod_c74421d4 ON public.devilry_group_feedbacksetpassedpreviousperiod USING btree (period_short_name);
+CREATE INDEX devilry_group_feedbacksetpassedpreviousperiod_c74421d4 ON devilry_group_feedbacksetpassedpreviousperiod USING btree (period_short_name);
 
 
 --
 -- Name: devilry_group_feedbacksetpassedpreviousperiod_fa900df0; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_group_feedbacksetpassedpreviousperiod_fa900df0 ON public.devilry_group_feedbacksetpassedpreviousperiod USING btree (grading_published_by_id);
+CREATE INDEX devilry_group_feedbacksetpassedpreviousperiod_fa900df0 ON devilry_group_feedbacksetpassedpreviousperiod USING btree (grading_published_by_id);
 
 
 --
 -- Name: devilry_group_groupcomment_c08198b8; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_group_groupcomment_c08198b8 ON public.devilry_group_groupcomment USING btree (feedback_set_id);
+CREATE INDEX devilry_group_groupcomment_c08198b8 ON devilry_group_groupcomment USING btree (feedback_set_id);
 
 
 --
 -- Name: devilry_group_groupcomment_f79b1d64; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_group_groupcomment_f79b1d64 ON public.devilry_group_groupcomment USING btree (visibility);
+CREATE INDEX devilry_group_groupcomment_f79b1d64 ON devilry_group_groupcomment USING btree (visibility);
+
+
+--
+-- Name: devilry_group_groupcommentedithistory_group_comment_id_123b9b0d; Type: INDEX; Schema: public; Owner: dbdev
+--
+
+CREATE INDEX devilry_group_groupcommentedithistory_group_comment_id_123b9b0d ON devilry_group_groupcommentedithistory USING btree (group_comment_id);
+
+
+--
+-- Name: devilry_group_groupcommentedithistory_visibility_fddebfac; Type: INDEX; Schema: public; Owner: dbdev
+--
+
+CREATE INDEX devilry_group_groupcommentedithistory_visibility_fddebfac ON devilry_group_groupcommentedithistory USING btree (visibility);
+
+
+--
+-- Name: devilry_group_groupcommentedithistory_visibility_fddebfac_like; Type: INDEX; Schema: public; Owner: dbdev
+--
+
+CREATE INDEX devilry_group_groupcommentedithistory_visibility_fddebfac_like ON devilry_group_groupcommentedithistory USING btree (visibility varchar_pattern_ops);
 
 
 --
 -- Name: devilry_group_imageannotationcomment_c08198b8; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_group_imageannotationcomment_c08198b8 ON public.devilry_group_imageannotationcomment USING btree (feedback_set_id);
+CREATE INDEX devilry_group_imageannotationcomment_c08198b8 ON devilry_group_imageannotationcomment USING btree (feedback_set_id);
 
 
 --
 -- Name: devilry_group_imageannotationcomment_f33175e6; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_group_imageannotationcomment_f33175e6 ON public.devilry_group_imageannotationcomment USING btree (image_id);
+CREATE INDEX devilry_group_imageannotationcomment_f33175e6 ON devilry_group_imageannotationcomment USING btree (image_id);
 
 
 --
 -- Name: devilry_group_imageannotationcomment_f79b1d64; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_group_imageannotationcomment_f79b1d64 ON public.devilry_group_imageannotationcomment USING btree (visibility);
+CREATE INDEX devilry_group_imageannotationcomment_f79b1d64 ON devilry_group_imageannotationcomment USING btree (visibility);
 
 
 --
 -- Name: devilry_import_v2database_importedmodel_417f1b1c; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_import_v2database_importedmodel_417f1b1c ON public.devilry_import_v2database_importedmodel USING btree (content_type_id);
+CREATE INDEX devilry_import_v2database_importedmodel_417f1b1c ON devilry_import_v2database_importedmodel USING btree (content_type_id);
 
 
 --
 -- Name: devilry_qualifiesforexam_periodtag_f2e8843d; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_qualifiesforexam_periodtag_f2e8843d ON public.devilry_qualifiesforexam_periodtag USING btree (deadlinetag_id);
+CREATE INDEX devilry_qualifiesforexam_periodtag_f2e8843d ON devilry_qualifiesforexam_periodtag USING btree (deadlinetag_id);
 
 
 --
 -- Name: devilry_qualifiesforexam_qualifiesforfinalexam_39cb6676; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_qualifiesforexam_qualifiesforfinalexam_39cb6676 ON public.devilry_qualifiesforexam_qualifiesforfinalexam USING btree (relatedstudent_id);
+CREATE INDEX devilry_qualifiesforexam_qualifiesforfinalexam_39cb6676 ON devilry_qualifiesforexam_qualifiesforfinalexam USING btree (relatedstudent_id);
 
 
 --
 -- Name: devilry_qualifiesforexam_qualifiesforfinalexam_dc91ed4b; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_qualifiesforexam_qualifiesforfinalexam_dc91ed4b ON public.devilry_qualifiesforexam_qualifiesforfinalexam USING btree (status_id);
+CREATE INDEX devilry_qualifiesforexam_qualifiesforfinalexam_dc91ed4b ON devilry_qualifiesforexam_qualifiesforfinalexam USING btree (status_id);
 
 
 --
 -- Name: devilry_qualifiesforexam_status_b1efa79f; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_qualifiesforexam_status_b1efa79f ON public.devilry_qualifiesforexam_status USING btree (period_id);
+CREATE INDEX devilry_qualifiesforexam_status_b1efa79f ON devilry_qualifiesforexam_status USING btree (period_id);
 
 
 --
 -- Name: devilry_qualifiesforexam_status_e8701ad4; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_qualifiesforexam_status_e8701ad4 ON public.devilry_qualifiesforexam_status USING btree (user_id);
+CREATE INDEX devilry_qualifiesforexam_status_e8701ad4 ON devilry_qualifiesforexam_status USING btree (user_id);
 
 
 --
 -- Name: devilry_student_uploadeddeliveryfile_13a4f9cc; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_student_uploadeddeliveryfile_13a4f9cc ON public.devilry_student_uploadeddeliveryfile USING btree (deadline_id);
+CREATE INDEX devilry_student_uploadeddeliveryfile_13a4f9cc ON devilry_student_uploadeddeliveryfile USING btree (deadline_id);
 
 
 --
 -- Name: devilry_student_uploadeddeliveryfile_e8701ad4; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX devilry_student_uploadeddeliveryfile_e8701ad4 ON public.devilry_student_uploadeddeliveryfile USING btree (user_id);
+CREATE INDEX devilry_student_uploadeddeliveryfile_e8701ad4 ON devilry_student_uploadeddeliveryfile USING btree (user_id);
 
 
 --
 -- Name: django_admin_log_417f1b1c; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX django_admin_log_417f1b1c ON public.django_admin_log USING btree (content_type_id);
+CREATE INDEX django_admin_log_417f1b1c ON django_admin_log USING btree (content_type_id);
 
 
 --
 -- Name: django_admin_log_e8701ad4; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX django_admin_log_e8701ad4 ON public.django_admin_log USING btree (user_id);
+CREATE INDEX django_admin_log_e8701ad4 ON django_admin_log USING btree (user_id);
 
 
 --
 -- Name: django_session_de54fa62; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX django_session_de54fa62 ON public.django_session USING btree (expire_date);
+CREATE INDEX django_session_de54fa62 ON django_session USING btree (expire_date);
 
 
 --
 -- Name: django_session_session_key_461cfeaa630ca218_like; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX django_session_session_key_461cfeaa630ca218_like ON public.django_session USING btree (session_key varchar_pattern_ops);
+CREATE INDEX django_session_session_key_461cfeaa630ca218_like ON django_session USING btree (session_key varchar_pattern_ops);
 
 
 --
 -- Name: django_site_domain_a2e37b91_like; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX django_site_domain_a2e37b91_like ON public.django_site USING btree (domain varchar_pattern_ops);
+CREATE INDEX django_site_domain_a2e37b91_like ON django_site USING btree (domain varchar_pattern_ops);
 
 
 --
 -- Name: ievv_batchframework_batchope_operationtype_86db17563402048_like; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX ievv_batchframework_batchope_operationtype_86db17563402048_like ON public.ievv_batchframework_batchoperation USING btree (operationtype varchar_pattern_ops);
+CREATE INDEX ievv_batchframework_batchope_operationtype_86db17563402048_like ON ievv_batchframework_batchoperation USING btree (operationtype varchar_pattern_ops);
 
 
 --
 -- Name: ievv_batchframework_batchoperation_62c990b1; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX ievv_batchframework_batchoperation_62c990b1 ON public.ievv_batchframework_batchoperation USING btree (started_by_id);
+CREATE INDEX ievv_batchframework_batchoperation_62c990b1 ON ievv_batchframework_batchoperation USING btree (started_by_id);
 
 
 --
 -- Name: ievv_batchframework_batchoperation_651b6541; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX ievv_batchframework_batchoperation_651b6541 ON public.ievv_batchframework_batchoperation USING btree (context_content_type_id);
+CREATE INDEX ievv_batchframework_batchoperation_651b6541 ON ievv_batchframework_batchoperation USING btree (context_content_type_id);
 
 
 --
 -- Name: ievv_batchframework_batchoperation_e9e6a554; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX ievv_batchframework_batchoperation_e9e6a554 ON public.ievv_batchframework_batchoperation USING btree (operationtype);
+CREATE INDEX ievv_batchframework_batchoperation_e9e6a554 ON ievv_batchframework_batchoperation USING btree (operationtype);
+
+
+--
+-- Name: ievv_developemail_developemail_from_email_981952b3; Type: INDEX; Schema: public; Owner: dbdev
+--
+
+CREATE INDEX ievv_developemail_developemail_from_email_981952b3 ON ievv_developemail_developemail USING btree (from_email);
+
+
+--
+-- Name: ievv_developemail_developemail_from_email_981952b3_like; Type: INDEX; Schema: public; Owner: dbdev
+--
+
+CREATE INDEX ievv_developemail_developemail_from_email_981952b3_like ON ievv_developemail_developemail USING btree (from_email text_pattern_ops);
 
 
 --
 -- Name: socialaccount_socialaccount_e8701ad4; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX socialaccount_socialaccount_e8701ad4 ON public.socialaccount_socialaccount USING btree (user_id);
+CREATE INDEX socialaccount_socialaccount_e8701ad4 ON socialaccount_socialaccount USING btree (user_id);
 
 
 --
 -- Name: socialaccount_socialapp_sites_9365d6e7; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX socialaccount_socialapp_sites_9365d6e7 ON public.socialaccount_socialapp_sites USING btree (site_id);
+CREATE INDEX socialaccount_socialapp_sites_9365d6e7 ON socialaccount_socialapp_sites USING btree (site_id);
 
 
 --
 -- Name: socialaccount_socialapp_sites_fe95b0a0; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX socialaccount_socialapp_sites_fe95b0a0 ON public.socialaccount_socialapp_sites USING btree (socialapp_id);
+CREATE INDEX socialaccount_socialapp_sites_fe95b0a0 ON socialaccount_socialapp_sites USING btree (socialapp_id);
 
 
 --
 -- Name: socialaccount_socialtoken_8a089c2a; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX socialaccount_socialtoken_8a089c2a ON public.socialaccount_socialtoken USING btree (account_id);
+CREATE INDEX socialaccount_socialtoken_8a089c2a ON socialaccount_socialtoken USING btree (account_id);
 
 
 --
 -- Name: socialaccount_socialtoken_f382adfe; Type: INDEX; Schema: public; Owner: dbdev
 --
 
-CREATE INDEX socialaccount_socialtoken_f382adfe ON public.socialaccount_socialtoken USING btree (app_id);
+CREATE INDEX socialaccount_socialtoken_f382adfe ON socialaccount_socialtoken USING btree (app_id);
 
 
 --
 -- Name: core_assignment devilry__assignment_first_deadline_update_trigger; Type: TRIGGER; Schema: public; Owner: dbdev
 --
 
-CREATE TRIGGER devilry__assignment_first_deadline_update_trigger AFTER UPDATE ON public.core_assignment FOR EACH ROW EXECUTE PROCEDURE public.devilry__assignment_first_deadline_update();
+CREATE TRIGGER devilry__assignment_first_deadline_update_trigger AFTER UPDATE ON core_assignment FOR EACH ROW EXECUTE PROCEDURE devilry__assignment_first_deadline_update();
 
 
 --
 -- Name: core_candidate devilry__on_candidate_after_delete; Type: TRIGGER; Schema: public; Owner: dbdev
 --
 
-CREATE TRIGGER devilry__on_candidate_after_delete AFTER DELETE ON public.core_candidate FOR EACH ROW EXECUTE PROCEDURE public.devilry__on_candidate_after_delete();
+CREATE TRIGGER devilry__on_candidate_after_delete AFTER DELETE ON core_candidate FOR EACH ROW EXECUTE PROCEDURE devilry__on_candidate_after_delete();
 
 
 --
 -- Name: core_candidate devilry__on_candidate_after_insert_or_update; Type: TRIGGER; Schema: public; Owner: dbdev
 --
 
-CREATE TRIGGER devilry__on_candidate_after_insert_or_update AFTER INSERT OR UPDATE ON public.core_candidate FOR EACH ROW EXECUTE PROCEDURE public.devilry__on_candidate_after_insert_or_update();
+CREATE TRIGGER devilry__on_candidate_after_insert_or_update AFTER INSERT OR UPDATE ON core_candidate FOR EACH ROW EXECUTE PROCEDURE devilry__on_candidate_after_insert_or_update();
 
 
 --
 -- Name: core_candidate devilry__on_candidate_delete_add_history_trigger; Type: TRIGGER; Schema: public; Owner: dbdev
 --
 
-CREATE TRIGGER devilry__on_candidate_delete_add_history_trigger AFTER DELETE ON public.core_candidate FOR EACH ROW EXECUTE PROCEDURE public.devilry__on_candidate_delete_add_history();
+CREATE TRIGGER devilry__on_candidate_delete_add_history_trigger AFTER DELETE ON core_candidate FOR EACH ROW EXECUTE PROCEDURE devilry__on_candidate_delete_add_history();
 
 
 --
 -- Name: core_candidate devilry__on_candidate_insert_add_history_trigger; Type: TRIGGER; Schema: public; Owner: dbdev
 --
 
-CREATE TRIGGER devilry__on_candidate_insert_add_history_trigger AFTER INSERT ON public.core_candidate FOR EACH ROW EXECUTE PROCEDURE public.devilry__on_candidate_insert_add_history();
+CREATE TRIGGER devilry__on_candidate_insert_add_history_trigger AFTER INSERT ON core_candidate FOR EACH ROW EXECUTE PROCEDURE devilry__on_candidate_insert_add_history();
 
 
 --
 -- Name: core_candidate devilry__on_candidate_update_add_history_trigger; Type: TRIGGER; Schema: public; Owner: dbdev
 --
 
-CREATE TRIGGER devilry__on_candidate_update_add_history_trigger AFTER UPDATE ON public.core_candidate FOR EACH ROW EXECUTE PROCEDURE public.devilry__on_candidate_update_add_history();
+CREATE TRIGGER devilry__on_candidate_update_add_history_trigger AFTER UPDATE ON core_candidate FOR EACH ROW EXECUTE PROCEDURE devilry__on_candidate_update_add_history();
+
+
+--
+-- Name: devilry_comment_comment devilry__on_comment_text_update_trigger; Type: TRIGGER; Schema: public; Owner: dbdev
+--
+
+CREATE TRIGGER devilry__on_comment_text_update_trigger AFTER UPDATE ON devilry_comment_comment FOR EACH ROW EXECUTE PROCEDURE devilry__on_comment_text_update();
 
 
 --
 -- Name: devilry_comment_commentfile devilry__on_commentfile_after_delete; Type: TRIGGER; Schema: public; Owner: dbdev
 --
 
-CREATE TRIGGER devilry__on_commentfile_after_delete AFTER DELETE ON public.devilry_comment_commentfile FOR EACH ROW EXECUTE PROCEDURE public.devilry__on_commentfile_after_delete();
+CREATE TRIGGER devilry__on_commentfile_after_delete AFTER DELETE ON devilry_comment_commentfile FOR EACH ROW EXECUTE PROCEDURE devilry__on_commentfile_after_delete();
 
 
 --
 -- Name: devilry_comment_commentfile devilry__on_commentfile_after_insert_or_update_trigger; Type: TRIGGER; Schema: public; Owner: dbdev
 --
 
-CREATE TRIGGER devilry__on_commentfile_after_insert_or_update_trigger AFTER INSERT OR UPDATE ON public.devilry_comment_commentfile FOR EACH ROW EXECUTE PROCEDURE public.devilry__on_commentfile_after_insert_or_update();
+CREATE TRIGGER devilry__on_commentfile_after_insert_or_update_trigger AFTER INSERT OR UPDATE ON devilry_comment_commentfile FOR EACH ROW EXECUTE PROCEDURE devilry__on_commentfile_after_insert_or_update();
 
 
 --
 -- Name: core_assignmentgroup_examiners devilry__on_examiner_after_delete; Type: TRIGGER; Schema: public; Owner: dbdev
 --
 
-CREATE TRIGGER devilry__on_examiner_after_delete AFTER DELETE ON public.core_assignmentgroup_examiners FOR EACH ROW EXECUTE PROCEDURE public.devilry__on_examiner_after_delete();
+CREATE TRIGGER devilry__on_examiner_after_delete AFTER DELETE ON core_assignmentgroup_examiners FOR EACH ROW EXECUTE PROCEDURE devilry__on_examiner_after_delete();
 
 
 --
 -- Name: core_assignmentgroup_examiners devilry__on_examiner_after_insert_or_update; Type: TRIGGER; Schema: public; Owner: dbdev
 --
 
-CREATE TRIGGER devilry__on_examiner_after_insert_or_update AFTER INSERT OR UPDATE ON public.core_assignmentgroup_examiners FOR EACH ROW EXECUTE PROCEDURE public.devilry__on_examiner_after_insert_or_update();
+CREATE TRIGGER devilry__on_examiner_after_insert_or_update AFTER INSERT OR UPDATE ON core_assignmentgroup_examiners FOR EACH ROW EXECUTE PROCEDURE devilry__on_examiner_after_insert_or_update();
 
 
 --
 -- Name: core_assignmentgroup_examiners devilry__on_examiner_delete_add_history_trigger; Type: TRIGGER; Schema: public; Owner: dbdev
 --
 
-CREATE TRIGGER devilry__on_examiner_delete_add_history_trigger AFTER DELETE ON public.core_assignmentgroup_examiners FOR EACH ROW EXECUTE PROCEDURE public.devilry__on_examiner_delete_add_history();
+CREATE TRIGGER devilry__on_examiner_delete_add_history_trigger AFTER DELETE ON core_assignmentgroup_examiners FOR EACH ROW EXECUTE PROCEDURE devilry__on_examiner_delete_add_history();
 
 
 --
 -- Name: core_assignmentgroup_examiners devilry__on_examiner_insert_add_history_trigger; Type: TRIGGER; Schema: public; Owner: dbdev
 --
 
-CREATE TRIGGER devilry__on_examiner_insert_add_history_trigger AFTER INSERT ON public.core_assignmentgroup_examiners FOR EACH ROW EXECUTE PROCEDURE public.devilry__on_examiner_insert_add_history();
+CREATE TRIGGER devilry__on_examiner_insert_add_history_trigger AFTER INSERT ON core_assignmentgroup_examiners FOR EACH ROW EXECUTE PROCEDURE devilry__on_examiner_insert_add_history();
 
 
 --
 -- Name: core_assignmentgroup_examiners devilry__on_examiner_update_add_history_trigger; Type: TRIGGER; Schema: public; Owner: dbdev
 --
 
-CREATE TRIGGER devilry__on_examiner_update_add_history_trigger AFTER UPDATE ON public.core_assignmentgroup_examiners FOR EACH ROW EXECUTE PROCEDURE public.devilry__on_examiner_update_add_history();
+CREATE TRIGGER devilry__on_examiner_update_add_history_trigger AFTER UPDATE ON core_assignmentgroup_examiners FOR EACH ROW EXECUTE PROCEDURE devilry__on_examiner_update_add_history();
 
 
 --
 -- Name: devilry_group_feedbackset devilry__on_feedbackset_after_delete; Type: TRIGGER; Schema: public; Owner: dbdev
 --
 
-CREATE TRIGGER devilry__on_feedbackset_after_delete AFTER DELETE ON public.devilry_group_feedbackset FOR EACH ROW EXECUTE PROCEDURE public.devilry__on_feedbackset_after_delete();
+CREATE TRIGGER devilry__on_feedbackset_after_delete AFTER DELETE ON devilry_group_feedbackset FOR EACH ROW EXECUTE PROCEDURE devilry__on_feedbackset_after_delete();
 
 
 --
 -- Name: devilry_group_feedbackset devilry__on_feedbackset_after_insert_or_update_trigger; Type: TRIGGER; Schema: public; Owner: dbdev
 --
 
-CREATE TRIGGER devilry__on_feedbackset_after_insert_or_update_trigger AFTER INSERT OR UPDATE ON public.devilry_group_feedbackset FOR EACH ROW EXECUTE PROCEDURE public.devilry__on_feedbackset_after_insert_or_update();
+CREATE TRIGGER devilry__on_feedbackset_after_insert_or_update_trigger AFTER INSERT OR UPDATE ON devilry_group_feedbackset FOR EACH ROW EXECUTE PROCEDURE devilry__on_feedbackset_after_insert_or_update();
 
 
 --
 -- Name: devilry_group_feedbackset devilry__on_feedbackset_before_insert_or_update_trigger; Type: TRIGGER; Schema: public; Owner: dbdev
 --
 
-CREATE TRIGGER devilry__on_feedbackset_before_insert_or_update_trigger BEFORE INSERT OR UPDATE ON public.devilry_group_feedbackset FOR EACH ROW EXECUTE PROCEDURE public.devilry__on_feedbackset_before_insert_or_update();
+CREATE TRIGGER devilry__on_feedbackset_before_insert_or_update_trigger BEFORE INSERT OR UPDATE ON devilry_group_feedbackset FOR EACH ROW EXECUTE PROCEDURE devilry__on_feedbackset_before_insert_or_update();
 
 
 --
 -- Name: devilry_group_feedbackset devilry__on_feedbackset_deadline_update_trigger; Type: TRIGGER; Schema: public; Owner: dbdev
 --
 
-CREATE TRIGGER devilry__on_feedbackset_deadline_update_trigger AFTER UPDATE ON public.devilry_group_feedbackset FOR EACH ROW EXECUTE PROCEDURE public.devilry__on_feedbackset_deadline_update();
+CREATE TRIGGER devilry__on_feedbackset_deadline_update_trigger AFTER UPDATE ON devilry_group_feedbackset FOR EACH ROW EXECUTE PROCEDURE devilry__on_feedbackset_deadline_update();
 
 
 --
 -- Name: devilry_group_feedbackset devilry__on_feedbackset_grading_update_trigger; Type: TRIGGER; Schema: public; Owner: dbdev
 --
 
-CREATE TRIGGER devilry__on_feedbackset_grading_update_trigger AFTER UPDATE ON public.devilry_group_feedbackset FOR EACH ROW EXECUTE PROCEDURE public.devilry__on_feedbackset_grading_update();
+CREATE TRIGGER devilry__on_feedbackset_grading_update_trigger AFTER UPDATE ON devilry_group_feedbackset FOR EACH ROW EXECUTE PROCEDURE devilry__on_feedbackset_grading_update();
+
+
+--
+-- Name: devilry_group_groupcomment devilry__on_group_comment_text_update_trigger; Type: TRIGGER; Schema: public; Owner: dbdev
+--
+
+CREATE TRIGGER devilry__on_group_comment_text_update_trigger AFTER UPDATE ON devilry_group_groupcomment FOR EACH ROW EXECUTE PROCEDURE devilry__on_group_comment_text_update();
 
 
 --
 -- Name: devilry_group_groupcomment devilry__on_groupcomment_after_delete; Type: TRIGGER; Schema: public; Owner: dbdev
 --
 
-CREATE TRIGGER devilry__on_groupcomment_after_delete AFTER DELETE ON public.devilry_group_groupcomment FOR EACH ROW EXECUTE PROCEDURE public.devilry__on_groupcomment_after_delete();
+CREATE TRIGGER devilry__on_groupcomment_after_delete AFTER DELETE ON devilry_group_groupcomment FOR EACH ROW EXECUTE PROCEDURE devilry__on_groupcomment_after_delete();
 
 
 --
 -- Name: devilry_group_groupcomment devilry__on_groupcomment_after_insert_or_update_trigger; Type: TRIGGER; Schema: public; Owner: dbdev
 --
 
-CREATE TRIGGER devilry__on_groupcomment_after_insert_or_update_trigger AFTER INSERT OR UPDATE ON public.devilry_group_groupcomment FOR EACH ROW EXECUTE PROCEDURE public.devilry__on_groupcomment_after_insert_or_update();
+CREATE TRIGGER devilry__on_groupcomment_after_insert_or_update_trigger AFTER INSERT OR UPDATE ON devilry_group_groupcomment FOR EACH ROW EXECUTE PROCEDURE devilry__on_groupcomment_after_insert_or_update();
 
 
 --
 -- Name: devilry_group_imageannotationcomment devilry__on_imageannotationcomment_after_delete; Type: TRIGGER; Schema: public; Owner: dbdev
 --
 
-CREATE TRIGGER devilry__on_imageannotationcomment_after_delete AFTER DELETE ON public.devilry_group_imageannotationcomment FOR EACH ROW EXECUTE PROCEDURE public.devilry__on_imageannotationcomment_after_delete();
+CREATE TRIGGER devilry__on_imageannotationcomment_after_delete AFTER DELETE ON devilry_group_imageannotationcomment FOR EACH ROW EXECUTE PROCEDURE devilry__on_imageannotationcomment_after_delete();
 
 
 --
 -- Name: devilry_group_imageannotationcomment devilry__on_imageannotationcomment_after_insert_or_update_trigg; Type: TRIGGER; Schema: public; Owner: dbdev
 --
 
-CREATE TRIGGER devilry__on_imageannotationcomment_after_insert_or_update_trigg AFTER INSERT OR UPDATE ON public.devilry_group_imageannotationcomment FOR EACH ROW EXECUTE PROCEDURE public.devilry__on_imageannotationcomment_after_insert_or_update();
+CREATE TRIGGER devilry__on_imageannotationcomment_after_insert_or_update_trigg AFTER INSERT OR UPDATE ON devilry_group_imageannotationcomment FOR EACH ROW EXECUTE PROCEDURE devilry__on_imageannotationcomment_after_insert_or_update();
 
 
 --
 -- Name: core_assignmentgroup devilry_dbcache_on_assignmentgroup_insert_trigger; Type: TRIGGER; Schema: public; Owner: dbdev
 --
 
-CREATE TRIGGER devilry_dbcache_on_assignmentgroup_insert_trigger AFTER INSERT ON public.core_assignmentgroup FOR EACH ROW EXECUTE PROCEDURE public.devilry_dbcache_on_assignmentgroup_insert();
+CREATE TRIGGER devilry_dbcache_on_assignmentgroup_insert_trigger AFTER INSERT ON core_assignmentgroup FOR EACH ROW EXECUTE PROCEDURE devilry_dbcache_on_assignmentgroup_insert();
 
 
 --
 -- Name: devilry_account_permissiongroupuser D181b2ae85af4a8c369c2bd09f842f6f; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_account_permissiongroupuser
-    ADD CONSTRAINT "D181b2ae85af4a8c369c2bd09f842f6f" FOREIGN KEY (permissiongroup_id) REFERENCES public.devilry_account_permissiongroup(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_account_permissiongroupuser
+    ADD CONSTRAINT "D181b2ae85af4a8c369c2bd09f842f6f" FOREIGN KEY (permissiongroup_id) REFERENCES devilry_account_permissiongroup(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_assignmentgrouptag D219dbbaa875f1077d0f63778d98858a; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_assignmentgrouptag
-    ADD CONSTRAINT "D219dbbaa875f1077d0f63778d98858a" FOREIGN KEY (assignment_group_id) REFERENCES public.core_assignmentgroup(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_assignmentgrouptag
+    ADD CONSTRAINT "D219dbbaa875f1077d0f63778d98858a" FOREIGN KEY (assignment_group_id) REFERENCES core_assignmentgroup(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_assignmentgroup D3ec90dcce686786fa6cfc7940d91960; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_assignmentgroup
-    ADD CONSTRAINT "D3ec90dcce686786fa6cfc7940d91960" FOREIGN KEY (batchoperation_id) REFERENCES public.ievv_batchframework_batchoperation(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_assignmentgroup
+    ADD CONSTRAINT "D3ec90dcce686786fa6cfc7940d91960" FOREIGN KEY (batchoperation_id) REFERENCES ievv_batchframework_batchoperation(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_group_imageannotationcomment D5e4a1a4b4d81269fe677b9b11bcf9dd; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_group_imageannotationcomment
-    ADD CONSTRAINT "D5e4a1a4b4d81269fe677b9b11bcf9dd" FOREIGN KEY (feedback_set_id) REFERENCES public.devilry_group_feedbackset(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_group_imageannotationcomment
+    ADD CONSTRAINT "D5e4a1a4b4d81269fe677b9b11bcf9dd" FOREIGN KEY (feedback_set_id) REFERENCES devilry_group_feedbackset(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_candidate D5fa89d5f0632cab40e16a17b5422861; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_candidate
-    ADD CONSTRAINT "D5fa89d5f0632cab40e16a17b5422861" FOREIGN KEY (old_reference_not_in_use_student_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_candidate
+    ADD CONSTRAINT "D5fa89d5f0632cab40e16a17b5422861" FOREIGN KEY (old_reference_not_in_use_student_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_account_periodpermissiongroup D732bd61cc9e1e86d0a2745a748ae7e9; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_account_periodpermissiongroup
-    ADD CONSTRAINT "D732bd61cc9e1e86d0a2745a748ae7e9" FOREIGN KEY (permissiongroup_id) REFERENCES public.devilry_account_permissiongroup(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_account_periodpermissiongroup
+    ADD CONSTRAINT "D732bd61cc9e1e86d0a2745a748ae7e9" FOREIGN KEY (permissiongroup_id) REFERENCES devilry_account_permissiongroup(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_group_groupcomment D79d937271caab7986ef197c606f2644; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_group_groupcomment
-    ADD CONSTRAINT "D79d937271caab7986ef197c606f2644" FOREIGN KEY (feedback_set_id) REFERENCES public.devilry_group_feedbackset(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_group_groupcomment
+    ADD CONSTRAINT "D79d937271caab7986ef197c606f2644" FOREIGN KEY (feedback_set_id) REFERENCES devilry_group_feedbackset(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_deadline D7eb2452376d1d7e0038f38d5151e20b; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_deadline
-    ADD CONSTRAINT "D7eb2452376d1d7e0038f38d5151e20b" FOREIGN KEY (assignment_group_id) REFERENCES public.core_assignmentgroup(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_deadline
+    ADD CONSTRAINT "D7eb2452376d1d7e0038f38d5151e20b" FOREIGN KEY (assignment_group_id) REFERENCES core_assignmentgroup(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: ievv_batchframework_batchoperation D8d96d0a9bf59345ab08863cddcf9249; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.ievv_batchframework_batchoperation
-    ADD CONSTRAINT "D8d96d0a9bf59345ab08863cddcf9249" FOREIGN KEY (context_content_type_id) REFERENCES public.django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY ievv_batchframework_batchoperation
+    ADD CONSTRAINT "D8d96d0a9bf59345ab08863cddcf9249" FOREIGN KEY (context_content_type_id) REFERENCES django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: cradmin_temporaryfileuploadstore_temporaryfile D8ec1ffb7a00b82f7d4d23443f299188; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.cradmin_temporaryfileuploadstore_temporaryfile
-    ADD CONSTRAINT "D8ec1ffb7a00b82f7d4d23443f299188" FOREIGN KEY (collection_id) REFERENCES public.cradmin_temporaryfileuploadstore_temporaryfilecollection(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY cradmin_temporaryfileuploadstore_temporaryfile
+    ADD CONSTRAINT "D8ec1ffb7a00b82f7d4d23443f299188" FOREIGN KEY (collection_id) REFERENCES cradmin_temporaryfileuploadstore_temporaryfilecollection(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_candidate D933fe820df1d2bd50b8cf9434debe68; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_candidate
-    ADD CONSTRAINT "D933fe820df1d2bd50b8cf9434debe68" FOREIGN KEY (assignment_group_id) REFERENCES public.core_assignmentgroup(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_candidate
+    ADD CONSTRAINT "D933fe820df1d2bd50b8cf9434debe68" FOREIGN KEY (assignment_group_id) REFERENCES core_assignmentgroup(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_account_subjectpermissiongroup a3e107e91b77c6db5a281e5a98c442ab; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_account_subjectpermissiongroup
-    ADD CONSTRAINT a3e107e91b77c6db5a281e5a98c442ab FOREIGN KEY (permissiongroup_id) REFERENCES public.devilry_account_permissiongroup(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_account_subjectpermissiongroup
+    ADD CONSTRAINT a3e107e91b77c6db5a281e5a98c442ab FOREIGN KEY (permissiongroup_id) REFERENCES devilry_account_permissiongroup(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_dbcache_assignmentgroupcacheddata ac97fc0f77c7d2cb785f2d11c6af5dac; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_dbcache_assignmentgroupcacheddata
-    ADD CONSTRAINT ac97fc0f77c7d2cb785f2d11c6af5dac FOREIGN KEY (last_published_feedbackset_id) REFERENCES public.devilry_group_feedbackset(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_dbcache_assignmentgroupcacheddata
+    ADD CONSTRAINT ac97fc0f77c7d2cb785f2d11c6af5dac FOREIGN KEY (last_published_feedbackset_id) REFERENCES devilry_group_feedbackset(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: account_emailconfirmation account_em_email_address_id_5b7f8c58_fk_account_emailaddress_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.account_emailconfirmation
-    ADD CONSTRAINT account_em_email_address_id_5b7f8c58_fk_account_emailaddress_id FOREIGN KEY (email_address_id) REFERENCES public.account_emailaddress(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY account_emailconfirmation
+    ADD CONSTRAINT account_em_email_address_id_5b7f8c58_fk_account_emailaddress_id FOREIGN KEY (email_address_id) REFERENCES account_emailaddress(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: account_emailaddress account_emailaddres_user_id_2c513194_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.account_emailaddress
-    ADD CONSTRAINT account_emailaddres_user_id_2c513194_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY account_emailaddress
+    ADD CONSTRAINT account_emailaddres_user_id_2c513194_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_assignmentgroup_examiners assignmentgroup_id_1a4ffb13b923185e_fk_core_assignmentgroup_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_assignmentgroup_examiners
-    ADD CONSTRAINT assignmentgroup_id_1a4ffb13b923185e_fk_core_assignmentgroup_id FOREIGN KEY (assignmentgroup_id) REFERENCES public.core_assignmentgroup(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_assignmentgroup_examiners
+    ADD CONSTRAINT assignmentgroup_id_1a4ffb13b923185e_fk_core_assignmentgroup_id FOREIGN KEY (assignmentgroup_id) REFERENCES core_assignmentgroup(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: auth_permission auth_content_type_id_508cf46651277a81_fk_django_content_type_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.auth_permission
-    ADD CONSTRAINT auth_content_type_id_508cf46651277a81_fk_django_content_type_id FOREIGN KEY (content_type_id) REFERENCES public.django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY auth_permission
+    ADD CONSTRAINT auth_content_type_id_508cf46651277a81_fk_django_content_type_id FOREIGN KEY (content_type_id) REFERENCES django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: auth_group_permissions auth_group_permissio_group_id_689710a9a73b7457_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.auth_group_permissions
-    ADD CONSTRAINT auth_group_permissio_group_id_689710a9a73b7457_fk_auth_group_id FOREIGN KEY (group_id) REFERENCES public.auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY auth_group_permissions
+    ADD CONSTRAINT auth_group_permissio_group_id_689710a9a73b7457_fk_auth_group_id FOREIGN KEY (group_id) REFERENCES auth_group(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: auth_group_permissions auth_group_permission_id_1f49ccbbdc69d2fc_fk_auth_permission_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.auth_group_permissions
-    ADD CONSTRAINT auth_group_permission_id_1f49ccbbdc69d2fc_fk_auth_permission_id FOREIGN KEY (permission_id) REFERENCES public.auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY auth_group_permissions
+    ADD CONSTRAINT auth_group_permission_id_1f49ccbbdc69d2fc_fk_auth_permission_id FOREIGN KEY (permission_id) REFERENCES auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_group_imageannotationcomment b192fa069cc9d03afa7e7517d7bed124; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_group_imageannotationcomment
-    ADD CONSTRAINT b192fa069cc9d03afa7e7517d7bed124 FOREIGN KEY (image_id) REFERENCES public.devilry_comment_commentfileimage(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_group_imageannotationcomment
+    ADD CONSTRAINT b192fa069cc9d03afa7e7517d7bed124 FOREIGN KEY (image_id) REFERENCES devilry_comment_commentfileimage(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_qualifiesforexam_qualifiesforfinalexam b863a82336ea177568feaa30e1e51c85; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_qualifiesforexam_qualifiesforfinalexam
-    ADD CONSTRAINT b863a82336ea177568feaa30e1e51c85 FOREIGN KEY (status_id) REFERENCES public.devilry_qualifiesforexam_status(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_qualifiesforexam_qualifiesforfinalexam
+    ADD CONSTRAINT b863a82336ea177568feaa30e1e51c85 FOREIGN KEY (status_id) REFERENCES devilry_qualifiesforexam_status(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_comment_commentfileimage c5ab7e1e9bde26caa038c76c78d6bc7c; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_comment_commentfileimage
-    ADD CONSTRAINT c5ab7e1e9bde26caa038c76c78d6bc7c FOREIGN KEY (comment_file_id) REFERENCES public.devilry_comment_commentfile(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_comment_commentfileimage
+    ADD CONSTRAINT c5ab7e1e9bde26caa038c76c78d6bc7c FOREIGN KEY (comment_file_id) REFERENCES devilry_comment_commentfile(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_relatedstudentkeyvalue co_relatedstudent_id_3e3e80d75676e0c9_fk_core_relatedstudent_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_relatedstudentkeyvalue
-    ADD CONSTRAINT co_relatedstudent_id_3e3e80d75676e0c9_fk_core_relatedstudent_id FOREIGN KEY (relatedstudent_id) REFERENCES public.core_relatedstudent(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_relatedstudentkeyvalue
+    ADD CONSTRAINT co_relatedstudent_id_3e3e80d75676e0c9_fk_core_relatedstudent_id FOREIGN KEY (relatedstudent_id) REFERENCES core_relatedstudent(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_candidate co_relatedstudent_id_7e66ddf8f3442b99_fk_core_relatedstudent_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_candidate
-    ADD CONSTRAINT co_relatedstudent_id_7e66ddf8f3442b99_fk_core_relatedstudent_id FOREIGN KEY (relatedstudent_id) REFERENCES public.core_relatedstudent(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_candidate
+    ADD CONSTRAINT co_relatedstudent_id_7e66ddf8f3442b99_fk_core_relatedstudent_id FOREIGN KEY (relatedstudent_id) REFERENCES core_relatedstudent(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_staticfeedbackfileattachment co_staticfeedback_id_4a6ee82466877520_fk_core_staticfeedback_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_staticfeedbackfileattachment
-    ADD CONSTRAINT co_staticfeedback_id_4a6ee82466877520_fk_core_staticfeedback_id FOREIGN KEY (staticfeedback_id) REFERENCES public.core_staticfeedback(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_staticfeedbackfileattachment
+    ADD CONSTRAINT co_staticfeedback_id_4a6ee82466877520_fk_core_staticfeedback_id FOREIGN KEY (staticfeedback_id) REFERENCES core_staticfeedback(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_delivery cor_last_feedback_id_15c1864499fa3298_fk_core_staticfeedback_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_delivery
-    ADD CONSTRAINT cor_last_feedback_id_15c1864499fa3298_fk_core_staticfeedback_id FOREIGN KEY (last_feedback_id) REFERENCES public.core_staticfeedback(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_delivery
+    ADD CONSTRAINT cor_last_feedback_id_15c1864499fa3298_fk_core_staticfeedback_id FOREIGN KEY (last_feedback_id) REFERENCES core_staticfeedback(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_assignmentgrouphistory core_as_assignment_group_id_1a5bc40e_fk_core_assignmentgroup_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_assignmentgrouphistory
-    ADD CONSTRAINT core_as_assignment_group_id_1a5bc40e_fk_core_assignmentgroup_id FOREIGN KEY (assignment_group_id) REFERENCES public.core_assignmentgroup(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_assignmentgrouphistory
+    ADD CONSTRAINT core_as_assignment_group_id_1a5bc40e_fk_core_assignmentgroup_id FOREIGN KEY (assignment_group_id) REFERENCES core_assignmentgroup(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_assignmentgroup core_ass_feedback_id_4f3eb4317ce05ffd_fk_core_staticfeedback_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_assignmentgroup
-    ADD CONSTRAINT core_ass_feedback_id_4f3eb4317ce05ffd_fk_core_staticfeedback_id FOREIGN KEY (feedback_id) REFERENCES public.core_staticfeedback(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_assignmentgroup
+    ADD CONSTRAINT core_ass_feedback_id_4f3eb4317ce05ffd_fk_core_staticfeedback_id FOREIGN KEY (feedback_id) REFERENCES core_staticfeedback(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_assignment_admins core_assig_assignment_id_712ee5b81efdf7d7_fk_core_assignment_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_assignment_admins
-    ADD CONSTRAINT core_assig_assignment_id_712ee5b81efdf7d7_fk_core_assignment_id FOREIGN KEY (assignment_id) REFERENCES public.core_assignment(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_assignment_admins
+    ADD CONSTRAINT core_assig_assignment_id_712ee5b81efdf7d7_fk_core_assignment_id FOREIGN KEY (assignment_id) REFERENCES core_assignment(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_assignmentgroup core_assig_last_deadline_id_946dfcf7910964c_fk_core_deadline_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_assignmentgroup
-    ADD CONSTRAINT core_assig_last_deadline_id_946dfcf7910964c_fk_core_deadline_id FOREIGN KEY (last_deadline_id) REFERENCES public.core_deadline(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_assignmentgroup
+    ADD CONSTRAINT core_assig_last_deadline_id_946dfcf7910964c_fk_core_deadline_id FOREIGN KEY (last_deadline_id) REFERENCES core_deadline(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_assignmentgroup core_assig_parentnode_id_6e190fc057b9057c_fk_core_assignment_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_assignmentgroup
-    ADD CONSTRAINT core_assig_parentnode_id_6e190fc057b9057c_fk_core_assignment_id FOREIGN KEY (parentnode_id) REFERENCES public.core_assignment(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_assignmentgroup
+    ADD CONSTRAINT core_assig_parentnode_id_6e190fc057b9057c_fk_core_assignment_id FOREIGN KEY (parentnode_id) REFERENCES core_assignment(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_assignment_admins core_assignm_user_id_51116d5a7e12d3b_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_assignment_admins
-    ADD CONSTRAINT core_assignm_user_id_51116d5a7e12d3b_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_assignment_admins
+    ADD CONSTRAINT core_assignm_user_id_51116d5a7e12d3b_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_assignment core_assignmen_parentnode_id_7072d3388816d25c_fk_core_period_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_assignment
-    ADD CONSTRAINT core_assignmen_parentnode_id_7072d3388816d25c_fk_core_period_id FOREIGN KEY (parentnode_id) REFERENCES public.core_period(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_assignment
+    ADD CONSTRAINT core_assignmen_parentnode_id_7072d3388816d25c_fk_core_period_id FOREIGN KEY (parentnode_id) REFERENCES core_period(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_candidateassignmentgrouphistory core_candidateassign_assignment_group_id_98c373a5_fk_core_assi; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_candidateassignmentgrouphistory
-    ADD CONSTRAINT core_candidateassign_assignment_group_id_98c373a5_fk_core_assi FOREIGN KEY (assignment_group_id) REFERENCES public.core_assignmentgroup(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_candidateassignmentgrouphistory
+    ADD CONSTRAINT core_candidateassign_assignment_group_id_98c373a5_fk_core_assi FOREIGN KEY (assignment_group_id) REFERENCES core_assignmentgroup(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_candidateassignmentgrouphistory core_candidateassign_user_id_7a3668f9_fk_devilry_a; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_candidateassignmentgrouphistory
-    ADD CONSTRAINT core_candidateassign_user_id_7a3668f9_fk_devilry_a FOREIGN KEY (user_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_candidateassignmentgrouphistory
+    ADD CONSTRAINT core_candidateassign_user_id_7a3668f9_fk_devilry_a FOREIGN KEY (user_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_assignmentgroup core_copied_from_id_21e068e4666502b2_fk_core_assignmentgroup_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_assignmentgroup
-    ADD CONSTRAINT core_copied_from_id_21e068e4666502b2_fk_core_assignmentgroup_id FOREIGN KEY (copied_from_id) REFERENCES public.core_assignmentgroup(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_assignmentgroup
+    ADD CONSTRAINT core_copied_from_id_21e068e4666502b2_fk_core_assignmentgroup_id FOREIGN KEY (copied_from_id) REFERENCES core_assignmentgroup(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_deadline core_de_added_by_id_5715a513f2acd9ff_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_deadline
-    ADD CONSTRAINT core_de_added_by_id_5715a513f2acd9ff_fk_devilry_account_user_id FOREIGN KEY (added_by_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_deadline
+    ADD CONSTRAINT core_de_added_by_id_5715a513f2acd9ff_fk_devilry_account_user_id FOREIGN KEY (added_by_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_delivery core_del_alias_delivery_id_58e23cdc9faaee16_fk_core_delivery_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_delivery
-    ADD CONSTRAINT core_del_alias_delivery_id_58e23cdc9faaee16_fk_core_delivery_id FOREIGN KEY (alias_delivery_id) REFERENCES public.core_delivery(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_delivery
+    ADD CONSTRAINT core_del_alias_delivery_id_58e23cdc9faaee16_fk_core_delivery_id FOREIGN KEY (alias_delivery_id) REFERENCES core_delivery(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_delivery core_deli_delivered_by_id_47605050cd8092f1_fk_core_candidate_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_delivery
-    ADD CONSTRAINT core_deli_delivered_by_id_47605050cd8092f1_fk_core_candidate_id FOREIGN KEY (delivered_by_id) REFERENCES public.core_candidate(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_delivery
+    ADD CONSTRAINT core_deli_delivered_by_id_47605050cd8092f1_fk_core_candidate_id FOREIGN KEY (delivered_by_id) REFERENCES core_candidate(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_delivery core_delivery_copy_of_id_4bdefcd646b758a3_fk_core_delivery_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_delivery
-    ADD CONSTRAINT core_delivery_copy_of_id_4bdefcd646b758a3_fk_core_delivery_id FOREIGN KEY (copy_of_id) REFERENCES public.core_delivery(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_delivery
+    ADD CONSTRAINT core_delivery_copy_of_id_4bdefcd646b758a3_fk_core_delivery_id FOREIGN KEY (copy_of_id) REFERENCES core_delivery(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_delivery core_delivery_deadline_id_3af0ef5599495505_fk_core_deadline_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_delivery
-    ADD CONSTRAINT core_delivery_deadline_id_3af0ef5599495505_fk_core_deadline_id FOREIGN KEY (deadline_id) REFERENCES public.core_deadline(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_delivery
+    ADD CONSTRAINT core_delivery_deadline_id_3af0ef5599495505_fk_core_deadline_id FOREIGN KEY (deadline_id) REFERENCES core_deadline(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_devilryuserprofile core_devilr_user_id_71c4199c1d6418ff_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_devilryuserprofile
-    ADD CONSTRAINT core_devilr_user_id_71c4199c1d6418ff_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_devilryuserprofile
+    ADD CONSTRAINT core_devilr_user_id_71c4199c1d6418ff_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_examinerassignmentgrouphistory core_examinerassignm_assignment_group_id_eb832a6e_fk_core_assi; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_examinerassignmentgrouphistory
-    ADD CONSTRAINT core_examinerassignm_assignment_group_id_eb832a6e_fk_core_assi FOREIGN KEY (assignment_group_id) REFERENCES public.core_assignmentgroup(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_examinerassignmentgrouphistory
+    ADD CONSTRAINT core_examinerassignm_assignment_group_id_eb832a6e_fk_core_assi FOREIGN KEY (assignment_group_id) REFERENCES core_assignmentgroup(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_examinerassignmentgrouphistory core_examinerassignm_user_id_1636fd1b_fk_devilry_a; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_examinerassignmentgrouphistory
-    ADD CONSTRAINT core_examinerassignm_user_id_1636fd1b_fk_devilry_a FOREIGN KEY (user_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_examinerassignmentgrouphistory
+    ADD CONSTRAINT core_examinerassignm_user_id_1636fd1b_fk_devilry_a FOREIGN KEY (user_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_filemeta core_filemeta_delivery_id_6601bb0f5e56d9fe_fk_core_delivery_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_filemeta
-    ADD CONSTRAINT core_filemeta_delivery_id_6601bb0f5e56d9fe_fk_core_delivery_id FOREIGN KEY (delivery_id) REFERENCES public.core_delivery(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_filemeta
+    ADD CONSTRAINT core_filemeta_delivery_id_6601bb0f5e56d9fe_fk_core_delivery_id FOREIGN KEY (delivery_id) REFERENCES core_delivery(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_groupinvite core_gro_sent_by_id_1efa01196ad2f009_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_groupinvite
-    ADD CONSTRAINT core_gro_sent_by_id_1efa01196ad2f009_fk_devilry_account_user_id FOREIGN KEY (sent_by_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_groupinvite
+    ADD CONSTRAINT core_gro_sent_by_id_1efa01196ad2f009_fk_devilry_account_user_id FOREIGN KEY (sent_by_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_groupinvite core_gro_sent_to_id_50bd8691e6283e67_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_groupinvite
-    ADD CONSTRAINT core_gro_sent_to_id_50bd8691e6283e67_fk_devilry_account_user_id FOREIGN KEY (sent_to_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_groupinvite
+    ADD CONSTRAINT core_gro_sent_to_id_50bd8691e6283e67_fk_devilry_account_user_id FOREIGN KEY (sent_to_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_groupinvite core_groupi_group_id_3650f45b11bc854_fk_core_assignmentgroup_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_groupinvite
-    ADD CONSTRAINT core_groupi_group_id_3650f45b11bc854_fk_core_assignmentgroup_id FOREIGN KEY (group_id) REFERENCES public.core_assignmentgroup(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_groupinvite
+    ADD CONSTRAINT core_groupi_group_id_3650f45b11bc854_fk_core_assignmentgroup_id FOREIGN KEY (group_id) REFERENCES core_assignmentgroup(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_periodtag_relatedexaminers core_per_relatedexaminer_id_faa47fdc_fk_core_relatedexaminer_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_periodtag_relatedexaminers
-    ADD CONSTRAINT core_per_relatedexaminer_id_faa47fdc_fk_core_relatedexaminer_id FOREIGN KEY (relatedexaminer_id) REFERENCES public.core_relatedexaminer(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_periodtag_relatedexaminers
+    ADD CONSTRAINT core_per_relatedexaminer_id_faa47fdc_fk_core_relatedexaminer_id FOREIGN KEY (relatedexaminer_id) REFERENCES core_relatedexaminer(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_periodtag_relatedstudents core_perio_relatedstudent_id_fceab87a_fk_core_relatedstudent_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_periodtag_relatedstudents
-    ADD CONSTRAINT core_perio_relatedstudent_id_fceab87a_fk_core_relatedstudent_id FOREIGN KEY (relatedstudent_id) REFERENCES public.core_relatedstudent(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_periodtag_relatedstudents
+    ADD CONSTRAINT core_perio_relatedstudent_id_fceab87a_fk_core_relatedstudent_id FOREIGN KEY (relatedstudent_id) REFERENCES core_relatedstudent(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_period_admins core_period__user_id_eb067c4bde098ff_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_period_admins
-    ADD CONSTRAINT core_period__user_id_eb067c4bde098ff_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_period_admins
+    ADD CONSTRAINT core_period__user_id_eb067c4bde098ff_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_period_admins core_period_admins_period_id_11596bf319c91d8f_fk_core_period_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_period_admins
-    ADD CONSTRAINT core_period_admins_period_id_11596bf319c91d8f_fk_core_period_id FOREIGN KEY (period_id) REFERENCES public.core_period(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_period_admins
+    ADD CONSTRAINT core_period_admins_period_id_11596bf319c91d8f_fk_core_period_id FOREIGN KEY (period_id) REFERENCES core_period(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_period core_period_parentnode_id_1844773fcb98c0b8_fk_core_subject_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_period
-    ADD CONSTRAINT core_period_parentnode_id_1844773fcb98c0b8_fk_core_subject_id FOREIGN KEY (parentnode_id) REFERENCES public.core_subject(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_period
+    ADD CONSTRAINT core_period_parentnode_id_1844773fcb98c0b8_fk_core_subject_id FOREIGN KEY (parentnode_id) REFERENCES core_subject(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_periodapplicationkeyvalue core_periodapplica_period_id_71495bf20087514e_fk_core_period_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_periodapplicationkeyvalue
-    ADD CONSTRAINT core_periodapplica_period_id_71495bf20087514e_fk_core_period_id FOREIGN KEY (period_id) REFERENCES public.core_period(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_periodapplicationkeyvalue
+    ADD CONSTRAINT core_periodapplica_period_id_71495bf20087514e_fk_core_period_id FOREIGN KEY (period_id) REFERENCES core_period(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_periodtag core_periodtag_period_id_d7a1e8c9_fk_core_period_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_periodtag
-    ADD CONSTRAINT core_periodtag_period_id_d7a1e8c9_fk_core_period_id FOREIGN KEY (period_id) REFERENCES public.core_period(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_periodtag
+    ADD CONSTRAINT core_periodtag_period_id_d7a1e8c9_fk_core_period_id FOREIGN KEY (period_id) REFERENCES core_period(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_periodtag_relatedstudents core_periodtag_relat_periodtag_id_0aacb973_fk_core_periodtag_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_periodtag_relatedstudents
-    ADD CONSTRAINT core_periodtag_relat_periodtag_id_0aacb973_fk_core_periodtag_id FOREIGN KEY (periodtag_id) REFERENCES public.core_periodtag(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_periodtag_relatedstudents
+    ADD CONSTRAINT core_periodtag_relat_periodtag_id_0aacb973_fk_core_periodtag_id FOREIGN KEY (periodtag_id) REFERENCES core_periodtag(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_periodtag_relatedexaminers core_periodtag_relat_periodtag_id_d532c009_fk_core_periodtag_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_periodtag_relatedexaminers
-    ADD CONSTRAINT core_periodtag_relat_periodtag_id_d532c009_fk_core_periodtag_id FOREIGN KEY (periodtag_id) REFERENCES public.core_periodtag(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_periodtag_relatedexaminers
+    ADD CONSTRAINT core_periodtag_relat_periodtag_id_d532c009_fk_core_periodtag_id FOREIGN KEY (periodtag_id) REFERENCES core_periodtag(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_pointtogrademap core_point_assignment_id_45add1f59eb1ca29_fk_core_assignment_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_pointtogrademap
-    ADD CONSTRAINT core_point_assignment_id_45add1f59eb1ca29_fk_core_assignment_id FOREIGN KEY (assignment_id) REFERENCES public.core_assignment(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_pointtogrademap
+    ADD CONSTRAINT core_point_assignment_id_45add1f59eb1ca29_fk_core_assignment_id FOREIGN KEY (assignment_id) REFERENCES core_assignment(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_relatedexaminer core_relate_user_id_644ee92d6b54d587_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_relatedexaminer
-    ADD CONSTRAINT core_relate_user_id_644ee92d6b54d587_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_relatedexaminer
+    ADD CONSTRAINT core_relate_user_id_644ee92d6b54d587_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_relatedstudent core_related_user_id_66588181cfc595a_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_relatedstudent
-    ADD CONSTRAINT core_related_user_id_66588181cfc595a_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_relatedstudent
+    ADD CONSTRAINT core_related_user_id_66588181cfc595a_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_relatedexaminer core_relatedexamin_period_id_1608ffa9420f3529_fk_core_period_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_relatedexaminer
-    ADD CONSTRAINT core_relatedexamin_period_id_1608ffa9420f3529_fk_core_period_id FOREIGN KEY (period_id) REFERENCES public.core_period(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_relatedexaminer
+    ADD CONSTRAINT core_relatedexamin_period_id_1608ffa9420f3529_fk_core_period_id FOREIGN KEY (period_id) REFERENCES core_period(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_relatedstudent core_relatedstuden_period_id_518a11c836f19f36_fk_core_period_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_relatedstudent
-    ADD CONSTRAINT core_relatedstuden_period_id_518a11c836f19f36_fk_core_period_id FOREIGN KEY (period_id) REFERENCES public.core_period(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_relatedstudent
+    ADD CONSTRAINT core_relatedstuden_period_id_518a11c836f19f36_fk_core_period_id FOREIGN KEY (period_id) REFERENCES core_period(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_staticfeedback core_st_saved_by_id_5c9526c62cf55415_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_staticfeedback
-    ADD CONSTRAINT core_st_saved_by_id_5c9526c62cf55415_fk_devilry_account_user_id FOREIGN KEY (saved_by_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_staticfeedback
+    ADD CONSTRAINT core_st_saved_by_id_5c9526c62cf55415_fk_devilry_account_user_id FOREIGN KEY (saved_by_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_staticfeedback core_staticfee_delivery_id_76cd203e463381c6_fk_core_delivery_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_staticfeedback
-    ADD CONSTRAINT core_staticfee_delivery_id_76cd203e463381c6_fk_core_delivery_id FOREIGN KEY (delivery_id) REFERENCES public.core_delivery(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_staticfeedback
+    ADD CONSTRAINT core_staticfee_delivery_id_76cd203e463381c6_fk_core_delivery_id FOREIGN KEY (delivery_id) REFERENCES core_delivery(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_subject_admins core_subjec_user_id_757b64082c3dd225_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_subject_admins
-    ADD CONSTRAINT core_subjec_user_id_757b64082c3dd225_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_subject_admins
+    ADD CONSTRAINT core_subjec_user_id_757b64082c3dd225_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_subject_admins core_subject_admi_subject_id_30074ec6a2ab50f_fk_core_subject_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_subject_admins
-    ADD CONSTRAINT core_subject_admi_subject_id_30074ec6a2ab50f_fk_core_subject_id FOREIGN KEY (subject_id) REFERENCES public.core_subject(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_subject_admins
+    ADD CONSTRAINT core_subject_admi_subject_id_30074ec6a2ab50f_fk_core_subject_id FOREIGN KEY (subject_id) REFERENCES core_subject(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: cradmin_generic_token_with_metadata_generictokenwithmetadata crad_content_type_id_51aea07aab3596f7_fk_django_content_type_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.cradmin_generic_token_with_metadata_generictokenwithmetadata
-    ADD CONSTRAINT crad_content_type_id_51aea07aab3596f7_fk_django_content_type_id FOREIGN KEY (content_type_id) REFERENCES public.django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY cradmin_generic_token_with_metadata_generictokenwithmetadata
+    ADD CONSTRAINT crad_content_type_id_51aea07aab3596f7_fk_django_content_type_id FOREIGN KEY (content_type_id) REFERENCES django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: cradmin_temporaryfileuploadstore_temporaryfilecollection cradmin_tem_user_id_2dc5e0653dd71e89_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.cradmin_temporaryfileuploadstore_temporaryfilecollection
-    ADD CONSTRAINT cradmin_tem_user_id_2dc5e0653dd71e89_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY cradmin_temporaryfileuploadstore_temporaryfilecollection
+    ADD CONSTRAINT cradmin_tem_user_id_2dc5e0653dd71e89_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_pointrangetograde d0e0aa08edad3ed1e6bdf96c03308582; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_pointrangetograde
-    ADD CONSTRAINT d0e0aa08edad3ed1e6bdf96c03308582 FOREIGN KEY (point_to_grade_map_id) REFERENCES public.core_pointtogrademap(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_pointrangetograde
+    ADD CONSTRAINT d0e0aa08edad3ed1e6bdf96c03308582 FOREIGN KEY (point_to_grade_map_id) REFERENCES core_pointtogrademap(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_group_imageannotationcomment d_comment_ptr_id_1afa15ad1c07737e_fk_devilry_comment_comment_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_group_imageannotationcomment
-    ADD CONSTRAINT d_comment_ptr_id_1afa15ad1c07737e_fk_devilry_comment_comment_id FOREIGN KEY (comment_ptr_id) REFERENCES public.devilry_comment_comment(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_group_imageannotationcomment
+    ADD CONSTRAINT d_comment_ptr_id_1afa15ad1c07737e_fk_devilry_comment_comment_id FOREIGN KEY (comment_ptr_id) REFERENCES devilry_comment_comment(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_group_groupcomment d_comment_ptr_id_77e73d4401d55a91_fk_devilry_comment_comment_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_group_groupcomment
-    ADD CONSTRAINT d_comment_ptr_id_77e73d4401d55a91_fk_devilry_comment_comment_id FOREIGN KEY (comment_ptr_id) REFERENCES public.devilry_comment_comment(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_group_groupcomment
+    ADD CONSTRAINT d_comment_ptr_id_77e73d4401d55a91_fk_devilry_comment_comment_id FOREIGN KEY (comment_ptr_id) REFERENCES devilry_comment_comment(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_dbcache_assignmentgroupcacheddata d_first_feedbackset_id_89c38dc7_fk_devilry_group_feedbackset_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_dbcache_assignmentgroupcacheddata
-    ADD CONSTRAINT d_first_feedbackset_id_89c38dc7_fk_devilry_group_feedbackset_id FOREIGN KEY (first_feedbackset_id) REFERENCES public.devilry_group_feedbackset(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_dbcache_assignmentgroupcacheddata
+    ADD CONSTRAINT d_first_feedbackset_id_89c38dc7_fk_devilry_group_feedbackset_id FOREIGN KEY (first_feedbackset_id) REFERENCES devilry_group_feedbackset(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_dbcache_assignmentgroupcacheddata de_last_feedbackset_id_6961c179_fk_devilry_group_feedbackset_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_dbcache_assignmentgroupcacheddata
-    ADD CONSTRAINT de_last_feedbackset_id_6961c179_fk_devilry_group_feedbackset_id FOREIGN KEY (last_feedbackset_id) REFERENCES public.devilry_group_feedbackset(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_dbcache_assignmentgroupcacheddata
+    ADD CONSTRAINT de_last_feedbackset_id_6961c179_fk_devilry_group_feedbackset_id FOREIGN KEY (last_feedbackset_id) REFERENCES devilry_group_feedbackset(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_qualifiesforexam_qualifiesforfinalexam de_relatedstudent_id_55ab211e0e76d3c5_fk_core_relatedstudent_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_qualifiesforexam_qualifiesforfinalexam
-    ADD CONSTRAINT de_relatedstudent_id_55ab211e0e76d3c5_fk_core_relatedstudent_id FOREIGN KEY (relatedstudent_id) REFERENCES public.core_relatedstudent(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_qualifiesforexam_qualifiesforfinalexam
+    ADD CONSTRAINT de_relatedstudent_id_55ab211e0e76d3c5_fk_core_relatedstudent_id FOREIGN KEY (relatedstudent_id) REFERENCES core_relatedstudent(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_gradingsystem_feedbackdraft de_staticfeedback_id_43feb18645a3f2a4_fk_core_staticfeedback_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_gradingsystem_feedbackdraft
-    ADD CONSTRAINT de_staticfeedback_id_43feb18645a3f2a4_fk_core_staticfeedback_id FOREIGN KEY (staticfeedback_id) REFERENCES public.core_staticfeedback(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_gradingsystem_feedbackdraft
+    ADD CONSTRAINT de_staticfeedback_id_43feb18645a3f2a4_fk_core_staticfeedback_id FOREIGN KEY (staticfeedback_id) REFERENCES core_staticfeedback(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_group_feedbackset dev_grading_published_by_id_75176877_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_group_feedbackset
-    ADD CONSTRAINT dev_grading_published_by_id_75176877_fk_devilry_account_user_id FOREIGN KEY (grading_published_by_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_group_feedbackset
+    ADD CONSTRAINT dev_grading_published_by_id_75176877_fk_devilry_account_user_id FOREIGN KEY (grading_published_by_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_comment_commentfile devil_comment_id_2e9f77d72415c03e_fk_devilry_comment_comment_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_comment_commentfile
-    ADD CONSTRAINT devil_comment_id_2e9f77d72415c03e_fk_devilry_comment_comment_id FOREIGN KEY (comment_id) REFERENCES public.devilry_comment_comment(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_comment_commentfile
+    ADD CONSTRAINT devil_comment_id_2e9f77d72415c03e_fk_devilry_comment_comment_id FOREIGN KEY (comment_id) REFERENCES devilry_comment_comment(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_group_feedbacksetdeadlinehistory devilr_feedback_set_id_52741ef3_fk_devilry_group_feedbackset_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_group_feedbacksetdeadlinehistory
-    ADD CONSTRAINT devilr_feedback_set_id_52741ef3_fk_devilry_group_feedbackset_id FOREIGN KEY (feedback_set_id) REFERENCES public.devilry_group_feedbackset(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_group_feedbacksetdeadlinehistory
+    ADD CONSTRAINT devilr_feedback_set_id_52741ef3_fk_devilry_group_feedbackset_id FOREIGN KEY (feedback_set_id) REFERENCES devilry_group_feedbackset(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_comment_comment devilr_parent_id_5b1213dd5232a472_fk_devilry_comment_comment_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_comment_comment
-    ADD CONSTRAINT devilr_parent_id_5b1213dd5232a472_fk_devilry_comment_comment_id FOREIGN KEY (parent_id) REFERENCES public.devilry_comment_comment(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_comment_comment
+    ADD CONSTRAINT devilr_parent_id_5b1213dd5232a472_fk_devilry_comment_comment_id FOREIGN KEY (parent_id) REFERENCES devilry_comment_comment(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_account_permissiongroupuser devilry_acc_user_id_1639a4cd40d74025_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_account_permissiongroupuser
-    ADD CONSTRAINT devilry_acc_user_id_1639a4cd40d74025_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_account_permissiongroupuser
+    ADD CONSTRAINT devilry_acc_user_id_1639a4cd40d74025_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_account_username devilry_acc_user_id_5199824be5bb3b9b_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_account_username
-    ADD CONSTRAINT devilry_acc_user_id_5199824be5bb3b9b_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_account_username
+    ADD CONSTRAINT devilry_acc_user_id_5199824be5bb3b9b_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_account_useremail devilry_acco_user_id_a38a81995988057_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_account_useremail
-    ADD CONSTRAINT devilry_acco_user_id_a38a81995988057_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_account_useremail
+    ADD CONSTRAINT devilry_acco_user_id_a38a81995988057_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_account_subjectpermissiongroup devilry_account__subject_id_305f1dc9fe3d5d33_fk_core_subject_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_account_subjectpermissiongroup
-    ADD CONSTRAINT devilry_account__subject_id_305f1dc9fe3d5d33_fk_core_subject_id FOREIGN KEY (subject_id) REFERENCES public.core_subject(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_account_subjectpermissiongroup
+    ADD CONSTRAINT devilry_account__subject_id_305f1dc9fe3d5d33_fk_core_subject_id FOREIGN KEY (subject_id) REFERENCES core_subject(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_account_periodpermissiongroup devilry_account_pe_period_id_2bc5882f60c3e215_fk_core_period_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_account_periodpermissiongroup
-    ADD CONSTRAINT devilry_account_pe_period_id_2bc5882f60c3e215_fk_core_period_id FOREIGN KEY (period_id) REFERENCES public.core_period(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_account_periodpermissiongroup
+    ADD CONSTRAINT devilry_account_pe_period_id_2bc5882f60c3e215_fk_core_period_id FOREIGN KEY (period_id) REFERENCES core_period(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_comment_comment devilry_comment_com_user_id_ddc7b6b0_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_comment_comment
-    ADD CONSTRAINT devilry_comment_com_user_id_ddc7b6b0_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_comment_comment
+    ADD CONSTRAINT devilry_comment_com_user_id_ddc7b6b0_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: devilry_comment_commentedithistory devilry_comment_comm_comment_id_91baeb5a_fk_devilry_c; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
+--
+
+ALTER TABLE ONLY devilry_comment_commentedithistory
+    ADD CONSTRAINT devilry_comment_comm_comment_id_91baeb5a_fk_devilry_c FOREIGN KEY (comment_id) REFERENCES devilry_comment_comment(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: devilry_comment_commentedithistory devilry_comment_comm_edited_by_id_2e51be6c_fk_devilry_a; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
+--
+
+ALTER TABLE ONLY devilry_comment_commentedithistory
+    ADD CONSTRAINT devilry_comment_comm_edited_by_id_2e51be6c_fk_devilry_a FOREIGN KEY (edited_by_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_compressionutil_compressedarchivemeta devilry_comp_content_type_id_dc562e1b_fk_django_content_type_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_compressionutil_compressedarchivemeta
-    ADD CONSTRAINT devilry_comp_content_type_id_dc562e1b_fk_django_content_type_id FOREIGN KEY (content_type_id) REFERENCES public.django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_compressionutil_compressedarchivemeta
+    ADD CONSTRAINT devilry_comp_content_type_id_dc562e1b_fk_django_content_type_id FOREIGN KEY (content_type_id) REFERENCES django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_compressionutil_compressedarchivemeta devilry_compressionu_created_by_id_edfcbf68_fk_devilry_a; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_compressionutil_compressedarchivemeta
-    ADD CONSTRAINT devilry_compressionu_created_by_id_edfcbf68_fk_devilry_a FOREIGN KEY (created_by_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_compressionutil_compressedarchivemeta
+    ADD CONSTRAINT devilry_compressionu_created_by_id_edfcbf68_fk_devilry_a FOREIGN KEY (created_by_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_dbcache_assignmentgroupcacheddata devilry_dbcache_as_group_id_cfe8ca20_fk_core_assignmentgroup_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_dbcache_assignmentgroupcacheddata
-    ADD CONSTRAINT devilry_dbcache_as_group_id_cfe8ca20_fk_core_assignmentgroup_id FOREIGN KEY (group_id) REFERENCES public.core_assignmentgroup(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_dbcache_assignmentgroupcacheddata
+    ADD CONSTRAINT devilry_dbcache_as_group_id_cfe8ca20_fk_core_assignmentgroup_id FOREIGN KEY (group_id) REFERENCES core_assignmentgroup(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_group_feedbackset devilry_gr_group_id_148fa5d5062a96f8_fk_core_assignmentgroup_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_group_feedbackset
-    ADD CONSTRAINT devilry_gr_group_id_148fa5d5062a96f8_fk_core_assignmentgroup_id FOREIGN KEY (group_id) REFERENCES public.core_assignmentgroup(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_group_feedbackset
+    ADD CONSTRAINT devilry_gr_group_id_148fa5d5062a96f8_fk_core_assignmentgroup_id FOREIGN KEY (group_id) REFERENCES core_assignmentgroup(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_gradingsystem_feedbackdraft devilry_gradin_delivery_id_31734762a96e190f_fk_core_delivery_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_gradingsystem_feedbackdraft
-    ADD CONSTRAINT devilry_gradin_delivery_id_31734762a96e190f_fk_core_delivery_id FOREIGN KEY (delivery_id) REFERENCES public.core_delivery(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_gradingsystem_feedbackdraft
+    ADD CONSTRAINT devilry_gradin_delivery_id_31734762a96e190f_fk_core_delivery_id FOREIGN KEY (delivery_id) REFERENCES core_delivery(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_gradingsystem_feedbackdraftfile devilry_gradin_delivery_id_65ac58b6a461891b_fk_core_delivery_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_gradingsystem_feedbackdraftfile
-    ADD CONSTRAINT devilry_gradin_delivery_id_65ac58b6a461891b_fk_core_delivery_id FOREIGN KEY (delivery_id) REFERENCES public.core_delivery(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_gradingsystem_feedbackdraftfile
+    ADD CONSTRAINT devilry_gradin_delivery_id_65ac58b6a461891b_fk_core_delivery_id FOREIGN KEY (delivery_id) REFERENCES core_delivery(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_group_feedbacksetdeadlinehistory devilry_group_changed_by_id_8dd1df9c_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_group_feedbacksetdeadlinehistory
-    ADD CONSTRAINT devilry_group_changed_by_id_8dd1df9c_fk_devilry_account_user_id FOREIGN KEY (changed_by_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_group_feedbacksetdeadlinehistory
+    ADD CONSTRAINT devilry_group_changed_by_id_8dd1df9c_fk_devilry_account_user_id FOREIGN KEY (changed_by_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_group_feedbackset devilry_group_created_by_id_650ceed9_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_group_feedbackset
-    ADD CONSTRAINT devilry_group_created_by_id_650ceed9_fk_devilry_account_user_id FOREIGN KEY (created_by_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_group_feedbackset
+    ADD CONSTRAINT devilry_group_created_by_id_650ceed9_fk_devilry_account_user_id FOREIGN KEY (created_by_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_group_feedbacksetpassedpreviousperiod devilry_group_feedba_created_by_id_b8572995_fk_devilry_a; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_group_feedbacksetpassedpreviousperiod
-    ADD CONSTRAINT devilry_group_feedba_created_by_id_b8572995_fk_devilry_a FOREIGN KEY (created_by_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_group_feedbacksetpassedpreviousperiod
+    ADD CONSTRAINT devilry_group_feedba_created_by_id_b8572995_fk_devilry_a FOREIGN KEY (created_by_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_group_feedbacksetgradingupdatehistory devilry_group_feedba_feedback_set_id_24f4c349_fk_devilry_g; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_group_feedbacksetgradingupdatehistory
-    ADD CONSTRAINT devilry_group_feedba_feedback_set_id_24f4c349_fk_devilry_g FOREIGN KEY (feedback_set_id) REFERENCES public.devilry_group_feedbackset(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_group_feedbacksetgradingupdatehistory
+    ADD CONSTRAINT devilry_group_feedba_feedback_set_id_24f4c349_fk_devilry_g FOREIGN KEY (feedback_set_id) REFERENCES devilry_group_feedbackset(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_group_feedbacksetpassedpreviousperiod devilry_group_feedba_feedbackset_id_2c6e12d3_fk_devilry_g; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_group_feedbacksetpassedpreviousperiod
-    ADD CONSTRAINT devilry_group_feedba_feedbackset_id_2c6e12d3_fk_devilry_g FOREIGN KEY (feedbackset_id) REFERENCES public.devilry_group_feedbackset(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_group_feedbacksetpassedpreviousperiod
+    ADD CONSTRAINT devilry_group_feedba_feedbackset_id_2c6e12d3_fk_devilry_g FOREIGN KEY (feedbackset_id) REFERENCES devilry_group_feedbackset(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_group_feedbacksetpassedpreviousperiod devilry_group_feedba_grading_published_by_4090bbe2_fk_devilry_a; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_group_feedbacksetpassedpreviousperiod
-    ADD CONSTRAINT devilry_group_feedba_grading_published_by_4090bbe2_fk_devilry_a FOREIGN KEY (grading_published_by_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_group_feedbacksetpassedpreviousperiod
+    ADD CONSTRAINT devilry_group_feedba_grading_published_by_4090bbe2_fk_devilry_a FOREIGN KEY (grading_published_by_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_group_feedbackset devilry_group_feedba_last_updated_by_id_960089c6_fk_devilry_a; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_group_feedbackset
-    ADD CONSTRAINT devilry_group_feedba_last_updated_by_id_960089c6_fk_devilry_a FOREIGN KEY (last_updated_by_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_group_feedbackset
+    ADD CONSTRAINT devilry_group_feedba_last_updated_by_id_960089c6_fk_devilry_a FOREIGN KEY (last_updated_by_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_group_feedbacksetgradingupdatehistory devilry_group_feedba_old_grading_publishe_f855818b_fk_devilry_a; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_group_feedbacksetgradingupdatehistory
-    ADD CONSTRAINT devilry_group_feedba_old_grading_publishe_f855818b_fk_devilry_a FOREIGN KEY (old_grading_published_by_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_group_feedbacksetgradingupdatehistory
+    ADD CONSTRAINT devilry_group_feedba_old_grading_publishe_f855818b_fk_devilry_a FOREIGN KEY (old_grading_published_by_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_group_feedbacksetgradingupdatehistory devilry_group_feedba_updated_by_id_5aa2ab0f_fk_devilry_a; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_group_feedbacksetgradingupdatehistory
-    ADD CONSTRAINT devilry_group_feedba_updated_by_id_5aa2ab0f_fk_devilry_a FOREIGN KEY (updated_by_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_group_feedbacksetgradingupdatehistory
+    ADD CONSTRAINT devilry_group_feedba_updated_by_id_5aa2ab0f_fk_devilry_a FOREIGN KEY (updated_by_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: devilry_group_groupcommentedithistory devilry_group_groupc_commentedithistory_p_6eca5a90_fk_devilry_c; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
+--
+
+ALTER TABLE ONLY devilry_group_groupcommentedithistory
+    ADD CONSTRAINT devilry_group_groupc_commentedithistory_p_6eca5a90_fk_devilry_c FOREIGN KEY (commentedithistory_ptr_id) REFERENCES devilry_comment_commentedithistory(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: devilry_group_groupcommentedithistory devilry_group_groupc_group_comment_id_123b9b0d_fk_devilry_g; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
+--
+
+ALTER TABLE ONLY devilry_group_groupcommentedithistory
+    ADD CONSTRAINT devilry_group_groupc_group_comment_id_123b9b0d_fk_devilry_g FOREIGN KEY (group_comment_id) REFERENCES devilry_group_groupcomment(comment_ptr_id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_import_v2database_importedmodel devilry_impo_content_type_id_28663f30_fk_django_content_type_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_import_v2database_importedmodel
-    ADD CONSTRAINT devilry_impo_content_type_id_28663f30_fk_django_content_type_id FOREIGN KEY (content_type_id) REFERENCES public.django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_import_v2database_importedmodel
+    ADD CONSTRAINT devilry_impo_content_type_id_28663f30_fk_django_content_type_id FOREIGN KEY (content_type_id) REFERENCES django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_qualifiesforexam_status devilry_qua_user_id_522959bf05072244_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_qualifiesforexam_status
-    ADD CONSTRAINT devilry_qua_user_id_522959bf05072244_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_qualifiesforexam_status
+    ADD CONSTRAINT devilry_qua_user_id_522959bf05072244_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_qualifiesforexam_periodtag devilry_qualifiesf_period_id_102beba2d8031066_fk_core_period_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_qualifiesforexam_periodtag
-    ADD CONSTRAINT devilry_qualifiesf_period_id_102beba2d8031066_fk_core_period_id FOREIGN KEY (period_id) REFERENCES public.core_period(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_qualifiesforexam_periodtag
+    ADD CONSTRAINT devilry_qualifiesf_period_id_102beba2d8031066_fk_core_period_id FOREIGN KEY (period_id) REFERENCES core_period(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_qualifiesforexam_status devilry_qualifiesf_period_id_6a80472573c78154_fk_core_period_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_qualifiesforexam_status
-    ADD CONSTRAINT devilry_qualifiesf_period_id_6a80472573c78154_fk_core_period_id FOREIGN KEY (period_id) REFERENCES public.core_period(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_qualifiesforexam_status
+    ADD CONSTRAINT devilry_qualifiesf_period_id_6a80472573c78154_fk_core_period_id FOREIGN KEY (period_id) REFERENCES core_period(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_gradingsystem_feedbackdraftfile devilry_saved_by_id_22ca281ac57fddb4_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_gradingsystem_feedbackdraftfile
-    ADD CONSTRAINT devilry_saved_by_id_22ca281ac57fddb4_fk_devilry_account_user_id FOREIGN KEY (saved_by_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_gradingsystem_feedbackdraftfile
+    ADD CONSTRAINT devilry_saved_by_id_22ca281ac57fddb4_fk_devilry_account_user_id FOREIGN KEY (saved_by_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_gradingsystem_feedbackdraft devilry_saved_by_id_2688417740fdf346_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_gradingsystem_feedbackdraft
-    ADD CONSTRAINT devilry_saved_by_id_2688417740fdf346_fk_devilry_account_user_id FOREIGN KEY (saved_by_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_gradingsystem_feedbackdraft
+    ADD CONSTRAINT devilry_saved_by_id_2688417740fdf346_fk_devilry_account_user_id FOREIGN KEY (saved_by_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_student_uploadeddeliveryfile devilry_stu_user_id_594ee6dafdf52417_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_student_uploadeddeliveryfile
-    ADD CONSTRAINT devilry_stu_user_id_594ee6dafdf52417_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_student_uploadeddeliveryfile
+    ADD CONSTRAINT devilry_stu_user_id_594ee6dafdf52417_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_student_uploadeddeliveryfile devilry_studen_deadline_id_73bb1a77ed86db5c_fk_core_deadline_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_student_uploadeddeliveryfile
-    ADD CONSTRAINT devilry_studen_deadline_id_73bb1a77ed86db5c_fk_core_deadline_id FOREIGN KEY (deadline_id) REFERENCES public.core_deadline(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_student_uploadeddeliveryfile
+    ADD CONSTRAINT devilry_studen_deadline_id_73bb1a77ed86db5c_fk_core_deadline_id FOREIGN KEY (deadline_id) REFERENCES core_deadline(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: django_admin_log djan_content_type_id_697914295151027a_fk_django_content_type_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.django_admin_log
-    ADD CONSTRAINT djan_content_type_id_697914295151027a_fk_django_content_type_id FOREIGN KEY (content_type_id) REFERENCES public.django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY django_admin_log
+    ADD CONSTRAINT djan_content_type_id_697914295151027a_fk_django_content_type_id FOREIGN KEY (content_type_id) REFERENCES django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: django_admin_log django_admi_user_id_52fdd58701c5f563_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.django_admin_log
-    ADD CONSTRAINT django_admi_user_id_52fdd58701c5f563_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY django_admin_log
+    ADD CONSTRAINT django_admi_user_id_52fdd58701c5f563_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_assignmentgroup_examiners e2e901148f6cd8765ee8ce180b39118d; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_assignmentgroup_examiners
-    ADD CONSTRAINT e2e901148f6cd8765ee8ce180b39118d FOREIGN KEY (old_reference_not_in_use_user_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_assignmentgroup_examiners
+    ADD CONSTRAINT e2e901148f6cd8765ee8ce180b39118d FOREIGN KEY (old_reference_not_in_use_user_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: devilry_qualifiesforexam_periodtag f2a2267fbb3f8424a3f20a79ed9ed35d; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.devilry_qualifiesforexam_periodtag
-    ADD CONSTRAINT f2a2267fbb3f8424a3f20a79ed9ed35d FOREIGN KEY (deadlinetag_id) REFERENCES public.devilry_qualifiesforexam_deadlinetag(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY devilry_qualifiesforexam_periodtag
+    ADD CONSTRAINT f2a2267fbb3f8424a3f20a79ed9ed35d FOREIGN KEY (deadlinetag_id) REFERENCES devilry_qualifiesforexam_deadlinetag(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: ievv_batchframework_batchoperation ievv__started_by_id_453323e9bb289a44_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.ievv_batchframework_batchoperation
-    ADD CONSTRAINT ievv__started_by_id_453323e9bb289a44_fk_devilry_account_user_id FOREIGN KEY (started_by_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY ievv_batchframework_batchoperation
+    ADD CONSTRAINT ievv__started_by_id_453323e9bb289a44_fk_devilry_account_user_id FOREIGN KEY (started_by_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: core_assignmentgroup_examiners relatedexaminer_id_46b4afef8d47d182_fk_core_relatedexaminer_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.core_assignmentgroup_examiners
-    ADD CONSTRAINT relatedexaminer_id_46b4afef8d47d182_fk_core_relatedexaminer_id FOREIGN KEY (relatedexaminer_id) REFERENCES public.core_relatedexaminer(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY core_assignmentgroup_examiners
+    ADD CONSTRAINT relatedexaminer_id_46b4afef8d47d182_fk_core_relatedexaminer_id FOREIGN KEY (relatedexaminer_id) REFERENCES core_relatedexaminer(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: socialaccount_socialtoken socialacc_account_id_951f210e_fk_socialaccount_socialaccount_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.socialaccount_socialtoken
-    ADD CONSTRAINT socialacc_account_id_951f210e_fk_socialaccount_socialaccount_id FOREIGN KEY (account_id) REFERENCES public.socialaccount_socialaccount(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY socialaccount_socialtoken
+    ADD CONSTRAINT socialacc_account_id_951f210e_fk_socialaccount_socialaccount_id FOREIGN KEY (account_id) REFERENCES socialaccount_socialaccount(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: socialaccount_socialapp_sites socialaccou_socialapp_id_97fb6e7d_fk_socialaccount_socialapp_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.socialaccount_socialapp_sites
-    ADD CONSTRAINT socialaccou_socialapp_id_97fb6e7d_fk_socialaccount_socialapp_id FOREIGN KEY (socialapp_id) REFERENCES public.socialaccount_socialapp(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY socialaccount_socialapp_sites
+    ADD CONSTRAINT socialaccou_socialapp_id_97fb6e7d_fk_socialaccount_socialapp_id FOREIGN KEY (socialapp_id) REFERENCES socialaccount_socialapp(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: socialaccount_socialtoken socialaccount_soc_app_id_636a42d7_fk_socialaccount_socialapp_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.socialaccount_socialtoken
-    ADD CONSTRAINT socialaccount_soc_app_id_636a42d7_fk_socialaccount_socialapp_id FOREIGN KEY (app_id) REFERENCES public.socialaccount_socialapp(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY socialaccount_socialtoken
+    ADD CONSTRAINT socialaccount_soc_app_id_636a42d7_fk_socialaccount_socialapp_id FOREIGN KEY (app_id) REFERENCES socialaccount_socialapp(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: socialaccount_socialaccount socialaccount_socia_user_id_8146e70c_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.socialaccount_socialaccount
-    ADD CONSTRAINT socialaccount_socia_user_id_8146e70c_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY socialaccount_socialaccount
+    ADD CONSTRAINT socialaccount_socia_user_id_8146e70c_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: socialaccount_socialapp_sites socialaccount_socialapp_site_site_id_2579dee5_fk_django_site_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY public.socialaccount_socialapp_sites
-    ADD CONSTRAINT socialaccount_socialapp_site_site_id_2579dee5_fk_django_site_id FOREIGN KEY (site_id) REFERENCES public.django_site(id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY socialaccount_socialapp_sites
+    ADD CONSTRAINT socialaccount_socialapp_site_site_id_2579dee5_fk_django_site_id FOREIGN KEY (site_id) REFERENCES django_site(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
