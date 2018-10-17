@@ -61,33 +61,34 @@ export default class ExaminerDetailsWidget extends AbstractWidget {
     const groups_waiting_for_feedback_count_label = this.config.groups_waiting_for_feedback_count_label
     const groups_waiting_for_deadline_to_expire_count_label = this.config.groups_waiting_for_deadline_to_expire_count_label
     const points_label = this.config.points_label
-    const points_average_label = this.config.points_average_labe
+    const points_average_label = this.config.points_average_label
     const points_highest_label = this.config.points_highest_label
     const points_lowest_label = this.config.points_lowest_label
 
     let dataParser = new HtmlParser(`
-      <div>
+      <div style="margin-top: 100px;">
         <h2>${examinerDetails.user_name}</h2>
   
-        <p><strong>${groups_corrected_count_label}</strong></p>
+        <p class="paragraph--nomargin"><strong>${groups_corrected_count_label}</strong></p>
         <p>${groups_corrected_count}/${totalGroupCount}</p>
   
-        <p><strong>${groups_with_passing_grade_count_label}</strong></p>
+        <p class="paragraph--nomargin"><strong>${groups_with_passing_grade_count_label}</strong></p>
         <p>${groups_with_passing_grade_count}/${totalGroupCount}</p>
   
-        <p><strong>${groups_with_failing_grade_count_label}</strong></p>
+        <p class="paragraph--nomargin"><strong>${groups_with_failing_grade_count_label}</strong></p>
         <p>${groups_with_failing_grade_count}/${totalGroupCount}</p>
   
-        <p><strong>${groups_waiting_for_feedback_count_label}</strong></p>
+        <p class="paragraph--nomargin"><strong>${groups_waiting_for_feedback_count_label}</strong></p>
         <p>${groups_waiting_for_feedback_count}/${totalGroupCount}</p>
   
-        <p><strong>${groups_waiting_for_deadline_to_expire_count_label}</strong></p>
+        <p class="paragraph--nomargin"><strong>${groups_waiting_for_deadline_to_expire_count_label}</strong></p>
         <p>${groups_waiting_for_deadline_to_expire_count}/${totalGroupCount}</p>
   
-        <p><strong>${points_label}</strong></p>
-        <p>${points_average_label}: ${points_average}</p>
-        <p>${points_highest_label}: ${points_highest}</p>
-        <p>${points_lowest_label}: ${points_lowest}</p>
+        <p class="paragraph--nomargin"><strong>${points_label}</strong></p>
+        <p>
+            ${points_average_label}: ${points_average} 
+            (${points_highest_label}: ${points_highest}, ${points_lowest_label}: ${points_lowest})
+        </p>
       </div>
     `)
     this.element.appendChild(dataParser.firstRootElement)

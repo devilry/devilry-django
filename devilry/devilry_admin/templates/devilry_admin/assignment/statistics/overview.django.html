@@ -77,61 +77,37 @@
                     What does the different sections for each examiner mean?
                 {% endblocktrans %}
             </p>
-            <p>
-                <strong>{% trans "Corrected groups" %}:</strong>
-            </p>
-            <p>
-                {% blocktrans trimmed %}
-                    The number of groups the examiner has corrected.
-                {% endblocktrans %}
-            </p>
-            <br>
-            <p>
-                <strong>{% trans "Groups with passing grade" %}:</strong>
-            </p>
-            <p>
-                {% blocktrans trimmed %}
-                    The number of groups that where given a passing grade.
-                {% endblocktrans %}
-            </p>
-            <br>
-            <p>
-                <strong>{% trans "Groups with failing grade" %}:</strong>
-            </p>
-            <p>
-                {% blocktrans trimmed %}
-                    The number of groups that where given a failing grade.
-                {% endblocktrans %}
-            </p>
-            <br>
-            <p>
-                <strong>{% trans "Groups waiting for feedback" %}:</strong>
-            </p>
-            <p>
-                {% blocktrans trimmed %}
-                    The number of groups waiting for feedback. A group is waiting for feedback if the feedback is
-                    not published, and the deadline has expired.
-                {% endblocktrans %}
-            </p>
-            <br>
-            <p>
-                <strong>{% trans "Groups where the deadline has not expired yet" %}:</strong>
-            </p>
-            <p>
-                {% blocktrans trimmed %}
-                    The number of groups that has deadline that has not expired yet, regardless of whether they have
-                    been corrected or not.
-                {% endblocktrans %}
-            </p>
-            <br>
-            <p>
-                <strong>{% trans "Points" %}:</strong>
-            </p>
-            <p>
-                {% blocktrans trimmed %}
-                    The average, highest and lowest grading points given by the examiner.
-                {% endblocktrans %}
-            </p>
+            <strong>{% trans "Corrected groups" %}:</strong><br>
+            {% blocktrans trimmed %}
+                The number of groups the examiner has corrected.
+            {% endblocktrans %}
+            <br><br>
+            <strong>{% trans "Groups with passing grade" %}:</strong><br>
+            {% blocktrans trimmed %}
+                The number of groups that where given a passing grade.
+            {% endblocktrans %}
+            <br><br>
+            <strong>{% trans "Groups with failing grade" %}:</strong><br>
+            {% blocktrans trimmed %}
+                The number of groups that where given a failing grade.
+            {% endblocktrans %}
+            <br><br>
+            <strong>{% trans "Groups waiting for feedback" %}:</strong><br>
+            {% blocktrans trimmed %}
+                The number of groups waiting for feedback. A group is waiting for feedback if the feedback is
+                not published, and the deadline has expired.
+            {% endblocktrans %}
+            <br><br>
+            <strong>{% trans "Groups where the deadline has not expired yet" %}:</strong><br>
+            {% blocktrans trimmed %}
+                The number of groups that has deadline that has not expired yet, regardless of whether they have
+                been corrected or not.
+            {% endblocktrans %}
+            <br><br>
+            <strong>{% trans "Points" %}:</strong><br>
+            {% blocktrans trimmed %}
+                The average, highest and lowest grading points given by the examiner.
+            {% endblocktrans %}
             <br><br>
             <div data-ievv-jsbase-widget="examiner-details"
                  data-ievv-jsbase-widget-config='{{ examiner_detail_config|safe }}'></div>
