@@ -2,10 +2,8 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from django.utils import timezone
-from rest_framework.exceptions import NotFound
 
-from rest_framework.permissions import IsAuthenticated, BasePermission
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status, serializers
 from rest_framework.views import APIView
@@ -20,6 +18,9 @@ class ExaminerGroupResultsSerializer(serializers.Serializer):
 
 
 class ExaminerGroupResultApi(AssignmentApiViewPreMixin, APIView):
+    """
+    API for getting the percentage of groups passed, failed and not corrected for an examiner.
+    """
     permission_classes = [IsAuthenticated, AccessPermission]
 
     def get_queryset(self, assignment, relatedexaminer):
@@ -35,6 +36,7 @@ class ExaminerGroupResultApi(AssignmentApiViewPreMixin, APIView):
                 num_groups_passed=models.Count(models.Case(
                     models.When(
                         cached_data__last_published_feedbackset__isnull=False,
+                        cached_data__last_feedbackset=models.F('cached_data__last_published_feedbackset'),
                         cached_data__last_published_feedbackset__grading_points__gte=models.F(
                             'parentnode__passing_grade_min_points'),
                         then=1)
@@ -42,13 +44,14 @@ class ExaminerGroupResultApi(AssignmentApiViewPreMixin, APIView):
                 num_groups_failed=models.Count(models.Case(
                     models.When(
                         cached_data__last_published_feedbackset__isnull=False,
+                        cached_data__last_feedbackset=models.F('cached_data__last_published_feedbackset'),
                         cached_data__last_published_feedbackset__grading_points__lt=models.F(
                             'parentnode__passing_grade_min_points'),
                         then=1)
                 )),
                 num_groups_not_corrected=models.Count(models.Case(
                     models.When(
-                        cached_data__last_published_feedbackset__isnull=True,
+                        models.Q(cached_data__last_feedbackset__grading_published_datetime__isnull=True),
                         then=1)
                 )))
 

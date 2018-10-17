@@ -18,6 +18,9 @@ class ExaminerAverageGradingPointsSerializer(serializers.Serializer):
 
 
 class ExaminerAverageGradingPointsApi(AssignmentApiViewPreMixin, APIView):
+    """
+    API for getting the average score given by an examiner.
+    """
     permission_classes = [IsAuthenticated, AccessPermission]
 
     def get_queryset(self, assignment, relatedexaminer):
@@ -37,7 +40,7 @@ class ExaminerAverageGradingPointsApi(AssignmentApiViewPreMixin, APIView):
         queryset = self.get_queryset(assignment=assignment, relatedexaminer=relatedexaminer)
         result = self.get_result(queryset=queryset)
         return {
-            'average_grading_points_given': result,
+            'average_grading_points_given': '{0:.2f}'.format(result),
             'user_name': relatedexaminer.user.get_full_name()
         }
 

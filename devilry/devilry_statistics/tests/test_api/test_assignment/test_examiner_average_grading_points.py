@@ -139,7 +139,7 @@ class TestExaminerAverageGradingPointsApi(test.TestCase, api_test_mixin.ApiTestM
             requestuser=self.make_superuser(),
             viewkwargs={'assignment_id': assignment.id, 'relatedexaminer_id': relatedexaminer.id})
         self.assertEqual(response.data,
-                         {'average_grading_points_given': 1.0,
+                         {'average_grading_points_given': '1.00',
                           'user_name': 'Test User'})
 
     def test_assignment_grading_average_sanity(self):
@@ -154,7 +154,7 @@ class TestExaminerAverageGradingPointsApi(test.TestCase, api_test_mixin.ApiTestM
             requestuser=self.make_superuser(),
             viewkwargs={'assignment_id': assignment.id, 'relatedexaminer_id': relatedexaminer.id})
         self.assertEqual(response.data,
-                         {'average_grading_points_given': 25.0,
+                         {'average_grading_points_given': '25.00',
                           'user_name': 'Test User'})
 
     def test_assignment_multiple_groups_grading_average_sanity(self):
@@ -171,7 +171,7 @@ class TestExaminerAverageGradingPointsApi(test.TestCase, api_test_mixin.ApiTestM
             requestuser=self.make_superuser(),
             viewkwargs={'assignment_id': assignment.id, 'relatedexaminer_id': relatedexaminer.id})
         self.assertEqual(response.data,
-                         {'average_grading_points_given': 10.0,
+                         {'average_grading_points_given': '10.00',
                           'user_name': 'Test User'})
 
     def test_assignment_grading_average_only_for_relatedexaminer_id_passed(self):
@@ -190,5 +190,5 @@ class TestExaminerAverageGradingPointsApi(test.TestCase, api_test_mixin.ApiTestM
             requestuser=self.make_superuser(),
             viewkwargs={'assignment_id': assignment.id, 'relatedexaminer_id': relatedexaminer1.id})
         self.assertEqual(response.data,
-                         {'average_grading_points_given': 5.0,
+                         {'average_grading_points_given': '5.00',
                           'user_name': 'Test User 1'})
