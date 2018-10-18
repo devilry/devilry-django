@@ -1,0 +1,11 @@
+.. _3.4.2changelog:
+
+############################
+What is new in Devilry 3.4.2
+############################
+
+
+New features
+############
+(ADMINS):
+    - Examiner statistics on assignment.
