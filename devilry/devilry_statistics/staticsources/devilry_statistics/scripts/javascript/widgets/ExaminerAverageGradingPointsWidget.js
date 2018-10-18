@@ -7,7 +7,6 @@ export default class ExaminerAverageGradingPointsWidget extends AbstractWidget {
   constructor(element, widgetInstanceId) {
     super(element, widgetInstanceId)
     this.loading_label = this.config.loading_label
-    this.chartLabel = this.config.chart_label
     this.assignmentMaxPoints = this.config.assignment_max_points
     this.chart = null
 
@@ -40,7 +39,7 @@ export default class ExaminerAverageGradingPointsWidget extends AbstractWidget {
           data.push(responseData.average_grading_points_given)
         })
         this.isLoading = false
-        this.renderChart(labels, data)
+        this.render(labels, data)
       })
       .catch((error) => {
         console.error('Error:', error.toString());
@@ -64,7 +63,7 @@ export default class ExaminerAverageGradingPointsWidget extends AbstractWidget {
     }
   }
 
-  renderChart (labelArray, dataArray) {
+  render (labelArray, dataArray) {
     let parser = new HtmlParser(`
       <canvas width="400" height="400"></canvas>
     `)
@@ -75,7 +74,7 @@ export default class ExaminerAverageGradingPointsWidget extends AbstractWidget {
     const chartData = {
       labels: labelArray,
       datasets: [{
-        label: this.chartLabel,
+        label: this.config.chart_label,
         data: dataArray,
         backgroundColor: 'rgba(54, 162, 235, 1)',
         borderColor: 'rgba(54, 162, 235, 1)',

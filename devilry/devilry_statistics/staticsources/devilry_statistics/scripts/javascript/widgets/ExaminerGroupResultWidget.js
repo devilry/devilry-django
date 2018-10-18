@@ -43,7 +43,7 @@ export default class ExaminerGroupResultWidget extends AbstractWidget {
           notCorrected.push(responseData.groups_not_corrected)
         })
         this.isLoading = false
-        this.renderChart(usernames, passed, failed, notCorrected)
+        this.render(usernames, passed, failed, notCorrected)
       })
       .catch((error) => {
         console.error('Error:', error.toString());
@@ -56,7 +56,7 @@ export default class ExaminerGroupResultWidget extends AbstractWidget {
         xAxes: [{
           scaleLabel: {
             display: true,
-            labelString: 'Percentage',
+            labelString: this.config.x_axes_label,
           },
           stacked: true,
           ticks: {
@@ -72,7 +72,7 @@ export default class ExaminerGroupResultWidget extends AbstractWidget {
     }
   }
 
-  renderChart (usernamesArray, passedArray, failedArray, notCorrectedArray) {
+  render (usernamesArray, passedArray, failedArray, notCorrectedArray) {
     let parser = new HtmlParser(`
       <canvas width="400" height="400"></canvas>
     `)
@@ -84,21 +84,21 @@ export default class ExaminerGroupResultWidget extends AbstractWidget {
       labels: usernamesArray,
       datasets: [
         {
-          label: 'Passed',
+          label: this.config.passed_label,
           data: passedArray,
           backgroundColor: 'rgba(187, 241, 166, 1)',
           borderColor: 'rgba(54, 162, 235, 1)',
           borderWidth: 1
         },
         {
-          label: 'Failed',
+          label: this.config.failed_label,
           data: failedArray,
           backgroundColor: 'rgba(232, 139, 139, 1)',
           borderColor: 'rgba(54, 162, 235, 1)',
           borderWidth: 1
         },
         {
-          label: 'Not corrected',
+          label: this.config.not_corrected_label,
           data: notCorrectedArray,
           backgroundColor: 'rgba(214, 214, 214, 1)',
           borderColor: 'rgba(54, 162, 235, 1)',

@@ -37,12 +37,19 @@ class Overview(DetailRoleView):
 
     def get_default_ievv_js_base_widget_config(self):
         return {
-            'chart_label': pgettext('devilry_admin assignment examiner statistics', 'Points (average)'),
             'loading_label': pgettext('devilry_admin assignment examiner statistics', 'Fetching data'),
             'assignment_id': self.assignment.id,
             'assignment_max_points': self.assignment.max_points,
             'relatedexaminer_ids': list(self.__get_relatedexaminer_ids())
         }
+
+    def get_examiner_average_points_widget_config(self):
+        widget_config = self.get_default_ievv_js_base_widget_config()
+        widget_config.update({
+            'chart_label': pgettext(
+                'devilry_admin assignment examiner statistics', 'Points (average)'),
+        })
+        return widget_config
 
     def get_examiner_detail_js_base_widget_config(self):
         default_config = self.get_default_ievv_js_base_widget_config()
@@ -68,13 +75,27 @@ class Overview(DetailRoleView):
         })
         return default_config
 
+    def get_examiner_percentage_grade_widget_config(self):
+        widget_config = self.get_default_ievv_js_base_widget_config()
+        widget_config.update({
+            'x_axes_label': pgettext(
+                'devilry_admin assignment examiner statistics', 'Percentage'),
+            'passed_label': pgettext(
+                'devilry_admin assignment examiner statistics', 'Passed'),
+            'failed_label': pgettext(
+                'devilry_admin assignment examiner statistics', 'Failed'),
+            'not_corrected_label': pgettext(
+                'devilry_admin assignment examiner statistics', 'Not corrected'),
+        })
+        return widget_config
+
     def get_context_data(self, **kwargs):
         context = super(Overview, self).get_context_data(**kwargs)
         default_ievv_js_base_widget_config = self.get_default_ievv_js_base_widget_config()
         context['examiner_average_point_chart_config'] = json.dumps(
-            default_ievv_js_base_widget_config)
+            self.get_examiner_average_points_widget_config())
         context['examiner_percentage_graded_chart_config'] = json.dumps(
-            default_ievv_js_base_widget_config)
+            self.get_examiner_percentage_grade_widget_config())
         context['examiner_detail_config'] = json.dumps(
             self.get_examiner_detail_js_base_widget_config())
         context['examiners_with_published_feedbackset_exist'] = self.__examiners_with_published_feedbackset_exist()
