@@ -174,6 +174,8 @@ def remove_pyc_files():
 @task
 def make_source_dist():
     local('git rm -r devilry/devilry_theme3/static/devilry_theme3/')
+    local('git rm -r devilry/devilry_statistics/static/devilry_statistics/')
     local('ievv buildstatic --production --yarn-clean-node-modules')
     local('git add devilry/devilry_theme3/static/devilry_theme3/')
+    local('git add devilry/devilry_statistics/static/devilry_statistics/')
     local('python setup.py sdist')
