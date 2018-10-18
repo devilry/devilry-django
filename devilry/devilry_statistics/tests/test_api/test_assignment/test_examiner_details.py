@@ -3,6 +3,7 @@ from django.utils import timezone
 from model_mommy import mommy
 
 from devilry.apps.core.models import Assignment
+from devilry.devilry_account.models import PermissionGroup
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_statistics.tests.test_api import api_test_mixin
 from devilry.devilry_statistics.api.assignment import examiner_details
@@ -102,6 +103,7 @@ class TestExaminerDetailsApi(test.TestCase, api_test_mixin.ApiTestMixin):
         self.__make_published_group_for_relatedexaminer(assignment=assignment, relatedexaminer=relatedexaminer, grading_points=1)
         requestuser = self.make_user()
         permissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                     permissiongroup__grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN,
                                      subject=subject)
         mommy.make('devilry_account.PermissionGroupUser',
                    user=requestuser,
