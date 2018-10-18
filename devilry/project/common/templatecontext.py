@@ -17,6 +17,10 @@ def template_variables(request):
             static_url=settings.DEVILRY_STATIC_URL,
             theme3_version=devilry.__version__
         ),
+        'DEVILRY_STATISTICS_JAVASCRIPT_URL': '{static_url}/devilry_statistics/{statistics_version}/devilry_statistics_all.js'.format(
+            static_url=settings.DEVILRY_STATIC_URL,
+            statistics_version=devilry.__version__
+        ),
         'session': request.session,
         'DEVILRY_MATHJAX_URL': settings.DEVILRY_MATHJAX_URL,
         'DEVILRY_HELP_URL': settings.DEVILRY_HELP_URL,

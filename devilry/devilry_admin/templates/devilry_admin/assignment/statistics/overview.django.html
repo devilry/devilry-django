@@ -15,7 +15,7 @@
 {% endblock pageheader-inner %}
 
 {% block jsimports %}
-    <script src="{% static 'devilry_statistics/3.4.1/devilry_statistics_all.js' %}"></script>
+    <script src="{{ DEVILRY_STATISTICS_JAVASCRIPT_URL }}"></script>
 {% endblock %}
 
 {% block content %}
