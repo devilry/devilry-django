@@ -49,22 +49,7 @@
             {% include "devilry_admin/assignment/include/utilities.django.html" %}
         </div>
         <div class="devilry-dashboard-container">
-            <div id="devilry_admin_assignment_overview_statistics">
-                <h3>
-                    {% trans "Statistics" %}
-                </h3>
-                <p>
-                    {% blocktrans trimmed with context="devilry_admin assignment overview statistics" %}
-                        See statistics about the assignment and examiners.
-                    {% endblocktrans %}
-                </p>
-                <div id="devilry_admin_assignment_overview_statistics">
-                    <a href="{% cradmin_instance_appindex_url 'statistics' %}" type="button"
-                       class="btn btn-default btn-sm">
-                        {% trans 'Show statistics' %}
-                    </a>
-                </div>
-            </div>
+            {% include "devilry_admin/assignment/include/statistics.django.html" %}
         </div>
     </div>
 {% endblock content %}

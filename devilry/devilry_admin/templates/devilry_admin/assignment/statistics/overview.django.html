@@ -22,17 +22,17 @@
     {% if not examiners_exist %}
         <div class="container devilry-dashboard-container">
             <p>
-                {% trans "No data available. There are no examiners assigned to any groups." %}
+                {% trans "No data available. There are no examiners assigned to any groups." context "devilry_admin assignment statistics" %}
             </p>
         </div>
     {% else %}
         <div class="container devilry-dashboard-container">
             <h2 class="h3">
-                {% trans "Points (average)" %}
+                {% trans "Points (average)" context "devilry_admin assignment statistics" %}
             </h2>
             <br>
             <p class="text-muted">
-                {% blocktrans trimmed %}
+                {% blocktrans trimmed with context="devilry_admin assignment statistics" %}
                     Average points given by each examiner registered on the assignment. The points are calculated by the
                     last published feedback, this means that points given on previous attemps are not used.
                 {% endblocktrans %}
@@ -43,13 +43,13 @@
 
         <div class="container devilry-dashboard-container">
             <h2 class="h3">
-                {% trans "Result/Progress" %}
+                {% trans "Result/Progress" context "devilry_admin assignment statistics" %}
             </h2>
             <br>
             <p class="text-muted">
-                {% blocktrans trimmed %}
-                    The feedback progress in percentages. How many deliveries has the examiner passed, failed and not yet
-                    corrected.
+                {% blocktrans trimmed with context="devilry_admin assignment statistics" %}
+                    The feedback progress in percentages. How many of the groups has been given the grade passed/failed
+                    or have not been corrected yet.
                 {% endblocktrans %}
             </p>
             <div data-ievv-jsbase-widget="examiner-group-results"
@@ -58,11 +58,11 @@
 
         <div class="container devilry-dashboard-container">
             <h2 class="h3">
-                {% trans "Details" %}
+                {% trans "Details" context "devilry_admin assignment statistics" %}
             </h2>
             <br>
             <p class="text-muted">
-                {% blocktrans trimmed %}
+                {% blocktrans trimmed with context="devilry_admin assignment statistics" %}
                     Detailed statistics per examiner.
                 {% endblocktrans %}
             </p>
@@ -70,43 +70,43 @@
 
             {# Explaining the different sections #}
             <p>
-                {% blocktrans trimmed %}
+                {% blocktrans trimmed with context="devilry_admin assignment statistics" %}
                     What does the different sections for each examiner mean?
                 {% endblocktrans %}
             </p>
-            <strong>{% trans "Corrected groups" %}:</strong><br>
-            {% blocktrans trimmed %}
+            <strong>{% trans "Corrected groups" context "devilry_admin assignment statistics" %}:</strong><br>
+            {% blocktrans trimmed with context="devilry_admin assignment statistics" %}
                 The number of groups the examiner has corrected.
             {% endblocktrans %}
             <br><br>
-            <strong>{% trans "Groups with passing grade" %}:</strong><br>
-            {% blocktrans trimmed %}
-                The number of groups that where given a passing grade.
+            <strong>{% trans "Groups with passing grade" context "devilry_admin assignment statistics" %}:</strong><br>
+            {% blocktrans trimmed with context="devilry_admin assignment statistics" %}
+                The number of groups that where given points above or equal to the minimum required points to pass
+                configured on the assignment.
             {% endblocktrans %}
             <br><br>
-            <strong>{% trans "Groups with failing grade" %}:</strong><br>
-            {% blocktrans trimmed %}
-                The number of groups that where given a failing grade.
+            <strong>{% trans "Groups with failing grade" context "devilry_admin assignment statistics" %}:</strong><br>
+            {% blocktrans trimmed with context="devilry_admin assignment statistics" %}
+                The number of groups that where given points below the minimum required points to pass
+                configured on the assignment.
             {% endblocktrans %}
             <br><br>
-            <strong>{% trans "Groups waiting for feedback" %}:</strong><br>
-            {% blocktrans trimmed %}
-                The number of groups waiting for feedback. A group is waiting for feedback if the feedback is
-                not published, and the deadline has expired.
+            <strong>{% trans "Groups waiting for feedback" context "devilry_admin assignment statistics" %}:</strong><br>
+            {% blocktrans trimmed with context="devilry_admin assignment statistics" %}
+                The number of groups that have not been corrected yet and the deadline has expired.
             {% endblocktrans %}
             <br><br>
-            <strong>{% trans "Groups waiting for the deadline to expire" %}:</strong><br>
-            {% blocktrans trimmed %}
-                The number of groups that are waiting for the deadline to expire. A group is waiting for the deadline
-                to expire if they have not been corrected yet, and the deadline has not expired.
+            <strong>{% trans "Groups waiting for the deadline to expire" context "devilry_admin assignment statistics" %}:</strong><br>
+            {% blocktrans trimmed with context="devilry_admin assignment statistics" %}
+                The number of groups that have not been corrected yet and the deadline has not expired.
             {% endblocktrans %}
             <em>
-                {% trans "Note that students can have individual deadlines." %}
+                {% trans "Note that students can have individual deadlines." context "devilry_admin assignment statistics" %}
             </em>
             <br><br>
-            <strong>{% trans "Points" %}:</strong><br>
-            {% blocktrans trimmed %}
-                The average, highest and lowest grading points given by the examiner.
+            <strong>{% trans "Points" context "devilry_admin assignment statistics" %}:</strong><br>
+            {% blocktrans trimmed with context="devilry_admin assignment statistics" %}
+                The average, highest and lowest points given by the examiner.
             {% endblocktrans %}
             <br><br>
             <div data-ievv-jsbase-widget="examiner-details"

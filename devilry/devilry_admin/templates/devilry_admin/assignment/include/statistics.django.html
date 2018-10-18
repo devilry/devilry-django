@@ -1,0 +1,20 @@
+{% load i18n %}
+{% load cradmin_tags %}
+
+
+<div id="devilry_admin_assignment_overview_statistics">
+    <h3>
+        {% trans "Statistics" %}
+    </h3>
+    <p>
+        {% blocktrans trimmed with context="devilry_admin assignment overview statistics" %}
+            See statistics about the examiners on the assignment.
+        {% endblocktrans %}
+    </p>
+    <div id="devilry_admin_assignment_overview_statistics">
+        <a href="{% cradmin_instance_appindex_url 'statistics' %}" type="button"
+           class="btn btn-default btn-sm">
+            {% trans 'Show statistics' %}
+        </a>
+    </div>
+</div>
