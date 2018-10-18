@@ -9,7 +9,15 @@ export default class ExaminerDetailsWidget extends AbstractWidget {
     this.loading_label = this.config.loading_label
     this.chartLabel = this.config.chart_label
     this.assignmentMaxPoints = this.config.assignment_max_points
-    this.chart = null
+    this.groups_corrected_count_label = this.config.groups_corrected_count_label
+    this.groups_with_passing_grade_count_label = this.config.groups_with_passing_grade_count_label
+    this.groups_with_failing_grade_count_label = this.config.groups_with_failing_grade_count_label
+    this.groups_waiting_for_feedback_count_label = this.config.groups_waiting_for_feedback_count_label
+    this.groups_waiting_for_deadline_to_expire_count_label = this.config.groups_waiting_for_deadline_to_expire_count_label
+    this.points_label = this.config.points_label
+    this.points_average_label = this.config.points_average_label
+    this.points_highest_label = this.config.points_highest_label
+    this.points_lowest_label = this.config.points_lowest_label
 
     // Fetch data from API
     this.requestData()
@@ -32,17 +40,32 @@ export default class ExaminerDetailsWidget extends AbstractWidget {
 
     Promise.all(promises)
       .then((promiseData) => {
-        let data = []
         Object.entries(promiseData).forEach(([key, response]) => {
           let responseData = JSON.parse(response.body)
-          data.push(responseData)
+          this._addExaminerDetail(responseData)
         })
         this.isLoading = false
-        this.render(data)
       })
       .catch((error) => {
         console.error('Error:', error.toString());
       })
+  }
+
+  _buildRowLayout (leftRootElement, rightRootElement) {
+    let colLeft = new HtmlParser(`
+      <div class="col-sm-6"></div>
+    `)
+    let colRight = new HtmlParser(`
+      <div class="col-sm-6"></div>
+    `)
+    let row = new HtmlParser(`
+      <div class="row" style="margin-top: 100px;"></div>
+    `)
+    colLeft.firstRootElement.appendChild(leftRootElement)
+    colRight.firstRootElement.appendChild(rightRootElement)
+    row.firstRootElement.appendChild(colLeft.firstRootElement)
+    row.firstRootElement.appendChild(colRight.firstRootElement)
+    return row.firstRootElement
   }
 
   _addExaminerDetail (examinerDetails) {
@@ -55,82 +78,66 @@ export default class ExaminerDetailsWidget extends AbstractWidget {
     const points_average = examinerDetails.points_average
     const points_highest = examinerDetails.points_highest
     const points_lowest = examinerDetails.points_lowest
-    const groups_corrected_count_label = this.config.groups_corrected_count_label
-    const groups_with_passing_grade_count_label = this.config.groups_with_passing_grade_count_label
-    const groups_with_failing_grade_count_label = this.config.groups_with_failing_grade_count_label
-    const groups_waiting_for_feedback_count_label = this.config.groups_waiting_for_feedback_count_label
-    const groups_waiting_for_deadline_to_expire_count_label = this.config.groups_waiting_for_deadline_to_expire_count_label
-    const points_label = this.config.points_label
-    const points_average_label = this.config.points_average_label
-    const points_highest_label = this.config.points_highest_label
-    const points_lowest_label = this.config.points_lowest_label
 
     let dataParser = new HtmlParser(`
-      <div style="margin-top: 100px;">
+      <div>
         <h2>${examinerDetails.user_name}</h2>
-  
-        <p class="paragraph--nomargin"><strong>${groups_corrected_count_label}</strong></p>
+
+        <p class="paragraph--nomargin"><strong>${this.groups_corrected_count_label}</strong></p>
         <p>${groups_corrected_count}/${totalGroupCount}</p>
-  
-        <p class="paragraph--nomargin"><strong>${groups_with_passing_grade_count_label}</strong></p>
+
+        <p class="paragraph--nomargin"><strong>${this.groups_with_passing_grade_count_label}</strong></p>
         <p>${groups_with_passing_grade_count}/${totalGroupCount}</p>
-  
-        <p class="paragraph--nomargin"><strong>${groups_with_failing_grade_count_label}</strong></p>
+
+        <p class="paragraph--nomargin"><strong>${this.groups_with_failing_grade_count_label}</strong></p>
         <p>${groups_with_failing_grade_count}/${totalGroupCount}</p>
-  
-        <p class="paragraph--nomargin"><strong>${groups_waiting_for_feedback_count_label}</strong></p>
+
+        <p class="paragraph--nomargin"><strong>${this.groups_waiting_for_feedback_count_label}</strong></p>
         <p>${groups_waiting_for_feedback_count}/${totalGroupCount}</p>
-  
-        <p class="paragraph--nomargin"><strong>${groups_waiting_for_deadline_to_expire_count_label}</strong></p>
+
+        <p class="paragraph--nomargin"><strong>${this.groups_waiting_for_deadline_to_expire_count_label}</strong></p>
         <p>${groups_waiting_for_deadline_to_expire_count}/${totalGroupCount}</p>
-  
-        <p class="paragraph--nomargin"><strong>${points_label}</strong></p>
+
+        <p class="paragraph--nomargin"><strong>${this.points_label}</strong></p>
         <p>
-            ${points_average_label}: ${points_average} 
-            (${points_highest_label}: ${points_highest}, ${points_lowest_label}: ${points_lowest})
+            ${this.points_average_label}: ${points_average}
+            (${this.points_highest_label}: ${points_highest}, ${this.points_lowest_label}: ${points_lowest})
         </p>
       </div>
     `)
-    this.element.appendChild(dataParser.firstRootElement)
 
     let chartParser = new HtmlParser(`
-        <canvas width="400" height="400"></canvas>
-      `)
-      const rootElement = chartParser.firstRootElement
-      this.element.appendChild(rootElement)
+      <canvas width="400" height="400"></canvas>
+    `)
+    const chartRootElement = chartParser.firstRootElement
 
-      this.chart = new Chart(rootElement, {
-        type: 'pie',
-        data: {
-          labels: [
-            groups_with_passing_grade_count_label,
-            groups_with_failing_grade_count_label,
-            groups_waiting_for_feedback_count_label
+    const rowRootElement = this._buildRowLayout(dataParser.firstRootElement, chartRootElement)
+    this.element.appendChild(rowRootElement)
+
+    new Chart(chartRootElement, {
+      type: 'pie',
+      data: {
+        labels: [
+          this.groups_with_passing_grade_count_label,
+          this.groups_with_failing_grade_count_label,
+          this.groups_waiting_for_feedback_count_label
+        ],
+        datasets: [{
+          data: [
+            groups_with_passing_grade_count,
+            groups_with_failing_grade_count,
+            groups_waiting_for_feedback_count
           ],
-          datasets: [{
-            data: [
-              groups_with_passing_grade_count,
-              groups_with_failing_grade_count,
-              groups_waiting_for_feedback_count
-            ],
-            backgroundColor: [
-              'rgba(187, 241, 166, 1)',
-              'rgba(232, 139, 139, 1)',
-              'rgba(214, 214, 214, 1)'
-            ]
-          }]
-        },
-        options: {
-          responsive: false
-        }
-      })
+          backgroundColor: [
+            'rgba(187, 241, 166, 1)',
+            'rgba(232, 139, 139, 1)',
+            'rgba(214, 214, 214, 1)'
+          ]
+        }]
+      },
+      options: {
+        responsive: false
+      }
+    })
   }
-
-  render (dataArray) {
-    this.element.innerHTML = ''
-    for (let examinerDetails of dataArray) {
-      this._addExaminerDetail(examinerDetails)
-    }
-  }
-
 }
