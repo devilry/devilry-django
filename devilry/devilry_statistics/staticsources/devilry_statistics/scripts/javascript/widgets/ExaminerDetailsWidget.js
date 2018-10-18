@@ -7,8 +7,6 @@ export default class ExaminerDetailsWidget extends AbstractWidget {
   constructor(element, widgetInstanceId) {
     super(element, widgetInstanceId)
     this.loading_label = this.config.loading_label
-    this.chartLabel = this.config.chart_label
-    this.assignmentMaxPoints = this.config.assignment_max_points
     this.groups_corrected_count_label = this.config.groups_corrected_count_label
     this.groups_with_passing_grade_count_label = this.config.groups_with_passing_grade_count_label
     this.groups_with_failing_grade_count_label = this.config.groups_with_failing_grade_count_label
