@@ -1,0 +1,7 @@
+.. _3.4.3changelog:
+
+############################
+What is new in Devilry 3.4.3
+############################
+
+This release only fixes an static file issue from the 3.4.2 release.
