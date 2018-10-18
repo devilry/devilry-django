@@ -86,19 +86,19 @@ export default class ExaminerGroupResultWidget extends AbstractWidget {
         {
           label: this.config.passed_label,
           data: passedArray,
-          backgroundColor: 'rgba(187, 241, 166, 1)',
+          backgroundColor: '#5AA221',
           borderWidth: 1
         },
         {
           label: this.config.failed_label,
           data: failedArray,
-          backgroundColor: 'rgba(232, 139, 139, 1)',
+          backgroundColor: '#a0372f',
           borderWidth: 1
         },
         {
           label: this.config.not_corrected_label,
           data: notCorrectedArray,
-          backgroundColor: 'rgba(214, 214, 214, 1)',
+          backgroundColor: '#d6d6d6',
           borderWidth: 1
         }
       ]

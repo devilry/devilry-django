@@ -19,14 +19,11 @@
 {% endblock %}
 
 {% block content %}
-    {% if not examiners_with_published_feedbackset_exist %}
+    {% if not examiners_exist %}
         <div class="container devilry-dashboard-container">
             <p>
-                {% trans "No data available. This may be because" %}:
+                {% trans "No data available. There are no examiners assigned to any groups." %}
             </p>
-            -&nbsp;<strong>{% trans "There are no examiners assigned to any groups." %}</strong>
-            <br>
-            -&nbsp;<strong>{% trans "No feedbacks have been given yet." %}</strong>
         </div>
     {% else %}
         <div class="container devilry-dashboard-container">
@@ -37,7 +34,7 @@
             <p class="text-muted">
                 {% blocktrans trimmed %}
                     Average points given by each examiner registered on the assignment. The points are calculated by the
-                    last published feedback, this means that points awared from previous attemps are not used.
+                    last published feedback, this means that points given on previous attemps are not used.
                 {% endblocktrans %}
             </p>
             <div data-ievv-jsbase-widget="examiner-average-grading-points"
@@ -98,11 +95,14 @@
                 not published, and the deadline has expired.
             {% endblocktrans %}
             <br><br>
-            <strong>{% trans "Groups where the deadline has not expired yet" %}:</strong><br>
+            <strong>{% trans "Groups waiting for the deadline to expire" %}:</strong><br>
             {% blocktrans trimmed %}
-                The number of groups that has a deadline that has not expired yet, regardless of whether they have
-                been corrected or not.
+                The number of groups that are waiting for the deadline to expire. A group is waiting for the deadline
+                to expire if they have not been corrected yet, and the deadline has not expired.
             {% endblocktrans %}
+            <em>
+                {% trans "Note that students can have individual deadlines." %}
+            </em>
             <br><br>
             <strong>{% trans "Points" %}:</strong><br>
             {% blocktrans trimmed %}

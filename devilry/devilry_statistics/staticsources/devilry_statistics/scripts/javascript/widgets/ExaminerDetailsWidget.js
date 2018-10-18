@@ -6,16 +6,16 @@ import HtmlParser from "ievv_jsbase/lib/dom/HtmlParser";
 export default class ExaminerDetailsWidget extends AbstractWidget {
   constructor(element, widgetInstanceId) {
     super(element, widgetInstanceId)
-    this.loading_label = this.config.loading_label
-    this.groups_corrected_count_label = this.config.groups_corrected_count_label
-    this.groups_with_passing_grade_count_label = this.config.groups_with_passing_grade_count_label
-    this.groups_with_failing_grade_count_label = this.config.groups_with_failing_grade_count_label
-    this.groups_waiting_for_feedback_count_label = this.config.groups_waiting_for_feedback_count_label
-    this.groups_waiting_for_deadline_to_expire_count_label = this.config.groups_waiting_for_deadline_to_expire_count_label
-    this.points_label = this.config.points_label
-    this.points_average_label = this.config.points_average_label
-    this.points_highest_label = this.config.points_highest_label
-    this.points_lowest_label = this.config.points_lowest_label
+    this.loadingLabel = this.config.loading_label
+    this.groupsCorrectedCountLabel = this.config.groups_corrected_count_label
+    this.groupsWithPassingGradeCountLabel = this.config.groups_with_passing_grade_count_label
+    this.groupsWithFailingGradeCountLabel = this.config.groups_with_failing_grade_count_label
+    this.groupsWaitingForFeedbackCountLabel = this.config.groups_waiting_for_feedback_count_label
+    this.groupsWaitingForDeadlineToExpireCountLabel = this.config.groups_waiting_for_deadline_to_expire_count_label
+    this.pointsLabel = this.config.points_label
+    this.pointsAverageLabel = this.config.points_average_label
+    this.pointsHighestLabel = this.config.points_highest_label
+    this.pointsLowestLabel = this.config.points_lowest_label
 
     // Fetch data from API
     this.requestData()
@@ -38,6 +38,7 @@ export default class ExaminerDetailsWidget extends AbstractWidget {
 
     Promise.all(promises)
       .then((promiseData) => {
+        this.element.innerHTML = ''
         Object.entries(promiseData).forEach(([key, response]) => {
           let responseData = JSON.parse(response.body)
           this._addExaminerDetail(responseData)
@@ -51,10 +52,10 @@ export default class ExaminerDetailsWidget extends AbstractWidget {
 
   _buildRowLayout (leftRootElement, rightRootElement) {
     let colLeft = new HtmlParser(`
-      <div class="col-sm-6"></div>
+      <div class="col-sm-7 col-md-8"></div>
     `)
     let colRight = new HtmlParser(`
-      <div class="col-sm-6"></div>
+      <div class="col-sm-5 col-md-4"></div>
     `)
     let row = new HtmlParser(`
       <div class="row" style="margin-top: 100px;"></div>
@@ -68,44 +69,44 @@ export default class ExaminerDetailsWidget extends AbstractWidget {
 
   _addExaminerDetail (examinerDetails) {
     const totalGroupCount = examinerDetails.total_group_count
-    const groups_corrected_count = examinerDetails.groups_corrected_count
-    const groups_with_passing_grade_count = examinerDetails.groups_with_passing_grade_count
-    const groups_with_failing_grade_count = examinerDetails.groups_with_failing_grade_count
-    const groups_waiting_for_feedback_count = examinerDetails.groups_waiting_for_feedback_count
-    const groups_waiting_for_deadline_to_expire_count = examinerDetails.groups_waiting_for_deadline_to_expire_count
-    const points_average = examinerDetails.points_average
-    const points_highest = examinerDetails.points_highest
-    const points_lowest = examinerDetails.points_lowest
+    const groupsCorrectedCount = examinerDetails.groups_corrected_count
+    const groupsWithPassingGradeCount = examinerDetails.groups_with_passing_grade_count
+    const groupsWithFailingGradeCount = examinerDetails.groups_with_failing_grade_count
+    const groupsWaitingForFeedbackCount = examinerDetails.groups_waiting_for_feedback_count
+    const groupsWaitingForDeadlineToExpireCount = examinerDetails.groups_waiting_for_deadline_to_expire_count
+    const pointsAverage = examinerDetails.points_average
+    const pointsHighest = examinerDetails.points_highest
+    const pointsLowest = examinerDetails.points_lowest
 
     let dataParser = new HtmlParser(`
       <div>
         <h2>${examinerDetails.user_name}</h2>
 
-        <p class="paragraph--nomargin"><strong>${this.groups_corrected_count_label}</strong></p>
-        <p>${groups_corrected_count}/${totalGroupCount}</p>
+        <p class="paragraph--nomargin"><strong>${this.groupsCorrectedCountLabel}</strong></p>
+        <p>${groupsCorrectedCount}/${totalGroupCount}</p>
 
-        <p class="paragraph--nomargin"><strong>${this.groups_with_passing_grade_count_label}</strong></p>
-        <p>${groups_with_passing_grade_count}/${totalGroupCount}</p>
+        <p class="paragraph--nomargin"><strong>${this.groupsWithPassingGradeCountLabel}</strong></p>
+        <p>${groupsWithPassingGradeCount}/${totalGroupCount}</p>
 
-        <p class="paragraph--nomargin"><strong>${this.groups_with_failing_grade_count_label}</strong></p>
-        <p>${groups_with_failing_grade_count}/${totalGroupCount}</p>
+        <p class="paragraph--nomargin"><strong>${this.groupsWithFailingGradeCountLabel}</strong></p>
+        <p>${groupsWithFailingGradeCount}/${totalGroupCount}</p>
+        
+        <p class="paragraph--nomargin"><strong>${this.groupsWaitingForFeedbackCountLabel}</strong></p>
+        <p>${groupsWaitingForFeedbackCount}/${totalGroupCount}</p>
 
-        <p class="paragraph--nomargin"><strong>${this.groups_waiting_for_feedback_count_label}</strong></p>
-        <p>${groups_waiting_for_feedback_count}/${totalGroupCount}</p>
+        <p class="paragraph--nomargin"><strong>${this.groupsWaitingForDeadlineToExpireCountLabel}</strong></p>
+        <p>${groupsWaitingForDeadlineToExpireCount}/${totalGroupCount}</p>
 
-        <p class="paragraph--nomargin"><strong>${this.groups_waiting_for_deadline_to_expire_count_label}</strong></p>
-        <p>${groups_waiting_for_deadline_to_expire_count}/${totalGroupCount}</p>
-
-        <p class="paragraph--nomargin"><strong>${this.points_label}</strong></p>
+        <p class="paragraph--nomargin"><strong>${this.pointsLabel}</strong></p>
         <p>
-            ${this.points_average_label}: ${points_average}
-            (${this.points_highest_label}: ${points_highest}, ${this.points_lowest_label}: ${points_lowest})
+            ${this.pointsAverageLabel}: ${pointsAverage}
+            (${this.pointsHighestLabel}: ${pointsHighest}, ${this.pointsLowestLabel}: ${pointsLowest})
         </p>
       </div>
     `)
 
     let chartParser = new HtmlParser(`
-      <canvas width="400" height="400"></canvas>
+      <canvas width="400" height="400" style="max-width: 450px;"></canvas>
     `)
     const chartRootElement = chartParser.firstRootElement
 
@@ -116,25 +117,25 @@ export default class ExaminerDetailsWidget extends AbstractWidget {
       type: 'pie',
       data: {
         labels: [
-          this.groups_with_passing_grade_count_label,
-          this.groups_with_failing_grade_count_label,
-          this.groups_waiting_for_feedback_count_label
+          this.groupsWithPassingGradeCountLabel,
+          this.groupsWithFailingGradeCountLabel,
+          this.groupsWaitingForFeedbackCountLabel,
+          this.groupsWaitingForDeadlineToExpireCountLabel
         ],
         datasets: [{
           data: [
-            groups_with_passing_grade_count,
-            groups_with_failing_grade_count,
-            groups_waiting_for_feedback_count
+            groupsWithPassingGradeCount,
+            groupsWithFailingGradeCount,
+            groupsWaitingForFeedbackCount,
+            groupsWaitingForDeadlineToExpireCount
           ],
           backgroundColor: [
-            'rgba(187, 241, 166, 1)',
-            'rgba(232, 139, 139, 1)',
-            'rgba(214, 214, 214, 1)'
+            '#5AA221',
+            '#a0372f',
+            '#d6d6d6',
+            '#474747'
           ]
         }]
-      },
-      options: {
-        responsive: false
       }
     })
   }

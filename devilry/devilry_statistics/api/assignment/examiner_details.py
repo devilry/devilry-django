@@ -57,6 +57,13 @@ class ExaminerDetailsApi(AssignmentApiViewPreMixin, APIView):
                             'parentnode__passing_grade_min_points'),
                         then=1)
                 )),
+                groups_waiting_for_deliveries_count=models.Count(models.Case(
+                    models.When(
+                        cached_data__last_feedbackset__grading_published_datetime__isnull=True,
+                        cached_data__last_feedbackset__deadline_datetime__gt=now,
+                        then=1
+                    )
+                )),
                 groups_waiting_for_feedback_count=models.Count(models.Case(
                     models.When(
                         cached_data__last_feedbackset__grading_published_datetime__isnull=True,
@@ -65,6 +72,7 @@ class ExaminerDetailsApi(AssignmentApiViewPreMixin, APIView):
                 )),
                 groups_waiting_for_deadline_to_expire_count=models.Count(models.Case(
                     models.When(
+                        cached_data__last_feedbackset__grading_published_datetime__isnull=True,
                         cached_data__last_feedbackset__deadline_datetime__gt=now,
                         then=1)
                 )),
@@ -83,6 +91,7 @@ class ExaminerDetailsApi(AssignmentApiViewPreMixin, APIView):
             'groups_corrected_count': result.get('groups_corrected_count'),
             'groups_with_passing_grade_count': result.get('groups_with_passing_grade_count'),
             'groups_with_failing_grade_count': result.get('groups_with_failing_grade_count'),
+            'groups_waiting_for_deliveries_count': result.get('groups_waiting_for_deliveries_count'),
             'groups_waiting_for_feedback_count': result.get('groups_waiting_for_feedback_count'),
             'groups_waiting_for_deadline_to_expire_count': result.get('groups_waiting_for_deadline_to_expire_count'),
             'points_average': '{0:.2f}'.format(result.get('points_average') or 0),

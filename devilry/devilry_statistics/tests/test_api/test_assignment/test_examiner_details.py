@@ -259,7 +259,7 @@ class TestExaminerDetailsApi(test.TestCase, api_test_mixin.ApiTestMixin):
             viewkwargs={'assignment_id': assignment.id, 'relatedexaminer_id': relatedexaminer.id})
         self.assertEqual(response.data['groups_waiting_for_feedback_count'], 2)
 
-    def test_groups_waiting_for_deadline_to_pass_none(self):
+    def test_groups_waiting_for_deadline_to_expire_none(self):
         period = mommy.make('core.Period')
         assignment = mommy.make('core.Assignment', parentnode=period)
         relatedexaminer = mommy.make('core.RelatedExaminer', period=period, user__fullname='Test User')
@@ -272,7 +272,7 @@ class TestExaminerDetailsApi(test.TestCase, api_test_mixin.ApiTestMixin):
             viewkwargs={'assignment_id': assignment.id, 'relatedexaminer_id': relatedexaminer.id})
         self.assertEqual(response.data['groups_waiting_for_deadline_to_expire_count'], 0)
 
-    def test_groups_waiting_for_deadline_to_pass_multiple(self):
+    def test_groups_waiting_for_deadline_to_expire_multiple(self):
         period = mommy.make('core.Period')
         assignment = mommy.make('core.Assignment', parentnode=period)
         relatedexaminer = mommy.make('core.RelatedExaminer', period=period, user__fullname='Test User')
@@ -282,7 +282,7 @@ class TestExaminerDetailsApi(test.TestCase, api_test_mixin.ApiTestMixin):
             feedbackset_deadline_datetime=now - timezone.timedelta(days=1))
         self.__make_unpublished_group_for_relatedexaminer(
             assignment=assignment, relatedexaminer=relatedexaminer,
-            feedbackset_deadline_datetime=now - timezone.timedelta(days=1))
+            feedbackset_deadline_datetime=now + timezone.timedelta(days=1))
         self.__make_published_group_for_relatedexaminer(
             assignment=assignment, relatedexaminer=relatedexaminer, grading_points=1,
             feedbackset_deadline_datetime=now + timezone.timedelta(days=1))

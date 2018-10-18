@@ -32,7 +32,7 @@ class ExaminerAverageGradingPointsApi(AssignmentApiViewPreMixin, APIView):
     def get_result(self, queryset):
         return queryset\
             .aggregate(average_grading_points=models.Avg('cached_data__last_published_feedbackset__grading_points'))\
-            .get('average_grading_points')
+            .get('average_grading_points') or 0
 
     def get_data(self, serializer):
         relatedexaminer = self.get_relatedexaminer(relatedexaminer_id=serializer.validated_data['relatedexaminer_id'])

@@ -19,11 +19,9 @@ class Overview(DetailRoleView):
     def assignment(self):
         return self.request.cradmin_role
 
-    def __examiners_with_published_feedbackset_exist(self):
+    def __examiners_exist(self):
         return Examiner.objects\
-            .filter(
-                assignmentgroup__parentnode=self.request.cradmin_role,
-                assignmentgroup__cached_data__last_published_feedbackset__isnull=False)\
+            .filter(assignmentgroup__parentnode=self.request.cradmin_role)\
             .exists()
 
     def __get_relatedexaminer_ids(self):
@@ -63,7 +61,7 @@ class Overview(DetailRoleView):
             'groups_waiting_for_feedback_count_label': pgettext(
                 'devilry_admin assignment examiner statistics', 'Groups waiting for feedback'),
             'groups_waiting_for_deadline_to_expire_count_label': pgettext(
-                'devilry_admin assignment examiner statistics', 'Groups where the deadline has not expired'),
+                'devilry_admin assignment examiner statistics', 'Groups waiting for the deadline to expire'),
             'points_label': pgettext(
                 'devilry_admin assignment examiner statistics', 'Points'),
             'points_average_label': pgettext(
@@ -91,14 +89,13 @@ class Overview(DetailRoleView):
 
     def get_context_data(self, **kwargs):
         context = super(Overview, self).get_context_data(**kwargs)
-        default_ievv_js_base_widget_config = self.get_default_ievv_js_base_widget_config()
         context['examiner_average_point_chart_config'] = json.dumps(
             self.get_examiner_average_points_widget_config())
         context['examiner_percentage_graded_chart_config'] = json.dumps(
             self.get_examiner_percentage_grade_widget_config())
         context['examiner_detail_config'] = json.dumps(
             self.get_examiner_detail_js_base_widget_config())
-        context['examiners_with_published_feedbackset_exist'] = self.__examiners_with_published_feedbackset_exist()
+        context['examiners_exist'] = self.__examiners_exist()
         return context
 
 
