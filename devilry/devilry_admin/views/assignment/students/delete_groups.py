@@ -261,11 +261,18 @@ class BulkSelectionDeleteGroupsViewMixin(object):
 
     def form_valid(self, form):
         selected_assignment_groups = form.cleaned_data['selected_items']
+        selected_assignment_groups_count = selected_assignment_groups.count()
         selected_assignment_groups.delete()
+        success_message = self.get_success_message(delete_group_count=selected_assignment_groups_count)
+        if success_message:
+            messages.success(request=self.request, message=success_message)
         return redirect(self.get_success_url())
 
     def get_error_url(self):
         return self.request.get_full_path()
+
+    def get_success_message(self, delete_group_count):
+        return None
 
     def form_invalid(self, form):
         messages.error(self.request, self.form_invalid_message)
@@ -356,8 +363,6 @@ class ConfirmView(BulkSelectionDeleteGroupsViewMixin,
         """
         return AssignmentGroup.objects\
             .filter(parentnode_id=self.from_assignment.id)\
-            .exclude(cached_data__public_student_comment_count__gt=0)\
-            .exclude(cached_data__public_examiner_comment_count__gt=0)\
             .filter(cached_data__last_feedbackset__grading_published_datetime__isnull=False)\
             .filter(cached_data__last_feedbackset__grading_points__lt=self.from_assignment.passing_grade_min_points)
 
@@ -376,7 +381,13 @@ class ConfirmView(BulkSelectionDeleteGroupsViewMixin,
             .prefetch_related(
                 models.Prefetch('candidates', queryset=Candidate.objects.select_related(
                     'assignment_group', 'relatedstudent', 'relatedstudent__user')))\
-            .filter(candidates__relatedstudent_id__in=relatedstudents_from_failed_groups_ids)\
+            .filter(candidates__relatedstudent_id__in=relatedstudents_from_failed_groups_ids) \
+            .filter(
+                models.Q(cached_data__first_feedbackset=models.F('cached_data__last_feedbackset'))
+                &
+                models.Q(cached_data__last_published_feedbackset__isnull=True)) \
+            .exclude(cached_data__public_student_comment_count__gt=0) \
+            .exclude(cached_data__public_examiner_comment_count__gt=0) \
             .filter(cached_data__candidate_count=1)
 
     def get_form_kwargs(self):
@@ -394,16 +405,33 @@ class ConfirmView(BulkSelectionDeleteGroupsViewMixin,
         helper.form_id = 'devilry_admin_delete_groups_confirm_form'
         helper.layout = layout.Layout(
             'selected_items',
-            PrimarySubmit('delete_groups', pgettext_lazy('admin delete_groups', 'Delete students'))
+                PrimarySubmit('delete_groups', pgettext_lazy('admin delete_groups', 'Delete students'))
         )
         helper.form_action = self.request.get_full_path()
         return helper
+
+    def __get_total_candidate_count(self):
+        return Candidate.objects\
+            .filter(assignment_group__parentnode=self.request.cradmin_role)\
+            .count()
+
+    def get_success_message(self, delete_group_count):
+        return pgettext_lazy('admin delete groups confirm',
+                             'Successfully deleted %(delete_group_count)s students from the assignment') % {
+            'delete_group_count': delete_group_count
+        }
 
     def get_context_data(self, **kwargs):
         context = super(ConfirmView, self).get_context_data(**kwargs)
         context['from_assignment'] = self.from_assignment
         context['no_groups_found'] = not self.get_unfiltered_queryset_for_role(
             role=self.request.cradmin_role).exists()
+        num_candidates_total = self.__get_total_candidate_count()
+        num_to_be_deleted = self.get_unfiltered_queryset_for_role(
+            role=self.request.cradmin_role).count()
+        context['num_candidates_total'] = num_candidates_total
+        context['num_to_be_deleted'] = num_to_be_deleted
+        context['num_excluded'] = num_candidates_total - num_to_be_deleted
         context['formhelper'] = self.__get_formhelper()
         context['form'] = self.get_form()
         return context

@@ -506,6 +506,198 @@ class TestDeleteGroupsFromPreviousAssignmentConfirmView(test.TestCase, cradmin_t
         self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
         self.assertEqual(self.__get_selected_group_ids_to_be_removed(selector=mockresponse.selector), [])
 
+    def test_get_project_groups_from_current_assignment_with_student_comment_is_excluded(self):
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active')
+        past_assignment = mommy.make('core.Assignment', parentnode=testperiod)
+        current_assignment = mommy.make('core.Assignment', parentnode=testperiod)
+        related_student = mommy.make('core.RelatedStudent', period=testperiod, user__shortname='testuser1')
+
+        # Past assignment
+        past_assignment_group = mommy.make('core.AssignmentGroup', parentnode=past_assignment)
+        mommy.make('core.Candidate', relatedstudent=related_student,assignment_group=past_assignment_group)
+        self.__set_grading_points_for_last_feedbackset(cached_data=past_assignment_group.cached_data)
+
+        # Current assignment
+        current_assignment_group = mommy.make('core.AssignmentGroup', parentnode=current_assignment)
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
+            group=current_assignment_group)
+        mommy.make('core.Candidate', relatedstudent=related_student, assignment_group=current_assignment_group)
+        mommy.make('devilry_group.GroupComment', user_role=GroupComment.USER_ROLE_STUDENT, text='Test',
+                   feedback_set=feedbackset)
+
+        self.assertEqual(AssignmentGroup.objects.filter(parentnode=past_assignment).count(), 1)
+        self.assertEqual(AssignmentGroup.objects.filter(parentnode=current_assignment).count(), 1)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=current_assignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole(devilryrole='subjectadmin'),
+            viewkwargs={
+                'from_assignment_id': past_assignment.id
+            }
+        )
+        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+        self.assertEqual(self.__get_selected_group_ids_to_be_removed(selector=mockresponse.selector), [])
+
+    def test_get_project_groups_from_current_assignment_with_examiner_public_comment_is_excluded(self):
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active')
+        past_assignment = mommy.make('core.Assignment', parentnode=testperiod)
+        current_assignment = mommy.make('core.Assignment', parentnode=testperiod)
+        related_student = mommy.make('core.RelatedStudent', period=testperiod, user__shortname='testuser1')
+
+        # Past assignment
+        past_assignment_group = mommy.make('core.AssignmentGroup', parentnode=past_assignment)
+        mommy.make('core.Candidate', relatedstudent=related_student,assignment_group=past_assignment_group)
+        self.__set_grading_points_for_last_feedbackset(cached_data=past_assignment_group.cached_data)
+
+        # Current assignment
+        current_assignment_group = mommy.make('core.AssignmentGroup', parentnode=current_assignment)
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
+            group=current_assignment_group)
+        mommy.make('core.Candidate', relatedstudent=related_student, assignment_group=current_assignment_group)
+        mommy.make('devilry_group.GroupComment', user_role=GroupComment.USER_ROLE_EXAMINER, text='Test',
+                   feedback_set=feedbackset)
+
+        self.assertEqual(AssignmentGroup.objects.filter(parentnode=past_assignment).count(), 1)
+        self.assertEqual(AssignmentGroup.objects.filter(parentnode=current_assignment).count(), 1)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=current_assignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole(devilryrole='subjectadmin'),
+            viewkwargs={
+                'from_assignment_id': past_assignment.id
+            }
+        )
+        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+        self.assertEqual(self.__get_selected_group_ids_to_be_removed(selector=mockresponse.selector), [])
+
+    def test_get_project_groups_from_current_assignment_draft_comment_is_not_excluded(self):
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active')
+        past_assignment = mommy.make('core.Assignment', parentnode=testperiod)
+        current_assignment = mommy.make('core.Assignment', parentnode=testperiod)
+        related_student = mommy.make('core.RelatedStudent', period=testperiod, user__shortname='testuser1')
+
+        # Past assignment
+        past_assignment_group = mommy.make('core.AssignmentGroup', parentnode=past_assignment)
+        mommy.make('core.Candidate', relatedstudent=related_student,assignment_group=past_assignment_group)
+        self.__set_grading_points_for_last_feedbackset(cached_data=past_assignment_group.cached_data)
+
+        # Current assignment
+        current_assignment_group = mommy.make('core.AssignmentGroup', parentnode=current_assignment)
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
+            group=current_assignment_group)
+        mommy.make('core.Candidate', relatedstudent=related_student, assignment_group=current_assignment_group)
+        mommy.make('devilry_group.GroupComment', visibility=GroupComment.VISIBILITY_PRIVATE, text='Test',
+                   feedback_set=feedbackset)
+
+        self.assertEqual(AssignmentGroup.objects.filter(parentnode=past_assignment).count(), 1)
+        self.assertEqual(AssignmentGroup.objects.filter(parentnode=current_assignment).count(), 1)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=current_assignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole(devilryrole='subjectadmin'),
+            viewkwargs={
+                'from_assignment_id': past_assignment.id
+            }
+        )
+        self.assertTrue(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+        self.assertEqual(self.__get_selected_group_ids_to_be_removed(selector=mockresponse.selector),
+                         [str(current_assignment_group.id)])
+
+    def test_get_project_groups_from_current_assignment_comment_visible_to_examiners_and_admins_is_not_excluded(self):
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active')
+        past_assignment = mommy.make('core.Assignment', parentnode=testperiod)
+        current_assignment = mommy.make('core.Assignment', parentnode=testperiod)
+        related_student = mommy.make('core.RelatedStudent', period=testperiod, user__shortname='testuser1')
+
+        # Past assignment
+        past_assignment_group = mommy.make('core.AssignmentGroup', parentnode=past_assignment)
+        mommy.make('core.Candidate', relatedstudent=related_student,assignment_group=past_assignment_group)
+        self.__set_grading_points_for_last_feedbackset(cached_data=past_assignment_group.cached_data)
+
+        # Current assignment
+        current_assignment_group = mommy.make('core.AssignmentGroup', parentnode=current_assignment)
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
+            group=current_assignment_group)
+        mommy.make('core.Candidate', relatedstudent=related_student, assignment_group=current_assignment_group)
+        mommy.make('devilry_group.GroupComment', visibility=GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+                   text='Test', feedback_set=feedbackset)
+
+        self.assertEqual(AssignmentGroup.objects.filter(parentnode=past_assignment).count(), 1)
+        self.assertEqual(AssignmentGroup.objects.filter(parentnode=current_assignment).count(), 1)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=current_assignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole(devilryrole='subjectadmin'),
+            viewkwargs={
+                'from_assignment_id': past_assignment.id
+            }
+        )
+        self.assertTrue(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+        self.assertEqual(self.__get_selected_group_ids_to_be_removed(selector=mockresponse.selector),
+                         [str(current_assignment_group.id)])
+
+    def test_get_project_groups_from_current_assignment_graded_is_excluded(self):
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active')
+        past_assignment = mommy.make('core.Assignment', parentnode=testperiod)
+        current_assignment = mommy.make('core.Assignment', parentnode=testperiod)
+        related_student = mommy.make('core.RelatedStudent', period=testperiod, user__shortname='testuser1')
+
+        # Past assignment
+        past_assignment_group = mommy.make('core.AssignmentGroup', parentnode=past_assignment)
+        mommy.make('core.Candidate', relatedstudent=related_student,assignment_group=past_assignment_group)
+        self.__set_grading_points_for_last_feedbackset(cached_data=past_assignment_group.cached_data)
+
+        # Current assignment
+        current_assignment_group = mommy.make('core.AssignmentGroup', parentnode=current_assignment)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=current_assignment_group)
+        mommy.make('core.Candidate', relatedstudent=related_student, assignment_group=current_assignment_group)
+
+        self.assertEqual(AssignmentGroup.objects.filter(parentnode=past_assignment).count(), 1)
+        self.assertEqual(AssignmentGroup.objects.filter(parentnode=current_assignment).count(), 1)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=current_assignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole(devilryrole='subjectadmin'),
+            viewkwargs={
+                'from_assignment_id': past_assignment.id
+            }
+        )
+        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+        self.assertEqual(self.__get_selected_group_ids_to_be_removed(selector=mockresponse.selector), [])
+
+    def test_get_project_groups_from_current_assignment_with_new_attempt_is_excluded(self):
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active')
+        past_assignment = mommy.make('core.Assignment', parentnode=testperiod)
+        current_assignment = mommy.make('core.Assignment', parentnode=testperiod)
+        related_student = mommy.make('core.RelatedStudent', period=testperiod, user__shortname='testuser1')
+
+        # Past assignment
+        past_assignment_group = mommy.make('core.AssignmentGroup', parentnode=past_assignment)
+        mommy.make('core.Candidate', relatedstudent=related_student,assignment_group=past_assignment_group)
+        self.__set_grading_points_for_last_feedbackset(cached_data=past_assignment_group.cached_data)
+
+        # Current assignment
+        current_assignment_group = mommy.make('core.AssignmentGroup', parentnode=current_assignment)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=current_assignment_group)
+        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
+            group=current_assignment_group)
+        mommy.make('core.Candidate', relatedstudent=related_student, assignment_group=current_assignment_group)
+
+        self.assertEqual(AssignmentGroup.objects.filter(parentnode=past_assignment).count(), 1)
+        self.assertEqual(AssignmentGroup.objects.filter(parentnode=current_assignment).count(), 1)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=current_assignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole(devilryrole='subjectadmin'),
+            viewkwargs={
+                'from_assignment_id': past_assignment.id
+            }
+        )
+        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+        self.assertEqual(self.__get_selected_group_ids_to_be_removed(selector=mockresponse.selector), [])
+
     def test_get_correct_selected_items_single(self):
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
         past_assignment = mommy.make('core.Assignment', parentnode=testperiod)
@@ -596,12 +788,13 @@ class TestDeleteGroupsFromPreviousAssignmentConfirmView(test.TestCase, cradmin_t
         self.assertEqual(AssignmentGroup.objects.filter(parentnode=current_assignment).count(), 100)
 
         requestuser = mommy.make(settings.AUTH_USER_MODEL)
-        with self.assertNumQueries(6):
+        with self.assertNumQueries(8):
             # 1 query to fetch the `from_assignment`
             # 1 query to fetch assignment groups to delete
             # 1 query to count for pagination
             # 1 exists query to check if there are any groups to be deleted
             # 2 query to fill the form, one for initial queryset and for items to submit
+            # 2 counts queries for showing number of groups to delete and exclude
             self.mock_http200_getrequest_htmls(
                 requestuser=requestuser,
                 cradmin_role=current_assignment,

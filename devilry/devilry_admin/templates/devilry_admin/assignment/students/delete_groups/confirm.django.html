@@ -23,34 +23,47 @@
     <div class="container">
         <div class="devilry-dashboard-container devilry-dashboard-container-withtopmargin">
             <p>
-                {% blocktrans trimmed with from_assignment=from_assignment.long_name context 'admin delete groups confirm' %}
+                {% blocktrans trimmed with from_assignment=from_assignment.long_name context='admin delete groups confirm' %}
                     The students listed below are the students on the current assignment that failed
-                    {{ from_assignment }}, and are ready to be deleted. Some students may be excluded based on the
-                    following criteria
+                    {{ from_assignment }}, and are ready to be deleted. Students are excluded based on these criteria
                 {% endblocktrans %}:
             </p>
             <dl class="devilry-dl-indented devilry-dl-sm">
                 <dt>
-                    {% blocktrans trimmed context 'admin delete groups confirm' %}
-                        Last attempt not graded
+                    {% blocktrans trimmed with context='admin delete groups confirm' %}
+                        Already graded
                     {% endblocktrans %}
                 </dt>
                 <dd>
                     <p>
-                        {% blocktrans trimmed context 'admin delete groups confirm' %}
-                            Simply means that whether or not they have multiple attempts, the last attempt is not
-                            corrected and therefore not counted as failed.
+                        {% blocktrans trimmed with context='admin delete groups confirm' %}
+                            If a group on the current assignment has already been graded
+                            (or has been given a new attempt).
                         {% endblocktrans %}
                     </p>
                 </dd>
                 <dt>
-                    {% blocktrans trimmed context 'admin delete groups confirm' %}
+                    {% blocktrans trimmed with context='admin delete groups confirm' %}
+                        Public comment activity by students or examiners
+                    {% endblocktrans %}
+                </dt>
+                <dd>
+                    <p>
+                        {% blocktrans trimmed with context='admin delete groups confirm' %}
+                            If a group on the current assignment has public comments by either the students, examiners
+                            or both. Drafted comments, comments by admins and comments only visible to examiners and
+                            admins are not considered public comment activity.
+                        {% endblocktrans %}
+                    </p>
+                </dd>
+                <dt>
+                    {% blocktrans trimmed with context='admin delete groups confirm' %}
                         More than one student
                     {% endblocktrans %}
                 </dt>
                 <dd>
                     <p>
-                        {% blocktrans trimmed context 'admin delete groups confirm' %}
+                        {% blocktrans trimmed with context='admin delete groups confirm' %}
                             If a project group on the current assignment has more than one student
                             (a collaborative group). You can still delete this project group manually, or split and then
                             delete if you only want to delete one of the students in the project group.
@@ -66,9 +79,20 @@
     {% if no_groups_found %}
         <div class="container django-cradmin-container-focus django-cradmin-container-focus-warning
                     devilry-admin-delete-groups-confirm-no-groups">
-            {% trans "No students matching your selection found." %}
+            {% trans "No students found." %}
         </div>
     {% else %}
+        <div class="container">
+            <div class="devilry-dashboard-container">
+                <strong>
+                    <p>
+                        {% blocktrans trimmed with delete_count=num_to_be_deleted total_count=num_candidates_total num_excluded=num_excluded context='admin delete groups confirm' %}
+                            {{ delete_count }} students can be deleted. {{ num_excluded }} students have been excluded.
+                        {% endblocktrans %}
+                    </p>
+                </strong>
+            </div>
+        </div>
         {{ block.super }}
         <div class="container text-right">
             {% crispy form formhelper %}
