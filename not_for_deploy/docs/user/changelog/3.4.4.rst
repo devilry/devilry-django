@@ -1,0 +1,12 @@
+.. _3.4.4changelog:
+
+############################
+What is new in Devilry 3.4.4
+############################
+
+
+Bug fix
+#######
+(ADMINS):
+    - Fix bug in view for removing students on assignment that failed a selected assignment.
+      Updated description text.
