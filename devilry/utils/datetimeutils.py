@@ -105,8 +105,6 @@ def datetime_with_same_time(timesource_datetime, target_datetime):
     Returns a new datetime object with the same day as the given ``target_datetime``,
     with the time replaced with the time from ``timesource_datetime``.
     """
-    timesource_datetime = timezone.localtime(timesource_datetime)
-    target_datetime = timezone.localtime(target_datetime)
     return target_datetime.replace(hour=timesource_datetime.hour,
                                    minute=timesource_datetime.minute,
                                    second=timesource_datetime.second,
