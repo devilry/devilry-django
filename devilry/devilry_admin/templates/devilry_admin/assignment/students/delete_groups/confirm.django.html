@@ -25,26 +25,26 @@
             <p>
                 {% blocktrans trimmed with from_assignment=from_assignment.long_name context='admin delete groups confirm' %}
                     The students listed below are the students on the current assignment that failed
-                    {{ from_assignment }}, and are ready to be deleted. Students are excluded based on these criteria
+                    {{ from_assignment }}, and are ready to be deleted. Students will not be included if
                 {% endblocktrans %}:
             </p>
             <dl class="devilry-dl-indented devilry-dl-sm">
                 <dt>
                     {% blocktrans trimmed with context='admin delete groups confirm' %}
-                        Already graded
+                        The group has already been corrected
                     {% endblocktrans %}
                 </dt>
                 <dd>
                     <p>
                         {% blocktrans trimmed with context='admin delete groups confirm' %}
-                            If a group on the current assignment has already been graded
+                            If a group on the current assignment has already been corrected
                             (or has been given a new attempt).
                         {% endblocktrans %}
                     </p>
                 </dd>
                 <dt>
                     {% blocktrans trimmed with context='admin delete groups confirm' %}
-                        Public comment activity by students or examiners
+                        The group has public comment activity by students or examiners
                     {% endblocktrans %}
                 </dt>
                 <dd>
@@ -58,7 +58,7 @@
                 </dd>
                 <dt>
                     {% blocktrans trimmed with context='admin delete groups confirm' %}
-                        More than one student
+                        The group has more than one student
                     {% endblocktrans %}
                 </dt>
                 <dd>
