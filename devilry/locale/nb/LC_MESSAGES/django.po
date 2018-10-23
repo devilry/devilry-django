@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-18 13:42+0200\n"
-"PO-Revision-Date: 2018-10-18 13:45+0200\n"
+"POT-Creation-Date: 2018-10-23 12:26+0200\n"
+"PO-Revision-Date: 2018-10-23 12:29+0200\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -1654,6 +1654,18 @@ msgctxt "admin assignment overview"
 msgid "You do not have access to change this setting."
 msgstr "Du har ikke tilgang til å endre denne innstillingen."
 
+#: devilry/devilry_admin/templates/devilry_admin/assignment/include/statistics.django.html:7
+msgid "Statistics"
+msgstr "Statistikk"
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/include/statistics.django.html:10
+msgid "See statistics about the examiners on the assignment."
+msgstr "Se statistikk om rettere på oppgaven."
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/include/statistics.django.html:17
+msgid "Show statistics"
+msgstr "Vis statistikk"
+
 #: devilry/devilry_admin/templates/devilry_admin/assignment/include/students.django.html:6
 msgid "Manage students"
 msgstr "Administrer studenter"
@@ -1734,18 +1746,6 @@ msgstr "nedlasting er klar"
 #: devilry/devilry_admin/templates/devilry_admin/assignment/overview.django.html:22
 msgid "Edit name"
 msgstr "Rediger navn"
-
-#: devilry/devilry_admin/templates/devilry_admin/assignment/overview.django.html:54
-msgid "Statistics"
-msgstr "Statistikk"
-
-#: devilry/devilry_admin/templates/devilry_admin/assignment/overview.django.html:57
-msgid "See statistics about the examiners on the assignment."
-msgstr "Se statistikk om rettere på oppgaven."
-
-#: devilry/devilry_admin/templates/devilry_admin/assignment/overview.django.html:64
-msgid "Show statistics"
-msgstr "Vis statistikk"
 
 #: devilry/devilry_admin/templates/devilry_admin/assignment/passed_previous_period/assignment-item-value.django.html:8
 msgid "(max points/passing grade)"
@@ -2081,7 +2081,6 @@ msgid "You selected"
 msgstr "Du valgte"
 
 #: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/confirm.django.html:33
-#: devilry/devilry_admin/templates/devilry_admin/assignment/students/delete_groups/confirm.django.html:69
 msgid "No students matching your selection found."
 msgstr "Fant ingen studenter som samsvarer med ditt valg."
 
@@ -2231,51 +2230,75 @@ msgstr "Publisert"
 
 #: devilry/devilry_admin/templates/devilry_admin/assignment/students/delete_groups/confirm.django.html:26
 #, python-format
-msgctxt "admin delete groups confirm"
 msgid ""
 "The students listed below are the students on the current assignment that "
-"failed %(from_assignment)s, and are ready to be deleted. Some students may "
-"be excluded based on the following criteria"
+"failed %(from_assignment)s, and are ready to be deleted. Students will not "
+"be included if"
 msgstr ""
 "Studentene listet under er studenter på denne oppgaven som ikke bestod "
-"%(from_assignment)s, og er klare for å bli slettet. Noen student kan bli "
-"ekskludert fra slettingen basert på følgende kriterier"
+"%(from_assignment)s, og er klare for å bli slettet. Studenter blir ikke tatt "
+"med hvis"
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/students/delete_groups/confirm.django.html:34
-msgctxt "admin delete groups confirm"
-msgid "Last attempt not graded"
-msgstr "Siste forsøk er ikke rettet"
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/delete_groups/confirm.django.html:33
+msgid "The group has already been corrected"
+msgstr "Gruppen har blitt rettet"
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/students/delete_groups/confirm.django.html:40
-msgctxt "admin delete groups confirm"
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/delete_groups/confirm.django.html:39
 msgid ""
-"Simply means that whether or not they have multiple attempts, the last "
-"attempt is not corrected and therefore not counted as failed."
+"If a group on the current assignment has already been corrected (or has been "
+"given a new attempt)."
 msgstr ""
-"Uavhengig av hvor mange forsøk studenten har, så er ikke siste forsøk rettet "
-"og anses ikke som et feilet forsøk."
+"Hvis en gruppe på nåværende oppgave har blitt rettet (eller har fått et nytt "
+"forsøk)."
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/students/delete_groups/confirm.django.html:47
-msgctxt "admin delete groups confirm"
-msgid "More than one student"
-msgstr "Mer enn én student"
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/delete_groups/confirm.django.html:46
+msgid "The group has public comment activity by students or examiners"
+msgstr "Gruppen har kommentarer synlige for alle fra studenter eller rettere"
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/students/delete_groups/confirm.django.html:53
-msgctxt "admin delete groups confirm"
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/delete_groups/confirm.django.html:52
+msgid ""
+"If a group on the current assignment has public comments by either the "
+"students, examiners or both. Drafted comments, comments by admins and "
+"comments only visible to examiners and admins are not considered public "
+"comment activity."
+msgstr ""
+"Hvis en gruppe på den nåværende oppgaven har kommentarer synlig for alle og "
+"er publisert av studenter eller rettere. Det tas ikke hensyn til utkast, "
+"kommentarer fra administratorer og kommentarer som kun er synlige for "
+"administratorer og rettere."
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/delete_groups/confirm.django.html:60
+msgid "The group has more than one student"
+msgstr "Gruppen har mer enn én student"
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/delete_groups/confirm.django.html:66
 msgid ""
 "If a project group on the current assignment has more than one student (a "
 "collaborative group). You can still delete this project group manually, or "
 "split and then delete if you only want to delete one of the students in the "
 "project group."
 msgstr ""
-"Hvis en gruppe på oppgaven har mer enn én student. Du kan fortsatt slette "
-"denne gruppen manuelt, eller splitte og deretter slette hvis du kun vil "
-"slette en av studentene."
+"Hvis en gruppe på oppgaven har mer enn én student (en prosjektgruppe). Du "
+"kan fortsatt slette denne gruppen manuelt, eller splitte og deretter slette "
+"hvis du kun vil slette en av studentene."
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/students/delete_groups/confirm.django.html:62
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/delete_groups/confirm.django.html:75
 msgctxt "admin delete groups confirm"
 msgid "Manually delete groups"
-msgstr "Slette grupper manuelt"
+msgstr "Slett grupper manuelt"
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/delete_groups/confirm.django.html:82
+msgid "No students found."
+msgstr "Fant ingen studenter."
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/delete_groups/confirm.django.html:89
+#, python-format
+msgid ""
+"%(delete_count)s students can be deleted. %(num_excluded)s students have "
+"been excluded."
+msgstr ""
+"%(delete_count)s studenter kan bli slettet. %(num_excluded)s har blitt "
+"ekskludert."
 
 #: devilry/devilry_admin/templates/devilry_admin/assignment/students/groupdetails/view.django.html:31
 msgid "View feedback details"
@@ -3620,7 +3643,7 @@ msgstr "Alle studenter i %(period)s"
 #, python-format
 msgctxt "admin create_groups"
 msgid "Confirm that you want to add the following students to %(assignment)s"
-msgstr "Bekreft at du vill legge til de følgende studentene i %(assignment)s"
+msgstr "Bekreft at du vil legge til de følgende studentene i %(assignment)s"
 
 #: devilry/devilry_admin/views/assignment/students/create_groups.py:346
 #: devilry/devilry_admin/views/assignment/students/create_groups.py:364
@@ -3766,19 +3789,26 @@ msgstr ""
 "tilhørende oppgaven eller semesteret samtidig som du gjorde dine valg. "
 "Vennligst prøv igjen."
 
-#: devilry/devilry_admin/views/assignment/students/delete_groups.py:309
 #: devilry/devilry_admin/views/assignment/students/delete_groups.py:316
+#: devilry/devilry_admin/views/assignment/students/delete_groups.py:323
 #, python-format
 msgctxt "admin delete_groups"
 msgid ""
 "Confirm that you want to delete students that failed %(from_assignment_name)s"
 msgstr ""
-"Bekreft at du vill slette studenter som ikke bestod %(from_assignment_name)s"
+"Bekreft at du vil slette studenter som ikke bestod %(from_assignment_name)s"
 
-#: devilry/devilry_admin/views/assignment/students/delete_groups.py:397
+#: devilry/devilry_admin/views/assignment/students/delete_groups.py:408
 msgctxt "admin delete_groups"
 msgid "Delete students"
 msgstr "Slett studenter"
+
+#: devilry/devilry_admin/views/assignment/students/delete_groups.py:420
+#, python-format
+msgctxt "admin delete groups confirm"
+msgid ""
+"Successfully deleted %(delete_group_count)s students from the assignment"
+msgstr "Slettet %(delete_group_count)s studenter fra denne oppgaven"
 
 #: devilry/devilry_admin/views/assignment/students/groupview_base.py:183
 msgctxt "admin group multiselect submit"
@@ -7042,6 +7072,21 @@ msgstr "Engelsk"
 #: devilry/project/common/settings.py:170
 msgid "Norwegian Bokmal"
 msgstr "Norsk bokmål"
+
+#~ msgid "Already graded"
+#~ msgstr "Allerede rettet"
+
+#~ msgctxt "admin delete groups confirm"
+#~ msgid "Last attempt not graded"
+#~ msgstr "Siste forsøk er ikke rettet"
+
+#~ msgctxt "admin delete groups confirm"
+#~ msgid ""
+#~ "Simply means that whether or not they have multiple attempts, the last "
+#~ "attempt is not corrected and therefore not counted as failed."
+#~ msgstr ""
+#~ "Uavhengig av hvor mange forsøk studenten har, så er ikke siste forsøk "
+#~ "rettet og anses ikke som et feilet forsøk."
 
 #~ msgid "The number of groups that where given a passing grade."
 #~ msgstr "Antallet grupper med bestått karakter."
