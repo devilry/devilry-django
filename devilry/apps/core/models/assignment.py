@@ -866,14 +866,14 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         WARNING: This will not work if :meth:`.has_valid_grading_setup` is not ``True``.
         """
         if self.points_to_grade_mapper == self.POINTS_TO_GRADE_MAPPER_PASSED_FAILED:
-            if points == 0:
-                return pgettext_lazy(
-                    'assignment grade passed-or-failed',
-                    'failed')
-            else:
+            if self.points_is_passing_grade(points=points):
                 return pgettext_lazy(
                     'assignment grade passed-or-failed',
                     'passed')
+            else:
+                return pgettext_lazy(
+                    'assignment grade passed-or-failed',
+                    'failed')
         elif self.points_to_grade_mapper == self.POINTS_TO_GRADE_MAPPER_RAW_POINTS:
             return u'{}/{}'.format(points, self.max_points)
         elif self.points_to_grade_mapper == self.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE:
