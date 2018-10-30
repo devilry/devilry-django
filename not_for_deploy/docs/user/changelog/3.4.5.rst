@@ -1,0 +1,10 @@
+.. _3.4.5changelog:
+
+############################
+What is new in Devilry 3.4.5
+############################
+
+
+Bug fix
+#######
+Fixed bug that ignored the passing grade point threshold.
