@@ -1210,6 +1210,18 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             'groupid': self.id
         }
 
+    def get_unanonymized_short_displayname(self):
+        candidates = self.candidates.all()
+        names = [candidate.relatedstudent.user.shortname for candidate in candidates]
+        out = u', '.join(names)
+        if out:
+            if self.name:
+                return self.name
+            else:
+                return out
+        else:
+            return self.__get_no_candidates_nonanonymous_displayname()
+
     def get_short_displayname(self, assignment=None):
         assignment = assignment or self.assignment
         if assignment.is_anonymous:

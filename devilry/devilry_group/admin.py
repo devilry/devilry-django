@@ -3,7 +3,45 @@ from devilry.devilry_group import models
 
 
 class FeedbackSetAdmin(admin.ModelAdmin):
-    pass
+    list_display = [
+        'id',
+        'group_id',
+        'get_students',
+        'deadline_datetime',
+        'feedbackset_type',
+        'grading_published_datetime',
+        'grading_points'
+    ]
+    raw_id_fields = [
+        'group',
+        'created_by',
+        'last_updated_by',
+        'grading_published_by'
+    ]
+    readonly_fields = [
+        'feedbackset_type',
+        'gradeform_data_json'
+    ]
+    search_fields = [
+        '=group__id',
+        'group__parentnode__short_name',
+        'group__parentnode__long_name',
+        'group__parentnode__parentnode__short_name',
+        'group__parentnode__parentnode__long_name',
+        'group__parentnode__parentnode__parentnode__short_name',
+        'group__parentnode__parentnode__parentnode__long_name',
+        'group__candidates__relatedstudent__user__shortname'
+    ]
+
+    list_filter = [
+        'created_datetime',
+        'deadline_datetime',
+        'grading_published_datetime'
+    ]
+
+    def get_students(self, obj):
+        return obj.group.get_unanonymized_short_displayname()
+    get_students.short_description = 'Students'
 
 
 admin.site.register(models.FeedbackSet, FeedbackSetAdmin)
