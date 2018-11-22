@@ -283,3 +283,161 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
         self.assertEquals(studentinfo.alltext_normalized, '{} {}'.format(relatedstudent.user.fullname,
                                                                          relatedstudent.user.shortname))
         self.assertEquals(mockresponse.selector.one('.devilry-qualifiesforexam-cell-qualify').alltext_normalized, 'YES')
+
+    def __make_related_student(self, period, fullname, lastname, shortname, candidate_id=None):
+        user = mommy.make(settings.AUTH_USER_MODEL, fullname=fullname, lastname=lastname, shortname=shortname)
+        relatedstudent = mommy.make('core.RelatedStudent', period=period, user=user, candidate_id=candidate_id)
+        return relatedstudent
+
+    def __make_qualification_item(self, status, relatedstudent, qualifies=True):
+        return mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+                          status=status, relatedstudent=relatedstudent, qualifies=qualifies)
+
+    def test_table_default_ordering_lastname(self):
+        testperiod = mommy.make('core.Period')
+        relatedstudent1 = self.__make_related_student(
+            period=testperiod, fullname='A C', lastname='C', shortname='ac@example.com')
+        relatedstudent2 = self.__make_related_student(
+            period=testperiod, fullname='B B', lastname='B', shortname='bb@example.com')
+        relatedstudent3 = self.__make_related_student(
+            period=testperiod, fullname='C A', lastname='A', shortname='ca@example.com')
+
+        teststatus = mommy.make('devilry_qualifiesforexam.Status', period=testperiod)
+        self.__make_qualification_item(teststatus, relatedstudent1)
+        self.__make_qualification_item(teststatus, relatedstudent2)
+        self.__make_qualification_item(teststatus, relatedstudent3)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod,
+            viewkwargs={
+                'statusid': teststatus.id
+            })
+        student_list = mockresponse.selector.list('.devilry-qualifiesforexam-cell-studentinfo')
+        self.assertEqual(len(student_list), 3)
+        self.assertEqual(student_list[0].alltext_normalized, 'C A ca@example.com')
+        self.assertEqual(student_list[1].alltext_normalized, 'B B bb@example.com')
+        self.assertEqual(student_list[2].alltext_normalized, 'A C ac@example.com')
+
+    def test_table_default_ordering_lastname_if_order_by_param_is_not_supported(self):
+        testperiod = mommy.make('core.Period')
+        relatedstudent1 = self.__make_related_student(
+            period=testperiod, fullname='A C', lastname='C', shortname='ac@example.com')
+        relatedstudent2 = self.__make_related_student(
+            period=testperiod, fullname='B B', lastname='B', shortname='bb@example.com')
+        relatedstudent3 = self.__make_related_student(
+            period=testperiod, fullname='C A', lastname='A', shortname='ca@example.com')
+
+        teststatus = mommy.make('devilry_qualifiesforexam.Status', period=testperiod)
+        self.__make_qualification_item(teststatus, relatedstudent1)
+        self.__make_qualification_item(teststatus, relatedstudent2)
+        self.__make_qualification_item(teststatus, relatedstudent3)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod,
+            viewkwargs={
+                'statusid': teststatus.id
+            },
+            requestkwargs={'data': {'order_by': 'asd'}})
+        student_list = mockresponse.selector.list('.devilry-qualifiesforexam-cell-studentinfo')
+        self.assertEqual(len(student_list), 3)
+        self.assertEqual(student_list[0].alltext_normalized, 'C A ca@example.com')
+        self.assertEqual(student_list[1].alltext_normalized, 'B B bb@example.com')
+        self.assertEqual(student_list[2].alltext_normalized, 'A C ac@example.com')
+
+    def test_table_order_by_lastname_sanity(self):
+        testperiod = mommy.make('core.Period')
+        relatedstudent1 = self.__make_related_student(
+            period=testperiod, fullname='A C', lastname='C', shortname='ac@example.com')
+        relatedstudent2 = self.__make_related_student(
+            period=testperiod, fullname='B B', lastname='B', shortname='bb@example.com')
+        relatedstudent3 = self.__make_related_student(
+            period=testperiod, fullname='C A', lastname='A', shortname='ca@example.com')
+
+        teststatus = mommy.make('devilry_qualifiesforexam.Status', period=testperiod)
+        self.__make_qualification_item(teststatus, relatedstudent1)
+        self.__make_qualification_item(teststatus, relatedstudent2)
+        self.__make_qualification_item(teststatus, relatedstudent3)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod,
+            viewkwargs={
+                'statusid': teststatus.id
+            },
+            requestkwargs={'data': {'order_by': 'lastname'}})
+        student_list = mockresponse.selector.list('.devilry-qualifiesforexam-cell-studentinfo')
+        self.assertEqual(len(student_list), 3)
+        self.assertEqual(student_list[0].alltext_normalized, 'C A ca@example.com')
+        self.assertEqual(student_list[1].alltext_normalized, 'B B bb@example.com')
+        self.assertEqual(student_list[2].alltext_normalized, 'A C ac@example.com')
+
+    def test_table_order_by_username(self):
+        testperiod = mommy.make('core.Period')
+        relatedstudent1 = self.__make_related_student(
+            period=testperiod, fullname='C A', lastname='A', shortname='ca@example.com')
+        relatedstudent2 = self.__make_related_student(
+            period=testperiod, fullname='B B', lastname='B', shortname='bb@example.com')
+        relatedstudent3 = self.__make_related_student(
+            period=testperiod, fullname='A C', lastname='C', shortname='ac@example.com')
+
+        teststatus = mommy.make('devilry_qualifiesforexam.Status', period=testperiod)
+        self.__make_qualification_item(teststatus, relatedstudent1)
+        self.__make_qualification_item(teststatus, relatedstudent2)
+        self.__make_qualification_item(teststatus, relatedstudent3)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod,
+            viewkwargs={
+                'statusid': teststatus.id
+            },
+            requestkwargs={'data': {'order_by': 'username'}})
+        student_list = mockresponse.selector.list('.devilry-qualifiesforexam-cell-studentinfo')
+        self.assertEqual(len(student_list), 3)
+        self.assertEqual(student_list[0].alltext_normalized, 'A C ac@example.com')
+        self.assertEqual(student_list[1].alltext_normalized, 'B B bb@example.com')
+        self.assertEqual(student_list[2].alltext_normalized, 'C A ca@example.com')
+
+    def test_table_order_by_fullname(self):
+        testperiod = mommy.make('core.Period')
+        relatedstudent1 = self.__make_related_student(
+            period=testperiod, fullname='C A', lastname='A', shortname='a@example.com')
+        relatedstudent2 = self.__make_related_student(
+            period=testperiod, fullname='B B', lastname='B', shortname='b@example.com')
+        relatedstudent3 = self.__make_related_student(
+            period=testperiod, fullname='A C', lastname='C', shortname='c@example.com')
+
+        teststatus = mommy.make('devilry_qualifiesforexam.Status', period=testperiod)
+        self.__make_qualification_item(teststatus, relatedstudent1)
+        self.__make_qualification_item(teststatus, relatedstudent2)
+        self.__make_qualification_item(teststatus, relatedstudent3)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod,
+            viewkwargs={
+                'statusid': teststatus.id
+            },
+            requestkwargs={'data': {'order_by': 'fullname'}})
+        student_list = mockresponse.selector.list('.devilry-qualifiesforexam-cell-studentinfo')
+        self.assertEqual(len(student_list), 3)
+        self.assertEqual(student_list[0].alltext_normalized, 'A C c@example.com')
+        self.assertEqual(student_list[1].alltext_normalized, 'B B b@example.com')
+        self.assertEqual(student_list[2].alltext_normalized, 'C A a@example.com')
+
+    def test_table_order_by_candidate_id(self):
+        testperiod = mommy.make('core.Period')
+        relatedstudent1 = self.__make_related_student(
+            period=testperiod, fullname='C C', lastname='C', shortname='c@example.com', candidate_id='1')
+        relatedstudent2 = self.__make_related_student(
+            period=testperiod, fullname='B B', lastname='B', shortname='b@example.com', candidate_id='3')
+        relatedstudent3 = self.__make_related_student(
+            period=testperiod, fullname='A A', lastname='A', shortname='a@example.com', candidate_id='2')
+
+        teststatus = mommy.make('devilry_qualifiesforexam.Status', period=testperiod)
+        self.__make_qualification_item(teststatus, relatedstudent1)
+        self.__make_qualification_item(teststatus, relatedstudent2)
+        self.__make_qualification_item(teststatus, relatedstudent3)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod,
+            viewkwargs={
+                'statusid': teststatus.id
+            },
+            requestkwargs={'data': {'order_by': 'candidateid'}})
+        student_list = mockresponse.selector.list('.devilry-qualifiesforexam-cell-studentinfo')
+        self.assertEqual(len(student_list), 3)
+        self.assertEqual(student_list[0].alltext_normalized, 'C C c@example.com')
+        self.assertEqual(student_list[1].alltext_normalized, 'A A a@example.com')
+        self.assertEqual(student_list[2].alltext_normalized, 'B B b@example.com')

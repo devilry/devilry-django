@@ -1,9 +1,8 @@
-# # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
 # Django imports
 from django import forms
-from django.contrib import messages
 from django.utils.translation import ugettext_lazy
 from django.views import generic
 from django.core.exceptions import PermissionDenied
@@ -26,6 +25,19 @@ class AbstractQualificationPreviewView(generic.FormView):
     """
     form_class = forms.Form
 
+    def get_order_by_queryparam(self):
+        return self.request.GET.get('order_by', '')
+
+    def get_order_by(self):
+        order_by = self.get_order_by_queryparam()
+        if order_by == 'fullname':
+            return 'user__fullname'
+        if order_by == 'username':
+            return 'user__shortname'
+        if order_by == 'candidateid':
+            return 'candidate_id'
+        return 'user__lastname'
+
     def get_relatedstudents_queryset(self, period):
         """
         Get all the :class:`~.devilry.apps.core.models.RelatedStudent`s for ``period``.
@@ -36,9 +48,11 @@ class AbstractQualificationPreviewView(generic.FormView):
         Returns:
             QuerySet: QuerySet for :class:`~.devilry.apps.core.models.RelatedStudent`
         """
-        return core_models.RelatedStudent.objects.filter(period=period)\
+        order_by = self.get_order_by()
+        queryset = core_models.RelatedStudent.objects.filter(period=period) \
             .select_related('user')\
-            .order_by('user__fullname')
+            .order_by(order_by, 'user__shortname')
+        return queryset
 
     def _get_tablebuilder(self, relatedstudents, qualifying_studentids):
         """
@@ -211,6 +225,7 @@ class QualificationStatusView(PrefetchStatusInfoMixin, AbstractQualificationPrev
         qualifiesforexam = list(current_status.students.all())
         qualifying_studentids = [q.relatedstudent.id for q in qualifiesforexam if q.qualifies]
         relatedstudents = self.get_relatedstudents_queryset(self.request.cradmin_role)
+        context_data['order_by_queryparam'] = self.get_order_by_queryparam()
         context_data['num_students_qualify'] = len(qualifying_studentids)
         context_data['num_students'] = len(relatedstudents)
         context_data['table'] = self._get_tablebuilder(
@@ -229,6 +244,19 @@ class PrintStatusView(PrefetchStatusInfoMixin, generic.TemplateView):
     """
     template_name = 'devilry_qualifiesforexam/print_view.html'
 
+    def get_order_by_queryparam(self):
+        return self.request.GET.get('order_by', '')
+
+    def get_order_by(self):
+        order_by = self.get_order_by_queryparam()
+        if order_by == 'fullname':
+            return 'relatedstudent__user__fullname'
+        if order_by == 'username':
+            return 'relatedstudent__user__shortname'
+        if order_by == 'candidateid':
+            return 'relatedstudent__candidate_id'
+        return 'relatedstudent__user__lastname'
+
     def get_context_data(self, **kwargs):
         context_data = super(PrintStatusView, self).get_context_data(**kwargs)
         status = self._get_status(self.kwargs['statusid'])
@@ -236,11 +264,13 @@ class PrintStatusView(PrefetchStatusInfoMixin, generic.TemplateView):
         nonqualifying_students = []
 
         # Add qualifying and non-qualifying students
-        for qualification in list(status.students.all()):
+        order_by = self.get_order_by()
+        for qualification in status.students.order_by(order_by, 'relatedstudent__user__shortname'):
             if qualification.qualifies:
                 qualifying_students.append(qualification.relatedstudent)
             else:
                 nonqualifying_students.append(qualification.relatedstudent)
+        context_data['order_by_queryparam'] = self.get_order_by_queryparam()
         context_data['period'] = status.period
         context_data['qualifying_students'] = qualifying_students
         context_data['nonqualifying_students'] = nonqualifying_students

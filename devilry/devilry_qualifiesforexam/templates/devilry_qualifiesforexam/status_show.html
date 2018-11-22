@@ -42,12 +42,37 @@
                     {% trans "Retract" %}
                 </a>
                 <a id="devilry_qualifiesforexam_print_link" class="btn btn-primary"
-                    href="{% cradmin_instance_url 'qualifiesforexam' 'print-status' status.id %}">
+                    href="{% cradmin_instance_url 'qualifiesforexam' 'print-status' status.id %}?order_by={{ order_by_queryparam }}">
                     {% trans "print" %}
                 </a>
+                <div>
+                    {% trans 'Order by' context 'qualifies-for-exam-order-by-lastname' %}:
+                    <select onchange="onOrderChange(event)">
+                      <option value="lastname" {% if order_by_queryparam == "lastname" %}selected{% endif %}>
+                          {% trans 'Last name' context 'qualifies-for-exam-order-by-lastname' %}
+                      </option>
+                      <option value="fullname" {% if order_by_queryparam == "fullname" %}selected{% endif %}>
+                          {% trans 'Full name' context 'qualifies-for-exam-order-by-fullname' %}
+                      </option>
+                      <option value="username" {% if order_by_queryparam == "username" %}selected{% endif %}>
+                          {% trans 'Username' context 'qualifies-for-exam-order-by-username' %}
+                      </option>
+                      <option value="candidateid" {% if order_by_queryparam == "candidateid" %}selected{% endif %}>
+                          {% trans 'Candidate ID' context 'qualifies-for-exam-order-by-candidateid' %}
+                      </option>
+                    </select>
+                </div>
             {% endif %}
         </p>
         {% cradmin_render_renderable table %}
-{#        {% include "devilry_qualifiesforexam/includes/qualification_table.django.html" %}#}
     </div>
 {% endblock content %}
+
+{% block end-of-body %}
+    <script type="text/javascript">
+        function onOrderChange (e) {
+          let value = e.target.value
+          window.location.search = "?order_by=" + value
+        }
+    </script>
+{% endblock end-of-body %}

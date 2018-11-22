@@ -17,9 +17,29 @@
 
     <h1>{{ period }}</h1>
     <br>
+
     <a id="devilry_qualifiesforexam_print_link" class="btn btn-primary no-print" onclick="window.print();">
         {% trans "print" %}
     </a>
+
+    <div class="no-print">
+        {% trans 'Order by' context 'qualifies-for-exam-order-by-lastname' %}:
+        <select onchange="onOrderChange(event)">
+          <option value="lastname" {% if order_by_queryparam == "lastname" %}selected{% endif %}>
+              {% trans 'Last name' context 'qualifies-for-exam-order-by-lastname' %}
+          </option>
+          <option value="fullname" {% if order_by_queryparam == "fullname" %}selected{% endif %}>
+              {% trans 'Full name' context 'qualifies-for-exam-order-by-fullname' %}
+          </option>
+          <option value="username" {% if order_by_queryparam == "username" %}selected{% endif %}>
+              {% trans 'Username' context 'qualifies-for-exam-order-by-username' %}
+          </option>
+          <option value="candidateid" {% if order_by_queryparam == "candidateid" %}selected{% endif %}>
+              {% trans 'Candidate ID' context 'qualifies-for-exam-order-by-candidateid' %}
+          </option>
+        </select>
+    </div>
+
     <br>
     <h1>
         {% trans "Qualified for final exams" %}
@@ -46,3 +66,12 @@
     {% endfor %}
     </ul>
 {% endblock %}
+
+{% block end-of-body %}
+    <script type="text/javascript">
+        function onOrderChange (e) {
+          let value = e.target.value
+          window.location.search = "?order_by=" + value
+        }
+    </script>
+{% endblock end-of-body %}
