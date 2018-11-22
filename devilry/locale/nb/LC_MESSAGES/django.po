@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-23 12:26+0200\n"
-"PO-Revision-Date: 2018-10-23 12:29+0200\n"
+"POT-Creation-Date: 2018-11-22 15:03+0100\n"
+"PO-Revision-Date: 2018-11-22 15:05+0100\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -21,20 +21,20 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.2\n"
 
-#: devilry/apps/core/admin.py:58
+#: devilry/apps/core/admin.py:66
 msgid "Admins"
 msgstr "Admins"
 
-#: devilry/apps/core/admin.py:89 devilry/apps/core/admin.py:117
-#: devilry/apps/core/admin.py:181 devilry/apps/core/models/period.py:196
+#: devilry/apps/core/admin.py:97 devilry/apps/core/admin.py:125
+#: devilry/apps/core/admin.py:189 devilry/apps/core/models/period.py:196
 msgid "Subject"
 msgstr "Kurs"
 
-#: devilry/apps/core/admin.py:122 devilry/apps/core/admin.py:186
+#: devilry/apps/core/admin.py:130 devilry/apps/core/admin.py:194
 msgid "Period"
 msgstr "Semester"
 
-#: devilry/apps/core/admin.py:191
+#: devilry/apps/core/admin.py:199
 msgid "Assignment"
 msgstr "Oppgave"
 
@@ -275,13 +275,13 @@ msgstr ""
 
 #: devilry/apps/core/models/assignment.py:872
 msgctxt "assignment grade passed-or-failed"
-msgid "failed"
-msgstr "ikke bestått"
+msgid "passed"
+msgstr "bestått"
 
 #: devilry/apps/core/models/assignment.py:876
 msgctxt "assignment grade passed-or-failed"
-msgid "passed"
-msgstr "bestått"
+msgid "failed"
+msgstr "ikke bestått"
 
 #: devilry/apps/core/models/assignment.py:913
 #, python-format
@@ -357,7 +357,7 @@ msgctxt "core assignmentgroup"
 msgid "group#%(groupid)s - no students in group"
 msgstr "gruppe#%(groupid)s - ingen studenter i gruppen"
 
-#: devilry/apps/core/models/assignment_group.py:1558
+#: devilry/apps/core/models/assignment_group.py:1570
 msgid ""
 "Cannot merge self into target, self and target is not part of same "
 "AssignmentGroup"
@@ -365,7 +365,7 @@ msgstr ""
 "Kan ikke flette seg selv med målet, seg selv og målet er ikke en del av "
 "samme oppgave gruppe (AssignmentGroup)"
 
-#: devilry/apps/core/models/assignment_group.py:1611
+#: devilry/apps/core/models/assignment_group.py:1623
 msgid "Cannot merge less than 2 groups"
 msgstr "Kan ikke flette mindre enn 2 grupper"
 
@@ -559,8 +559,8 @@ msgstr ""
 "Kan ikke ha verdier i karaktertabellen som er større enn maksimalt antall "
 "poeng."
 
-#: devilry/apps/core/models/relateduser.py:341
-#: devilry/apps/core/models/relateduser.py:438
+#: devilry/apps/core/models/relateduser.py:344
+#: devilry/apps/core/models/relateduser.py:441
 msgid "Automatic anonymous ID missing"
 msgstr "Automatisk anonym ID mangler"
 
@@ -2194,7 +2194,7 @@ msgstr "Du kan legge til flere studenter på semestersiden."
 
 #: devilry/devilry_admin/templates/devilry_admin/assignment/students/delete_groups.django.html:7
 #: devilry/devilry_admin/templates/devilry_admin/assignment/students/delete_groups.django.html:23
-#: devilry/devilry_admin/views/assignment/students/delete_groups.py:138
+#: devilry/devilry_admin/views/assignment/students/delete_groups.py:139
 msgid "Delete students"
 msgstr "Slett studenter"
 
@@ -2384,7 +2384,7 @@ msgid "Back to feedback feed"
 msgstr "Tilbake til innleveringsoversikt"
 
 #: devilry/devilry_admin/templates/devilry_admin/assignment/students/split_groups.django.html:19
-#: devilry/devilry_admin/views/assignment/students/split_group.py:53
+#: devilry/devilry_admin/views/assignment/students/split_group.py:54
 msgid "Split students from project group"
 msgstr "Del studenter fra prosjektgruppe"
 
@@ -3016,7 +3016,7 @@ msgstr "Oversikt av alle resultater"
 #: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:107
 #: devilry/devilry_qualifiesforexam/tablebuilder/tablebuilder.py:33
 #: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/includes/qualification_table.django.html:9
-#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:25
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:45
 #: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:10
 msgid "Qualified for final exams"
 msgstr "Kvalifisert til avsluttende eksamen"
@@ -3565,24 +3565,24 @@ msgctxt "devilry_admin assignment examiner statistics"
 msgid "Not corrected"
 msgstr "Ikke rettet"
 
-#: devilry/devilry_admin/views/assignment/students/create_groups.py:34
+#: devilry/devilry_admin/views/assignment/students/create_groups.py:37
 #, python-format
 msgctxt "admin create_groups"
 msgid "Select students from %(subject)s %(period)s"
 msgstr "Velg studenter fra %(subject)s %(period)s"
 
-#: devilry/devilry_admin/views/assignment/students/create_groups.py:46
+#: devilry/devilry_admin/views/assignment/students/create_groups.py:49
 #, python-format
 msgctxt "admin create_groups"
 msgid "Select students from %(assignment)s"
 msgstr "Velg studenter fra %(assignment)s"
 
-#: devilry/devilry_admin/views/assignment/students/create_groups.py:56
+#: devilry/devilry_admin/views/assignment/students/create_groups.py:59
 msgctxt "admin create_groups_accumulated_score_on_assignments"
 msgid "Add students based on their total score"
 msgstr "Legg til studenter basert på poengsum"
 
-#: devilry/devilry_admin/views/assignment/students/create_groups.py:60
+#: devilry/devilry_admin/views/assignment/students/create_groups.py:63
 msgctxt "admin create_groups_accumulated_score_on_assignments"
 msgid ""
 "Add students based on their total score across assignments you select from "
@@ -3591,18 +3591,18 @@ msgstr ""
 "Legg til studenter basert på poengsum fra oppgaver du velger på dette "
 "semesteret."
 
-#: devilry/devilry_admin/views/assignment/students/create_groups.py:69
+#: devilry/devilry_admin/views/assignment/students/create_groups.py:72
 #, python-format
 msgctxt "admin create_group"
 msgid "Add students to %(assignment)s"
 msgstr "Legg studenter til %(assignment)s"
 
-#: devilry/devilry_admin/views/assignment/students/create_groups.py:74
+#: devilry/devilry_admin/views/assignment/students/create_groups.py:77
 msgctxt "admin create_group"
 msgid "Add students"
 msgstr "Legg til studenter"
 
-#: devilry/devilry_admin/views/assignment/students/create_groups.py:78
+#: devilry/devilry_admin/views/assignment/students/create_groups.py:81
 msgctxt "admin create_group"
 msgid ""
 "Please select how you would like to add students. You will get a preview of "
@@ -3612,7 +3612,7 @@ msgstr ""
 "forhåndsvisning av valget ditt på neste side, før det legges til noen "
 "studenter."
 
-#: devilry/devilry_admin/views/assignment/students/create_groups.py:127
+#: devilry/devilry_admin/views/assignment/students/create_groups.py:130
 msgctxt "admin create_groups"
 msgid ""
 "Oups! Something went wrong. This may happen if someone edited students on "
@@ -3623,36 +3623,36 @@ msgstr ""
 "tilhørende oppgaven eller semesteret samtidig som du gjorde dine valg. "
 "Vennligst prøv igjen."
 
-#: devilry/devilry_admin/views/assignment/students/create_groups.py:220
+#: devilry/devilry_admin/views/assignment/students/create_groups.py:223
 #, python-format
 msgid "All students on %(assignment)s"
 msgstr "Alle studenter i %(assignment)s"
 
-#: devilry/devilry_admin/views/assignment/students/create_groups.py:221
+#: devilry/devilry_admin/views/assignment/students/create_groups.py:224
 #, python-format
 msgid "Students with passing grade on %(assignment)s"
 msgstr "Studenter med bestått karakter på %(assignment)s"
 
-#: devilry/devilry_admin/views/assignment/students/create_groups.py:222
+#: devilry/devilry_admin/views/assignment/students/create_groups.py:225
 #, python-format
 msgid "All students on %(period)s"
 msgstr "Alle studenter i %(period)s"
 
-#: devilry/devilry_admin/views/assignment/students/create_groups.py:237
-#: devilry/devilry_admin/views/assignment/students/create_groups.py:243
+#: devilry/devilry_admin/views/assignment/students/create_groups.py:240
+#: devilry/devilry_admin/views/assignment/students/create_groups.py:246
 #, python-format
 msgctxt "admin create_groups"
 msgid "Confirm that you want to add the following students to %(assignment)s"
 msgstr "Bekreft at du vil legge til de følgende studentene i %(assignment)s"
 
-#: devilry/devilry_admin/views/assignment/students/create_groups.py:346
-#: devilry/devilry_admin/views/assignment/students/create_groups.py:364
+#: devilry/devilry_admin/views/assignment/students/create_groups.py:349
+#: devilry/devilry_admin/views/assignment/students/create_groups.py:367
 msgctxt "admin create_groups"
 msgid "Add students"
 msgstr "Legg til studenter"
 
-#: devilry/devilry_admin/views/assignment/students/create_groups.py:383
-#: devilry/devilry_admin/views/assignment/students/create_groups.py:389
+#: devilry/devilry_admin/views/assignment/students/create_groups.py:386
+#: devilry/devilry_admin/views/assignment/students/create_groups.py:392
 #, python-format
 msgctxt "admin create_groups"
 msgid "Select the students you want to add to %(assignment)s"
@@ -3730,36 +3730,36 @@ msgid "%(num_relatedstudents)s student(s) added to %(assignment_long_name)s"
 msgstr ""
 "%(num_relatedstudents)s student(er) lagt til på %(assignment_long_name)s"
 
-#: devilry/devilry_admin/views/assignment/students/delete_groups.py:63
+#: devilry/devilry_admin/views/assignment/students/delete_groups.py:64
 msgctxt "admin delete_groups"
 msgid "Manually"
 msgstr "Velg manuelt"
 
-#: devilry/devilry_admin/views/assignment/students/delete_groups.py:67
+#: devilry/devilry_admin/views/assignment/students/delete_groups.py:68
 msgctxt "admin delete_groups"
 msgid "You can delete some students on this assignment, or all of them"
 msgstr "Du kan slette noen studenter på oppgaven, eller alle"
 
-#: devilry/devilry_admin/views/assignment/students/delete_groups.py:76
+#: devilry/devilry_admin/views/assignment/students/delete_groups.py:77
 #, python-format
 msgctxt "admin delete_groups"
 msgid "Students that failed %(assignment)s"
 msgstr "Studenter som ikke bestod %(assignment)s"
 
-#: devilry/devilry_admin/views/assignment/students/delete_groups.py:82
+#: devilry/devilry_admin/views/assignment/students/delete_groups.py:83
 #, python-format
 msgctxt "admin delete_groups"
 msgid "Delete students that did not pass %(assignment)s"
 msgstr "Slett studenter som ikke bestod %(assignment)s"
 
-#: devilry/devilry_admin/views/assignment/students/delete_groups.py:92
-#: devilry/devilry_admin/views/assignment/students/delete_groups.py:98
+#: devilry/devilry_admin/views/assignment/students/delete_groups.py:93
+#: devilry/devilry_admin/views/assignment/students/delete_groups.py:99
 #, python-format
 msgctxt "admin delete_group"
 msgid "Delete students from %(assignment)s"
 msgstr "Slett studenter fra %(assignment)s"
 
-#: devilry/devilry_admin/views/assignment/students/delete_groups.py:104
+#: devilry/devilry_admin/views/assignment/students/delete_groups.py:105
 msgctxt "admin delete_group"
 msgid ""
 "Please select how you would like to delete students. You will get a preview "
@@ -3769,16 +3769,16 @@ msgstr ""
 "forhåndsvisning av valget ditt på neste side før det slettes til noen "
 "studenter."
 
-#: devilry/devilry_admin/views/assignment/students/delete_groups.py:141
+#: devilry/devilry_admin/views/assignment/students/delete_groups.py:142
 msgid "Delete the following students:"
 msgstr "Slett følgende studenter:"
 
-#: devilry/devilry_admin/views/assignment/students/delete_groups.py:184
+#: devilry/devilry_admin/views/assignment/students/delete_groups.py:185
 #, python-format
 msgid "Deleted %(count)s students from this assignment."
 msgstr "Slettet %(count)s studenter fra denne oppgaven."
 
-#: devilry/devilry_admin/views/assignment/students/delete_groups.py:225
+#: devilry/devilry_admin/views/assignment/students/delete_groups.py:226
 msgctxt "admin delete_groups"
 msgid ""
 "Oups! Something went wrong. This may happen if someone edited students on "
@@ -3789,8 +3789,8 @@ msgstr ""
 "tilhørende oppgaven eller semesteret samtidig som du gjorde dine valg. "
 "Vennligst prøv igjen."
 
-#: devilry/devilry_admin/views/assignment/students/delete_groups.py:316
-#: devilry/devilry_admin/views/assignment/students/delete_groups.py:323
+#: devilry/devilry_admin/views/assignment/students/delete_groups.py:317
+#: devilry/devilry_admin/views/assignment/students/delete_groups.py:324
 #, python-format
 msgctxt "admin delete_groups"
 msgid ""
@@ -3798,19 +3798,19 @@ msgid ""
 msgstr ""
 "Bekreft at du vil slette studenter som ikke bestod %(from_assignment_name)s"
 
-#: devilry/devilry_admin/views/assignment/students/delete_groups.py:408
+#: devilry/devilry_admin/views/assignment/students/delete_groups.py:409
 msgctxt "admin delete_groups"
 msgid "Delete students"
 msgstr "Slett studenter"
 
-#: devilry/devilry_admin/views/assignment/students/delete_groups.py:420
+#: devilry/devilry_admin/views/assignment/students/delete_groups.py:421
 #, python-format
 msgctxt "admin delete groups confirm"
 msgid ""
 "Successfully deleted %(delete_group_count)s students from the assignment"
 msgstr "Slettet %(delete_group_count)s studenter fra denne oppgaven"
 
-#: devilry/devilry_admin/views/assignment/students/groupview_base.py:183
+#: devilry/devilry_admin/views/assignment/students/groupview_base.py:184
 msgctxt "admin group multiselect submit"
 msgid ""
 "Something went wrong. This may happen if changes was made to the selected "
@@ -3819,25 +3819,25 @@ msgstr ""
 "Et eller annet gikk galt. Dette kan skje hvis noen andre gjorde endringer på "
 "de valgte studentene samtidig som du arbeidet med de. Vennligst prøv igjen."
 
-#: devilry/devilry_admin/views/assignment/students/merge_groups.py:18
+#: devilry/devilry_admin/views/assignment/students/merge_groups.py:19
 msgid "Create project group"
 msgstr "Opprett prosjektgruppe"
 
-#: devilry/devilry_admin/views/assignment/students/merge_groups.py:86
+#: devilry/devilry_admin/views/assignment/students/merge_groups.py:87
 #, python-format
 msgid "A group with %(what)s has been created!"
 msgstr "En gruppe med %(what)s har blitt opprettet!"
 
-#: devilry/devilry_admin/views/assignment/students/overview.py:30
+#: devilry/devilry_admin/views/assignment/students/overview.py:31
 #: devilry/devilry_admin/views/period/manage_tags/manage_tags.py:551
 msgid "student"
 msgstr "student"
 
-#: devilry/devilry_admin/views/assignment/students/overview.py:33
+#: devilry/devilry_admin/views/assignment/students/overview.py:34
 msgid "students"
 msgstr "studenter"
 
-#: devilry/devilry_admin/views/assignment/students/replace_groups.py:13
+#: devilry/devilry_admin/views/assignment/students/replace_groups.py:16
 msgctxt "admin replace_groups"
 msgid ""
 "You can not use the replace students wizard on a published assignment. You "
@@ -3848,18 +3848,18 @@ msgstr ""
 "oppgave. Du kan fortsatt legge til og fjerne studenter uten tilbakemeldinger "
 "eller leveringer."
 
-#: devilry/devilry_admin/views/assignment/students/replace_groups.py:27
+#: devilry/devilry_admin/views/assignment/students/replace_groups.py:30
 #, python-format
 msgctxt "admin create_group"
 msgid "Replace students on %(assignment)s"
 msgstr "Erstatt studenter for %(assignment)s"
 
-#: devilry/devilry_admin/views/assignment/students/replace_groups.py:32
+#: devilry/devilry_admin/views/assignment/students/replace_groups.py:35
 msgctxt "admin create_group"
 msgid "Replace students"
 msgstr "Erstatt studenter"
 
-#: devilry/devilry_admin/views/assignment/students/replace_groups.py:36
+#: devilry/devilry_admin/views/assignment/students/replace_groups.py:39
 msgctxt "admin create_group"
 msgid ""
 "Please select how you would like to add students. Your current students for "
@@ -3872,8 +3872,8 @@ msgstr ""
 "leveringer eller kommentarer. Du får se en forhåndsvisning av valget ditt på "
 "neste side, før det legges til noen studenter."
 
-#: devilry/devilry_admin/views/assignment/students/replace_groups.py:47
-#: devilry/devilry_admin/views/assignment/students/replace_groups.py:54
+#: devilry/devilry_admin/views/assignment/students/replace_groups.py:50
+#: devilry/devilry_admin/views/assignment/students/replace_groups.py:57
 #, python-format
 msgctxt "admin create_groups"
 msgid ""
@@ -3883,25 +3883,25 @@ msgstr ""
 "Bekreft at nåværende studenter tilknyttet %(assignment)s skal fjernes og "
 "erstattes med studentene som vises nedenfor"
 
-#: devilry/devilry_admin/views/assignment/students/replace_groups.py:63
+#: devilry/devilry_admin/views/assignment/students/replace_groups.py:66
 msgctxt "admin create_groups"
 msgid "Replace students"
 msgstr "Erstatt studenter"
 
-#: devilry/devilry_admin/views/assignment/students/split_group.py:60
+#: devilry/devilry_admin/views/assignment/students/split_group.py:61
 msgid "Split"
 msgstr "Del"
 
-#: devilry/devilry_admin/views/assignment/students/split_group.py:78
+#: devilry/devilry_admin/views/assignment/students/split_group.py:79
 msgid "student is not part of project group"
 msgstr "studenten er ikke en del av prosjektgruppen"
 
-#: devilry/devilry_admin/views/assignment/students/split_group.py:83
+#: devilry/devilry_admin/views/assignment/students/split_group.py:84
 msgid "Cannot split student if there is less than 2 students in project group."
 msgstr ""
 "Kan ikke dele studenter hvis det er færre en 2 studenter i en prosjektgruppe."
 
-#: devilry/devilry_admin/views/assignment/students/split_group.py:89
+#: devilry/devilry_admin/views/assignment/students/split_group.py:90
 #, python-format
 msgid "%(what)s was removed from the project group"
 msgstr "%(what)s ble fjernet fra prosjektgruppen"
@@ -6550,12 +6550,42 @@ msgstr "Klar"
 msgid "Not ready"
 msgstr "Ikke klar"
 
-#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:21
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:22
 #: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:46
 msgid "print"
 msgstr "skriv ut"
 
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:26
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:49
+msgctxt "qualifies-for-exam-order-by-lastname"
+msgid "Order by"
+msgstr "Sorter på"
+
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:29
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:52
+msgctxt "qualifies-for-exam-order-by-lastname"
+msgid "Last name"
+msgstr "Etternavn"
+
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:32
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:55
+msgctxt "qualifies-for-exam-order-by-fullname"
+msgid "Full name"
+msgstr "Fullt navn"
+
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:35
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:58
+msgctxt "qualifies-for-exam-order-by-username"
+msgid "Username"
+msgstr "Brukernavn"
+
 #: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:38
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:61
+msgctxt "qualifies-for-exam-order-by-candidateid"
+msgid "Candidate ID"
+msgstr "Kandidat nummer"
+
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:58
 msgid "NOT qualified for final exams"
 msgstr "Kan IKKE gå opp til avsluttende eksamen"
 
@@ -6655,19 +6685,19 @@ msgstr ""
 "Velg et av alternativene fra listen. Hvert alternativ starter som slutter "
 "med en forhåndsvisning av resultatene, før du får muligheten til å lagre"
 
-#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:258
+#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:288
 msgid "Provide a message as to why the Status needs to be retracted."
 msgstr "Gi en beskjed om hvorfor Statusen må trekkes tilbake."
 
-#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:264
+#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:294
 msgid "Message"
 msgstr "Beskjed"
 
-#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:281
+#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:311
 msgid "Why is the status retracted?"
 msgstr "Hvorfor er denne statusen trukket tilbake?"
 
-#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:324
+#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:354
 msgid "Cannot retract status without a message."
 msgstr "Kan ikke trekke tilbake en status uten en beskjed."
 
@@ -7065,11 +7095,11 @@ msgstr ""
 "Denne oppdaven bruker harde frister. Studenter vil ikke kunne skrive "
 "kommentarer eller laste opp innleveringer etter fristen."
 
-#: devilry/project/common/settings.py:169
+#: devilry/project/common/settings.py:170
 msgid "English"
 msgstr "Engelsk"
 
-#: devilry/project/common/settings.py:170
+#: devilry/project/common/settings.py:171
 msgid "Norwegian Bokmal"
 msgstr "Norsk bokmål"
 
@@ -7680,9 +7710,6 @@ msgstr "Norsk bokmål"
 #~ "Du har fått en ny sjanse til å levere et forbedret forsøk. Les den siste "
 #~ "tilbakemeldingen for informasjon om hvorfor du ikke bestod og hva du må "
 #~ "forbedre."
-
-#~ msgid "Order by: Name"
-#~ msgstr "Sorter på: Navn"
 
 #~ msgid "Order by: Name reversed"
 #~ msgstr "Sorter på: Navn reversert"
