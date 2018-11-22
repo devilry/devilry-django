@@ -271,7 +271,7 @@ class PrintStatusView(PrefetchStatusInfoMixin, generic.TemplateView):
             else:
                 nonqualifying_students.append(qualification.relatedstudent)
         context_data['order_by_queryparam'] = self.get_order_by_queryparam()
-        context_data['period'] = status.period
+        context_data['period'] = '{} ({})'.format(status.period.long_name, status.period)
         context_data['qualifying_students'] = qualifying_students
         context_data['nonqualifying_students'] = nonqualifying_students
         return context_data
