@@ -1,0 +1,11 @@
+.. _3.5.0changelog:
+
+############################
+What is new in Devilry 3.5.0
+############################
+
+
+Fix/improvement
+###############
+Admin:
+ - Added simple option to order by last name, full name, username and candidate ID to students qualifying for final exams list.
