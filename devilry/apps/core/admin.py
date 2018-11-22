@@ -4,7 +4,8 @@ from django.contrib import admin
 from django.utils.html import format_html
 
 from devilry.apps.core.models import AssignmentGroup, Subject, Period, Assignment, PeriodTag, \
-    CandidateAssignmentGroupHistory, ExaminerAssignmentGroupHistory, Examiner, RelatedExaminer, AssignmentGroupHistory
+    CandidateAssignmentGroupHistory, ExaminerAssignmentGroupHistory, Examiner, RelatedStudent, RelatedExaminer, \
+    AssignmentGroupHistory
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -20,6 +21,13 @@ class RelatedExaminerAdmin(admin.ModelAdmin):
 
 
 admin.site.register(RelatedExaminer, RelatedExaminerAdmin)
+
+
+class RelatedStudentAdmin(admin.ModelAdmin):
+    pass
+
+
+admin.site.register(RelatedStudent, RelatedStudentAdmin)
 
 
 class BaseNodeAdmin(admin.ModelAdmin):
