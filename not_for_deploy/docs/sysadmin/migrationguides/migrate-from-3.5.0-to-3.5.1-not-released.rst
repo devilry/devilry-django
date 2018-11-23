@@ -13,10 +13,15 @@ BACKUP. YOUR. DATABASE. AND. FILES.
 
 Fixes and tweaks
 ################
- - Previously, merge history was excluded if no public comments existed. We now include all types of comments. Note that merged
+
+Students, examiners and admins:
+
+ - Feedback feed: Previously, merge history was excluded if no public comments existed. We now include all types of comments. Note that merged
    feedbackset with "internal" notes will only be visible to examiners and admin, and will not clutter up the feedbackfeed of a student.
+
+ - Feedback feed: Merge history is expanded by default.
 
 Update devilry to 3.5.1
 #######################
 
-Update the devilry version to ``3.5.0`` as described in :doc:`../update`.
+Update the devilry version to ``3.5.1`` as described in :doc:`../update`.
