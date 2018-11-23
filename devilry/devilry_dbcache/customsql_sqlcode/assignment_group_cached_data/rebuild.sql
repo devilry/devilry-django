@@ -39,6 +39,11 @@ BEGIN
                 group_id = param_group_id
                 AND
                 grading_published_datetime IS NOT NULL
+                AND (
+                  last_published_feedbackset.feedbackset_type = 'first_attempt' OR
+                  last_published_feedbackset.feedbackset_type = 'new_attempt' OR
+                  last_published_feedbackset.feedbackset_type = 're_edit'
+                )
             ORDER BY deadline_datetime DESC NULLS LAST
             LIMIT 1
         ) AS last_published_feedbackset_id,

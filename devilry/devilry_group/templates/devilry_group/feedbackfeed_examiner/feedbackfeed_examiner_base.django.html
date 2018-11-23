@@ -25,13 +25,13 @@
             </span>
         </a>
         <a href="{% cradmin_appurl 'examiner-admin-discuss' %}#/tabs"
-               class="devilry-group-feedbackfeed-discuss-button
-                    devilry-tabs__tab
-                    {% block examiner_admin_discuss_navigation_active_class %}{% endblock %}">
+           class="devilry-group-feedbackfeed-discuss-button
+                devilry-tabs__tab
+                {% block examiner_admin_discuss_navigation_active_class %}{% endblock %}">
                 <span class="devilry-tabs__title">
                     {% trans "Internal notes" %}
                     {% block examiner_admin_discuss_navigation_title_suffix %}{% endblock %}
                 </span>
-            </a>
+        </a>
     </nav>
 {% endblock %}

@@ -98,7 +98,7 @@ class TimelineBuilderTestMixin:
         timeline_builder.build()
         timeline_list = timeline_builder.get_as_list()
         self.assertEquals(len(timeline_list), 2)
-        self.assertEqual(timeline_list[0]['feedbackset'], testfeedbackset)
+        self.assertEqual(timeline_list[1]['feedbackset'], testfeedbackset)
 
     def test_feedbackset_mergetype_is_excluded_if_not_published_and_no_comments_visible_to_everyone(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)

@@ -130,7 +130,7 @@ class FeedbackFeedTimelineBuilder(AbstractTimelineBuilder, builder_base.Feedback
             DateTime: Datetime object to order by.
         """
         if feedback_set.is_merge_type:
-            return feedback_set.deadline_datetime - timezone.timedelta(microseconds=1)
+            return feedback_set.created_datetime
         return feedback_set.deadline_datetime
 
     def build(self):
