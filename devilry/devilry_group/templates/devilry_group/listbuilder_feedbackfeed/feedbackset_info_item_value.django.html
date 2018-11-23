@@ -26,7 +26,7 @@
             {% trans "Merged" %}
             <div>
                 <button id="id_expand_hide_merged_feedbackset_{{ me.feedbackset.id }}" class="btn btn-default devilry-feedbackfeed-show_hide_feedbackset_mergetype_button">
-                    Show/hide
+                    {% trans "Show/hide" context "devilry-merged-feedbackset show-hide-button" %}
                 </button>
             </div>
         {% elif me.is_graded %}
