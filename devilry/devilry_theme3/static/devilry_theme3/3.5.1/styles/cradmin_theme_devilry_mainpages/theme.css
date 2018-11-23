@@ -9726,7 +9726,7 @@ fieldset[disabled] .button_student {
   margin-left: -30px;
 }
 .devilry-group-feedbackfeed-feed__feedbackset-wrapper__content-merge-type {
-  display: none;
+  display: block;
 }
 .devilry-group-feedbackfeed-feed__feedbackset-wrapper .header {
   display: block;
