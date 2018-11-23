@@ -23,6 +23,8 @@ Students, examiners and admins:
    status "Waiting for deliveries" since they can still upload files and new comments. When the deadline expires, the
    status will switch to the grading received.
 
+ - Feedbackset status affected by "merge history" feedbacks fixed. This was an issue with a PostgreSQL trigger.
+
 
 Examiners:
 

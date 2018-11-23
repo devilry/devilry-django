@@ -25,6 +25,8 @@ Students, examiners and admins:
    status "Waiting for deliveries" since they can still upload files and new comments. When the deadline expires, the
    status will switch to the grading received.
 
+ - Feedbackset status affected by "merge history" feedbacks fixed. This was an issue with a PostgreSQL trigger.
+
 
 Examiners:
 
@@ -37,7 +39,12 @@ Examiners and admins:
    no earlier than the current time.
 
 
+
 Update devilry to 3.5.1
 #######################
 
 Update the devilry version to ``3.5.1`` as described in :doc:`../update`.
+
+After updating, you need to run::
+
+    $ venv/bin/python manage.py ievvtasks_customsql -i -r
