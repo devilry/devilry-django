@@ -58,9 +58,7 @@ class ManageDeadlineForm(SelectedItemsForm):
                                                               'calendar, or select one of the suggested deadlines.')
 
     def get_minimum_datetime(self):
-        if self.last_deadline < timezone.now():
-            return timezone.now().replace(second=0, microsecond=0)
-        return self.last_deadline + timezone.timedelta(days=1)
+        return timezone.now().replace(microsecond=0)
 
     def clean(self):
         super(ManageDeadlineForm, self).clean()
