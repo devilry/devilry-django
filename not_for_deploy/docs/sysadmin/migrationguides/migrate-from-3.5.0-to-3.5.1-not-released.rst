@@ -21,6 +21,16 @@ Students, examiners and admins:
 
  - Feedback feed: Merge history is expanded by default.
 
+ - Students that have had their assignment corrected but the deadline has not yet expired will be shown with
+   status "Waiting for deliveries" since they can still upload files and new comments. When the deadline expires, the
+   status will switch to the grading received.
+
+Examiners:
+
+ - Examiners can not move the deadline of a student/group if the assignment has been corrected. They will need to either
+   edit the grading or give the student/group a new attempt.
+
+
 Update devilry to 3.5.1
 #######################
 

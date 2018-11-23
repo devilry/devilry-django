@@ -1248,25 +1248,57 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 'devilry.apps.core.assignment_activeperiod_start',
                 first_deadline=timezone.now() + timedelta(days=2))
 
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(
-            group=testgroup1, grading_points=1)
-
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
-        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_core_mommy_factories.candidate(group=testgroup, shortname='user')
+        mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=testuser)
         devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
-            group=testgroup2)
+            group=testgroup)
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'filters_string': 'status-waiting-for-deliveries'},
             requestuser=testuser)
         self.assertEqual(
-            {'user2'},
+            {'user'},
             set(self.__get_titles(mockresponse.selector)))
+
+    def test_filter_status_waiting_for_deliveries_corrected_but_deadline_not_expired(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe(
+                'devilry.apps.core.assignment_activeperiod_start',
+                first_deadline=timezone.now() + timedelta(days=2))
+
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_core_mommy_factories.candidate(group=testgroup, shortname='user')
+        mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=testuser)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup, grading_points=1)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': 'status-waiting-for-deliveries'},
+            requestuser=testuser)
+        self.assertEqual(
+            {'user'},
+            set(self.__get_titles(mockresponse.selector)))
+
+    def test_filter_status_waiting_for_deliveries_corrected_and_deadline_expired(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe(
+                'devilry.apps.core.assignment_activeperiod_start',
+                first_deadline=timezone.now() - timedelta(days=2))
+
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_core_mommy_factories.candidate(group=testgroup, shortname='user')
+        mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=testuser)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup, grading_points=1)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': 'status-waiting-for-deliveries'},
+            requestuser=testuser)
+        self.assertEqual(len(set(self.__get_titles(mockresponse.selector))), 0)
 
     def test_filter_status_waiting_for_deliveries_new_attempt_also_waiting_for_deliveries(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -1450,7 +1482,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment,
             requestuser=testuser)
         self.assertEqual(
-            'waiting for deliveries 2',
+            'waiting for deliveries 3',
             mockresponse.selector.one(
                 '#django_cradmin_listfilter_status_input_waiting-for-deliveries_label').alltext_normalized)
 

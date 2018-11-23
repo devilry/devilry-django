@@ -2065,9 +2065,9 @@ class TestAssignmentGroupQuerysetAnnotateWithIsWaitingForDeliveries(TestCase):
         testgroup2 = mommy.make('core.AssignmentGroup',
                                 parentnode__first_deadline=ACTIVE_PERIOD_START)
         testgroup3 = mommy.make('core.AssignmentGroup',
-                                parentnode__first_deadline=ACTIVE_PERIOD_END)
+                                parentnode__first_deadline=ACTIVE_PERIOD_START)
         testgroup4 = mommy.make('core.AssignmentGroup',
-                                parentnode__first_deadline=ACTIVE_PERIOD_END)
+                                parentnode__first_deadline=ACTIVE_PERIOD_START)
         testgroup5 = mommy.make('core.AssignmentGroup',
                                 parentnode__first_deadline=ACTIVE_PERIOD_START)
 

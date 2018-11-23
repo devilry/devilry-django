@@ -479,10 +479,30 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 'devilry.apps.core.assignment_activeperiod_start',
                 first_deadline=timezone.now() + timedelta(days=2))
 
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_core_mommy_factories.candidate(group=testgroup, shortname='user')
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
+            group=testgroup)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            viewkwargs={'filters_string': 'status-waiting-for-deliveries'},
+            requestuser=testuser)
+        self.assertEqual(
+            {'user'},
+            set(self.__get_titles(mockresponse.selector)))
+
+    def test_filter_status_waiting_for_deliveries_multiple_students(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe(
+                'devilry.apps.core.assignment_activeperiod_start',
+                first_deadline=timezone.now() + timedelta(days=2))
+
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(
-            group=testgroup1, grading_points=1)
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
+            group=testgroup1)
 
         testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
@@ -495,7 +515,74 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             viewkwargs={'filters_string': 'status-waiting-for-deliveries'},
             requestuser=testuser)
         self.assertEqual(
-            {'user2'},
+            {'user1', 'user2'},
+            set(self.__get_titles(mockresponse.selector)))
+
+    def test_filter_status_waiting_for_deliveries_corrected_but_deadline_not_expired(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe(
+                'devilry.apps.core.assignment_activeperiod_start',
+                first_deadline=timezone.now() + timedelta(days=2))
+
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_core_mommy_factories.candidate(group=testgroup, shortname='user')
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup, grading_points=1)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            viewkwargs={'filters_string': 'status-waiting-for-deliveries'},
+            requestuser=testuser)
+        self.assertEqual(
+            {'user'},
+            set(self.__get_titles(mockresponse.selector)))
+
+    def test_filter_status_waiting_for_deliveries_corrected_and_deadline_expired(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe(
+                'devilry.apps.core.assignment_activeperiod_start',
+                first_deadline=timezone.now() - timedelta(days=2))
+
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_core_mommy_factories.candidate(group=testgroup, shortname='user')
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup, grading_points=1)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            viewkwargs={'filters_string': 'status-waiting-for-deliveries'},
+            requestuser=testuser)
+        self.assertEqual(len(set(self.__get_titles(mockresponse.selector))), 0)
+
+    def test_filter_status_waiting_for_deliveries_and_corrected_if_corrected_and_deadline_has_not_expired(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe(
+                'devilry.apps.core.assignment_activeperiod_start',
+                first_deadline=timezone.now() + timedelta(days=2))
+
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_core_mommy_factories.candidate(group=testgroup, shortname='user')
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup, grading_points=1)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            viewkwargs={'filters_string': 'status-waiting-for-deliveries'},
+            requestuser=testuser)
+        self.assertEqual(
+            {'user'},
+            set(self.__get_titles(mockresponse.selector)))
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            viewkwargs={'filters_string': 'status-corrected'},
+            requestuser=testuser)
+        self.assertEqual(
+            {'user'},
             set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_status_corrected(self):

@@ -40,10 +40,6 @@
         {% if me.feedbackset.group.cached_data.last_feedbackset == me.feedbackset %}
             <div class="header-buttons">
                 {% if me.feedbackset.group.cached_data.last_published_feedbackset_is_last_feedbackset and me.feedbackset.group.cached_data.last_published_feedbackset == me.feedbackset %}
-                    <a href="{% cradmin_instance_url appname="manage-deadline" viewname="manage-deadline-single-group" handle_deadline="move-deadline" deadline=me.deadline_as_string group_id=me.feedbackset.group.id %}"
-                        class="btn btn-default devilry-group-event__grade-move-deadline-button">
-                        {% trans "Move deadline" %}
-                    </a>
                     {% if me.devilry_viewrole == 'examiner' %}
                         <a href="{% cradmin_appurl 'edit' pk=me.feedbackset.id %}"
                            class="btn btn-default devilry-group-event__grade-last-edit-button">
@@ -54,9 +50,17 @@
                         class="btn btn-primary devilry-group-event__grade-last-new-attempt-button">
                         {% trans "Give new attempt" %}
                     </a>
+                    {% if 'admin' in me.devilry_viewrole %}
+                        <a href="{% cradmin_instance_url appname="manage-deadline" viewname="manage-deadline-single-group" handle_deadline="move-deadline" deadline=me.deadline_as_string group_id=me.feedbackset.group.id %}"
+                            class="btn btn-default devilry-group-event__grade-move-deadline-button">{% trans "Move deadline" %}
+                        </a>
+                    {% endif %}
                 {% elif not me.feedbackset.group.cached_data.last_published_feedbackset_is_last_feedbackset %}
-                    <a href="{% cradmin_instance_url appname="manage-deadline" viewname="manage-deadline-single-group" handle_deadline="move-deadline" deadline=me.deadline_as_string group_id=me.feedbackset.group.id %}"
-                        class="btn btn-default devilry-group-event__grade-move-deadline-button">{% trans "Move deadline" %}</a>
+                    {% if me.devilry_viewrole == 'examiner' %}
+                        <a href="{% cradmin_instance_url appname="manage-deadline" viewname="manage-deadline-single-group" handle_deadline="move-deadline" deadline=me.deadline_as_string group_id=me.feedbackset.group.id %}"
+                            class="btn btn-default devilry-group-event__grade-move-deadline-button">{% trans "Move deadline" %}
+                        </a>
+                    {% endif %}
                 {% endif %}
             </div>
         {% endif %}

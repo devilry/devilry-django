@@ -178,7 +178,7 @@ class TestFeedbackfeedExaminerDiscussMixin(test_feedbackfeed_examiner.TestFeedba
         self.assertFalse(mockresponse.selector.exists('.devilry-group-event__grade-last-new-attempt-button'))
         self.assertNotIn('Give new attempt', mockresponse.response.content)
 
-    def test_get_feedbackset_header_buttons_graded(self):
+    def test_get_feedbackset_published_move_deadline_button_not_rendered(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         group_mommy.feedbackset_first_attempt_published(group=testgroup)
@@ -187,15 +187,27 @@ class TestFeedbackfeedExaminerDiscussMixin(test_feedbackfeed_examiner.TestFeedba
             cradmin_role=testgroup,
             requestuser=examiner.relatedexaminer.user,
         )
-        self.assertEquals(
-            mockresponse.selector.one('.devilry-group-event__grade-move-deadline-button').alltext_normalized,
-            'Move deadline')
+        self.assertFalse(
+            mockresponse.selector.exists('.devilry-group-event__grade-move-deadline-button'))
         self.assertEquals(
             mockresponse.selector.one('.devilry-group-event__grade-last-edit-button').alltext_normalized,
             'Edit grade')
         self.assertEquals(
             mockresponse.selector.one('.devilry-group-event__grade-last-new-attempt-button').alltext_normalized,
             'Give new attempt')
+
+    def test_get_feedbackset_not_published_only_move_deadline_button_shows(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=examiner.relatedexaminer.user,
+        )
+        self.assertEquals(
+            mockresponse.selector.one('.devilry-group-event__grade-move-deadline-button').alltext_normalized,
+            'Move deadline')
 
     def test_get_feedbackset_grading_updated_multiple_events_rendered(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')

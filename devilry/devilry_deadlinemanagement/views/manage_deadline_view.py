@@ -8,6 +8,7 @@ from django import forms
 from django import http
 from django.contrib import messages
 from django.db import transaction
+from django.http import Http404
 from django.shortcuts import redirect
 from django.template import defaultfilters
 from django.template.loader import render_to_string
@@ -86,11 +87,28 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
     #: Posted data from previous view as it will appear in request.POST.
     post_type_received_data = 'post_type_received_data'
 
+    def can_move_deadline(self):
+        """
+        Returns ``False`` if the type is `move-deadline`, request user is an
+        `examiner` and the group is already graded.
+        """
+        if self.request.cradmin_role.__class__ == core_models.AssignmentGroup:
+            if self.post_move_deadline:
+                group = self.request.cradmin_role
+                if self.request.cradmin_instance.get_devilryrole_type() == 'examiner' and \
+                        group.cached_data.last_published_feedbackset_is_last_feedbackset:
+                    return False
+        return True
+
     def get(self, request, *args, **kwargs):
+        if not self.can_move_deadline():
+            raise Http404()
         form = self.get_instantiated_form()
         return self.render_to_response(self.get_context_data(form=form))
 
     def post(self, request, *args, **kwargs):
+        if not self.can_move_deadline():
+            raise Http404()
         if self.post_from_previous_view:
             if self.initial_selected_form_is_valid():
                 return self.render_to_response(self.get_context_data(form=self.get_form()))
