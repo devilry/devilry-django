@@ -25,10 +25,16 @@ Students, examiners and admins:
    status "Waiting for deliveries" since they can still upload files and new comments. When the deadline expires, the
    status will switch to the grading received.
 
+
 Examiners:
 
  - Examiners can not move the deadline of a student/group if the assignment has been corrected. They will need to either
    edit the grading or give the student/group a new attempt.
+
+
+Examiners and admins:
+ - Previously, a deadline had to be after the latest previous deadline. Deadlines can now be moved back and forth, but
+   no earlier than the current time.
 
 
 Update devilry to 3.5.1
