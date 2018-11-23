@@ -1,16 +1,13 @@
-.. _3.5.1changelog:
+=============================
+Migrating from 3.5.0 to 3.5.1
+=============================
 
-###########################################
-What is new in Devilry 3.5.1 (NOT RELEASED)
-###########################################
+Backup database and files
+#########################
+BACKUP. YOUR. DATABASE. AND. FILES.
 
-..note::
-
-    NOT RELEASED
-
-
-Fixes / improvements
-####################
+Fixes and tweaks
+################
 
 Students, examiners and admins:
 
@@ -35,3 +32,14 @@ Examiners:
 Examiners and admins:
  - Previously, a deadline had to be after the latest previous deadline. Deadlines can now be moved back and forth, but
    no earlier than the current time.
+
+
+
+Update devilry to 3.5.1
+#######################
+
+Update the devilry version to ``3.5.1`` as described in :doc:`../update`.
+
+After updating, you need to run::
+
+    $ venv/bin/python manage.py ievvtasks_customsql -i -r
