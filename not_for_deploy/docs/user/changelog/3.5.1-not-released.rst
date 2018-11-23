@@ -1,0 +1,16 @@
+.. _3.5.1changelog:
+
+###########################################
+What is new in Devilry 3.5.1 (NOT RELEASED)
+###########################################
+
+..note::
+
+    NOT RELEASED
+
+
+Fixes / improvements
+####################
+Admin, students and examiners:
+ - Previously, merge history was excluded if no public comments existed. We now include all types of comments. Note that merged
+   feedbackset with "internal" notes will only be visible to examiners and admin, and will not clutter up the feedbackfeed of a student.

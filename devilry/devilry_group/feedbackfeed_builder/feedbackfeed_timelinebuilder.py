@@ -92,18 +92,25 @@ class FeedbackFeedTimelineBuilder(AbstractTimelineBuilder, builder_base.Feedback
     def __should_skip_feedback_set(self, feedback_set):
         """
         Skip adding merge type feedbackset if they are not graded or
-        do have any public comments.
+        do not have any comments.
+
+        Note::
+            The feedback_set.groupcomment_set is already prefetched and filtered based on the
+            devilryrole (student, examiner and admin). If no public comments exists, feedbackset is not graded and the
+            devilryrole is ``student``, the merged feedbackset will not be added (rendered for a student).
+
+            See ``builder_base.get_feedbackfeed_builder_queryset`` for more details.
 
         Args:
             feedback_set: The ``FeedbackSet`` to check.
 
         Returns:
-            ``True`` or ``False``.
+            bool: ``True`` or ``False``.
         """
         if feedback_set.is_merge_type:
-            if not feedback_set.grading_published_datetime and\
-               not feedback_set.groupcomment_set.filter(visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE).exists():
-                return True
+            if feedback_set.grading_published_datetime or feedback_set.groupcomment_set.exists():
+                return False
+            return True
         return False
 
     def __get_order_feedback_set_by_deadline_datetime(self, feedback_set):
