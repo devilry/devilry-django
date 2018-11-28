@@ -39,6 +39,62 @@ class TestFeedbackfeedAdminMixin(test_feedbackfeed_common.TestFeedbackFeedMixin)
         self.assertEquals(mockresponse.selector.one('title').alltext_normalized,
                           candidate.assignment_group.assignment.get_path())
 
+    def test_move_deadline_button_rendered_if_deadline_expired_and_feedbackset_is_not_graded(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        deadline_datetime = timezone.now() - timezone.timedelta(days=1)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
+        test_feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup,
+                                                                             deadline_datetime=deadline_datetime)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=test_feedbackset.group,
+            requestuser=testuser,
+            cradmin_instance=self.__mock_cradmin_instance()
+        )
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-event__grade-move-deadline-button'))
+
+    def test_move_deadline_button_rendered_if_deadline_expired_and_feedbackset_is_graded(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        deadline_datetime = timezone.now() - timezone.timedelta(days=1)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
+        test_feedbackset = group_mommy.feedbackset_first_attempt_published(
+            group=testgroup, deadline_datetime=deadline_datetime, grading_published_datetime=deadline_datetime)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=test_feedbackset.group,
+            requestuser=testuser,
+            cradmin_instance=self.__mock_cradmin_instance()
+        )
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-event__grade-move-deadline-button'))
+
+    def test_new_attempt_button_rendered_if_deadline_expired_and_feedbackset_is_graded(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        deadline_datetime = timezone.now() - timezone.timedelta(days=1)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
+        test_feedbackset = group_mommy.feedbackset_first_attempt_published(
+            group=testgroup, deadline_datetime=deadline_datetime, grading_published_datetime=deadline_datetime)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=test_feedbackset.group,
+            requestuser=testuser,
+            cradmin_instance=self.__mock_cradmin_instance()
+        )
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-event__grade-last-new-attempt-button'))
+
+    def test_new_attempt_button_not_rendered_if_deadline_expired_and_feedbackset_not_graded(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        deadline_datetime = timezone.now() - timezone.timedelta(days=1)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
+        test_feedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group=testgroup, deadline_datetime=deadline_datetime)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=test_feedbackset.group,
+            requestuser=testuser,
+            cradmin_instance=self.__mock_cradmin_instance()
+        )
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-event__grade-last-new-attempt-button'))
+
     def test_assignment_deadline_hard_expired_comment_form_rendered(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         deadline_datetime = timezone.now() - timezone.timedelta(days=1)

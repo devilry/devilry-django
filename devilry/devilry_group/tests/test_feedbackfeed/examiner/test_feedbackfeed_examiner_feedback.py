@@ -1,3 +1,4 @@
+import mock
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import Http404
 from django.test import TestCase
@@ -25,6 +26,11 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.Test
 
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
+
+    def __mock_cradmin_instance(self):
+        mockinstance = mock.MagicMock()
+        mockinstance.get_devilryrole_for_requestuser.return_value = 'examiner'
+        return mockinstance
 
     def test_no_404_on_last_feedbackset_unpublished(self):
         testgroup = mommy.make('core.AssignmentGroup')
