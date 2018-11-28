@@ -1,0 +1,13 @@
+.. _3.5.2changelog:
+
+############################
+What is new in Devilry 3.5.2
+############################
+
+
+Fixes / improvements
+####################
+
+Admins:
+ - Fixed an issue where move deadline was not rendered if the deadline had expired
+   and the feedback set was not graded.
