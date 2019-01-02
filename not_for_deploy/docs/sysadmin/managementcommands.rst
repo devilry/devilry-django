@@ -11,9 +11,9 @@ Django managment commands follow a strict and well defined interface and is easy
 More info can be found on the `custom django-admin commands`_ page.
 Devilry provides the following commands to ease the administration tasks for Devilry maintainers.
 If you find the list incomplete and or want a broader support, you are welcome to post an issue on the Devilry
-project `issue tracker`_ at any time. 
+project `issue tracker`_ at any time.
 
-.. _issue tracker: https://github.com/devilry/devilry-django/issues?state=open 
+.. _issue tracker: https://github.com/devilry/devilry-django/issues?state=open
 
 .. _django managment commands: https://docs.djangoproject.com/en/1.4/ref/django-admin/
 
@@ -48,15 +48,33 @@ devilry_subjectadd
 ::
 
     $ cd ~/devilrydeploy/
-    $ venv/bin/manage.py devilry_subjectadd <node path> <short name>
+    $ venv/bin/manage.py devilry_subjectadd <short name> --long-name <long name>
 
-Creates a new subject within the devilry hierarchy. The path and short name are required.
+Creates a new subject within the devilry hierarchy. Short name and long name are required.
 
---admins
-    Comma separated list of usernames to set as admins on the node
-
---long_name
+--long-name
     A longer and more descriptive name of the node.
+
+--permission-groups
+    The name of one or more permission groups of type `departmentadmin` or `subjectadmin`.
+
+
+Full example + adding the subject to multiple permission groups ::
+
+    $ cd ~/devilrydeploy/
+    $ venv/bin/manage.py devilry_subjectadd duck1010 --long-name "Duck1010" --permission-groups "Duck1010 admins" "Department admins"
+
+
+===================================
+devilry_permissiongroup_add_subject
+===================================
+::
+
+    $ cd ~/devilrydeploy/
+    $ venv/bin/manage.py devilry_permissiongroup_add_subject <Subject short name> <Permission group name>
+
+Adds a subject to a permission group. Subject short name and permission group name are required.
+
 
 =======================
 devilry_subjectadminadd
@@ -114,8 +132,8 @@ Create a new period on a new subject.
     The end time of the period on ISO format *"%Y-%m-%dT%H:%M"*.
 
 --date-format
-    The date format expressed in a format according to `strftime`_ 
-    
+    The date format expressed in a format according to `strftime`_
+
     .. _strftime: http://docs.python.org/library/datetime.html#strftime-strptime-behavior'
 
 ======================
@@ -159,7 +177,7 @@ devilry_periodsetrelatedexaminers
     $ cd ~/devilrydeploy/
     $ venv/bin/manage.py devilry_periodsetrelatedexaminers <subject short name> <period short name>
 
-Set related examiners on a period. Users are read from stdin, as a JSON encoded array of arguments to the RelatedExaminer model. 
+Set related examiners on a period. Users are read from stdin, as a JSON encoded array of arguments to the RelatedExaminer model.
 See `relatedexaminers.json`_ for an example.
 
 .. _relatedexaminers.json: https://github.com/devilry/devilry-django/blob/master/devilry/devilry_superadmin/examples/relatedexaminers.json
@@ -175,7 +193,7 @@ devilry_periodsetrelatedstudents
     $ cd ~/devilrydeploy/
     $ venv/bin/manage.py devilry_periodsetrelatedstudents <subject short name> <period short name>
 
-Set related students on a period. Users are read from stdin, as a JSON encoded array of arguments to the RelatedStudent model. 
+Set related students on a period. Users are read from stdin, as a JSON encoded array of arguments to the RelatedStudent model.
 See `relatedstudents.json`_ for an example.
 
 .. _relatedstudents.json: https://github.com/devilry/devilry-django/blob/master/devilry/devilry_superadmin/examples/relatedstudents.json

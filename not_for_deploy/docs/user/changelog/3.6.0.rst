@@ -1,0 +1,16 @@
+.. _3.6.0changelog:
+
+############################
+What is new in Devilry 3.6.0
+############################
+
+.. note::
+    Not released
+
+
+Fixes / improvements
+####################
+
+Superuser:
+ - Fixed management command `devilry_periodsetrelatedstudents` overriding the active field on relatedusers.
+ - Management command `devilry_subjectadd` now supports the created subject being added to multiple permission groups.
