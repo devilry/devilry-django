@@ -72,7 +72,8 @@ class TestPeriodDelete(TestCase):
         mommy.make('core.Period', end_time=timezone.now())
         self.assertEqual(Subject.objects.count(), 2)
         self.assertEqual(Period.objects.count(), 1)
-        PeriodDelete(end_time_older_than_datetime=timezone.now() + timezone.timedelta(days=10)).delete()
+        PeriodDelete(end_time_older_than_datetime=timezone.now() + timezone.timedelta(days=10),
+                     delete_empty_subjects=True).delete()
         self.assertEqual(Subject.objects.get(), subject_without_period)
         self.assertEqual(Period.objects.count(), 0)
 
@@ -92,7 +93,8 @@ class TestPeriodDelete(TestCase):
         mommy.make('core.Period', parentnode=testsubject, end_time=timezone.now())
         self.assertEqual(Subject.objects.count(), 1)
         self.assertEqual(Period.objects.count(), 1)
-        PeriodDelete(end_time_older_than_datetime=timezone.now() + timezone.timedelta(days=10)).delete()
+        PeriodDelete(end_time_older_than_datetime=timezone.now() + timezone.timedelta(days=10),
+                     delete_empty_subjects=True).delete()
         self.assertEqual(Subject.objects.count(), 0)
         self.assertEqual(Period.objects.count(), 0)
 
@@ -275,7 +277,8 @@ class TestPeriodDelete(TestCase):
         self.assertEqual(GroupComment.objects.count(), 1)
         self.assertEqual(Comment.objects.count(), 1)
 
-        PeriodDelete(end_time_older_than_datetime=timezone.now() + timezone.timedelta(days=10)).delete()
+        PeriodDelete(end_time_older_than_datetime=timezone.now() + timezone.timedelta(days=10),
+                     delete_empty_subjects=True).delete()
 
         self.assertEqual(Subject.objects.count(), 0)
         self.assertEqual(SubjectPermissionGroup.objects.count(), 0)

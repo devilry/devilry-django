@@ -4,11 +4,9 @@ from django import test
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core import management
-from django.core.management import CommandError
 from django.utils import timezone
 from model_mommy import mommy
 
-from devilry.apps.core.models.relateduser import RelatedUserBase
 from devilry.devilry_account.models import PermissionGroup
 from devilry.utils import datetimeutils
 from devilry.devilry_superadmin.management.commands.devilry_delete_inactive_users import InactiveUserDeleter

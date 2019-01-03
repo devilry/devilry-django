@@ -309,18 +309,44 @@ Search for a user by username. Matches any part of the username.
 devilry_delete_periods
 ======================
 
-You have the option to delete all semesters that ended before a given amount of months ago.
+.. warning::
+
+    BACK UP YOUR DATABASE AND FILES!
+
+    Take a backup of the database and the files, this operation cannot be undone other than restoring the backup.
+
+You have the option to delete all semesters that ended before a given datetime.
 This will delete everything associated with a semester: assignments, permissions, groups,
-deliveries(comments and files) ...
+deliveries(comments and files) and related history.
 
-You will be given a preview of which semesters that will be deleted, and which subjects they belong to.
-Initially empty subjects will not be deleted, but if all semesters for a subject are deleted, the subject
-will be deleted as well. You have to confirm to begin the deletion.
+You will be given a preview of the semesters that will be deleted, and which subjects they belong to.
+Initially empty subjects will not be deleted, but you can pass the parameter `--delete-empty-subjects` to delete
+subjects where all semesters where deleted.
 
-This example will delete all semesters that ended before two months ago from now::
+This example will delete all semesters that ended before Jan 1. 2018 23:59::
 
     $ cd ~/devilrydeploy/
-    $ python manage.py devilry_delete_periods 2
+    $ python manage.py devilry_delete_periods "2018-01-01 23:59"
+
+
+Example for the same as above, but will also delete empty subjects::
+
+    $ cd ~/devilrydeploy/
+    $ python manage.py devilry_delete_periods "2018-01-01 23:59" --delete-empty-subjects
+
+Will delete:
+ - Assignments
+ - Assignment groups (and results)
+ - Student, examiner and admin permissions for users
+ - Comments and files
+ - Qualification results
+ - History related to the data above
+ - If all semester for a course are delete, the course will also be deleted
+
+Will NOT delete:
+ - Users (see :ref:`devilry_delete_users` if you want to delete users)
+
+
 
 
 .. _devilry_delete_users:
@@ -328,6 +354,12 @@ This example will delete all semesters that ended before two months ago from now
 =============================
 devilry_delete_inactive_users
 =============================
+
+.. warning::
+
+    BACK UP YOUR DATABASE AND FILES!
+
+    Take a backup of the database and the files, this operation cannot be undone other than restoring the backup.
 
 You can delete inactive users, which means users that have not logged in after a specified datetime.
 The script has a required argument `--inactive-since-datetime` and expects it to be a ISO formatted datetime string.
@@ -341,11 +373,14 @@ This example will delete all users that has not logged in since the 3pm first of
     $ python manage.py devilry_delete_inactive_users --inactive-since-datetime "2016-07-01 15:00"
 
 The script will delete:
- - All users not logged in since the provided datetime, and their personal info(phone, email).
- - Their permissions.
+ - Users with last login before the provided datetime, and their personal info(phone, email)
+ - Their permissions
 
 The script will NOT delete:
- - Deliveries, comments or files made by the deleted users, see :ref:`devilry_delete_periods` for deleting that data.
+ - Superusers
+ - Users that are registered as students or examiners on active semesters
+ - Users that are semester admins on an active semester
+ - Deliveries, comments or files made by the deleted users, see :ref:`devilry_delete_periods`
 
 
 .. _devilry_anonymize_database:
