@@ -29,10 +29,7 @@ class InactiveUserDeleter(object):
                          relatedexaminer__period__end_time__gte=now))\
             .exclude(is_superuser=True)\
             .exclude(id__in=user_ids)\
-            .filter(
-                models.Q(last_login__lt=self.inactive_since_datetime)
-                |
-                models.Q(last_login__isnull=True))
+            .filter(last_login__lt=self.inactive_since_datetime)
 
     def delete(self):
         self.get_users_to_delete_queryset().delete()
@@ -42,7 +39,7 @@ class Command(BaseCommand):
     """
     Management script for deleting all inactive users.
     """
-    help = 'Delete users that hasn\'t logged in since the provided date. ' \
+    help = 'Delete users that hasn\'t logged in since the provided date, or never logged in.' \
            'These users will be excluded from deletion: ' \
            '- Superusers ' \
            '- Students and examiners on active semesters ' \

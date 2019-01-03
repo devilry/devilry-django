@@ -65,11 +65,11 @@ class TestInactiveUserDeleter(test.TestCase):
         user_deleter = InactiveUserDeleter(inactive_since)
         self.assertEqual(user_deleter.get_users_to_delete_queryset().count(), 0)
 
-    def test_last_login_null(self):
+    def test_last_login_null_not_to_be_deleted(self):
         inactive_since = self.__create_timestamp(year=2019, hour=10)
         mommy.make(settings.AUTH_USER_MODEL)
         user_deleter = InactiveUserDeleter(inactive_since)
-        self.assertEqual(user_deleter.get_users_to_delete_queryset().count(), 1)
+        self.assertEqual(user_deleter.get_users_to_delete_queryset().count(), 0)
 
     def test_last_login_one_second_before(self):
         inactive_since = self.__create_timestamp(year=2019, hour=10, minute=0, second=1)
