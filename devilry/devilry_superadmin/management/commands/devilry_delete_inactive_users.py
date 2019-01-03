@@ -1,19 +1,38 @@
 from django.contrib.auth import get_user_model
 from django.core.management import call_command
-from django.core.management.base import BaseCommand
-from django.db import transaction
+from django.core.management.base import BaseCommand, CommandError
+from django.db import transaction, models
+from django.template import defaultfilters
+from django.utils import timezone
 
+from devilry.devilry_account.models import PeriodPermissionGroup
 from devilry.utils import datetimeutils
 
 
-class DeleteInactiveUsers(object):
+class InactiveUserDeleter(object):
     def __init__(self, inactive_since_datetime):
         self.inactive_since_datetime = inactive_since_datetime
 
     def get_users_to_delete_queryset(self):
+        now = timezone.now()
+
+        user_ids = PeriodPermissionGroup.objects\
+            .filter(period__start_time__lte=now, period__end_time__gte=now)\
+            .values_list('permissiongroup__permissiongroupuser__user_id', flat=True)
+
         return get_user_model().objects\
+            .exclude(
+                models.Q(relatedstudent__period__start_time__lte=now,
+                         relatedstudent__period__end_time__gte=now)
+                |
+                models.Q(relatedexaminer__period__start_time__lte=now,
+                         relatedexaminer__period__end_time__gte=now))\
             .exclude(is_superuser=True)\
-            .filter(last_login__lt=self.inactive_since_datetime)
+            .exclude(id__in=user_ids)\
+            .filter(
+                models.Q(last_login__lt=self.inactive_since_datetime)
+                |
+                models.Q(last_login__isnull=True))
 
     def delete(self):
         self.get_users_to_delete_queryset().delete()
@@ -23,8 +42,11 @@ class Command(BaseCommand):
     """
     Management script for deleting all inactive users.
     """
-    help = 'Delete users that hasn\'t logged in since the provided date. Superusers are excluded, ' \
-           'and needs to be deleted manually.'
+    help = 'Delete users that hasn\'t logged in since the provided date. ' \
+           'These users will be excluded from deletion: ' \
+           '- Superusers ' \
+           '- Students and examiners on active semesters ' \
+           '- Period admins on active semesters'
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -36,42 +58,39 @@ class Command(BaseCommand):
 
     def __confirm_delete(self):
         confirm_string = 'DELETE USERS'
-        input_string = raw_input('Are you sure you want to delete these users?\n'
-                                 'To confirm, type "{}", to exit type "q": '.format(confirm_string))
+        self.stdout.write(self.style.ERROR('Are you sure you want to delete these users? This operation can NOT BE UNDONE!'))
+        input_string = raw_input('To confirm, type "{}", to exit type "q": '.format(confirm_string))
         if input_string == confirm_string:
             return
         else:
-            self.stderr.write('ABORTING... No users deleted.')
+            self.stdout.write(self.style.ERROR('ABORTING... No users deleted.'))
             raise SystemExit()
 
     def __get_string_formatted_datetime(self, datetime_obj):
         return datetimeutils.isoformat_withseconds(datetime_obj)
 
     def __confirm_preview(self, user_deleter):
-        input_string = raw_input('\n\nDo you want a preview of the users to delete?\n'
-                                 'Type "y" to show preview, or type "n" to skip: ')
-        if input_string == 'y':
-            for user in user_deleter.get_users_to_delete_queryset():
-                self.stdout.write('\n')
-                self.stdout.write('\t- {}: {}\n\t\tLast login: {}\n\n'.format(
-                    user.shortname, user.get_full_name(), datetimeutils.isoformat_withseconds(user.last_login)))
-        else:
-            return
+        for user in user_deleter.get_users_to_delete_queryset():
+            last_login = None
+            if user.last_login:
+                last_login = datetimeutils.isoformat_withseconds(user.last_login)
+            self.stdout.write('- {}: {}\n\tLast login: {}\n\n'.format(
+                user.shortname, user.get_full_name(), last_login))
 
     def handle(self, *args, **options):
-        inactive_since_datetime = datetimeutils.from_isoformat(options['inactive_since_datetime'])
-        print inactive_since_datetime
-
-        # Check if users exist.
-        if not get_user_model().objects.filter(last_login__lt=inactive_since_datetime).exists():
-            self.stderr.write('EXITING... There are no users that has not logged in since {}.'.format(
-                datetimeutils.isoformat_withseconds(inactive_since_datetime)))
-            raise SystemExit()
+        inactive_since_datetime = datetimeutils.from_isoformat(
+            options['inactive_since_datetime']).replace(microsecond=0)
 
         # Instantiate the user deleter.
-        user_deleter = DeleteInactiveUsers(inactive_since_datetime=inactive_since_datetime)
+        user_deleter = InactiveUserDeleter(inactive_since_datetime=inactive_since_datetime)
 
-        self.stdout.write('\n\nAll users that have not logged in since {} will be deleted:\n'.format(
+        # Check if users exist.
+        if not user_deleter.get_users_to_delete_queryset().exists():
+            self.stdout.write(self.style.ERROR('EXITING... There are no users with last login before {}.'.format(
+                datetimeutils.isoformat_withseconds(inactive_since_datetime))))
+            raise SystemExit()
+
+        self.stdout.write('\n\nAll users with last login before {} will be deleted:\n'.format(
             datetimeutils.isoformat_withseconds(inactive_since_datetime)))
 
         # Confirm show preview of users to be deleted
