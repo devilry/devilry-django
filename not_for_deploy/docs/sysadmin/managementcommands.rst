@@ -323,16 +323,6 @@ You will be given a preview of the semesters that will be deleted, and which sub
 Initially empty subjects will not be deleted, but you can pass the parameter `--delete-empty-subjects` to delete
 subjects where all semesters where deleted.
 
-This example will delete all semesters that ended before Jan 1. 2018 23:59::
-
-    $ cd ~/devilrydeploy/
-    $ python manage.py devilry_delete_periods "2018-01-01 23:59"
-
-
-Example for the same as above, but will also delete empty subjects::
-
-    $ cd ~/devilrydeploy/
-    $ python manage.py devilry_delete_periods "2018-01-01 23:59" --delete-empty-subjects
 
 Will delete:
  - Assignments
@@ -345,6 +335,21 @@ Will delete:
 
 Will NOT delete:
  - Users (see :ref:`devilry_delete_users` if you want to delete users)
+
+
+This example will delete all semesters that ended before Jan 1. 2018 23:59::
+
+    $ cd ~/devilrydeploy/
+    $ python manage.py devilry_delete_periods "2018-01-01 23:59"
+
+
+Same as above, but will also delete subjects where all semesters where deleted::
+
+    $ cd ~/devilrydeploy/
+    $ python manage.py devilry_delete_periods "2018-01-01 23:59" --delete-empty-subjects
+
+--delete-empty-subjects
+    Delete a subject if all semesters within that subject are deleted.
 
 
 
