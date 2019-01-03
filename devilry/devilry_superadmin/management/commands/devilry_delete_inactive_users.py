@@ -1,8 +1,8 @@
+import arrow
 from django.contrib.auth import get_user_model
 from django.core.management import call_command
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from django.db import transaction, models
-from django.template import defaultfilters
 from django.utils import timezone
 
 from devilry.devilry_account.models import PeriodPermissionGroup
@@ -50,9 +50,8 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '--inactive-since-datetime',
+            'inactive_since_datetime',
             type=str,
-            required=True,
             help='An ISO formatted datetime string. Example: YYYY-MM-DD HH:mm:ss'
         )
 
@@ -69,17 +68,31 @@ class Command(BaseCommand):
     def __get_string_formatted_datetime(self, datetime_obj):
         return datetimeutils.isoformat_withseconds(datetime_obj)
 
-    def __confirm_preview(self, user_deleter):
+    def __preview(self, user_deleter):
         for user in user_deleter.get_users_to_delete_queryset():
             last_login = None
             if user.last_login:
-                last_login = datetimeutils.isoformat_withseconds(user.last_login)
+                last_login = arrow.get(
+                    user.last_login.astimezone(timezone.get_current_timezone())).format('MMM D. YYYY HH:mm')
             self.stdout.write('- {}: {}\n\tLast login: {}\n\n'.format(
-                user.shortname, user.get_full_name(), last_login))
+                user.shortname,
+                user.get_full_name(),
+                last_login))
 
     def handle(self, *args, **options):
         inactive_since_datetime = datetimeutils.from_isoformat(
             options['inactive_since_datetime']).replace(microsecond=0)
+
+        # Inactive since must be earlier than now
+        now = timezone.now()
+        if inactive_since_datetime >= now:
+            self.stderr.write(
+                'EXITING... Given datetime ({}) must be earlier than now ({})'.format(
+                    arrow.get(inactive_since_datetime.astimezone(
+                        timezone.get_current_timezone())).format('MMM D. YYYY HH:mm'),
+                    arrow.get(now.astimezone(timezone.get_current_timezone())).format('MMM D. YYYY HH:mm')
+                ))
+            raise SystemExit()
 
         # Instantiate the user deleter.
         user_deleter = InactiveUserDeleter(inactive_since_datetime=inactive_since_datetime)
@@ -87,14 +100,19 @@ class Command(BaseCommand):
         # Check if users exist.
         if not user_deleter.get_users_to_delete_queryset().exists():
             self.stdout.write(self.style.ERROR('EXITING... There are no users with last login before {}.'.format(
-                datetimeutils.isoformat_withseconds(inactive_since_datetime))))
+                arrow.get(inactive_since_datetime).format('MMM D. YYYY HH:mm'))))
             raise SystemExit()
 
-        self.stdout.write('\n\nAll users with last login before {} will be deleted:\n'.format(
-            datetimeutils.isoformat_withseconds(inactive_since_datetime)))
+        self.stdout.write('############################################################\n'
+                          '# Delete all users with last login before: {}'
+                          '\n############################################################'.format(
+            arrow.get(inactive_since_datetime).format('MMM D. YYYY HH:mm')
+        ))
+        self.stdout.write('\n')
 
         # Confirm show preview of users to be deleted
-        self.__confirm_preview(user_deleter=user_deleter)
+        self.stdout.write('Preview of all users that will be deleted:\n\n')
+        self.__preview(user_deleter=user_deleter)
 
         # User must confirm the deletion.
         self.stdout.write('\n\nThis action will delete {} users.'.format(

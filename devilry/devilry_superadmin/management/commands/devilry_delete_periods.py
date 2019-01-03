@@ -56,9 +56,11 @@ class Command(BaseCommand):
         now = timezone.now()
         if delete_older_than_datetime >= now:
             self.stderr.write(
-                'EXITING... Supplied datetime {} must be earlier than now ({})'.format(
-                    arrow.get(delete_older_than_datetime).format('MMM D. YYYY HH:mm'),
-                    arrow.get(now).format('MMM D. YYYY HH:mm')
+                'EXITING... Given datetime {} must be earlier than now ({})'.format(
+                    arrow.get(delete_older_than_datetime.astimezone(
+                        timezone.get_current_timezone())).format('MMM D. YYYY HH:mm'),
+                    arrow.get(
+                        now.astimezone(timezone.get_current_timezone())).format('MMM D. YYYY HH:mm')
                 ))
             raise SystemExit()
 
