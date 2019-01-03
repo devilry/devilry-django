@@ -52,7 +52,7 @@ class Command(BaseCommand):
         parser.add_argument(
             'inactive_since_datetime',
             type=str,
-            help='An ISO formatted datetime string. Example: YYYY-MM-DD HH:mm:ss'
+            help='An ISO formatted datetime string. Example: YYYY-MM-DD HH:mm'
         )
 
     def __confirm_delete(self):
@@ -81,7 +81,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         inactive_since_datetime = datetimeutils.from_isoformat(
-            options['inactive_since_datetime']).replace(microsecond=0)
+            options['inactive_since_datetime']).replace(second=0, microsecond=0)
 
         # Inactive since must be earlier than now
         now = timezone.now()

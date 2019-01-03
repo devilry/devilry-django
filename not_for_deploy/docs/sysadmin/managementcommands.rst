@@ -367,15 +367,15 @@ devilry_delete_inactive_users
     Take a backup of the database and the files, this operation cannot be undone other than restoring the backup.
 
 You can delete inactive users, which means users that have not logged in after a specified datetime.
-The script has a required argument `--inactive-since-datetime` and expects it to be a ISO formatted datetime string.
+The script has a required argument `inactive_since_datetime` and expects it to be a ISO formatted datetime string.
 
 When running the script you will be prompted with a preview of all users that are to delete and can be skipped. After
 that you will have to confirm that you want to delete the users.
 
-This example will delete all users that has not logged in since the 3pm first of July 2016::
+This example will delete all users that has not logged in since the Jul 1. 2016 15:00::
 
     $ cd ~/devilrydeploy/
-    $ python manage.py devilry_delete_inactive_users --inactive-since-datetime "2016-07-01 15:00"
+    $ python manage.py devilry_delete_inactive_users "2016-07-01 15:00"
 
 The script will delete:
  - Users with last login before the provided datetime, and their personal info(phone, email)
