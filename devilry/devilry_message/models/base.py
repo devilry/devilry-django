@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
+import django_rq
+
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
@@ -6,6 +11,8 @@ from django.contrib.postgres.fields import ArrayField, JSONField
 from django_cradmin.apps.cradmin_email import emailutils
 
 from ievv_opensource.utils import choices_with_meta
+
+from devilry.devilry_message.tasks import prepare_message
 
 
 class BaseMessage(models.Model):
@@ -74,14 +81,33 @@ class BaseMessage(models.Model):
         default=STATUS_CHOICES.DRAFT.value
     )
 
+    #: The user role of message the `MessageReceiver`s this message is sent to.
+    #:
+    #: - `other`: Anything but the choices below.
+    #: - `student`: Message for students.
+    #: - `examiner`: Message for examiners.
+    #: - `students_and_examiners`: Message for both students and examiners.
+    #: - `admin`: Message for students.
+    RECEIVER_ROLE_CHOICES = choices_with_meta.ChoicesWithMeta(
+        choices_with_meta.Choice(value='other'),
+        choices_with_meta.Choice(value='student'),
+        choices_with_meta.Choice(value='examiner'),
+        choices_with_meta.Choice(value='students_and_examiners'),
+        choices_with_meta.Choice(value='admin')
+    )
+
+    #: The type of user this message receiver is
+    receiver_type = models.CharField(
+        max_length=255,
+        blank=False, null=False,
+        choices=RECEIVER_ROLE_CHOICES.iter_as_django_choices_short(),
+        default=RECEIVER_ROLE_CHOICES.OTHER.value
+    )
+
     #: ArrayField with the types for this message.
+    #:
     #: Examples:
     #: - ``['email']`` - Send as email only
-    #: - ``['sms']`` - Send as SMS only
-    #: - ``['email', 'sms']`` - Send as both email and SMS
-    #:
-    #: Note: Whether or not it is actually sent as email, SMS or both depends on each
-    #: users notification settings.
     message_type = ArrayField(
         models.CharField(max_length=30),
         blank=False, null=False
@@ -146,6 +172,55 @@ class BaseMessage(models.Model):
         """
         message_receivers = self.prepare_message_receivers()
         MessageReceiver.objects.bulk_create(message_receivers)
+
+    def queue_for_prepare(self, send_when_prepared=False, sent_by=None):
+        if self.status != self.STATUS_CHOICES.DRAFT.value:
+            raise ValueError('Can only call queue_for_prepare on messages with '
+                             'status={self.STATUS_CHOICES.DRAFT.value!r}. Current status: {self.status!r}.')
+        self.sent_by = sent_by
+        self.status = self.STATUS_CHOICES.QUEUED_FOR_PREPARE.value
+        self.full_clean()
+        self.save()
+
+        # Prepare sending with RQ task.
+        if getattr(settings, 'IEVV_MESSAGEFRAMEWORK_QUEUE_IN_REALTIME', True):
+            django_rq.get_queue('default')\
+                .enqueue(prepare_message,
+                         message_id=self.id,
+                         message_class_string=self.__class__.get_message_class_string(),
+                         send_when_prepared=send_when_prepared)
+
+    # def queue_for_sending(self, sent_by=None):
+    #     """
+    #     Sets :obj:`~.BaseMessage.sent_by` to the provided ``sent_by`` user,
+    #     updates the :obj:`~.BaseMessage.status` to ``queued_for_prepare``
+    #     (I.E.: ``BaseMessage.STATUS_CHOICES.QUEUED_FOR_PREPARE.value``),
+    #     and start an RQ task that prepares the message for sending.
+    #
+    #     If :obj:`~.BaseMessage.requested_send_datetime` is ``None``, the RQ
+    #     task that prepares the message for sending will start another RQ
+    #     task that actually sends the message. If it is not ``None``,
+    #     the message will end up with :obj:`~.BaseMessage.status` set to ``"queued"``,
+    #     and some background task, cronjob, etc. will have to pick it up
+    #     and send it when the time is right.
+    #
+    #     Args:
+    #         sent_by: The User who is sending the message - optional,
+    #             but normally used unless you are sending without a user
+    #             (authenticating in some other way).
+    #     """
+    #     if self.status == self.STATUS_CHOICES.DRAFT.value:
+    #         self.queue_for_prepare(send_when_prepared=True, sent_by=sent_by)
+    #     elif self.status == self.STATUS_CHOICES.READY_FOR_SENDING.value:
+    #         if getattr(settings, 'IEVV_MESSAGEFRAMEWORK_QUEUE_IN_REALTIME', True):
+    #             django_rq.get_queue('default')\
+    #                 .enqueue(send_message,
+    #                          message_id=self.id,
+    #                          message_class_string=self.__class__.get_message_class_string())
+    #     else:
+    #         raise ValueError('Can only call queue_for_sending if status is one of: '
+    #                          '{self.STATUS_CHOICES.READY_FOR_SENDING.value!r} or '
+    #                          '{self.STATUS_CHOICES.DRAFT.value!r}. Current status is: {self.status!r}.')
 
     def clean_message_content_fields(self):
         """

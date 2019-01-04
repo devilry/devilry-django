@@ -101,6 +101,7 @@ INSTALLED_APPS = [
     'devilry.devilry_import_v2database',
     'devilry.devilry_detektor',
     'devilry.devilry_statistics',
+    'devilry.devilry_message',
 
     # Django-allauth for dataporten login
     'allauth',
