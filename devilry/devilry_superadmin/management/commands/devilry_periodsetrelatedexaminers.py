@@ -86,7 +86,6 @@ class RelatedBaseCommand(BaseCommand):
             username = kw.pop('username', None)
             email = kw.pop('email', None)
             tags_string = kw.pop('tags', '').strip()
-            kw.setdefault('active', True)
             user, created = user_model.objects.get_or_create_user(
                 username=username, email=email)
             if not self._update_related_user(user, kw, tags_string):

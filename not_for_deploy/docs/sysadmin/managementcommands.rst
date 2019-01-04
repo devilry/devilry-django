@@ -209,7 +209,7 @@ devilry_useradd
 ::
 
     $ cd ~/devilrydeploy/
-    $ venv/bin/manage.py devilry_userad <username>
+    $ venv/bin/manage.py devilry_useradd <username>
 
 Creates a new user.
 
