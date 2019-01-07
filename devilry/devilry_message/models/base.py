@@ -93,6 +93,7 @@ class Message(models.Model):
         choices_with_meta.Choice(value='other'),
         choices_with_meta.Choice(value='comment_delivery'),
         choices_with_meta.Choice(value='deadline_moved'),
+        choices_with_meta.Choice(value='new_attempt'),
         choices_with_meta.Choice(value='feedback'),
         choices_with_meta.Choice(value='feedback_updated')
     )
