@@ -1,17 +1,13 @@
-from datetime import datetime
-
 import htmls
 from django.template import defaultfilters
 from django import test
 from django.conf import settings
 from django.core import mail
 from django.utils import timezone
-from django.template import defaultfilters
 from django_cradmin.crinstance import reverse_cradmin_url
 
 from model_mommy import mommy
 
-from devilry.apps.core.models import Assignment
 from devilry.devilry_comment.models import Comment
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy

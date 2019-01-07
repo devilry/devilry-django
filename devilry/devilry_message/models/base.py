@@ -157,6 +157,16 @@ class Message(models.Model):
 
         Does nothing by default.
         """
+        if 'user_ids' not in self.virtual_message_receivers:
+            raise ValueError('Missing \'user_ids\' in \'virtual_message_receivers\'')
+        if type(self.virtual_message_receivers['user_ids']) != list:
+            raise ValueError('\'user_ids\' in \'virtual_message_receivers\' is not a list')
+        if len(self.virtual_message_receivers['user_ids']) == 0:
+            raise ValueError('\'user_ids\' in \'virtual_message_receivers\' is empty')
+        for user_id in self.virtual_message_receivers['user_ids']:
+            if not isinstance(user_id, int):
+                raise ValueError(
+                    '\'virtual_message_receivers["user_ids"]\' contains a non-integer value.: {}'.format(user_id))
 
     def create_message_receivers(self, **kwargs):
         """
@@ -178,6 +188,7 @@ class Message(models.Model):
             `ValueError` if the status of a the message is not `draft`. A message that
             is not a draft can not be resent via this method.
         """
+        self.validate_virtual_message_receivers()
         if not self.status == self.STATUS_CHOICES.DRAFT.value:
             raise ValueError('Can only send drafted messages.')
         with transaction.atomic():
@@ -359,7 +370,7 @@ class MessageReceiver(models.Model):
         Sets `email` as default message type if empty or `None`.
         """
         if not self.message_type:
-            self.message_type = ['email']
+            self.message_type = 'email'
 
     def clean(self):
         self.subject = self.subject.strip()
