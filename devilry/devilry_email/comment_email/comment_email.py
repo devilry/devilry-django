@@ -9,11 +9,12 @@ import django_rq
 from devilry.devilry_comment.models import Comment
 from devilry.devilry_email.utils import get_student_users_in_group, get_examiner_users_in_group, \
     build_feedbackfeed_absolute_url, activate_translation_for_user
+from devilry.devilry_message.utils.subject_generator import SubjectTextGenerator
 
 logger = logging.getLogger(__name__)
 
 
-class SubjectTextGenerator(object):
+class CommentSubjectTextGenerator(SubjectTextGenerator):
     """
     This class generates a subject through method `get_standard_subject`. We need
     this to generate a subject for the preferred translation of a user.
@@ -21,6 +22,7 @@ class SubjectTextGenerator(object):
     def __init__(self, comment, is_receipt=False):
         self.comment = comment
         self.is_receipt = is_receipt
+        super(CommentSubjectTextGenerator, self).__init__()
 
     def get_subject_text(self):
         """
@@ -116,7 +118,7 @@ def send_comment_email(comment, user_list, feedbackfeed_url, crinstance_id, doma
         'url': feedbackfeed_url
     }
     if not subject_generator:
-        subject_generator = SubjectTextGenerator(comment=comment)
+        subject_generator = CommentSubjectTextGenerator(comment=comment)
 
     user_ids = [user.id for user in user_list]
 
@@ -235,7 +237,7 @@ def send_student_comment_email(comment_id, domain_url_start, from_student_poster
             user_list=[comment.user],
             domain_scheme=domain_url_start,
             crinstance_id='devilry_group_student',
-            subject_generator=SubjectTextGenerator(comment=comment, is_receipt=True)
+            subject_generator=CommentSubjectTextGenerator(comment=comment, is_receipt=True)
         )
 
 
