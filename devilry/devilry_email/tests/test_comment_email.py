@@ -13,6 +13,7 @@ from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_email.comment_email.comment_email import send_comment_email, send_student_comment_email, \
     send_examiner_comment_email, bulk_send_comment_email_to_students_and_examiners
+from devilry.devilry_message.models import Message, MessageReceiver
 
 
 class TestCommentEmail(test.TestCase):
@@ -248,6 +249,34 @@ class TestStudentCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
             '[Devilry] You added a new delivery/comment for {}'.format(
                 test_feedbackset.group.parentnode.long_name))
 
+    def test_send_student_comment_message_and_message_receiver_created(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           long_name='Assignment 1')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        test_feedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group=testgroup, deadline_datetime=timezone.now() + timezone.timedelta(days=1))
+
+        # Another user on the group
+        self._make_studentuser_with_email(group=test_feedbackset.group, email='student1@example.com')
+
+        # The user that posted the comment
+        comment_user = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com')
+        mommy.make('core.Candidate', assignment_group=test_feedbackset.group, relatedstudent__user=comment_user)
+        test_groupcomment = mommy.make('devilry_group.GroupComment',
+                                       feedback_set=test_feedbackset,
+                                       text='This is a test',
+                                       user_role=Comment.USER_ROLE_STUDENT,
+                                       user=comment_user)
+        mommy.make('devilry_account.UserEmail', user=comment_user, email='testuser@example.com')
+        send_student_comment_email(
+            comment_id=test_groupcomment.id,
+            domain_url_start='http://www.example.com/',
+            from_student_poster=True)
+
+        self.assertEqual(len(mail.outbox), 2)
+        self.assertEqual(Message.objects.count(), 2)
+        self.assertEqual(MessageReceiver.objects.count(), 2)
+
     def test_examiner_comment_post_subject(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            long_name='Assignment 1')
@@ -450,6 +479,33 @@ class TestExaminerCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
             mail.outbox[0].subject,
             '[Devilry] A student added a new delivery/comment for {}'.format(
                 test_feedbackset.group.parentnode.long_name))
+
+    def test_send_examiner_comment_message_and_message_receivers_created(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           long_name='Assignment 1')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        test_feedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group=testgroup, deadline_datetime=timezone.now() + timezone.timedelta(days=1))
+
+        # Another user on the group
+        self._make_examineruser_with_email(group=testgroup, email='examiner@example.com')
+
+        # The user that posted the comment
+        comment_user = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com')
+        mommy.make('core.Candidate', assignment_group=test_feedbackset.group, relatedstudent__user=comment_user)
+        test_groupcomment = mommy.make('devilry_group.GroupComment',
+                                       feedback_set=test_feedbackset,
+                                       text='This is a test',
+                                       user_role=Comment.USER_ROLE_STUDENT,
+                                       user=comment_user)
+        mommy.make('devilry_account.UserEmail', user=comment_user, email='testuser@example.com')
+        send_examiner_comment_email(
+            comment_id=test_groupcomment.id,
+            domain_url_start='http://www.example.com/', )
+
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(Message.objects.count(), 1)
+        self.assertEqual(MessageReceiver.objects.count(), 1)
 
     def test_send_examiner_comment_subject_from_student_another_examiner(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
