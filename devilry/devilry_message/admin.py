@@ -28,7 +28,8 @@ class MessageAdmin(admin.ModelAdmin):
         'status',
         'created_by',
         'created_datetime',
-        'virtual_message_receivers'
+        'virtual_message_receivers',
+        'context_type'
     ]
     search_fields = [
         'id',
@@ -50,7 +51,9 @@ class MessageAdmin(admin.ModelAdmin):
         'metadata'
     ]
     list_filter = [
-        'status'
+        'status',
+        'context_type',
+        'created_datetime'
     ]
 
     def get_virtual_message_receivers_pretty(self, obj):
