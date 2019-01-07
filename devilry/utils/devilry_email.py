@@ -36,6 +36,7 @@ def send_message(subject, message, *user_objects_to_send_to, **kwargs):
         plain_message = message
 
     emails = []
+
     for user in user_objects_to_send_to:
         users_notification_emails = []
         for useremail in user.useremail_set.filter(use_for_notifications=True):

@@ -36,7 +36,7 @@ setup(
         'anyjson==0.3.3',
         'rq==0.13.0',
         'django-rq==1.3.0',
-        'redis==2.10.5',
+        'redis==3.0.1',
         'python-dateutil==1.5',
         'pytz==2012j',
         'httplib2==0.7.7',

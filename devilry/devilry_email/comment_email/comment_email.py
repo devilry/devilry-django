@@ -1,40 +1,57 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.conf import settings
-from django.utils import translation
 from django.utils.translation import ugettext_lazy, ugettext
 
 import logging
 import django_rq
 
 from devilry.devilry_comment.models import Comment
-from devilry.utils.devilry_email import send_templated_message
 from devilry.devilry_email.utils import get_student_users_in_group, get_examiner_users_in_group, \
     build_feedbackfeed_absolute_url, activate_translation_for_user
 
 logger = logging.getLogger(__name__)
 
 
-def get_standard_subject_text(comment):
+class SubjectTextGenerator(object):
     """
-    Get a standard subject text based on the role of the comment poster.
+    This class generates a subject through method `get_standard_subject`. We need
+    this to generate a subject for the preferred translation of a user.
     """
-    if comment.user_role == Comment.USER_ROLE_STUDENT:
-        if comment.published_datetime > comment.feedback_set.deadline_datetime:
-            return ugettext('A student added a new comment AFTER THE DEADLINE for %(assignment_name)s') % {
-                'assignment_name': comment.feedback_set.group.parentnode.long_name
+    def __init__(self, comment, is_receipt=False):
+        self.comment = comment
+        self.is_receipt = is_receipt
+
+    def get_subject_text(self):
+        """
+        Get a standard subject text based on the role of the comment poster.
+        """
+        if self.is_receipt:
+            after_deadline = self.comment.published_datetime > self.comment.feedback_set.deadline_datetime
+            if after_deadline:
+                subject_text = ugettext_lazy('You added a new comment AFTER THE DEADLINE for %(assignment_name)s') % {
+                    'assignment_name': self.comment.feedback_set.group.parentnode.long_name
+                }
+            else:
+                subject_text = ugettext_lazy('You added a new delivery/comment for %(assignment_name)s') % {
+                    'assignment_name': self.comment.feedback_set.group.parentnode.long_name
+                }
+            return subject_text
+        if self.comment.user_role == Comment.USER_ROLE_STUDENT:
+            if self.comment.published_datetime > self.comment.feedback_set.deadline_datetime:
+                return ugettext('A student added a new comment AFTER THE DEADLINE for %(assignment_name)s') % {
+                    'assignment_name': self.comment.feedback_set.group.parentnode.long_name
+                }
+            return ugettext('A student added a new delivery/comment for %(assignment_name)s') % {
+                'assignment_name': self.comment.feedback_set.group.parentnode.long_name
             }
-        return ugettext('A student added a new delivery/comment for %(assignment_name)s') % {
-            'assignment_name': comment.feedback_set.group.parentnode.long_name
+        elif self.comment.user_role == Comment.USER_ROLE_EXAMINER:
+            return ugettext('An examiner added a new comment for %(assignment_name)s') % {
+                'assignment_name': self.comment.feedback_set.group.parentnode.long_name
+            }
+        return ugettext('An admin added a new comment for %(assignment_name)s') % {
+            'assignment_name': self.comment.feedback_set.group.parentnode.long_name
         }
-    elif comment.user_role == Comment.USER_ROLE_EXAMINER:
-        return ugettext('An examiner added a new comment for %(assignment_name)s') % {
-            'assignment_name': comment.feedback_set.group.parentnode.long_name
-        }
-    return ugettext('An admin added a new comment for %(assignment_name)s') % {
-        'assignment_name': comment.feedback_set.group.parentnode.long_name
-    }
 
 
 def get_comment(comment_id):
@@ -65,8 +82,7 @@ def get_examiner_users_not_comment_poster(group, exclude_user=None):
     return queryset.exclude(id=exclude_user.id)
 
 
-def send_comment_email(comment, user_list, feedbackfeed_url, crinstance_id, domain_scheme,
-                       to_users_devilry_role, subject=None):
+def send_comment_email(comment, user_list, feedbackfeed_url, crinstance_id, domain_scheme, subject_generator=None):
     """
     Do not use this directly. Use ``send_examiner_comment_email`` or ``send_student_comment_email``.
 
@@ -86,30 +102,43 @@ def send_comment_email(comment, user_list, feedbackfeed_url, crinstance_id, doma
         subject: Can be given a customized subject, if ``None``, a standard subject is created based on who
             created the comment.
     """
-    from devilry.apps.core.group_user_lookup import GroupUserLookup
-    assignment = comment.feedback_set.group.parentnode
-    group = comment.feedback_set.group
+    from devilry.devilry_message.models import Message
     template_name = 'devilry_email/comment_email/comment.txt'
-    for user in user_list:
-        group_user_lookup = GroupUserLookup(
-            assignment=assignment,
-            group=group,
-            requestuser=user,
-            requestuser_devilryrole=to_users_devilry_role)
-        current_language = translation.get_language()
-        activate_translation_for_user(user=user)
-        template_dictionary = {
-            'comment_user_name': group_user_lookup.get_long_name_from_user(
-                user=comment.user, user_role=comment.user_role),
-            'comment': comment,
-            'domain_scheme': domain_scheme,
-            'crinstance_id': crinstance_id,
-            'url': feedbackfeed_url
-        }
-        if not subject:
-            subject = get_standard_subject_text(comment=comment)
-        send_templated_message(subject, template_name, template_dictionary, user, is_html=True)
-        translation.activate(current_language)
+
+    if len(user_list) == 0:
+        return
+
+    #: New implementation
+    template_dictionary = {
+        'comment': comment,
+        'domain_scheme': domain_scheme,
+        'crinstance_id': crinstance_id,
+        'url': feedbackfeed_url
+    }
+    if not subject_generator:
+        subject_generator = SubjectTextGenerator(comment=comment)
+
+    user_ids = [user.id for user in user_list]
+
+    message = Message(
+        virtual_message_receivers={'user_ids': user_ids},
+        context_type=Message.CONTEXT_TYPE_CHOICES.COMMENT_DELIVERY.value,
+        metadata={
+            'comment_id': comment.id,
+            'feedbackset_id': comment.feedback_set_id,
+            'assignment_group_id': comment.feedback_set.group_id,
+            'assignment_id': comment.feedback_set.group.parentnode_id
+        },
+        message_type=['email']
+    )
+    message.full_clean()
+    message.save()
+
+    message.prepare_and_send(
+        subject_generator=subject_generator,
+        template_name=template_name,
+        template_context=template_dictionary
+    )
 
 
 def send_examiner_comment_email(comment_id, domain_url_start):
@@ -145,8 +174,7 @@ def send_examiner_comment_email(comment_id, domain_url_start):
         user_list=examiner_users,
         feedbackfeed_url=absolute_url,
         crinstance_id='devilry_group_examiner',
-        domain_scheme=domain_url_start,
-        to_users_devilry_role='examiner'
+        domain_scheme=domain_url_start
     )
 
 
@@ -191,25 +219,15 @@ def send_student_comment_email(comment_id, domain_url_start, from_student_poster
     absolute_url = build_feedbackfeed_absolute_url(
         domain_scheme=domain_url_start, group_id=comment.feedback_set.group.id)
     student_users = list(get_student_users_not_comment_poster(group=comment.feedback_set.group, exclude_user=comment.user))
-    after_deadline = comment.published_datetime > comment.feedback_set.deadline_datetime
+
     send_comment_email(
         comment=comment,
         user_list=student_users,
         feedbackfeed_url=absolute_url,
         domain_scheme=domain_url_start,
-        crinstance_id='devilry_group_student',
-        to_users_devilry_role='student'
+        crinstance_id='devilry_group_student'
     )
-    activate_translation_for_user(user=comment.user)
-    if after_deadline:
-        subject_text = ugettext_lazy('You added a new comment AFTER THE DEADLINE for %(assignment_name)s') % {
-            'assignment_name': comment.feedback_set.group.parentnode.long_name
-        }
-    else:
-        subject_text = ugettext_lazy('You added a new delivery/comment for %(assignment_name)s') % {
-            'assignment_name': comment.feedback_set.group.parentnode.long_name
-        }
-    translation.deactivate()
+
     if from_student_poster:
         send_comment_email(
             comment=comment,
@@ -217,8 +235,7 @@ def send_student_comment_email(comment_id, domain_url_start, from_student_poster
             user_list=[comment.user],
             domain_scheme=domain_url_start,
             crinstance_id='devilry_group_student',
-            to_users_devilry_role='student',
-            subject=subject_text
+            subject_generator=SubjectTextGenerator(comment=comment, is_receipt=True)
         )
 
 

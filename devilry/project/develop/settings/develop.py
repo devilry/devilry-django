@@ -201,3 +201,13 @@ IEVVTASKS_RECREATE_DEVDB_POST_MANAGEMENT_COMMANDS = [
 # from devilry.utils.custom_templates import add_custom_templates_directory
 # add_custom_templates_directory(
 #     TEMPLATES, 'not_for_deploy/custom_devilry_templates_example/')
+
+###################################################################################
+# RQ
+###################################################################################
+
+# Uncomment these line to run RQ synchronously.
+# RQ_QUEUES['default']['ASYNC'] = False
+# RQ_QUEUES['email']['ASYNC'] = False
+# RQ_QUEUES['highpriority']['ASYNC'] = False
+

@@ -1,2 +1,2 @@
-from .base import BaseMessage
+from .base import Message
 from .base import MessageReceiver
