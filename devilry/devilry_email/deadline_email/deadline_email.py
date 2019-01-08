@@ -1,4 +1,3 @@
-from django.utils import translation
 from django.utils.translation import ugettext_lazy
 
 import django_rq
@@ -6,8 +5,7 @@ from django_cradmin.crinstance import reverse_cradmin_url
 
 from devilry.devilry_message.models import Message
 from devilry.devilry_message.utils.subject_generator import SubjectTextGenerator
-from devilry.utils.devilry_email import send_templated_message
-from devilry.devilry_email.utils import get_student_users_in_group, activate_translation_for_user
+from devilry.devilry_email.utils import get_student_users_in_group
 
 
 class DeadlineSubjectTextGenerator(SubjectTextGenerator):
