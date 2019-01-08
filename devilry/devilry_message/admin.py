@@ -104,7 +104,6 @@ class MessageReceiverAdmin(admin.ModelAdmin):
 
     readonly_fields = [
         'send_to',
-        'subject',
         'user',
         'status',
         'subject',
