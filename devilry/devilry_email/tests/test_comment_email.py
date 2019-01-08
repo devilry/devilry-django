@@ -249,7 +249,7 @@ class TestStudentCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
             '[Devilry] You added a new delivery/comment for {}'.format(
                 test_feedbackset.group.parentnode.long_name))
 
-    def test_send_student_comment_message_and_message_receiver_created(self):
+    def test_send_student_comment_message_and_message_receivers(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            long_name='Assignment 1')
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
@@ -257,7 +257,7 @@ class TestStudentCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
             group=testgroup, deadline_datetime=timezone.now() + timezone.timedelta(days=1))
 
         # Another user on the group
-        self._make_studentuser_with_email(group=test_feedbackset.group, email='student1@example.com')
+        other_user = self._make_studentuser_with_email(group=test_feedbackset.group, email='student1@example.com')
 
         # The user that posted the comment
         comment_user = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com')
@@ -276,6 +276,10 @@ class TestStudentCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
         self.assertEqual(len(mail.outbox), 2)
         self.assertEqual(Message.objects.count(), 2)
         self.assertEqual(MessageReceiver.objects.count(), 2)
+        self.assertTrue(MessageReceiver.objects.filter(user=other_user).exists())
+        self.assertTrue(MessageReceiver.objects.filter(user=comment_user).exists())
+        self.assertEqual(Message.objects.filter(status='sent').count(), 2)
+        self.assertEqual(MessageReceiver.objects.filter(status='sent').count(), 2)
 
     def test_examiner_comment_post_subject(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -488,7 +492,7 @@ class TestExaminerCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
             group=testgroup, deadline_datetime=timezone.now() + timezone.timedelta(days=1))
 
         # Another user on the group
-        self._make_examineruser_with_email(group=testgroup, email='examiner@example.com')
+        examiner_user = self._make_examineruser_with_email(group=testgroup, email='examiner@example.com')
 
         # The user that posted the comment
         comment_user = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com')
@@ -506,6 +510,9 @@ class TestExaminerCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(Message.objects.count(), 1)
         self.assertEqual(MessageReceiver.objects.count(), 1)
+        self.assertTrue(MessageReceiver.objects.filter(user=examiner_user).exists())
+        self.assertEqual(Message.objects.filter(status='sent').count(), 1)
+        self.assertEqual(MessageReceiver.objects.filter(status='sent').count(), 1)
 
     def test_send_examiner_comment_subject_from_student_another_examiner(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',

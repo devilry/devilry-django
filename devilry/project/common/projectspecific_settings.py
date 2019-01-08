@@ -38,6 +38,8 @@ DEVILRY_EMAIL_DEFAULT_FROM = 'devilry-support@example.com'
 DEVILRY_SYSTEM_ADMIN_EMAIL = 'devilry-admin@example.com'
 DEVILRY_SCHEME_AND_DOMAIN = 'https://devilry.example.com'
 
+DEVILRY_MESSAGE_RESEND_LIMIT = 2
+
 # The name of the primary sync system where data is imported from.
 # This is shown in the user interface, and can be a longer string
 # with spaces.
