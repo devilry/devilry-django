@@ -29,6 +29,7 @@ class Overview(listbuilderview.FilterListMixin, listbuilderview.View):
     model = Period
     frame_renderer_class = PeriodItemFrame
     value_renderer_class = devilry_listbuilder.period.AdminItemValue
+    paginate_by = 50
 
     def add_filterlist_items(self, filterlist):
         filterlist.append(listfilter.django.single.textinput.Search(
