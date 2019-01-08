@@ -81,6 +81,7 @@ class OverviewSubjectListView(listbuilderview.FilterListMixin, listbuilderview.V
     template_name = 'devilry_admin/dashboard/overview.django.html'
     frame_renderer_class = SubjectItemFrame
     value_renderer_class = devilry_listbuilder.subject.AdminItemValue
+    paginate_by = 50
 
     def get_pageheading(self):
         return ugettext("Administrator dashboard")

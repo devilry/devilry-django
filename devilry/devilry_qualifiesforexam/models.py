@@ -129,7 +129,7 @@ class Status(models.Model):
         verbose_name_plural = _('Qualified for final exam statuses')
 
     def get_status_text(self):
-        return self.STATUS_CHOICES_DICT[self.status]
+        return self.status
 
     def clean(self):
         if self.status == 'notready' and not self.message:
