@@ -11,6 +11,7 @@ from model_mommy import mommy
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_email.deadline_email import deadline_email
+from devilry.devilry_message.models import Message, MessageReceiver
 
 
 class TestNewAttemptEmail(test.TestCase):
@@ -32,19 +33,19 @@ class TestNewAttemptEmail(test.TestCase):
 
     def test_send_new_attempt_email_subject(self):
         test_feedbackset = self.__setup_feedback_set(new_deadline=timezone.now() + timezone.timedelta(days=10))
-        deadline_email.send_new_attempt_email(feedback_set=test_feedbackset, domain_url_start='http://www.example.com/')
+        deadline_email.send_new_attempt_email(feedback_sets=[test_feedbackset], domain_url_start='http://www.example.com/')
         self.assertEqual(
             mail.outbox[0].subject,
             '[Devilry] New attempt for {}'.format(test_feedbackset.group.parentnode.long_name))
 
     def test_send_new_attempt_email_recipients(self):
         test_feedbackset = self.__setup_feedback_set(new_deadline=timezone.now() + timezone.timedelta(days=10))
-        deadline_email.send_new_attempt_email(feedback_set=test_feedbackset, domain_url_start='http://www.example.com/')
+        deadline_email.send_new_attempt_email(feedback_sets=[test_feedbackset], domain_url_start='http://www.example.com/')
         self.assertEqual(mail.outbox[0].recipients(), ['student@example.com'])
 
     def test_send_new_attempt_email_body_text_with_deadline(self):
         test_feedbackset = self.__setup_feedback_set(new_deadline=datetime.utcnow())
-        deadline_email.send_new_attempt_email(feedback_set=test_feedbackset, domain_url_start='http://www.example.com/')
+        deadline_email.send_new_attempt_email(feedback_sets=[test_feedbackset], domain_url_start='http://www.example.com/')
         self.assertEqual(
             htmls.S(mail.outbox[0].message().as_string()).one(
                 '.devilry_email_deadline_new_attempt_info_text').alltext_normalized,
@@ -58,13 +59,19 @@ class TestNewAttemptEmail(test.TestCase):
 
     def test_send_new_attempt_email_link(self):
         test_feedbackset = self.__setup_feedback_set(new_deadline=timezone.now() + timezone.timedelta(days=10))
-        deadline_email.send_new_attempt_email(feedback_set=test_feedbackset, domain_url_start='http://www.example.com/')
+        deadline_email.send_new_attempt_email(feedback_sets=[test_feedbackset], domain_url_start='http://www.example.com/')
         feedback_link = 'http://www.example.com/devilry_group/student/{}/feedbackfeed/'.format(
             test_feedbackset.group.id)
         self.assertEqual(
             htmls.S(mail.outbox[0].message().as_string()).one(
                 '.devilry_email_deadline_new_attempt_detail_url').alltext_normalized,
             feedback_link)
+
+    def test_send_new_attempt_email_message_and_messagereceivers_created(self):
+        test_feedbackset = self.__setup_feedback_set(new_deadline=timezone.now() + timezone.timedelta(days=10))
+        deadline_email.send_new_attempt_email(feedback_sets=[test_feedbackset], domain_url_start='http://www.example.com/')
+        self.assertEqual(Message.objects.count(), 1)
+        self.assertEqual(MessageReceiver.objects.count(), 1)
 
 
 class TestNewAttemptBulkEmail(test.TestCase):
@@ -102,6 +109,31 @@ class TestNewAttemptBulkEmail(test.TestCase):
         self.assertIn('student2@example.com', recipient_list)
         self.assertIn('student3@example.com', recipient_list)
 
+    def test_bulk_send_emails_message_and_messagereceivers_created(self):
+        new_deadline = datetime.utcnow()
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           long_name='Assignment 1')
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        test_fb1 = group_mommy.feedbackset_first_attempt_published(
+            group=testgroup1, grading_points=1, deadline_datetime=new_deadline)
+        test_fb2 = group_mommy.feedbackset_first_attempt_published(
+            group=testgroup2, grading_points=1, deadline_datetime=new_deadline)
+        test_fb3 = group_mommy.feedbackset_first_attempt_published(
+            group=testgroup3, grading_points=1, deadline_datetime=new_deadline)
+        student1 = mommy.make('core.Candidate', assignment_group=testgroup1)
+        mommy.make('devilry_account.UserEmail', user=student1.relatedstudent.user, email='student1@example.com')
+        student2 = mommy.make('core.Candidate', assignment_group=testgroup2)
+        mommy.make('devilry_account.UserEmail', user=student2.relatedstudent.user, email='student2@example.com')
+        student3 = mommy.make('core.Candidate', assignment_group=testgroup3)
+        mommy.make('devilry_account.UserEmail', user=student3.relatedstudent.user, email='student3@example.com')
+        deadline_email.bulk_send_new_attempt_email(feedbackset_id_list=[test_fb1.id, test_fb2.id, test_fb3.id],
+                                                   domain_url_start='http://www.example.com/')
+        self.assertEqual(len(mail.outbox), 3)
+        self.assertEqual(Message.objects.count(), 1)
+        self.assertEqual(MessageReceiver.objects.count(), 3)
+
 
 class TestDeadlineMovedEmail(test.TestCase):
     def setUp(self):
@@ -122,19 +154,19 @@ class TestDeadlineMovedEmail(test.TestCase):
 
     def test_send_deadline_moved_email_subject(self):
         test_feedbackset = self.__setup_feedback_set(new_deadline=timezone.now() + timezone.timedelta(days=10))
-        deadline_email.send_deadline_moved_email(feedback_set=test_feedbackset, domain_url_start='http://www.example.com/')
+        deadline_email.send_deadline_moved_email(feedback_sets=[test_feedbackset], domain_url_start='http://www.example.com/')
         self.assertEqual(
             mail.outbox[0].subject,
             '[Devilry] Deadline moved for {}'.format(test_feedbackset.group.parentnode.long_name))
 
     def test_deadline_moved_email_recipients(self):
         test_feedbackset = self.__setup_feedback_set(new_deadline=timezone.now() + timezone.timedelta(days=10))
-        deadline_email.send_deadline_moved_email(feedback_set=test_feedbackset, domain_url_start='http://www.example.com/')
+        deadline_email.send_deadline_moved_email(feedback_sets=[test_feedbackset], domain_url_start='http://www.example.com/')
         self.assertEqual(mail.outbox[0].recipients(), ['student@example.com'])
 
     def test_deadline_moved_email_body_text_without_deadline(self):
         test_feedbackset = self.__setup_feedback_set(new_deadline=datetime.utcnow())
-        deadline_email.send_deadline_moved_email(feedback_set=test_feedbackset, domain_url_start='http://www.example.com/')
+        deadline_email.send_deadline_moved_email(feedback_sets=[test_feedbackset], domain_url_start='http://www.example.com/')
         self.assertEqual(
             htmls.S(mail.outbox[0].message().as_string()).one(
                 '.devilry_email_deadline_moved_info_text').alltext_normalized,
@@ -150,13 +182,19 @@ class TestDeadlineMovedEmail(test.TestCase):
 
     def test_deadline_moved_email_link(self):
         test_feedbackset = self.__setup_feedback_set(new_deadline=timezone.now() + timezone.timedelta(days=10))
-        deadline_email.send_deadline_moved_email(feedback_set=test_feedbackset, domain_url_start='http://www.example.com/')
+        deadline_email.send_deadline_moved_email(feedback_sets=[test_feedbackset], domain_url_start='http://www.example.com/')
         feedback_link = 'http://www.example.com/devilry_group/student/{}/feedbackfeed/'.format(
             test_feedbackset.group.id)
         self.assertEqual(
             htmls.S(mail.outbox[0].message().as_string()).one(
                 '.devilry_email_deadline_detail_url').alltext_normalized,
             feedback_link)
+
+    def test_deadline_moved_email_message_and_messagereceivers_created(self):
+        test_feedbackset = self.__setup_feedback_set(new_deadline=timezone.now() + timezone.timedelta(days=10))
+        deadline_email.send_deadline_moved_email(feedback_sets=[test_feedbackset], domain_url_start='http://www.example.com/')
+        self.assertEqual(Message.objects.count(), 1)
+        self.assertEqual(MessageReceiver.objects.count(), 1)
 
 
 class TestDeadlineMovedBulkEmail(test.TestCase):
@@ -193,3 +231,29 @@ class TestDeadlineMovedBulkEmail(test.TestCase):
         self.assertIn('student1@example.com', recipient_list)
         self.assertIn('student2@example.com', recipient_list)
         self.assertIn('student3@example.com', recipient_list)
+
+    def test_bulk_send_emails_message_and_messagereceivers_created(self):
+        new_deadline = datetime.utcnow()
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           long_name='Assignment 1')
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        test_fb1 = group_mommy.feedbackset_first_attempt_published(
+            group=testgroup1, grading_points=1, deadline_datetime=new_deadline)
+        test_fb2 = group_mommy.feedbackset_first_attempt_published(
+            group=testgroup2, grading_points=1, deadline_datetime=new_deadline)
+        test_fb3 = group_mommy.feedbackset_first_attempt_published(
+            group=testgroup3, grading_points=1, deadline_datetime=new_deadline)
+        student1 = mommy.make('core.Candidate', assignment_group=testgroup1)
+        mommy.make('devilry_account.UserEmail', user=student1.relatedstudent.user, email='student1@example.com')
+        student2 = mommy.make('core.Candidate', assignment_group=testgroup2)
+        mommy.make('devilry_account.UserEmail', user=student2.relatedstudent.user, email='student2@example.com')
+        student3 = mommy.make('core.Candidate', assignment_group=testgroup3)
+        mommy.make('devilry_account.UserEmail', user=student3.relatedstudent.user, email='student3@example.com')
+        deadline_email.bulk_send_deadline_moved_email(feedbackset_id_list=[test_fb1.id, test_fb2.id, test_fb3.id],
+                                                      domain_url_start='http://www.example.com/')
+        self.assertEqual(len(mail.outbox), 3)
+
+        self.assertEqual(Message.objects.count(), 1)
+        self.assertEqual(MessageReceiver.objects.count(), 3)

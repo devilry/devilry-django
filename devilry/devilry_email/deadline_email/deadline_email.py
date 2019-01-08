@@ -27,21 +27,15 @@ class DeadlineSubjectTextGenerator(SubjectTextGenerator):
                 'assignment_name': self.assignment.long_name}
 
 
-# def get_subject(assignment, deadline_type=None):
-#     if not deadline_type:
-#         raise ValueError('Missing mailtype')
-#     if deadline_type == 'new_attempt':
-#         return ugettext_lazy('New attempt for %(assignment_name)s') % {'assignment_name': assignment.long_name}
-#     if deadline_type == 'moved':
-#         return ugettext_lazy('Deadline moved for %(assignment_name)s') % {'assignment_name': assignment.long_name}
-
-def send_deadline_email(feedback_set, domain_url_start, deadline_type, template_name):
+def send_deadline_email(feedback_sets, domain_url_start, deadline_type, template_name):
     """
     Send email about a new attempt given to a group.
 
     General function for sending deadline related emails.
     """
-    student_users = list(get_student_users_in_group(feedback_set.group))
+    student_users = []
+    for feedback_set in feedback_sets:
+        student_users.extend(list(get_student_users_in_group(feedback_set.group)))
 
     if len(student_users) == 0:
         return
@@ -61,9 +55,16 @@ def send_deadline_email(feedback_set, domain_url_start, deadline_type, template_
     }
 
     user_ids = [user.id for user in student_users]
+    if deadline_type == 'new_attempt':
+        message_context_type = Message.CONTEXT_TYPE_CHOICES.NEW_ATTEMPT.value
+    elif deadline_type == 'moved':
+        message_context_type = Message.CONTEXT_TYPE_CHOICES.DEADLINE_MOVED.value
+    else:
+        message_context_type = Message.CONTEXT_TYPE_CHOICES.OTHER.value
+
     message = Message(
         virtual_message_receivers={'user_ids': user_ids},
-        context_type=Message.CONTEXT_TYPE_CHOICES.DEADLINE_MOVED.value,
+        context_type=message_context_type,
         metadata={
             'deadline': feedback_set.deadline_datetime.isoformat(),
             'feedbackset_id': feedback_set.id,
@@ -80,32 +81,6 @@ def send_deadline_email(feedback_set, domain_url_start, deadline_type, template_
         template_name=template_name,
         template_context=template_dictionary
     )
-
-
-# def send_deadline_email(feedback_set, domain_url_start, deadline_type, template_name):
-#     """
-#     Send email about a new attempt given to a group.
-#
-#     General function for sending deadline related emails.
-#     """
-#     assignment = feedback_set.group.parentnode
-#     domain_url_start = domain_url_start.rstrip('/')
-#     absolute_url = '{}{}'.format(
-#         domain_url_start,
-#         reverse_cradmin_url(instanceid='devilry_group_student', appname='feedbackfeed', roleid=feedback_set.group_id)
-#     )
-#     student_users = list(get_student_users_in_group(feedback_set.group))
-#     for student_user in student_users:
-#         current_language = translation.get_language()
-#         activate_translation_for_user(user=student_user)
-#         subject = get_subject(assignment=assignment, deadline_type=deadline_type)
-#         template_dictionary = {
-#             'assignment_name': assignment.long_name,
-#             'deadline': feedback_set.deadline_datetime,
-#             'url': absolute_url
-#         }
-#         send_templated_message(subject, template_name, template_dictionary, student_user, is_html=True)
-#         translation.activate(current_language)
 
 
 def send_new_attempt_email(**kwargs):
@@ -132,11 +107,10 @@ def bulk_new_attempt_mail(feedbackset_id_list, domain_url_start):
     feedbackset_queryset = FeedbackSet.objects \
         .select_related('group', 'group__parentnode', 'group__parentnode__parentnode') \
         .filter(id__in=feedbackset_id_list)
-    for feedback_set in feedbackset_queryset:
-        send_new_attempt_email(
-            feedback_set=feedback_set,
-            domain_url_start=domain_url_start
-        )
+    send_new_attempt_email(
+        feedback_sets=feedbackset_queryset,
+        domain_url_start=domain_url_start
+    )
 
 
 def bulk_deadline_moved_mail(feedbackset_id_list, domain_url_start):
@@ -144,11 +118,10 @@ def bulk_deadline_moved_mail(feedbackset_id_list, domain_url_start):
     feedbackset_queryset = FeedbackSet.objects \
         .select_related('group', 'group__parentnode', 'group__parentnode__parentnode') \
         .filter(id__in=feedbackset_id_list)
-    for feedback_set in feedbackset_queryset:
-        send_deadline_moved_email(
-            feedback_set=feedback_set,
-            domain_url_start=domain_url_start
-        )
+    send_deadline_moved_email(
+        feedback_sets=feedbackset_queryset,
+        domain_url_start=domain_url_start
+    )
 
 
 def bulk_send_new_attempt_email(**kwargs):
