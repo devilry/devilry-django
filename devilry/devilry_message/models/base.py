@@ -215,10 +215,21 @@ class Message(models.Model):
                 self.save()
             except Exception as exception:
                 self.status = self.STATUS_CHOICES.ERROR.value
-                self.status_data = {
-                    'error_message': str(exception),
-                    'exception_traceback': traceback.format_exc()
-                }
+
+                if 'errors' in self.status_data:
+                    self.status_data['errors'].append({
+                        'error_message': str(exception),
+                        'timestamp': timezone.now().isoformat(),
+                        'exception_traceback': traceback.format_exc()
+                    })
+                else:
+                    self.status_data = {
+                        'errors': [{
+                            'error_message': str(exception),
+                            'timestamp': timezone.now().isoformat(),
+                            'exception_traceback': traceback.format_exc()
+                        }]
+                    }
                 self.save()
 
     def clean_message_type(self):
@@ -264,6 +275,8 @@ class MessageReceiver(models.Model):
     #: - ``not_sent``: The MessageReceiver has just been created, but not sent yet.
     #: - ``error``: There is some error with this message. Details about the error(s)
     #:   is available in :obj:`.status_data`.
+    #: - ``failed``: The message failed, same as error, but the status is set to `failed` if the
+    #: `sending_failed_count` is less than `DEVILRY_MESSAGE_RESEND_LIMIT`.
     #: - ``sent``: Sent to the backend. We do not know if it was successful or
     #:   not yet when we have this status (E.g.: We do not know if the message has been received, but
     #:   we are waiting for an update that tells us if it was).
@@ -272,6 +285,8 @@ class MessageReceiver(models.Model):
     STATUS_CHOICES = choices_with_meta.ChoicesWithMeta(
         choices_with_meta.Choice(value='not_sent',
                                  label=ugettext_lazy('Not sent')),
+        choices_with_meta.Choice(value='failed',
+                                 label=ugettext_lazy('Failed')),
         choices_with_meta.Choice(value='error',
                                  label=ugettext_lazy('Error')),
         choices_with_meta.Choice(value='sent',
@@ -339,6 +354,24 @@ class MessageReceiver(models.Model):
     #: The datetime the message was sent to this user.
     sent_datetime = models.DateTimeField(null=True, blank=True)
 
+    #: Number of failed attempts.
+    sending_failed_count = models.IntegerField(
+        default=0
+    )
+
+    #: Number of successful attempts (no errors where raised).
+    sending_success_count = models.IntegerField(
+        default=0
+    )
+
+    def _send_email(self):
+        """
+        Sends the email via `devilry.utils.devilry_email.send_message`.
+
+        DO NOT call this method directly.
+        """
+        send_message(self.subject, self.message_content_html, *[self.user], is_html=True)
+
     def send(self):
         """
         Simply sends a message to this receiver. This method can also be
@@ -346,16 +379,34 @@ class MessageReceiver(models.Model):
         """
         with transaction.atomic():
             try:
-                send_message(self.subject, self.message_content_html, *[self.user], is_html=True)
+                # send_message(self.subject, self.message_content_html, *[self.user], is_html=True)
+                self._send_email()
                 self.sent_datetime = timezone.now()
                 self.status = self.STATUS_CHOICES.SENT.value
+                self.sending_success_count += 1
                 self.save()
             except Exception as exception:
-                self.status = self.STATUS_CHOICES.ERROR.value
-                self.status_data = {
-                    'error_message': str(exception),
-                    'exception_traceback': traceback.format_exc()
-                }
+                self.sending_failed_count += 1
+
+                if self.sending_failed_count >= settings.DEVILRY_MESSAGE_RESEND_LIMIT:
+                    self.status = self.STATUS_CHOICES.ERROR.value
+                else:
+                    self.status = self.STATUS_CHOICES.FAILED.value
+
+                if 'errors' in self.status_data:
+                    self.status_data['errors'].append({
+                        'error_message': str(exception),
+                        'timestamp': timezone.now().isoformat(),
+                        'exception_traceback': traceback.format_exc()
+                    })
+                else:
+                    self.status_data = {
+                        'errors': [{
+                            'error_message': str(exception),
+                            'timestamp': timezone.now().isoformat(),
+                            'exception_traceback': traceback.format_exc()
+                        }]
+                    }
                 self.save()
 
     def clean_message_content_fields(self):
