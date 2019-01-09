@@ -430,7 +430,7 @@ class MessageReceiver(models.Model):
         except Exception as exception:
             self.sending_failed_count += 1
 
-            if self.sending_failed_count >= settings.DEVILRY_MESSAGE_RESEND_LIMIT:
+            if self.sending_failed_count > settings.DEVILRY_MESSAGE_RESEND_LIMIT:
                 self.status = self.STATUS_CHOICES.ERROR.value
             else:
                 self.status = self.STATUS_CHOICES.FAILED.value
