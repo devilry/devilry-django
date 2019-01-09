@@ -98,12 +98,18 @@ class Message(models.Model):
     #: - `feedback`: Message regarding feedback/grading.
     #: - `feedback_updated`: Message regarding an updated grade/result.
     CONTEXT_TYPE_CHOICES = choices_with_meta.ChoicesWithMeta(
-        choices_with_meta.Choice(value='other'),
-        choices_with_meta.Choice(value='comment_delivery'),
-        choices_with_meta.Choice(value='deadline_moved'),
-        choices_with_meta.Choice(value='new_attempt'),
-        choices_with_meta.Choice(value='feedback'),
-        choices_with_meta.Choice(value='feedback_updated')
+        choices_with_meta.Choice(value='other',
+                                 label='Other'),
+        choices_with_meta.Choice(value='comment_delivery',
+                                 label='Comment or delivery'),
+        choices_with_meta.Choice(value='deadline_moved',
+                                 label='Deadline moved'),
+        choices_with_meta.Choice(value='new_attempt',
+                                 label='New attempt'),
+        choices_with_meta.Choice(value='feedback',
+                                 label='Feedback'),
+        choices_with_meta.Choice(value='feedback_updated',
+                                 label='Grading updated')
     )
 
     #: The context type of the message.
@@ -301,6 +307,11 @@ class MessageReceiver(models.Model):
         - When the message was successfully sent.
     """
     objects = MessageReceiverQuerySet.as_manager()
+
+    #: When the receiver was created.
+    created_datetime = models.DateTimeField(
+        blank=True, null=True, default=timezone.now
+    )
 
     #: Choices for the :obj:`.MessageReceiver.status` field.
     #:
