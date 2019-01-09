@@ -4,12 +4,18 @@ from devilry.devilry_qualifiesforexam.models import Status, QualifiesForFinalExa
 
 class QualifiesForFinalExamInline(admin.TabularInline):
     model = QualifiesForFinalExam
+    raw_id_fields = [
+        'relatedstudent'
+    ]
     fields = ['relatedstudent', 'qualifies']
     readonly_fields = ['relatedstudent', 'qualifies']
     extra = 0
 
 
 class StatusAdmin(admin.ModelAdmin):
+    raw_id_fields = [
+        'period'
+    ]
     inlines = [QualifiesForFinalExamInline]
     list_display = (
         'id',
@@ -45,4 +51,22 @@ class StatusAdmin(admin.ModelAdmin):
     #     return ', '.join([user.username for user in obj.admins.all()])
     # admins_as_string.short_description = "Admins"
 
+
 admin.site.register(Status, StatusAdmin)
+
+
+class QualifiesForFinalExamAdmin(admin.ModelAdmin):
+    raw_id_fields = [
+        'relatedstudent'
+    ]
+    list_display = (
+        'id',
+        'qualifies'
+    )
+    search_fields = [
+        'id'
+    ]
+
+
+
+admin.site.register(QualifiesForFinalExam, QualifiesForFinalExamAdmin)
