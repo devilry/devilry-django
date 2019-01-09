@@ -22,7 +22,15 @@ from devilry.utils.devilry_email import send_message
 
 class Message(models.Model):
     """
-    A message that contains a message sent via different message types (SMS or E-mail).
+    The `Message`-class handles preparing and sending of different messages in the Devilry-system.
+
+    This model contains metadata about a message sent to one or multiple users, what type of message it is, the overall
+    status of the message and creates recipients for the email to be sent.
+
+    Notes::
+        The actual subject and message-content is stored on each :class:`.MessageReceiver` with a
+        foreignkey to this class. The reason for this being that we want to save the subject and content
+        in the preferred language of the user.
     """
     #: When the message was created.
     created_datetime = models.DateTimeField(
@@ -249,6 +257,22 @@ class Message(models.Model):
 class MessageReceiverQuerySet(models.QuerySet):
     def create_receiver(self, user, message, message_type, subject_generator, template_name, template_context):
         """
+        Create a message receiver and generate the email content and subject
+        according to the preferred language of the user and return the `MessageReceiver`-instance. This method
+        cleans the receiver object, but DOES NOT SAVE IT.
+
+        Args:
+            user: A :class:`devilry.devilry_account.models.User`-instance.
+            message: A :class:`.Message`-instance this receiver belongs to.
+            message_type: The type of message (email, sms, ...).
+            subject_generator: A subclass of
+                :class:`devilry.devilry_message.utils.subject_generator.SubjectTextGenerator`
+            template_name: Template to render content with (a path).
+            template_context: Context data for template.
+
+        Returns:
+            :class:`.MessageRecveiver`: Unsaved instance.
+
         """
         current_language = translation.get_language()
         activate_translation_for_user(user=user)
@@ -266,7 +290,15 @@ class MessageReceiverQuerySet(models.QuerySet):
 
 class MessageReceiver(models.Model):
     """
-    A message receiver for a subclass of :class:`.BaseMessage`.
+    This class represents a single message to a single user.
+
+    Contains data about the specific message for a user:
+        - ForeignKey to a user.
+        - The status of the sending.
+        - How many time the message has been successfully and unsuccessfully sent to the user.
+        - The subject (in the users preferred language).
+        - The content as both html and plaintext (in the users preferred language).
+        - When the message was successfully sent.
     """
     objects = MessageReceiverQuerySet.as_manager()
 
@@ -351,7 +383,8 @@ class MessageReceiver(models.Model):
         to=settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE)
 
-    #: The datetime the message was sent to this user.
+    #: The datetime the message was successfully sent
+    #: to the user.
     sent_datetime = models.DateTimeField(null=True, blank=True)
 
     #: Number of failed attempts.
@@ -359,7 +392,7 @@ class MessageReceiver(models.Model):
         default=0
     )
 
-    #: Number of successful attempts (no errors where raised).
+    #: Number of successful attempts.
     sending_success_count = models.IntegerField(
         default=0
     )
