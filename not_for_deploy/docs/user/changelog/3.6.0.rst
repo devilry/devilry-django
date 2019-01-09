@@ -4,9 +4,6 @@
 What is new in Devilry 3.6.0
 ############################
 
-.. note::
-    Not released
-
 
 Fixes / improvements
 ####################
