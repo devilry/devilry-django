@@ -30,10 +30,18 @@ def send_feedback_email(assignment, feedback_sets, domain_url_start, feedback_ty
     Send a feedback mail to all students in and :class:`~.devilry.apps.core.models.AssignmentGroup` for
     a :class:`~.devilry.devilry_group.models.FeedbackSet`.
 
+    Here's what this method does, step-by-step:
+        1. Creates a :class:`~.devilry.devilry_message.models.Message` for each
+           `FeedbackSet`.
+        2. Calls :meth:`~.devilry.devilry_message.models.Message.prepare_and_send` which
+           generates and sends an email to each user.
+
     Args:
-        assignment: The assignment for the feedbacksets.
-        feedback_sets: The feedback_sets that where corrected.
-        domain_url_start: Domain url.
+        assignment: An instance of :class:`~.devilry.apps.core.models.Assignment`
+            where deadlines changed.
+        feedback_sets: An iterable containing :class:`~.devilry.devilry_group.models.FeedbackSet`s
+            that have their deadlines changed.
+        domain_url_start: The domain address, e.g: "www.example.com".
         feedback_type: The type of feedback, is it a new grading or has the grading been update.
 
     """
@@ -76,6 +84,7 @@ def send_feedback_email(assignment, feedback_sets, domain_url_start, feedback_ty
             'url': absolute_url
         }
 
+        # Create message object and save it.
         message = Message(
             virtual_message_receivers={'user_ids': user_ids},
             context_type=message_context_type,
@@ -91,6 +100,7 @@ def send_feedback_email(assignment, feedback_sets, domain_url_start, feedback_ty
         message.full_clean()
         message.save()
 
+        # Prepare receivers and send.
         message.prepare_and_send(
             subject_generator=subject_generator,
             template_name=template_name,
@@ -99,7 +109,8 @@ def send_feedback_email(assignment, feedback_sets, domain_url_start, feedback_ty
 
 def bulk_feedback_mail(assignment_id, feedbackset_id_list, domain_url_start, feedback_type=None):
     """
-    Starts an RQ task that sends a mail users in a group for FeedbackSet.
+    Fetches necessary data, and calls :meth:`.send_feedback_email`. Works as an interface
+    for :meth:`bulk_send_feedback_created_email` and :meth:`bulk_send_feedback_edited_email`.
 
     Args:
         assignment_id: The :class:`~.devilry.apps.core.models.Assignment` the feedbacks where given on.
@@ -123,6 +134,10 @@ def bulk_feedback_mail(assignment_id, feedbackset_id_list, domain_url_start, fee
 
 def bulk_send_feedback_created_email(**kwargs):
     """
+    Queue RQ job for sending out notifications to users when receive
+    feedback.
+
+    Adds :meth:`bulk_feedback_mail` to the RQ-queue.
     """
     kwargs.update({
         'feedback_type': 'feedback_created'
@@ -133,6 +148,10 @@ def bulk_send_feedback_created_email(**kwargs):
 
 def bulk_send_feedback_edited_email(**kwargs):
     """
+    Queue RQ job for sending out notifications to users when their feedback
+    has been edited.
+
+    Adds :meth:`bulk_feedback_mail` to the RQ-queue.
     """
     kwargs.update({
         'feedback_type': 'feedback_edited'

@@ -27,9 +27,23 @@ class DeadlineSubjectTextGenerator(SubjectTextGenerator):
 
 def send_deadline_email(assignment, feedback_sets, domain_url_start, deadline_type, template_name):
     """
-    Send email about a new attempt given to a group.
+    Send email to users on a set of :class:`~.devilry.devilry_group.models.FeedbackSet`s that have
+    had their deadline moved or been given a new attempt.
 
-    General function for sending deadline related emails.
+    Here's what this method does, step-by-step:
+        1. Creates a :class:`~.devilry.devilry_message.models.Message` for each
+           `FeedbackSet`.
+        2. Calls :meth:`~.devilry.devilry_message.models.Message.prepare_and_send` which
+           generates and sends an email to each user.
+
+    Args:
+        assignment: An instance of :class:`~.devilry.apps.core.models.Assignment`
+            where deadlines changed.
+        feedback_sets: An iterable containing :class:`~.devilry.devilry_group.models.FeedbackSet`s
+            that have their deadlines changed.
+        domain_url_start: The domain address, e.g: "www.example.com".
+        template_name: Name (path) to template the message should be generated from.
+        deadline_type: The type of deadline change (moved deadline or a new attempt).
     """
     if deadline_type == 'new_attempt':
         message_context_type = Message.CONTEXT_TYPE_CHOICES.NEW_ATTEMPT.value
@@ -56,6 +70,7 @@ def send_deadline_email(assignment, feedback_sets, domain_url_start, deadline_ty
             'url': absolute_url
         }
 
+        # Create message object and save it.
         message = Message(
             virtual_message_receivers={'user_ids': user_ids},
             context_type=message_context_type,
@@ -70,6 +85,7 @@ def send_deadline_email(assignment, feedback_sets, domain_url_start, deadline_ty
         message.full_clean()
         message.save()
 
+        # Prepare receivers and send.
         message.prepare_and_send(
             subject_generator=subject_generator,
             template_name=template_name,
@@ -80,7 +96,7 @@ def send_deadline_email(assignment, feedback_sets, domain_url_start, deadline_ty
 def bulk_deadline_email(assignment_id, feedbackset_id_list, domain_url_start, template_name, deadline_type):
     """
     Fetches necessary data, and calls :meth:`.send_deadline_email`. Works as an interface
-    for :meth:`bulk_send_new_attempt_email` and :meth:`bulk_send_deadline_moved_email`
+    for :meth:`bulk_send_new_attempt_email` and :meth:`bulk_send_deadline_moved_email`.
 
     Args:
         assignment_id: The ID of an :class:`~.devilry.apps.core.models.Assignment`
@@ -108,7 +124,10 @@ def bulk_deadline_email(assignment_id, feedbackset_id_list, domain_url_start, te
 
 def bulk_send_new_attempt_email(**kwargs):
     """
-    Queue RQ job for sending out notifications to users when they have been given a new attempt.
+    Queue RQ job for sending out notifications to users when they
+    have been given a new attempt.
+
+    Adds :meth:`bulk_deadline_email` to the RQ-queue.
     """
     kwargs.update({
         'template_name': 'devilry_email/deadline_email/new_attempt.txt',
@@ -120,7 +139,10 @@ def bulk_send_new_attempt_email(**kwargs):
 
 def bulk_send_deadline_moved_email(**kwargs):
     """
-    Queue RQ job for sending out notifications to users when their deadline is moved.
+    Queue RQ job for sending out notifications to users when their
+    deadline is moved.
+
+    Adds :meth:`bulk_deadline_email` to the RQ-queue.
     """
     kwargs.update({
         'template_name': 'devilry_email/deadline_email/deadline_moved.txt',
