@@ -38,6 +38,7 @@ def send_deadline_email(feedback_sets, domain_url_start, deadline_type, template
     if len(student_users) == 0:
         return
 
+    # TODO: Fix assignment. We need this as an argument to the function.
     assignment = feedback_set.group.parentnode
     domain_url_start = domain_url_start.rstrip('/')
     absolute_url = '{}{}'.format(

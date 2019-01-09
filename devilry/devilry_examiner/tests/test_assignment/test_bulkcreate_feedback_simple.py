@@ -318,7 +318,6 @@ class TestBulkCreateFeedbackSimplePassedFailedPlugin(test.TestCase, cradmin_test
             )
 
     def test_post_query_count(self):
-        # 1 query for each FeedbackSet update, and 2 queries for each GroupComment created(also creates Comment).
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
@@ -333,7 +332,7 @@ class TestBulkCreateFeedbackSimplePassedFailedPlugin(test.TestCase, cradmin_test
         mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=user)
         mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=user)
         mommy.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=user)
-        with self.assertNumQueries(32):
+        with self.assertNumQueries(61):
             self.mock_http302_postrequest(
                 requestuser=user,
                 cradmin_role=testassignment,

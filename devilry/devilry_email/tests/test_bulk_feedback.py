@@ -6,10 +6,11 @@ from model_mommy import mommy
 
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
-from devilry.devilry_email.feedback_email.feedback_email import bulk_feedback_mail
+from devilry.devilry_email.feedback_email.feedback_email import bulk_send_feedback_created_email
+from devilry.devilry_message.models import Message, MessageReceiver
 
 
-class TestBulkMailSending(test.TestCase):
+class TestBulkFeedbackMailSending(test.TestCase):
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
@@ -22,7 +23,10 @@ class TestBulkMailSending(test.TestCase):
         mommy.make('devilry_account.UserEmail', user=student.relatedstudent.user, email='student@example.com')
         user = mommy.make(settings.AUTH_USER_MODEL)
         mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=user)
-        bulk_feedback_mail(feedbackset_id_list=[test_feedbackset.id], domain_url_start='http://www.example.com/')
+        bulk_send_feedback_created_email(
+            assignment_id=testassignment.id,
+            feedbackset_id_list=[test_feedbackset.id],
+            domain_url_start='http://www.example.com/')
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, '[Devilry] Feedback for {}'.format(testassignment.long_name))
         self.assertEqual(mail.outbox[0].recipients(), ['student@example.com'])
@@ -30,6 +34,11 @@ class TestBulkMailSending(test.TestCase):
         self.assertIn('Assignment: {}'.format(testassignment.long_name), mail_content)
         self.assertIn('Subject: {}'.format(testassignment.parentnode.parentnode.long_name), mail_content)
         self.assertIn('Result: passed', mail_content)
+
+        self.assertEqual(Message.objects.count(), 1)
+        self.assertEqual(MessageReceiver.objects.count(), 1)
+        message_receiver = MessageReceiver.objects.get()
+        self.assertEqual(message_receiver.user, student.relatedstudent.user)
 
     def test_send_to_multiple_feedbacksets(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -49,6 +58,15 @@ class TestBulkMailSending(test.TestCase):
         mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=user)
         mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=user)
         mommy.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=user)
-        bulk_feedback_mail(feedbackset_id_list=[test_feedbackset1.id, test_feedbackset2.id, test_feedbackset3.id],
-                           domain_url_start='http://www.example.com/')
+        bulk_send_feedback_created_email(
+            assignment_id=testassignment.id,
+            feedbackset_id_list=[test_feedbackset1.id, test_feedbackset2.id, test_feedbackset3.id],
+            domain_url_start='http://www.example.com/')
         self.assertEqual(len(mail.outbox), 3)
+
+        self.assertEqual(Message.objects.count(), 3)
+        self.assertEqual(MessageReceiver.objects.count(), 3)
+        receiver_users = [receiver.user for receiver in MessageReceiver.objects.all()]
+        self.assertIn(student1.relatedstudent.user, receiver_users)
+        self.assertIn(student2.relatedstudent.user, receiver_users)
+        self.assertIn(student3.relatedstudent.user, receiver_users)

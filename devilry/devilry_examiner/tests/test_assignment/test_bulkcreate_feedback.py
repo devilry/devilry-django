@@ -14,6 +14,7 @@ from devilry.devilry_dbcache import models as cache_models
 from devilry.devilry_examiner.views.assignment.bulkoperations import bulk_feedback
 from devilry.devilry_group import devilry_group_mommy_factories
 from devilry.devilry_group import models as group_models
+from devilry.devilry_message.models import Message
 from devilry.project.common import settings
 
 
@@ -943,7 +944,7 @@ class TestPassedFailedBulkCreateFeedback(test.TestCase, cradmin_testhelpers.Test
         devilry_group_mommy_factories\
             .feedbackset_first_attempt_unpublished(group=testgroup5)
 
-        with self.assertNumQueries(23):
+        with self.assertNumQueries(22):
             self.mock_postrequest(
                 cradmin_role=testassignment,
                 requestuser=examiner_user,
@@ -1129,6 +1130,20 @@ class TestPointsBulkCreateFeedback(test.TestCase, cradmin_testhelpers.TestCaseMi
         testgroup5 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         testgroup6 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
 
+        # create students for the groups
+        student1 = mommy.make('core.Candidate', assignment_group=testgroup1)
+        student2 = mommy.make('core.Candidate', assignment_group=testgroup2)
+        student3 = mommy.make('core.Candidate', assignment_group=testgroup3)
+        student4 = mommy.make('core.Candidate', assignment_group=testgroup4)
+        student5 = mommy.make('core.Candidate', assignment_group=testgroup5)
+        student6 = mommy.make('core.Candidate', assignment_group=testgroup6)
+        mommy.make('devilry_account.UserEmail', user=student1.relatedstudent.user, email='student1@example.com')
+        mommy.make('devilry_account.UserEmail', user=student2.relatedstudent.user, email='student2@example.com')
+        mommy.make('devilry_account.UserEmail', user=student3.relatedstudent.user, email='student3@example.com')
+        mommy.make('devilry_account.UserEmail', user=student4.relatedstudent.user, email='student4@example.com')
+        mommy.make('devilry_account.UserEmail', user=student5.relatedstudent.user, email='student5@example.com')
+        mommy.make('devilry_account.UserEmail', user=student6.relatedstudent.user, email='student6@example.com')
+
         # create user as examiner for AssignmentGroups
         examiner_user = mommy.make(settings.AUTH_USER_MODEL)
         mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=examiner_user)
@@ -1152,7 +1167,7 @@ class TestPointsBulkCreateFeedback(test.TestCase, cradmin_testhelpers.TestCaseMi
         devilry_group_mommy_factories \
             .feedbackset_first_attempt_unpublished(group=testgroup6)
 
-        with self.assertNumQueries(5):
+        with self.assertNumQueries(10):
             self.mock_http200_getrequest_htmls(
                 cradmin_role=testassignment,
                 requestuser=examiner_user
@@ -1171,6 +1186,18 @@ class TestPointsBulkCreateFeedback(test.TestCase, cradmin_testhelpers.TestCaseMi
         testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         testgroup4 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         testgroup5 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+
+        # create students for the groups
+        student1 = mommy.make('core.Candidate', assignment_group=testgroup1)
+        student2 = mommy.make('core.Candidate', assignment_group=testgroup2)
+        student3 = mommy.make('core.Candidate', assignment_group=testgroup3)
+        student4 = mommy.make('core.Candidate', assignment_group=testgroup4)
+        student5 = mommy.make('core.Candidate', assignment_group=testgroup5)
+        mommy.make('devilry_account.UserEmail', user=student1.relatedstudent.user, email='student1@example.com')
+        mommy.make('devilry_account.UserEmail', user=student2.relatedstudent.user, email='student2@example.com')
+        mommy.make('devilry_account.UserEmail', user=student3.relatedstudent.user, email='student3@example.com')
+        mommy.make('devilry_account.UserEmail', user=student4.relatedstudent.user, email='student4@example.com')
+        mommy.make('devilry_account.UserEmail', user=student5.relatedstudent.user, email='student5@example.com')
 
         # create user as examiner for AssignmentGroups
         examiner_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -1192,7 +1219,7 @@ class TestPointsBulkCreateFeedback(test.TestCase, cradmin_testhelpers.TestCaseMi
         devilry_group_mommy_factories\
             .feedbackset_first_attempt_unpublished(group=testgroup5)
 
-        with self.assertNumQueries(23):
+        with self.assertNumQueries(93):
             self.mock_postrequest(
                 cradmin_role=testassignment,
                 requestuser=examiner_user,

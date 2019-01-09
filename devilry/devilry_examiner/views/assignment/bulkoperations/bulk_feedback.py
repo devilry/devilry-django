@@ -16,7 +16,7 @@ from devilry.devilry_comment import models as comment_models
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_examiner.views.assignment.bulkoperations import bulk_operations_grouplist
 from devilry.devilry_group import models as group_models
-from devilry.devilry_email.feedback_email.feedback_email import bulk_send_email
+from devilry.devilry_email.feedback_email import feedback_email
 
 
 class AssignPointsForm(bulk_operations_grouplist.SelectedAssignmentGroupForm):
@@ -98,13 +98,13 @@ class AbstractBulkFeedbackListView(bulk_operations_grouplist.AbstractAssignmentG
 
     def get_filterlist_url(self, filters_string):
         raise NotImplementedError()
-    
+
     def get_unfiltered_queryset_for_role(self, role):
         queryset = super(AbstractBulkFeedbackListView, self).get_unfiltered_queryset_for_role(role)
         return queryset\
             .filter_examiner_has_access(user=self.request.user) \
             .exclude(cached_data__last_published_feedbackset=models.F('cached_data__last_feedbackset'))
-    
+
     def __create_grading_groupcomment(self, feedback_set_id, published_time, text):
         """
         Create an entry of :class:`~.devilry.devilry_group.models.GroupComment` as part of grading
@@ -159,8 +159,10 @@ class AbstractBulkFeedbackListView(bulk_operations_grouplist.AbstractAssignmentG
                     grading_published_by=self.request.user,
                     grading_published_datetime=now_without_microseconds + timezone.timedelta(microseconds=1),
                     grading_points=points)
-            bulk_send_email(feedbackset_id_list=feedback_set_ids,
-                            domain_url_start=self.request.build_absolute_uri('/'))
+            feedback_email.bulk_send_feedback_created_email(
+                assignment_id=self.assignment.id,
+                feedbackset_id_list=feedback_set_ids,
+                domain_url_start=self.request.build_absolute_uri('/'))
 
         self.add_success_message(displaynames)
         return super(AbstractBulkFeedbackListView, self).form_valid(form=form)

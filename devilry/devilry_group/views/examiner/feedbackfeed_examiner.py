@@ -220,8 +220,9 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
         if result is False:
             messages.error(self.request, ugettext_lazy(error_msg))
         else:
-            feedback_email.send_feedback_created_email(
-                feedback_set=feedback_set, points=form.get_grading_points(),
+            feedback_email.bulk_send_feedback_created_email(
+                assignment_id=self.request.cradmin_role.parentnode_id,
+                feedbackset_id_list=[feedback_set.id],
                 domain_url_start=self.request.build_absolute_uri('/')
             )
 
@@ -413,8 +414,9 @@ class ExaminerEditGradeView(update.UpdateView):
 
     def save_object(self, form, commit=True):
         feedback_set = super(ExaminerEditGradeView, self).save_object(form=form, commit=True)
-        feedback_email.send_feedback_edited_email(
-            feedback_set=feedback_set, points=feedback_set.grading_points,
+        feedback_email.bulk_send_feedback_edited_email(
+            assignment_id=self.request.cradmin_role.parentnode_id,
+            feedbackset_id_list=[feedback_set.id],
             domain_url_start=self.request.build_absolute_uri('/')
         )
         return feedback_set
