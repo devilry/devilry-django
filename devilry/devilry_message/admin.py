@@ -111,6 +111,8 @@ class MessageReceiverAdmin(admin.ModelAdmin):
         'message_content_plain',
         'status_data',
         'sent_datetime',
+        'sending_failed_count',
+        'sending_success_count',
         'message',
         'message_type',
         'get_message_sent_by'

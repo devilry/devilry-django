@@ -159,3 +159,20 @@ class TestMessage(test.TestCase):
             self.assertEqual(message.status, 'error')
             self.assertEqual(len(message.status_data), 1)
             self.assertEqual(message.status_data['errors'][0]['error_message'], 'Test error')
+
+    def test_prepare_and_send_query_count(self):
+        user_ids = []
+        for i in range(1, 10):
+            user = self.__make_email_for_user(
+                mommy.make(settings.AUTH_USER_MODEL),
+                'testuser{}@example.com'.format(i)
+            ).user
+            user_ids.append(user.id)
+        message = mommy.make('devilry_message.Message',
+                             virtual_message_receivers={'user_ids': user_ids},
+                             message_type=['email'])
+        with self.assertNumQueries(44):
+            message.prepare_and_send(
+                subject_generator=test_utils.SubjectTextTestGenerator(),
+                template_name='devilry_message/for_test.django.html',
+                template_context={})

@@ -138,7 +138,7 @@ class Message(models.Model):
         user_queryset = get_user_model().objects.filter(id__in=self.virtual_message_receivers['user_ids'])
         message_receivers = []
         for user in user_queryset.iterator():
-            message_receiver = MessageReceiver.objects.create(
+            message_receiver = MessageReceiver.objects.create_receiver(
                 user=user,
                 message=self,
                 message_type=self.message_type[0],
@@ -207,7 +207,7 @@ class Message(models.Model):
                 self.status = self.STATUS_CHOICES.SENDING.value
                 self.save()
 
-                for message_receiver in self.messagereceiver_set.all():
+                for message_receiver in self.messagereceiver_set.select_related('user').all():
                     message_receiver.send()
 
                 # Set status to 'sent'.
@@ -247,7 +247,7 @@ class Message(models.Model):
 
 
 class MessageReceiverQuerySet(models.QuerySet):
-    def create(self, user, message, message_type, subject_generator, template_name, template_context):
+    def create_receiver(self, user, message, message_type, subject_generator, template_name, template_context):
         """
         """
         current_language = translation.get_language()
@@ -377,37 +377,35 @@ class MessageReceiver(models.Model):
         Simply sends a message to this receiver. This method can also be
         used to resend an email.
         """
-        with transaction.atomic():
-            try:
-                # send_message(self.subject, self.message_content_html, *[self.user], is_html=True)
-                self._send_email()
-                self.sent_datetime = timezone.now()
-                self.status = self.STATUS_CHOICES.SENT.value
-                self.sending_success_count += 1
-                self.save()
-            except Exception as exception:
-                self.sending_failed_count += 1
+        try:
+            self._send_email()
+            self.sent_datetime = timezone.now()
+            self.status = self.STATUS_CHOICES.SENT.value
+            self.sending_success_count += 1
+            self.save()
+        except Exception as exception:
+            self.sending_failed_count += 1
 
-                if self.sending_failed_count >= settings.DEVILRY_MESSAGE_RESEND_LIMIT:
-                    self.status = self.STATUS_CHOICES.ERROR.value
-                else:
-                    self.status = self.STATUS_CHOICES.FAILED.value
+            if self.sending_failed_count >= settings.DEVILRY_MESSAGE_RESEND_LIMIT:
+                self.status = self.STATUS_CHOICES.ERROR.value
+            else:
+                self.status = self.STATUS_CHOICES.FAILED.value
 
-                if 'errors' in self.status_data:
-                    self.status_data['errors'].append({
+            if 'errors' in self.status_data:
+                self.status_data['errors'].append({
+                    'error_message': str(exception),
+                    'timestamp': timezone.now().isoformat(),
+                    'exception_traceback': traceback.format_exc()
+                })
+            else:
+                self.status_data = {
+                    'errors': [{
                         'error_message': str(exception),
                         'timestamp': timezone.now().isoformat(),
                         'exception_traceback': traceback.format_exc()
-                    })
-                else:
-                    self.status_data = {
-                        'errors': [{
-                            'error_message': str(exception),
-                            'timestamp': timezone.now().isoformat(),
-                            'exception_traceback': traceback.format_exc()
-                        }]
-                    }
-                self.save()
+                    }]
+                }
+            self.save()
 
     def clean_message_content_fields(self):
         """
