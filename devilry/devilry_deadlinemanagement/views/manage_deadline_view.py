@@ -357,7 +357,11 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
                     publishing_time=now_without_sec_and_micro,
                     text=text
                 )
+            # deadline_email.bulk_send_deadline_moved_email(
+            #     feedbackset_id_list=feedback_set_ids,
+            #     domain_url_start=self.request.build_absolute_uri('/'))
             deadline_email.bulk_send_deadline_moved_email(
+                assignment_id=self.assignment.id,
                 feedbackset_id_list=feedback_set_ids,
                 domain_url_start=self.request.build_absolute_uri('/'))
 
@@ -386,7 +390,11 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
                     text=text
                 )
                 feedbackset_id_list.append(feedbackset_id)
+            # deadline_email.bulk_send_new_attempt_email(
+            #     feedbackset_id_list=feedbackset_id_list,
+            #     domain_url_start=self.request.build_absolute_uri('/'))
             deadline_email.bulk_send_new_attempt_email(
+                assignment_id=self.assignment.id,
                 feedbackset_id_list=feedbackset_id_list,
                 domain_url_start=self.request.build_absolute_uri('/'))
 

@@ -25,115 +25,106 @@ class DeadlineSubjectTextGenerator(SubjectTextGenerator):
                 'assignment_name': self.assignment.long_name}
 
 
-def send_deadline_email(feedback_sets, domain_url_start, deadline_type, template_name):
+def send_deadline_email(assignment, feedback_sets, domain_url_start, deadline_type, template_name):
     """
     Send email about a new attempt given to a group.
 
     General function for sending deadline related emails.
     """
-    student_users = []
-    for feedback_set in feedback_sets:
-        student_users.extend(list(get_student_users_in_group(feedback_set.group)))
-
-    if len(student_users) == 0:
-        return
-
-    # TODO: Fix assignment. We need this as an argument to the function.
-    assignment = feedback_set.group.parentnode
-    domain_url_start = domain_url_start.rstrip('/')
-    absolute_url = '{}{}'.format(
-        domain_url_start,
-        reverse_cradmin_url(instanceid='devilry_group_student', appname='feedbackfeed', roleid=feedback_set.group_id)
-    )
-
-    subject_generator = DeadlineSubjectTextGenerator(assignment=assignment, deadline_type=deadline_type)
-    template_dictionary = {
-        'assignment_name': assignment.long_name,
-        'deadline': feedback_set.deadline_datetime,
-        'url': absolute_url
-    }
-
-    user_ids = [user.id for user in student_users]
     if deadline_type == 'new_attempt':
         message_context_type = Message.CONTEXT_TYPE_CHOICES.NEW_ATTEMPT.value
     elif deadline_type == 'moved':
         message_context_type = Message.CONTEXT_TYPE_CHOICES.DEADLINE_MOVED.value
     else:
         message_context_type = Message.CONTEXT_TYPE_CHOICES.OTHER.value
+    subject_generator = DeadlineSubjectTextGenerator(assignment=assignment, deadline_type=deadline_type)
 
-    message = Message(
-        virtual_message_receivers={'user_ids': user_ids},
-        context_type=message_context_type,
-        metadata={
-            'deadline': feedback_set.deadline_datetime.isoformat(),
-            'feedbackset_id': feedback_set.id,
-            'assignment_group_id': feedback_set.group_id,
-            'assignment_id': feedback_set.group.parentnode_id
-        },
-        message_type=['email']
-    )
-    message.full_clean()
-    message.save()
+    for feedback_set in feedback_sets:
+        student_users = list(get_student_users_in_group(feedback_set.group))
+        if len(student_users) == 0:
+            return
+        user_ids = [user.id for user in student_users]
 
-    message.prepare_and_send(
-        subject_generator=subject_generator,
+        domain_url_start = domain_url_start.rstrip('/')
+        absolute_url = '{}{}'.format(
+            domain_url_start,
+            reverse_cradmin_url(instanceid='devilry_group_student', appname='feedbackfeed', roleid=feedback_set.group_id)
+        )
+        template_dictionary = {
+            'assignment_name': assignment.long_name,
+            'deadline': feedback_set.deadline_datetime,
+            'url': absolute_url
+        }
+
+        message = Message(
+            virtual_message_receivers={'user_ids': user_ids},
+            context_type=message_context_type,
+            metadata={
+                'deadline': feedback_set.deadline_datetime.isoformat(),
+                'feedbackset_id': feedback_set.id,
+                'assignment_group_id': feedback_set.group_id,
+                'assignment_id': assignment.id
+            },
+            message_type=['email']
+        )
+        message.full_clean()
+        message.save()
+
+        message.prepare_and_send(
+            subject_generator=subject_generator,
+            template_name=template_name,
+            template_context=template_dictionary
+        )
+
+
+def bulk_deadline_email(assignment_id, feedbackset_id_list, domain_url_start, template_name, deadline_type):
+    """
+    Fetches necessary data, and calls :meth:`.send_deadline_email`. Works as an interface
+    for :meth:`bulk_send_new_attempt_email` and :meth:`bulk_send_deadline_moved_email`
+
+    Args:
+        assignment_id: The ID of an :class:`~.devilry.apps.core.models.Assignment`
+            where deadlines changed.
+        feedbackset_id_list: The :class:`~.devilry.devilry_group.models.FeedbackSet`s
+        that have their deadlines changed.
+        domain_url_start: The domain address, e.g: "www.example.com".
+        template_name: Name (path) to template the message should be generated from.
+        deadline_type: The type of deadline change (moved deadline or a new attempt).
+    """
+    from devilry.devilry_group.models import FeedbackSet
+    from devilry.apps.core.models import Assignment
+    assignment = Assignment.objects.get(id=assignment_id)
+    feedbackset_queryset = FeedbackSet.objects \
+        .select_related('group', 'group__parentnode', 'group__parentnode__parentnode') \
+        .filter(id__in=feedbackset_id_list)
+    send_deadline_email(
+        assignment=assignment,
+        feedback_sets=feedbackset_queryset,
+        domain_url_start=domain_url_start,
         template_name=template_name,
-        template_context=template_dictionary
-    )
-
-
-def send_new_attempt_email(**kwargs):
-    """
-    Sets custom template and subject for mail sending regarding new attempts.
-    """
-    template_name = 'devilry_email/deadline_email/new_attempt.txt'
-    send_deadline_email(deadline_type='new_attempt', template_name=template_name, **kwargs)
-
-
-def send_deadline_moved_email(**kwargs):
-    """
-    Sets custom template and subject for mail sending regarding moved deadline.
-    """
-    template_name = 'devilry_email/deadline_email/deadline_moved.txt'
-    send_deadline_email(deadline_type='moved', template_name=template_name, **kwargs)
-
-
-def bulk_new_attempt_mail(feedbackset_id_list, domain_url_start):
-    """
-    Handle bulk sending of email to students in a group.
-    """
-    from devilry.devilry_group.models import FeedbackSet
-    feedbackset_queryset = FeedbackSet.objects \
-        .select_related('group', 'group__parentnode', 'group__parentnode__parentnode') \
-        .filter(id__in=feedbackset_id_list)
-    send_new_attempt_email(
-        feedback_sets=feedbackset_queryset,
-        domain_url_start=domain_url_start
-    )
-
-
-def bulk_deadline_moved_mail(feedbackset_id_list, domain_url_start):
-    from devilry.devilry_group.models import FeedbackSet
-    feedbackset_queryset = FeedbackSet.objects \
-        .select_related('group', 'group__parentnode', 'group__parentnode__parentnode') \
-        .filter(id__in=feedbackset_id_list)
-    send_deadline_moved_email(
-        feedback_sets=feedbackset_queryset,
-        domain_url_start=domain_url_start
+        deadline_type=deadline_type
     )
 
 
 def bulk_send_new_attempt_email(**kwargs):
     """
-    Queue RQ job for sending out notifications to users when they are given a new attempt.
+    Queue RQ job for sending out notifications to users when they have been given a new attempt.
     """
+    kwargs.update({
+        'template_name': 'devilry_email/deadline_email/new_attempt.txt',
+        'deadline_type': 'new_attempt'
+    })
     queue = django_rq.get_queue(name='email')
-    queue.enqueue(bulk_new_attempt_mail, **kwargs)
+    queue.enqueue(bulk_deadline_email, **kwargs)
 
 
 def bulk_send_deadline_moved_email(**kwargs):
     """
-    Queue RQ job for sending out notifications to users when they are given a new attempt.
+    Queue RQ job for sending out notifications to users when their deadline is moved.
     """
+    kwargs.update({
+        'template_name': 'devilry_email/deadline_email/deadline_moved.txt',
+        'deadline_type': 'moved'
+    })
     queue = django_rq.get_queue(name='email')
-    queue.enqueue(bulk_deadline_moved_mail, **kwargs)
+    queue.enqueue(bulk_deadline_email, **kwargs)
