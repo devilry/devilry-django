@@ -389,6 +389,24 @@ The script will NOT delete:
  - Deliveries, comments or files made by the deleted users, see :ref:`devilry_delete_periods`
 
 
+.. _devilry_resend_failed_messages:
+
+==============================
+devilry_resend_failed_messages
+==============================
+
+This command will resend all messages sent to users with status failed, and will only send if the message has failed
+less than or equal to the limit defined by `DEVILRY_MESSAGE_RESEND_LIMIT`.
+`DEVILRY_MESSAGE_RESEND_LIMIT` can be configured in ``~/devilrydeploy/devilry_settings.py``.
+
+Set it up with a cron job or something similar to periodically resend failed messages.
+
+Example usage::
+
+    $ cd ~/devilrydeploy/
+    $ python manage.py devilry_resend_failed_messages
+
+
 .. _devilry_anonymize_database:
 
 ==========================

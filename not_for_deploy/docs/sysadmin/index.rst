@@ -20,6 +20,7 @@ Devilry sysadmin docs
    devilry_settings
    compressed_archive_setup
    editable_ui_messages
+   message_framework
 
 
 Importing data from Devilry v2

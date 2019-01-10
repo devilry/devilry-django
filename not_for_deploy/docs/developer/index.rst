@@ -71,6 +71,7 @@ Apps
     devilry_compressionutil
     devilry_assignment_group_merge_guide
     devilry_utils_passed_in_previous_period
+    devilry_message
 
 
 ******************************

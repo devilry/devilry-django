@@ -152,6 +152,9 @@ Start by copying the following into ``~/devilrydeploy/devilry_settings.py``::
     #: If this is set to `False`, students can still see that the comment has been edited, but not the edit history.
     DEVILRY_COMMENT_STUDENTS_CAN_SEE_OTHER_USERS_COMMENT_HISTORY = True
 
+    #: What should the limit for resending failed message be?.
+    DEVILRY_MESSAGE_RESEND_LIMIT = 2
+
     #: Configure an email backend.
     #: See https://docs.djangoproject.com/en/2.0/ref/settings/ for details about these settings.
     #: If you have performance issues with your email backend, see ``Sending emails in background task``.
