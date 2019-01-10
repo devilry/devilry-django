@@ -67,16 +67,17 @@ class TestPeriodDelete(TestCase):
         self.assertTrue(os.path.exists(file_path))
         self.assertFalse(os.path.exists(to_delete_file_path))
 
-    def excludes_initially_empty_subjects(self):
+    def test_excludes_initially_empty_subjects(self):
         subject_without_period = mommy.make('core.Subject')
         mommy.make('core.Period', end_time=timezone.now())
         self.assertEqual(Subject.objects.count(), 2)
         self.assertEqual(Period.objects.count(), 1)
-        PeriodDelete(end_time_older_than_datetime=timezone.now() + timezone.timedelta(days=10)).delete()
+        PeriodDelete(end_time_older_than_datetime=timezone.now() + timezone.timedelta(days=10),
+                     delete_empty_subjects=True).delete()
         self.assertEqual(Subject.objects.get(), subject_without_period)
         self.assertEqual(Period.objects.count(), 0)
 
-    def does_subject_not_deleted_if_not_all_periods_are_deleted(self):
+    def test_subject_not_deleted_if_not_all_periods_are_deleted(self):
         testsubject = mommy.make('core.Subject')
         mommy.make('core.Period', parentnode=testsubject, end_time=timezone.now())
         period_not_deleted = mommy.make('core.Period', parentnode=testsubject,
@@ -87,12 +88,13 @@ class TestPeriodDelete(TestCase):
         self.assertEqual(Subject.objects.get(), testsubject)
         self.assertEqual(Period.objects.get(), period_not_deleted)
 
-    def does_subject_deleted_if_all_periods_are_deleted(self):
+    def testsubject_deleted_if_all_periods_are_deleted(self):
         testsubject = mommy.make('core.Subject')
         mommy.make('core.Period', parentnode=testsubject, end_time=timezone.now())
         self.assertEqual(Subject.objects.count(), 1)
         self.assertEqual(Period.objects.count(), 1)
-        PeriodDelete(end_time_older_than_datetime=timezone.now() + timezone.timedelta(days=10)).delete()
+        PeriodDelete(end_time_older_than_datetime=timezone.now() + timezone.timedelta(days=10),
+                     delete_empty_subjects=True).delete()
         self.assertEqual(Subject.objects.count(), 0)
         self.assertEqual(Period.objects.count(), 0)
 
@@ -275,7 +277,8 @@ class TestPeriodDelete(TestCase):
         self.assertEqual(GroupComment.objects.count(), 1)
         self.assertEqual(Comment.objects.count(), 1)
 
-        PeriodDelete(end_time_older_than_datetime=timezone.now() + timezone.timedelta(days=10)).delete()
+        PeriodDelete(end_time_older_than_datetime=timezone.now() + timezone.timedelta(days=10),
+                     delete_empty_subjects=True).delete()
 
         self.assertEqual(Subject.objects.count(), 0)
         self.assertEqual(SubjectPermissionGroup.objects.count(), 0)

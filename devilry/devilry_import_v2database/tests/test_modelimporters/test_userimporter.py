@@ -1,6 +1,8 @@
 from django import test
 from django.contrib.auth import get_user_model
 from django.conf import settings
+from django.utils import timezone
+from dateutil.parser import parse
 
 from model_mommy import mommy
 
@@ -99,6 +101,16 @@ class TestUserImporter(ImporterTestCaseMixin, test.TestCase):
         userimporter.import_models()
         user = get_user_model().objects.first()
         self.assertFalse(user.is_staff)
+
+    def test_importer_last_login(self):
+        user_dict = self._create_user_dict()
+        self.create_v2dump(model_name='auth.user',
+                           data=user_dict,
+                           model_meta=self._create_model_meta())
+        userimporter = UserImporter(input_root=self.temp_root_dir)
+        userimporter.import_models()
+        user = get_user_model().objects.first()
+        self.assertIsNotNone(user.last_login)
 
     # Does not seem to work, but that does not matter since
     # all known v2 installs use unusable password and custom

@@ -47,6 +47,8 @@ class UserImporter(modelimporter.ModelImporter):
                 'pk',
                 'is_superuser',
                 'password',
+                'last_login',
+                ('date_joined', 'datetime_joined'),
                 ('last_name', 'lastname')
             ]
         )
