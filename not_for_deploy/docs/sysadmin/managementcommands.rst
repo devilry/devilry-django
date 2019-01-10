@@ -380,6 +380,7 @@ This example will delete all users that has not logged in since the Jul 1. 2016 
 The script will delete:
  - Users with last login before the provided datetime, and their personal info(phone, email)
  - Their permissions
+ - Their semester exam qualification status
 
 The script will NOT delete:
  - Superusers
