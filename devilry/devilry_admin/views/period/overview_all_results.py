@@ -11,6 +11,8 @@ from devilry.apps.core import models as core_models
 from devilry.devilry_admin.cradminextensions.listfilter import listfilter_relateduser
 from devilry.devilry_admin.views.period import overview_all_results_collector
 from devilry.devilry_cradmin.devilry_tablebuilder import base_new
+from devilry.devilry_report.models import DevilryReport
+from devilry.devilry_report.views.download_report import DownloadReportView
 
 
 class RelatedStudentItemValue(base_new.AbstractCellRenderer):
@@ -201,5 +203,8 @@ class App(crapp.App):
                   name=crapp.INDEXVIEW_NAME),
         crapp.Url(r'^all-results-overview/filter/(?P<filters_string>.+)?$',
                   RelatedStudentsAllResultsOverview.as_view(),
-                  name='filter')
+                  name='filter'),
+        crapp.Url(r'^download-report',
+                  DownloadReportView.as_view(),
+                  name='download_report')
     ]

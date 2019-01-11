@@ -12,7 +12,10 @@ class DevilryAdminAppConfig(AppConfig):
         from devilry.devilry_admin.views.assignment.download_files import backends
         from devilry.devilry_compressionutil import backend_registry
         from ievv_opensource.ievv_batchframework import batchregistry
+        from devilry.devilry_report import generator_registry as report_generator_registry
+        from devilry.devilry_admin.views.period import all_results_generator
         from devilry.devilry_admin import tasks
+        from django.apps import AppConfig
 
         backend_registry.Registry.get_instance().add(backends.DevilryAdminZipBackend)
 
@@ -24,3 +27,8 @@ class DevilryAdminAppConfig(AppConfig):
                 actions=[
                     tasks.AssignmentCompressAction
                 ]))
+
+        # All period-all-results-generator to the registry.
+        report_generator_registry.Registry.get_instance().add(
+            generator_class=all_results_generator.AllResultsExcelReportGenerator
+        )
