@@ -9,7 +9,6 @@ from django.utils import timezone
 
 from model_mommy import mommy
 from io import BytesIO
-from datetime import timedelta
 
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories as group_factory
