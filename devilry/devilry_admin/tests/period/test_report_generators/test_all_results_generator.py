@@ -188,6 +188,40 @@ class AllResultsGeneratorPreMixin:
         group_factory.feedbackset_first_attempt_published(group=testgroup4, grading_points=0)
         return period
 
+    def create_single_student_results_on_each_points_to_grade_mapper_type_assignment(self):
+        period = mommy.make_recipe('devilry.apps.core.period_active')
+        testassignment_passed_failed = self.make_assignment(
+            period=period, long_name='Assignment Passed Failed', passing_grade_min_points=5, max_points=10)
+        testassignment_raw_points = self.make_assignment(
+            period=period, long_name='Assignment Raw Points', passing_grade_min_points=5, max_points=10,
+            points_to_grade_mapper='raw-points')
+        testassignment_custom_table = self.make_assignment(
+            period=period, long_name='Assignment Raw Points', passing_grade_min_points=10, max_points=60,
+            points_to_grade_mapper='custom-table')
+        point_to_grade_map = mommy.make('core.PointToGradeMap', assignment=testassignment_custom_table)
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map,
+                   minimum_points=0, maximum_points=10, grade='F')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map,
+                   minimum_points=11, maximum_points=20, grade='E')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map,
+                   minimum_points=21, maximum_points=30, grade='D')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map,
+                   minimum_points=31, maximum_points=40, grade='C')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map,
+                   minimum_points=41, maximum_points=50, grade='B')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map,
+                   minimum_points=51, maximum_points=60, grade='A')
+        teststudent = self.make_relatedstudent(period=period, user__shortname='teststudent@example.com')
+        testgroup_passed_failed = self.make_group_for_student(
+            assignment=testassignment_passed_failed, relatedstudent=teststudent)
+        group_factory.feedbackset_first_attempt_published(group=testgroup_passed_failed, grading_points=5)
+        testgroup_raw_points = self.make_group_for_student(
+            assignment=testassignment_raw_points, relatedstudent=teststudent)
+        group_factory.feedbackset_first_attempt_published(group=testgroup_raw_points, grading_points=5)
+        testgroup_custom_table = self.make_group_for_student(
+            assignment=testassignment_custom_table, relatedstudent=teststudent)
+        group_factory.feedbackset_first_attempt_published(group=testgroup_custom_table, grading_points=47)
+        return period
 
 class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestCase):
     def setUp(self):
@@ -554,3 +588,39 @@ class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestC
             self.assertEqual(worksheet.cell(row=2, column=0).value, 'teststudent2@example.com')
             self.assertEqual(worksheet.cell(row=2, column=1).value, 1)
             self.assertEqual(worksheet.cell(row=2, column=2).value, 0)
+
+    def test_grades_sheet_single_student_results_on_each_points_to_grade_mapper_type_assignment(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_single_student_results_on_each_points_to_grade_mapper_type_assignment()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Grades')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, 'passed')
+            self.assertEqual(worksheet.cell(row=1, column=2).value, '5/10')
+            self.assertEqual(worksheet.cell(row=1, column=3).value, 'B')
+
+    def test_points_sheet_single_student_results_on_each_points_to_grade_mapper_type_assignment(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_single_student_results_on_each_points_to_grade_mapper_type_assignment()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Points')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, 5)
+            self.assertEqual(worksheet.cell(row=1, column=2).value, 5)
+            self.assertEqual(worksheet.cell(row=1, column=3).value, 47)
+
+    def test_passed_sheet_single_student_results_on_each_points_to_grade_mapper_type_assignment(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_single_student_results_on_each_points_to_grade_mapper_type_assignment()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Passed')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, 1)
+            self.assertEqual(worksheet.cell(row=1, column=2).value, 1)
+            self.assertEqual(worksheet.cell(row=1, column=3).value, 1)
