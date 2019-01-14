@@ -54,15 +54,17 @@ class DevilryReport(models.Model):
         default=None
     )
 
-    #: The type of generator. What kind of data is the report generated for.
+    #: The generator type.
+    #:
+    #:  This is specified in a subclass of
+    #: :class:`~.devilry.devilry_report.abstract_generator.AbstractReportGenerator`.
     generator_type = models.CharField(
         null=False, blank=False, max_length=255
     )
 
     #: JSON-field for generator options that are specific to the ``generator_type``.
     #:
-    #: This field will typically contain filters used on the models
-    #: needed for generating the report.
+    #: If the generator
     generator_options = JSONField(null=False, blank=True, default=dict)
 
     #: Supported status types.
@@ -95,6 +97,13 @@ class DevilryReport(models.Model):
 
     #: Name of the generated file with results.
     output_filename = models.CharField(
+        null=True, blank=True,
+        max_length=255,
+        default=''
+    )
+
+    #: Content-type used when creating a download-request.
+    content_type = models.CharField(
         null=True, blank=True,
         max_length=255,
         default=''
@@ -157,7 +166,8 @@ class DevilryReport(models.Model):
         self.status = self.STATUS_CHOICES.GENERATING.value
         self.full_clean()
         self.save()
-        generator = self.generator(devilry_report=self, **generator_kwargs)
+
+        generator = self.generator(devilry_report=self)
         file_like_obj = BytesIO()
         try:
             generator.generate(file_like_object=file_like_obj)
@@ -169,12 +179,14 @@ class DevilryReport(models.Model):
             }
             logger.exception('Failed to generate DevilryReport#{}'.format(self.id))
         else:
-            self.status = self.STATUS_CHOICES.SUCCESS.value
             self.result = file_like_obj.getvalue()
             self.finished_datetime = timezone.now()
-            self.output_filename = '{}-{}'.format(
+            self.content_type = generator.get_content_type()
+            self.output_filename = '{}-{}.{}'.format(
                 generator.get_output_filename_prefix(),
-                self.finished_datetime.strftime('%d%m%Y-%H%M%S')
+                self.finished_datetime.strftime('%d%m%Y-%H%M%S'),
+                generator.get_output_file_extension()
             )
+            self.status = self.STATUS_CHOICES.SUCCESS.value
         self.full_clean()
         self.save()

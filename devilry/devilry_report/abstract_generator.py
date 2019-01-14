@@ -29,6 +29,25 @@ class AbstractReportGenerator(object):
         """
         return 'report'
 
+    def get_output_file_extension(self):
+        """
+        Get the output file extension.
+
+        Returns:
+            str: Output file extension.
+
+        """
+        raise NotImplementedError()
+
+    def get_content_type(self):
+        """
+        The content-type used for download.
+
+        Returns:
+            str: A HTTP-supported content-type
+        """
+        raise NotImplementedError()
+
     def validate(self):
         """
         Todo: Remove?
@@ -37,7 +56,6 @@ class AbstractReportGenerator(object):
 
         If everything is validated, do nothing, else raise ValidationError.
         """
-        raise NotImplementedError()
 
     def generate(self, file_like_object):
         """
@@ -65,6 +83,12 @@ class AbstractExcelReportGenerator(AbstractReportGenerator):
         self.row = row
         self.column = column
         self.workbook = None
+
+    def get_output_file_extension(self):
+        return 'xlsx'
+
+    def get_content_type(self):
+        return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 
     def add_worksheet_headers(self, worksheet):
         """
