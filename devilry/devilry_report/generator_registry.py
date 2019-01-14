@@ -92,7 +92,7 @@ class MockableRegistry(Registry):
                     class Mock2(AbstractReportGenerator):
                         @classmethod get_generator_type(cls):
                             return 'mock2'
-                    mockregistry = backend_registry.MockableRegistry.make_mockregistry(
+                    mockregistry = generator_registry.MockableRegistry.make_mockregistry(
                         Mock1, Mock2)
                     with mock.patch('devilry.devilry_report.generator_registry.Registry.get_instance',
                                     lambda: mockregistry):
@@ -107,3 +107,4 @@ class MockableRegistry(Registry):
         mockregistry = cls()
         for generator_class in generator_classes:
             mockregistry.add(generator_class=generator_class)
+        return mockregistry

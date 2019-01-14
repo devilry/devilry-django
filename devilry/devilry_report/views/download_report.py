@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 import io
 import json
 
@@ -16,9 +19,7 @@ class ReportForm(forms.Form):
     def clean_report_options(self):
         report_options = json.loads(self.cleaned_data['report_options'])
         if 'generator_type' not in report_options:
-            raise forms.ValidationError(
-                {'report_options': 'Missing \'generator_type\' in report_options'}
-            )
+            raise forms.ValidationError('Missing \'generator_type\' in report_options')
         return report_options
 
 
@@ -57,7 +58,7 @@ class DownloadReportView(generic.FormView):
         try:
             return DevilryReport.objects.get(id=self.request.GET['report'])
         except DevilryReport.DoesNotExist:
-            return None
+            raise Http404
 
     def get(self, *args, **kwargs):
         if 'report' not in self.request.GET:
@@ -65,20 +66,19 @@ class DownloadReportView(generic.FormView):
 
         # Fetch report
         self.devilry_report = self.__get_devilry_report()
-        if self.devilry_report:
-            if self.devilry_report.generated_by_user_id != self.request.user.id:
-                # Raise 404 if the requestuser did not create the report.
-                raise Http404()
+        if self.devilry_report.generated_by_user_id != self.request.user.id:
+            # Raise 404 if the requestuser did not create the report.
+            raise Http404()
 
-            if self.devilry_report.status == DevilryReport.STATUS_CHOICES.SUCCESS.value:
-                # Return a download reponse if the report is finished.
-                buffer = io.BytesIO()
-                buffer.write(self.devilry_report.result)
-                response = HttpResponse(
-                    buffer.getvalue(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-                response['Content-Disposition'] = 'attachment; filename={}'.format(self.devilry_report.output_filename)
-                response['Content-Length'] = len(buffer.getvalue())
-                return response
+        if self.devilry_report.status == DevilryReport.STATUS_CHOICES.SUCCESS.value:
+            # Return a download reponse if the report is finished.
+            buffer = io.BytesIO()
+            buffer.write(self.devilry_report.result)
+            response = HttpResponse(
+                buffer.getvalue(), content_type=self.devilry_report.content_type)
+            response['Content-Disposition'] = 'attachment; filename={}'.format(self.devilry_report.output_filename)
+            response['Content-Length'] = len(buffer.getvalue())
+            return response
         return super(DownloadReportView, self).get(*args, **kwargs)
 
     def get_context_data(self, **kwargs):

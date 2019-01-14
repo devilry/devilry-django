@@ -116,22 +116,6 @@ class DevilryReport(models.Model):
         return '#{}-{}-{}'.format(
             self.id, self.generator_type, self.status)
 
-    def clean_generator_type(self):
-        """
-        Clean the generator type. Make the this field is set, and
-        that the generator type is valid.
-
-        Raises:
-            ValidationError
-        """
-        if not self.generator_type:
-            raise ValidationError({'generator_type': 'Can not be blank.'})
-        try:
-            generator_registry.Registry.get_instance().get(generator_type=self.generator_type)
-        except ValueError as e:
-            raise ValidationError({'generator_type': 'Not a valid type. Has the generator been '
-                                                     'added to the registry?'})
-
     def clean_generator_options(self):
         if len(self.generator_options) == 0:
             return
@@ -139,7 +123,6 @@ class DevilryReport(models.Model):
         generator.validate()
 
     def clean(self):
-        self.clean_generator_type()
         self.clean_generator_options()
 
     @property
@@ -152,7 +135,7 @@ class DevilryReport(models.Model):
         """
         return generator_registry.Registry.get_instance().get(generator_type=self.generator_type)
 
-    def generate(self, **generator_kwargs):
+    def generate(self):
         """
         Typically called within RQ task
           - Sets started_datetime to NOW
