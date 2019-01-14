@@ -23,11 +23,9 @@
     <div class="container devilry-dashboard-container-withtopmargin">
         <form action="{% cradmin_appurl 'download_report' %}" method="POST">
             {% csrf_token %}
-            <input class="btn btn-primary" type="submit" name="confirm" value="{% trans "Download results" %}" />
+            <input type="hidden" name="report_options" value="{{ report_options }}">
+            <input class="btn btn-primary" type="submit" name="confirm" value="{% trans "Download results" %}"/>
         </form>
-{#        <a href="{% cradmin_appurl viewname='download_report' %}" class="btn btn-default">#}
-{#            {% trans "Download results" %}#}
-{#        </a>#}
     </div>
     {{ block.super }}
 {% endblock content %}

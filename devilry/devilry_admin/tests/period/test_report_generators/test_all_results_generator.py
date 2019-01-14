@@ -42,11 +42,12 @@ class AllResultsGeneratorPreMixin:
 
         with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
             devilry_report = DevilryReport(
+                generator_options={'period_id': period.id},
                 generator_type='semesterstudentresults',
                 generated_by_user=requestuser)
             devilry_report.full_clean()
             devilry_report.save()
-            devilry_report.generate(period=period)
+            devilry_report.generate()
             worksheet = self.get_work_sheet(devilry_report=devilry_report)
             self.assertEqual(worksheet.cell(row=0, column=0).value, 'Student')
             self.assertEqual(worksheet.cell(row=0, column=1).value, testassignment1.long_name)
@@ -73,11 +74,12 @@ class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestC
 
         with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
             devilry_report = DevilryReport(
+                generator_options={'period_id': period.id},
                 generator_type='semesterstudentresults',
                 generated_by_user=requestuser)
             devilry_report.full_clean()
             devilry_report.save()
-            devilry_report.generate(period=period)
+            devilry_report.generate()
             worksheet = self.get_work_sheet(devilry_report=devilry_report)
             self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
             self.assertEqual(worksheet.cell(row=1, column=1).value, 'passed')
@@ -93,11 +95,12 @@ class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestC
 
         with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
             devilry_report = DevilryReport(
+                generator_options={'period_id': period.id},
                 generator_type='semesterstudentresults',
                 generated_by_user=requestuser)
             devilry_report.full_clean()
             devilry_report.save()
-            devilry_report.generate(period=period)
+            devilry_report.generate()
             worksheet = self.get_work_sheet(devilry_report=devilry_report)
             self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
             self.assertEqual(worksheet.cell(row=1, column=1).value, 'failed')
@@ -114,11 +117,12 @@ class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestC
 
         with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
             devilry_report = DevilryReport(
+                generator_options={'period_id': period.id},
                 generator_type='semesterstudentresults',
                 generated_by_user=requestuser)
             devilry_report.full_clean()
             devilry_report.save()
-            devilry_report.generate(period=period)
+            devilry_report.generate()
             worksheet = self.get_work_sheet(devilry_report=devilry_report)
             self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
             self.assertEqual(worksheet.cell(row=1, column=1).value, '7/10')
@@ -149,11 +153,12 @@ class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestC
 
         with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
             devilry_report = DevilryReport(
+                generator_options={'period_id': period.id},
                 generator_type='semesterstudentresults',
                 generated_by_user=requestuser)
             devilry_report.full_clean()
             devilry_report.save()
-            devilry_report.generate(period=period)
+            devilry_report.generate()
             worksheet = self.get_work_sheet(devilry_report=devilry_report)
             self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
             self.assertEqual(worksheet.cell(row=1, column=1).value, 'C')
@@ -166,11 +171,12 @@ class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestC
 
         with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
             devilry_report = DevilryReport(
+                generator_options={'period_id': period.id},
                 generator_type='semesterstudentresults',
                 generated_by_user=requestuser)
             devilry_report.full_clean()
             devilry_report.save()
-            devilry_report.generate(period=period)
+            devilry_report.generate()
             worksheet = self.get_work_sheet(devilry_report=devilry_report)
             self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
             self.assertEqual(worksheet.cell(row=1, column=1).value, 'Not registered')
@@ -186,11 +192,12 @@ class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestC
 
         with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
             devilry_report = DevilryReport(
+                generator_options={'period_id': period.id},
                 generator_type='semesterstudentresults',
                 generated_by_user=requestuser)
             devilry_report.full_clean()
             devilry_report.save()
-            devilry_report.generate(period=period)
+            devilry_report.generate()
             worksheet = self.get_work_sheet(devilry_report=devilry_report)
             self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
             self.assertEqual(worksheet.cell(row=1, column=1).value, 'Waiting for feedback')
@@ -207,11 +214,12 @@ class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestC
 
         with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
             devilry_report = DevilryReport(
+                generator_options={'period_id': period.id},
                 generator_type='semesterstudentresults',
                 generated_by_user=requestuser)
             devilry_report.full_clean()
             devilry_report.save()
-            devilry_report.generate(period=period)
+            devilry_report.generate()
             worksheet = self.get_work_sheet(devilry_report=devilry_report)
             self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
             self.assertEqual(worksheet.cell(row=1, column=1).value, 'No deliveries')
@@ -230,11 +238,12 @@ class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestC
 
         with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
             devilry_report = DevilryReport(
+                generator_options={'period_id': period.id},
                 generator_type='semesterstudentresults',
                 generated_by_user=requestuser)
             devilry_report.full_clean()
             devilry_report.save()
-            devilry_report.generate(period=period)
+            devilry_report.generate()
             worksheet = self.get_work_sheet(devilry_report=devilry_report)
             self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
             self.assertEqual(worksheet.cell(row=1, column=1).value, 'Waiting for feedback')
@@ -251,11 +260,12 @@ class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestC
 
         with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
             devilry_report = DevilryReport(
+                generator_options={'period_id': period.id},
                 generator_type='semesterstudentresults',
                 generated_by_user=requestuser)
             devilry_report.full_clean()
             devilry_report.save()
-            devilry_report.generate(period=period)
+            devilry_report.generate()
             worksheet = self.get_work_sheet(devilry_report=devilry_report)
             self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
             self.assertEqual(worksheet.cell(row=1, column=1).value, 'Waiting for deliveries')
@@ -279,11 +289,12 @@ class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestC
 
         with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
             devilry_report = DevilryReport(
+                generator_options={'period_id': period.id},
                 generator_type='semesterstudentresults',
                 generated_by_user=requestuser)
             devilry_report.full_clean()
             devilry_report.save()
-            devilry_report.generate(period=period)
+            devilry_report.generate()
             worksheet = self.get_work_sheet(devilry_report=devilry_report)
             self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
             self.assertEqual(worksheet.cell(row=1, column=1).value, 'passed')
@@ -310,11 +321,12 @@ class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestC
 
         with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
             devilry_report = DevilryReport(
+                generator_options={'period_id': period.id},
                 generator_type='semesterstudentresults',
                 generated_by_user=requestuser)
             devilry_report.full_clean()
             devilry_report.save()
-            devilry_report.generate(period=period)
+            devilry_report.generate()
             worksheet = self.get_work_sheet(devilry_report=devilry_report)
             self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent1@example.com')
             self.assertEqual(worksheet.cell(row=1, column=1).value, 'passed')

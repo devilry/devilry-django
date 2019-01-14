@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import json
+
 from django.utils.translation import ugettext_lazy
 
 from django_cradmin import crapp
@@ -196,6 +198,16 @@ class RelatedStudentsAllResultsOverview(FilterListMixin, listbuilderview.View):
             kwargs={'filters_string': filters_string}
         )
 
+    def get_context_data(self, **kwargs):
+        context = super(RelatedStudentsAllResultsOverview, self).get_context_data(**kwargs)
+        context['report_options'] = json.dumps({
+            'generator_type': 'semesterstudentresults',
+            'generator_options': {
+                'period_id': self.request.cradmin_role.id
+            }
+        })
+        return context
+
 
 class App(crapp.App):
     appurls = [
@@ -204,7 +216,7 @@ class App(crapp.App):
         crapp.Url(r'^all-results-overview/filter/(?P<filters_string>.+)?$',
                   RelatedStudentsAllResultsOverview.as_view(),
                   name='filter'),
-        crapp.Url(r'^download-report',
+        crapp.Url(r'^download-report$',
                   DownloadReportView.as_view(),
                   name='download_report')
     ]

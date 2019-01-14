@@ -12,9 +12,13 @@ class AllResultsExcelReportGenerator(AbstractExcelReportGenerator):
     """
     Generates a downloadable Excel spreadsheet of all current student results.
     """
-    def __init__(self, period, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(AllResultsExcelReportGenerator, self).__init__(*args, **kwargs)
-        self.period = period
+        self.period = Period.objects.get(id=self.generator_options['period_id'])
+
+    @property
+    def generator_options(self):
+        return self.devilry_report.generator_options
 
     @classmethod
     def get_generator_type(cls):
