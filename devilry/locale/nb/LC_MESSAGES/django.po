@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-22 15:03+0100\n"
-"PO-Revision-Date: 2018-11-22 15:05+0100\n"
+"POT-Creation-Date: 2019-01-14 17:53+0100\n"
+"PO-Revision-Date: 2019-01-14 17:55+0100\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -320,44 +320,44 @@ msgstr ""
 "Oppgaven har studenter. Du kan ikke kopiere og bruke dette på oppgaver med "
 "studenter."
 
-#: devilry/apps/core/models/assignment_group.py:996
+#: devilry/apps/core/models/assignment_group.py:999
 #: devilry/devilry_examiner/templatetags/devilry_examiner_tags.py:17
 #: devilry/devilry_examiner/templatetags/devilry_examiner_tags.py:55
 #: devilry/devilry_student/templatetags/devilry_student_tags.py:34
 msgid "No deadlines"
 msgstr "Ingen innleveringsfrister"
 
-#: devilry/apps/core/models/assignment_group.py:997
+#: devilry/apps/core/models/assignment_group.py:1000
 #: devilry/devilry_examiner/templatetags/devilry_examiner_tags.py:19
 #: devilry/devilry_student/templatetags/devilry_student_tags.py:36
 msgid "Corrected"
 msgstr "Rettet"
 
-#: devilry/apps/core/models/assignment_group.py:998
+#: devilry/apps/core/models/assignment_group.py:1001
 #: devilry/devilry_examiner/templatetags/devilry_examiner_tags.py:21
 #: devilry/devilry_examiner/templatetags/devilry_examiner_tags.py:59
 #: devilry/devilry_student/templatetags/devilry_student_tags.py:38
 msgid "Closed without feedback"
 msgstr "Lukket uten tilbakemelding"
 
-#: devilry/apps/core/models/assignment_group.py:999
+#: devilry/apps/core/models/assignment_group.py:1002
 msgid "Waiting for something"
 msgstr "Venter på noe"
 
-#: devilry/apps/core/models/assignment_group.py:1205
+#: devilry/apps/core/models/assignment_group.py:1208
 #: devilry/apps/core/templates/devilry_core/templatetags/multiple-candidates-long-displayname.django.html:8
 #: devilry/apps/core/templates/devilry_core/templatetags/multiple-candidates-short-displayname.django.html:8
 msgctxt "core assignmentgroup"
 msgid "no students in group"
 msgstr "ingen studenter i gruppen"
 
-#: devilry/apps/core/models/assignment_group.py:1209
+#: devilry/apps/core/models/assignment_group.py:1212
 #, python-format
 msgctxt "core assignmentgroup"
 msgid "group#%(groupid)s - no students in group"
 msgstr "gruppe#%(groupid)s - ingen studenter i gruppen"
 
-#: devilry/apps/core/models/assignment_group.py:1570
+#: devilry/apps/core/models/assignment_group.py:1573
 msgid ""
 "Cannot merge self into target, self and target is not part of same "
 "AssignmentGroup"
@@ -365,7 +365,7 @@ msgstr ""
 "Kan ikke flette seg selv med målet, seg selv og målet er ikke en del av "
 "samme oppgave gruppe (AssignmentGroup)"
 
-#: devilry/apps/core/models/assignment_group.py:1623
+#: devilry/apps/core/models/assignment_group.py:1626
 msgid "Cannot merge less than 2 groups"
 msgstr "Kan ikke flette mindre enn 2 grupper"
 
@@ -379,7 +379,7 @@ msgstr "Administrator"
 
 #: devilry/apps/core/models/custom_db_fields.py:20
 #: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:26
-#: devilry/devilry_admin/views/dashboard/overview.py:116
+#: devilry/devilry_admin/views/dashboard/overview.py:117
 msgid "Short name"
 msgstr "Kort navn"
 
@@ -420,7 +420,7 @@ msgid "Time of delivery"
 msgstr "Innleveringstid"
 
 #: devilry/apps/core/models/delivery.py:156
-#: devilry/devilry_cradmin/templates/devilry_cradmin/devilry_listbuilder/assignmentgroup/include/groupdetails.django.html:30
+#: devilry/devilry_cradmin/templates/devilry_cradmin/devilry_listbuilder/assignmentgroup/include/groupdetails.django.html:52
 #: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:14
 #: devilry/devilry_student/templates/devilry_student/cradmin_group/deliveriesapp/delivery_details.django.html:89
 msgid "Deadline"
@@ -650,26 +650,26 @@ msgstr "bestått"
 msgid "failed"
 msgstr "ikke bestått"
 
-#: devilry/apps/core/templates/devilry_core/templatetags/groupstatus.django.html:12
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:274
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:302
-msgctxt "group status"
-msgid "corrected"
-msgstr "korrigert"
-
-#: devilry/apps/core/templates/devilry_core/templatetags/groupstatus.django.html:14
+#: devilry/apps/core/templates/devilry_core/templatetags/groupstatus.django.html:31
 #: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:263
 #: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:300
 msgctxt "group status"
 msgid "waiting for feedback"
 msgstr "venter på tilbakemelding"
 
-#: devilry/apps/core/templates/devilry_core/templatetags/groupstatus.django.html:16
+#: devilry/apps/core/templates/devilry_core/templatetags/groupstatus.django.html:33
 #: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:269
 #: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:301
 msgctxt "group status"
 msgid "waiting for deliveries"
 msgstr "venter på innleveringer"
+
+#: devilry/apps/core/templates/devilry_core/templatetags/groupstatus.django.html:35
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:274
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:302
+msgctxt "group status"
+msgid "corrected"
+msgstr "korrigert"
 
 #: devilry/apps/core/templates/devilry_core/templatetags/multiple-examiners-long-displayname.django.html:8
 #: devilry/apps/core/templates/devilry_core/templatetags/multiple-examiners-short-displayname.django.html:8
@@ -2548,7 +2548,7 @@ msgstr ""
 
 #: devilry/devilry_admin/templates/devilry_admin/dashboard/overview.django.html:8
 #: devilry/devilry_admin/templates/devilry_admin/dashboard/overview.django.html:13
-#: devilry/devilry_admin/views/dashboard/overview.py:86
+#: devilry/devilry_admin/views/dashboard/overview.py:87
 msgid "Administrator dashboard"
 msgstr "Administrator dashboard"
 
@@ -2597,7 +2597,8 @@ msgstr "Kurs"
 #: devilry/devilry_admin/templates/devilry_admin/dashboard/student_feedbackfeed_wizard/group_by_assignment.django.html:28
 #: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:241
 #: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:295
-#: devilry/devilry_cradmin/templates/devilry_cradmin/devilry_listbuilder/assignmentgroup/include/groupdetails.django.html:22
+#: devilry/devilry_cradmin/templates/devilry_cradmin/devilry_listbuilder/assignmentgroup/include/groupdetails.django.html:32
+#: devilry/devilry_cradmin/templates/devilry_cradmin/devilry_listbuilder/assignmentgroup/include/groupdetails.django.html:44
 msgctxt "group status"
 msgid "Status"
 msgstr "Status"
@@ -2726,6 +2727,63 @@ msgid ""
 msgstr ""
 "Ingen semesteradministratorer er manuelt lagt til for dette semesteret. Du "
 "kan legge til administratorer ved å bruke knappen ovenfor."
+
+#: devilry/devilry_admin/templates/devilry_admin/period/all_results_overview/devilry_all_results_overview.django.html:32
+msgctxt "devilry_admin period all results overview"
+msgid "Download the current results"
+msgstr "Last ned resultater"
+
+#: devilry/devilry_admin/templates/devilry_admin/period/all_results_overview/devilry_all_results_overview.django.html:35
+msgid ""
+"Clicking the \"Download results\"-button will send you to a download view, "
+"and a report will be generated on an xlsx-format(Excel). The download will "
+"start automatically once the report is generated."
+msgstr ""
+"Når du klikker på \"Last ned resultater\"-knappen vil du sendt til siden for "
+"nedlasting, og en rapport vil bli generert på xlsx-format(Excel). "
+"Nedlastingen vil starte så for rapporten er ferdig."
+
+#: devilry/devilry_admin/templates/devilry_admin/period/all_results_overview/devilry_all_results_overview.django.html:42
+msgid ""
+"The report will contain three different workheets, \"Grades\", \"Points\" "
+"and \"Passed Failed\""
+msgstr ""
+"Raporten inneholder tre forskjellige \"ark\", \"Karakterer\", \"Poeng\" og "
+"\"Bestått Ikke-bestått\""
+
+#: devilry/devilry_admin/templates/devilry_admin/period/all_results_overview/devilry_all_results_overview.django.html:49
+msgid ""
+"<strong>\"Grades\"</strong>, a worksheet containing the current grading/"
+"status for each assignment as shown in the table below."
+msgstr ""
+"<strong>\"Karakterer\"</strong>, et \"ark\" som inneholder nåværende "
+"karakter/status for hver oppgave slik som vist i tabellen nedenfor."
+
+#: devilry/devilry_admin/templates/devilry_admin/period/all_results_overview/devilry_all_results_overview.django.html:55
+msgid ""
+"<strong>\"Points\"</strong>, a worksheet showing the grading-points for each "
+"assignment formatted as number-fields. Fields for each assignment where the "
+"student has not received a grading is empty."
+msgstr ""
+"<strong>\"Poeng\"</strong>, et \"ark\" som viser poengene for hver oppgave "
+"formatert som tall-felt. Feltene for hver oppgave hvor studenten ikke har "
+"fått noen poeng er blanke."
+
+#: devilry/devilry_admin/templates/devilry_admin/period/all_results_overview/devilry_all_results_overview.django.html:61
+msgid ""
+"<strong>\"Passed Failed\"</strong>, a worksheet showing if the student have "
+"passed or failed each assignment formatted as boolean-fields. Fields for "
+"each assignment where the student has not received a grading is empty."
+msgstr ""
+"<strong>\"Bestått Ikke-bestått\"</strong>, et \"ark\" som viser om studenten "
+"har bestått eller ikke bestått for hver oppgave formatert som boolske "
+"verdier (0 eller 1). Feltene for hver oppgave hvor studenten ikke har fått "
+"noen poeng er blanke."
+
+#: devilry/devilry_admin/templates/devilry_admin/period/all_results_overview/devilry_all_results_overview.django.html:71
+#: not_for_deploy/docs/_build/_sources/developer/devilry_report.rst.txt:112
+msgid "Download results"
+msgstr "Last ned resultater"
 
 #: devilry/devilry_admin/templates/devilry_admin/period/all_results_overview/result_cell_value.django.html:10
 msgid "Not registered"
@@ -4038,6 +4096,47 @@ msgstr ""
 msgid "%(user)s is no longer semester administrator for %(period)s."
 msgstr "%(user)s er ikke lengre semesteradministrator for %(period)s."
 
+#: devilry/devilry_admin/views/period/all_results_generator.py:48
+msgctxt "devilry report semesters student results"
+msgid "Student"
+msgstr "Student"
+
+#: devilry/devilry_admin/views/period/all_results_generator.py:57
+msgctxt "devilry report semesters assignment status"
+msgid "Not registered"
+msgstr "Ikke registrert"
+
+#: devilry/devilry_admin/views/period/all_results_generator.py:59
+msgctxt "devilry report semesters assignment status"
+msgid "Waiting for deliveries"
+msgstr "Venter på innleveringer"
+
+#: devilry/devilry_admin/views/period/all_results_generator.py:61
+msgctxt "devilry report semesters assignment status"
+msgid "No deliveries"
+msgstr "Ingen innleveringer"
+
+#: devilry/devilry_admin/views/period/all_results_generator.py:63
+msgctxt "devilry report semesters assignment status"
+msgid "Waiting for feedback"
+msgstr "Venter på tilbakemelding"
+
+#: devilry/devilry_admin/views/period/all_results_generator.py:124
+msgid "Grades"
+msgstr "Karakterer"
+
+#: devilry/devilry_admin/views/period/all_results_generator.py:125
+#: devilry/devilry_gradingsystem/templates/devilry_gradingsystem/admin/summary.django.html:81
+#: devilry/devilry_gradingsystemplugin_points/apps.py:11
+#: devilry/devilry_gradingsystemplugin_points/views/feedbackeditor.py:25
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:76
+msgid "Points"
+msgstr "Poeng"
+
+#: devilry/devilry_admin/views/period/all_results_generator.py:126
+msgid "Passed Failed"
+msgstr "Bestått Ikke-bestått"
+
 #: devilry/devilry_admin/views/period/createassignment.py:50
 msgid "Type the name of your assignment."
 msgstr "Skriv inn navnet for din oppgave."
@@ -4064,7 +4163,7 @@ msgstr ""
 #: devilry/devilry_admin/views/period/createassignment.py:64
 #: devilry/devilry_admin/views/subject/createperiod.py:31
 #: devilry/devilry_admin/views/subject/createperiod.py:35
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:53
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:54
 msgctxt "CrAdmin datetime picker typo fix"
 msgid "Select a date/time"
 msgstr "Velg tidspunkt"
@@ -4351,11 +4450,11 @@ msgstr "Ugyldig retter ble valgt."
 msgid "Invalid student was selected."
 msgstr "Ugyldig student ble valgt."
 
-#: devilry/devilry_admin/views/period/overview_all_results.py:150
+#: devilry/devilry_admin/views/period/overview_all_results.py:154
 msgid "All students results"
 msgstr "Resultater for alle studenter"
 
-#: devilry/devilry_admin/views/period/overview_all_results.py:153
+#: devilry/devilry_admin/views/period/overview_all_results.py:157
 msgid "No students on period"
 msgstr "Ingen studenter for perioden"
 
@@ -4867,7 +4966,7 @@ msgstr "Kodeblokk"
 msgid "Unpublished feedback draft"
 msgstr "Kladd av upublisert tilbakemelding"
 
-#: devilry/devilry_cradmin/templates/devilry_cradmin/devilry_listbuilder/assignmentgroup/include/groupdetails.django.html:16
+#: devilry/devilry_cradmin/templates/devilry_cradmin/devilry_listbuilder/assignmentgroup/include/groupdetails.django.html:38
 msgctxt "group grade"
 msgid "Grade"
 msgstr "Karakter"
@@ -4939,9 +5038,9 @@ msgstr "Grupper som ennå ikke er rettet ble ekskludert."
 
 #: devilry/devilry_deadlinemanagement/templates/devilry_deadlinemanagement/select-deadline-item-value.django.html:34
 #: devilry/devilry_deadlinemanagement/templates/devilry_deadlinemanagement/select-deadline-item-value.django.html:53
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:252
-#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:45
-#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:59
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:268
+#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:72
+#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:84
 msgid "Move deadline"
 msgstr "Flytt innleveringsfrist"
 
@@ -4978,21 +5077,21 @@ msgctxt "deadline_list_view select_deadline"
 msgid "Please choose how you would like to manage the deadline."
 msgstr "Vennligst velg hvordan du vil administrere innleveringsfristen."
 
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:41
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:42
 msgid "Add a suitable comment describing why the the deadline was changed."
 msgstr ""
 "Legg til en passende kommentar som beskriver hvorfor innleveringsfristen ble "
 "endret."
 
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:42
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:43
 msgid "Comment Text"
 msgstr "Kommentar tekst"
 
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:46
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:47
 msgid "New deadline"
 msgstr "Ny innleveringsfrist"
 
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:56
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:57
 msgid ""
 "Pick a date and time from the calendar, or select one of the suggested "
 "deadlines."
@@ -5000,21 +5099,21 @@ msgstr ""
 "Velg dato og tid fra kalenderen, eller en av de foreslåtte "
 "innleveringsfristene."
 
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:114
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:130
 #, python-format
 msgid "Manage deadline %(deadline)s"
 msgstr "Håndter innleveringsfristen %(deadline)s"
 
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:232
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:248
 msgid "test placeholder"
 msgstr "test placeholder"
 
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:253
-#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:55
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:269
+#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:62
 msgid "Give new attempt"
 msgstr "Gi et nytt forsøk"
 
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:404
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:428
 #, python-format
 msgid "Deadline managed for %(group_names)s"
 msgstr "Innleveringsfrist endret for %(group_names)s"
@@ -5064,55 +5163,55 @@ msgctxt "assignment_group_multiselect_list_filter_view page_subheading"
 msgid "Select the groups you want to manage the deadline for."
 msgstr "Velg grupper hvor du vil redigere innleveringsfristen."
 
-#: devilry/devilry_email/comment_email/comment_email.py:25
+#: devilry/devilry_email/comment_email/comment_email.py:34
+#, python-format
+msgid "You added a new comment AFTER THE DEADLINE for %(assignment_name)s"
+msgstr "Du la til en ny kommentar ETTER FRISTEN på %(assignment_name)s"
+
+#: devilry/devilry_email/comment_email/comment_email.py:38
+#, python-format
+msgid "You added a new delivery/comment for %(assignment_name)s"
+msgstr "Du la til en ny innlevering/kommentar på %(assignment_name)s"
+
+#: devilry/devilry_email/comment_email/comment_email.py:44
 #, python-format
 msgid ""
 "A student added a new comment AFTER THE DEADLINE for %(assignment_name)s"
 msgstr ""
 "En student har lagt til en ny kommentar ETTER FRISTEN på %(assignment_name)s"
 
-#: devilry/devilry_email/comment_email/comment_email.py:28
+#: devilry/devilry_email/comment_email/comment_email.py:47
 #, python-format
 msgid "A student added a new delivery/comment for %(assignment_name)s"
 msgstr ""
 "En student har lagt til en ny innlevering/kommentar på %(assignment_name)s"
 
-#: devilry/devilry_email/comment_email/comment_email.py:32
+#: devilry/devilry_email/comment_email/comment_email.py:51
 #, python-format
 msgid "An examiner added a new comment for %(assignment_name)s"
 msgstr "En retter har lagt til en ny kommentar på %(assignment_name)s"
 
-#: devilry/devilry_email/comment_email/comment_email.py:35
+#: devilry/devilry_email/comment_email/comment_email.py:54
 #, python-format
 msgid "An admin added a new comment for %(assignment_name)s"
 msgstr "En administrator har lagt til en ny kommentar på %(assignment_name)s"
 
-#: devilry/devilry_email/comment_email/comment_email.py:205
-#, python-format
-msgid "You added a new comment AFTER THE DEADLINE for %(assignment_name)s"
-msgstr "Du la til en ny kommentar ETTER FRISTEN på %(assignment_name)s"
-
-#: devilry/devilry_email/comment_email/comment_email.py:209
-#, python-format
-msgid "You added a new delivery/comment for %(assignment_name)s"
-msgstr "Du la til en ny innlevering/kommentar på %(assignment_name)s"
-
-#: devilry/devilry_email/deadline_email/deadline_email.py:14
+#: devilry/devilry_email/deadline_email/deadline_email.py:21
 #, python-format
 msgid "New attempt for %(assignment_name)s"
 msgstr "Nytt forsøk for %(assignment_name)s"
 
-#: devilry/devilry_email/deadline_email/deadline_email.py:16
+#: devilry/devilry_email/deadline_email/deadline_email.py:24
 #, python-format
 msgid "Deadline moved for %(assignment_name)s"
 msgstr "Tidsfrist flyttet for %(assignment_name)s"
 
-#: devilry/devilry_email/feedback_email/feedback_email.py:14
+#: devilry/devilry_email/feedback_email/feedback_email.py:21
 #, python-format
 msgid "Feedback for %(assignment_name)s"
 msgstr "Tilbakemelding for %(assignment_name)s"
 
-#: devilry/devilry_email/feedback_email/feedback_email.py:16
+#: devilry/devilry_email/feedback_email/feedback_email.py:24
 #, python-format
 msgid "Feedback updated for %(assignment_name)s"
 msgstr "Tilbakemelding oppdatert for %(assignment_name)s"
@@ -5124,20 +5223,15 @@ msgstr "Oppgave"
 
 #: devilry/devilry_email/templates/devilry_email/comment_email/comment.txt:6
 msgctxt "devilry comment email"
-msgid "Added by"
-msgstr "Lagt til av"
-
-#: devilry/devilry_email/templates/devilry_email/comment_email/comment.txt:8
-msgctxt "devilry comment email"
 msgid "Added datetime"
 msgstr "Tidspunkt"
 
-#: devilry/devilry_email/templates/devilry_email/comment_email/comment.txt:23
+#: devilry/devilry_email/templates/devilry_email/comment_email/comment.txt:21
 msgctxt "devilry comment email"
 msgid "Uploaded files"
 msgstr "Opplastede filer"
 
-#: devilry/devilry_email/templates/devilry_email/comment_email/comment.txt:39
+#: devilry/devilry_email/templates/devilry_email/comment_email/comment.txt:37
 msgctxt "devilry comment email"
 msgid "See the delivery feed for more details"
 msgstr "Se leveringsoversikten for flere detaljer"
@@ -5207,7 +5301,7 @@ msgid "Bulk feedback"
 msgstr "Bulk tilbakemelding"
 
 #: devilry/devilry_examiner/templates/devilry_examiner/assignment/grouplist.django.html:22
-#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:256
+#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:258
 msgid "Simple bulk feedback"
 msgstr "Enkel bulk-håndtering av tilbakemelding"
 
@@ -5232,6 +5326,7 @@ msgstr "Bestått"
 
 #: devilry/devilry_examiner/templates/devilry_examiner/assignment/simple_group_bulk_feedback/grade_cell_value.django.html:9
 #: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:48
+#: devilry/devilry_message/models/base.py:332
 #: devilry/devilry_student/templates/devilry_student/devilry_student_shortgrade_tag.django.html:6
 #: devilry/devilry_student/templates/devilry_student/devilry_student_shortgrade_tag.django.html:13
 msgid "Failed"
@@ -5287,13 +5382,13 @@ msgid "Show feedback"
 msgstr "Vis tilbakemelding"
 
 #: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback.py:52
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:362
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:363
 msgctxt "grading"
 msgid "Passed?"
 msgstr "Bestått?"
 
 #: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback.py:53
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:363
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:364
 msgctxt "grading"
 msgid "Check to provide a passing grade."
 msgstr "Huk av for å gi en bestått karakter."
@@ -5302,7 +5397,7 @@ msgstr "Huk av for å gi en bestått karakter."
 msgid "Bulk create feedback"
 msgstr "Opprett tilbakemelding i bulk"
 
-#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback.py:169
+#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback.py:171
 #, python-format
 msgid "Bulk added feedback for %(group_names)s"
 msgstr "Tilbakemelding lagt til med bulk for %(group_names)s"
@@ -5312,8 +5407,8 @@ msgid "Students in groups"
 msgstr "Studenter i grupper"
 
 #: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:91
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:344
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:367
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:345
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:368
 msgid "Grading"
 msgstr "Karaktersetting"
 
@@ -5321,15 +5416,15 @@ msgstr "Karaktersetting"
 msgid "Comment text"
 msgstr "Kommentar tekst"
 
-#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:240
+#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:242
 msgid "Feedback published for {} groups"
 msgstr "Tilbakemelding publisert for {} grupper"
 
-#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:243
+#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:245
 msgid "You must set a grade for at least one group."
 msgstr "Du m sette en karakter for minst en gruppe."
 
-#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:259
+#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:261
 msgid "No groups to receive feedback"
 msgstr "Ingen grupper som kan motta tilbakemelding"
 
@@ -5424,7 +5519,7 @@ msgstr "Superbruker UI"
 
 #: devilry/devilry_gradeform/views/setup_gradeform.py:66
 #: devilry/devilry_group/views/admin/feedbackfeed_admin.py:74
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:262
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:263
 msgid "Add comment"
 msgstr "Legg til kommentar"
 
@@ -5700,13 +5795,6 @@ msgstr ""
 "Systemet for karaktersetting og mulighetene rundt tilbakemeldinger er meget "
 "fleksibelt i Devilry. Felles for alle metoder er at sluttresultatet består "
 "av følgende:"
-
-#: devilry/devilry_gradingsystem/templates/devilry_gradingsystem/admin/summary.django.html:81
-#: devilry/devilry_gradingsystemplugin_points/apps.py:11
-#: devilry/devilry_gradingsystemplugin_points/views/feedbackeditor.py:25
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:76
-msgid "Points"
-msgstr "Poeng"
 
 #: devilry/devilry_gradingsystem/templates/devilry_gradingsystem/admin/summary.django.html:82
 msgid ""
@@ -6046,8 +6134,8 @@ msgid "Back to feed"
 msgstr "Tilbake til feed"
 
 #: devilry/devilry_group/templates/devilry_group/feedbackfeed_examiner/feedbackfeed_examiner_edit_grade.django.html:21
-#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:50
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:399
+#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:67
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:400
 msgid "Edit grade"
 msgstr "Rediger karakter"
 
@@ -6247,6 +6335,11 @@ msgstr "Forsøk"
 msgid "Merged"
 msgstr "Sammenslått"
 
+#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:29
+msgctxt "devilry-merged-feedbackset show-hide-button"
+msgid "Show/hide"
+msgstr "Vis/ikke vis"
+
 #: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/grading_item_value.django.html:11
 msgctxt "devilry_group feedbackfeed"
 msgid "This delivery was corrected, and given"
@@ -6336,7 +6429,7 @@ msgid "tenth"
 msgstr "tiende"
 
 #: devilry/devilry_group/views/admin/feedbackfeed_admin.py:114
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:303
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:304
 msgid "Add note"
 msgstr "Legg til notat"
 
@@ -6404,11 +6497,11 @@ msgstr "Lagre utkast og forhåndsvis"
 msgid "Publish feedback"
 msgstr "Publiser tilbakemelding"
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:231
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:232
 msgid "Feedback is already published!"
 msgstr "Tilbakemelding er allerede publisert!"
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:347
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:348
 msgid ""
 "Give a score between {} to {} where {} is the minimum amount of points "
 "needed to pass."
@@ -6416,11 +6509,11 @@ msgstr ""
 "Sett en poengsum mellom {} og {}, hvor {} er minimum antall poeng som kreves "
 "for å bestå."
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:368
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:369
 msgid "Check the box to give a passing grade"
 msgstr "Velg denne for å gi bestått karakter"
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:496
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:498
 msgid "Groupcomment"
 msgstr "Gruppekommentar"
 
@@ -6503,6 +6596,36 @@ msgstr "Guider, forumer, sakssporer."
 #: devilry/devilry_help/templates/devilry_help/help.django.html:28
 msgid "Documentation provided by your organization."
 msgstr "Dokumentasjon gitt av din organisasjon."
+
+#: devilry/devilry_message/models/base.py:62
+msgid "Draft"
+msgstr "Utkast"
+
+#: devilry/devilry_message/models/base.py:64
+msgid "Preparing for sending"
+msgstr "Forbereder sending"
+
+#: devilry/devilry_message/models/base.py:65
+msgid "Building the list of actual users to send to."
+msgstr "Bygger listen over brukere det skal sendes til."
+
+#: devilry/devilry_message/models/base.py:67
+msgid "Sending"
+msgstr "Sender"
+
+#: devilry/devilry_message/models/base.py:69
+#: devilry/devilry_message/models/base.py:334
+msgid "Error"
+msgstr "Feil"
+
+#: devilry/devilry_message/models/base.py:71
+#: devilry/devilry_message/models/base.py:336
+msgid "Sent"
+msgstr "Sendt"
+
+#: devilry/devilry_message/models/base.py:330
+msgid "Not sent"
+msgstr "Ikke sent"
 
 #: devilry/devilry_qualifiesforexam/models.py:93
 msgid "Ready for export"
@@ -6740,6 +6863,11 @@ msgstr "Velg studenter manuelt"
 #: devilry/devilry_qualifiesforexam_plugin_students/plugin.py:13
 msgid "Manually select the students that qualifies for exam."
 msgstr "Manuelt velg studenter som kvalifiserer for eksamen."
+
+#: devilry/devilry_report/templates/devilry_report/download_report.django.html:11
+msgid ""
+"The download will start automatically as soon as the report is finished."
+msgstr "Nedlastingen vil starte så for rapporten er ferdig."
 
 #: devilry/devilry_student/cradminextensions/columntypes.py:13
 #: devilry/devilry_student/templates/devilry_student/cradmin_group/deliveriesapp/delivery_details.django.html:8
@@ -7079,7 +7207,7 @@ msgctxt "student period overview"
 msgid "No assignments."
 msgstr "Ingen oppgaver."
 
-#: devilry/project/common/projectspecific_settings.py:184
+#: devilry/project/common/projectspecific_settings.py:186
 msgid ""
 "This assignment uses hard deadlines. You will not be able to write comments "
 "or upload files after the deadline has expired."
@@ -7087,7 +7215,7 @@ msgstr ""
 "Denne oppgaven bruker harde frister. Du vil ikke kunne skrive kommentarer "
 "eller laste opp innleveringer etter fristen."
 
-#: devilry/project/common/projectspecific_settings.py:190
+#: devilry/project/common/projectspecific_settings.py:192
 msgid ""
 "This assignment uses hard deadlines. Students will not be able to write "
 "comments or upload files after the deadline has expired."
@@ -7095,13 +7223,17 @@ msgstr ""
 "Denne oppdaven bruker harde frister. Studenter vil ikke kunne skrive "
 "kommentarer eller laste opp innleveringer etter fristen."
 
-#: devilry/project/common/settings.py:170
+#: devilry/project/common/settings.py:172
 msgid "English"
 msgstr "Engelsk"
 
-#: devilry/project/common/settings.py:171
+#: devilry/project/common/settings.py:173
 msgid "Norwegian Bokmal"
 msgstr "Norsk bokmål"
+
+#~ msgctxt "devilry comment email"
+#~ msgid "Added by"
+#~ msgstr "Lagt til av"
 
 #~ msgid "Already graded"
 #~ msgstr "Allerede rettet"
@@ -7545,9 +7677,6 @@ msgstr "Norsk bokmål"
 
 #~ msgid "Getting started guide"
 #~ msgstr "Nybegynnerguide"
-
-#~ msgid "Error"
-#~ msgstr "Feil"
 
 #~ msgid ""
 #~ "You can not provide feedback for this assignment because the course "
