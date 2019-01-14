@@ -55,58 +55,25 @@ class AllResultsGeneratorPreMixin:
             self.assertEqual(worksheet.cell(row=0, column=3).value, testassignment3.long_name)
             self.assertEqual(worksheet.cell(row=0, column=4).value, testassignment4.long_name)
 
-
-class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestCase):
-    def setUp(self):
-        AssignmentGroupDbCacheCustomSql().initialize()
-
-    def get_work_sheet(self, devilry_report):
-        return openpyxl.load_workbook(filename=BytesIO(devilry_report.result)).get_sheet_by_name(name='Grades')
-
-    def test_value_for_single_student_passed_plugin_passed(self):
-        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+    def create_single_student_passed_plugin_passed_failed(self):
         period = mommy.make_recipe('devilry.apps.core.period_active')
         testassignment = self.make_assignment(
             period=period, long_name='Assignment 1', passing_grade_min_points=1, max_points=1)
         teststudent = self.make_relatedstudent(period=period, user__shortname='teststudent@example.com')
         testgroup = self.make_group_for_student(assignment=testassignment, relatedstudent=teststudent)
         group_factory.feedbackset_first_attempt_published(group=testgroup, grading_points=1)
+        return period
 
-        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
-            devilry_report = DevilryReport(
-                generator_options={'period_id': period.id},
-                generator_type='semesterstudentresults',
-                generated_by_user=requestuser)
-            devilry_report.full_clean()
-            devilry_report.save()
-            devilry_report.generate()
-            worksheet = self.get_work_sheet(devilry_report=devilry_report)
-            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
-            self.assertEqual(worksheet.cell(row=1, column=1).value, 'passed')
-
-    def test_value_for_single_student_failed_plugin_passed(self):
-        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+    def create_single_student_failed_plugin_passed_failed(self):
         period = mommy.make_recipe('devilry.apps.core.period_active')
         testassignment = self.make_assignment(
             period=period, long_name='Assignment 1', passing_grade_min_points=1, max_points=1)
         teststudent = self.make_relatedstudent(period=period, user__shortname='teststudent@example.com')
         testgroup = self.make_group_for_student(assignment=testassignment, relatedstudent=teststudent)
         group_factory.feedbackset_first_attempt_published(group=testgroup, grading_points=0)
+        return period
 
-        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
-            devilry_report = DevilryReport(
-                generator_options={'period_id': period.id},
-                generator_type='semesterstudentresults',
-                generated_by_user=requestuser)
-            devilry_report.full_clean()
-            devilry_report.save()
-            devilry_report.generate()
-            worksheet = self.get_work_sheet(devilry_report=devilry_report)
-            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
-            self.assertEqual(worksheet.cell(row=1, column=1).value, 'failed')
-
-    def test_value_for_single_student_plugin_raw_points(self):
-        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+    def create_single_student_plugin_raw_points(self):
         period = mommy.make_recipe('devilry.apps.core.period_active')
         testassignment = self.make_assignment(
             period=period, long_name='Assignment 1', passing_grade_min_points=5, max_points=10,
@@ -114,21 +81,9 @@ class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestC
         teststudent = self.make_relatedstudent(period=period, user__shortname='teststudent@example.com')
         testgroup = self.make_group_for_student(assignment=testassignment, relatedstudent=teststudent)
         group_factory.feedbackset_first_attempt_published(group=testgroup, grading_points=7)
+        return period
 
-        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
-            devilry_report = DevilryReport(
-                generator_options={'period_id': period.id},
-                generator_type='semesterstudentresults',
-                generated_by_user=requestuser)
-            devilry_report.full_clean()
-            devilry_report.save()
-            devilry_report.generate()
-            worksheet = self.get_work_sheet(devilry_report=devilry_report)
-            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
-            self.assertEqual(worksheet.cell(row=1, column=1).value, '7/10')
-
-    def test_value_for_single_student_plugin_custom_table(self):
-        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+    def create_single_student_plugin_custom_table(self):
         period = mommy.make_recipe('devilry.apps.core.period_active')
         testassignment = self.make_assignment(
             period=period, long_name='Assignment 1', passing_grade_min_points=5, max_points=10,
@@ -146,64 +101,27 @@ class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestC
                    minimum_points=41, maximum_points=50, grade='B')
         mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map,
                    minimum_points=51, maximum_points=60, grade='A')
-
         teststudent = self.make_relatedstudent(period=period, user__shortname='teststudent@example.com')
         testgroup = self.make_group_for_student(assignment=testassignment, relatedstudent=teststudent)
         group_factory.feedbackset_first_attempt_published(group=testgroup, grading_points=32)
+        return period
 
-        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
-            devilry_report = DevilryReport(
-                generator_options={'period_id': period.id},
-                generator_type='semesterstudentresults',
-                generated_by_user=requestuser)
-            devilry_report.full_clean()
-            devilry_report.save()
-            devilry_report.generate()
-            worksheet = self.get_work_sheet(devilry_report=devilry_report)
-            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
-            self.assertEqual(worksheet.cell(row=1, column=1).value, 'C')
-
-    def test_value_for_single_student_not_registered_on_assignment(self):
-        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+    def create_single_student_not_registered_on_assignment(self):
         period = mommy.make_recipe('devilry.apps.core.period_active')
         self.make_assignment(period=period, long_name='Assignment 1', passing_grade_min_points=1, max_points=1)
         self.make_relatedstudent(period=period, user__shortname='teststudent@example.com')
+        return period
 
-        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
-            devilry_report = DevilryReport(
-                generator_options={'period_id': period.id},
-                generator_type='semesterstudentresults',
-                generated_by_user=requestuser)
-            devilry_report.full_clean()
-            devilry_report.save()
-            devilry_report.generate()
-            worksheet = self.get_work_sheet(devilry_report=devilry_report)
-            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
-            self.assertEqual(worksheet.cell(row=1, column=1).value, 'Not registered')
-
-    def test_value_for_single_student_waiting_for_feedback(self):
-        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+    def create_single_student_waiting_for_feedback(self):
         period = mommy.make_recipe('devilry.apps.core.period_active')
         testassignment = self.make_assignment(period=period, long_name='Assignment 1', passing_grade_min_points=1, max_points=1)
         teststudent = self.make_relatedstudent(period=period, user__shortname='teststudent@example.com')
         testgroup = self.make_group_for_student(assignment=testassignment, relatedstudent=teststudent)
         deadline_datetime = timezone.now() - timezone.timedelta(days=10)
         group_factory.feedbackset_first_attempt_unpublished(group=testgroup, deadline_datetime=deadline_datetime)
+        return period
 
-        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
-            devilry_report = DevilryReport(
-                generator_options={'period_id': period.id},
-                generator_type='semesterstudentresults',
-                generated_by_user=requestuser)
-            devilry_report.full_clean()
-            devilry_report.save()
-            devilry_report.generate()
-            worksheet = self.get_work_sheet(devilry_report=devilry_report)
-            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
-            self.assertEqual(worksheet.cell(row=1, column=1).value, 'Waiting for feedback')
-
-    def test_value_for_single_student_hard_deadline_no_deliveries(self):
-        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+    def create_single_student_hard_deadline_no_deliveries(self):
         period = mommy.make_recipe('devilry.apps.core.period_active')
         testassignment = self.make_assignment(
             period=period, long_name='Assignment 1', passing_grade_min_points=1, max_points=1, deadline_handling=1)
@@ -211,21 +129,9 @@ class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestC
         testgroup = self.make_group_for_student(assignment=testassignment, relatedstudent=teststudent)
         deadline_datetime = timezone.now() - timezone.timedelta(days=10)
         group_factory.feedbackset_first_attempt_unpublished(group=testgroup, deadline_datetime=deadline_datetime)
+        return period
 
-        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
-            devilry_report = DevilryReport(
-                generator_options={'period_id': period.id},
-                generator_type='semesterstudentresults',
-                generated_by_user=requestuser)
-            devilry_report.full_clean()
-            devilry_report.save()
-            devilry_report.generate()
-            worksheet = self.get_work_sheet(devilry_report=devilry_report)
-            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
-            self.assertEqual(worksheet.cell(row=1, column=1).value, 'No deliveries')
-
-    def test_value_for_single_student_hard_deadline_waiting_for_feedback(self):
-        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+    def create_single_student_hard_deadline_waiting_for_feedback(self):
         period = mommy.make_recipe('devilry.apps.core.period_active')
         testassignment = self.make_assignment(
             period=period, long_name='Assignment 1', passing_grade_min_points=1, max_points=1, deadline_handling=1)
@@ -235,21 +141,9 @@ class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestC
         feedbackset = group_factory.feedbackset_first_attempt_unpublished(group=testgroup, deadline_datetime=deadline_datetime)
         mommy.make('devilry_group.GroupComment', feedback_set=feedbackset, user=teststudent.user,
                    user_role='student', text='Test')
+        return period
 
-        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
-            devilry_report = DevilryReport(
-                generator_options={'period_id': period.id},
-                generator_type='semesterstudentresults',
-                generated_by_user=requestuser)
-            devilry_report.full_clean()
-            devilry_report.save()
-            devilry_report.generate()
-            worksheet = self.get_work_sheet(devilry_report=devilry_report)
-            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
-            self.assertEqual(worksheet.cell(row=1, column=1).value, 'Waiting for feedback')
-
-    def test_value_for_single_student_waiting_for_deliveries(self):
-        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+    def create_single_student_waiting_for_deliveries(self):
         period = mommy.make_recipe('devilry.apps.core.period_active')
         testassignment = self.make_assignment(
             period=period, long_name='Assignment 1', passing_grade_min_points=1, max_points=1, deadline_handling=1)
@@ -257,21 +151,9 @@ class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestC
         testgroup = self.make_group_for_student(assignment=testassignment, relatedstudent=teststudent)
         deadline_datetime = timezone.now() + timezone.timedelta(days=10)
         group_factory.feedbackset_first_attempt_unpublished(group=testgroup, deadline_datetime=deadline_datetime)
+        return period
 
-        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
-            devilry_report = DevilryReport(
-                generator_options={'period_id': period.id},
-                generator_type='semesterstudentresults',
-                generated_by_user=requestuser)
-            devilry_report.full_clean()
-            devilry_report.save()
-            devilry_report.generate()
-            worksheet = self.get_work_sheet(devilry_report=devilry_report)
-            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
-            self.assertEqual(worksheet.cell(row=1, column=1).value, 'Waiting for deliveries')
-
-    def test_value_for_single_student_on_multiple_assignments(self):
-        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+    def create_single_student_on_multiple_assignments(self):
         period = mommy.make_recipe('devilry.apps.core.period_active')
         testassignment1 = self.make_assignment(
             period=period, long_name='Assignment 1', passing_grade_min_points=1, max_points=1)
@@ -286,23 +168,9 @@ class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestC
         group_factory.feedbackset_first_attempt_published(group=testgroup1, grading_points=1)
         group_factory.feedbackset_first_attempt_published(group=testgroup2, grading_points=1)
         group_factory.feedbackset_first_attempt_published(group=testgroup3, grading_points=0)
+        return period
 
-        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
-            devilry_report = DevilryReport(
-                generator_options={'period_id': period.id},
-                generator_type='semesterstudentresults',
-                generated_by_user=requestuser)
-            devilry_report.full_clean()
-            devilry_report.save()
-            devilry_report.generate()
-            worksheet = self.get_work_sheet(devilry_report=devilry_report)
-            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
-            self.assertEqual(worksheet.cell(row=1, column=1).value, 'passed')
-            self.assertEqual(worksheet.cell(row=1, column=2).value, 'passed')
-            self.assertEqual(worksheet.cell(row=1, column=3).value, 'failed')
-
-    def test_multiple_students_on_multiple_assignments(self):
-        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+    def create_multiple_students_on_multiple_assignments(self):
         period = mommy.make_recipe('devilry.apps.core.period_active')
         testassignment1 = self.make_assignment(
             period=period, long_name='Assignment 1', passing_grade_min_points=1, max_points=1)
@@ -318,19 +186,371 @@ class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestC
         group_factory.feedbackset_first_attempt_published(group=testgroup2, grading_points=1)
         group_factory.feedbackset_first_attempt_published(group=testgroup3, grading_points=1)
         group_factory.feedbackset_first_attempt_published(group=testgroup4, grading_points=0)
+        return period
+
+
+class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def get_work_sheet(self, devilry_report):
+        return openpyxl.load_workbook(filename=BytesIO(devilry_report.result)).get_sheet_by_name(name='Grades')
+
+    def generate_report_and_get_worksheet(self, generated_by_user, period, worksheet_name):
+        devilry_report = DevilryReport(
+            generator_options={'period_id': period.id},
+            generator_type='semesterstudentresults',
+            generated_by_user=generated_by_user)
+        devilry_report.full_clean()
+        devilry_report.save()
+        devilry_report.generate()
+        return openpyxl.load_workbook(filename=BytesIO(devilry_report.result))\
+            .get_sheet_by_name(name=worksheet_name)
+
+    def test_grades_sheet_value_for_single_student_passed_plugin_passed(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_single_student_passed_plugin_passed_failed()
 
         with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
-            devilry_report = DevilryReport(
-                generator_options={'period_id': period.id},
-                generator_type='semesterstudentresults',
-                generated_by_user=requestuser)
-            devilry_report.full_clean()
-            devilry_report.save()
-            devilry_report.generate()
-            worksheet = self.get_work_sheet(devilry_report=devilry_report)
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Grades')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, 'passed')
+
+    def test_points_sheet_value_for_single_student_passed_plugin_passed(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_single_student_passed_plugin_passed_failed()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Points')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, 1)
+
+    def test_passed_sheet_value_for_single_student_passed_plugin_passed(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_single_student_passed_plugin_passed_failed()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Passed')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, 1)
+
+    def test_grades_sheet_value_for_single_student_failed_plugin_passed(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_single_student_failed_plugin_passed_failed()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Grades')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, 'failed')
+
+    def test_points_sheet_value_for_single_student_failed_plugin_passed(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_single_student_failed_plugin_passed_failed()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Points')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, 0)
+
+    def test_passed_sheet_value_for_single_student_failed_plugin_passed(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_single_student_failed_plugin_passed_failed()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Passed')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, 0)
+
+    def test_grades_sheet_value_for_single_student_plugin_raw_points(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_single_student_plugin_raw_points()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Grades')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, '7/10')
+
+    def test_points_sheet_value_for_single_student_plugin_raw_points(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_single_student_plugin_raw_points()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Points')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, 7)
+
+    def test_passed_sheet_value_for_single_student_plugin_raw_points(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_single_student_plugin_raw_points()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Passed')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, 1)
+
+    def test_grades_sheet_value_for_single_student_plugin_custom_table(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_single_student_plugin_custom_table()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Grades')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, 'C')
+
+    def test_points_sheet_value_for_single_student_plugin_custom_table(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_single_student_plugin_custom_table()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Points')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, 32)
+
+    def test_passed_sheet_value_for_single_student_plugin_custom_table(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_single_student_plugin_custom_table()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Passed')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, 1)
+
+    def test_grades_sheet_value_for_single_student_not_registered_on_assignment(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_single_student_not_registered_on_assignment()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Grades')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, 'Not registered')
+
+    def test_points_sheet_value_for_single_student_not_registered_on_assignment(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_single_student_not_registered_on_assignment()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Points')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, None)
+
+    def test_passed_sheet_value_for_single_student_not_registered_on_assignment(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_single_student_not_registered_on_assignment()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Passed')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, None)
+
+    def test_grades_sheet_value_for_single_student_waiting_for_feedback(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_single_student_waiting_for_feedback()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Grades')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, 'Waiting for feedback')
+
+    def test_points_sheet_value_for_single_student_waiting_for_feedback(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_single_student_waiting_for_feedback()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Points')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, None)
+
+    def test_passed_sheet_value_for_single_student_waiting_for_feedback(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_single_student_waiting_for_feedback()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Passed')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, None)
+
+    def test_grades_sheet_value_for_single_student_hard_deadline_no_deliveries(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_single_student_hard_deadline_no_deliveries()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Grades')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, 'No deliveries')
+
+    def test_points_sheet_value_for_single_student_hard_deadline_no_deliveries(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_single_student_hard_deadline_no_deliveries()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Points')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, None)
+
+    def test_passed_sheet_value_for_single_student_hard_deadline_no_deliveries(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_single_student_hard_deadline_no_deliveries()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Passed')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, None)
+
+    def test_grades_sheet_value_for_single_student_hard_deadline_waiting_for_feedback(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_single_student_hard_deadline_waiting_for_feedback()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Grades')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, 'Waiting for feedback')
+
+    def test_points_sheet_value_for_single_student_hard_deadline_waiting_for_feedback(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_single_student_hard_deadline_waiting_for_feedback()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Points')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, None)
+
+    def test_passed_sheet_value_for_single_student_hard_deadline_waiting_for_feedback(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_single_student_hard_deadline_waiting_for_feedback()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Passed')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, None)
+
+    def test_grades_sheet_value_for_single_student_waiting_for_deliveries(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_single_student_waiting_for_deliveries()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Grades')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, 'Waiting for deliveries')
+
+    def test_points_sheet_value_for_single_student_waiting_for_deliveries(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_single_student_waiting_for_deliveries()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Points')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, None)
+
+    def test_passed_sheet_value_for_single_student_waiting_for_deliveries(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_single_student_waiting_for_deliveries()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Passed')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, None)
+
+    def test_grades_sheet_value_for_single_student_on_multiple_assignments(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_single_student_on_multiple_assignments()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Grades')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, 'passed')
+            self.assertEqual(worksheet.cell(row=1, column=2).value, 'passed')
+            self.assertEqual(worksheet.cell(row=1, column=3).value, 'failed')
+
+    def test_points_sheet_value_for_single_student_on_multiple_assignments(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_single_student_on_multiple_assignments()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Points')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, 1)
+            self.assertEqual(worksheet.cell(row=1, column=2).value, 1)
+            self.assertEqual(worksheet.cell(row=1, column=3).value, 0)
+
+    def test_passed_sheet_value_for_single_student_on_multiple_assignments(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_single_student_on_multiple_assignments()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Passed')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, 1)
+            self.assertEqual(worksheet.cell(row=1, column=2).value, 1)
+            self.assertEqual(worksheet.cell(row=1, column=3).value, 0)
+
+    def test_grades_sheet_multiple_students_on_multiple_assignments(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_multiple_students_on_multiple_assignments()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Grades')
             self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent1@example.com')
             self.assertEqual(worksheet.cell(row=1, column=1).value, 'passed')
             self.assertEqual(worksheet.cell(row=1, column=2).value, 'passed')
             self.assertEqual(worksheet.cell(row=2, column=0).value, 'teststudent2@example.com')
             self.assertEqual(worksheet.cell(row=2, column=1).value, 'passed')
             self.assertEqual(worksheet.cell(row=2, column=2).value, 'failed')
+
+    def test_points_sheet_multiple_students_on_multiple_assignments(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_multiple_students_on_multiple_assignments()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Points')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent1@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, 1)
+            self.assertEqual(worksheet.cell(row=1, column=2).value, 1)
+            self.assertEqual(worksheet.cell(row=2, column=0).value, 'teststudent2@example.com')
+            self.assertEqual(worksheet.cell(row=2, column=1).value, 1)
+            self.assertEqual(worksheet.cell(row=2, column=2).value, 0)
+
+    def test_passed_sheet_multiple_students_on_multiple_assignments(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        period = self.create_multiple_students_on_multiple_assignments()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Passed')
+            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent1@example.com')
+            self.assertEqual(worksheet.cell(row=1, column=1).value, 1)
+            self.assertEqual(worksheet.cell(row=1, column=2).value, 1)
+            self.assertEqual(worksheet.cell(row=2, column=0).value, 'teststudent2@example.com')
+            self.assertEqual(worksheet.cell(row=2, column=1).value, 1)
+            self.assertEqual(worksheet.cell(row=2, column=2).value, 0)
