@@ -31,31 +31,37 @@
                 {% trans 'Download the current results' context 'devilry_admin period all results overview' %}
             </h3>
             <p>
-                {% blocktrans with context='devilry_admin period all results overview' %}
+                {% blocktrans trimmed with context='devilry_admin period all results overview' %}
                     Clicking the "Download results"-button will send you to a download view, and a report
                     will be generated on an xlsx-format(Excel). The download will start automatically once the
                     report is generated.
                 {% endblocktrans %}
             </p>
             <p>
-                {% blocktrans with context='devilry_admin period all results overview' %}
+                {% blocktrans trimmed with context='devilry_admin period all results overview' %}
                     The report will contain three different workheets, "Grades", "Points" and
                     "Passed Failed"
                 {% endblocktrans %}:
             </p>
             <ul>
                 <li>
-                    <strong>"Grades"</strong>, a worksheet containing the current
-                    grading/status for each assignment as shown in the table below.
+                    {% blocktrans trimmed with context='devilry_admin period all results overview' %}
+                        <strong>"Grades"</strong>, a worksheet containing the current
+                        grading/status for each assignment as shown in the table below.
+                    {% endblocktrans %}
                 </li>
                 <li>
-                    <strong>"Points"</strong>, a worksheet showing the grading-points for each assignment formatted as
-                    number-fields. Fields for each assignment where the student has not received a grading is empty.
+                    {% blocktrans trimmed with context='devilry_admin period all results overview' %}
+                        <strong>"Points"</strong>, a worksheet showing the grading-points for each assignment formatted as
+                        number-fields. Fields for each assignment where the student has not received a grading is empty.
+                    {% endblocktrans %}
                 </li>
                 <li>
-                    <strong>"Passed Failed"</strong>, a worksheet showing if the student have passed or failed each
-                    assignment formatted as boolean-fields. Fields for each assignment where the student has not
-                    received a grading is empty.
+                    {% blocktrans trimmed with context='devilry_admin period all results overview' %}
+                        <strong>"Passed Failed"</strong>, a worksheet showing if the student have passed or failed each
+                        assignment formatted as boolean-fields. Fields for each assignment where the student has not
+                        received a grading is empty.
+                    {% endblocktrans %}
                 </li>
             </ul>
             <form action="{% cradmin_appurl 'download_report' %}" method="POST">
