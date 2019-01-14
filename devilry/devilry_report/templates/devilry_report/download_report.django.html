@@ -1,8 +1,16 @@
 {% extends "django_cradmin/base.django.html" %}
 {% load i18n %}
 
+{% block extra_meta %}
+    <meta http-equiv="Refresh" content="2">
+{% endblock extra_meta %}
+
 {% block content %}
     <div class="container devilry-dashboard-container-withtopmargin">
-        <h1>{{ devilry_report }}</h1>
+        <h2>
+            {% blocktrans with context='devilry_report download report view' %}
+                The download will start automatically as soon as the report is finished.
+            {% endblocktrans %}
+        </h2>
     </div>
 {% endblock content %}
