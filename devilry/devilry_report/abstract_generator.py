@@ -50,9 +50,9 @@ class AbstractReportGenerator(object):
 
     def validate(self):
         """
-        Todo: Remove?
         Validate required input. Mostly used for validating
         :attr:`devilry.devilry_report.models.DevilryReport.generator_options`.
+        This method is optional and does not have to be overridden.
 
         If everything is validated, do nothing, else raise ValidationError.
         """

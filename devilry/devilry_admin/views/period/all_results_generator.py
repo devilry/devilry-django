@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.utils.translation import pgettext
+from django.utils import translation
+from django.utils.translation import pgettext, ugettext
 
 from devilry.devilry_admin.views.period.overview_all_results_collector import PeriodAllResultsCollector
+from devilry.devilry_email.utils import activate_translation_for_user
 from devilry.devilry_report.abstract_generator import AbstractExcelReportGenerator
 from devilry.apps.core.models import RelatedStudent, Assignment, Period
 
@@ -119,11 +121,13 @@ class AllResultsExcelReportGenerator(AbstractExcelReportGenerator):
 
     def get_work_sheets(self):
         return [
-            ('grades', self.workbook.add_worksheet(name='Grades')),
-            ('points', self.workbook.add_worksheet(name='Points')),
-            ('passed', self.workbook.add_worksheet(name='Passed'))
+            ('grades', self.workbook.add_worksheet(name=ugettext('Grades'))),
+            ('points', self.workbook.add_worksheet(name=ugettext('Points'))),
+            ('passed', self.workbook.add_worksheet(name=ugettext('Passed Failed')))
         ]
 
     def generate(self, file_like_object):
-        # TODO: Activate generated_by user language
+        current_language = translation.get_language()
+        activate_translation_for_user(user=self.devilry_report.generated_by_user)
         self.write(file_like_object=file_like_object)
+        translation.activate(current_language)

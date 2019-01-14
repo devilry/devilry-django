@@ -20,14 +20,53 @@
 {% endblock pageheader-inner %}
 
 {% block content %}
-    <div class="container devilry-dashboard-container-withtopmargin">
-        <form action="{% cradmin_appurl 'download_report' %}" method="POST">
-            {% csrf_token %}
-            <input type="hidden" name="report_options" value="{{ report_options }}">
-            <input class="btn btn-primary" type="submit" name="confirm" value="{% trans "Download results" %}"/>
-        </form>
+
+    {% comment %}
+        Adds support for downloading the current results as Excel-spreadsheets.
+    {% endcomment %}
+    <div class="container">
+{#        <div class="container devilry-dashboard-container-withtopmargin">#}
+        <div class="devilry-dashboard-container devilry-dashboard-container-withtopmargin">
+            <h3>
+                {% trans 'Download the current results' context 'devilry_admin period all results overview' %}
+            </h3>
+            <p>
+                {% blocktrans with context='devilry_admin period all results overview' %}
+                    Clicking the "Download results"-button will send you to a download view, and a report
+                    will be generated on an xlsx-format(Excel). The download will start automatically once the
+                    report is generated.
+                {% endblocktrans %}
+            </p>
+            <p>
+                {% blocktrans with context='devilry_admin period all results overview' %}
+                    The report will contain three different workheets, "Grades", "Points" and
+                    "Passed Failed"
+                {% endblocktrans %}:
+            </p>
+            <ul>
+                <li>
+                    <strong>"Grades"</strong>, a worksheet containing the current
+                    grading/status for each assignment as shown in the table below.
+                </li>
+                <li>
+                    <strong>"Points"</strong>, a worksheet showing the grading-points for each assignment formatted as
+                    number-fields. Fields for each assignment where the student has not received a grading is empty.
+                </li>
+                <li>
+                    <strong>"Passed Failed"</strong>, a worksheet showing if the student have passed or failed each
+                    assignment formatted as boolean-fields. Fields for each assignment where the student has not
+                    received a grading is empty.
+                </li>
+            </ul>
+            <form action="{% cradmin_appurl 'download_report' %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="report_options" value="{{ report_options }}">
+                <input class="btn btn-primary" type="submit" name="confirm" value="{% trans "Download results" %}"/>
+            </form>
+        </div>
     </div>
     {{ block.super }}
+
 {% endblock content %}
 
 {% block listbuilderlist %}

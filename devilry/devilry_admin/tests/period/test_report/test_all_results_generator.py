@@ -222,6 +222,7 @@ class AllResultsGeneratorPreMixin:
         group_factory.feedbackset_first_attempt_published(group=testgroup_custom_table, grading_points=47)
         return period
 
+
 class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestCase):
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
@@ -266,7 +267,7 @@ class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestC
 
         with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
             worksheet = self.generate_report_and_get_worksheet(
-                generated_by_user=requestuser, period=period, worksheet_name='Passed')
+                generated_by_user=requestuser, period=period, worksheet_name='Passed Failed')
             self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
             self.assertEqual(worksheet.cell(row=1, column=1).value, 1)
 
@@ -296,7 +297,7 @@ class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestC
 
         with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
             worksheet = self.generate_report_and_get_worksheet(
-                generated_by_user=requestuser, period=period, worksheet_name='Passed')
+                generated_by_user=requestuser, period=period, worksheet_name='Passed Failed')
             self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
             self.assertEqual(worksheet.cell(row=1, column=1).value, 0)
 
@@ -326,7 +327,7 @@ class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestC
 
         with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
             worksheet = self.generate_report_and_get_worksheet(
-                generated_by_user=requestuser, period=period, worksheet_name='Passed')
+                generated_by_user=requestuser, period=period, worksheet_name='Passed Failed')
             self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
             self.assertEqual(worksheet.cell(row=1, column=1).value, 1)
 
@@ -356,7 +357,7 @@ class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestC
 
         with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
             worksheet = self.generate_report_and_get_worksheet(
-                generated_by_user=requestuser, period=period, worksheet_name='Passed')
+                generated_by_user=requestuser, period=period, worksheet_name='Passed Failed')
             self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
             self.assertEqual(worksheet.cell(row=1, column=1).value, 1)
 
@@ -386,7 +387,7 @@ class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestC
 
         with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
             worksheet = self.generate_report_and_get_worksheet(
-                generated_by_user=requestuser, period=period, worksheet_name='Passed')
+                generated_by_user=requestuser, period=period, worksheet_name='Passed Failed')
             self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
             self.assertEqual(worksheet.cell(row=1, column=1).value, None)
 
@@ -416,7 +417,7 @@ class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestC
 
         with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
             worksheet = self.generate_report_and_get_worksheet(
-                generated_by_user=requestuser, period=period, worksheet_name='Passed')
+                generated_by_user=requestuser, period=period, worksheet_name='Passed Failed')
             self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
             self.assertEqual(worksheet.cell(row=1, column=1).value, None)
 
@@ -446,7 +447,7 @@ class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestC
 
         with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
             worksheet = self.generate_report_and_get_worksheet(
-                generated_by_user=requestuser, period=period, worksheet_name='Passed')
+                generated_by_user=requestuser, period=period, worksheet_name='Passed Failed')
             self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
             self.assertEqual(worksheet.cell(row=1, column=1).value, None)
 
@@ -476,7 +477,7 @@ class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestC
 
         with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
             worksheet = self.generate_report_and_get_worksheet(
-                generated_by_user=requestuser, period=period, worksheet_name='Passed')
+                generated_by_user=requestuser, period=period, worksheet_name='Passed Failed')
             self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
             self.assertEqual(worksheet.cell(row=1, column=1).value, None)
 
@@ -506,7 +507,7 @@ class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestC
 
         with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
             worksheet = self.generate_report_and_get_worksheet(
-                generated_by_user=requestuser, period=period, worksheet_name='Passed')
+                generated_by_user=requestuser, period=period, worksheet_name='Passed Failed')
             self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
             self.assertEqual(worksheet.cell(row=1, column=1).value, None)
 
@@ -540,7 +541,7 @@ class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestC
 
         with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
             worksheet = self.generate_report_and_get_worksheet(
-                generated_by_user=requestuser, period=period, worksheet_name='Passed')
+                generated_by_user=requestuser, period=period, worksheet_name='Passed Failed')
             self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
             self.assertEqual(worksheet.cell(row=1, column=1).value, 1)
             self.assertEqual(worksheet.cell(row=1, column=2).value, 1)
@@ -553,12 +554,17 @@ class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestC
         with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
             worksheet = self.generate_report_and_get_worksheet(
                 generated_by_user=requestuser, period=period, worksheet_name='Grades')
-            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent1@example.com')
-            self.assertEqual(worksheet.cell(row=1, column=1).value, 'passed')
-            self.assertEqual(worksheet.cell(row=1, column=2).value, 'passed')
-            self.assertEqual(worksheet.cell(row=2, column=0).value, 'teststudent2@example.com')
-            self.assertEqual(worksheet.cell(row=2, column=1).value, 'passed')
-            self.assertEqual(worksheet.cell(row=2, column=2).value, 'failed')
+
+            if worksheet.cell(row=1, column=0).value == 'teststudent1@example.com':
+                teststudent1_row, teststudent2_row = (1, 2)
+            else:
+                teststudent1_row, teststudent2_row = (2, 1)
+            self.assertEqual(worksheet.cell(row=teststudent1_row, column=0).value, 'teststudent1@example.com')
+            self.assertEqual(worksheet.cell(row=teststudent1_row, column=1).value, 'passed')
+            self.assertEqual(worksheet.cell(row=teststudent1_row, column=2).value, 'passed')
+            self.assertEqual(worksheet.cell(row=teststudent2_row, column=0).value, 'teststudent2@example.com')
+            self.assertEqual(worksheet.cell(row=teststudent2_row, column=1).value, 'passed')
+            self.assertEqual(worksheet.cell(row=teststudent2_row, column=2).value, 'failed')
 
     def test_points_sheet_multiple_students_on_multiple_assignments(self):
         requestuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -567,12 +573,16 @@ class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestC
         with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
             worksheet = self.generate_report_and_get_worksheet(
                 generated_by_user=requestuser, period=period, worksheet_name='Points')
-            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent1@example.com')
-            self.assertEqual(worksheet.cell(row=1, column=1).value, 1)
-            self.assertEqual(worksheet.cell(row=1, column=2).value, 1)
-            self.assertEqual(worksheet.cell(row=2, column=0).value, 'teststudent2@example.com')
-            self.assertEqual(worksheet.cell(row=2, column=1).value, 1)
-            self.assertEqual(worksheet.cell(row=2, column=2).value, 0)
+            if worksheet.cell(row=1, column=0).value == 'teststudent1@example.com':
+                teststudent1_row, teststudent2_row = (1, 2)
+            else:
+                teststudent1_row, teststudent2_row = (2, 1)
+            self.assertEqual(worksheet.cell(row=teststudent1_row, column=0).value, 'teststudent1@example.com')
+            self.assertEqual(worksheet.cell(row=teststudent1_row, column=1).value, 1)
+            self.assertEqual(worksheet.cell(row=teststudent1_row, column=2).value, 1)
+            self.assertEqual(worksheet.cell(row=teststudent2_row, column=0).value, 'teststudent2@example.com')
+            self.assertEqual(worksheet.cell(row=teststudent2_row, column=1).value, 1)
+            self.assertEqual(worksheet.cell(row=teststudent2_row, column=2).value, 0)
 
     def test_passed_sheet_multiple_students_on_multiple_assignments(self):
         requestuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -580,13 +590,17 @@ class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestC
 
         with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
             worksheet = self.generate_report_and_get_worksheet(
-                generated_by_user=requestuser, period=period, worksheet_name='Passed')
-            self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent1@example.com')
-            self.assertEqual(worksheet.cell(row=1, column=1).value, 1)
-            self.assertEqual(worksheet.cell(row=1, column=2).value, 1)
-            self.assertEqual(worksheet.cell(row=2, column=0).value, 'teststudent2@example.com')
-            self.assertEqual(worksheet.cell(row=2, column=1).value, 1)
-            self.assertEqual(worksheet.cell(row=2, column=2).value, 0)
+                generated_by_user=requestuser, period=period, worksheet_name='Passed Failed')
+            if worksheet.cell(row=1, column=0).value == 'teststudent1@example.com':
+                teststudent1_row, teststudent2_row = (1, 2)
+            else:
+                teststudent1_row, teststudent2_row = (2, 1)
+            self.assertEqual(worksheet.cell(row=teststudent1_row, column=0).value, 'teststudent1@example.com')
+            self.assertEqual(worksheet.cell(row=teststudent1_row, column=1).value, 1)
+            self.assertEqual(worksheet.cell(row=teststudent1_row, column=2).value, 1)
+            self.assertEqual(worksheet.cell(row=teststudent2_row, column=0).value, 'teststudent2@example.com')
+            self.assertEqual(worksheet.cell(row=teststudent2_row, column=1).value, 1)
+            self.assertEqual(worksheet.cell(row=teststudent2_row, column=2).value, 0)
 
     def test_grades_sheet_single_student_results_on_each_points_to_grade_mapper_type_assignment(self):
         requestuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -618,7 +632,7 @@ class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestC
 
         with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
             worksheet = self.generate_report_and_get_worksheet(
-                generated_by_user=requestuser, period=period, worksheet_name='Passed')
+                generated_by_user=requestuser, period=period, worksheet_name='Passed Failed')
             self.assertEqual(worksheet.cell(row=1, column=0).value, 'teststudent@example.com')
             self.assertEqual(worksheet.cell(row=1, column=1).value, 1)
             self.assertEqual(worksheet.cell(row=1, column=2).value, 1)
