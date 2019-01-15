@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-14 17:53+0100\n"
-"PO-Revision-Date: 2019-01-14 17:55+0100\n"
+"POT-Creation-Date: 2019-01-15 11:53+0100\n"
+"PO-Revision-Date: 2019-01-15 11:55+0100\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -1348,7 +1348,7 @@ msgstr "%(examiner)s"
 
 #: devilry/devilry_admin/templates/devilry_admin/assignment/examiners/examinerdetails.django.html:39
 #: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/choose-accumulated-score.django.html:10
-#: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/grading_points_based/preview.django.html:70
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/grading_points_based/preview.django.html:74
 #: devilry/devilry_admin/templates/devilry_admin/assignment/students/overview.django.html:38
 #: devilry/devilry_admin/templates/devilry_admin/period/manage_tags/tag-item-value.django.html:52
 #: devilry/devilry_admin/templates/devilry_admin/period/students/overview.django.html:39
@@ -2133,6 +2133,10 @@ msgid "Threshold percentage of max score"
 msgstr "Poenggrense prosentandel"
 
 #: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/grading_points_based/preview.django.html:50
+msgid "Number of students that will be added to the assignment"
+msgstr "Antall studenter som vil bli lagt til på oppgaven"
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/grading_points_based/preview.django.html:54
 msgid ""
 "Below is a list of the students that will be added to the assignment. Each "
 "student has a total score across the selected assignments that is equal to "
@@ -2142,7 +2146,7 @@ msgstr ""
 "student har en total poengsum fra de valgte oppgavene som er lik eller "
 "større enn poenggrensen."
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/grading_points_based/preview.django.html:57
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/grading_points_based/preview.django.html:61
 msgid ""
 "Note that students DO NOT have to be registered on each assignment, they "
 "must simply have accumulated a high enough score."
@@ -2150,7 +2154,7 @@ msgstr ""
 "Studenter må IKKE ha vært registrert på alle oppgavene, men kun ha oppnådd "
 "en poengsum som er høy nok."
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/grading_points_based/preview.django.html:71
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/grading_points_based/preview.django.html:75
 #: devilry/devilry_student/templates/devilry_student/cradmin_group/projectgroupapp/groupinvite_delete.django.html:36
 msgid "Cancel"
 msgstr "Avbryt"
@@ -3781,7 +3785,7 @@ msgstr ""
 "Ingen studenter. Dette betyr at alle studentene som ville kvalifisert "
 "allerede er lagt til på oppgaven, eller at ingen studenter har nok poeng."
 
-#: devilry/devilry_admin/views/assignment/students/create_groups_accumulated_score.py:260
+#: devilry/devilry_admin/views/assignment/students/create_groups_accumulated_score.py:266
 #, python-format
 msgctxt "admin create_groups_accumulated_score_on_assignments"
 msgid "%(num_relatedstudents)s student(s) added to %(assignment_long_name)s"
