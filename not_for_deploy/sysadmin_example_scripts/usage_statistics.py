@@ -7,7 +7,6 @@ import arrow
 
 from django.contrib.auth import get_user_model
 from django.utils import timezone
-from django.db import models
 
 
 def get_number_of_deliveries(from_datetime, to_datetime):
@@ -35,7 +34,7 @@ def get_number_of_deliveries(from_datetime, to_datetime):
     # from and to datetime posted by a student.
     group_comment_queryset = GroupComment.objects\
         .filter(user_role=GroupComment.USER_ROLE_STUDENT)\
-        .filter(id__in=feedbackset_queryset.values_list('id', flat=True))
+        .filter(feedback_set_id__in=feedbackset_queryset.values_list('id', flat=True))
 
     #: UNCOMMENT THIS IF YOU WANT TO:
     #:
@@ -68,7 +67,7 @@ def populate_arguments_and_get_parser():
         default='1900-01-01',
         help='A %%Y-%%m-%%d formatted from-date. Defaults to 1900-01-01.')
     parser.add_argument(
-        '--to_date',
+        '--to-date',
         dest='to_date',
         default='5999-12-31',
         help='A %%Y-%%m-%%d formatted to-date. Defaults to 5999-12-31.')
@@ -89,19 +88,21 @@ if __name__ == "__main__":
     args = parser.parse_args()
     arguments_dict = vars(args)
 
-    from_datetime = timezone.make_aware(datetime.strptime(arguments_dict['from_date'], '%Y-%m-%d'))
-    to_datetime = timezone.make_aware(datetime.strptime(arguments_dict['to_date'], '%Y-%m-%d'))
+    from_datetime = timezone.make_aware(datetime.strptime(arguments_dict['from_date'], '%Y-%m-%d')).replace(
+        hour=0, minute=0, second=0)
+    to_datetime = timezone.make_aware(datetime.strptime(arguments_dict['to_date'], '%Y-%m-%d')).replace(
+        hour=23, minute=59, second=59)
 
     # Get unique logins
     unique_login_count = get_unique_logins(from_datetime=from_datetime)
     print 'Unique logins since {}: {}'.format(
-        arrow.get(from_datetime).format('MMM D. YYYY HH:mm'),
+        arrow.get(from_datetime).format('MMM D. YYYY HH:mm:ss'),
         unique_login_count)
 
     # Get number of deliveries
     delivery_count = get_number_of_deliveries(from_datetime, to_datetime)
     print 'Deliveries made between {} and {}: {}'.format(
-        arrow.get(from_datetime).format('MMM D. YYYY HH:mm'),
-        arrow.get(to_datetime).format('MMM D. YYYY HH:mm'),
+        arrow.get(from_datetime).format('MMM D. YYYY HH:mm:ss'),
+        arrow.get(to_datetime).format('MMM D. YYYY HH:mm:ss'),
         delivery_count
     )
