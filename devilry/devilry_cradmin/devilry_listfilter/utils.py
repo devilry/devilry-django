@@ -1,5 +1,7 @@
 from django.utils.translation import ugettext_lazy
 from django_cradmin.viewhelpers.listbuilder.itemvalue import TitleDescription
+from django_cradmin.viewhelpers.listbuilder.lists import RowList
+from django_cradmin.viewhelpers.listbuilder.itemframe import DefaultSpacingItemFrame
 
 
 class WithResultValueRenderable(TitleDescription):
@@ -38,3 +40,29 @@ class WithResultValueRenderable(TitleDescription):
         in addition to the classes added by the superclasses.
         """
         return []
+
+
+class RowListWithMatchResults(RowList):
+    """
+    Extends the default RowList with rendering of filter hit count and
+    total object count.
+    """
+    match_result_value_renderable = WithResultValueRenderable
+    match_result_frame_renderable = DefaultSpacingItemFrame
+
+    def append_results_renderable(self):
+        result_info_renderable = self.match_result_value_renderable(
+            value=None,
+            num_matches=self.num_matches,
+            num_total=self.num_total
+        )
+        self.renderable_list.insert(0, self.match_result_frame_renderable(inneritem=result_info_renderable))
+
+    def __init__(self, num_matches, num_total, page):
+        self.num_matches = num_matches
+        self.num_total = num_total
+        self.page = page
+        super(RowListWithMatchResults, self).__init__()
+
+        if page == 1:
+            self.append_results_renderable()

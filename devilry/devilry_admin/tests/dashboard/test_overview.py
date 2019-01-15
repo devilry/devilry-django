@@ -286,10 +286,10 @@ class TestOverviewSubjectListViewApp(TestCase, cradmin_testhelpers.TestCaseMixin
             view._OverviewSubjectListView__get_all_periods_where_user_is_subjectadmin_or_periodadmin()
         )
 
-    def test_empty_list(self):
-        mockresponse = self.mock_http200_getrequest_htmls()
-        self.assertTrue(mockresponse.selector.exists('.django-cradmin-listing-no-items-message'))
-        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-list'))
+    # def test_empty_list(self):
+    #     mockresponse = self.mock_http200_getrequest_htmls()
+    #     self.assertTrue(mockresponse.selector.exists('.django-cradmin-listing-no-items-message'))
+    #     self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-list'))
 
     def test_nonempty_list(self):
         mommy.make('core.Subject')
