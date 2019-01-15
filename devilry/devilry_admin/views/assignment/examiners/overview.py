@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
 from django.http import Http404
@@ -29,7 +30,7 @@ class ExaminerDetailPageLinkFrame(devilry_listbuilder.common.GoForwardLinkItemFr
         return ['devilry-admin-assignment-students-overview-group-linkframe']
 
 
-class StudentGroupListMatchResultRenderable(WithResultValueRenderable):
+class ExaminerGroupListMatchResultRenderable(WithResultValueRenderable):
     def get_object_name_singular(self, num_matches):
         return ugettext_lazy('examiner')
 
@@ -39,7 +40,7 @@ class StudentGroupListMatchResultRenderable(WithResultValueRenderable):
 
 class RowListWithMatchResults(RowList):
     def append_results_renderable(self):
-        result_info_renderable = StudentGroupListMatchResultRenderable(
+        result_info_renderable = ExaminerGroupListMatchResultRenderable(
             value=None,
             num_matches=self.num_matches,
             num_total=self.num_total

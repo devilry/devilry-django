@@ -1,15 +1,21 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models.functions import Lower, Concat
-from django.utils.translation import ugettext
+from django.utils.translation import ugettext, ugettext_lazy
 
 from django_cradmin.crinstance import reverse_cradmin_url
 from django_cradmin.viewhelpers import listbuilderview
+from django_cradmin.viewhelpers.listbuilder.lists import RowList
+from django_cradmin.viewhelpers.listbuilder.itemframe import DefaultSpacingItemFrame
 
 from devilry.apps.core import models as core_models
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin import devilry_listfilter
 from devilry.devilry_admin.views.dashboard.student_feedbackfeed_wizard import filters
+from devilry.devilry_cradmin.devilry_listfilter.utils import WithResultValueRenderable
 
 
 class NonAnonymousGroupItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
@@ -46,11 +52,39 @@ class DepartmentAdminItemValueByAssignment(devilry_listbuilder.assignmentgroup.D
         return self.group.assignment
 
 
+class AssignmentListMatchResultRenderable(WithResultValueRenderable):
+    def get_object_name_singular(self, num_matches):
+        return ugettext_lazy('assignment')
+
+    def get_object_name_plural(self, num_matches):
+        return ugettext_lazy('assignments')
+
+
+class RowListWithMatchResults(RowList):
+    def append_results_renderable(self):
+        result_info_renderable = AssignmentListMatchResultRenderable(
+            value=None,
+            num_matches=self.num_matches,
+            num_total=self.num_total
+        )
+        self.renderable_list.insert(0, DefaultSpacingItemFrame(inneritem=result_info_renderable))
+
+    def __init__(self, num_matches, num_total, page):
+        self.num_matches = num_matches
+        self.num_total = num_total
+        self.page = page
+        super(RowListWithMatchResults, self).__init__()
+
+        if page == 1:
+            self.append_results_renderable()
+
+
 class StudentAssignmentGroupListView(listbuilderview.FilterListMixin, listbuilderview.View):
     """
     """
     template_name = 'devilry_admin/dashboard/student_feedbackfeed_wizard/student_feedbackfeed_list_groups.django.html'
     model = core_models.AssignmentGroup
+    listbuilder_class = RowListWithMatchResults
     frame_renderer_class = NonAnonymousGroupItemFrame
     filterview_name = 'student_group_filter'
     value_renderer_class = DepartmentAdminItemValueByAssignment
@@ -135,4 +169,24 @@ class StudentAssignmentGroupListView(listbuilderview.FilterListMixin, listbuilde
             .annotate_with_is_waiting_for_deliveries_count() \
             .annotate_with_is_corrected_count() \
             .distinct()
+
+        # Set unfiltered count on self.
+        self.num_total = queryset.count()
         return queryset
+
+    def get_queryset_for_role(self, role):
+        queryset = super(StudentAssignmentGroupListView, self).get_queryset_for_role(role=role)
+
+        # Set filtered count on self.
+        self.num_matches = queryset.count()
+        return queryset
+
+    #
+    # Add support for showing results on the top of list.
+    #
+    def get_listbuilder_list_kwargs(self):
+        kwargs = super(StudentAssignmentGroupListView, self).get_listbuilder_list_kwargs()
+        kwargs['num_matches'] = self.num_matches or 0
+        kwargs['num_total'] = self.num_total or 0
+        kwargs['page'] = self.request.GET.get('page', 1)
+        return kwargs

@@ -15,16 +15,24 @@ class TestStudentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls()
         self.assertEqual(mockresponse.selector.one('title').alltext_normalized, 'Select a student')
 
+    def test_only_users_with_relatedstudent_are_listed(self):
+        mommy.make(settings.AUTH_USER_MODEL, shortname='notstudentuser')
+        mommy.make('core.RelatedStudent', user__shortname='studentuser')
+        mockresponse = self.mock_http200_getrequest_htmls()
+        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue-titledescription-title'), 1)
+        self.assertIn('studentuser', mockresponse.response.content)
+        self.assertNotIn('notstudentuser', mockresponse.response.content)
+
     def test_list_users(self):
-        mommy.make(settings.AUTH_USER_MODEL, shortname='a', fullname='A')
-        mommy.make(settings.AUTH_USER_MODEL, shortname='b', fullname='B')
-        mommy.make(settings.AUTH_USER_MODEL, shortname='c', fullname='C')
+        mommy.make('core.RelatedStudent', user__shortname='a', user__fullname='A')
+        mommy.make('core.RelatedStudent', user__shortname='b', user__fullname='B')
+        mommy.make('core.RelatedStudent', user__shortname='c', user__fullname='C')
         mockresponse = self.mock_http200_getrequest_htmls()
         fullname_list = [element.alltext_normalized for element in mockresponse.selector.list(
             '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
         shortname_list = [element.alltext_normalized for element in mockresponse.selector.list(
             '.django-cradmin-listbuilder-itemvalue-titledescription-description')]
-        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 4)
+        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 3)
         self.assertIn('A', fullname_list)
         self.assertIn('B', fullname_list)
         self.assertIn('C', fullname_list)
@@ -33,21 +41,21 @@ class TestStudentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertIn('c', shortname_list)
 
     def test_search_no_match(self):
-        mommy.make(settings.AUTH_USER_MODEL, shortname='a', fullname='A')
+        mommy.make('core.RelatedStudent', user__shortname='a', user__fullname='A')
         mockresponse = self.mock_http200_getrequest_htmls(
             viewkwargs={'filters_string': 'search-No match'}
         )
         self.assertEqual(0, mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
 
     def test_search_match_fullname(self):
-        mommy.make(settings.AUTH_USER_MODEL, shortname='shortnamea', fullname='FullnameA')
+        mommy.make('core.RelatedStudent', user__shortname='shortnamea', user__fullname='FullnameA')
         mockresponse = self.mock_http200_getrequest_htmls(
             viewkwargs={'filters_string': 'search-FullnameA'}
         )
         self.assertEqual(1, mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
 
     def test_search_match_shortname(self):
-        mommy.make(settings.AUTH_USER_MODEL, shortname='shortnamea', fullname='FullnameA')
+        mommy.make('core.RelatedStudent', user__shortname='shortnamea', user__fullname='FullnameA')
         mockresponse = self.mock_http200_getrequest_htmls(
             viewkwargs={'filters_string': 'search-shortnamea'}
         )
@@ -62,17 +70,17 @@ class TestStudentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         )
 
     def test_pagination(self):
-        mommy.make(settings.AUTH_USER_MODEL, _quantity=50)
+        mommy.make('core.RelatedStudent', _quantity=50)
         mockresponse = self.mock_http200_getrequest_htmls()
         self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 35)
 
     def test_query_count(self):
-        mommy.make(settings.AUTH_USER_MODEL, _quantity=10)
-        with self.assertNumQueries(3):
+        mommy.make('core.RelatedStudent', _quantity=10)
+        with self.assertNumQueries(5):
             self.mock_http200_getrequest_htmls()
-        mommy.make(settings.AUTH_USER_MODEL, _quantity=90)
-        with self.assertNumQueries(3):
+        mommy.make('core.RelatedStudent', _quantity=90)
+        with self.assertNumQueries(5):
             self.mock_http200_getrequest_htmls()
-        mommy.make(settings.AUTH_USER_MODEL, _quantity=400)
-        with self.assertNumQueries(3):
+        mommy.make('core.RelatedStudent', _quantity=400)
+        with self.assertNumQueries(5):
             self.mock_http200_getrequest_htmls()

@@ -6,6 +6,8 @@ class WithResultValueRenderable(TitleDescription):
     """
     For rendering results number in list filter views.
     """
+    template_name = 'devilry_cradmin/devilry_listfilter/utils/devilry_with_result_value_renderable.django.html'
+
     def get_object_name_singular(self, num_matches):
         """
         String representation of the objects listed in singular form.

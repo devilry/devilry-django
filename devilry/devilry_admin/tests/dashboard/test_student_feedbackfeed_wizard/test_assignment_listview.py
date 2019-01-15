@@ -452,7 +452,7 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
                 testgroup = mommy.make('core.AssignmentGroup', parentnode__long_name='Accessible Assignment',
                                        parentnode__parentnode__parentnode=testsubject)
                 mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=testuser)
-        with self.assertNumQueries(6):
+        with self.assertNumQueries(8):
             selector = self.mock_http200_getrequest_htmls(
                 requestuser=adminuser,
                 viewkwargs={'user_id': testuser.id}

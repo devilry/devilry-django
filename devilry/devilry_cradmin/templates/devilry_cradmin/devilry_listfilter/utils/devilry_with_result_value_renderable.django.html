@@ -1,0 +1,28 @@
+{% extends "django_cradmin/viewhelpers/listbuilder/itemvalue/titledescription.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+
+
+{% comment %}
+    Title and description block is overridden to make sure we dont't get any crashes
+    when testing for rendered items that also uses the titledescription renderable.
+
+    This also makes it easier to test for the match results.
+{% endcomment %}
+{% block title %}
+    <h2 class="devilry-with-match-result-listbuilder-itemvalue-titledescription-title">
+        {% block title-content %}
+            {{ me.get_title }}
+        {% endblock title-content %}
+    </h2>
+{% endblock title %}
+
+{% block description %}
+    {% if me.get_description %}
+        <p class="devilry-with-match-result--listbuilder-itemvalue-titledescription-description">
+            {% block description-content %}
+                {{ me.get_description }}
+            {% endblock description-content %}
+        </p>
+    {% endif %}
+{% endblock description %}
