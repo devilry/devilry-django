@@ -7,7 +7,6 @@ import arrow
 
 from django.contrib.auth import get_user_model
 from django.utils import timezone
-from django.db import models
 
 
 def get_number_of_deliveries(from_datetime, to_datetime):
