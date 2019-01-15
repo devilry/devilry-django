@@ -35,7 +35,7 @@ def get_number_of_deliveries(from_datetime, to_datetime):
     # from and to datetime posted by a student.
     group_comment_queryset = GroupComment.objects\
         .filter(user_role=GroupComment.USER_ROLE_STUDENT)\
-        .filter(id__in=feedbackset_queryset.values_list('id', flat=True))
+        .filter(feedback_set_id__in=feedbackset_queryset.values_list('id', flat=True))
 
     #: UNCOMMENT THIS IF YOU WANT TO:
     #:
