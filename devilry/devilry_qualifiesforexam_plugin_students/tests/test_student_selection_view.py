@@ -30,7 +30,7 @@ class TestStudentSelectionView(test.TestCase, cradmin_testhelpers.TestCaseMixin)
 
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         selectorlist = mockresponse.selector.list(
-                '.django-cradmin-listbuilder-itemvalue-titledescription-title'
+                '.django-cradmin-listbuilder-itemvalue-titledescription-description'
         )
         elements_normalized = [element.alltext_normalized for element in selectorlist]
         self.assertEquals(len(elements_normalized), len(relatedstudents))

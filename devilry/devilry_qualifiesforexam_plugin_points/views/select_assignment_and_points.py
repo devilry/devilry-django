@@ -9,6 +9,8 @@ from django import forms
 from django.utils.translation import ugettext_lazy
 
 from devilry.devilry_qualifiesforexam.views.plugin_base_views import base_multiselect_view
+from devilry.devilry_qualifiesforexam.views.plugin_base_views.base_multiselect_view import SelectedQualificationItem, \
+    SelectableQualificationItemValue
 from devilry.devilry_qualifiesforexam_plugin_points import resultscollector
 from devilry.devilry_qualifiesforexam.views import plugin_mixin
 
@@ -37,9 +39,21 @@ class WithPointsFormDataTargetRenderer(base_multiselect_view.QualificationItemTa
         ]
 
 
-class PluginSelectAssignmentsAndPointsView(base_multiselect_view.QualificationItemListView, plugin_mixin.PluginMixin):
+class SelectedAssignmentItem(SelectedQualificationItem):
+    def get_title(self):
+        return self.value.long_name
 
+
+class SelectableAssignmentItemValue(SelectableQualificationItemValue):
+    selected_item_renderer_class = SelectedAssignmentItem
+
+    def get_title(self):
+        return self.value.long_name
+
+
+class PluginSelectAssignmentsAndPointsView(base_multiselect_view.QualificationItemListView, plugin_mixin.PluginMixin):
     plugintypeid = 'devilry_qualifiesforexam_plugin_points.plugin_points'
+    value_renderer_class = SelectableAssignmentItemValue
 
     def get_period_result_collector_class(self):
         return resultscollector.PeriodResultSetCollector
