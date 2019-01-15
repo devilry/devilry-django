@@ -11,7 +11,7 @@ from django.utils.translation import pgettext_lazy
 
 from django_cradmin.viewhelpers import multiselect2view, multiselect2, listbuilder, listbuilderview
 
-from devilry.apps.core.models import Assignment, AssignmentGroup, RelatedStudent
+from devilry.apps.core.models import Assignment, AssignmentGroup, RelatedStudent, Candidate
 
 
 class SelectAssignmentItemValuePreMixin(object):
@@ -232,15 +232,21 @@ class PreviewRelatedstudentsListView(listbuilderview.View):
             - Excludes RelatedStudents already on the assignment.
             - Filter away all RelatedStudents with a grading point total below the threshold.
         """
-        queryset = RelatedStudent.objects\
-            .filter(candidate__assignment_group__parentnode_id__in=selected_assignment_ids)\
-            .filter(active=True)\
-            .exclude(id__in=self.__get_relatedstudent_ids_already_on_assignment())\
-            .annotate_with_total_grading_points(assignment_ids=selected_assignment_ids)\
-            .filter(grade_points_total__gte=points_threshold)\
-            .order_by('-grade_points_total')\
+        queryset = RelatedStudent.objects \
+            .filter(candidate__assignment_group__parentnode_id__in=selected_assignment_ids) \
+            .filter(active=True) \
             .distinct()
-        self.relatedstudent_count = queryset.count()
+
+        # Total number of RelatedStudents on across the selected assignments
+        self._cached_relatedstudent_total_count = queryset.count()
+
+        queryset = queryset.exclude(id__in=self.__get_relatedstudent_ids_already_on_assignment())\
+            .annotate_with_total_grading_points(assignment_ids=selected_assignment_ids) \
+            .filter(grade_points_total__gte=points_threshold) \
+            .order_by('-grade_points_total')
+
+        # Number of RelatedStudents that will be added to the assignment
+        self._cached_relatedstudent_add_count = queryset.count()
         return queryset
 
     def __get_selected_assignments_queryset(self):
@@ -258,7 +264,7 @@ class PreviewRelatedstudentsListView(listbuilderview.View):
         """
         message = pgettext_lazy('admin create_groups_accumulated_score_on_assignments',
                                 '%(num_relatedstudents)s student(s) added to %(assignment_long_name)s') % {
-            'num_relatedstudents': self.relatedstudent_count,
+            'num_relatedstudents': self._cached_relatedstudent_add_count,
             'assignment_long_name': self.request.cradmin_role.long_name
         }
         messages.success(request=self.request, message=message)
@@ -289,5 +295,6 @@ class PreviewRelatedstudentsListView(listbuilderview.View):
         context['selected_assignments_total_max_score'] = selected_assignments_max_score
         context['threshold_percentage'] = ((float(points_threshold)/float(selected_assignments_max_score)) * 100.0)
         context['selected_assignments'] = selected_assignments
-        context['relatedstudent_count'] = self.relatedstudent_count
+        context['relatedstudent_total_count'] = self._cached_relatedstudent_total_count
+        context['relatedstudent_add_count'] = self._cached_relatedstudent_add_count
         return context

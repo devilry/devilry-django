@@ -274,6 +274,102 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
                 '.devilry-accumulated-score-selected-assignments-threshold-percentage-of-max-score').alltext_normalized,
             'Threshold percentage of max score: {:.2f} %'.format((123.0/250.0) * 100.0))
 
+    def test_single_assignment_single_student_not_passed_added_students_count_info_box(self):
+        current_assignment = mommy.make('core.Assignment')
+        test_assignment = mommy.make('core.Assignment', parentnode=current_assignment.parentnode,
+                                     long_name='Test Assignment 1')
+        relatedstudent = mommy.make('core.RelatedStudent', period=current_assignment.parentnode)
+        self.__make_published_feedbackset_for_relatedstudent(
+            relatedstudent=relatedstudent, assignment=test_assignment, grading_points=0)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=current_assignment,
+            sessionmock={
+                'points_threshold': 1,
+                'from_select_assignment_view': '',
+                'selected_assignment_ids': [test_assignment.id]
+            })
+        self.assertEqual(
+            mockresponse.selector.one(
+                '.devilry-accumulated-score-selected-assignments-student-count').alltext_normalized,
+            'Number of students that will be added to the assignment: 0 / 1')
+
+    def test_single_assignment_single_student_passed_added_students_count_info_box(self):
+        current_assignment = mommy.make('core.Assignment')
+        test_assignment = mommy.make('core.Assignment', parentnode=current_assignment.parentnode,
+                                     long_name='Test Assignment 1')
+        relatedstudent = mommy.make('core.RelatedStudent', period=current_assignment.parentnode)
+        self.__make_published_feedbackset_for_relatedstudent(
+            relatedstudent=relatedstudent, assignment=test_assignment, grading_points=1)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=current_assignment,
+            sessionmock={
+                'points_threshold': 1,
+                'from_select_assignment_view': '',
+                'selected_assignment_ids': [test_assignment.id]
+            })
+        self.assertEqual(
+            mockresponse.selector.one(
+                '.devilry-accumulated-score-selected-assignments-student-count').alltext_normalized,
+            'Number of students that will be added to the assignment: 1 / 1')
+
+    def test_single_assignment_multiple_students_added_students_count_info_box_sanity(self):
+        current_assignment = mommy.make('core.Assignment')
+        test_assignment = mommy.make('core.Assignment', parentnode=current_assignment.parentnode,
+                                     long_name='Test Assignment 1')
+        relatedstudent1 = mommy.make('core.RelatedStudent', period=current_assignment.parentnode)
+        relatedstudent2 = mommy.make('core.RelatedStudent', period=current_assignment.parentnode)
+        relatedstudent3 = mommy.make('core.RelatedStudent', period=current_assignment.parentnode)
+        self.__make_published_feedbackset_for_relatedstudent(
+            relatedstudent=relatedstudent1, assignment=test_assignment, grading_points=1)
+        self.__make_published_feedbackset_for_relatedstudent(
+            relatedstudent=relatedstudent2, assignment=test_assignment, grading_points=1)
+        self.__make_published_feedbackset_for_relatedstudent(
+            relatedstudent=relatedstudent3, assignment=test_assignment, grading_points=0)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=current_assignment,
+            sessionmock={
+                'points_threshold': 1,
+                'from_select_assignment_view': '',
+                'selected_assignment_ids': [test_assignment.id]
+            })
+        self.assertEqual(
+            mockresponse.selector.one(
+                '.devilry-accumulated-score-selected-assignments-student-count').alltext_normalized,
+            'Number of students that will be added to the assignment: 2 / 3')
+
+    def test_multiple_assignment_multiple_students_added_students_count_info_box_sanity(self):
+        current_assignment = mommy.make('core.Assignment')
+        test_assignment1 = mommy.make('core.Assignment', parentnode=current_assignment.parentnode,
+                                      long_name='Test Assignment 1')
+        test_assignment2 = mommy.make('core.Assignment', parentnode=current_assignment.parentnode,
+                                      long_name='Test Assignment 2')
+        relatedstudent1 = mommy.make('core.RelatedStudent', period=current_assignment.parentnode)
+        relatedstudent2 = mommy.make('core.RelatedStudent', period=current_assignment.parentnode)
+        relatedstudent3 = mommy.make('core.RelatedStudent', period=current_assignment.parentnode)
+        self.__make_published_feedbackset_for_relatedstudent(
+            relatedstudent=relatedstudent1, assignment=test_assignment1, grading_points=1)
+        self.__make_published_feedbackset_for_relatedstudent(
+            relatedstudent=relatedstudent1, assignment=test_assignment2, grading_points=1)
+        self.__make_published_feedbackset_for_relatedstudent(
+            relatedstudent=relatedstudent2, assignment=test_assignment1, grading_points=1)
+        self.__make_published_feedbackset_for_relatedstudent(
+            relatedstudent=relatedstudent2, assignment=test_assignment2, grading_points=1)
+        self.__make_published_feedbackset_for_relatedstudent(
+            relatedstudent=relatedstudent3, assignment=test_assignment1, grading_points=1)
+        self.__make_published_feedbackset_for_relatedstudent(
+            relatedstudent=relatedstudent3, assignment=test_assignment2, grading_points=0)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=current_assignment,
+            sessionmock={
+                'points_threshold': 2,
+                'from_select_assignment_view': '',
+                'selected_assignment_ids': [test_assignment1.id, test_assignment2.id]
+            })
+        self.assertEqual(
+            mockresponse.selector.one(
+                '.devilry-accumulated-score-selected-assignments-student-count').alltext_normalized,
+            'Number of students that will be added to the assignment: 2 / 3')
+
     def __make_published_feedbackset_for_relatedstudent(self, relatedstudent, assignment, grading_points=0):
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
         group_mommy.feedbackset_first_attempt_published(group=group, grading_points=grading_points)
@@ -596,7 +692,7 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
         self.__make_published_feedbackset_for_relatedstudent(
             relatedstudent=relatedstudent4, assignment=test_assignment4, grading_points=30)
         requestuser = mommy.make(settings.AUTH_USER_MODEL)
-        with self.assertNumQueries(4):
+        with self.assertNumQueries(5):
             self.mock_getrequest(
                 requestuser=requestuser,
                 cradmin_role=current_assignment,
@@ -657,7 +753,7 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
         self.__make_published_feedbackset_for_relatedstudent(
             relatedstudent=relatedstudent4, assignment=test_assignment4, grading_points=50)
         requestuser = mommy.make(settings.AUTH_USER_MODEL)
-        with self.assertNumQueries(8):
+        with self.assertNumQueries(9):
             self.mock_http302_postrequest(
                 requestuser=requestuser,
                 cradmin_role=current_assignment,

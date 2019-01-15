@@ -46,6 +46,10 @@
                 <strong>{% trans "Threshold percentage of max score" %}</strong>:<br>
                 {{ threshold_percentage|floatformat:2 }} %
             </p>
+            <p class="devilry-accumulated-score-selected-assignments-student-count">
+                <strong>{% trans "Number of students that will be added to the assignment" %}</strong>:<br>
+                {{ relatedstudent_add_count }} / {{ relatedstudent_total_count }}
+            </p>
             <p class="paragraph">
                 {% blocktrans trimmed %}
                     Below is a list of the students that will be added to the assignment. Each student
@@ -62,7 +66,7 @@
         </div>
     </div>
     {{ block.super }}
-    {% if relatedstudent_count > 0 %}
+    {% if relatedstudent_add_count > 0 %}
         <div class="container">
             <div class="devilry-dashboard-container">
                 <form action="{% cradmin_appurl 'accumulated-score-preview' %}" method="POST">
