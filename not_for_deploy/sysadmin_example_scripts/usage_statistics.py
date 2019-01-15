@@ -68,7 +68,7 @@ def populate_arguments_and_get_parser():
         default='1900-01-01',
         help='A %%Y-%%m-%%d formatted from-date. Defaults to 1900-01-01.')
     parser.add_argument(
-        '--to_date',
+        '--to-date',
         dest='to_date',
         default='5999-12-31',
         help='A %%Y-%%m-%%d formatted to-date. Defaults to 5999-12-31.')
