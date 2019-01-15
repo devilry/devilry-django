@@ -9,7 +9,8 @@ qualifying students for final exams.
 
 Overview of all results
 =======================
-The results utility is quite simple, and just lists the results for each student on all assignments.
+The overview shows a table with an entry for each student and their result/status on each assignment. You can also
+download an Excel-report of the current results as seen in the table.
 
 .. image:: images/admin-period-all-results-overview.png
 
