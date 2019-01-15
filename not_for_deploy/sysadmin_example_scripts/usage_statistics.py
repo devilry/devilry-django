@@ -89,19 +89,21 @@ if __name__ == "__main__":
     args = parser.parse_args()
     arguments_dict = vars(args)
 
-    from_datetime = timezone.make_aware(datetime.strptime(arguments_dict['from_date'], '%Y-%m-%d'))
-    to_datetime = timezone.make_aware(datetime.strptime(arguments_dict['to_date'], '%Y-%m-%d'))
+    from_datetime = timezone.make_aware(datetime.strptime(arguments_dict['from_date'], '%Y-%m-%d')).replace(
+        hour=0, minute=0, second=0)
+    to_datetime = timezone.make_aware(datetime.strptime(arguments_dict['to_date'], '%Y-%m-%d')).replace(
+        hour=23, minute=59, second=59)
 
     # Get unique logins
     unique_login_count = get_unique_logins(from_datetime=from_datetime)
     print 'Unique logins since {}: {}'.format(
-        arrow.get(from_datetime).format('MMM D. YYYY HH:mm'),
+        arrow.get(from_datetime).format('MMM D. YYYY HH:mm:ss'),
         unique_login_count)
 
     # Get number of deliveries
     delivery_count = get_number_of_deliveries(from_datetime, to_datetime)
     print 'Deliveries made between {} and {}: {}'.format(
-        arrow.get(from_datetime).format('MMM D. YYYY HH:mm'),
-        arrow.get(to_datetime).format('MMM D. YYYY HH:mm'),
+        arrow.get(from_datetime).format('MMM D. YYYY HH:mm:ss'),
+        arrow.get(to_datetime).format('MMM D. YYYY HH:mm:ss'),
         delivery_count
     )
