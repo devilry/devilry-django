@@ -737,14 +737,7 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
             models.Q(cached_data__last_feedbackset__grading_published_datetime__isnull=False,
                      cached_data__last_feedbackset__deadline_datetime__gte=now)
         ) & (
-                models.Q(
-                    ~models.Q(cached_data__last_feedbackset=models.F('cached_data__first_feedbackset')),
-                    models.Q(cached_data__last_feedbackset__deadline_datetime__gte=now),
-                ) |
-                models.Q(
-                    models.Q(cached_data__last_feedbackset=models.F('cached_data__first_feedbackset')),
-                    parentnode__first_deadline__gte=now
-                )
+                models.Q(cached_data__last_feedbackset__deadline_datetime__gte=now)
         )
         return self.annotate(
             annotated_is_waiting_for_deliveries=models.Count(
