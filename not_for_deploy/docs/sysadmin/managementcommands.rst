@@ -407,6 +407,39 @@ Example usage::
     $ python manage.py devilry_resend_failed_messages
 
 
+.. _devilry_delete_message_receivers:
+
+================================
+devilry_delete_message_receivers
+================================
+
+This command will delete all message receivers older than a given number of days ago.
+
+Set it up with a cron job or something similiar to periodically delete old message receivers.
+
+Example usage for deleting message receivers older than 30 days::
+
+    $ cd ~/devilrydeploy/
+    $ python manage.py devilry_delete_message_receivers 30
+
+
+.. _devilry_delete_messages_without_receivers:
+
+=========================================
+devilry_delete_messages_without_receivers
+=========================================
+
+This command will delete all messages without any message receivers. You may want to use this with
+the :ref:`devilry_delete_message_receivers` management command.
+
+Set it up with a cron job or something similiar to periodically delete messages.
+
+Example usages::
+
+    $ cd ~/devilrydeploy/
+    $ python manage.py devilry_delete_messages_without_receivers
+
+
 .. _devilry_anonymize_database:
 
 ==========================

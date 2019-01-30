@@ -37,7 +37,6 @@ class MessageAdmin(admin.ModelAdmin):
     ]
     readonly_fields = [
         'created_datetime',
-        'created_by',
         'context_type',
         'message_type',
         'get_virtual_message_receivers_pretty',
@@ -48,7 +47,8 @@ class MessageAdmin(admin.ModelAdmin):
     exclude = [
         'virtual_message_receivers',
         'metadata',
-        'status_data'
+        'status_data',
+        'created_by'
     ]
     list_filter = [
         'status',

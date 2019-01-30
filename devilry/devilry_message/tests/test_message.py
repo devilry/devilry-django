@@ -5,7 +5,7 @@ from django.core import mail
 
 from model_mommy import mommy
 
-from devilry.devilry_message.models import MessageReceiver
+from devilry.devilry_message.models import MessageReceiver, Message
 from devilry.devilry_message.tests import test_utils
 
 
@@ -176,3 +176,31 @@ class TestMessage(test.TestCase):
                 subject_generator=test_utils.SubjectTextTestGenerator(),
                 template_name='devilry_message/for_test.django.html',
                 template_context={})
+
+    def test_queryset_filter_messages_with_no_message_receivers_sanity(self):
+        message1 = mommy.make('devilry_message.Message', message_type=['email'])
+        queryset = Message.objects.filter_message_with_no_message_receivers()
+        self.assertIn(message1, queryset)
+
+    def test_queryset_filter_messages_with_receiver_not_filterd_sanity(self):
+        message = mommy.make('devilry_message.Message', message_type=['email'])
+        mommy.make('devilry_message.MessageReceiver', message=message)
+        queryset = Message.objects.filter_message_with_no_message_receivers()
+        self.assertEqual(queryset.count(), 0)
+
+    def test_queryset_filter_messages_multiple_none_filterd_sanity(self):
+        message1 = mommy.make('devilry_message.Message', message_type=['email'])
+        message2 = mommy.make('devilry_message.Message', message_type=['email'])
+        mommy.make('devilry_message.MessageReceiver', message=message1)
+        mommy.make('devilry_message.MessageReceiver', message=message2, _quantity=10)
+        queryset = Message.objects.filter_message_with_no_message_receivers()
+        self.assertEqual(queryset.count(), 0)
+
+    def test_queryset_filter_messages_with_and_without_receivers_exist_sanity(self):
+        message_without_receivers = mommy.make('devilry_message.Message', message_type=['email'])
+        message_with_receivers = mommy.make('devilry_message.Message', message_type=['email'])
+        mommy.make('devilry_message.MessageReceiver', message=message_with_receivers, _quantity=10)
+        self.assertEqual(Message.objects.count(), 2)
+        queryset = Message.objects.filter_message_with_no_message_receivers()
+        self.assertEqual(queryset.count(), 1)
+        self.assertIn(message_without_receivers, queryset)

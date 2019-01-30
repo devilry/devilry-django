@@ -20,6 +20,15 @@ from devilry.devilry_email.utils import activate_translation_for_user
 from devilry.utils.devilry_email import send_message
 
 
+class MessageReceiverQuerySet(models.QuerySet):
+    def filter_message_with_no_message_receivers(self):
+        """
+        Filter all :obj:`.Message`s without any :class:`.MessageReceiver`s.
+        """
+        return self.annotate(receiver_count=models.Count('messagereceiver'))\
+            .filter(receiver_count=0)
+
+
 class Message(models.Model):
     """
     The `Message`-class handles preparing and sending of different messages in the Devilry-system.
@@ -32,6 +41,8 @@ class Message(models.Model):
         foreignkey to this class. The reason for this being that we want to save the subject and content
         in the preferred language of the user.
     """
+    objects = MessageReceiverQuerySet.as_manager()
+
     #: When the message was created.
     created_datetime = models.DateTimeField(
         blank=True, null=True, default=timezone.now
@@ -292,6 +303,13 @@ class MessageReceiverQuerySet(models.QuerySet):
         message_receiver.full_clean()
         translation.activate(current_language)
         return message_receiver
+
+    def filter_old_receivers(self, datetime_obj):
+        """
+        Filter all :class:`.MessageReceivers` created before the given
+        `datetime_obj`-argument.
+        """
+        return self.filter(created_datetime__lt=datetime_obj)
 
 
 class MessageReceiver(models.Model):

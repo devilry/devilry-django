@@ -40,12 +40,21 @@ for a period of time. Messages with the status `Error` will be ignored by the :r
 command.
 
 
-
 Configuring the resend limit
 ############################
 
 You can configure the resend limit with `DEVILRY_MESSAGE_RESEND_LIMIT` in ``~/devilrydeploy/devilry_settings.py``.
-For more information, see :ref:`devilry_resend_failed_messages`.
+For more information, see the management command :ref:`devilry_resend_failed_messages`.
+
+
+Deleting old receivers
+######################
+For more information, see the management command :ref:`devilry_delete_messages_receivers`
+
+
+Deleting messages without message receivers
+###########################################
+For more information, see the management command :ref:`devilry_delete_messages_without_receivers`
 
 
 Managing message receivers via Djangoadmin
