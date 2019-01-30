@@ -27,7 +27,7 @@ class Message(models.Model):
     This model contains metadata about a message sent to one or multiple users, what type of message it is, the overall
     status of the message and creates recipients for the email to be sent.
 
-    Notes::
+    Notes:
         The actual subject and message-content is stored on each :class:`.MessageReceiver` with a
         foreignkey to this class. The reason for this being that we want to save the subject and content
         in the preferred language of the user.
@@ -124,17 +124,17 @@ class Message(models.Model):
     #: ArrayField with the types for this message.
     #:
     #: Examples:
-    #: - ``['email']`` - Send as email only
+    #: - ``['email']``: Send as email only.
     message_type = ArrayField(
         models.CharField(max_length=30),
         blank=False, null=False
     )
 
-    #: :class:`.MessageReceiver`s are created for this message
-    #: based on the content of this field.
+    #: Store data needed to create :class:`.MessageReceiver`-objects.
     #:
     #: Each subclass defines how the dataformat of this field should be.
-    #: Override :meth:`prepare_message_receivers` to create message receivers from this field.
+    #: Override :obj:`.Message.prepare_message_receivers` to create message receivers
+    #: from this field.
     virtual_message_receivers = JSONField(
         null=False, blank=True, default=dict)
 
@@ -302,13 +302,17 @@ class MessageReceiver(models.Model):
         - ForeignKey to a user.
         - The status of the sending.
         - How many time the message has been successfully and unsuccessfully sent to the user.
-        - The subject (in the users preferred language).
-        - The content as both html and plaintext (in the users preferred language).
+        - The subject.
+        - The content as both html and plaintext.
         - When the message was successfully sent.
+
+    The subject and message-content is stored in the users preferred language when the first
+    message was created.
+
     """
     objects = MessageReceiverQuerySet.as_manager()
 
-    #: When the receiver was created.
+    #: When the message receiver was created.
     created_datetime = models.DateTimeField(
         blank=True, null=True, default=timezone.now
     )
@@ -316,15 +320,14 @@ class MessageReceiver(models.Model):
     #: Choices for the :obj:`.MessageReceiver.status` field.
     #:
     #: - ``not_sent``: The MessageReceiver has just been created, but not sent yet.
-    #: - ``error``: There is some error with this message. Details about the error(s)
-    #:   is available in :obj:`.status_data`.
-    #: - ``failed``: The message failed, same as error, but the status is set to `failed` if the
-    #: `sending_failed_count` is less than `DEVILRY_MESSAGE_RESEND_LIMIT`.
-    #: - ``sent``: Sent to the backend. We do not know if it was successful or
-    #:   not yet when we have this status (E.g.: We do not know if the message has been received, but
-    #:   we are waiting for an update that tells us if it was).
-    #:   Backends that do not support reporting if messages was sent successfully
-    #:   or not will only use this status, not the ``received`` status.
+    #: - ``error``: An error occurred when trying to send the message. The status is set to `failed` if the
+    #:   :obj:`.sending_failed_count` is greater than the resend limit defined by the
+    #:   `DEVILRY_MESSAGE_RESEND_LIMIT`-setting. Error-details and traceback is stored in :obj:`.status_data`.
+    #: - ``failed``: The message failed, same as `error`, but the status is set to `failed` if the
+    #:   :obj:`.sending_failed_count` is less than or equal to the resend limit defined by the
+    #:   `DEVILRY_MESSAGE_RESEND_LIMIT`-setting. Error-details and traceback is stored in :obj:`.status_data`.
+    #: - ``sent``: The message was sent to a backend (mailserver, SMS-provider etc.) without any errors.
+    #:
     STATUS_CHOICES = choices_with_meta.ChoicesWithMeta(
         choices_with_meta.Choice(value='not_sent',
                                  label=ugettext_lazy('Not sent')),
