@@ -594,9 +594,9 @@ boom@5.x.x:
   dependencies:
     hoek "4.x.x"
 
-bower@^1.8.7:
-  version "1.8.7"
-  resolved "https://registry.yarnpkg.com/bower/-/bower-1.8.7.tgz#b6df6f074304177371ceea606fc5b62d810337b0"
+bower@^1.8.8:
+  version "1.8.8"
+  resolved "https://registry.yarnpkg.com/bower/-/bower-1.8.8.tgz#82544be34a33aeae7efb8bdf9905247b2cffa985"
 
 brace-expansion@^1.0.0:
   version "1.1.6"
