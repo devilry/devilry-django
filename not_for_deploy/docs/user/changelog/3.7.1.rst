@@ -1,0 +1,17 @@
+.. _3.7.1changelog:
+
+############################
+What is new in Devilry 3.7.1
+############################
+
+
+.. note::
+    Patch-release for 3.7.0. Added utility management commands for devilry_message.
+
+Fixes / improvements
+####################
+
+Superusers:
+    - Added management command for deleting message receivers older than a specified number of days.
+    - Added management command for deleting messages without message receivers.
+
