@@ -1,0 +1,22 @@
+.. _3.7.0changelog:
+
+############################
+What is new in Devilry 3.7.0
+############################
+
+
+Fixes / improvements
+####################
+
+- Added list counters for course and student listing views.
+- Fixed group-status filter. This was caused by a filter that had been overlooked when we moved on to
+  data-caching for groups.
+- Tested on Postgres 11.1.
+
+
+New features
+############
+
+- New email framework with error handling. Supports resending of failed messages, saves errors for later debugging and
+  manual mail-resending available to sysadmins.
+- Downloadable student results on semester.
