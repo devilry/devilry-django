@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.core.management.base import BaseCommand
-from devilry.devilry_message.models import MessageReceiver, Message
+from devilry.devilry_message.models import Message
 
 
 class Command(BaseCommand):
