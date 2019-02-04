@@ -30,7 +30,7 @@ devilry_nodeadd
 ::
 
     $ cd ~/devilrydeploy/
-    $ venv/bin/manage.py devilry_nodeadd <node path> <short name>
+    $ venv/bin/python manage.py devilry_nodeadd <node path> <short name>
 
 Creates a new node in the Devilry node hierarchy. To create a root node
 use *None* as <node path>.
@@ -48,7 +48,7 @@ devilry_subjectadd
 ::
 
     $ cd ~/devilrydeploy/
-    $ venv/bin/manage.py devilry_subjectadd <short name> --long-name <long name>
+    $ venv/bin/python manage.py devilry_subjectadd <short name> --long-name <long name>
 
 Creates a new subject within the devilry hierarchy. Short name and long name are required.
 
@@ -62,7 +62,7 @@ Creates a new subject within the devilry hierarchy. Short name and long name are
 Full example + adding the subject to multiple permission groups ::
 
     $ cd ~/devilrydeploy/
-    $ venv/bin/manage.py devilry_subjectadd duck1010 --long-name "Duck1010" --permission-groups "Duck1010 admins" "Department admins"
+    $ venv/bin/python manage.py devilry_subjectadd duck1010 --long-name "Duck1010" --permission-groups "Duck1010 admins" "Department admins"
 
 
 ===================================
@@ -71,7 +71,7 @@ devilry_permissiongroup_add_subject
 ::
 
     $ cd ~/devilrydeploy/
-    $ venv/bin/manage.py devilry_permissiongroup_add_subject <Subject short name> <Permission group name>
+    $ venv/bin/python manage.py devilry_permissiongroup_add_subject <Subject short name> <Permission group name>
 
 Adds a subject to a permission group. Subject short name and permission group name are required.
 
@@ -82,7 +82,7 @@ devilry_subjectadminadd
 ::
 
     $ cd ~/devilrydeploy/
-    $ venv/bin/manage.py devilry_subjectadminadd <subject-short_name> <admin username>
+    $ venv/bin/python manage.py devilry_subjectadminadd <subject-short_name> <admin username>
 
 Add a user as admin on the specified subject.
 
@@ -92,7 +92,7 @@ devilry_subjectadminclear
 ::
 
     $ cd ~/devilrydeploy/
-    $ venv/bin/manage.py devilry_subjectadminclear <subject short name>
+    $ venv/bin/python manage.py devilry_subjectadminclear <subject short name>
 
 Removes all administrators from the specified subject.
 
@@ -102,7 +102,7 @@ devilry_subjectsearch
 ::
 
     $ cd ~/devilrydeploy/
-    $ venv/bin/manage.py devilry_subjectsearch <short name>
+    $ venv/bin/python manage.py devilry_subjectsearch <short name>
 
 Search for a subject by short name. Matches any part of the name.
 
@@ -115,7 +115,7 @@ devilry_periodadd
 ::
 
     $ cd ~/devilrydeploy/
-    $ venv/bin/manage.py devilry_periodadd <subject short name> <period short name>
+    $ venv/bin/python manage.py devilry_periodadd <subject short name> <period short name>
 
 Create a new period on a new subject.
 
@@ -142,7 +142,7 @@ devilry_periodadminadd
 ::
 
     $ cd ~/devilrydeploy/
-    $ venv/bin/manage.py devilry_periodadminadd <subject-short_name> <period-short-name> <admin-username>
+    $ venv/bin/python manage.py devilry_periodadminadd <subject-short_name> <period-short-name> <admin-username>
 
 Add a user as admin on the period.
 
@@ -152,7 +152,7 @@ devilry_periodadminclear
 ::
 
     $ cd ~/devilrydeploy/
-    $ venv/bin/manage.py devilry_periodadminclear <subject short name> <period short name>
+    $ venv/bin/python manage.py devilry_periodadminclear <subject short name> <period short name>
 
 Clear administrators on the the subject.
 
@@ -162,7 +162,7 @@ devilry_periodsearch
 ::
 
     $ cd ~/devilrydeploy/
-    $ venv/bin/manage.py devilry_periodsearch <period short name>
+    $ venv/bin/python manage.py devilry_periodsearch <period short name>
 
 Searches for periods based on the specified short name
 
@@ -175,7 +175,7 @@ devilry_periodsetrelatedexaminers
 ::
 
     $ cd ~/devilrydeploy/
-    $ venv/bin/manage.py devilry_periodsetrelatedexaminers <subject short name> <period short name>
+    $ venv/bin/python manage.py devilry_periodsetrelatedexaminers <subject short name> <period short name>
 
 Set related examiners on a period. Users are read from stdin, as a JSON encoded array of arguments to the RelatedExaminer model.
 See `relatedexaminers.json`_ for an example.
@@ -191,7 +191,7 @@ devilry_periodsetrelatedstudents
 ::
 
     $ cd ~/devilrydeploy/
-    $ venv/bin/manage.py devilry_periodsetrelatedstudents <subject short name> <period short name>
+    $ venv/bin/python manage.py devilry_periodsetrelatedstudents <subject short name> <period short name>
 
 Set related students on a period. Users are read from stdin, as a JSON encoded array of arguments to the RelatedStudent model.
 See `relatedstudents.json`_ for an example.
@@ -207,7 +207,7 @@ devilry_resave_all_users
 ::
 
     $ cd ~/devilrydeploy/
-    $ venv/bin/manage.py devilrly_resave_all_users
+    $ venv/bin/python manage.py devilrly_resave_all_users
 
 Resaves all users. This command is useful if you have any apps that listens for `post_save` signals on User.
 
@@ -217,7 +217,7 @@ devilry_sync_candidates
 ::
 
     $ cd ~/devilrydeploy/
-    $ venv/bin/manage.py devilry_sync_candidates
+    $ venv/bin/python manage.py devilry_sync_candidates
 
 Sync the cached fields in Candidate with the actual data from User.
 
@@ -227,7 +227,7 @@ devilry_useradd
 ::
 
     $ cd ~/devilrydeploy/
-    $ venv/bin/manage.py devilry_useradd <username>
+    $ venv/bin/python manage.py devilry_useradd <username>
 
 Creates a new user.
 
@@ -251,7 +251,7 @@ devilry_useraddbulk
 ::
 
     $ cd ~/devilrydeploy/
-    $ venv/bin/manage.py devilry_useraddbulk
+    $ venv/bin/python manage.py devilry_useraddbulk
 
 Reading usernames from `stdin`
 
@@ -264,7 +264,7 @@ devilry_usermod
 ::
 
     $ cd ~/devilrydeploy/
-    $ venv/bin/manage.py devilry_usermod <username>
+    $ venv/bin/python manage.py devilry_usermod <username>
 
 Modify the credentials of an existing user
 
@@ -286,7 +286,7 @@ devilry_usersearch
 ::
 
     $ cd ~/devilrydeploy/
-    $ venv/bin/manage.py devilry_usersearch <username>
+    $ venv/bin/python manage.py devilry_usersearch <username>
 
 Search for a user by username. Matches any part of the username.
 
@@ -340,13 +340,13 @@ Will NOT delete:
 This example will delete all semesters that ended before Jan 1. 2018 23:59::
 
     $ cd ~/devilrydeploy/
-    $ python manage.py devilry_delete_periods "2018-01-01 23:59"
+    $ venv/bin/python manage.py devilry_delete_periods "2018-01-01 23:59"
 
 
 Same as above, but will also delete subjects where all semesters where deleted::
 
     $ cd ~/devilrydeploy/
-    $ python manage.py devilry_delete_periods "2018-01-01 23:59" --delete-empty-subjects
+    $ venv/bin/python manage.py devilry_delete_periods "2018-01-01 23:59" --delete-empty-subjects
 
 --delete-empty-subjects
     Delete a subject if all semesters within that subject are deleted.
@@ -375,7 +375,7 @@ that you will have to confirm that you want to delete the users.
 This example will delete all users that has not logged in since the Jul 1. 2016 15:00::
 
     $ cd ~/devilrydeploy/
-    $ python manage.py devilry_delete_inactive_users "2016-07-01 15:00"
+    $ venv/bin/python manage.py devilry_delete_inactive_users "2016-07-01 15:00"
 
 The script will delete:
  - Users with last login before the provided datetime, and their personal info(phone, email)
@@ -404,7 +404,7 @@ Set it up with a cron job or something similar to periodically resend failed mes
 Example usage::
 
     $ cd ~/devilrydeploy/
-    $ python manage.py devilry_resend_failed_messages
+    $ venv/bin/python manage.py devilry_resend_failed_messages
 
 
 .. _devilry_delete_message_receivers:
@@ -420,7 +420,7 @@ Set it up with a cron job or something similiar to periodically delete old messa
 Example usage for deleting message receivers older than 30 days::
 
     $ cd ~/devilrydeploy/
-    $ python manage.py devilry_delete_message_receivers 30
+    $ venv/bin/python manage.py devilry_delete_message_receivers 30
 
 
 .. _devilry_delete_messages_without_receivers:
@@ -437,7 +437,7 @@ Set it up with a cron job or something similiar to periodically delete messages.
 Example usages::
 
     $ cd ~/devilrydeploy/
-    $ python manage.py devilry_delete_messages_without_receivers
+    $ venv/bin/python manage.py devilry_delete_messages_without_receivers
 
 
 .. _devilry_anonymize_database:
@@ -502,7 +502,7 @@ Running the command with default mode
 To run the command with default mode::
 
     $ cd ~/devilrydeploy/
-    $ python manage.py devilry_anonymize_database
+    $ venv/bin/python manage.py devilry_anonymize_database
 
 
 Running the command with fast mode
@@ -510,5 +510,5 @@ Running the command with fast mode
 To run the command with fast mode::
 
     $ cd ~/devilrydeploy/
-    $ python manage.py devilry_anonymize_database --fast
+    $ venv/bin/python manage.py devilry_anonymize_database --fast
 
