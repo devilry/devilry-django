@@ -409,7 +409,16 @@ class FeedbackFeedBaseView(create.CreateView):
         super(FeedbackFeedBaseView, self).set_automatic_attributes(obj)
         obj.user = self.request.user
         obj.comment_type = 'groupcomment'
-        obj.feedback_set = self.request.cradmin_role.feedbackset_set.latest('created_datetime')
+        obj.feedback_set = self.request.cradmin_role\
+            .feedbackset_set\
+            .exclude(
+                feedbackset_type__in=[
+                    group_models.FeedbackSet.FEEDBACKSET_TYPE_MERGE_FIRST_ATTEMPT,
+                    group_models.FeedbackSet.FEEDBACKSET_TYPE_MERGE_NEW_ATTEMPT,
+                    group_models.FeedbackSet.FEEDBACKSET_TYPE_MERGE_RE_EDIT
+                ]
+            )\
+            .latest('created_datetime')
 
     def save_object(self, form, commit=False):
         """
