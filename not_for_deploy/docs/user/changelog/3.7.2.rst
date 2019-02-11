@@ -1,0 +1,13 @@
+.. _3.7.2changelog:
+
+############################
+What is new in Devilry 3.7.2
+############################
+
+
+Fixes / improvements
+####################
+
+Examiners, students and admins:
+    - Fix issue where posted comments/feedback where added to the merged feedbackset.
+
