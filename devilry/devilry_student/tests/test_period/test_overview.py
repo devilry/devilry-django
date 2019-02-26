@@ -465,7 +465,7 @@ class TestPeriodOverviewView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                                             parentnode=testperiod)
 
         loops = overview.PeriodOverviewView.paginate_by / 2
-        for number in range(int(loops)):
+        for number in range(int(round(loops))):
             group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
             mommy.make('core.Examiner', assignmentgroup=group1)
             mommy.make('core.Candidate', relatedstudent__user=testuser, assignment_group=group1)
@@ -507,7 +507,7 @@ class TestPeriodOverviewView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    minimum_points=0, maximum_points=1)
 
         loops = overview.PeriodOverviewView.paginate_by / 2
-        for number in range(int(loops)):
+        for number in range(int(round(loops))):
             group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
             mommy.make('core.Candidate', relatedstudent__user=testuser, assignment_group=group1)
             devilry_group_mommy_factories.feedbackset_first_attempt_published(
