@@ -274,6 +274,9 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
         """
         return self.parentnode
 
+    def __str__(self):
+        return self.get_path()
+
 
 class PeriodApplicationKeyValue(AbstractApplicationKeyValue, AbstractIsAdmin):
     """ Key/value pair tied to a specific Period. """
@@ -284,4 +287,4 @@ class PeriodApplicationKeyValue(AbstractApplicationKeyValue, AbstractIsAdmin):
         app_label = 'core'
 
     def __str__(self):
-        return '{0}: {1}'.format(self.period, super(AbstractApplicationKeyValue, self).__str__())
+        return '{0}: {1}'.format(self.period, super(AbstractApplicationKeyValue, self))
