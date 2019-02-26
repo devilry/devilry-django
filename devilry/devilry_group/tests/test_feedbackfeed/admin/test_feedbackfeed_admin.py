@@ -205,7 +205,7 @@ class TestFeedbackfeedAdminDiscussPublicView(TestCase, TestFeedbackfeedAdminMixi
             file_list=[
                 SimpleUploadedFile(name='testfile1.txt', content=b'Test content1', content_type='text/txt'),
                 SimpleUploadedFile(name='testfile2.txt', content=b'Test content2', content_type='text/txt'),
-                SimpleUploadedFile(name='testfile3.txt', content=b b'Test content3', content_type='text/txt')
+                SimpleUploadedFile(name='testfile3.txt', content=b'Test content3', content_type='text/txt')
             ],
             user=testuser
         )
@@ -233,7 +233,7 @@ class TestFeedbackfeedAdminDiscussPublicView(TestCase, TestFeedbackfeedAdminMixi
             file_list=[
                 SimpleUploadedFile(name='testfile1.txt', content=b'Test content1', content_type='text/txt'),
                 SimpleUploadedFile(name='testfile2.txt', content=b'Test content2', content_type='text/txt'),
-                SimpleUploadedFile(name='testfile3.txt', content=b b'Test content3', content_type='text/txt')
+                SimpleUploadedFile(name='testfile3.txt', content=b'Test content3', content_type='text/txt')
             ],
             user=testuser
         )
@@ -453,7 +453,7 @@ class TestFeedbackfeedAdminWithExaminersDiscussView(TestCase, TestFeedbackfeedAd
             file_list=[
                 SimpleUploadedFile(name='testfile1.txt', content=b'Test content1', content_type='text/txt'),
                 SimpleUploadedFile(name='testfile2.txt', content=b'Test content2', content_type='text/txt'),
-                SimpleUploadedFile(name='testfile3.txt', content=b b'Test content3', content_type='text/txt')
+                SimpleUploadedFile(name='testfile3.txt', content=b'Test content3', content_type='text/txt')
             ],
             user=testuser
         )
@@ -481,7 +481,7 @@ class TestFeedbackfeedAdminWithExaminersDiscussView(TestCase, TestFeedbackfeedAd
             file_list=[
                 SimpleUploadedFile(name='testfile1.txt', content=b'Test content1', content_type='text/txt'),
                 SimpleUploadedFile(name='testfile2.txt', content=b'Test content2', content_type='text/txt'),
-                SimpleUploadedFile(name='testfile3.txt', content=b b'Test content3', content_type='text/txt')
+                SimpleUploadedFile(name='testfile3.txt', content=b'Test content3', content_type='text/txt')
             ],
             user=testuser
         )

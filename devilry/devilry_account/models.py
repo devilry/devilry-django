@@ -520,7 +520,7 @@ class User(AbstractBaseUser):
     def get_user_permissions(self, *args, **kwargs):
         return set()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.shortname
 
     def clean(self):
@@ -684,7 +684,7 @@ class UserEmail(AbstractUserIdentity):
             #         user.shortname = self.email
             #         user.save()
 
-    def __unicode__(self):
+    def __str__(self):
         return _('%(email)s - User%(userid)s#%(userhortname)s') % {
             'email': self.email,
             'userid': self.user_id,
@@ -745,7 +745,7 @@ class UserName(AbstractUserIdentity):
             #     user.shortname = self.username
             #     user.save()
 
-    def __unicode__(self):
+    def __str__(self):
         return _('%(username)s - User%(userid)s') % {
             'username': self.username,
             'userid': self.user_id
@@ -771,7 +771,7 @@ class PermissionGroupUser(models.Model):
     #: The user.
     user = models.ForeignKey(User)
 
-    def __unicode__(self):
+    def __str__(self):
         return _('%(user)s in group %(permissiongroup)s') % {
             'user': self.user.shortname,
             'permissiongroup': self.permissiongroup.name,
@@ -940,7 +940,7 @@ class PermissionGroup(models.Model):
             verbose_name=_('Users in this group'),
             blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return '{name} ({grouptype})'.format(
             name=self.name,
             grouptype=self.get_grouptype_display()
@@ -1056,7 +1056,7 @@ class PeriodPermissionGroup(models.Model):
     #: The :class:`devilry.apps.core.Period`.
     period = models.ForeignKey('core.Period')
 
-    def __unicode__(self):
+    def __str__(self):
         if self.permissiongroup.is_custom_manageable:
             return ugettext_lazy('Semester administrators for %(period)s') % {
                 'period': self.period.get_path(),
@@ -1208,7 +1208,7 @@ class SubjectPermissionGroup(models.Model):
     #: The :class:`devilry.apps.core.Subject`.
     subject = models.ForeignKey('core.Subject')
 
-    def __unicode__(self):
+    def __str__(self):
         if self.permissiongroup.is_custom_manageable:
             return ugettext_lazy('Course administrators for %(subject)s') % {
                 'subject': self.subject.short_name,
