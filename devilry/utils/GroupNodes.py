@@ -62,7 +62,7 @@ class GroupNode(object):
         self.node = node
         self.display_group = False
     
-    def __unicode__(self):
+    def __str__(self):
         if hasattr(self.node, 'short_name'):
             return self.node.short_name
         elif hasattr(self.node, 'long_name'):
@@ -74,7 +74,7 @@ class GroupNode(object):
                 return self.node.parentnode.long_name
 
     def get_name(self):
-        return self.__unicode__()
+        return self.__str__()
 
     def add_child(self, child_node):
         """

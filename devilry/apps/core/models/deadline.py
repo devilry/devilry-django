@@ -296,7 +296,7 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         if groupsave_needed:
             group.save(update_delivery_status=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return str(self.deadline)
 
     def __repr__(self):

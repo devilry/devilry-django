@@ -10,5 +10,5 @@ class AbstractApplicationKeyValue(models.Model):
     class Meta:
         abstract = True
 
-    def __unicode__(self):
+    def __str__(self):
         return '{0}.{1}={2}'.format(self.application, self.key, self.value)

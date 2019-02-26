@@ -267,7 +267,7 @@ class Message(models.Model):
     def clean(self):
         self.clean_message_type()
 
-    def __unicode__(self):
+    def __str__(self):
         return 'Message - {} - {}'.format(self.context_type, self.created_datetime)
 
 
@@ -493,5 +493,5 @@ class MessageReceiver(models.Model):
         self.clean_message_content_fields()
         self.message_content_plain = self.message_content_plain.strip()
 
-    def __unicode__(self):
+    def __str__(self):
         return '{}'.format(self.user)

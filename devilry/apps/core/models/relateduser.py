@@ -250,7 +250,7 @@ class RelatedUserBase(models.Model, AbstractIsAdmin):
             raise ValidationError('tags must be a comma-separated list of tags, each tag only containing '
                                   'a-z, 0-9, ``_`` and ``-``.')
 
-    def __unicode__(self):
+    def __str__(self):
         return '{}#{} on {}'.format(self.__class__.__name__,
                                     self.user.shortname,
                                     self.period.get_path())
@@ -468,5 +468,5 @@ class RelatedStudentKeyValue(AbstractApplicationKeyValue, AbstractIsAdmin):
         unique_together = ('relatedstudent', 'application', 'key')
         app_label = 'core'
 
-    def __unicode__(self):
-        return '{0}: {1}'.format(self.relatedstudent, super(RelatedStudentKeyValue, self).__unicode__())
+    def __str__(self):
+        return '{0}: {1}'.format(self.relatedstudent, super(RelatedStudentKeyValue, self).__str__())

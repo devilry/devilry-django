@@ -204,7 +204,7 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
                 _('You are not allowed to give more than {max_points} points on this assignment.').format(
                     max_points=max_points))
 
-    def __unicode__(self):
+    def __str__(self):
         return "StaticFeedback on %s" % self.delivery
 
     def copy(self, newdelivery):
@@ -274,6 +274,6 @@ class StaticFeedbackFileAttachment(models.Model):
     def get_ascii_filename(self):
         return self.filename.encode('ascii', 'ignore')
 
-    def __unicode__(self):
+    def __str__(self):
         return 'StaticFeedbackFileAttachment#{} StaticFeedback#{}'.format(
             self.pk, self.staticfeedback_id)

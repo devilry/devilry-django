@@ -282,7 +282,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
                 raise ValidationError('A Delivery with delivery_type=ALIAS must have an alias_delivery or feedback.')
         super(Delivery, self).clean()
 
-    def __unicode__(self):
+    def __str__(self):
         return ('Delivery(id={id}, number={number}, group={group}, '
                 'time_of_delivery={time_of_delivery})').format(id=self.id,
                                                                 group=self.deadline.assignment_group,

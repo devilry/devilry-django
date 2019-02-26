@@ -425,7 +425,7 @@ class FeedbackSet(models.Model):
         null=False, blank=True, default=''
     )
 
-    def __unicode__(self):
+    def __str__(self):
         return "{} - {} - {} - deadline: {} - points: {}".format(
                 self.group.assignment,
                 self.feedbackset_type,
@@ -797,7 +797,7 @@ class FeedbackSetDeadlineHistory(models.Model):
     #: The new :attr:`~.FeedbackDet.deadline_datetime`.
     deadline_new = models.DateTimeField(null=False, blank=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return 'Changed {}: from {} to {}'.format(self.changed_datetime, self.deadline_old, self.deadline_new)
 
 
@@ -836,7 +836,7 @@ class GroupComment(AbstractGroupComment):
         max_length=255,
         null=False, blank=True, default="")
 
-    def __unicode__(self):
+    def __str__(self):
         return "{} - {} - {}".format(self.feedback_set, self.user_role, self.user)
 
     def clean(self):
@@ -882,7 +882,7 @@ class GroupCommentEditHistory(comment_models.CommentEditHistory):
         db_index=True
     )
 
-    def __unicode__(self):
+    def __str__(self):
         return 'GroupComment: {} - {}'.format(self.group_comment.user_role, self.group_comment.user)
 
 

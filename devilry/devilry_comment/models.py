@@ -76,7 +76,7 @@ class Comment(models.Model):
     #: What type of comment is this. Used for reverse mapping to subclasses.
     comment_type = models.CharField(choices=COMMENT_TYPE_CHOICES, max_length=42)
 
-    def __unicode__(self):
+    def __str__(self):
         return '{}'.format(self.user)
 
     def add_commentfile_from_temporary_file(self, tempfile):
@@ -163,7 +163,7 @@ class CommentEditHistory(models.Model):
         null=False, blank=True, default=''
     )
 
-    def __unicode__(self):
+    def __str__(self):
         return 'Comment: {} - {}'.format(self.comment.user_role, self.comment.user)
 
 
@@ -248,7 +248,7 @@ class CommentFile(models.Model):
         max_length=255,
         null=False, blank=True, default="")
 
-    def __unicode__(self):
+    def __str__(self):
         return '{} - {}'.format(self.comment.user, self.filename)
 
     def copy_into_comment(self, target):

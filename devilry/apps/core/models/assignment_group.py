@@ -1290,7 +1290,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         """
         return self.get_long_displayname()
 
-    def __unicode__(self):
+    def __str__(self):
         return '{} - {}'.format(self.short_displayname, self.parentnode.get_path())
 
     def get_examiners(self, separator=', '):
@@ -1843,5 +1843,5 @@ class AssignmentGroupTag(models.Model):
         ordering = ['tag']
         unique_together = ('assignment_group', 'tag')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.tag

@@ -175,7 +175,7 @@ class PointToGradeMap(models.Model):
                 points_to_grade_dict[points] = pointrange_to_grade.grade
         return points_to_grade_dict
 
-    def __unicode__(self):
+    def __str__(self):
         return 'Point to grade map for {}'.format(self.assignment.get_path())
 
 
@@ -268,5 +268,5 @@ class PointRangeToGrade(models.Model):
         if overlapping_ranges.exists():
             raise ValidationError('One or more PointRangeToGrade overlaps with this range.')
 
-    def __unicode__(self):
+    def __str__(self):
         return '{}-{}={}'.format(self.minimum_points, self.maximum_points, self.grade)

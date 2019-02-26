@@ -38,7 +38,7 @@ class Examiner(models.Model, AbstractIsAdmin):
         """
         return self.relatedexaminer.get_anonymous_name()
 
-    def __unicode__(self):
+    def __str__(self):
         return 'Examiner {} for {}'.format(
             self.relatedexaminer, self.assignmentgroup
         )

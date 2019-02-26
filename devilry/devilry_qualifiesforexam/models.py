@@ -145,7 +145,7 @@ class Status(models.Model):
     def get_qualified_students(self):
         return self.students.filter(qualifies=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return 'Status(period={period}, id={id}, status={status})'.format(
             id=self.id, status=self.period, period=self.period)
 
@@ -169,5 +169,5 @@ class QualifiesForFinalExam(models.Model):
         if self.status.status == 'notready':
             raise ValidationError('Status ``notready`` does not allow marking qualified students.')
 
-    def __unicode__(self):
+    def __str__(self):
         return '{}-{}-{}'.format(self.relatedstudent, self.status, self.qualifies)

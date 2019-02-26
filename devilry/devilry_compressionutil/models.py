@@ -154,7 +154,7 @@ class CompressedArchiveMeta(GenericMeta):
                 'backend_id': ugettext_lazy('backend_id must refer to a valid backend')
             })
 
-    def __unicode__(self):
+    def __str__(self):
         return self.archive_path
 
 

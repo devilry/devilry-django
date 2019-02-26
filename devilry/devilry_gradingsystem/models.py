@@ -49,7 +49,7 @@ class FeedbackDraft(models.Model):
         blank=False, null=False,
         help_text='Time when this feedback was saved. Since FeedbackDraft is immutable, this never changes.')
 
-    def __unicode__(self):
+    def __str__(self):
         return 'FeedbackDraft#{} for Delivery#{} ({} - {})'.format(
             self.id, self.delivery_id, self.saved_by, self.save_timestamp)
 
@@ -158,7 +158,7 @@ class FeedbackDraftFile(models.Model):
             'asciifilename': self.get_ascii_filename()
         })
 
-    def __unicode__(self):
+    def __str__(self):
         return 'FeedbackDraftFile#{} by user#{} on delivery#{}'.format(
             self.pk, self.saved_by_id, self.delivery_id)
 

@@ -283,5 +283,5 @@ class PeriodApplicationKeyValue(AbstractApplicationKeyValue, AbstractIsAdmin):
         unique_together = ('period', 'application', 'key')
         app_label = 'core'
 
-    def __unicode__(self):
-        return '{0}: {1}'.format(self.period, super(AbstractApplicationKeyValue, self).__unicode__())
+    def __str__(self):
+        return '{0}: {1}'.format(self.period, super(AbstractApplicationKeyValue, self).__str__())

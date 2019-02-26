@@ -86,7 +86,7 @@ class FileMeta(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
     def q_is_examiner(cls, user_obj):
         return Q(delivery__deadline__assignment_group__examiners__user=user_obj)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.filename
 
     def get_all_data_as_string(self):

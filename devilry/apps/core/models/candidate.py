@@ -97,7 +97,7 @@ class Candidate(models.Model):
         else:
             return self.relatedstudent.get_anonymous_name()
 
-    def __unicode__(self):
+    def __str__(self):
         return 'Candiate id={id}, student={student}, group={group}'.format(
             id=self.id,
             student=self.relatedstudent,
