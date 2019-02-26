@@ -27,13 +27,13 @@ class TestUploadedDeliveryFile(TestCase):
         )
         delivery, files = UploadedDeliveryFile.objects.convert_to_delivery(deadline, self.testuser)
         self.assertIsNotNone(delivery.id)
-        self.assertEquals(delivery.deadline, deadline)
-        self.assertEquals(delivery.delivered_by, deadline.assignment_group.candidates.all()[0])
-        self.assertEquals(delivery.delivered_by.relatedstudent.user, self.testuser)
-        self.assertEquals(delivery.filemetas.count(), 1)
+        self.assertEqual(delivery.deadline, deadline)
+        self.assertEqual(delivery.delivered_by, deadline.assignment_group.candidates.all()[0])
+        self.assertEqual(delivery.delivered_by.relatedstudent.user, self.testuser)
+        self.assertEqual(delivery.filemetas.count(), 1)
         filemeta = delivery.filemetas.all()[0]
-        self.assertEquals(filemeta.filename, 'testing.txt')
-        self.assertEquals(filemeta.get_all_data_as_string(), 'Hello world')
+        self.assertEqual(filemeta.filename, 'testing.txt')
+        self.assertEqual(filemeta.get_all_data_as_string(), 'Hello world')
 
     def test_convert_multiple_to_delivery(self):
         deadline = PeriodBuilder.quickadd_ducku_duck1010_active()\
@@ -53,11 +53,11 @@ class TestUploadedDeliveryFile(TestCase):
             filecontent=ContentFile('Hello world 2')
         )
         delivery, files = UploadedDeliveryFile.objects.convert_to_delivery(deadline, self.testuser)
-        self.assertEquals(delivery.filemetas.count(), 2)
-        self.assertEquals(
+        self.assertEqual(delivery.filemetas.count(), 2)
+        self.assertEqual(
             set([f.filename for f in delivery.filemetas.all()]),
             set(['testing.txt', 'testing2.txt']))
-        self.assertEquals(
+        self.assertEqual(
             set([f.get_all_data_as_string() for f in delivery.filemetas.all()]),
             set(['Hello world', 'Hello world 2']))
 
@@ -76,14 +76,14 @@ class TestUploadedDeliveryFile(TestCase):
         path = uploadedfile.uploaded_file.file.name
         self.assertTrue(exists(path))
         UploadedDeliveryFile.objects.get_queryset().all().delete_objects_and_files()
-        self.assertEquals(UploadedDeliveryFile.objects.count(), 0)
+        self.assertEqual(UploadedDeliveryFile.objects.count(), 0)
         self.assertFalse(exists(path))
 
 
     def test_prepare_filename(self):
-        self.assertEquals(UploadedDeliveryFile.prepare_filename('test.txt'), 'test.txt')
-        self.assertEquals(255,
+        self.assertEqual(UploadedDeliveryFile.prepare_filename('test.txt'), 'test.txt')
+        self.assertEqual(255,
             len(UploadedDeliveryFile.prepare_filename('x'*300)))
-        self.assertEquals(
+        self.assertEqual(
             UploadedDeliveryFile.prepare_filename('{}yy.txt'.format('x'*251)),
             '{}.txt'.format('x'*251))

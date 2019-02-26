@@ -47,7 +47,7 @@ class TestStatusImporter(ImporterTestCaseMixin, test.TestCase):
         )
         status_importer = StatusImporter(input_root=self.temp_root_dir)
         status_importer.import_models()
-        self.assertEquals(Status.objects.count(), 1)
+        self.assertEqual(Status.objects.count(), 1)
 
     def test_importer_pk(self):
         test_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -59,8 +59,8 @@ class TestStatusImporter(ImporterTestCaseMixin, test.TestCase):
         status_importer = StatusImporter(input_root=self.temp_root_dir)
         status_importer.import_models()
         status = Status.objects.first()
-        self.assertEquals(status.pk, 3)
-        self.assertEquals(status.id, 3)
+        self.assertEqual(status.pk, 3)
+        self.assertEqual(status.id, 3)
 
     def test_importer_status_ready(self):
         test_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -72,7 +72,7 @@ class TestStatusImporter(ImporterTestCaseMixin, test.TestCase):
         status_importer = StatusImporter(input_root=self.temp_root_dir)
         status_importer.import_models()
         status = Status.objects.first()
-        self.assertEquals(status.status, Status.READY)
+        self.assertEqual(status.status, Status.READY)
 
     def test_importer_status_othen_than_ready_is_set_to_notready(self):
         test_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -84,7 +84,7 @@ class TestStatusImporter(ImporterTestCaseMixin, test.TestCase):
         status_importer = StatusImporter(input_root=self.temp_root_dir)
         status_importer.import_models()
         status = Status.objects.first()
-        self.assertEquals(status.status, Status.NOTREADY)
+        self.assertEqual(status.status, Status.NOTREADY)
 
     def test_importer_message(self):
         test_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -96,7 +96,7 @@ class TestStatusImporter(ImporterTestCaseMixin, test.TestCase):
         status_importer = StatusImporter(input_root=self.temp_root_dir)
         status_importer.import_models()
         status = Status.objects.first()
-        self.assertEquals(status.message, "Message")
+        self.assertEqual(status.message, "Message")
 
     def test_importer_status_points_plugin(self):
         test_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -108,7 +108,7 @@ class TestStatusImporter(ImporterTestCaseMixin, test.TestCase):
         status_importer = StatusImporter(input_root=self.temp_root_dir)
         status_importer.import_models()
         status = Status.objects.first()
-        self.assertEquals(status.plugin, PointsPlugin.plugintypeid)
+        self.assertEqual(status.plugin, PointsPlugin.plugintypeid)
 
     def test_importer_status_approved_all_plugin(self):
         test_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -121,7 +121,7 @@ class TestStatusImporter(ImporterTestCaseMixin, test.TestCase):
         status_importer = StatusImporter(input_root=self.temp_root_dir)
         status_importer.import_models()
         status = Status.objects.first()
-        self.assertEquals(status.plugin, SelectAssignmentsPlugin.plugintypeid)
+        self.assertEqual(status.plugin, SelectAssignmentsPlugin.plugintypeid)
 
     def test_importer_status_approved_subset_plugin(self):
         test_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -134,7 +134,7 @@ class TestStatusImporter(ImporterTestCaseMixin, test.TestCase):
         status_importer = StatusImporter(input_root=self.temp_root_dir)
         status_importer.import_models()
         status = Status.objects.first()
-        self.assertEquals(status.plugin, SelectAssignmentsPlugin.plugintypeid)
+        self.assertEqual(status.plugin, SelectAssignmentsPlugin.plugintypeid)
 
     def test_import_status_select_students_plugin(self):
         test_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -147,7 +147,7 @@ class TestStatusImporter(ImporterTestCaseMixin, test.TestCase):
         status_importer = StatusImporter(input_root=self.temp_root_dir)
         status_importer.import_models()
         status = Status.objects.first()
-        self.assertEquals(status.plugin, StudentSelectPlugin.plugintypeid)
+        self.assertEqual(status.plugin, StudentSelectPlugin.plugintypeid)
 
     def test_import_status_select_unknown_plugin(self):
         test_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -160,7 +160,7 @@ class TestStatusImporter(ImporterTestCaseMixin, test.TestCase):
         status_importer = StatusImporter(input_root=self.temp_root_dir)
         status_importer.import_models()
         status = Status.objects.first()
-        self.assertEquals(status.plugin, 'Unknown Devilry V2 qualifiesforexam pluginid: devilry_qualifiesforexam_asd')
+        self.assertEqual(status.plugin, 'Unknown Devilry V2 qualifiesforexam pluginid: devilry_qualifiesforexam_asd')
 
     def test_auto_sequence_numbered_objects_uses_meta_max_id(self):
         max_id = 10
@@ -174,11 +174,11 @@ class TestStatusImporter(ImporterTestCaseMixin, test.TestCase):
         status_importer = StatusImporter(input_root=self.temp_root_dir)
         status_importer.import_models()
         status = Status.objects.first()
-        self.assertEquals(status.pk, 3)
-        self.assertEquals(status.id, 3)
+        self.assertEqual(status.pk, 3)
+        self.assertEqual(status.id, 3)
         status_with_auto_id = mommy.make('devilry_qualifiesforexam.Status', period=test_period, user=test_user)
-        self.assertEquals(status_with_auto_id.pk, max_id+1)
-        self.assertEquals(status_with_auto_id.id, max_id+1)
+        self.assertEqual(status_with_auto_id.pk, max_id+1)
+        self.assertEqual(status_with_auto_id.id, max_id+1)
 
 
 class TestQualifiesForFinalExamImporter(ImporterTestCaseMixin, test.TestCase):
@@ -208,7 +208,7 @@ class TestQualifiesForFinalExamImporter(ImporterTestCaseMixin, test.TestCase):
             data=self._create_status_dict(status=test_status, related_student=test_relatedstudent)
         )
         QualifiesForFinalExamImporter(input_root=self.temp_root_dir).import_models()
-        self.assertEquals(QualifiesForFinalExam.objects.count(), 1)
+        self.assertEqual(QualifiesForFinalExam.objects.count(), 1)
 
     def test_importer_pk(self):
         test_relatedstudent = mommy.make('core.RelatedStudent')
@@ -219,8 +219,8 @@ class TestQualifiesForFinalExamImporter(ImporterTestCaseMixin, test.TestCase):
         )
         QualifiesForFinalExamImporter(input_root=self.temp_root_dir).import_models()
         qualifies = QualifiesForFinalExam.objects.first()
-        self.assertEquals(qualifies.pk, 3)
-        self.assertEquals(qualifies.id, 3)
+        self.assertEqual(qualifies.pk, 3)
+        self.assertEqual(qualifies.id, 3)
 
     def test_importer_status(self):
         test_relatedstudent = mommy.make('core.RelatedStudent')
@@ -231,7 +231,7 @@ class TestQualifiesForFinalExamImporter(ImporterTestCaseMixin, test.TestCase):
         )
         QualifiesForFinalExamImporter(input_root=self.temp_root_dir).import_models()
         qualifies = QualifiesForFinalExam.objects.first()
-        self.assertEquals(qualifies.status, test_status)
+        self.assertEqual(qualifies.status, test_status)
 
     def test_importer_relatedstudent(self):
         test_relatedstudent = mommy.make('core.RelatedStudent')
@@ -242,7 +242,7 @@ class TestQualifiesForFinalExamImporter(ImporterTestCaseMixin, test.TestCase):
         )
         QualifiesForFinalExamImporter(input_root=self.temp_root_dir).import_models()
         qualifies = QualifiesForFinalExam.objects.first()
-        self.assertEquals(qualifies.relatedstudent, test_relatedstudent)
+        self.assertEqual(qualifies.relatedstudent, test_relatedstudent)
 
     def test_importer_qualifies_true(self):
         test_relatedstudent = mommy.make('core.RelatedStudent')
@@ -288,8 +288,8 @@ class TestQualifiesForFinalExamImporter(ImporterTestCaseMixin, test.TestCase):
         )
         QualifiesForFinalExamImporter(input_root=self.temp_root_dir).import_models()
         qualifies = QualifiesForFinalExam.objects.first()
-        self.assertEquals(qualifies.pk, 3)
-        self.assertEquals(qualifies.id, 3)
+        self.assertEqual(qualifies.pk, 3)
+        self.assertEqual(qualifies.id, 3)
         qualifies_with_auto_id = mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam')
-        self.assertEquals(qualifies_with_auto_id.pk, max_id+1)
-        self.assertEquals(qualifies_with_auto_id.id, max_id+1)
+        self.assertEqual(qualifies_with_auto_id.pk, max_id+1)
+        self.assertEqual(qualifies_with_auto_id.id, max_id+1)

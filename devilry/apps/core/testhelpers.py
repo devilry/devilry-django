@@ -6,10 +6,10 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 
-from deliverystore import FileNotFoundError
-from models import Subject, Period, Assignment, AssignmentGroup, \
+from .deliverystore import FileNotFoundError
+from .models import Subject, Period, Assignment, AssignmentGroup, \
     FileMeta, Candidate
-from testhelper import TestHelper
+from .testhelper import TestHelper
 
 
 def create_from_path(path):
@@ -132,7 +132,7 @@ class DeliveryStoreTestMixin(TestHelper):
         w.write('!')
         w.close()
         r = store.read_open(self.filemeta)
-        self.assertEquals(r.read(), 'hello world!')
+        self.assertEqual(r.read(), 'hello world!')
 
     def test_readwrite(self):
         store = self.get_storageobj()
@@ -158,7 +158,7 @@ class DeliveryStoreTestMixin(TestHelper):
         target_filemeta.filename = 'test2.txt'
         target_filemeta.save()
         store.copy(self.filemeta, target_filemeta)
-        self.assertEquals(store.read_open(target_filemeta).read(), 'hello')
+        self.assertEqual(store.read_open(target_filemeta).read(), 'hello')
 
 
 class SeleniumTestBase(unittest.TestCase):
@@ -182,7 +182,7 @@ class SeleniumTestBase(unittest.TestCase):
     def assert403(self, f, *args, **kw):
         try:
             f(*args, **kw)
-        except Exception, e:
+        except Exception as e:
             self.assertTrue("403" in str(e))
             self.assertTrue("FORBIDDEN" in str(e))
         else:

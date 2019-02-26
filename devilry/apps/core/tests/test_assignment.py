@@ -33,8 +33,8 @@ class TestAssignment(TestCase):
     def test_points_to_grade_passed_failed(self):
         assignment1 = PeriodBuilder.quickadd_ducku_duck1010_active()\
             .add_assignment('assignment1', points_to_grade_mapper='passed-failed').assignment
-        self.assertEquals(assignment1.points_to_grade(0), 'failed')
-        self.assertEquals(assignment1.points_to_grade(1), 'passed')
+        self.assertEqual(assignment1.points_to_grade(0), 'failed')
+        self.assertEqual(assignment1.points_to_grade(1), 'passed')
 
     def test_points_to_grade_points(self):
         assignment1 = PeriodBuilder.quickadd_ducku_duck1010_active()\
@@ -42,9 +42,9 @@ class TestAssignment(TestCase):
                 'assignment1',
                 points_to_grade_mapper='raw-points',
                 max_points=10).assignment
-        self.assertEquals(assignment1.points_to_grade(0), '0/10')
-        self.assertEquals(assignment1.points_to_grade(1), '1/10')
-        self.assertEquals(assignment1.points_to_grade(10), '10/10')
+        self.assertEqual(assignment1.points_to_grade(0), '0/10')
+        self.assertEqual(assignment1.points_to_grade(1), '1/10')
+        self.assertEqual(assignment1.points_to_grade(10), '10/10')
 
     def test_points_to_grade_custom_table(self):
         testassignment = mommy.make(
@@ -60,7 +60,7 @@ class TestAssignment(TestCase):
                    maximum_points=10,
                    grade='Ok')
         prefetched_assignment = Assignment.objects.prefetch_point_to_grade_map().get(id=testassignment.id)
-        self.assertEquals(prefetched_assignment.points_to_grade(5), 'Ok')
+        self.assertEqual(prefetched_assignment.points_to_grade(5), 'Ok')
 
     def test_has_valid_grading_setup_valid_by_default(self):
         assignment1 = PeriodBuilder.quickadd_ducku_duck1010_active()\
@@ -88,7 +88,7 @@ class TestAssignment(TestCase):
         assignmentbuilder.assignment.set_max_points(20)
         assignmentbuilder.assignment.save()
         assignmentbuilder.reload_from_db()
-        self.assertEquals(assignmentbuilder.assignment.max_points, 20)
+        self.assertEqual(assignmentbuilder.assignment.max_points, 20)
         self.assertTrue(assignmentbuilder.assignment.pointtogrademap.invalid)
 
     def test_feedback_workflow_allows_shared_feedback_drafts_default(self):
@@ -946,8 +946,8 @@ class TestAssignmentQuerySet(TestCase):
         duck1010builder.add_6month_nextyear_period().add_assignment('week1')
 
         qry = Assignment.objects.filter_is_active()
-        self.assertEquals(qry.count(), 1)
-        self.assertEquals(qry[0], activeassignmentbuilder.assignment)
+        self.assertEqual(qry.count(), 1)
+        self.assertEqual(qry[0], activeassignmentbuilder.assignment)
 
     def test_filter_user_is_examiner(self):
         user = mommy.make(settings.AUTH_USER_MODEL)
@@ -956,7 +956,7 @@ class TestAssignmentQuerySet(TestCase):
         relatedexaminer = mommy.make('core.RelatedExaminer', user=user)
         mommy.make('core.Examiner', relatedexaminer=relatedexaminer, assignmentgroup=assignmentgroup)
         queryset = Assignment.objects.filter_user_is_examiner(user)
-        self.assertEquals(queryset.count(), 1)
+        self.assertEqual(queryset.count(), 1)
         returned_assignment = queryset.first()
         self.assertTrue(assignment.id, returned_assignment.id)
 
@@ -968,7 +968,7 @@ class TestAssignmentQuerySet(TestCase):
         mommy.make('core.Examiner', relatedexaminer=relatedexaminer,
                    assignmentgroup=assignmentgroup)
         queryset = Assignment.objects.filter_user_is_examiner(user)
-        self.assertEquals(queryset.count(), 0)
+        self.assertEqual(queryset.count(), 0)
 
     def test_filter_user_is_candidate(self):
         user = mommy.make(settings.AUTH_USER_MODEL)
@@ -978,7 +978,7 @@ class TestAssignmentQuerySet(TestCase):
                 relatedstudent=mommy.make('core.RelatedStudent', user=user),
                 assignment_group=mommy.make('core.AssignmentGroup', parentnode=assignment))
         queryset = Assignment.objects.filter_student_has_access(user)
-        self.assertEquals(queryset.count(), 1)
+        self.assertEqual(queryset.count(), 1)
         returned_assignment = queryset.first()
         self.assertTrue(assignment.id, returned_assignment.id)
 
@@ -994,7 +994,7 @@ class TestAssignmentQuerySet(TestCase):
                         'core.AssignmentGroup',
                         parentnode=assignment))
         queryset = Assignment.objects.filter_student_has_access(user_not_set_as_candidate)
-        self.assertEquals(queryset.count(), 0)
+        self.assertEqual(queryset.count(), 0)
 
 
 class TestAssignmentQuerySetFilterExaminerHasAccess(TestCase):

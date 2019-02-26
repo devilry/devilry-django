@@ -147,8 +147,8 @@ class TestFeedbackSetBatchTask(TestCompressed):
 
             archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testfeedbackset.id)
             zipfileobject = ZipFile(archive_meta.archive_path)
-            self.assertEquals(zipfileobject.read('after_deadline_not_part_of_delivery/testfile.txt'),
-                              'testcontent')
+            self.assertEqual(zipfileobject.read('after_deadline_not_part_of_delivery/testfile.txt'),
+                              b'testcontent')
 
     def test_batchframework_examiner_files_not_uploaded(self):
         # Tests that the file is added under 'uploaded_by_examiner'.
@@ -184,5 +184,5 @@ class TestFeedbackSetBatchTask(TestCompressed):
 
             archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testfeedbackset.id)
             zipfileobject = ZipFile(archive_meta.archive_path)
-            self.assertEquals(1, len(zipfileobject.namelist()))
-            self.assertEquals(zipfileobject.read('testfile_student.txt'), 'student testcontent')
+            self.assertEqual(1, len(zipfileobject.namelist()))
+            self.assertEqual(zipfileobject.read('testfile_student.txt'), b'student testcontent')

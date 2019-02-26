@@ -13,7 +13,7 @@ class RestClient(Client):
             return None
         try:
             return json.loads(content)
-        except ValueError, e:
+        except ValueError as e:
             raise ValueError('{0}: {1}'.format(e, content))
 
     def rest_post(self, url, data):

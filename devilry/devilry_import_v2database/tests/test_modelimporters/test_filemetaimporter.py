@@ -40,7 +40,7 @@ class TestFileMetaImporter(ImporterTestCaseMixin, test.TestCase):
                 data=self._create_filemeta_dict(delivery_comment, 'test.py')
             )
             FileMetaImporter(input_root=self.temp_root_dir).import_models()
-            self.assertEquals(CommentFile.objects.count(), 1)
+            self.assertEqual(CommentFile.objects.count(), 1)
 
     def test_importer_delivery_comment(self):
         with self.settings(DEVILRY_V2_DELIVERY_FILE_ROOT=self.v2_delivery_root_temp_dir):
@@ -52,7 +52,7 @@ class TestFileMetaImporter(ImporterTestCaseMixin, test.TestCase):
             FileMetaImporter(input_root=self.temp_root_dir).import_models()
             comment_file = CommentFile.objects.first()
             group_comment = GroupComment.objects.get(id=comment_file.comment.id)
-            self.assertEquals(group_comment, delivery_comment)
+            self.assertEqual(group_comment, delivery_comment)
 
     def test_importer_filename(self):
         with self.settings(DEVILRY_V2_DELIVERY_FILE_ROOT=self.v2_delivery_root_temp_dir):
@@ -63,7 +63,7 @@ class TestFileMetaImporter(ImporterTestCaseMixin, test.TestCase):
             )
             FileMetaImporter(input_root=self.temp_root_dir).import_models()
             comment_file = CommentFile.objects.first()
-            self.assertEquals(comment_file.filename, 'test.py')
+            self.assertEqual(comment_file.filename, 'test.py')
 
     def test_importer_mimetype(self):
         with self.settings(DEVILRY_V2_DELIVERY_FILE_ROOT=self.v2_delivery_root_temp_dir):
@@ -74,4 +74,4 @@ class TestFileMetaImporter(ImporterTestCaseMixin, test.TestCase):
             )
             FileMetaImporter(input_root=self.temp_root_dir).import_models()
             comment_file = CommentFile.objects.first()
-            self.assertEquals(comment_file.mimetype, 'text/x-python')
+            self.assertEqual(comment_file.mimetype, 'text/x-python')

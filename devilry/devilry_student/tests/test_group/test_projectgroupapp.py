@@ -84,7 +84,7 @@ class TestProjectGroupOverviewView(TestCase, cradmin_testhelpers.TestCaseMixin):
         group = mommy.make('core.AssignmentGroup')
         candidate = core_mommy.candidate(group=group)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group, requestuser=candidate.relatedstudent.user)
-        self.assertEquals(1, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
+        self.assertEqual(1, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
         self.assertEqual(
             mock.call(appname='feedbackfeed', args=(), kwargs={}, viewname='INDEX'),
             mockresponse.request.cradmin_instance.reverse_url.call_args_list[0]
@@ -513,7 +513,7 @@ class TestGroupInviteRespondView(TestCase, cradmin_testhelpers.TestCaseMixin):
                 'invite_id': invite.id
             }
         )
-        self.assertEquals(1, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
+        self.assertEqual(1, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
         self.assertEqual(
             mock.call(appname='projectgroup', args=(), kwargs={}, viewname='INDEX'),
             mockresponse.request.cradmin_instance.reverse_url.call_args_list[0]
@@ -910,7 +910,7 @@ class TestGroupInviteDeleteView(TestCase, cradmin_testhelpers.TestCaseMixin):
                 'invite_id': invite.id
             }
         )
-        self.assertEquals(2, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
+        self.assertEqual(2, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
         self.assertEqual(
             mock.call(appname='projectgroup', args=(), kwargs={}, viewname='INDEX'),
             mockresponse.request.cradmin_instance.reverse_url.call_args_list[0]

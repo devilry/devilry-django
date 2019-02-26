@@ -5,9 +5,9 @@ from django.db import models
 from django.db.models import Q
 from django.db.models.signals import pre_delete
 
-from abstract_is_admin import AbstractIsAdmin
-from abstract_is_examiner import AbstractIsExaminer
-from abstract_is_candidate import AbstractIsCandidate
+from .abstract_is_admin import AbstractIsAdmin
+from .abstract_is_examiner import AbstractIsExaminer
+from .abstract_is_candidate import AbstractIsCandidate
 from ..deliverystore import load_deliverystore_backend
 
 log = logging.getLogger(__name__)

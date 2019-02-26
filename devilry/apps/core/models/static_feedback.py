@@ -8,10 +8,10 @@ from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 
-from abstract_is_admin import AbstractIsAdmin
-from abstract_is_candidate import AbstractIsCandidate
-from abstract_is_examiner import AbstractIsExaminer
-from delivery import Delivery
+from .abstract_is_admin import AbstractIsAdmin
+from .abstract_is_candidate import AbstractIsCandidate
+from .abstract_is_examiner import AbstractIsExaminer
+from .delivery import Delivery
 from devilry.devilry_account.models import User
 
 
@@ -234,7 +234,7 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
 
 def staticfeedback_fileattachment_upload_to(instance, filename):
     extension = os.path.splitext(filename)[1]
-    return u'devilry_core/staticfeedbackfileattachment/{staticfeedback_id}/{uuid}{extension}'.format(
+    return 'devilry_core/staticfeedbackfileattachment/{staticfeedback_id}/{uuid}{extension}'.format(
         staticfeedback_id=instance.staticfeedback_id,
         uuid=str(uuid.uuid1()),
         extension=extension)
@@ -275,5 +275,5 @@ class StaticFeedbackFileAttachment(models.Model):
         return self.filename.encode('ascii', 'ignore')
 
     def __unicode__(self):
-        return u'StaticFeedbackFileAttachment#{} StaticFeedback#{}'.format(
+        return 'StaticFeedbackFileAttachment#{} StaticFeedback#{}'.format(
             self.pk, self.staticfeedback_id)

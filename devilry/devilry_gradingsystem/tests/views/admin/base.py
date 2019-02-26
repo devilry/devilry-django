@@ -30,7 +30,7 @@ class AdminViewTestMixin(object):
     def test_get_not_admin_404(self):
         nobody = UserBuilder('nobody').user
         response = self.get_as(nobody)
-        self.assertEquals(response.status_code, 404)
+        self.assertEqual(response.status_code, 404)
 
 
 class MockPointsPluginApi(GradingSystemPluginInterface):

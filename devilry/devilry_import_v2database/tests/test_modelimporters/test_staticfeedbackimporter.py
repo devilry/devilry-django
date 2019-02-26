@@ -36,21 +36,21 @@ class TestStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
                 'files': file_info_dict or {},
                 'deadline_id': feedback_set.id,
                 'save_timestamp': '2017-05-15T11:04:46.817',
-                'rendered_view': u'<p>Quo tempore facilis eos suscipit eum doloremque libero'
-                                  u' veniam nisi?</p>\n<p>Magnam mollitia alias consequatur nisi'
-                                  u' nam error dolor laboriosam aperiam? Nihil eligendi voluptatem,'
-                                  u' eveniet iure officiis amet laborum debitis nisi in, '
-                                  u'molestias similique vero quos beatae obcaecati neque laudantium '
-                                  u'suscipit rerum repudiandae, facilis doloribus autem molestias '
-                                  u'asperiores perferendis est delectus alias porro laboriosam culpa, '
-                                  u'iusto ut aliquid et? Id iusto dolor consequatur necessitatibus explicabo '
-                                  u'repellendus, suscipit nisi non.</p>\n<p>Quas natus id nulla pariatur'
-                                  u' similique ducimus mollitia ea tenetur veniam fugiat, rerum temporibus '
-                                  u'tempore eaque nemo at, nihil dolores ad ducimus delectus quasi nesciunt '
-                                  u'illo, aspernatur ullam officia aperiam officiis harum repellat pariatur '
-                                  u'quaerat deserunt sint. Debitis nam deserunt autem voluptas? Debitis libero'
-                                  u' beatae deserunt et ullam expedita aliquid inventore autem nam veniam, '
-                                  u'dolore rem ea voluptatibus placeat explicabo.</p>'
+                'rendered_view': '<p>Quo tempore facilis eos suscipit eum doloremque libero'
+                                  ' veniam nisi?</p>\n<p>Magnam mollitia alias consequatur nisi'
+                                  ' nam error dolor laboriosam aperiam? Nihil eligendi voluptatem,'
+                                  ' eveniet iure officiis amet laborum debitis nisi in, '
+                                  'molestias similique vero quos beatae obcaecati neque laudantium '
+                                  'suscipit rerum repudiandae, facilis doloribus autem molestias '
+                                  'asperiores perferendis est delectus alias porro laboriosam culpa, '
+                                  'iusto ut aliquid et? Id iusto dolor consequatur necessitatibus explicabo '
+                                  'repellendus, suscipit nisi non.</p>\n<p>Quas natus id nulla pariatur'
+                                  ' similique ducimus mollitia ea tenetur veniam fugiat, rerum temporibus '
+                                  'tempore eaque nemo at, nihil dolores ad ducimus delectus quasi nesciunt '
+                                  'illo, aspernatur ullam officia aperiam officiis harum repellat pariatur '
+                                  'quaerat deserunt sint. Debitis nam deserunt autem voluptas? Debitis libero'
+                                  ' beatae deserunt et ullam expedita aliquid inventore autem nam veniam, '
+                                  'dolore rem ea voluptatibus placeat explicabo.</p>'
             }
         }
 
@@ -69,8 +69,8 @@ class TestStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
                 examiner_user_id=test_examiner_user.id)
         )
         StaticFeedbackImporter(input_root=self.temp_root_dir).import_models()
-        self.assertEquals(FeedbackSet.objects.count(), 1)
-        self.assertEquals(GroupComment.objects.count(), 1)
+        self.assertEqual(FeedbackSet.objects.count(), 1)
+        self.assertEqual(GroupComment.objects.count(), 1)
 
     def test_importer_feedback_set(self):
         test_examiner_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -88,7 +88,7 @@ class TestStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
         )
         StaticFeedbackImporter(input_root=self.temp_root_dir).import_models()
         comment = GroupComment.objects.first()
-        self.assertEquals(comment.feedback_set, test_feedbackset)
+        self.assertEqual(comment.feedback_set, test_feedbackset)
 
     def test_importer_user(self):
         test_examiner_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -106,7 +106,7 @@ class TestStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
         )
         StaticFeedbackImporter(input_root=self.temp_root_dir).import_models()
         comment = GroupComment.objects.first()
-        self.assertEquals(comment.user, test_examiner_user)
+        self.assertEqual(comment.user, test_examiner_user)
 
     def test_importer_user_role(self):
         test_examiner_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -124,7 +124,7 @@ class TestStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
         )
         StaticFeedbackImporter(input_root=self.temp_root_dir).import_models()
         comment = GroupComment.objects.first()
-        self.assertEquals(comment.user_role, GroupComment.USER_ROLE_EXAMINER)
+        self.assertEqual(comment.user_role, GroupComment.USER_ROLE_EXAMINER)
 
     def test_importer_text(self):
         test_examiner_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -143,7 +143,7 @@ class TestStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
         )
         StaticFeedbackImporter(input_root=self.temp_root_dir).import_models()
         comment = GroupComment.objects.first()
-        self.assertEquals(comment.text, staticfeedback_data_dict['fields']['rendered_view'])
+        self.assertEqual(comment.text, staticfeedback_data_dict['fields']['rendered_view'])
 
     def test_importer_comment_type(self):
         test_examiner_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -161,7 +161,7 @@ class TestStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
         )
         StaticFeedbackImporter(input_root=self.temp_root_dir).import_models()
         comment = GroupComment.objects.first()
-        self.assertEquals(comment.comment_type, GroupComment.COMMENT_TYPE_GROUPCOMMENT)
+        self.assertEqual(comment.comment_type, GroupComment.COMMENT_TYPE_GROUPCOMMENT)
 
     def test_importer_comment_is_part_of_grading(self):
         test_examiner_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -199,7 +199,7 @@ class TestStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
         )
         StaticFeedbackImporter(input_root=self.temp_root_dir).import_models()
         comment = GroupComment.objects.first()
-        self.assertEquals(
+        self.assertEqual(
             comment.published_datetime,
             datetimeutils.from_isoformat(staticfeedback_data_dict['fields']['save_timestamp'])
         )
@@ -222,7 +222,7 @@ class TestStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
         )
         StaticFeedbackImporter(input_root=self.temp_root_dir).import_models()
         feedback_set = GroupComment.objects.first().feedback_set
-        self.assertEquals(
+        self.assertEqual(
             feedback_set.grading_published_datetime,
             datetimeutils.from_isoformat(staticfeedback_data_dict['fields']['save_timestamp']))
 
@@ -244,7 +244,7 @@ class TestStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
         )
         StaticFeedbackImporter(input_root=self.temp_root_dir).import_models()
         feedback_set = GroupComment.objects.first().feedback_set
-        self.assertEquals(feedback_set.grading_points, staticfeedback_data_dict['fields']['points'])
+        self.assertEqual(feedback_set.grading_points, staticfeedback_data_dict['fields']['points'])
 
     def test_importer_feedback_set_grading_published_by(self):
         test_examiner_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -264,7 +264,7 @@ class TestStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
         )
         StaticFeedbackImporter(input_root=self.temp_root_dir).import_models()
         feedback_set = GroupComment.objects.first().feedback_set
-        self.assertEquals(feedback_set.grading_published_by, test_examiner_user)
+        self.assertEqual(feedback_set.grading_published_by, test_examiner_user)
 
     def test_importer_comment_file_attributes(self):
         with self.settings(DEVILRY_V2_MEDIA_ROOT=self.v2_media_root_temp_dir):
@@ -289,10 +289,10 @@ class TestStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
                     })
             )
             StaticFeedbackImporter(input_root=self.temp_root_dir).import_models()
-            self.assertEquals(CommentFile.objects.count(), 1)
+            self.assertEqual(CommentFile.objects.count(), 1)
             comment_file = CommentFile.objects.first()
-            self.assertEquals(comment_file.filename, 'test.py')
-            self.assertEquals(comment_file.mimetype, 'text/x-python')
+            self.assertEqual(comment_file.filename, 'test.py')
+            self.assertEqual(comment_file.mimetype, 'text/x-python')
 
 
 class TestDeliveryAndStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
@@ -347,21 +347,21 @@ class TestDeliveryAndStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.
                 'files': {},
                 'deadline_id': feedback_set.id,
                 'save_timestamp': '2017-05-15T11:04:46.817',
-                'rendered_view': u'<p>Quo tempore facilis eos suscipit eum doloremque libero'
-                                  u' veniam nisi?</p>\n<p>Magnam mollitia alias consequatur nisi'
-                                  u' nam error dolor laboriosam aperiam? Nihil eligendi voluptatem,'
-                                  u' eveniet iure officiis amet laborum debitis nisi in, '
-                                  u'molestias similique vero quos beatae obcaecati neque laudantium '
-                                  u'suscipit rerum repudiandae, facilis doloribus autem molestias '
-                                  u'asperiores perferendis est delectus alias porro laboriosam culpa, '
-                                  u'iusto ut aliquid et? Id iusto dolor consequatur necessitatibus explicabo '
-                                  u'repellendus, suscipit nisi non.</p>\n<p>Quas natus id nulla pariatur'
-                                  u' similique ducimus mollitia ea tenetur veniam fugiat, rerum temporibus '
-                                  u'tempore eaque nemo at, nihil dolores ad ducimus delectus quasi nesciunt '
-                                  u'illo, aspernatur ullam officia aperiam officiis harum repellat pariatur '
-                                  u'quaerat deserunt sint. Debitis nam deserunt autem voluptas? Debitis libero'
-                                  u' beatae deserunt et ullam expedita aliquid inventore autem nam veniam, '
-                                  u'dolore rem ea voluptatibus placeat explicabo.</p>'
+                'rendered_view': '<p>Quo tempore facilis eos suscipit eum doloremque libero'
+                                  ' veniam nisi?</p>\n<p>Magnam mollitia alias consequatur nisi'
+                                  ' nam error dolor laboriosam aperiam? Nihil eligendi voluptatem,'
+                                  ' eveniet iure officiis amet laborum debitis nisi in, '
+                                  'molestias similique vero quos beatae obcaecati neque laudantium '
+                                  'suscipit rerum repudiandae, facilis doloribus autem molestias '
+                                  'asperiores perferendis est delectus alias porro laboriosam culpa, '
+                                  'iusto ut aliquid et? Id iusto dolor consequatur necessitatibus explicabo '
+                                  'repellendus, suscipit nisi non.</p>\n<p>Quas natus id nulla pariatur'
+                                  ' similique ducimus mollitia ea tenetur veniam fugiat, rerum temporibus '
+                                  'tempore eaque nemo at, nihil dolores ad ducimus delectus quasi nesciunt '
+                                  'illo, aspernatur ullam officia aperiam officiis harum repellat pariatur '
+                                  'quaerat deserunt sint. Debitis nam deserunt autem voluptas? Debitis libero'
+                                  ' beatae deserunt et ullam expedita aliquid inventore autem nam veniam, '
+                                  'dolore rem ea voluptatibus placeat explicabo.</p>'
             }
         }
 
@@ -394,7 +394,7 @@ class TestDeliveryAndStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.
             data=staticfeedback_data_dict
         )
         StaticFeedbackImporter(input_root=self.temp_root_dir).import_models()
-        self.assertEquals(GroupComment.objects.count(), 2)
+        self.assertEqual(GroupComment.objects.count(), 2)
 
     def test_importer_feedback_comments_id_starts_at_max_id(self):
         test_student_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -425,10 +425,10 @@ class TestDeliveryAndStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.
             )
         )
         StaticFeedbackImporter(input_root=self.temp_root_dir).import_models()
-        self.assertEquals(GroupComment.objects.count(), 2)
+        self.assertEqual(GroupComment.objects.count(), 2)
         delivery_comment = GroupComment.objects.filter(user_role=GroupComment.USER_ROLE_STUDENT).first()
         feedback_comment = GroupComment.objects.filter(user_role=GroupComment.USER_ROLE_EXAMINER).first()
-        self.assertEquals(delivery_comment.pk, 3)
-        self.assertEquals(delivery_comment.id, 3)
-        self.assertEquals(feedback_comment.pk, self._create_model_meta_for_delivery()['max_id']+1)
-        self.assertEquals(feedback_comment.id, self._create_model_meta_for_delivery()['max_id']+1)
+        self.assertEqual(delivery_comment.pk, 3)
+        self.assertEqual(delivery_comment.id, 3)
+        self.assertEqual(feedback_comment.pk, self._create_model_meta_for_delivery()['max_id']+1)
+        self.assertEqual(feedback_comment.id, self._create_model_meta_for_delivery()['max_id']+1)

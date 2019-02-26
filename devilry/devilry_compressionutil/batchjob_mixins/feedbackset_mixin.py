@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 import os
 
@@ -12,7 +12,7 @@ class FeedbackSetBatchMixin(object):
     :class:`devilry.devilry_compressionutil.abstract_batch_action.AbstractBaseBatchAction`.
     """
     def __build_zip_archive_from_comment_file_tree(self, zipfile_backend, sub_path, comment_file_tree):
-        for filename, value in comment_file_tree.iteritems():
+        for filename, value in comment_file_tree.items():
             # Add files before deadline
             if value['before_deadline']['last']:
                 comment_file = value['before_deadline']['last']

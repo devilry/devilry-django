@@ -3,9 +3,9 @@ from datetime import datetime, timedelta
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 
-from models import (Subject, Period, Assignment, AssignmentGroup,
+from .models import (Subject, Period, Assignment, AssignmentGroup,
                     Candidate, Deadline, Delivery, StaticFeedback, FileMeta)
-from deliverystore import MemoryDeliveryStore
+from .deliverystore import MemoryDeliveryStore
 from devilry.apps.core.models import deliverytypes
 
 
@@ -44,7 +44,7 @@ class TestHelper(object):
         :return: The object that was re-loaded from the database.
         """
         freshed_obj = type(obj).objects.get(pk=obj.pk)
-        for key in vars(self).keys():
+        for key in list(vars(self).keys()):
             if vars(self)[key] == obj:
                 vars(self)[key] = freshed_obj
         return freshed_obj
@@ -125,7 +125,7 @@ class TestHelper(object):
         delivery.save()
 
         # add files if there are any
-        for filename in files.keys():
+        for filename in list(files.keys()):
             delivery.add_file(filename, files[filename])
 
         if time_of_delivery is not None:
@@ -146,7 +146,7 @@ class TestHelper(object):
                   group.parentnode.short_name + '_' +  # assignment_
                   group.name + '_')
         varname = prefix + 'deliveries'
-        if varname in vars(self).keys():
+        if varname in list(vars(self).keys()):
             vars(self)[varname].append(delivery)
         else:
             vars(self)[varname] = [delivery]
@@ -233,7 +233,7 @@ class TestHelper(object):
                    delivery.deadline.assignment_group.parentnode.short_name + '_' +   # assignment_
                    delivery.deadline.assignment_group.name + '_feedbacks')
 
-        if varname in vars(self).keys():
+        if varname in list(vars(self).keys()):
             vars(self)[varname].append(feedback)
         else:
             vars(self)[varname] = [feedback]
@@ -568,7 +568,7 @@ class TestHelper(object):
         # the same as the most recently created deadline, stored in
         # prefix+deadline_name
         vardict = prefix + 'deadlines'
-        if vardict in vars(self).keys():
+        if vardict in list(vars(self).keys()):
             vars(self)[vardict].append(deadline)
         else:
             vars(self)[vardict] = [deadline]
@@ -581,7 +581,7 @@ class TestHelper(object):
 
         # check if the default deadline, deadline0, variable exists
         default_deadline_var = prefix + 'deadline0'
-        if default_deadline_var not in vars(self).keys():
+        if default_deadline_var not in list(vars(self).keys()):
             vars(self)[default_deadline_var] = parentnode.deadlines.order_by('deadline')[0]
 
         return deadline
@@ -778,7 +778,7 @@ class TestHelper(object):
         the object, and call ``obj.save()``.
         """
         obj = self.get_object_from_path(path)
-        for key, value in attributes.iteritems():
+        for key, value in attributes.items():
             setattr(obj, key, value)
         obj.save()
 

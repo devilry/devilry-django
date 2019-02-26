@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 # 3rd party imports
 from model_mommy import mommy
@@ -29,5 +29,5 @@ class TestPluginListBuilderList(test.TestCase):
                 pluginregistry=testregistry,
                 roleid=testperiod.id)
 
-        self.assertEquals(plugintypeclass().get_plugintypeid(),
+        self.assertEqual(plugintypeclass().get_plugintypeid(),
                           listbuilder_list.renderable_list[0].inneritem.value.get_plugintypeid())

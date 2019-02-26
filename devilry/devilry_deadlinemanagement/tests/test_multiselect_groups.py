@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 import mock
 from django import http
@@ -183,9 +183,9 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
                 'handle_deadline': self.handle_deadline
             }
         )
-        self.assertIn('unanonymizedfullname', mockresponse.response.content)
-        self.assertIn('A un-anonymized fullname', mockresponse.response.content)
-        self.assertNotIn('MyAnonymousID', mockresponse.response.content)
+        self.assertContains(mockresponse.response, 'unanonymizedfullname')
+        self.assertContains(mockresponse.response, 'A un-anonymized fullname')
+        self.assertNotContains(mockresponse.response, 'MyAnonymousID')
 
     def test_anonymizationmode_semi_anonymous_candidates(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -216,9 +216,9 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
                 'handle_deadline': self.handle_deadline
             }
         )
-        self.assertNotIn('unanonymizedfullname', mockresponse.response.content)
-        self.assertNotIn('A un-anonymized fullname', mockresponse.response.content)
-        self.assertIn('MyAnonymousID', mockresponse.response.content)
+        self.assertNotContains(mockresponse.response, 'unanonymizedfullname')
+        self.assertNotContains(mockresponse.response, 'A un-anonymized fullname')
+        self.assertContains(mockresponse.response, 'MyAnonymousID')
 
     def test_anonymizationmode_fully_anonymous_candidates(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -249,9 +249,9 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
                 'handle_deadline': self.handle_deadline
             }
         )
-        self.assertNotIn('unanonymizedfullname', mockresponse.response.content)
-        self.assertNotIn('A un-anonymized fullname', mockresponse.response.content)
-        self.assertIn('MyAnonymousID', mockresponse.response.content)
+        self.assertNotContains(mockresponse.response, 'unanonymizedfullname')
+        self.assertNotContains(mockresponse.response, 'A un-anonymized fullname')
+        self.assertContains(mockresponse.response, 'MyAnonymousID')
 
     def test_search_anonymous_nomatch_fullname(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -597,7 +597,7 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
                 'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             })
-        self.assertEquals(
+        self.assertEqual(
             3,
             mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
 
@@ -626,7 +626,7 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
                 'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             })
-        self.assertEquals(
+        self.assertEqual(
             0,
             mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
 
@@ -813,9 +813,9 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
                 'handle_deadline': self.handle_deadline
             }
         )
-        self.assertIn('unanonymizedfullname', mockresponse.response.content)
-        self.assertIn('A un-anonymized fullname', mockresponse.response.content)
-        self.assertNotIn('MyAnonymousID', mockresponse.response.content)
+        self.assertContains(mockresponse.response, 'unanonymizedfullname')
+        self.assertContains(mockresponse.response, 'A un-anonymized fullname')
+        self.assertNotContains(mockresponse.response, 'MyAnonymousID')
 
     def test_anonymizationmode_semi_anonymous_candidates(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -846,9 +846,9 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
                 'handle_deadline': self.handle_deadline
             }
         )
-        self.assertNotIn('unanonymizedfullname', mockresponse.response.content)
-        self.assertNotIn('A un-anonymized fullname', mockresponse.response.content)
-        self.assertIn('MyAnonymousID', mockresponse.response.content)
+        self.assertNotContains(mockresponse.response, 'unanonymizedfullname')
+        self.assertNotContains(mockresponse.response, 'A un-anonymized fullname')
+        self.assertContains(mockresponse.response, 'MyAnonymousID')
 
     def test_anonymizationmode_fully_anonymous_candidates(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -879,9 +879,9 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
                 'handle_deadline': self.handle_deadline
             }
         )
-        self.assertNotIn('unanonymizedfullname', mockresponse.response.content)
-        self.assertNotIn('A un-anonymized fullname', mockresponse.response.content)
-        self.assertIn('MyAnonymousID', mockresponse.response.content)
+        self.assertNotContains(mockresponse.response, 'unanonymizedfullname')
+        self.assertNotContains(mockresponse.response, 'A un-anonymized fullname')
+        self.assertContains(mockresponse.response, 'MyAnonymousID')
 
     def test_search_anonymous_nomatch_fullname(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -1227,7 +1227,7 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
                 'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             })
-        self.assertEquals(
+        self.assertEqual(
             0,
             mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
 
@@ -1256,7 +1256,7 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
                 'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             })
-        self.assertEquals(
+        self.assertEqual(
             3,
             mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
 

@@ -59,9 +59,9 @@ class BulkCreateUsers(object):
         Any/all conflicting users are added to `self.__conflicting_users`, which can be retrieved using
         :func:`self.get_conflicting_users`
         """
-        print self.__parsed_userdata
-        emails = [email for username, email in self.__parsed_userdata.iteritems()]
-        usernames = [username for username, email in self.__parsed_userdata.iteritems()]
+        print(self.__parsed_userdata)
+        emails = [email for username, email in self.__parsed_userdata.items()]
+        usernames = [username for username, email in self.__parsed_userdata.items()]
         user_model = auth.get_user_model()
         conflicting_users = user_model.objects.filter(email__in=emails, username__in=usernames).distinct()
 
@@ -95,7 +95,7 @@ class BulkCreateUsers(object):
         """
         user_model = auth.get_user_model()
         with transaction.atomic():
-            for username, email in self.__parsed_userdata.iteritems():
+            for username, email in self.__parsed_userdata.items():
                 user = user_model(username=username, email=email)
                 user.set_unusable_password()
                 user.full_clean()

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from crispy_forms import layout
 from django import forms
@@ -186,7 +186,7 @@ class AssignmentGroupMultiSelectListFilterView(viewutils.DeadlineManagementMixin
         """
         groups = form.cleaned_data['selected_items']
         anonymous_display_names = [
-            unicode(group.get_anonymous_displayname(assignment=self.assignment))
+            str(group.get_anonymous_displayname(assignment=self.assignment))
             for group in groups]
         return anonymous_display_names
 

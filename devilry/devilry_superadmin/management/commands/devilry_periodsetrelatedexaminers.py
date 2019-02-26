@@ -63,11 +63,11 @@ class RelatedBaseCommand(BaseCommand):
         # Get the subject and period
         try:
             self.subject = Subject.objects.get(short_name=subject_short_name)
-        except Subject.DoesNotExist, e:
+        except Subject.DoesNotExist as e:
             raise CommandError('Subject with short name %s does not exist.' % subject_short_name)
         try:
             self.period = Period.objects.get(short_name=period_short_name, parentnode=self.subject)
-        except Period.DoesNotExist, e:
+        except Period.DoesNotExist as e:
             raise CommandError('Period with short name %s does not exist.' % period_short_name)
 
     def _deactivate_all(self):
@@ -91,9 +91,9 @@ class RelatedBaseCommand(BaseCommand):
             if not self._update_related_user(user, kw, tags_string):
                 self._create_reluser(user, kw, tags_string)
         if self.verbosity > 0:
-            print "Added/updated {count} related {user_type}s to {subject}.{period}".format(
+            print("Added/updated {count} related {user_type}s to {subject}.{period}".format(
                 count=len(self.input_data), user_type=self.user_type,
-                subject=self.subject.short_name, period=self.period.short_name)
+                subject=self.subject.short_name, period=self.period.short_name))
 
     def _split_tags_string(self, tags_string):
         return re.split(r'\s*,\s*', tags_string)
@@ -135,7 +135,7 @@ class RelatedBaseCommand(BaseCommand):
         except self.related_user_model_class.DoesNotExist:
             return False
         else:
-            for key, value in kw.iteritems():
+            for key, value in kw.items():
                 setattr(relateduser, key, value)
             self._save_related_user(relateduser, 'Updated')
             self._update_tags(relateduser, tags_string)
@@ -155,7 +155,7 @@ class RelatedBaseCommand(BaseCommand):
         else:
             relateduser.save()
             if self.verbosity > 1:
-                print "{0} {1} {2}".format(mode, self.user_type, relateduser)
+                print("{0} {1} {2}".format(mode, self.user_type, relateduser))
 
     def handle(self, *args, **options):
         self.args = args

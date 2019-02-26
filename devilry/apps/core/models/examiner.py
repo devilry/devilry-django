@@ -1,6 +1,6 @@
 from django.db import models
 
-from abstract_is_admin import AbstractIsAdmin
+from .abstract_is_admin import AbstractIsAdmin
 from devilry.apps.core.models import RelatedExaminer
 from devilry.devilry_account.models import User
 
@@ -39,6 +39,6 @@ class Examiner(models.Model, AbstractIsAdmin):
         return self.relatedexaminer.get_anonymous_name()
 
     def __unicode__(self):
-        return u'Examiner {} for {}'.format(
+        return 'Examiner {} for {}'.format(
             self.relatedexaminer, self.assignmentgroup
         )

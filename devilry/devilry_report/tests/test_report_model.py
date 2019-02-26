@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 import io
 
@@ -91,4 +91,4 @@ class TestDevilryReport(test.TestCase):
             devilry_report.refresh_from_db()
             buffer = io.BytesIO()
             buffer.write(devilry_report.result)
-            self.assertEqual(buffer.getvalue(), 'Test content')
+            self.assertEqual(buffer.getvalue(), b'Test content')

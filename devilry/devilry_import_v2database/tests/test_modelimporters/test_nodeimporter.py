@@ -33,11 +33,11 @@ class TestNodeImporter(ImporterTestCaseMixin, test.TestCase):
         self.create_v2dump(model_name='core.node', data=data_dict)
         nodeimporter = NodeImporter(input_root=self.temp_root_dir)
         nodeimporter.import_models()
-        self.assertEquals(account_models.PermissionGroup.objects.count(), 1)
-        self.assertEquals(account_models.PermissionGroup.objects.first().grouptype,
+        self.assertEqual(account_models.PermissionGroup.objects.count(), 1)
+        self.assertEqual(account_models.PermissionGroup.objects.first().grouptype,
                           account_models.PermissionGroup.GROUPTYPE_DEPARTMENTADMIN)
-        self.assertEquals(account_models.SubjectPermissionGroup.objects.count(), 1)
-        self.assertEquals(account_models.PermissionGroupUser.objects.count(), 1)
+        self.assertEqual(account_models.SubjectPermissionGroup.objects.count(), 1)
+        self.assertEqual(account_models.PermissionGroupUser.objects.count(), 1)
 
     def test_import_multiple_subjects_single_admin(self):
         test_subject1 = mommy.make('core.Subject')
@@ -49,8 +49,8 @@ class TestNodeImporter(ImporterTestCaseMixin, test.TestCase):
         self.create_v2dump(model_name='core.node', data=data_dict)
         nodeimporter = NodeImporter(input_root=self.temp_root_dir)
         nodeimporter.import_models()
-        self.assertEquals(account_models.PermissionGroup.objects.count(), 1)
-        self.assertEquals(account_models.SubjectPermissionGroup.objects.count(), 3)
+        self.assertEqual(account_models.PermissionGroup.objects.count(), 1)
+        self.assertEqual(account_models.SubjectPermissionGroup.objects.count(), 3)
 
     def test_import_subject_permission_group_for_permission_group(self):
         test_subject = mommy.make('core.Subject')
@@ -59,11 +59,11 @@ class TestNodeImporter(ImporterTestCaseMixin, test.TestCase):
         self.create_v2dump(model_name='core.node', data=data_dict)
         nodeimporter = NodeImporter(input_root=self.temp_root_dir)
         nodeimporter.import_models()
-        self.assertEquals(account_models.PermissionGroup.objects.count(), 1)
+        self.assertEqual(account_models.PermissionGroup.objects.count(), 1)
         permission_group = account_models.PermissionGroup.objects.first()
         subject_permission_group = account_models.SubjectPermissionGroup.objects.first()
-        self.assertEquals(subject_permission_group.permissiongroup, permission_group)
-        self.assertEquals(subject_permission_group.subject, test_subject)
+        self.assertEqual(subject_permission_group.permissiongroup, permission_group)
+        self.assertEqual(subject_permission_group.subject, test_subject)
 
     def test_import_multiple_subject_permission_groups_for_permission_group(self):
         test_subject1 = mommy.make('core.Subject')
@@ -75,11 +75,11 @@ class TestNodeImporter(ImporterTestCaseMixin, test.TestCase):
         self.create_v2dump(model_name='core.node', data=data_dict)
         nodeimporter = NodeImporter(input_root=self.temp_root_dir)
         nodeimporter.import_models()
-        self.assertEquals(account_models.PermissionGroup.objects.count(), 1)
+        self.assertEqual(account_models.PermissionGroup.objects.count(), 1)
         permission_group = account_models.PermissionGroup.objects.first()
         subject_permission_groups = account_models.SubjectPermissionGroup.objects.all()
         for subject_permission_group in subject_permission_groups:
-            self.assertEquals(subject_permission_group.permissiongroup, permission_group)
+            self.assertEqual(subject_permission_group.permissiongroup, permission_group)
 
     def test_import_permission_group_user_on_permission_group(self):
         test_subject = mommy.make('core.Subject')
@@ -88,11 +88,11 @@ class TestNodeImporter(ImporterTestCaseMixin, test.TestCase):
         self.create_v2dump(model_name='core.node', data=data_dict)
         nodeimporter = NodeImporter(input_root=self.temp_root_dir)
         nodeimporter.import_models()
-        self.assertEquals(account_models.PermissionGroupUser.objects.count(), 1)
+        self.assertEqual(account_models.PermissionGroupUser.objects.count(), 1)
         permission_group = account_models.PermissionGroup.objects.first()
         permission_group_user = account_models.PermissionGroupUser.objects.first()
-        self.assertEquals(permission_group_user.user, test_admin)
-        self.assertEquals(permission_group_user.permissiongroup, permission_group)
+        self.assertEqual(permission_group_user.user, test_admin)
+        self.assertEqual(permission_group_user.permissiongroup, permission_group)
 
     def test_import_user_is_admin_for_subject(self):
         test_subject = mommy.make('core.Subject')
@@ -103,7 +103,7 @@ class TestNodeImporter(ImporterTestCaseMixin, test.TestCase):
         nodeimporter = NodeImporter(input_root=self.temp_root_dir)
         nodeimporter.import_models()
         subject_queryset = Subject.objects.filter_user_is_admin(user=test_admin)
-        self.assertEquals(subject_queryset.count(), 1)
+        self.assertEqual(subject_queryset.count(), 1)
         self.assertIn(test_subject, subject_queryset)
         self.assertNotIn(test_subject_no_admins, subject_queryset)
 
@@ -119,7 +119,7 @@ class TestNodeImporter(ImporterTestCaseMixin, test.TestCase):
         nodeimporter = NodeImporter(input_root=self.temp_root_dir)
         nodeimporter.import_models()
         subject_queryset = Subject.objects.filter_user_is_admin(user=test_admin)
-        self.assertEquals(subject_queryset.count(), 3)
+        self.assertEqual(subject_queryset.count(), 3)
         self.assertIn(test_subject1, subject_queryset)
         self.assertIn(test_subject2, subject_queryset)
         self.assertIn(test_subject3, subject_queryset)

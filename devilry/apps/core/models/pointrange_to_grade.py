@@ -91,7 +91,7 @@ class PointToGradeMap(models.Model):
             for mapentry in mapentries:
                 if mapentry.minimum_points != expected_minimum_points:
                     raise GapsInMapValidationError(
-                        u'{} must have minimum_points set to {} to avoid gaps in the point to grade map.'.format(
+                        '{} must have minimum_points set to {} to avoid gaps in the point to grade map.'.format(
                             mapentry, expected_minimum_points))
                 expected_minimum_points = mapentry.maximum_points + 1
             self.invalid = False
@@ -176,7 +176,7 @@ class PointToGradeMap(models.Model):
         return points_to_grade_dict
 
     def __unicode__(self):
-        return u'Point to grade map for {}'.format(self.assignment.get_path())
+        return 'Point to grade map for {}'.format(self.assignment.get_path())
 
 
 class PointRangeToGradeQueryset(models.QuerySet):
@@ -269,4 +269,4 @@ class PointRangeToGrade(models.Model):
             raise ValidationError('One or more PointRangeToGrade overlaps with this range.')
 
     def __unicode__(self):
-        return u'{}-{}={}'.format(self.minimum_points, self.maximum_points, self.grade)
+        return '{}-{}={}'.format(self.minimum_points, self.maximum_points, self.grade)

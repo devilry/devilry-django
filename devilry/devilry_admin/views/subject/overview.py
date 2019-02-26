@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django_cradmin import crapp
 from django_cradmin.crinstance import reverse_cradmin_url

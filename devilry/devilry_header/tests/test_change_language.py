@@ -11,7 +11,7 @@ class TestChangeLanguage(TestCase, LoginTestCaseMixin):
 
     def test_not_authenticated(self):
         response = self.client.post(self.url)
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
     def test_post_valid(self):
         testuser = UserBuilder('testuser')
@@ -23,10 +23,10 @@ class TestChangeLanguage(TestCase, LoginTestCaseMixin):
                 'languagecode': 'en',
                 'redirect_url': '/successtest'
             })
-            self.assertEquals(response.status_code, 302)
-            self.assertEquals(response['Location'], '/successtest')
+            self.assertEqual(response.status_code, 302)
+            self.assertEqual(response['Location'], '/successtest')
             testuser.reload_from_db()
-            self.assertEquals(testuser.user.languagecode, 'en')
+            self.assertEqual(testuser.user.languagecode, 'en')
 
     def test_post_invalid(self):
         testuser = UserBuilder('testuser')
@@ -38,6 +38,6 @@ class TestChangeLanguage(TestCase, LoginTestCaseMixin):
                 'languagecode': 'tu',
                 'redirect_url': '/successtest'
             })
-            self.assertEquals(response.status_code, 400)
+            self.assertEqual(response.status_code, 400)
             testuser.reload_from_db()
-            self.assertEquals(testuser.user.languagecode, 'nb')
+            self.assertEqual(testuser.user.languagecode, 'nb')

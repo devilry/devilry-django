@@ -196,7 +196,7 @@ class AggregatedRelatedStudentInfo(object):
         Returns an iterator over all :class:`.GroupFeedbackSetList` objects for this student.
         Shortcut for ``self.assignments.itervalues()``.
         """
-        return self.assignments.itervalues()
+        return iter(self.assignments.values())
 
     def add_group_with_feedbackset(self, group):
         """
@@ -223,7 +223,7 @@ class AggregatedRelatedStudentInfo(object):
         Returns:
             bool: ``True`` if student qualifies, else ``False``.
         """
-        for groups_fbsets in self.assignments.itervalues():
+        for groups_fbsets in self.assignments.values():
             if len(groups_fbsets) == 0:
                 # Student not enlisted on assignment.
                 return False
@@ -240,10 +240,10 @@ class AggregatedRelatedStudentInfo(object):
         Uses FeedbackSet to fetch grading results.
         """
         qualifies = True
-        print '\n{}\n{}'.format(self.user.fullname, self.user)
-        for assignmentid, groups_fbsets in self.assignments.iteritems():
-            print '  - Assignment ID: {}'.format(assignmentid)
-            print '     - Groups: {}'.format(len(groups_fbsets))
+        print('\n{}\n{}'.format(self.user.fullname, self.user))
+        for assignmentid, groups_fbsets in self.assignments.items():
+            print('  - Assignment ID: {}'.format(assignmentid))
+            print('     - Groups: {}'.format(len(groups_fbsets)))
             if len(groups_fbsets) == 0:
                 qualifies = False
             for group, fbset in groups_fbsets:
@@ -256,17 +256,17 @@ class AggregatedRelatedStudentInfo(object):
                             fbset.grading_points, group.parentnode.max_points)
                 else:
                     grade = 'Grade not published'
-                print '    - {}: {}'.format(group, grade)
-                print 'Qualifies: YES' if qualifies else 'Qualifies: NO'
+                print('    - {}: {}'.format(group, grade))
+                print('Qualifies: YES' if qualifies else 'Qualifies: NO')
 
     def prettyprint(self):
         """
         Prettyprint for debugging.
         """
-        print '{}:'.format(self.user)
-        for assignmentid, groups in self.assignments.iteritems():
-            print '  - Assignment ID: {}'.format(assignmentid)
-            print '     - Groups: {}'.format(len(groups))
+        print('{}:'.format(self.user))
+        for assignmentid, groups in self.assignments.items():
+            print('  - Assignment ID: {}'.format(assignmentid))
+            print('     - Groups: {}'.format(len(groups)))
             for group in groups:
                 if group.feedback:
                     grade = '{} (points:{},passed:{})'.format(
@@ -274,7 +274,7 @@ class AggregatedRelatedStudentInfo(object):
                             group.feedback.points, group.feedback.is_passing_grade)
                 else:
                     grade = None
-                print '    - {}: {}'.format(group, grade)
+                print('    - {}: {}'.format(group, grade))
 
     def __str__(self):
         """
@@ -283,8 +283,8 @@ class AggregatedRelatedStudentInfo(object):
         results = ''
         for group_feedbackset_list in self.iter_groups_feedbacksets_by_assignment():
             for group, feedbackset in group_feedbackset_list:
-                results += u'\n\t\t{}: {}'.format(group.parentnode, feedbackset.grading_points)
-        return u'AggregatedRelatedStudentInfo\n\tUser: {}\n\tAssignmentscount: {}\n\tResults: {}'.format(
+                results += '\n\t\t{}: {}'.format(group.parentnode, feedbackset.grading_points)
+        return 'AggregatedRelatedStudentInfo\n\tUser: {}\n\tAssignmentscount: {}\n\tResults: {}'.format(
             self.user.shortname,
             len(self.assignments),
             results
@@ -304,7 +304,7 @@ class AggregatedRelatedStudentInfo(object):
 
     def _serialize_groups_by_assignment(self):
         groups_by_assignment_list = []
-        for assignmentid, group_feedbackset in self.assignments.iteritems():
+        for assignmentid, group_feedbackset in self.assignments.items():
             groups_by_assignment_list.append(
                     {'assignmentid': assignmentid,
                      'group_feedbackset_list': group_feedbackset.serialize()})
@@ -481,7 +481,7 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
                 on the assignment, and more than 1 if the user is in more than one group on the
                 assignment.
         """
-        return self.result.itervalues()
+        return iter(self.result.values())
 
     def iter_students_that_is_candidate_but_not_in_related(self):
         """
@@ -493,14 +493,14 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
         - :meth:`iter_students_with_feedback_that_is_candidate_but_not_in_related`
         - :meth:`iter_students_with_no_feedback_that_is_candidate_but_not_in_related`
         """
-        return self.ignored_students.itervalues()
+        return iter(self.ignored_students.values())
 
     def iter_students_with_feedback_that_is_candidate_but_not_in_related(self):
         """
         Same as :meth:`.iter_students_that_is_candidate_but_not_in_related`, but it does not include
         the students that have no feedback.
         """
-        for userid, aggregatedgroupinfo in self.ignored_students.iteritems():
+        for userid, aggregatedgroupinfo in self.ignored_students.items():
             if userid in self.ignored_students_with_results:
                 yield aggregatedgroupinfo
 
@@ -511,7 +511,7 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
         except for the students returned by
         :meth:`.iter_students_with_feedback_that_is_candidate_but_not_in_related`
         """
-        for userid, aggregatedgroupinfo in self.ignored_students.iteritems():
+        for userid, aggregatedgroupinfo in self.ignored_students.items():
             if userid not in self.ignored_students_with_results:
                 yield aggregatedgroupinfo
 

@@ -4,11 +4,11 @@ from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 
-import deliverytypes
-from abstract_is_admin import AbstractIsAdmin
-from abstract_is_candidate import AbstractIsCandidate
-from abstract_is_examiner import AbstractIsExaminer
-from assignment_group import AssignmentGroup
+from . import deliverytypes
+from .abstract_is_admin import AbstractIsAdmin
+from .abstract_is_candidate import AbstractIsCandidate
+from .abstract_is_examiner import AbstractIsExaminer
+from .assignment_group import AssignmentGroup
 from devilry.devilry_account.models import User
 
 
@@ -44,7 +44,7 @@ class DeadlineQuerySet(models.QuerySet):
                 why_created=why_created,
                 added_by=added_by)
 
-        deadlines_to_create = map(init_deadline, groups)
+        deadlines_to_create = list(map(init_deadline, groups))
         self.bulk_create(deadlines_to_create)
 
         # DB query 4 - Fetch created deadlines
@@ -254,7 +254,7 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
             if self.deadline > self.assignment_group.parentnode.parentnode.end_time:
                 raise ValidationError(
                     "Deadline must be within it's period (%(period)s)."
-                    % dict(period=unicode(self.assignment_group.parentnode.parentnode)))
+                    % dict(period=str(self.assignment_group.parentnode.parentnode)))
             self._clean_deadline()
         super(Deadline, self).clean()
 
@@ -297,7 +297,7 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
             group.save(update_delivery_status=False)
 
     def __unicode__(self):
-        return unicode(self.deadline)
+        return str(self.deadline)
 
     def __repr__(self):
         return 'Deadline(id={id}, deadline={deadline})'.format(**self.__dict__)

@@ -12,7 +12,7 @@ class TestEmailAuthBackend(TestCase):
 
     def test_lookup_user(self):
         user = self.authbackend.lookup_user(email='testuser@example.com')
-        self.assertEquals(user.pk, self.testuser.pk)
+        self.assertEqual(user.pk, self.testuser.pk)
 
     def test_lookup_user_invalid_email(self):
         with self.assertRaises(User.DoesNotExist):
@@ -20,7 +20,7 @@ class TestEmailAuthBackend(TestCase):
 
     def test_get_user(self):
         user = self.authbackend.get_user(self.testuser.pk)
-        self.assertEquals(user.pk, self.testuser.pk)
+        self.assertEqual(user.pk, self.testuser.pk)
 
     def test_get_user_returns_none(self):
         user = self.authbackend.get_user(42)
@@ -30,7 +30,7 @@ class TestEmailAuthBackend(TestCase):
         user = self.authbackend.authenticate(email='testuser@example.com',
                                              password='test')
         self.assertIsNotNone(user)
-        self.assertEquals(self.testuser.pk, user.pk)
+        self.assertEqual(self.testuser.pk, user.pk)
 
     def test_authenticate_invalid_password_returns_none(self):
         user = self.authbackend.authenticate(email='testuser@example.com',
@@ -52,7 +52,7 @@ class TestUsernameAuthBackend(TestCase):
 
     def test_lookup_user(self):
         user = self.authbackend.lookup_user(username='testuser')
-        self.assertEquals(user.pk, self.testuser.pk)
+        self.assertEqual(user.pk, self.testuser.pk)
 
     def test_lookup_user_invalid_email(self):
         with self.assertRaises(User.DoesNotExist):
@@ -60,7 +60,7 @@ class TestUsernameAuthBackend(TestCase):
 
     def test_get_user(self):
         user = self.authbackend.get_user(self.testuser.pk)
-        self.assertEquals(user.pk, self.testuser.pk)
+        self.assertEqual(user.pk, self.testuser.pk)
 
     def test_get_user_returns_none(self):
         user = self.authbackend.get_user(42)
@@ -70,7 +70,7 @@ class TestUsernameAuthBackend(TestCase):
         user = self.authbackend.authenticate(username='testuser',
                                              password='test')
         self.assertIsNotNone(user)
-        self.assertEquals(self.testuser.pk, user.pk)
+        self.assertEqual(self.testuser.pk, user.pk)
 
     def test_authenticate_invalid_password_returns_none(self):
         user = self.authbackend.authenticate(username='testuser',

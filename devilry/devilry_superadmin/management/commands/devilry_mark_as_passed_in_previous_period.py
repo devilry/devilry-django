@@ -34,20 +34,20 @@ class Command(BaseCommand):
 
         marker = MarkAsPassedInPreviousPeriod(assignment)
         result = marker.mark_all(pretend=kwargs['pretend'])
-        print
-        print '#' * 70
-        print '# Ignored groups, ordered by reason for ignoring'
-        print '#' * 70
-        for reason, groups in result['ignored'].iteritems():
-            print
-            print reason
-            print '-' * 70
+        print()
+        print('#' * 70)
+        print('# Ignored groups, ordered by reason for ignoring')
+        print('#' * 70)
+        for reason, groups in result['ignored'].items():
+            print()
+            print(reason)
+            print('-' * 70)
             pprint(groups)
 
-        print
-        print '#' * 70
-        print '# Groups marked as passed in previous period'
-        print '#' * 70
+        print()
+        print('#' * 70)
+        print('# Groups marked as passed in previous period')
+        print('#' * 70)
         marked = result['marked']
         if marked:
             for group, oldgroup in result['marked']:
@@ -56,13 +56,13 @@ class Command(BaseCommand):
                     status = 'Passed'
                 else:
                     status = 'Failed'
-                print '- {0}'.format(group)
-                print '     copied from: {0}'.format(oldgroup)
-                print '     feedback: {0} ({1}) (points:{2})'.format(status,
+                print('- {0}'.format(group))
+                print('     copied from: {0}'.format(oldgroup))
+                print('     feedback: {0} ({1}) (points:{2})'.format(status,
                                                                      feedback.grade,
-                                                                     feedback.points)
+                                                                     feedback.points))
         else:
-            print 'No groups with passing grade in previous periods found'
+            print('No groups with passing grade in previous periods found')
 
     def _get_or_error(self, cls, **qry):
         try:

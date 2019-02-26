@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 import re
 import warnings
@@ -11,11 +11,11 @@ from django.db.models import Q
 from django.db.models.expressions import RawSQL
 from django.utils.translation import ugettext_lazy
 
-from abstract_applicationkeyvalue import AbstractApplicationKeyValue
-from abstract_is_admin import AbstractIsAdmin
+from .abstract_applicationkeyvalue import AbstractApplicationKeyValue
+from .abstract_is_admin import AbstractIsAdmin
 from devilry.devilry_account.models import User
-from period import Period
-import period_tag
+from .period import Period
+from . import period_tag
 
 
 class BulkCreateFromEmailsResult(object):

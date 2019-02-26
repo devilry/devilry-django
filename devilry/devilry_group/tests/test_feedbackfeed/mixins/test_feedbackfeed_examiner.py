@@ -27,7 +27,7 @@ class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMix
         examiner = mommy.make('core.Examiner')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
                                                           requestuser=examiner.relatedexaminer.user)
-        self.assertEquals(mockresponse.selector.one('title').alltext_normalized,
+        self.assertEqual(mockresponse.selector.one('title').alltext_normalized,
                           examiner.assignmentgroup.assignment.get_path())
 
     def test_assignment_soft_deadline_info_box_not_rendered(self):
@@ -147,7 +147,7 @@ class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMix
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
                                                           requestuser=examiner.relatedexaminer.user)
         name = mockresponse.selector.one('.devilry-user-verbose-inline-fullname').alltext_normalized
-        self.assertEquals(student.relatedstudent.user.fullname, name)
+        self.assertEqual(student.relatedstudent.user.fullname, name)
 
     def test_get_feedbackfeed_examiner_can_see_other_examiner_comment_visible_to_everyone(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
@@ -167,7 +167,7 @@ class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMix
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=request_examiner.assignmentgroup,
                                                           requestuser=request_examiner.relatedexaminer.user)
         name = mockresponse.selector.one('.devilry-user-verbose-inline-fullname').alltext_normalized
-        self.assertEquals(comment_examiner.relatedexaminer.user.fullname, name)
+        self.assertEqual(comment_examiner.relatedexaminer.user.fullname, name)
 
     def test_get_feedbackfeed_examiner_can_see_other_examiner_comment_visible_to_examiner_and_admins(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
@@ -187,7 +187,7 @@ class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMix
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=request_examiner.assignmentgroup,
                                                           requestuser=request_examiner.relatedexaminer.user)
         name = mockresponse.selector.one('.devilry-user-verbose-inline-fullname').alltext_normalized
-        self.assertEquals(comment_examiner.relatedexaminer.user.fullname, name)
+        self.assertEqual(comment_examiner.relatedexaminer.user.fullname, name)
 
     def test_get_feedbackfeed_other_examiner_can_not_see_comment_visibility_private(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')

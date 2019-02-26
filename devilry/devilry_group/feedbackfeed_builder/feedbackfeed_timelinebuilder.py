@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 import collections
 import datetime
 
 # Django imports
+import functools
+
 from django.utils import timezone
 
 # Devilry/cradmin imports
@@ -60,8 +62,8 @@ class AbstractTimelineBuilder(object):
                 datetime_a = datetime.datetime(1970, 1, 1)
             if datetime_b is None:
                 datetime_b = datetime.datetime(1970, 1, 1)
-            return cmp(datetime_a, datetime_b)
-        return collections.OrderedDict(sorted(dictionary.items(), compare_items))
+            return (datetime_a > datetime_b) - (datetime_a < datetime_b)
+        return collections.OrderedDict(sorted(list(dictionary.items()), key=functools.cmp_to_key(compare_items)))
 
 
 class FeedbackFeedTimelineBuilder(AbstractTimelineBuilder, builder_base.FeedbackFeedBuilderBase):

@@ -19,16 +19,16 @@ class NodeSearchBase(BaseCommand):
         add_output_encoding_argument(parser)
 
     def _print_details(self, record):
-        print self.get_short(record)
-        print '   id: {}'.format(record.id)
+        print(self.get_short(record))
+        print('   id: {}'.format(record.id))
         for attrname in self.attrs:
             attr = getattr(record, attrname)
             try:
                 attr = attr.encode(self.outputencoding)
             except:
                 attr = attr.encode('ascii', 'replace')
-            print '   {attrname}: {attr}'.format(attrname=attrname,
-                                                 attr=attr)
+            print('   {attrname}: {attr}'.format(attrname=attrname,
+                                                 attr=attr))
         # print '   admins:'
         # for admin in record.admins.all():
         #     print '        - {0}'.format(admin)
@@ -36,7 +36,7 @@ class NodeSearchBase(BaseCommand):
     def show_search_results(self, options, qry):
         for record in qry:
             if options['short_name_only']:
-                print self.get_short(record)
+                print(self.get_short(record))
             else:
                 self._print_details(record)
 

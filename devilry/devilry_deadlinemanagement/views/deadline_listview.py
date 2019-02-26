@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 import collections
 
@@ -102,7 +102,7 @@ class DeadlineListView(viewutils.DeadlineManagementMixin, TemplateView):
 
     def __make_listbuilder_list(self):
         listbuilder_list = listbuilder.lists.RowList()
-        for deadline, group_list in self.get_distinct_deadlines_with_groups().iteritems():
+        for deadline, group_list in self.get_distinct_deadlines_with_groups().items():
             listbuilder_list.append(
                 listbuilder.itemframe.DefaultSpacingItemFrame(
                     SelectDeadlineItemValue(

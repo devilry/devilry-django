@@ -32,7 +32,7 @@ class FeedbackSetImporter(modelimporter.ModelImporter):
         with BulkCreator(model_class=FeedbackSet) as feedbackset_bulk_creator:
             for object_dict in directory_parser.iterate_object_dicts():
                 if fake:
-                    print('Would import: {}'.format(pprint.pformat(object_dict)))
+                    print(('Would import: {}'.format(pprint.pformat(object_dict))))
                 else:
                     feedback_set = self._create_feedback_set_from_object_dict(object_dict=object_dict)
                     feedbackset_bulk_creator.add(feedback_set)

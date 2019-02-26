@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 # Python imports
 import os
@@ -126,7 +126,7 @@ class BulkFileDownloadBaseView(generic.View):
         identical_filenames_counter = 0
         split_filename = os.path.splitext(commentfile.filename)
         archivename = "{}{}".format(archivebasename, commentfile.filename)
-        while archivename in files.keys():
+        while archivename in list(files.keys()):
             identical_filenames_counter += 1
             archivename = "{}{}-{}{}".format(archivebasename,
                                              split_filename[0],
@@ -207,7 +207,7 @@ class BulkFileDownloadBaseView(generic.View):
         sink = ZipBuffer()
         archive = zipfile.ZipFile(sink, "w")
         files = self.get_filestructure(queryset)
-        for archivename, commentfile in files.iteritems():
+        for archivename, commentfile in files.items():
             archive.writestr(archivename, commentfile.file.read())
             for chunk in sink.get_and_clear():
                 yield chunk

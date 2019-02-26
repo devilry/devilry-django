@@ -46,7 +46,7 @@ class Suggest(object):
     def __suggest_name_from_number(self, name):
         match = self.pattern.match(name)
         prefix = name[:match.start(1)]
-        suggested_name = u'{}{}'.format(prefix, self.number + 1)
+        suggested_name = '{}{}'.format(prefix, self.number + 1)
         return suggested_name
 
     def __suggest_names_from_number(self):

@@ -926,7 +926,7 @@ class TestOrganizeByTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment
         )
         self.assertTrue(mockresponse.selector.exists('.devilry-listbuilderlist-footer'))
-        self.assertEquals(mockresponse.selector.one('.devilry-listbuilderlist-footer').alltext_normalized,
+        self.assertEqual(mockresponse.selector.one('.devilry-listbuilderlist-footer').alltext_normalized,
                           'Tags exist for the semester, but is missing either examiners, students or both. '
                           'Manage tags.')
 
@@ -949,7 +949,7 @@ class TestOrganizeByTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment
         )
         self.assertTrue(mockresponse.selector.exists('.devilry-listbuilderlist-footer'))
-        self.assertEquals(mockresponse.selector.one('.devilry-listbuilderlist-footer').alltext_normalized,
+        self.assertEqual(mockresponse.selector.one('.devilry-listbuilderlist-footer').alltext_normalized,
                           'Tags exist for the semester, but is missing either examiners, students or both. '
                           'Manage tags.')
 
@@ -959,7 +959,7 @@ class TestOrganizeByTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment
         )
         self.assertTrue(mockresponse.selector.exists('.devilry-listbuilderlist-footer'))
-        self.assertEquals(mockresponse.selector.one('.devilry-listbuilderlist-footer').alltext_normalized,
+        self.assertEqual(mockresponse.selector.one('.devilry-listbuilderlist-footer').alltext_normalized,
                           'No tags registered on the semester. If you add tags, '
                           'you can organize examiners and students based on the tags. Add semester tags.')
 
@@ -1029,9 +1029,9 @@ class TestOrganizeByTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         examiners = Examiner.objects.all()
         group1 = AssignmentGroup.objects.get(id=testgroup1.id)
         group2 = AssignmentGroup.objects.get(id=testgroup2.id)
-        self.assertEquals(examiners.count(), 2)
-        self.assertEquals(examiners[0].relatedexaminer, testrelatedexaminer)
-        self.assertEquals(examiners[1].relatedexaminer, testrelatedexaminer)
+        self.assertEqual(examiners.count(), 2)
+        self.assertEqual(examiners[0].relatedexaminer, testrelatedexaminer)
+        self.assertEqual(examiners[1].relatedexaminer, testrelatedexaminer)
         self.assertIn(examiners[0], group1.examiners.all())
         self.assertIn(examiners[1], group2.examiners.all())
 
@@ -1055,10 +1055,10 @@ class TestOrganizeByTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         examiners = Examiner.objects.all()
         group = AssignmentGroup.objects.get(id=testgroup.id)
-        self.assertEquals(examiners.count(), 2)
+        self.assertEqual(examiners.count(), 2)
         self.assertIn(testcandidate, group.candidates.all())
         self.assertNotIn(testexaminer_in_another_group, group.examiners.all())
-        self.assertEquals(group.examiners.all().count(), 1)
+        self.assertEqual(group.examiners.all().count(), 1)
 
     def test_examiner_and_candidate_already_in_group(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -1093,7 +1093,7 @@ class TestOrganizeByTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=requestuser
             )
         examiners = Examiner.objects.all()
-        self.assertEquals(examiners.count(), 450)
+        self.assertEqual(examiners.count(), 450)
 
     def test_get_query_count(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')

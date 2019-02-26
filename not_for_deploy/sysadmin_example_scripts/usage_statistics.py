@@ -95,14 +95,14 @@ if __name__ == "__main__":
 
     # Get unique logins
     unique_login_count = get_unique_logins(from_datetime=from_datetime)
-    print 'Unique logins since {}: {}'.format(
+    print('Unique logins since {}: {}'.format(
         arrow.get(from_datetime).format('MMM D. YYYY HH:mm:ss'),
-        unique_login_count)
+        unique_login_count))
 
     # Get number of deliveries
     delivery_count = get_number_of_deliveries(from_datetime, to_datetime)
-    print 'Deliveries made between {} and {}: {}'.format(
+    print('Deliveries made between {} and {}: {}'.format(
         arrow.get(from_datetime).format('MMM D. YYYY HH:mm:ss'),
         arrow.get(to_datetime).format('MMM D. YYYY HH:mm:ss'),
         delivery_count
-    )
+    ))

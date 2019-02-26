@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from views import submit_bulk_users
+from .views import submit_bulk_users
 
 urlpatterns = [
     url(r'^add',

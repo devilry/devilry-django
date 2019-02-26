@@ -1,4 +1,4 @@
-from __future__ import unicode_literals
+
 import mock
 from django.conf import settings
 from django.test import TestCase
@@ -50,7 +50,7 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
                                 parentnode__long_name='Test Subject',
                                 long_name='Test Period')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
-        self.assertEqual(u'Test Period \u2014 Test Subject',
+        self.assertEqual('Test Period \u2014 Test Subject',
                          mockresponse.selector.one('h1').alltext_normalized)
 
     def test_no_students_and_examiners_on_semester_meta(self):
@@ -94,7 +94,7 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
                 mock.call(appname='examiners', args=(), viewname='INDEX', kwargs={}),
                 mockresponse.request.cradmin_instance.reverse_url.call_args_list[3])
-        self.assertEquals(
+        self.assertEqual(
             mock.call(appname='manage_tags', args=(), viewname='INDEX', kwargs={}),
             mockresponse.request.cradmin_instance.reverse_url.call_args_list[4])
         self.assertEqual(

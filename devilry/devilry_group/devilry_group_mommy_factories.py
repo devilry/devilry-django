@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django.utils import timezone
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -16,7 +16,7 @@ def feedbackset_save(feedbackset, **kwargs):
     Args:
         feedbackset: FeedbackSet to save.
     """
-    for key, value in kwargs.iteritems():
+    for key, value in kwargs.items():
         setattr(feedbackset, key, value)
     feedbackset.save()
 
@@ -86,7 +86,7 @@ def make_first_feedbackset_in_group(group=None, **feedbackset_attributes):
     group = _make_assignment_group_for_feedbackset(group=group, **feedbackset_attributes)
     first_feedbackset = group.feedbackset_set.first()
     if feedbackset_attributes:
-        for key, value in feedbackset_attributes.items():
+        for key, value in list(feedbackset_attributes.items()):
             setattr(first_feedbackset, key, value)
         first_feedbackset.save()
     return first_feedbackset

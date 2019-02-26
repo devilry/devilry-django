@@ -1,4 +1,4 @@
-from __future__ import unicode_literals
+
 
 from django.utils.translation import ugettext_lazy, pgettext_lazy
 from django_cradmin import crapp
@@ -16,7 +16,7 @@ class AssignmentItemValue(listbuilder.itemvalue.TitleDescription):
     valuealias = 'assignment'
 
     def get_title(self):
-        return u'{} - {}'.format(self.assignment.parentnode.get_path(), self.assignment.long_name)
+        return '{} - {}'.format(self.assignment.parentnode.get_path(), self.assignment.long_name)
 
     def get_description(self):
         if self.assignment.waiting_for_feedback_count > 0:

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django.utils import translation
 from django.utils.translation import pgettext, ugettext
@@ -34,7 +34,7 @@ class AllResultsExcelReportGenerator(AbstractExcelReportGenerator):
             .filter(period=self.period)
         related_student_ids = [relatedstudent.id for relatedstudent in related_student_queryset]
         result_collector = PeriodAllResultsCollector(period=self.period, related_student_ids=related_student_ids)
-        collected_results = [related_student_results for related_student_results in result_collector.results.itervalues()]
+        collected_results = [related_student_results for related_student_results in result_collector.results.values()]
         return collected_results
 
     def __get_all_assignments_for_period(self):

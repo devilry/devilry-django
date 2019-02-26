@@ -181,7 +181,7 @@ class TestFeedbackFeedGroupCommentMixin(cradmin_testhelpers.TestCaseMixin):
                              visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group,
                                                           cradmin_instance=_get_mock_cradmin_instance())
-        self.assertEquals('(student)', mockresponse.selector.one('.comment-created-by-role-text').alltext_normalized)
+        self.assertEqual('(student)', mockresponse.selector.one('.comment-created-by-role-text').alltext_normalized)
 
     def test_get_comment_examiner_user_role(self):
         # tests that the role of an examiner comment is 'examiner'
@@ -192,7 +192,7 @@ class TestFeedbackFeedGroupCommentMixin(cradmin_testhelpers.TestCaseMixin):
                              visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group,
                                                           cradmin_instance=_get_mock_cradmin_instance())
-        self.assertEquals('(examiner)', mockresponse.selector.one('.comment-created-by-role-text').alltext_normalized)
+        self.assertEqual('(examiner)', mockresponse.selector.one('.comment-created-by-role-text').alltext_normalized)
 
     def test_get_comment_admin_user_role(self):
         # tests that the role of an admin comment is 'admin'
@@ -202,7 +202,7 @@ class TestFeedbackFeedGroupCommentMixin(cradmin_testhelpers.TestCaseMixin):
                              user_role='admin',
                              visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
-        self.assertEquals('(admin)', mockresponse.selector.one('.comment-created-by-role-text').alltext_normalized)
+        self.assertEqual('(admin)', mockresponse.selector.one('.comment-created-by-role-text').alltext_normalized)
 
 
 class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin, TestFeedbackFeedGroupCommentMixin):
@@ -309,7 +309,7 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin, TestFeedbackFeedGroupCo
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
         expired = mockresponse.selector.list('.devilry-group-feedbackfeed-event-message__deadline-expired')
         self.assertEqual(2, len(expired))
-        self.assertEquals(2, group_models.FeedbackSet.objects.count())
+        self.assertEqual(2, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackset_header(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -328,7 +328,7 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin, TestFeedbackFeedGroupCo
             mockresponse = self.mock_http200_getrequest_htmls(
                 cradmin_role=testgroup,
             )
-        self.assertEquals(mockresponse.selector.one('.header-title').alltext_normalized,
+        self.assertEqual(mockresponse.selector.one('.header-title').alltext_normalized,
                           'Deadline: Saturday 15 January, 2000, 23:59')
 
     def test_get_feedbackset_header_attempt(self):
@@ -338,7 +338,7 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin, TestFeedbackFeedGroupCo
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testgroup,
         )
-        self.assertEquals(mockresponse.selector.one('.header-attempt-number').alltext_normalized,
+        self.assertEqual(mockresponse.selector.one('.header-attempt-number').alltext_normalized,
                           'Attempt 1')
 
     def test_get_feedbackset_header_grading_info_waiting_for_feedback(self):
@@ -348,7 +348,7 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin, TestFeedbackFeedGroupCo
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testgroup,
         )
-        self.assertEquals(mockresponse.selector.one('.header-grading-info').alltext_normalized, 'waiting for feedback')
+        self.assertEqual(mockresponse.selector.one('.header-grading-info').alltext_normalized, 'waiting for feedback')
 
     def test_get_feedbackset_header_grading_info_waiting_for_deliveries_for_feedback(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_middle')
@@ -357,7 +357,7 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin, TestFeedbackFeedGroupCo
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testgroup,
         )
-        self.assertEquals(mockresponse.selector.one('.header-grading-info').alltext_normalized,
+        self.assertEqual(mockresponse.selector.one('.header-grading-info').alltext_normalized,
                           'waiting for deliveries')
 
     def test_get_feedbackset_header_two_attempts(self):
@@ -368,9 +368,9 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin, TestFeedbackFeedGroupCo
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testgroup,
         )
-        self.assertEquals(mockresponse.selector.list('.header-attempt-number')[0].alltext_normalized,
+        self.assertEqual(mockresponse.selector.list('.header-attempt-number')[0].alltext_normalized,
                           'Attempt 1')
-        self.assertEquals(mockresponse.selector.list('.header-attempt-number')[1].alltext_normalized,
+        self.assertEqual(mockresponse.selector.list('.header-attempt-number')[1].alltext_normalized,
                           'Attempt 2')
 
     def test_get_feedbackset_deadline_history_username_rendered(self):

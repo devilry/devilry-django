@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 import json
 
@@ -142,7 +142,7 @@ class ListAsTable(base_new.AbstractListAsTable):
 
         See :class:`~.StudentRowList`.
         """
-        for related_student_result in self.collector.results.values():
+        for related_student_result in list(self.collector.results.values()):
             self.append(StudentRowList(assignments=self.assignments, related_student_result=related_student_result))
 
 

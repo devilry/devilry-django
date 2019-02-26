@@ -10,10 +10,10 @@ from django.template import defaultfilters
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy, ugettext_lazy
 
-from abstract_is_candidate import AbstractIsCandidate
-from abstract_is_examiner import AbstractIsExaminer
-from basenode import BaseNode
-from custom_db_fields import ShortNameField, LongNameField
+from .abstract_is_candidate import AbstractIsCandidate
+from .abstract_is_examiner import AbstractIsExaminer
+from .basenode import BaseNode
+from .custom_db_fields import ShortNameField, LongNameField
 from devilry.apps.core.models import RelatedStudent
 from devilry.devilry_account.models import User, PeriodPermissionGroup
 from devilry.devilry_gradingsystem.pluginregistry import gradingsystempluginregistry
@@ -544,15 +544,15 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
     students_can_create_groups = models.BooleanField(
         default=False,
-        verbose_name=_(u'Students can create project groups?'),
-        help_text=_(u'Select this if students should be allowed to join/leave groups. '
-                    u'Even if this is not selected, you can still organize your students '
-                    u'in groups manually.'))
+        verbose_name=_('Students can create project groups?'),
+        help_text=_('Select this if students should be allowed to join/leave groups. '
+                    'Even if this is not selected, you can still organize your students '
+                    'in groups manually.'))
     students_can_not_create_groups_after = models.DateTimeField(
         default=None, null=True, blank=True,
-        verbose_name=_(u'Students can not create project groups after'),
-        help_text=_(u'Students can not create project groups after this time. '
-                    u'Ignored if "Students can create project groups" is not selected.'))
+        verbose_name=_('Students can not create project groups after'),
+        help_text=_('Students can not create project groups after this time. '
+                    'Ignored if "Students can create project groups" is not selected.'))
 
     feedback_workflow = models.CharField(
         blank=True, null=False, default='', max_length=50,
@@ -875,7 +875,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                     'assignment grade passed-or-failed',
                     'failed')
         elif self.points_to_grade_mapper == self.POINTS_TO_GRADE_MAPPER_RAW_POINTS:
-            return u'{}/{}'.format(points, self.max_points)
+            return '{}/{}'.format(points, self.max_points)
         elif self.points_to_grade_mapper == self.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE:
             return self.get_points_to_grade_map_as_cached_dict()[points]
         else:
@@ -1099,7 +1099,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     def setup_examiners_by_relateduser_syncsystem_tags(self):
         from devilry.apps.core.models import Candidate
         from devilry.apps.core.models import Examiner
-        import period_tag
+        from . import period_tag
         period = self.period
 
         # We use this to avoid adding examiners to groups they are already on

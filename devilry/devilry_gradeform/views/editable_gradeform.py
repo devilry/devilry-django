@@ -39,7 +39,7 @@ class AdvancedEditableGradeForm(AbstractEditableRenderer):
     def get_template_context_object(self, request=None):
         context = super(AdvancedEditableGradeForm, self).get_context_data()
         context['gradeform_type'] = 'advanced'
-        print self.assignment.gradeform_setup_json
+        print(self.assignment.gradeform_setup_json)
         data = json.loads(self.assignment.gradeform_setup_json)
         context['form'] = AdvancedForm()
 

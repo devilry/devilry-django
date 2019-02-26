@@ -1,4 +1,4 @@
-from __future__ import unicode_literals
+
 
 from django.conf import settings
 from django.test import TestCase
@@ -25,7 +25,7 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
         testsubject = mommy.make('core.Subject',
                                  long_name='Test Subject')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
-        self.assertEqual(u'Test Subject',
+        self.assertEqual('Test Subject',
                          mockresponse.selector.one('h1').alltext_normalized)
 
     def test_period_list_one_period_where_user_is_period_admin(self):

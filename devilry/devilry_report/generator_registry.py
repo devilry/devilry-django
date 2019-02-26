@@ -22,7 +22,7 @@ class Registry(Singleton):
         Iterate over the registry yielding
         subclasses of :class:`.devilry.devilry_report.abstract_generator.AbstractReportGenerator`.
         """
-        return iter(self._generator_type_classes.values())
+        return iter(list(self._generator_type_classes.values()))
 
     def get(self, generator_type):
         """

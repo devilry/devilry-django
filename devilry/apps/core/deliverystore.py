@@ -1,7 +1,7 @@
 from shutil import copy as shutil_copy
 from os.path import join, exists
 from os import makedirs, remove
-from StringIO import StringIO
+from io import StringIO
 import posixpath
 
 from importlib import import_module
@@ -19,7 +19,7 @@ def load_deliverystore_backend():
     modulepath, classname = s
     try:
         module = import_module(modulepath)
-    except ImportError, e:
+    except ImportError as e:
         raise ImproperlyConfigured(
             'Error importing deliverystore backend %s: "%s"' % (
                 modulepath, e))
@@ -229,7 +229,7 @@ class MemoryDeliveryStore(DeliveryStoreInterface):
     def read_open(self, filemeta_obj):
         try:
             f = self.files[filemeta_obj.id]
-        except KeyError, e:
+        except KeyError as e:
             raise FileNotFoundError(filemeta_obj)
         f.seek(0)
         return f

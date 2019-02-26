@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 import mock
 from django import test
@@ -49,7 +49,7 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             cradmin_role=testassignment,
             requestuser=testuser
         )
-        self.assertEquals(
+        self.assertEqual(
             0,
             mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue')
         )
@@ -65,7 +65,7 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             cradmin_role=testassignment,
             requestuser=examiner_user
         )
-        self.assertEquals(
+        self.assertEqual(
             2,
             mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue')
         )
@@ -85,7 +85,7 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             cradmin_role=testassignment,
             requestuser=examiner_user
         )
-        self.assertEquals(
+        self.assertEqual(
             0,
             mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue')
         )
@@ -107,9 +107,9 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             cradmin_role=testassignment,
             requestuser=examineruser
         )
-        self.assertIn('unanonymizedfullname', mockresponse.response.content)
-        self.assertIn('A un-anonymized fullname', mockresponse.response.content)
-        self.assertNotIn('MyAnonymousID', mockresponse.response.content)
+        self.assertContains(mockresponse.response, 'unanonymizedfullname')
+        self.assertContains(mockresponse.response, 'A un-anonymized fullname')
+        self.assertNotContains(mockresponse.response, 'MyAnonymousID')
 
     def test_anonymizationmode_semi_anonymous_canidates(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -128,9 +128,9 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             cradmin_role=testassignment,
             requestuser=examineruser
         )
-        self.assertNotIn('unanonymizedfullname', mockresponse.response.content)
-        self.assertNotIn('A un-anonymized fullname', mockresponse.response.content)
-        self.assertIn('MyAnonymousID', mockresponse.response.content)
+        self.assertNotContains(mockresponse.response, 'unanonymizedfullname')
+        self.assertNotContains(mockresponse.response, 'A un-anonymized fullname')
+        self.assertContains(mockresponse.response, 'MyAnonymousID')
 
     def test_anonymizationmode_fully_anonymous_canidates(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -149,9 +149,9 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             cradmin_role=testassignment,
             requestuser=examineruser
         )
-        self.assertNotIn('unanonymizedfullname', mockresponse.response.content)
-        self.assertNotIn('A un-anonymized fullname', mockresponse.response.content)
-        self.assertIn('MyAnonymousID', mockresponse.response.content)
+        self.assertNotContains(mockresponse.response, 'unanonymizedfullname')
+        self.assertNotContains(mockresponse.response, 'A un-anonymized fullname')
+        self.assertContains(mockresponse.response, 'MyAnonymousID')
 
     def test_group_render_title_name_order(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -460,10 +460,10 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             cradmin_role=testassignment,
             requestuser=examiner_user
         )
-        self.assertEquals(
+        self.assertEqual(
             0,
             mockresponse.selector.count('.django-cradmin-multiselect2-target-with-items'))
-        self.assertEquals(
+        self.assertEqual(
             0,
             mockresponse.selector.count('.django-cradmin-multiselect2-target-selected-item'))
 
@@ -478,7 +478,7 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             requestuser=examiner_user)
-        self.assertEquals(
+        self.assertEqual(
             1,
             mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
 
@@ -501,7 +501,7 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             requestuser=examiner_user)
-        self.assertEquals(
+        self.assertEqual(
             3,
             mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
 
@@ -518,7 +518,7 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             requestuser=examiner_user)
-        self.assertEquals(
+        self.assertEqual(
             1,
             mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
 
@@ -545,9 +545,9 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             cradmin_role=testassignment,
             requestuser=examiner_user
         )
-        self.assertEquals(1, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+        self.assertEqual(1, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
         candidate1_user = candidate1.relatedstudent.user
-        self.assertEquals(
+        self.assertEqual(
             '{}({})'.format(candidate1_user.fullname, candidate1_user.shortname),
             mockresponse.selector.one(
                 '.django-cradmin-multiselect2-itemvalue-details:nth-child(1) '
@@ -565,7 +565,7 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             cradmin_role=testassignment,
             requestuser=examiner_user
         )
-        self.assertEquals(0, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+        self.assertEqual(0, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
 
     def test_filter_search_two_students_one_result(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -593,9 +593,9 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             requestuser=examiner_user,
             viewkwargs={'filters_string': 'search-Donald'}
         )
-        self.assertEquals(1, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+        self.assertEqual(1, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
         candidate1_user = candidate.relatedstudent.user
-        self.assertEquals(
+        self.assertEqual(
             '{}({})'.format(candidate1_user.fullname, candidate1_user.shortname),
             mockresponse.selector.one(
                 '.django-cradmin-multiselect2-itemvalue-details:nth-child(1) '
@@ -635,7 +635,7 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             requestuser=examiner_user,
             viewkwargs={'filters_string': 'search-Don'}
         )
-        self.assertEquals(2, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+        self.assertEqual(2, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
         element_lst = mockresponse.selector.list('.django-cradmin-multiselect2-itemvalue-details:nth-child(1) '
                                                  '.devilry-user-verbose-inline-both')
         # normalize text to test on it
@@ -769,9 +769,9 @@ class TestPassedFailedBulkCreateFeedback(test.TestCase, cradmin_testhelpers.Test
         )
 
         cached_data_group1 = cache_models.AssignmentGroupCachedData.objects.get(group=testgroup1)
-        self.assertNotEquals(testfeedbackset_first_attempt, cached_data_group1.last_published_feedbackset)
-        self.assertEquals(testfeedbackset_new_attempt, cached_data_group1.last_published_feedbackset)
-        self.assertEquals(1, group_models.GroupComment.objects.count())
+        self.assertNotEqual(testfeedbackset_first_attempt, cached_data_group1.last_published_feedbackset)
+        self.assertEqual(testfeedbackset_new_attempt, cached_data_group1.last_published_feedbackset)
+        self.assertEqual(1, group_models.GroupComment.objects.count())
 
         cached_data_group2 = cache_models.AssignmentGroupCachedData.objects.get(group=testgroup2)
         self.assertIsNone(cached_data_group2.last_published_feedbackset)
@@ -805,12 +805,12 @@ class TestPassedFailedBulkCreateFeedback(test.TestCase, cradmin_testhelpers.Test
         )
 
         cached_data = cache_models.AssignmentGroupCachedData.objects.get(group=testgroup)
-        self.assertNotEquals(testfeedbackset_first_attempt, cached_data.last_published_feedbackset)
-        self.assertEquals(testfeedbackset_new_attempt, cached_data.last_published_feedbackset)
-        self.assertEquals(1, group_models.GroupComment.objects.count())
+        self.assertNotEqual(testfeedbackset_first_attempt, cached_data.last_published_feedbackset)
+        self.assertEqual(testfeedbackset_new_attempt, cached_data.last_published_feedbackset)
+        self.assertEqual(1, group_models.GroupComment.objects.count())
         comment = group_models.GroupComment.objects.all()[0]
-        self.assertEquals('feedback comment', comment.text)
-        self.assertEquals(testassignment.passing_grade_min_points,
+        self.assertEqual('feedback comment', comment.text)
+        self.assertEqual(testassignment.passing_grade_min_points,
                           cached_data.last_published_feedbackset.grading_points)
 
     def test_multiple_groups_receive_bulk_feedback(self):
@@ -859,23 +859,23 @@ class TestPassedFailedBulkCreateFeedback(test.TestCase, cradmin_testhelpers.Test
         cached_data_group1 = cache_models.AssignmentGroupCachedData.objects.get(group=testgroup1)
         cached_data_group2 = cache_models.AssignmentGroupCachedData.objects.get(group=testgroup2)
         cached_data_group3 = cache_models.AssignmentGroupCachedData.objects.get(group=testgroup3)
-        self.assertEquals(testfeedbackset_group1, cached_data_group1.last_published_feedbackset)
-        self.assertEquals(testfeedbackset_group2, cached_data_group2.last_published_feedbackset)
-        self.assertEquals(testfeedbackset_group3, cached_data_group3.last_published_feedbackset)
+        self.assertEqual(testfeedbackset_group1, cached_data_group1.last_published_feedbackset)
+        self.assertEqual(testfeedbackset_group2, cached_data_group2.last_published_feedbackset)
+        self.assertEqual(testfeedbackset_group3, cached_data_group3.last_published_feedbackset)
 
         # Test bulk created GroupComments
         group_comments = group_models.GroupComment.objects.all()
-        self.assertEquals(3, group_comments.count())
+        self.assertEqual(3, group_comments.count())
         for group_comment in group_comments:
             self.assertTrue(group_comment.published_datetime < group_comment.feedback_set.grading_published_datetime)
-            self.assertEquals('feedback comment', group_comment.text)
+            self.assertEqual('feedback comment', group_comment.text)
 
         # Test bulk created FeedbackSets
         feedback_sets = group_models.FeedbackSet.objects.all()
-        self.assertEquals(3, feedback_sets.count())
+        self.assertEqual(3, feedback_sets.count())
         for feedback_set in feedback_sets:
             self.assertIsNotNone(feedback_set.grading_published_datetime)
-            self.assertEquals(feedback_set.grading_points, testassignment.passing_grade_min_points)
+            self.assertEqual(feedback_set.grading_points, testassignment.passing_grade_min_points)
         self.assertEqual(len(mail.outbox), 3)
 
     def test_get_num_queries(self):
@@ -1000,9 +1000,9 @@ class TestPointsBulkCreateFeedback(test.TestCase, cradmin_testhelpers.TestCaseMi
         )
 
         cached_data_group1 = cache_models.AssignmentGroupCachedData.objects.get(group=testgroup1)
-        self.assertNotEquals(testfeedbackset_first_attempt, cached_data_group1.last_published_feedbackset)
-        self.assertEquals(testfeedbackset_new_attempt, cached_data_group1.last_published_feedbackset)
-        self.assertEquals(1, group_models.GroupComment.objects.count())
+        self.assertNotEqual(testfeedbackset_first_attempt, cached_data_group1.last_published_feedbackset)
+        self.assertEqual(testfeedbackset_new_attempt, cached_data_group1.last_published_feedbackset)
+        self.assertEqual(1, group_models.GroupComment.objects.count())
 
         cached_data_group2 = cache_models.AssignmentGroupCachedData.objects.get(group=testgroup2)
         self.assertIsNone(cached_data_group2.last_published_feedbackset)
@@ -1040,12 +1040,12 @@ class TestPointsBulkCreateFeedback(test.TestCase, cradmin_testhelpers.TestCaseMi
         )
 
         cached_data = cache_models.AssignmentGroupCachedData.objects.get(group=testgroup)
-        self.assertNotEquals(testfeedbackset_first_attempt, cached_data.last_published_feedbackset)
-        self.assertEquals(testfeedbackset_new_attempt, cached_data.last_published_feedbackset)
-        self.assertEquals(1, group_models.GroupComment.objects.count())
+        self.assertNotEqual(testfeedbackset_first_attempt, cached_data.last_published_feedbackset)
+        self.assertEqual(testfeedbackset_new_attempt, cached_data.last_published_feedbackset)
+        self.assertEqual(1, group_models.GroupComment.objects.count())
         comment = group_models.GroupComment.objects.all()[0]
-        self.assertEquals('feedback comment', comment.text)
-        self.assertEquals(10, cached_data.last_published_feedbackset.grading_points)
+        self.assertEqual('feedback comment', comment.text)
+        self.assertEqual(10, cached_data.last_published_feedbackset.grading_points)
 
     def test_multiple_groups_receive_bulk_feedback(self):
         testassignment = mommy.make_recipe(
@@ -1097,22 +1097,22 @@ class TestPointsBulkCreateFeedback(test.TestCase, cradmin_testhelpers.TestCaseMi
         cached_data_group1 = cache_models.AssignmentGroupCachedData.objects.get(group=testgroup1)
         cached_data_group2 = cache_models.AssignmentGroupCachedData.objects.get(group=testgroup2)
         cached_data_group3 = cache_models.AssignmentGroupCachedData.objects.get(group=testgroup3)
-        self.assertEquals(testfeedbackset_group1, cached_data_group1.last_published_feedbackset)
-        self.assertEquals(testfeedbackset_group2, cached_data_group2.last_published_feedbackset)
-        self.assertEquals(testfeedbackset_group3, cached_data_group3.last_published_feedbackset)
+        self.assertEqual(testfeedbackset_group1, cached_data_group1.last_published_feedbackset)
+        self.assertEqual(testfeedbackset_group2, cached_data_group2.last_published_feedbackset)
+        self.assertEqual(testfeedbackset_group3, cached_data_group3.last_published_feedbackset)
 
         # Test bulk created GroupComments
         group_comments = group_models.GroupComment.objects.all()
-        self.assertEquals(3, group_comments.count())
+        self.assertEqual(3, group_comments.count())
         for group_comment in group_comments:
-            self.assertEquals('feedback comment', group_comment.text)
+            self.assertEqual('feedback comment', group_comment.text)
 
         # Test bulk created FeedbackSets
         feedback_sets = group_models.FeedbackSet.objects.all()
-        self.assertEquals(3, feedback_sets.count())
+        self.assertEqual(3, feedback_sets.count())
         for feedback_set in feedback_sets:
             self.assertIsNotNone(feedback_set.grading_published_datetime)
-            self.assertEquals(10, feedback_set.grading_points)
+            self.assertEqual(10, feedback_set.grading_points)
         self.assertEqual(len(mail.outbox), 3)
 
     def test_get_num_queries(self):

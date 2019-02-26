@@ -1,4 +1,4 @@
-from __future__ import unicode_literals
+
 
 from datetime import timedelta
 
@@ -28,7 +28,7 @@ class TestAllResultsCollector(test.TestCase):
             period=testassignment.parentnode,
             related_student_ids=[relatedstudent.id]
         )
-        self.assertEquals(relatedstudent, collector.results[relatedstudent.id].relatedstudent)
+        self.assertEqual(relatedstudent, collector.results[relatedstudent.id].relatedstudent)
 
     def test_get_result_for_assignment_feedbackset_is_published(self):
         testperiod = mommy.make('core.Period')
@@ -43,7 +43,7 @@ class TestAllResultsCollector(test.TestCase):
             period=testperiod,
             related_student_ids=[relatedstudent.id]
         )
-        self.assertEquals(
+        self.assertEqual(
             10,
             collector.results[relatedstudent.id].get_result_for_assignment(testassignment.id))
 
@@ -60,7 +60,7 @@ class TestAllResultsCollector(test.TestCase):
             period=testperiod,
             related_student_ids=[relatedstudent.id]
         )
-        self.assertEquals(
+        self.assertEqual(
             0,
             collector.results[relatedstudent.id].get_result_for_assignment(testassignment.id))
 
@@ -256,8 +256,8 @@ class TestAllResultsCollector(test.TestCase):
             period=testassignment.parentnode,
             related_student_ids=[relatedstudent_donald.id, relatedstudent_april.id]
         )
-        self.assertEquals(relatedstudent_donald, collector.results[relatedstudent_donald.id].relatedstudent)
-        self.assertEquals(relatedstudent_april, collector.results[relatedstudent_april.id].relatedstudent)
+        self.assertEqual(relatedstudent_donald, collector.results[relatedstudent_donald.id].relatedstudent)
+        self.assertEqual(relatedstudent_april, collector.results[relatedstudent_april.id].relatedstudent)
 
     def test_student_points_for_assignment(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -272,7 +272,7 @@ class TestAllResultsCollector(test.TestCase):
             related_student_ids=[relatedstudent.id]
         )
         relatedstudent_results = collector.results[relatedstudent.id]
-        self.assertEquals(10, relatedstudent_results.get_result_for_assignment(assignment_id=testassignment.id))
+        self.assertEqual(10, relatedstudent_results.get_result_for_assignment(assignment_id=testassignment.id))
 
     def test_student_no_published_feedback_on_assignment(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -286,7 +286,7 @@ class TestAllResultsCollector(test.TestCase):
             related_student_ids=[relatedstudent.id]
         )
         relatedstudent_results = collector.results[relatedstudent.id]
-        self.assertEquals(0, relatedstudent_results.get_result_for_assignment(assignment_id=testassignment.id))
+        self.assertEqual(0, relatedstudent_results.get_result_for_assignment(assignment_id=testassignment.id))
 
     def test_get_result_for_assignment_only_counts_last_published_feedbackset_is_last_feedbackset(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -301,7 +301,7 @@ class TestAllResultsCollector(test.TestCase):
             period=testassignment.parentnode,
             related_student_ids=[relatedstudent.id]
         )
-        self.assertEquals(0, collector.results[relatedstudent.id].get_result_for_assignment(testassignment.id))
+        self.assertEqual(0, collector.results[relatedstudent.id].get_result_for_assignment(testassignment.id))
 
     def test_get_total_result_only_counts_last_published_feedbackset_is_last_feedbackset(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -316,7 +316,7 @@ class TestAllResultsCollector(test.TestCase):
             period=testassignment.parentnode,
             related_student_ids=[relatedstudent.id]
         )
-        self.assertEquals(0, collector.results[relatedstudent.id].get_total_result())
+        self.assertEqual(0, collector.results[relatedstudent.id].get_total_result())
 
     def test_students_in_separate_groups_points_for_assignment(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -340,10 +340,10 @@ class TestAllResultsCollector(test.TestCase):
             period=testassignment.parentnode,
             related_student_ids=[relatedstudent_donald.id, relatedstudent_april.id]
         )
-        self.assertEquals(
+        self.assertEqual(
             10,
             collector.results[relatedstudent_donald.id].get_result_for_assignment(assignment_id=testassignment.id))
-        self.assertEquals(
+        self.assertEqual(
             15,
             collector.results[relatedstudent_april.id].get_result_for_assignment(assignment_id=testassignment.id))
 
@@ -368,10 +368,10 @@ class TestAllResultsCollector(test.TestCase):
             period=testassignment.parentnode,
             related_student_ids=[relatedstudent_donald.id, relatedstudent_april.id]
         )
-        self.assertEquals(
+        self.assertEqual(
             10,
             collector.results[relatedstudent_donald.id].get_result_for_assignment(testassignment.id))
-        self.assertEquals(
+        self.assertEqual(
             10,
             collector.results[relatedstudent_april.id].get_result_for_assignment(testassignment.id))
 
@@ -410,7 +410,7 @@ class TestAllResultsCollector(test.TestCase):
             period=testperiod,
             related_student_ids=[relatedstudent_donald.id]
         )
-        self.assertEquals(
+        self.assertEqual(
             33,
             collector.results[relatedstudent_donald.id].get_total_result())
 

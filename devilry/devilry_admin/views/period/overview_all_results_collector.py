@@ -1,4 +1,4 @@
-from __future__ import unicode_literals
+
 
 from collections import OrderedDict
 
@@ -144,7 +144,7 @@ class RelatedStudentResults(object):
             (int): total number of grading points.
         """
         total = 0
-        for cached_data in self.cached_data_dict.values():
+        for cached_data in list(self.cached_data_dict.values()):
             if cached_data.last_published_feedbackset_is_last_feedbackset:
                 total += cached_data.last_published_feedbackset.grading_points
         return total
@@ -157,7 +157,7 @@ class RelatedStudentResults(object):
         Returns:
             (list): Sorted list of AssignmentGroupCachedData.
         """
-        cached_data_list = [cached_data for cached_data in self.cached_data_dict.values()]
+        cached_data_list = [cached_data for cached_data in list(self.cached_data_dict.values())]
         cached_data_list.sort(key=lambda cd: cd.group.assignment.publishing_time)
         return cached_data_list
 
@@ -171,7 +171,7 @@ class RelatedStudentResults(object):
 
     def __serialize_assignment_results(self):
         assignment_result_list = []
-        for assignment_id in self.cached_data_dict.keys():
+        for assignment_id in list(self.cached_data_dict.keys()):
             assignment_result_list.append({
                 'id': assignment_id,
                 'result': self.get_result_for_assignment(assignment_id=assignment_id)
@@ -190,16 +190,16 @@ class RelatedStudentResults(object):
         Simple prettyprint showing the results of the RelatedStudent for
         each Assignment.
         """
-        for assignment_id, cached_data in self.cached_data_dict.items():
+        for assignment_id, cached_data in list(self.cached_data_dict.items()):
             published_feedbackset = cached_data.last_published_feedbackset
             passing_grade = cached_data.group.parentnode.points_is_passing_grade(published_feedbackset.grading_points)
-            print '    - Assignment {} ({}):\n        * Points: {}/{} (passed: {})'.format(
+            print('    - Assignment {} ({}):\n        * Points: {}/{} (passed: {})'.format(
                 assignment_id,
                 cached_data.group.parentnode,
                 cached_data.last_published_feedbackset.grading_points,
                 cached_data.group.parentnode.max_points,
                 passing_grade
-            )
+            ))
 
 
 class PeriodAllResultsCollector(object):
@@ -310,11 +310,11 @@ class PeriodAllResultsCollector(object):
         Returns:
             (iterator): iterator over :obj:`~.RelatedStudentResults`.
         """
-        return self.results.itervalues()
+        return iter(self.results.values())
 
     def serialize_all_results(self):
         serialized = {
-            'relatedstudents': [result_info.serialize() for result_info in self.results.itervalues()]
+            'relatedstudents': [result_info.serialize() for result_info in self.results.values()]
         }
         return serialized
 
@@ -322,6 +322,6 @@ class PeriodAllResultsCollector(object):
         """
         Pretty prints the result on all Assignments for each RelatedStudent.
         """
-        for relatedstudent_id, relatedstudent_results in self.results.items():
+        for relatedstudent_id, relatedstudent_results in list(self.results.items()):
             relatedstudent_results.prettyprint_results()
-            print '\n'
+            print('\n')

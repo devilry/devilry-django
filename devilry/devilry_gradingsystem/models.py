@@ -50,7 +50,7 @@ class FeedbackDraft(models.Model):
         help_text='Time when this feedback was saved. Since FeedbackDraft is immutable, this never changes.')
 
     def __unicode__(self):
-        return u'FeedbackDraft#{} for Delivery#{} ({} - {})'.format(
+        return 'FeedbackDraft#{} for Delivery#{} ({} - {})'.format(
             self.id, self.delivery_id, self.saved_by, self.save_timestamp)
 
     @classmethod
@@ -112,7 +112,7 @@ class FeedbackDraft(models.Model):
 
 def feedback_draft_file_upload_to(instance, filename):
     extension = os.path.splitext(filename)[1]
-    return u'devilry_gradingsystem/feedbackdraftfile/{deliveryid}/{uuid}{extension}'.format(
+    return 'devilry_gradingsystem/feedbackdraftfile/{deliveryid}/{uuid}{extension}'.format(
         deliveryid=instance.delivery_id,
         uuid=str(uuid.uuid1()),
         extension=extension)
@@ -159,7 +159,7 @@ class FeedbackDraftFile(models.Model):
         })
 
     def __unicode__(self):
-        return u'FeedbackDraftFile#{} by user#{} on delivery#{}'.format(
+        return 'FeedbackDraftFile#{} by user#{} on delivery#{}'.format(
             self.pk, self.saved_by_id, self.delivery_id)
 
     def to_staticfeedbackfileattachment(self, staticfeedback):

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django import test
 from django.core import mail
@@ -61,7 +61,7 @@ class TestBulkCreateFeedbackSimplePassedFailedPlugin(test.TestCase, cradmin_test
             requestuser=user,
             cradmin_role=testassignment
         )
-        self.assertEquals('Candidate(candidate)',
+        self.assertEqual('Candidate(candidate)',
                           mockresponse.selector.one('.devilry-user-verbose-inline-both').alltext_normalized)
 
     def test_group_three_candidates_display_names(self):
@@ -82,7 +82,7 @@ class TestBulkCreateFeedbackSimplePassedFailedPlugin(test.TestCase, cradmin_test
             requestuser=user,
             cradmin_role=testassignment
         )
-        self.assertEquals('Candidate1(candidate1) , Candidate2(candidate2) , Candidate3(candidate3)',
+        self.assertEqual('Candidate1(candidate1) , Candidate2(candidate2) , Candidate3(candidate3)',
                           mockresponse.selector.one('.devilry-assignmentgroup-users').alltext_normalized)
 
     def test_group_anonymization_semi_single_candidate(self):
@@ -96,7 +96,7 @@ class TestBulkCreateFeedbackSimplePassedFailedPlugin(test.TestCase, cradmin_test
             requestuser=user,
             cradmin_role=testassignment
         )
-        self.assertEquals('Automatic anonymous ID missing',
+        self.assertEqual('Automatic anonymous ID missing',
                           mockresponse.selector.one('.devilry-core-candidate-anonymous-name').alltext_normalized)
 
     def test_group_anonymization_semi_multiple_candidates(self):
@@ -114,9 +114,9 @@ class TestBulkCreateFeedbackSimplePassedFailedPlugin(test.TestCase, cradmin_test
         )
         candidate_names = [elem.alltext_normalized
                            for elem in mockresponse.selector.list('.devilry-core-candidate-anonymous-name')]
-        self.assertEquals(3, len(candidate_names))
+        self.assertEqual(3, len(candidate_names))
         for name in candidate_names:
-            self.assertEquals(name, 'Automatic anonymous ID missing')
+            self.assertEqual(name, 'Automatic anonymous ID missing')
 
     def test_group_anonymization_fully_single_candidate(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -129,7 +129,7 @@ class TestBulkCreateFeedbackSimplePassedFailedPlugin(test.TestCase, cradmin_test
             requestuser=user,
             cradmin_role=testassignment
         )
-        self.assertEquals('Automatic anonymous ID missing',
+        self.assertEqual('Automatic anonymous ID missing',
                           mockresponse.selector.one('.devilry-core-candidate-anonymous-name').alltext_normalized)
 
     def test_group_anonymization_fully_multiple_candidates(self):
@@ -147,9 +147,9 @@ class TestBulkCreateFeedbackSimplePassedFailedPlugin(test.TestCase, cradmin_test
         )
         candidate_names = [elem.alltext_normalized
                            for elem in mockresponse.selector.list('.devilry-core-candidate-anonymous-name')]
-        self.assertEquals(3, len(candidate_names))
+        self.assertEqual(3, len(candidate_names))
         for name in candidate_names:
-            self.assertEquals(name, 'Automatic anonymous ID missing')
+            self.assertEqual(name, 'Automatic anonymous ID missing')
 
     def test_post_comment_attributes(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -167,14 +167,14 @@ class TestBulkCreateFeedbackSimplePassedFailedPlugin(test.TestCase, cradmin_test
                 }
             })
         group_comments = group_models.GroupComment.objects.all()
-        self.assertEquals(1, group_comments.count())
+        self.assertEqual(1, group_comments.count())
         feedback_comment = group_comments[0]
-        self.assertEquals(feedback_comment.part_of_grading, True)
-        self.assertEquals(feedback_comment.visibility, group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        self.assertEquals(feedback_comment.user, user)
-        self.assertEquals(feedback_comment.user_role, group_models.GroupComment.USER_ROLE_EXAMINER)
-        self.assertEquals(feedback_comment.text, 'you passed')
-        self.assertEquals(feedback_comment.comment_type, group_models.GroupComment.COMMENT_TYPE_GROUPCOMMENT)
+        self.assertEqual(feedback_comment.part_of_grading, True)
+        self.assertEqual(feedback_comment.visibility, group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        self.assertEqual(feedback_comment.user, user)
+        self.assertEqual(feedback_comment.user_role, group_models.GroupComment.USER_ROLE_EXAMINER)
+        self.assertEqual(feedback_comment.text, 'you passed')
+        self.assertEqual(feedback_comment.comment_type, group_models.GroupComment.COMMENT_TYPE_GROUPCOMMENT)
         self.assertIsNotNone(feedback_comment.published_datetime)
         self.assertTrue(feedback_comment.published_datetime < feedback_comment.feedback_set.grading_published_datetime)
 
@@ -196,7 +196,7 @@ class TestBulkCreateFeedbackSimplePassedFailedPlugin(test.TestCase, cradmin_test
         cached_data = AssignmentGroupCachedData.objects.get(group_id=testgroup.id)
         group_comments = group_models.GroupComment.objects.all()
         self.assertIsNone(cached_data.last_published_feedbackset)
-        self.assertEquals(0, group_comments.count())
+        self.assertEqual(0, group_comments.count())
 
     def test_post_bulk_feedback_single_candidate_with_comment_text(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -215,10 +215,10 @@ class TestBulkCreateFeedbackSimplePassedFailedPlugin(test.TestCase, cradmin_test
             })
         cached_data = AssignmentGroupCachedData.objects.get(group_id=testgroup.id)
         group_comments = group_models.GroupComment.objects.all()
-        self.assertEquals(1, group_comments.count())
-        self.assertEquals('you passed', group_comments[0].text)
-        self.assertEquals(cached_data.last_feedbackset, cached_data.last_published_feedbackset)
-        self.assertEquals(cached_data.last_published_feedbackset.grading_points, testassignment.max_points)
+        self.assertEqual(1, group_comments.count())
+        self.assertEqual('you passed', group_comments[0].text)
+        self.assertEqual(cached_data.last_feedbackset, cached_data.last_published_feedbackset)
+        self.assertEqual(cached_data.last_published_feedbackset.grading_points, testassignment.max_points)
 
     def test_post_bulk_feedback_three_candidates_with_comment_text(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -253,17 +253,17 @@ class TestBulkCreateFeedbackSimplePassedFailedPlugin(test.TestCase, cradmin_test
         group_comment_group1 = group_comments.get(feedback_set__group_id=cached_data_group1.group_id)
         group_comment_group2 = group_comments.get(feedback_set__group_id=cached_data_group2.group_id)
         group_comment_group3 = group_comments.get(feedback_set__group_id=cached_data_group3.group_id)
-        self.assertEquals(3, cached_data.count())
-        self.assertEquals(3, group_comments.count())
+        self.assertEqual(3, cached_data.count())
+        self.assertEqual(3, group_comments.count())
 
-        self.assertEquals('you passed', group_comment_group1.text)
-        self.assertEquals(testassignment.max_points, group_comment_group1.feedback_set.grading_points)
+        self.assertEqual('you passed', group_comment_group1.text)
+        self.assertEqual(testassignment.max_points, group_comment_group1.feedback_set.grading_points)
 
-        self.assertEquals('you failed', group_comment_group2.text)
-        self.assertEquals(0, group_comment_group2.feedback_set.grading_points)
+        self.assertEqual('you failed', group_comment_group2.text)
+        self.assertEqual(0, group_comment_group2.feedback_set.grading_points)
 
-        self.assertEquals('you passed', group_comment_group3.text)
-        self.assertEquals(testassignment.max_points, group_comment_group3.feedback_set.grading_points)
+        self.assertEqual('you passed', group_comment_group3.text)
+        self.assertEqual(testassignment.max_points, group_comment_group3.feedback_set.grading_points)
 
     def test_mails_feedback_mails_sent(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -375,14 +375,14 @@ class TestBulkCreateFeedbackSimplePointsPlugin(test.TestCase, cradmin_testhelper
                 }
             })
         group_comments = group_models.GroupComment.objects.all()
-        self.assertEquals(1, group_comments.count())
+        self.assertEqual(1, group_comments.count())
         feedback_comment = group_comments[0]
-        self.assertEquals(feedback_comment.part_of_grading, True)
-        self.assertEquals(feedback_comment.visibility, group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        self.assertEquals(feedback_comment.user, user)
-        self.assertEquals(feedback_comment.user_role, group_models.GroupComment.USER_ROLE_EXAMINER)
-        self.assertEquals(feedback_comment.text, 'you passed')
-        self.assertEquals(feedback_comment.comment_type, group_models.GroupComment.COMMENT_TYPE_GROUPCOMMENT)
+        self.assertEqual(feedback_comment.part_of_grading, True)
+        self.assertEqual(feedback_comment.visibility, group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        self.assertEqual(feedback_comment.user, user)
+        self.assertEqual(feedback_comment.user_role, group_models.GroupComment.USER_ROLE_EXAMINER)
+        self.assertEqual(feedback_comment.text, 'you passed')
+        self.assertEqual(feedback_comment.comment_type, group_models.GroupComment.COMMENT_TYPE_GROUPCOMMENT)
         self.assertIsNotNone(feedback_comment.published_datetime)
         self.assertTrue(feedback_comment.published_datetime < feedback_comment.feedback_set.grading_published_datetime)
 
@@ -409,7 +409,7 @@ class TestBulkCreateFeedbackSimplePointsPlugin(test.TestCase, cradmin_testhelper
         cached_data = AssignmentGroupCachedData.objects.get(group_id=testgroup.id)
         group_comments = group_models.GroupComment.objects.all()
         self.assertIsNone(cached_data.last_published_feedbackset)
-        self.assertEquals(0, group_comments.count())
+        self.assertEqual(0, group_comments.count())
 
     def test_post_bulk_feedback_single_candidate_with_comment_text(self):
         testassignment = mommy.make_recipe(
@@ -433,10 +433,10 @@ class TestBulkCreateFeedbackSimplePointsPlugin(test.TestCase, cradmin_testhelper
             })
         cached_data = AssignmentGroupCachedData.objects.get(group_id=testgroup.id)
         group_comments = group_models.GroupComment.objects.all()
-        self.assertEquals(1, group_comments.count())
-        self.assertEquals('you passed', group_comments[0].text)
-        self.assertEquals(cached_data.last_feedbackset, cached_data.last_published_feedbackset)
-        self.assertEquals(cached_data.last_published_feedbackset.grading_points, 60)
+        self.assertEqual(1, group_comments.count())
+        self.assertEqual('you passed', group_comments[0].text)
+        self.assertEqual(cached_data.last_feedbackset, cached_data.last_published_feedbackset)
+        self.assertEqual(cached_data.last_published_feedbackset.grading_points, 60)
 
     def test_post_bulk_feedback_three_candidates_with_comment_text(self):
         testassignment = mommy.make_recipe(
@@ -476,14 +476,14 @@ class TestBulkCreateFeedbackSimplePointsPlugin(test.TestCase, cradmin_testhelper
         group_comment_group1 = group_comments.get(feedback_set__group_id=cached_data_group1.group_id)
         group_comment_group2 = group_comments.get(feedback_set__group_id=cached_data_group2.group_id)
         group_comment_group3 = group_comments.get(feedback_set__group_id=cached_data_group3.group_id)
-        self.assertEquals(3, cached_data.count())
-        self.assertEquals(3, group_comments.count())
+        self.assertEqual(3, cached_data.count())
+        self.assertEqual(3, group_comments.count())
 
-        self.assertEquals('you passed', group_comment_group1.text)
-        self.assertEquals(90, group_comment_group1.feedback_set.grading_points)
+        self.assertEqual('you passed', group_comment_group1.text)
+        self.assertEqual(90, group_comment_group1.feedback_set.grading_points)
 
-        self.assertEquals('you failed', group_comment_group2.text)
-        self.assertEquals(50, group_comment_group2.feedback_set.grading_points)
+        self.assertEqual('you failed', group_comment_group2.text)
+        self.assertEqual(50, group_comment_group2.feedback_set.grading_points)
 
-        self.assertEquals('you passed', group_comment_group3.text)
-        self.assertEquals(90, group_comment_group3.feedback_set.grading_points)
+        self.assertEqual('you passed', group_comment_group3.text)
+        self.assertEqual(90, group_comment_group3.feedback_set.grading_points)

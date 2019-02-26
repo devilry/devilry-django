@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 import mock
 from django.contrib import messages
@@ -70,7 +70,7 @@ class TestFeedbackfeedAdminDiscussPublicView(TestCase, TestFeedbackfeedAdminMixi
                                parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-form-heading'))
-        self.assertEquals(
+        self.assertEqual(
             'Discuss with the student(s). Anything you write or upload here is visible to the student(s), '
             'examiners, and admins.',
             mockresponse.selector.one('.devilry-group-feedbackfeed-form-heading').alltext_normalized
@@ -81,7 +81,7 @@ class TestFeedbackfeedAdminDiscussPublicView(TestCase, TestFeedbackfeedAdminMixi
                                parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
         self.assertTrue(mockresponse.selector.exists('#submit-id-admin_add_public_comment'))
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_post_feedbackset_comment_visible_to_everyone(self):
         admin = mommy.make('devilry_account.User', shortname='periodadmin', fullname='Thor')
@@ -98,11 +98,11 @@ class TestFeedbackfeedAdminDiscussPublicView(TestCase, TestFeedbackfeedAdminMixi
                 }
             })
         comments = group_models.GroupComment.objects.all()
-        self.assertEquals(1, len(comments))
-        self.assertEquals('visible-to-everyone', comments[0].visibility)
-        self.assertEquals('periodadmin', comments[0].user.shortname)
-        self.assertEquals(feedbackset.id, comments[0].feedback_set.id)
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(1, len(comments))
+        self.assertEqual('visible-to-everyone', comments[0].visibility)
+        self.assertEqual('periodadmin', comments[0].user.shortname)
+        self.assertEqual(feedbackset.id, comments[0].feedback_set.id)
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_post_comment_mail_sent_to_everyone_in_group_sanity(self):
         admin = mommy.make('devilry_account.User', shortname='periodadmin', fullname='Thor')
@@ -161,8 +161,8 @@ class TestFeedbackfeedAdminDiscussPublicView(TestCase, TestFeedbackfeedAdminMixi
                     'temporary_file_collection_id': temporary_filecollection.id
                 }
             })
-        self.assertEquals(1, group_models.GroupComment.objects.count())
-        self.assertEquals(1, comment_models.CommentFile.objects.count())
+        self.assertEqual(1, group_models.GroupComment.objects.count())
+        self.assertEqual(1, comment_models.CommentFile.objects.count())
 
     def test_upload_single_file_content_visibility_everyone(self):
         # Test the content of a CommentFile after upload.
@@ -186,14 +186,14 @@ class TestFeedbackfeedAdminDiscussPublicView(TestCase, TestFeedbackfeedAdminMixi
                     'temporary_file_collection_id': temporary_filecollection.id
                 }
             })
-        self.assertEquals(1, comment_models.CommentFile.objects.count())
+        self.assertEqual(1, comment_models.CommentFile.objects.count())
         comment_file = comment_models.CommentFile.objects.all()[0]
         group_comment = group_models.GroupComment.objects.get(id=comment_file.comment.id)
-        self.assertEquals(group_comment.visibility, group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        self.assertEquals('testfile.txt', comment_file.filename)
-        self.assertEquals('Test content', comment_file.file.file.read())
-        self.assertEquals(len('Test content'), comment_file.filesize)
-        self.assertEquals('text/txt', comment_file.mimetype)
+        self.assertEqual(group_comment.visibility, group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        self.assertEqual('testfile.txt', comment_file.filename)
+        self.assertEqual(b'Test content', comment_file.file.file.read())
+        self.assertEqual(len( b'Test content'), comment_file.filesize)
+        self.assertEqual('text/txt', comment_file.mimetype)
 
     def test_upload_multiple_files_visibility_everyone(self):
         # Test the content of CommentFiles after upload.
@@ -205,7 +205,7 @@ class TestFeedbackfeedAdminDiscussPublicView(TestCase, TestFeedbackfeedAdminMixi
             file_list=[
                 SimpleUploadedFile(name='testfile1.txt', content=b'Test content1', content_type='text/txt'),
                 SimpleUploadedFile(name='testfile2.txt', content=b'Test content2', content_type='text/txt'),
-                SimpleUploadedFile(name='testfile3.txt', content=b'Test content3', content_type='text/txt')
+                SimpleUploadedFile(name='testfile3.txt', content=b b'Test content3', content_type='text/txt')
             ],
             user=testuser
         )
@@ -219,10 +219,10 @@ class TestFeedbackfeedAdminDiscussPublicView(TestCase, TestFeedbackfeedAdminMixi
                     'temporary_file_collection_id': temporary_filecollection.id
                 }
             })
-        self.assertEquals(1, group_models.GroupComment.objects.count())
+        self.assertEqual(1, group_models.GroupComment.objects.count())
         self.assertEqual(group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                          group_models.GroupComment.objects.all()[0].visibility)
-        self.assertEquals(3, comment_models.CommentFile.objects.count())
+        self.assertEqual(3, comment_models.CommentFile.objects.count())
 
     def test_upload_multiple_files_contents_visibility_everyone(self):
         # Test the content of a CommentFile after upload.
@@ -233,7 +233,7 @@ class TestFeedbackfeedAdminDiscussPublicView(TestCase, TestFeedbackfeedAdminMixi
             file_list=[
                 SimpleUploadedFile(name='testfile1.txt', content=b'Test content1', content_type='text/txt'),
                 SimpleUploadedFile(name='testfile2.txt', content=b'Test content2', content_type='text/txt'),
-                SimpleUploadedFile(name='testfile3.txt', content=b'Test content3', content_type='text/txt')
+                SimpleUploadedFile(name='testfile3.txt', content=b b'Test content3', content_type='text/txt')
             ],
             user=testuser
         )
@@ -247,30 +247,30 @@ class TestFeedbackfeedAdminDiscussPublicView(TestCase, TestFeedbackfeedAdminMixi
                     'temporary_file_collection_id': temporary_filecollection.id
                 }
             })
-        self.assertEquals(1, group_models.GroupComment.objects.count())
+        self.assertEqual(1, group_models.GroupComment.objects.count())
         self.assertEqual(group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                          group_models.GroupComment.objects.all()[0].visibility)
-        self.assertEquals(3, comment_models.CommentFile.objects.count())
+        self.assertEqual(3, comment_models.CommentFile.objects.count())
         comment_file1 = comment_models.CommentFile.objects.get(filename='testfile1.txt')
         comment_file2 = comment_models.CommentFile.objects.get(filename='testfile2.txt')
         comment_file3 = comment_models.CommentFile.objects.get(filename='testfile3.txt')
 
         # Check content of testfile 1.
         self.assertEqual('testfile1.txt', comment_file1.filename)
-        self.assertEqual('Test content1', comment_file1.file.file.read())
+        self.assertEqual(b'Test content1', comment_file1.file.file.read())
         self.assertEqual(len('Test content1'), comment_file1.filesize)
         self.assertEqual('text/txt', comment_file1.mimetype)
 
         # Check content of testfile 2.
         self.assertEqual('testfile2.txt', comment_file2.filename)
-        self.assertEqual('Test content2', comment_file2.file.file.read())
+        self.assertEqual(b'Test content2', comment_file2.file.file.read())
         self.assertEqual(len('Test content2'), comment_file2.filesize)
         self.assertEqual('text/txt', comment_file2.mimetype)
 
         # Check content of testfile 3.
         self.assertEqual('testfile3.txt', comment_file3.filename)
-        self.assertEqual('Test content3', comment_file3.file.file.read())
-        self.assertEqual(len('Test content3'), comment_file3.filesize)
+        self.assertEqual( b'Test content3', comment_file3.file.file.read())
+        self.assertEqual(len( b'Test content3'), comment_file3.filesize)
         self.assertEqual('text/txt', comment_file3.mimetype)
 
     def test_upload_files_and_comment_text(self):
@@ -295,10 +295,10 @@ class TestFeedbackfeedAdminDiscussPublicView(TestCase, TestFeedbackfeedAdminMixi
                     'temporary_file_collection_id': temporary_filecollection.id
                 }
             })
-        self.assertEquals(2, comment_models.CommentFile.objects.count())
+        self.assertEqual(2, comment_models.CommentFile.objects.count())
         self.assertEqual(1, group_models.GroupComment.objects.count())
         group_comments = group_models.GroupComment.objects.all()
-        self.assertEquals('Test comment', group_comments[0].text)
+        self.assertEqual('Test comment', group_comments[0].text)
 
 
 class TestFeedbackfeedAdminWithExaminersDiscussView(TestCase, TestFeedbackfeedAdminMixin):
@@ -312,7 +312,7 @@ class TestFeedbackfeedAdminWithExaminersDiscussView(TestCase, TestFeedbackfeedAd
                                parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-form-heading'))
-        self.assertEquals(
+        self.assertEqual(
             'Internal notes for this student or project group. Visible only to examiners and admins. '
             'Notes are not visible to students.',
             mockresponse.selector.one('.devilry-group-feedbackfeed-form-heading').alltext_normalized
@@ -323,7 +323,7 @@ class TestFeedbackfeedAdminWithExaminersDiscussView(TestCase, TestFeedbackfeedAd
                                parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
         self.assertTrue(mockresponse.selector.exists('#submit-id-admin_add_comment_for_examiners_and_admins'))
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_post_feedbackset_comment_visible_to_examiner_and_admins(self):
         admin = mommy.make('devilry_account.User', shortname='periodadmin', fullname='Thor')
@@ -341,11 +341,11 @@ class TestFeedbackfeedAdminWithExaminersDiscussView(TestCase, TestFeedbackfeedAd
                 }
             })
         comments = group_models.GroupComment.objects.all()
-        self.assertEquals(1, len(comments))
-        self.assertEquals('visible-to-examiner-and-admins', comments[0].visibility)
-        self.assertEquals('periodadmin', comments[0].user.shortname)
-        self.assertEquals(feedbackset.id, comments[0].feedback_set.id)
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(1, len(comments))
+        self.assertEqual('visible-to-examiner-and-admins', comments[0].visibility)
+        self.assertEqual('periodadmin', comments[0].user.shortname)
+        self.assertEqual(feedbackset.id, comments[0].feedback_set.id)
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_post_comment_email_sent_only_to_examiners_sanity(self):
         admin = mommy.make('devilry_account.User', shortname='periodadmin', fullname='Thor')
@@ -406,10 +406,10 @@ class TestFeedbackfeedAdminWithExaminersDiscussView(TestCase, TestFeedbackfeedAd
                     'temporary_file_collection_id': temporary_filecollection.id
                 }
             })
-        self.assertEquals(1, group_models.GroupComment.objects.count())
+        self.assertEqual(1, group_models.GroupComment.objects.count())
         self.assertEqual(group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
                          group_models.GroupComment.objects.all()[0].visibility)
-        self.assertEquals(1, comment_models.CommentFile.objects.count())
+        self.assertEqual(1, comment_models.CommentFile.objects.count())
 
     def test_upload_single_file_content_visibility_examiners_and_admins(self):
         # Test the content of a CommentFile after upload.
@@ -433,14 +433,14 @@ class TestFeedbackfeedAdminWithExaminersDiscussView(TestCase, TestFeedbackfeedAd
                     'temporary_file_collection_id': temporary_filecollection.id
                 }
             })
-        self.assertEquals(1, group_models.GroupComment.objects.count())
+        self.assertEqual(1, group_models.GroupComment.objects.count())
         self.assertEqual(group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
                          group_models.GroupComment.objects.all()[0].visibility)
-        self.assertEquals(1, comment_models.CommentFile.objects.count())
+        self.assertEqual(1, comment_models.CommentFile.objects.count())
         comment_file = comment_models.CommentFile.objects.all()[0]
         self.assertEqual('testfile.txt', comment_file.filename)
-        self.assertEqual('Test content', comment_file.file.file.read())
-        self.assertEqual(len('Test content'), comment_file.filesize)
+        self.assertEqual(b'Test content', comment_file.file.file.read())
+        self.assertEqual(len( b'Test content'), comment_file.filesize)
         self.assertEqual('text/txt', comment_file.mimetype)
 
     def test_upload_multiple_files_visibility_examiners_and_admins(self):
@@ -453,7 +453,7 @@ class TestFeedbackfeedAdminWithExaminersDiscussView(TestCase, TestFeedbackfeedAd
             file_list=[
                 SimpleUploadedFile(name='testfile1.txt', content=b'Test content1', content_type='text/txt'),
                 SimpleUploadedFile(name='testfile2.txt', content=b'Test content2', content_type='text/txt'),
-                SimpleUploadedFile(name='testfile3.txt', content=b'Test content3', content_type='text/txt')
+                SimpleUploadedFile(name='testfile3.txt', content=b b'Test content3', content_type='text/txt')
             ],
             user=testuser
         )
@@ -467,10 +467,10 @@ class TestFeedbackfeedAdminWithExaminersDiscussView(TestCase, TestFeedbackfeedAd
                     'temporary_file_collection_id': temporary_filecollection.id
                 }
             })
-        self.assertEquals(1, group_models.GroupComment.objects.count())
+        self.assertEqual(1, group_models.GroupComment.objects.count())
         self.assertEqual(group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
                          group_models.GroupComment.objects.all()[0].visibility)
-        self.assertEquals(3, comment_models.CommentFile.objects.count())
+        self.assertEqual(3, comment_models.CommentFile.objects.count())
 
     def test_upload_multiple_files_contents_visibility_examiners_and_admins(self):
         # Test the content of a CommentFile after upload.
@@ -481,7 +481,7 @@ class TestFeedbackfeedAdminWithExaminersDiscussView(TestCase, TestFeedbackfeedAd
             file_list=[
                 SimpleUploadedFile(name='testfile1.txt', content=b'Test content1', content_type='text/txt'),
                 SimpleUploadedFile(name='testfile2.txt', content=b'Test content2', content_type='text/txt'),
-                SimpleUploadedFile(name='testfile3.txt', content=b'Test content3', content_type='text/txt')
+                SimpleUploadedFile(name='testfile3.txt', content=b b'Test content3', content_type='text/txt')
             ],
             user=testuser
         )
@@ -495,30 +495,30 @@ class TestFeedbackfeedAdminWithExaminersDiscussView(TestCase, TestFeedbackfeedAd
                     'temporary_file_collection_id': temporary_filecollection.id
                 }
             })
-        self.assertEquals(1, group_models.GroupComment.objects.count())
+        self.assertEqual(1, group_models.GroupComment.objects.count())
         self.assertEqual(group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
                          group_models.GroupComment.objects.all()[0].visibility)
-        self.assertEquals(3, comment_models.CommentFile.objects.count())
+        self.assertEqual(3, comment_models.CommentFile.objects.count())
         comment_file1 = comment_models.CommentFile.objects.get(filename='testfile1.txt')
         comment_file2 = comment_models.CommentFile.objects.get(filename='testfile2.txt')
         comment_file3 = comment_models.CommentFile.objects.get(filename='testfile3.txt')
 
         # Check content of testfile 1.
         self.assertEqual('testfile1.txt', comment_file1.filename)
-        self.assertEqual('Test content1', comment_file1.file.file.read())
+        self.assertEqual(b'Test content1', comment_file1.file.file.read())
         self.assertEqual(len('Test content1'), comment_file1.filesize)
         self.assertEqual('text/txt', comment_file1.mimetype)
 
         # Check content of testfile 2.
         self.assertEqual('testfile2.txt', comment_file2.filename)
-        self.assertEqual('Test content2', comment_file2.file.file.read())
+        self.assertEqual(b'Test content2', comment_file2.file.file.read())
         self.assertEqual(len('Test content2'), comment_file2.filesize)
         self.assertEqual('text/txt', comment_file2.mimetype)
 
         # Check content of testfile 3.
         self.assertEqual('testfile3.txt', comment_file3.filename)
-        self.assertEqual('Test content3', comment_file3.file.file.read())
-        self.assertEqual(len('Test content3'), comment_file3.filesize)
+        self.assertEqual( b'Test content3', comment_file3.file.file.read())
+        self.assertEqual(len( b'Test content3'), comment_file3.filesize)
         self.assertEqual('text/txt', comment_file3.mimetype)
 
 
@@ -663,7 +663,7 @@ class TestAdminEditGroupCommentView(TestCase, cradmin_testhelpers.TestCaseMixin)
         db_comment = group_models.GroupComment.objects.get(id=groupcomment.id)
         edit_history = group_models.GroupCommentEditHistory.objects.get()
         self.assertEqual(group_models.GroupCommentEditHistory.objects.count(), 1)
-        self.assertEquals('edited', db_comment.text)
+        self.assertEqual('edited', db_comment.text)
         self.assertEqual('', edit_history.pre_edit_text)
         self.assertEqual('edited', edit_history.post_edit_text)
         messagesmock.add.assert_called_once_with(messages.SUCCESS, 'Comment updated!', '')

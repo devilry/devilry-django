@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django import test
 from django.core import mail
@@ -70,7 +70,7 @@ class TestEditGradeView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             viewkwargs={
                 'pk': testfeedbackset.id
             })
-        self.assertEquals(mockresponse.selector.one('#hint_id_grading_points').alltext_normalized,
+        self.assertEqual(mockresponse.selector.one('#hint_id_grading_points').alltext_normalized,
                           'Give a score between 0 to 100 where 40 is the minimum amount of points needed to pass.')
 
     def test_points_plugin_initial_is_current_grade(self):
@@ -85,8 +85,8 @@ class TestEditGradeView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 'pk': testfeedbackset.id
             })
         input_element = mockresponse.selector.one('#id_grading_points')
-        self.assertEquals(int(input_element.get('max')), 100)
-        self.assertEquals(int(input_element.get('value')), 70)
+        self.assertEqual(int(input_element.get('max')), 100)
+        self.assertEqual(int(input_element.get('value')), 70)
 
     def test_passed_failed_plugin_help_text(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -98,7 +98,7 @@ class TestEditGradeView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             viewkwargs={
                 'pk': testfeedbackset.id
             })
-        self.assertEquals(mockresponse.selector.one('#hint_id_grading_points').alltext_normalized,
+        self.assertEqual(mockresponse.selector.one('#hint_id_grading_points').alltext_normalized,
                           'Check the box to give a passing grade')
 
     def test_passed_failed_choices(self):
@@ -112,8 +112,8 @@ class TestEditGradeView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 'pk': testfeedbackset.id
             })
         input_element = mockresponse.selector.list('option')
-        self.assertEquals(input_element[0].get('value'), 'Passed')
-        self.assertEquals(input_element[1].get('value'), 'Failed')
+        self.assertEqual(input_element[0].get('value'), 'Passed')
+        self.assertEqual(input_element[1].get('value'), 'Failed')
 
     def test_passed_failed_plugin_initial_failed_if_failed(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -126,9 +126,9 @@ class TestEditGradeView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 'pk': testfeedbackset.id
             })
         input_element = mockresponse.selector.list('option')
-        self.assertEquals(input_element[0].get('value'), 'Passed')
+        self.assertEqual(input_element[0].get('value'), 'Passed')
         self.assertFalse(input_element[0].hasattribute('selected'))
-        self.assertEquals(input_element[1].get('value'), 'Failed')
+        self.assertEqual(input_element[1].get('value'), 'Failed')
         self.assertTrue(input_element[1].hasattribute('selected'))
 
     def test_passed_failed_plugin_initial_passed_if_passed(self):
@@ -142,9 +142,9 @@ class TestEditGradeView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 'pk': testfeedbackset.id
             })
         input_element = mockresponse.selector.list('option')
-        self.assertEquals(input_element[0].get('value'), 'Passed')
+        self.assertEqual(input_element[0].get('value'), 'Passed')
         self.assertTrue(input_element[0].hasattribute('selected'))
-        self.assertEquals(input_element[1].get('value'), 'Failed')
+        self.assertEqual(input_element[1].get('value'), 'Failed')
         self.assertFalse(input_element[1].hasattribute('selected'))
 
     def test_post_points_plugin(self):

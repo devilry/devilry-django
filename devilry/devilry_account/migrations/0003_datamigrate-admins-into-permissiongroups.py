@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django.db import models, migrations
 
@@ -37,7 +37,7 @@ def datamigrate_admins_into_permissiongroups(apps, schema_editor):
             .select_related('parentnode')\
             .prefetch_related('admins'):
         permissiongroup = permissiongroup_model(
-            name=u'{}.{}'.format(period.parentnode.short_name,
+            name='{}.{}'.format(period.parentnode.short_name,
                                  period.short_name),
             is_custom_manageable=True,
             grouptype='periodadmin')

@@ -24,7 +24,7 @@ class TestAssignmentDeadlineHandlingUpdateView(TestCase, cradmin_testhelpers.Tes
             cradmin_role=testassignment,
             requestuser=testuser,
             viewkwargs={'pk': testassignment.id})
-        self.assertEquals(mockresponse.selector.one('h1').alltext_normalized,
+        self.assertEqual(mockresponse.selector.one('h1').alltext_normalized,
                           'Edit deadline handling')
 
     def test_user_is_periodadmin_raises_404(self):

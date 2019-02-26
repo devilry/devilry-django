@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django.db import models
 from django.utils import timezone
@@ -146,7 +146,7 @@ class Status(models.Model):
         return self.students.filter(qualifies=True)
 
     def __unicode__(self):
-        return u'Status(period={period}, id={id}, status={status})'.format(
+        return 'Status(period={period}, id={id}, status={status})'.format(
             id=self.id, status=self.period, period=self.period)
 
 
@@ -170,4 +170,4 @@ class QualifiesForFinalExam(models.Model):
             raise ValidationError('Status ``notready`` does not allow marking qualified students.')
 
     def __unicode__(self):
-        return u'{}-{}-{}'.format(self.relatedstudent, self.status, self.qualifies)
+        return '{}-{}-{}'.format(self.relatedstudent, self.status, self.qualifies)

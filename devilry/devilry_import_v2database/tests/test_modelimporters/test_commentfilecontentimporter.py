@@ -40,7 +40,7 @@ class TestCommentFileContentImporter(ImporterTestCaseMixin, test.TestCase):
         with self.settings(DEVILRY_V2_DELIVERY_FILE_ROOT=None):
             delivery_comment = mommy.make('devilry_group.GroupComment')
             v2_file = open(os.path.join(self.v2_delivery_root_temp_dir, 'test.py'), 'wb')
-            v2_file.write('import os')
+            v2_file.write(b'import os')
             v2_file.close()
             self.create_v2dump(
                 model_name='core.filemeta',
@@ -49,13 +49,13 @@ class TestCommentFileContentImporter(ImporterTestCaseMixin, test.TestCase):
             FileMetaImporter(input_root=self.temp_root_dir).import_models()
             CommentFileContentImporter(input_root=self.temp_root_dir).import_models()
             comment_file = CommentFile.objects.first()
-            self.assertEquals(comment_file.file.name, '')
+            self.assertEqual(comment_file.file.name, '')
 
     def test_filemeta_filecontent(self):
         with self.settings(DEVILRY_V2_DELIVERY_FILE_ROOT=self.v2_delivery_root_temp_dir):
             delivery_comment = mommy.make('devilry_group.GroupComment')
             v2_file = open(os.path.join(self.v2_delivery_root_temp_dir, 'test.py'), 'wb')
-            v2_file.write('import os')
+            v2_file.write(b'import os')
             v2_file.close()
             self.create_v2dump(
                 model_name='core.filemeta',
@@ -64,8 +64,8 @@ class TestCommentFileContentImporter(ImporterTestCaseMixin, test.TestCase):
             FileMetaImporter(input_root=self.temp_root_dir).import_models()
             CommentFileContentImporter(input_root=self.temp_root_dir).import_models()
             comment_file = CommentFile.objects.first()
-            self.assertEquals(comment_file.file.read(), 'import os')
-            self.assertEquals(comment_file.filesize, 9)
+            self.assertEqual(comment_file.file.read(), b'import os')
+            self.assertEqual(comment_file.filesize, 9)
 
     def _create_staticfeedback_dict(self, files):
         return {
@@ -80,14 +80,14 @@ class TestCommentFileContentImporter(ImporterTestCaseMixin, test.TestCase):
                 'files': files,
                 'deadline_id': mommy.make('devilry_group.FeedbackSet').id,
                 'save_timestamp': '2017-05-15T11:04:46.817',
-                'rendered_view': u'test'
+                'rendered_view': 'test'
             }
         }
 
     def test_staticfeedbackattachment_missing_file_root_setting(self):
         with self.settings(DEVILRY_V2_MEDIA_ROOT=None):
             v2_file = open(os.path.join(self.v2_feedback_root_temp_dir, 'test.py'), 'wb')
-            v2_file.write('import os')
+            v2_file.write(b'import os')
             v2_file.close()
             self.create_v2dump(
                 model_name='core.staticfeedback',
@@ -103,12 +103,12 @@ class TestCommentFileContentImporter(ImporterTestCaseMixin, test.TestCase):
             StaticFeedbackImporter(input_root=self.temp_root_dir).import_models()
             CommentFileContentImporter(input_root=self.temp_root_dir).import_models()
             comment_file = CommentFile.objects.first()
-            self.assertEquals(comment_file.file.name, '')
+            self.assertEqual(comment_file.file.name, '')
 
     def test_staticfeedbackattachment_filecontent(self):
         with self.settings(DEVILRY_V2_MEDIA_ROOT=self.v2_feedback_root_temp_dir):
             v2_file = open(os.path.join(self.v2_feedback_root_temp_dir, 'test.py'), 'wb')
-            v2_file.write('import os')
+            v2_file.write(b'import os')
             v2_file.close()
             self.create_v2dump(
                 model_name='core.staticfeedback',
@@ -124,5 +124,5 @@ class TestCommentFileContentImporter(ImporterTestCaseMixin, test.TestCase):
             StaticFeedbackImporter(input_root=self.temp_root_dir).import_models()
             CommentFileContentImporter(input_root=self.temp_root_dir).import_models()
             comment_file = CommentFile.objects.first()
-            self.assertEquals(comment_file.file.read(), 'import os')
-            self.assertEquals(comment_file.filesize, 9)
+            self.assertEqual(comment_file.file.read(), b'import os')
+            self.assertEqual(comment_file.filesize, 9)

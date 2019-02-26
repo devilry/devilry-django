@@ -12,7 +12,7 @@ def show_delivery(request, delivery_id):
         delivery = Delivery.objects\
             .select_related('deadline', 'deadline__assignment_group')\
             .get(id=delivery_id)
-    except Delivery.DoesNotExist, e:
+    except Delivery.DoesNotExist as e:
         raise Http404()
     else:
         return HttpResponseRedirect(

@@ -143,7 +143,7 @@ def sync_cradmin_theme_into_devilry_theme(cradmin_root_dir):
     for directory in 'cradmin_base', 'cradmin_theme_default', 'cradmin_theme_topmenu':
         sourcedir = os.path.join(cradmin_lessdir, directory)
         destinationdir = os.path.join(devilry_theme_lessdir, directory)
-        print 'Syncing', sourcedir, 'to', destinationdir
+        print('Syncing', sourcedir, 'to', destinationdir)
         if os.path.exists(destinationdir):
             shutil.rmtree(destinationdir)
         shutil.copytree(sourcedir, destinationdir)

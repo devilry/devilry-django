@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 import htmls
 from django import test
@@ -27,5 +27,5 @@ class TestTableBuilder(test.TestCase):
         selector = htmls.S(table.render())
 
         self.assertTrue(selector.one('.devilry-tablebuilder-table'))
-        self.assertEquals(3, len(selector.list('.devilry-tablebuilder-row')))
-        self.assertEquals(6, len(selector.list('.devilry-tablebuilder-data')))
+        self.assertEqual(3, len(selector.list('.devilry-tablebuilder-row')))
+        self.assertEqual(6, len(selector.list('.devilry-tablebuilder-data')))

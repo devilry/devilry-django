@@ -8,12 +8,12 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from ievv_opensource.ievv_batchframework.models import BatchOperation
 
-import deliverytypes
+from . import deliverytypes
 from devilry.apps.core.models import Subject, Period
 from devilry.devilry_account.models import PeriodPermissionGroup
 from devilry.devilry_comment.models import Comment
 from devilry.devilry_dbcache.bulk_create_queryset_mixin import BulkCreateQuerySetMixin
-from model_utils import Etag
+from .model_utils import Etag
 from .abstract_is_admin import AbstractIsAdmin
 from .abstract_is_examiner import AbstractIsExaminer
 from .assignment import Assignment
@@ -1193,9 +1193,9 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
         candidateids = []
         for candidate in self.candidates.all():
-            candidateids.append(unicode(candidate.get_anonymous_name(assignment=assignment)))
+            candidateids.append(str(candidate.get_anonymous_name(assignment=assignment)))
         if candidateids:
-            return u', '.join(candidateids)
+            return ', '.join(candidateids)
         else:
             return pgettext_lazy('core assignmentgroup',
                                  'no students in group')
@@ -1209,7 +1209,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     def get_unanonymized_short_displayname(self):
         candidates = self.candidates.all()
         names = [candidate.relatedstudent.user.shortname for candidate in candidates]
-        out = u', '.join(names)
+        out = ', '.join(names)
         if out:
             if self.name:
                 return self.name
@@ -1225,7 +1225,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         else:
             candidates = self.candidates.all()
             names = [candidate.relatedstudent.user.shortname for candidate in candidates]
-            out = u', '.join(names)
+            out = ', '.join(names)
             if out:
                 if self.name:
                     return self.name
@@ -1249,11 +1249,11 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     def get_unanonymized_long_displayname(self):
         candidates = self.candidates.all()
         names = [candidate.relatedstudent.user.get_full_name() for candidate in candidates]
-        out = u', '.join(names)
+        out = ', '.join(names)
         if not out:
             out = self.__get_no_candidates_nonanonymous_displayname()
         if self.name:
-            out = u'{} ({})'.format(self.name, out)
+            out = '{} ({})'.format(self.name, out)
         return out
 
     def get_long_displayname(self, assignment=None):
@@ -1291,9 +1291,9 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         return self.get_long_displayname()
 
     def __unicode__(self):
-        return u'{} - {}'.format(self.short_displayname, self.parentnode.get_path())
+        return '{} - {}'.format(self.short_displayname, self.parentnode.get_path())
 
-    def get_examiners(self, separator=u', '):
+    def get_examiners(self, separator=', '):
         """
         Get a string contaning the shortname of all examiners in the group separated by
         comma (``','``).
@@ -1522,7 +1522,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
         for feedbackset in feedbacksets:
             # change feedbackset_type to merge prefix
-            if feedbackset.feedbackset_type in feedbackset_type_merge_map.keys():
+            if feedbackset.feedbackset_type in list(feedbackset_type_merge_map.keys()):
                 feedbackset.feedbackset_type = feedbackset_type_merge_map[feedbackset.feedbackset_type]
             feedbackset.group = target
             feedbackset.save()
@@ -1582,7 +1582,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             FeedbackSet.FEEDBACKSET_TYPE_RE_EDIT: FeedbackSet.FEEDBACKSET_TYPE_MERGE_RE_EDIT
         }
         for feedbackset in target.feedbackset_set.all():
-            if feedbackset.feedbackset_type in feedbackset_type_merge_map.keys():
+            if feedbackset.feedbackset_type in list(feedbackset_type_merge_map.keys()):
                 feedbackset.feedbackset_type = feedbackset_type_merge_map[feedbackset.feedbackset_type]
                 feedbackset.save()
 

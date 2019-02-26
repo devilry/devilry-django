@@ -35,8 +35,8 @@ class TestExaminerImporter(ImporterTestCaseMixin, test.TestCase):
                            data=self._create_examiner_dict(assignment_group=test_group, user=test_user))
         examiner_importer = ExaminerImporter(input_root=self.temp_root_dir)
         examiner_importer.import_models()
-        self.assertEquals(Examiner.objects.count(), 1)
-        self.assertEquals(RelatedExaminer.objects.count(), 1)
+        self.assertEqual(Examiner.objects.count(), 1)
+        self.assertEqual(RelatedExaminer.objects.count(), 1)
 
     def test_importer_pk(self):
         test_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -46,8 +46,8 @@ class TestExaminerImporter(ImporterTestCaseMixin, test.TestCase):
         examiner_importer = ExaminerImporter(input_root=self.temp_root_dir)
         examiner_importer.import_models()
         examiner = Examiner.objects.first()
-        self.assertEquals(examiner.pk, 156)
-        self.assertEquals(examiner.id, 156)
+        self.assertEqual(examiner.pk, 156)
+        self.assertEqual(examiner.id, 156)
 
     def test_importer_assignment_group(self):
         test_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -57,7 +57,7 @@ class TestExaminerImporter(ImporterTestCaseMixin, test.TestCase):
         examiner_importer = ExaminerImporter(input_root=self.temp_root_dir)
         examiner_importer.import_models()
         examiner = Examiner.objects.first()
-        self.assertEquals(examiner.assignmentgroup, test_group)
+        self.assertEqual(examiner.assignmentgroup, test_group)
 
     def test_importer_existing_related_examiner_active_is_true(self):
         test_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -67,7 +67,7 @@ class TestExaminerImporter(ImporterTestCaseMixin, test.TestCase):
                            data=self._create_examiner_dict(assignment_group=test_group, user=test_user))
         examiner_importer = ExaminerImporter(input_root=self.temp_root_dir)
         examiner_importer.import_models()
-        self.assertEquals(RelatedExaminer.objects.count(), 1)
+        self.assertEqual(RelatedExaminer.objects.count(), 1)
         related_examiner = RelatedExaminer.objects.first()
         self.assertTrue(related_examiner.active)
 
@@ -78,7 +78,7 @@ class TestExaminerImporter(ImporterTestCaseMixin, test.TestCase):
                            data=self._create_examiner_dict(assignment_group=test_group, user=test_user))
         examiner_importer = ExaminerImporter(input_root=self.temp_root_dir)
         examiner_importer.import_models()
-        self.assertEquals(RelatedExaminer.objects.count(), 1)
+        self.assertEqual(RelatedExaminer.objects.count(), 1)
         related_examiner = RelatedExaminer.objects.first()
         self.assertFalse(related_examiner.active)
 
@@ -90,7 +90,7 @@ class TestExaminerImporter(ImporterTestCaseMixin, test.TestCase):
         examiner_importer = ExaminerImporter(input_root=self.temp_root_dir)
         examiner_importer.import_models()
         examiner = Examiner.objects.first()
-        self.assertEquals(examiner.relatedexaminer.user, test_user)
+        self.assertEqual(examiner.relatedexaminer.user, test_user)
 
     def test_importer_related_examiner_period(self):
         test_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -100,7 +100,7 @@ class TestExaminerImporter(ImporterTestCaseMixin, test.TestCase):
         examiner_importer = ExaminerImporter(input_root=self.temp_root_dir)
         examiner_importer.import_models()
         examiner = Examiner.objects.first()
-        self.assertEquals(examiner.relatedexaminer.period, test_group.parentnode.parentnode)
+        self.assertEqual(examiner.relatedexaminer.period, test_group.parentnode.parentnode)
 
     # def test_importer_imported_model_created(self):
     #     test_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -127,10 +127,10 @@ class TestExaminerImporter(ImporterTestCaseMixin, test.TestCase):
                            model_meta=self._create_model_meta())
         examiner_importer = ExaminerImporter(input_root=self.temp_root_dir)
         examiner_importer.import_models()
-        self.assertEquals(Examiner.objects.count(), 1)
+        self.assertEqual(Examiner.objects.count(), 1)
         examiner = Examiner.objects.first()
-        self.assertEquals(examiner.pk, 156)
-        self.assertEquals(examiner.id, 156)
+        self.assertEqual(examiner.pk, 156)
+        self.assertEqual(examiner.id, 156)
         examiner_with_auto_id = mommy.make('core.Examiner')
-        self.assertEquals(examiner_with_auto_id.pk, self._create_model_meta()['max_id']+1)
-        self.assertEquals(examiner_with_auto_id.id, self._create_model_meta()['max_id']+1)
+        self.assertEqual(examiner_with_auto_id.pk, self._create_model_meta()['max_id']+1)
+        self.assertEqual(examiner_with_auto_id.id, self._create_model_meta()['max_id']+1)

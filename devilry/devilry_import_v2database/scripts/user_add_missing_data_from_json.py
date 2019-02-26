@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 import os
 import argparse
@@ -55,10 +55,10 @@ def add_missing_data_from_json_data(v2_user_data):
     mismatching_usernames_for_id_count = 0
     successfully_updated_count = 0
 
-    print 'Found {}/{} v3 users with existing v2 user IDs with last_login == NULL'.format(
+    print('Found {}/{} v3 users with existing v2 user IDs with last_login == NULL'.format(
         v3_users_from_v2_users_count,
         v3_user_count_total
-    )
+    ))
     for v3_user in v3_users_from_v2_users:
         if v3_user.shortname != v2_user_info_map[v3_user.id]['username']:
             mismatching_usernames_for_id_count += 1
@@ -68,13 +68,13 @@ def add_missing_data_from_json_data(v2_user_data):
                 parse(v2_user_info_map[v3_user.id]['last_login']))
             v3_user.save()
         if successfully_updated_count % 1000 == 0:
-            print '{} users updated'.format(successfully_updated_count)
-    print '{} users had the same ID in v3 and v2, but mismatching usernames'.format(
+            print('{} users updated'.format(successfully_updated_count))
+    print('{} users had the same ID in v3 and v2, but mismatching usernames'.format(
         mismatching_usernames_for_id_count
-    )
-    print '{} users have been updated with last login datetime'.format(
+    ))
+    print('{} users have been updated with last login datetime'.format(
         successfully_updated_count
-    )
+    ))
 
 
 def populate_arguments_and_get_parser():

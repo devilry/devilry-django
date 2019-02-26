@@ -1,6 +1,6 @@
 import sys
 import cProfile
-from cStringIO import StringIO
+from io import StringIO
 import pstats
 
 from django.conf import settings

@@ -1,8 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
 
-from abstract_is_admin import AbstractIsAdmin
-from save_interface import SaveInterface
+from .abstract_is_admin import AbstractIsAdmin
+from .save_interface import SaveInterface
 
 
 class InheritedAdmin(object):
@@ -58,7 +58,7 @@ class BaseNode(SaveInterface):
 
         Note that admins on parentnode(s) is not included.
         """
-        return u', '.join([u.shortname for u in self.admins.all()])
+        return ', '.join([u.shortname for u in self.admins.all()])
     get_admins.short_description = _('Administrators')
 
     def _get_inherited_admins(self, admins):
@@ -78,7 +78,7 @@ class BaseNode(SaveInterface):
         admins = {}
         if self.parentnode:
             self.parentnode._get_inherited_admins(admins)
-        return admins.values()
+        return list(admins.values())
 
     def get_all_admins(self):
         """

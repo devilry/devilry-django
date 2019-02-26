@@ -80,10 +80,10 @@ class TestPointRangeToGradeManager(TestCase):
             maximum_points=30,
             grade='D'
         )
-        self.assertEquals(PointRangeToGrade.objects.filter_grades_matching_points(9).get().grade, 'F')
-        self.assertEquals(PointRangeToGrade.objects.filter_grades_matching_points(10).get().grade, 'E')
-        self.assertEquals(PointRangeToGrade.objects.filter_grades_matching_points(20).get().grade, 'E')
-        self.assertEquals(PointRangeToGrade.objects.filter_grades_matching_points(21).get().grade, 'D')
+        self.assertEqual(PointRangeToGrade.objects.filter_grades_matching_points(9).get().grade, 'F')
+        self.assertEqual(PointRangeToGrade.objects.filter_grades_matching_points(10).get().grade, 'E')
+        self.assertEqual(PointRangeToGrade.objects.filter_grades_matching_points(20).get().grade, 'E')
+        self.assertEqual(PointRangeToGrade.objects.filter_grades_matching_points(21).get().grade, 'D')
 
 
 class TestPointRangeToGrade(TestCase):
@@ -209,7 +209,7 @@ class TestPointRangeToGrade(TestCase):
             maximum_points=50,
             grade='D'
         )
-        self.assertEquals(list(PointRangeToGrade.objects.all()), [f, e, d])
+        self.assertEqual(list(PointRangeToGrade.objects.all()), [f, e, d])
 
 
 class TestPointToGradeMapOldTests(TestCase):
@@ -231,10 +231,10 @@ class TestPointToGradeMapOldTests(TestCase):
             maximum_points=40,
             grade='E'
         )
-        self.assertEquals(point_to_grade_map.points_to_grade(0), f)
-        self.assertEquals(point_to_grade_map.points_to_grade(12), f)
-        self.assertEquals(point_to_grade_map.points_to_grade(20), f)
-        self.assertEquals(point_to_grade_map.points_to_grade(21), e)
+        self.assertEqual(point_to_grade_map.points_to_grade(0), f)
+        self.assertEqual(point_to_grade_map.points_to_grade(12), f)
+        self.assertEqual(point_to_grade_map.points_to_grade(20), f)
+        self.assertEqual(point_to_grade_map.points_to_grade(21), e)
         with self.assertRaises(PointRangeToGrade.DoesNotExist):
             point_to_grade_map.points_to_grade(41)
 
@@ -254,20 +254,20 @@ class TestPointToGradeMapOldTests(TestCase):
             maximum_points=3,
             grade='F'
         )
-        self.assertEquals(pointrange_to_grade2, assignment2.pointtogrademap.points_to_grade(2))
+        self.assertEqual(pointrange_to_grade2, assignment2.pointtogrademap.points_to_grade(2))
 
         # When we update to Django 1.5+, this should start only
         # matching pointrange_to_grade2. See:
         # https://github.com/devilry/devilry-django/issues/563
         matches = assignment2.pointtogrademap.pointrangetograde_set.filter_grades_matching_points(2)
-        self.assertEquals({pointrange_to_grade2}, set(matches))
+        self.assertEqual({pointrange_to_grade2}, set(matches))
         # self.assertEquals(set([pointrange_to_grade1, pointrange_to_grade2]), set(matches))
 
     def test_clean_no_entries(self):
         point_to_grade_map = PointToGradeMap.objects.create(assignment=self.assignment)
         self.assertTrue(point_to_grade_map.invalid)
         point_to_grade_map.invalid = True
-        self.assertEquals(point_to_grade_map.pointrangetograde_set.count(), 0)
+        self.assertEqual(point_to_grade_map.pointrangetograde_set.count(), 0)
         point_to_grade_map.clean()
         self.assertTrue(point_to_grade_map.invalid)
 
@@ -357,17 +357,17 @@ class TestPointToGradeMapOldTests(TestCase):
             (0, 'Bad'),
             (30, 'Better'),
             (60, 'Good'))
-        self.assertEquals(point_to_grade_map.pointrangetograde_set.count(), 3)
+        self.assertEqual(point_to_grade_map.pointrangetograde_set.count(), 3)
         bad, better, good = point_to_grade_map.pointrangetograde_set.all()
-        self.assertEquals(bad.minimum_points, 0)
-        self.assertEquals(bad.maximum_points, 29)
-        self.assertEquals(bad.grade, 'Bad')
-        self.assertEquals(better.minimum_points, 30)
-        self.assertEquals(better.maximum_points, 59)
-        self.assertEquals(better.grade, 'Better')
-        self.assertEquals(good.minimum_points, 60)
-        self.assertEquals(good.maximum_points, 100)
-        self.assertEquals(good.grade, 'Good')
+        self.assertEqual(bad.minimum_points, 0)
+        self.assertEqual(bad.maximum_points, 29)
+        self.assertEqual(bad.grade, 'Bad')
+        self.assertEqual(better.minimum_points, 30)
+        self.assertEqual(better.maximum_points, 59)
+        self.assertEqual(better.grade, 'Better')
+        self.assertEqual(good.minimum_points, 60)
+        self.assertEqual(good.maximum_points, 100)
+        self.assertEqual(good.grade, 'Good')
 
     def test_clear_map(self):
         point_to_grade_map = PointToGradeMap.objects.create(assignment=self.assignment)
@@ -381,9 +381,9 @@ class TestPointToGradeMapOldTests(TestCase):
             maximum_points=100,
             grade='Better'
         )
-        self.assertEquals(point_to_grade_map.pointrangetograde_set.count(), 2)
+        self.assertEqual(point_to_grade_map.pointrangetograde_set.count(), 2)
         point_to_grade_map.clear_map()
-        self.assertEquals(point_to_grade_map.pointrangetograde_set.count(), 0)
+        self.assertEqual(point_to_grade_map.pointrangetograde_set.count(), 0)
 
     def test_recreate_map(self):
         point_to_grade_map = PointToGradeMap.objects.create(assignment=self.assignment)
@@ -391,11 +391,11 @@ class TestPointToGradeMapOldTests(TestCase):
             (0, 'Bad'),
             (30, 'Better'),
             (60, 'Good'))
-        self.assertEquals(point_to_grade_map.pointrangetograde_set.count(), 3)
+        self.assertEqual(point_to_grade_map.pointrangetograde_set.count(), 3)
         bad, better, good = point_to_grade_map.pointrangetograde_set.all()
-        self.assertEquals(bad.grade, 'Bad')
-        self.assertEquals(better.grade, 'Better')
-        self.assertEquals(good.grade, 'Good')
+        self.assertEqual(bad.grade, 'Bad')
+        self.assertEqual(better.grade, 'Better')
+        self.assertEqual(good.grade, 'Good')
 
 
 class TestPointToGradeMap(TestCase):
@@ -460,7 +460,7 @@ class TestPointToGradeMap(TestCase):
 
         point_to_grade_map = PointToGradeMap.objects\
             .prefetch_pointrange_to_grade().get(id=point_to_grade_map.id)
-        self.assertEquals(point_to_grade_map.as_choices(), [
+        self.assertEqual(point_to_grade_map.as_choices(), [
             (0, 'Bad'),
             (3, 'Medium'),
             (7, 'Good'),

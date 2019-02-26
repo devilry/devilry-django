@@ -103,7 +103,7 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
         db_comment = group_models.GroupComment.objects.get(id=groupcomment.id)
         edit_history = group_models.GroupCommentEditHistory.objects.get()
         self.assertEqual(group_models.GroupCommentEditHistory.objects.count(), 1)
-        self.assertEquals('edited', db_comment.text)
+        self.assertEqual('edited', db_comment.text)
         self.assertEqual('', edit_history.pre_edit_text)
         self.assertEqual('edited', edit_history.post_edit_text)
         messagesmock.add.assert_called_once_with(messages.SUCCESS, 'Comment updated!', '')
@@ -131,7 +131,7 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
             messagesmock=messagesmock)
         db_comment = group_models.GroupComment.objects.get(id=groupcomment.id)
         self.assertEqual(group_models.GroupCommentEditHistory.objects.count(), 0)
-        self.assertEquals('unedited', db_comment.text)
+        self.assertEqual('unedited', db_comment.text)
         messagesmock.add.assert_called_once_with(messages.SUCCESS, 'No changes, comment not updated', '')
 
     def test_post_comment_save(self):
@@ -163,7 +163,7 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
         self.assertEqual(edit_history_entry.group_comment.id, groupcomment.id)
         self.assertEqual(edit_history_entry.pre_edit_text, 'unedited')
         self.assertEqual(edit_history_entry.post_edit_text, 'edited')
-        self.assertEquals('edited', db_comment.text)
+        self.assertEqual('edited', db_comment.text)
 
     def test_post_comment_visible_to_everyone_history_visibility(self):
         testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=self.__make_active_period())
@@ -265,4 +265,4 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
         )
         self.assertEqual(group_models.GroupCommentEditHistory.objects.count(), 1)
         db_comment = group_models.GroupComment.objects.get(id=groupcomment.id)
-        self.assertEquals('edited', db_comment.text)
+        self.assertEqual('edited', db_comment.text)

@@ -18,7 +18,7 @@ class TestCrinstanceStudent(test.TestCase):
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser
         crinstance = crinstance_student.StudentCrInstance(request=mockrequest)
-        self.assertEquals(0, crinstance.get_rolequeryset().count())
+        self.assertEqual(0, crinstance.get_rolequeryset().count())
 
     def test_get_rolequeryset_one_assignment_group(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -28,7 +28,7 @@ class TestCrinstanceStudent(test.TestCase):
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser
         crinstance = crinstance_student.StudentCrInstance(request=mockrequest)
-        self.assertEquals(1, crinstance.get_rolequeryset().count())
+        self.assertEqual(1, crinstance.get_rolequeryset().count())
 
     def test_get_rolequeryset_multiple_assignment_groups(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -44,7 +44,7 @@ class TestCrinstanceStudent(test.TestCase):
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser
         crinstance = crinstance_student.StudentCrInstance(request=mockrequest)
-        self.assertEquals(3, crinstance.get_rolequeryset().count())
+        self.assertEqual(3, crinstance.get_rolequeryset().count())
 
     def test_get_rolequeryset_has_access_to_feedbackset(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -56,7 +56,7 @@ class TestCrinstanceStudent(test.TestCase):
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser
         crinstance = crinstance_student.StudentCrInstance(request=mockrequest)
-        self.assertEquals(feedbackset, crinstance.get_rolequeryset()[0].feedbackset_set.all()[0])
+        self.assertEqual(feedbackset, crinstance.get_rolequeryset()[0].feedbackset_set.all()[0])
 
     def test_get_rolequeryset_does_not_have_access_to_feedbackset(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)

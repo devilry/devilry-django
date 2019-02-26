@@ -15,7 +15,7 @@ class TestCrinstanceAdmin(test.TestCase):
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser
         instance = crinstance_admin.AdminCrInstance(request=mockrequest)
-        self.assertEquals([], list(instance.get_rolequeryset()))
+        self.assertEqual([], list(instance.get_rolequeryset()))
 
     def test_get_rolequeryset_superuser(self):
         testgroup = mommy.make('core.AssignmentGroup', parentnode=mommy.make('core.Assignment'))
@@ -45,7 +45,7 @@ class TestCrinstanceAdmin(test.TestCase):
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser
         instance = crinstance_admin.AdminCrInstance(request=mockrequest)
-        self.assertEquals([testgroup], list(instance.get_rolequeryset()))
+        self.assertEqual([testgroup], list(instance.get_rolequeryset()))
 
     def test_getrolequeryset_not_admin_on_period(self):
         testassignment_another = mommy.make('core.Assignment')
@@ -68,7 +68,7 @@ class TestCrinstanceAdmin(test.TestCase):
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser
         instance = crinstance_admin.AdminCrInstance(request=mockrequest)
-        self.assertNotEquals([testgroup_another], list(instance.get_rolequeryset()))
+        self.assertNotEqual([testgroup_another], list(instance.get_rolequeryset()))
 
     def test_getrolequeryset_admin_on_subject(self):
         testassignment = mommy.make('core.Assignment')
@@ -82,7 +82,7 @@ class TestCrinstanceAdmin(test.TestCase):
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser
         instance = crinstance_admin.AdminCrInstance(request=mockrequest)
-        self.assertEquals([testgroup], list(instance.get_rolequeryset()))
+        self.assertEqual([testgroup], list(instance.get_rolequeryset()))
 
     def test_getrolequeryset_not_admin_on_subject(self):
         testassignment_another = mommy.make('core.Assignment')
@@ -105,7 +105,7 @@ class TestCrinstanceAdmin(test.TestCase):
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser
         instance = crinstance_admin.AdminCrInstance(request=mockrequest)
-        self.assertNotEquals([testgroup_another], list(instance.get_rolequeryset()))
+        self.assertNotEqual([testgroup_another], list(instance.get_rolequeryset()))
 
     def test_admin_devilryrole_periodadmin(self):
         testperiod = mommy.make('core.Period')
@@ -121,7 +121,7 @@ class TestCrinstanceAdmin(test.TestCase):
         mockrequest.user = testuser
         mockrequest.cradmin_role = testgroup
         testinstance = crinstance_admin.AdminCrInstance(request=mockrequest)
-        self.assertEquals('periodadmin', testinstance.get_devilryrole_for_requestuser())
+        self.assertEqual('periodadmin', testinstance.get_devilryrole_for_requestuser())
 
     def test_admin_devilryrole_subjectadmin(self):
         testsubject = mommy.make('core.Subject')
@@ -137,4 +137,4 @@ class TestCrinstanceAdmin(test.TestCase):
         mockrequest.user = testuser
         mockrequest.cradmin_role = testgroup
         testinstance = crinstance_admin.AdminCrInstance(request=mockrequest)
-        self.assertEquals('subjectadmin', testinstance.get_devilryrole_for_requestuser())
+        self.assertEqual('subjectadmin', testinstance.get_devilryrole_for_requestuser())

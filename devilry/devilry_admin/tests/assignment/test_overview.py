@@ -38,7 +38,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_h1(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end', long_name="TESTASSIGNMENT")
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
-        self.assertEquals(mockresponse.selector.one('h1').alltext_normalized, 'TESTASSIGNMENT')
+        self.assertEqual(mockresponse.selector.one('h1').alltext_normalized, 'TESTASSIGNMENT')
 
     # Todo: Remove
     # def test_publish_now_info_box(self):
@@ -174,7 +174,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_gradingconfiguration_examiner_chooses(self):
         assignment = mommy.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
-        self.assertEquals(
+        self.assertEqual(
             mockresponse.selector.one(
                 '#devilry_admin_assignment_overview_gradingconfiguration_information '
                 'dl:nth-child(1) dt:nth-child(1)').alltext_normalized,

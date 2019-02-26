@@ -40,7 +40,7 @@ class PointToGradeMapImporter(modelimporter.ModelImporter):
         with BulkCreator(model_class=self.get_model_class()) as point_to_grade_map_bulk_creator:
             for object_dict in directory_parser.iterate_object_dicts():
                 if fake:
-                    print('Would import: {}'.format(pprint.pformat(object_dict)))
+                    print(('Would import: {}'.format(pprint.pformat(object_dict))))
                 else:
                     point_to_grade_map = self._create_point_to_grade_map_from_object_dict(object_dict=object_dict)
                     point_to_grade_map_bulk_creator.add(point_to_grade_map)
@@ -84,7 +84,7 @@ class PointRangeToGradeImporter(modelimporter.ModelImporter):
         with BulkCreator(model_class=self.get_model_class()) as point_range_to_grade_bulk_creator:
             for object_dict in directory_parser.iterate_object_dicts():
                 if fake:
-                    print('Would import: {}'.format(pprint.pformat(object_dict)))
+                    print(('Would import: {}'.format(pprint.pformat(object_dict))))
                 else:
                     point_range_to_grade = self._create_point_range_to_grade_from_object_dict(object_dict=object_dict)
                     point_range_to_grade_bulk_creator.add(point_range_to_grade)

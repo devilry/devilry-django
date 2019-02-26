@@ -41,9 +41,9 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
                                relatedstudent=mommy.make('core.RelatedStudent'))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
                                                           requestuser=candidate.relatedstudent.user)
-        self.assertEquals(mockresponse.selector.one('title').alltext_normalized,
+        self.assertEqual(mockresponse.selector.one('title').alltext_normalized,
                           candidate.assignment_group.assignment.get_path())
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_assignment_soft_deadline_info_box_not_rendered(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -231,7 +231,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         self.assertTrue(mockresponse.selector.exists('.devilry-core-examiner-anonymous-name'))
         self.assertEqual('AnonymousExaminer',
                          mockresponse.selector.one('.devilry-core-examiner-anonymous-name').alltext_normalized)
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackfeed_anonymous_examiner_fully(self):
         testassignment = mommy.make('core.Assignment',
@@ -252,7 +252,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         self.assertTrue(mockresponse.selector.exists('.devilry-core-examiner-anonymous-name'))
         self.assertEqual('AnonymousExaminer',
                          mockresponse.selector.one('.devilry-core-examiner-anonymous-name').alltext_normalized)
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackfeed_download_not_visible_no_commentfiles_exists(self):
         testassignment = mommy.make('core.Assignment')
@@ -331,7 +331,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
                                                           requestuser=candidate.relatedstudent.user)
         self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-feedback-button'))
         self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-discuss-button'))
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackfeed_student_add_comment_to_feedbackset_without_deadline(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -346,7 +346,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
                              feedback_set=testfeedbackset)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
         self.assertTrue(mockresponse.selector.one('.devilry-group-feedbackfeed-comment-student'))
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackset_student_comment_after_deadline(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -363,7 +363,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group,
                                                           requestuser=candidate.relatedstudent.user)
         self.assertTrue(mockresponse.selector.exists('.after-deadline-badge'))
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackset_student_comment_after_deadline_with_new_feedbackset(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -388,7 +388,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                           requestuser=candidate.relatedstudent.user)
         self.assertTrue(mockresponse.selector.exists('.after-deadline-badge'))
-        self.assertEquals(2, group_models.FeedbackSet.objects.count())
+        self.assertEqual(2, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackset_comment_student_before_deadline(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
@@ -406,7 +406,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group,
                                                           requestuser=candidate.relatedstudent.user)
         self.assertFalse(mockresponse.selector.exists('.after-deadline-badge'))
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackfeed_student_can_see_other_student_comments(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
@@ -427,8 +427,8 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=janedoe.assignment_group,
                                                           requestuser=janedoe.relatedstudent.user)
         name = mockresponse.selector.one('.devilry-user-verbose-inline-fullname').alltext_normalized
-        self.assertEquals(johndoe.relatedstudent.user.fullname, name)
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(johndoe.relatedstudent.user.fullname, name)
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackfeed_student_can_see_other_student_comments_after_deadline(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -450,8 +450,8 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
                                                           requestuser=janedoe.relatedstudent.user)
         name = mockresponse.selector.one('.devilry-user-verbose-inline-fullname').alltext_normalized
         self.assertTrue(mockresponse.selector.one('.after-deadline-badge'))
-        self.assertEquals(johndoe.relatedstudent.user.fullname, name)
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(johndoe.relatedstudent.user.fullname, name)
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackfeed_student_can_see_examiner_visibility_visible_to_everyone(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
@@ -472,8 +472,8 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
                                                           requestuser=candidate.relatedstudent.user)
         name = mockresponse.selector.one('.devilry-user-verbose-inline-fullname').alltext_normalized
-        self.assertEquals(examiner.relatedexaminer.user.fullname, name)
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(examiner.relatedexaminer.user.fullname, name)
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackfeed_student_can_see_examiner_visibility_visible_to_everyone_after_deadline(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -494,8 +494,8 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
                                                           requestuser=candidate.relatedstudent.user)
         name = mockresponse.selector.one('.devilry-user-verbose-inline-fullname').alltext_normalized
-        self.assertEquals(examiner.relatedexaminer.user.fullname, name)
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(examiner.relatedexaminer.user.fullname, name)
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackfeed_student_can_not_see_examiner_comment_visibility_visible_to_examiner_and_admins(self):
         requestuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -517,7 +517,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
                                                           requestuser=requestuser)
         self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackfeed_student_can_not_see_admin_comment_visibility_visible_to_examiner_and_admins(self):
         requestuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -536,7 +536,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
                                                           requestuser=requestuser)
         self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment-admin'))
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_student_cannot_see_comment_visibility_private(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -556,7 +556,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
                                                           requestuser=candidate.relatedstudent.user)
         self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_post_feedbackset_comment_with_text(self):
         feedbackset = group_mommy.feedbackset_first_attempt_unpublished(
@@ -574,8 +574,8 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
                     'student_add_comment': 'unused value',
                 }
             })
-        self.assertEquals(1, len(group_models.GroupComment.objects.all()))
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(1, len(group_models.GroupComment.objects.all()))
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_post_feedbackset_comment_with_text_published_datetime_is_set(self):
         feedbackset = group_mommy.feedbackset_first_attempt_unpublished(
@@ -593,7 +593,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
                     'student_add_comment': 'unused value',
                 }
             })
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
         self.assertEqual(1, group_models.GroupComment.objects.count())
         self.assertIsNotNone(group_models.GroupComment.objects.all()[0].published_datetime)
         self.assertEqual('test', group_models.GroupComment.objects.all()[0].text)
@@ -612,11 +612,11 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
                     'student_add_comment': 'unused value',
                 }
             })
-        self.assertEquals(
+        self.assertEqual(
             'A comment must have either text or a file attached, or both. An empty comment is not allowed.',
             mockresponse.selector.one('#error_1_id_text').alltext_normalized)
-        self.assertEquals(0, group_models.GroupComment.objects.count())
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(0, group_models.GroupComment.objects.count())
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_post_feedbackset_comment_email_sent_sanity(self):
         feedbackset = group_mommy.feedbackset_first_attempt_unpublished(
@@ -731,9 +731,9 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
             mockresponse.selector.exists('.devilry-group-event__grade-last-edit-button'))
         self.assertFalse(
             mockresponse.selector.exists('.devilry-group-event__grade-last-new-attempt-button'))
-        self.assertNotIn('Move deadline', mockresponse.response.content)
-        self.assertNotIn('Edit grade', mockresponse.response.content)
-        self.assertNotIn('Give new attempt', mockresponse.response.content)
+        self.assertNotIn(b'Move deadline', mockresponse.response.content)
+        self.assertNotIn(b'Edit grade', mockresponse.response.content)
+        self.assertNotIn(b'Give new attempt', mockresponse.response.content)
 
     def test_get_feedbackset_published_header_buttons_not_rendered(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -750,9 +750,9 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
             mockresponse.selector.exists('.devilry-group-event__grade-last-edit-button'))
         self.assertFalse(
             mockresponse.selector.exists('.devilry-group-event__grade-last-new-attempt-button'))
-        self.assertNotIn('Move deadline', mockresponse.response.content)
-        self.assertNotIn('Edit grade', mockresponse.response.content)
-        self.assertNotIn('Give new attempt', mockresponse.response.content)
+        self.assertNotIn(b'Move deadline', mockresponse.response.content)
+        self.assertNotIn(b'Edit grade', mockresponse.response.content)
+        self.assertNotIn(b'Give new attempt', mockresponse.response.content)
 
 
 class TestFeedbackfeedGradeMappingStudent(TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -769,7 +769,7 @@ class TestFeedbackfeedGradeMappingStudent(TestCase, cradmin_testhelpers.TestCase
             cradmin_role=testgroup
         )
         grade_result = mockresponse.selector.list('.devilry-core-grade')[0].alltext_normalized
-        self.assertEquals(grade_result, 'passed')
+        self.assertEqual(grade_result, 'passed')
 
     def test_get_event_grading_passed_failed_result_failed(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -779,7 +779,7 @@ class TestFeedbackfeedGradeMappingStudent(TestCase, cradmin_testhelpers.TestCase
             cradmin_role=testgroup
         )
         grade_result = mockresponse.selector.list('.devilry-core-grade')[0].alltext_normalized
-        self.assertEquals(grade_result, 'failed')
+        self.assertEqual(grade_result, 'failed')
 
     def test_get_event_grading_points_result_passed(self):
         testassignment = mommy.make_recipe(
@@ -795,7 +795,7 @@ class TestFeedbackfeedGradeMappingStudent(TestCase, cradmin_testhelpers.TestCase
             cradmin_role=testgroup
         )
         grade_result = mockresponse.selector.list('.devilry-core-grade')[0].alltext_normalized
-        self.assertEquals(grade_result, '75/100 (passed)')
+        self.assertEqual(grade_result, '75/100 (passed)')
 
     def test_get_event_grading_points_result_failed(self):
         testassignment = mommy.make_recipe(
@@ -811,7 +811,7 @@ class TestFeedbackfeedGradeMappingStudent(TestCase, cradmin_testhelpers.TestCase
             cradmin_role=testgroup
         )
         grade_result = mockresponse.selector.list('.devilry-core-grade')[0].alltext_normalized
-        self.assertEquals(grade_result, '25/100 (failed)')
+        self.assertEqual(grade_result, '25/100 (failed)')
 
     def test_get_event_grading_grade_mapper_failed(self):
         testassignment = mommy.make_recipe(
@@ -838,7 +838,7 @@ class TestFeedbackfeedGradeMappingStudent(TestCase, cradmin_testhelpers.TestCase
             cradmin_role=testgroup
         )
         grade_result = mockresponse.selector.list('.devilry-core-grade')[0].alltext_normalized
-        self.assertEquals(grade_result, 'F (failed)')
+        self.assertEqual(grade_result, 'F (failed)')
 
     def test_get_event_grading_grade_mapper_passed(self):
         testassignment = mommy.make_recipe(
@@ -865,7 +865,7 @@ class TestFeedbackfeedGradeMappingStudent(TestCase, cradmin_testhelpers.TestCase
             cradmin_role=testgroup
         )
         grade_result = mockresponse.selector.list('.devilry-core-grade')[0].alltext_normalized
-        self.assertEquals(grade_result, 'E (passed)')
+        self.assertEqual(grade_result, 'E (passed)')
 
     def test_get_event_grading_grade_mapper_failed_can_see_points(self):
         testassignment = mommy.make_recipe(
@@ -893,7 +893,7 @@ class TestFeedbackfeedGradeMappingStudent(TestCase, cradmin_testhelpers.TestCase
             cradmin_role=testgroup
         )
         grade_result = mockresponse.selector.list('.devilry-core-grade')[0].alltext_normalized
-        self.assertEquals(grade_result, 'F (failed - 5/35)')
+        self.assertEqual(grade_result, 'F (failed - 5/35)')
 
     def test_get_event_grading_grade_mapper_passed_can_see_points(self):
         testassignment = mommy.make_recipe(
@@ -921,7 +921,7 @@ class TestFeedbackfeedGradeMappingStudent(TestCase, cradmin_testhelpers.TestCase
             cradmin_role=testgroup
         )
         grade_result = mockresponse.selector.list('.devilry-core-grade')[0].alltext_normalized
-        self.assertEquals(grade_result, 'E (passed - 10/35)')
+        self.assertEqual(grade_result, 'E (passed - 10/35)')
 
 
 class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -946,7 +946,7 @@ class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMi
                     'student_add_comment': 'unused value'
                 }
             })
-        self.assertEquals(0, group_models.GroupComment.objects.count())
+        self.assertEqual(0, group_models.GroupComment.objects.count())
         self.assertEqual(
             'A comment must have either text or a file attached, or both. An empty comment is not allowed.',
             mockresponse.selector.one('#error_1_id_text').alltext_normalized)
@@ -988,7 +988,7 @@ class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMi
                     }
                 })
         # we have to add a backend to the backendregistry.
-        self.assertEquals(1, CompressedArchiveMeta.objects.filter(content_object_id=testfeedbackset.id).count())
+        self.assertEqual(1, CompressedArchiveMeta.objects.filter(content_object_id=testfeedbackset.id).count())
         self.assertTrue(CompressedArchiveMeta.objects.get(id=test_archive_meta.id).delete)
 
     def test_upload_single_file(self):
@@ -1009,8 +1009,8 @@ class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMi
                     'temporary_file_collection_id': temporary_filecollection.id
                 }
             })
-        self.assertEquals(1, group_models.GroupComment.objects.count())
-        self.assertEquals(1, comment_models.CommentFile.objects.count())
+        self.assertEqual(1, group_models.GroupComment.objects.count())
+        self.assertEqual(1, comment_models.CommentFile.objects.count())
 
     def test_upload_single_file_content(self):
         # Test the content of a CommentFile after upload.
@@ -1034,10 +1034,10 @@ class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMi
                     'temporary_file_collection_id': temporary_filecollection.id
                 }
             })
-        self.assertEquals(1, comment_models.CommentFile.objects.count())
+        self.assertEqual(1, comment_models.CommentFile.objects.count())
         comment_file = comment_models.CommentFile.objects.all()[0]
         self.assertEqual('testfile.txt', comment_file.filename)
-        self.assertEqual('Test content', comment_file.file.file.read())
+        self.assertEqual(b'Test content', comment_file.file.file.read())
         self.assertEqual(len('Test content'), comment_file.filesize)
         self.assertEqual('text/txt', comment_file.mimetype)
 
@@ -1065,7 +1065,7 @@ class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMi
                     'temporary_file_collection_id': temporary_filecollection.id
                 }
             })
-        self.assertEquals(3, comment_models.CommentFile.objects.count())
+        self.assertEqual(3, comment_models.CommentFile.objects.count())
 
     def test_upload_multiple_files_contents(self):
         # Test the content of a CommentFile after upload.
@@ -1091,24 +1091,24 @@ class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMi
                     'temporary_file_collection_id': temporary_filecollection.id
                 }
             })
-        self.assertEquals(3, comment_models.CommentFile.objects.count())
+        self.assertEqual(3, comment_models.CommentFile.objects.count())
         comment_file1 = comment_models.CommentFile.objects.get(filename='testfile1.txt')
         comment_file2 = comment_models.CommentFile.objects.get(filename='testfile2.txt')
         comment_file3 = comment_models.CommentFile.objects.get(filename='testfile3.txt')
 
         # Check content of testfile 1.
-        self.assertEqual('Test content1', comment_file1.file.file.read())
+        self.assertEqual(b'Test content1', comment_file1.file.file.read())
         self.assertEqual(len('Test content1'), comment_file1.filesize)
         self.assertEqual('text/txt', comment_file1.mimetype)
 
         # Check content of testfile 2.
-        self.assertEqual('Test content2', comment_file2.file.file.read())
-        self.assertEqual(len('Test content2'), comment_file2.filesize)
+        self.assertEqual(b'Test content2', comment_file2.file.file.read())
+        self.assertEqual(len(b'Test content2'), comment_file2.filesize)
         self.assertEqual('text/txt', comment_file2.mimetype)
 
         # Check content of testfile 3.
-        self.assertEqual('Test content3', comment_file3.file.file.read())
-        self.assertEqual(len('Test content3'), comment_file3.filesize)
+        self.assertEqual(b'Test content3', comment_file3.file.file.read())
+        self.assertEqual(len(b'Test content3'), comment_file3.filesize)
         self.assertEqual('text/txt', comment_file3.mimetype)
 
     def test_upload_files_with_comment_text(self):
@@ -1134,9 +1134,9 @@ class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMi
                     'temporary_file_collection_id': temporary_filecollection.id
                 }
             })
-        self.assertEquals(2, comment_models.CommentFile.objects.count())
-        self.assertEquals(1, group_models.GroupComment.objects.count())
-        self.assertEquals('Test comment', group_models.GroupComment.objects.all()[0].text)
+        self.assertEqual(2, comment_models.CommentFile.objects.count())
+        self.assertEqual(1, group_models.GroupComment.objects.count())
+        self.assertEqual('Test comment', group_models.GroupComment.objects.all()[0].text)
 
     @override_settings(DEVILRY_STUDENT_DELIVERY_FEED_FILEUPLOADS_SEND_CONFIRMATION_EMAIL=True)
     def test_upload_file_email_confirmation_sent(self):
@@ -1198,7 +1198,7 @@ class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMi
                 }
             })
 
-        self.assertEquals(1, group_models.GroupComment.objects.count())
+        self.assertEqual(1, group_models.GroupComment.objects.count())
         self.assertEqual('test', group_models.GroupComment.objects.all()[0].text)
         self.assertEqual(0, comment_models.CommentFile.objects.count())
 
@@ -1221,7 +1221,7 @@ class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin)
         group_mommy.feedbackset_first_attempt_published(group=testgroup, grading_points=7)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
         self.assertTrue(mockresponse.selector.exists('.devilry-core-grade-passed'))
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackfeed_event_delivery_failed(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -1231,7 +1231,7 @@ class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin)
         group_mommy.feedbackset_first_attempt_published(group=testgroup, grading_points=3)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
         self.assertTrue(mockresponse.selector.exists('.devilry-core-grade-failed'))
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_student_can_not_see_comments_part_of_grading_before_publish_first_attempt(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -1253,7 +1253,7 @@ class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
                                                           requestuser=requestuser)
         self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_student_can_not_see_comments_part_of_grading_before_publish_new_attempt(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -1279,7 +1279,7 @@ class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
                                                           requestuser=candidate.relatedstudent.user)
         self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
-        self.assertEquals(2, group_models.FeedbackSet.objects.count())
+        self.assertEqual(2, group_models.FeedbackSet.objects.count())
 
     def test_get_student_can_see_comments_part_of_grading_after_publish_first_attempt(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -1306,8 +1306,8 @@ class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
                                                           requestuser=candidate.relatedstudent.user)
         feedback_comments = mockresponse.selector.list('.devilry-group-feedbackfeed-comment')
-        self.assertEquals(2, len(feedback_comments))
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(2, len(feedback_comments))
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_student_can_see_comments_part_of_grading_before_publish_new_attempt(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -1333,7 +1333,7 @@ class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
                                                           requestuser=candidate.relatedstudent.user)
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
-        self.assertEquals(2, group_models.FeedbackSet.objects.count())
+        self.assertEqual(2, group_models.FeedbackSet.objects.count())
 
     def test_get_num_queries(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -1358,7 +1358,7 @@ class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin)
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=candidate.relatedstudent.user,
                                                cradmin_instance=mock_cradmininstance)
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_num_queries_with_commentfiles(self):
         """
@@ -1392,7 +1392,7 @@ class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin)
         with self.assertNumQueries(19):
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=candidate.relatedstudent.user)
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
 
 class TestStudentEditGroupCommentView(TestCase, cradmin_testhelpers.TestCaseMixin):

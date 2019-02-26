@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django.conf import settings
 from django.core import files
@@ -249,7 +249,7 @@ class CommentFile(models.Model):
         null=False, blank=True, default="")
 
     def __unicode__(self):
-        return u'{} - {}'.format(self.comment.user, self.filename)
+        return '{} - {}'.format(self.comment.user, self.filename)
 
     def copy_into_comment(self, target):
         """

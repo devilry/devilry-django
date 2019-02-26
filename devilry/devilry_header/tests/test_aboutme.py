@@ -19,11 +19,11 @@ class TestAboutMeView(TestCase):
 
     def test_nologin(self):
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
     def test_render_noinput(self):
         response = self._getas(self.testuserbuilder.user)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         # html = response.content
 
     def test_languageselect(self):
@@ -34,7 +34,7 @@ class TestAboutMeView(TestCase):
             html = self._getas(self.testuserbuilder.user).content
             self.assertTrue(cssExists(html,
                 '#devilry_change_language_form'))
-            self.assertEquals(
+            self.assertEqual(
                 cssGet(html, '#devilry_change_language_form option[value="en"]')['selected'],
                 'selected')
 
@@ -44,6 +44,6 @@ class TestAboutMeView(TestCase):
                 LANGUAGE_CODE='nb'):
             html = self._getas(self.testuserbuilder.user).content
             self.assertTrue(cssExists(html, '#devilry_change_language_form'))
-            self.assertEquals(
+            self.assertEqual(
                 cssGet(html, '#devilry_change_language_form option[value="nb"]')['selected'],
                 'selected')

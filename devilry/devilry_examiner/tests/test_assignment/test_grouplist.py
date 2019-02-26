@@ -88,9 +88,9 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup.assignment,
                                                           requestuser=testuser)
-        self.assertIn('unanonymizedfullname', mockresponse.response.content)
-        self.assertIn('A un-anonymized fullname', mockresponse.response.content)
-        self.assertNotIn('MyAnonymousID', mockresponse.response.content)
+        self.assertContains(mockresponse.response, 'unanonymizedfullname')
+        self.assertContains(mockresponse.response, 'A un-anonymized fullname')
+        self.assertNotContains(mockresponse.response, 'MyAnonymousID')
 
     def test_anonymizationmode_semi_anonymous_candidates(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -108,9 +108,9 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup.assignment,
                                                           requestuser=testuser)
-        self.assertNotIn('unanonymizedfullname', mockresponse.response.content)
-        self.assertNotIn('A un-anonymized fullname', mockresponse.response.content)
-        self.assertIn('MyAnonymousID', mockresponse.response.content)
+        self.assertNotContains(mockresponse.response, 'unanonymizedfullname')
+        self.assertNotContains(mockresponse.response, 'A un-anonymized fullname')
+        self.assertContains(mockresponse.response, 'MyAnonymousID')
 
     def test_anonymizationmode_fully_anonymous_candidates(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -128,9 +128,9 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup.assignment,
                                                           requestuser=testuser)
-        self.assertNotIn('unanonymizedfullname', mockresponse.response.content)
-        self.assertNotIn('A un-anonymized fullname', mockresponse.response.content)
-        self.assertIn('MyAnonymousID', mockresponse.response.content)
+        self.assertNotContains(mockresponse.response, 'unanonymizedfullname')
+        self.assertNotContains(mockresponse.response, 'A un-anonymized fullname')
+        self.assertContains(mockresponse.response, 'MyAnonymousID')
 
     def test_querycount(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL,
@@ -2208,7 +2208,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testgroup.parentnode,
             requestuser=testuser
         )
-        self.assertEquals(
+        self.assertEqual(
             'Bulk feedback',
             mockresponse.selector.one('#devilry-examiner-bulk-feedback-button').alltext_normalized)
 
@@ -2225,7 +2225,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testgroup.parentnode,
             requestuser=testuser
         )
-        self.assertEquals(
+        self.assertEqual(
             'Simple bulk feedback',
             mockresponse.selector.one('#devilry-examiner-simple-bulk-feedback-button').alltext_normalized)
 
@@ -2246,6 +2246,6 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment,
             requestuser=testuser
         )
-        self.assertEquals(
+        self.assertEqual(
             'Manage deadlines',
             mockresponse.selector.one('#devilry-examiner-bulk-new-attempt-button').alltext_normalized)

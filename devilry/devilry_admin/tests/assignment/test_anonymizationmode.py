@@ -15,7 +15,7 @@ class TestAssignmentAnonymizationmodeUpdateView(TestCase, cradmin_testhelpers.Te
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=assignment, viewkwargs={'pk':assignment.id})
-        self.assertEquals(mockresponse.selector.one('h1').alltext_normalized,
+        self.assertEqual(mockresponse.selector.one('h1').alltext_normalized,
                           'Edit anonymization settings')
 
     def test_get_anonymizationmode_choices_sanity(self):

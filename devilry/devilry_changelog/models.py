@@ -57,6 +57,6 @@ class AssignmentChangeLogItem(AbstractChangeLogItem):
 
     actions = models.CharField(
         max_length=50,
-        choices=ACTIONS.items()
+        choices=list(ACTIONS.items())
     )
     assignment = models.ForeignKey(Assignment)

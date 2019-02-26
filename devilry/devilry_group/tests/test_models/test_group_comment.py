@@ -15,13 +15,13 @@ class TestGroupCommentModel(TestCase):
         test_comment = mommy.make('devilry_group.GroupComment',
                                   feedback_set__group__parentnode__parentnode=mommy.make_recipe(
                                       'devilry.apps.core.period_active'))
-        self.assertEquals(False, test_comment.part_of_grading)
+        self.assertEqual(False, test_comment.part_of_grading)
 
     def test_groupcomment_visibility_default_visible_to_everyone(self):
         test_comment = mommy.make('devilry_group.GroupComment',
                                   feedback_set__group__parentnode__parentnode=mommy.make_recipe(
                                       'devilry.apps.core.period_active'))
-        self.assertEquals(group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE, test_comment.visibility)
+        self.assertEqual(group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE, test_comment.visibility)
 
     def test_groupcomment_get_published_datetime_part_of_grading(self):
         time = timezone.now()
@@ -32,7 +32,7 @@ class TestGroupCommentModel(TestCase):
                                   part_of_grading=True,
                                   feedback_set__group__parentnode__parentnode=mommy.make_recipe(
                                       'devilry.apps.core.period_active'))
-        self.assertEquals(test_feedbackset.grading_published_datetime, test_comment.get_published_datetime())
+        self.assertEqual(test_feedbackset.grading_published_datetime, test_comment.get_published_datetime())
 
     def test_groupcomment_get_published_datetime_not_part_of_grading(self):
         test_feedbackset = mommy.make('devilry_group.FeedbackSet',
@@ -42,7 +42,7 @@ class TestGroupCommentModel(TestCase):
         test_comment = mommy.make('devilry_group.GroupComment',
                                   published_datetime=timezone.now(),
                                   feedback_set=test_feedbackset)
-        self.assertEquals(test_comment.published_datetime, test_comment.get_published_datetime())
+        self.assertEqual(test_comment.published_datetime, test_comment.get_published_datetime())
 
     def test_groupcomment_publish_draft(self):
         test_draftcomment = mommy.make('devilry_group.GroupComment',
@@ -54,15 +54,15 @@ class TestGroupCommentModel(TestCase):
         time = timezone.now()
         test_draftcomment.publish_draft(time)
         self.assertTrue(test_draftcomment.part_of_grading)
-        self.assertEquals(test_draftcomment.visibility, group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        self.assertEquals(test_draftcomment.published_datetime, time)
+        self.assertEqual(test_draftcomment.visibility, group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        self.assertEqual(test_draftcomment.published_datetime, time)
 
     def test_groupcomment_feedback_set(self):
         test_feedbackset = mommy.make('devilry_group.FeedbackSet',
                                       group__parentnode__parentnode=mommy.make_recipe(
                                           'devilry.apps.core.period_active'))
         test_comment = mommy.make('devilry_group.GroupComment', feedback_set=test_feedbackset)
-        self.assertEquals(test_comment.feedback_set, test_feedbackset)
+        self.assertEqual(test_comment.feedback_set, test_feedbackset)
 
     def test_clean_groupcomment_student_private_comment(self):
         test_comment = mommy.prepare('devilry_group.GroupComment',

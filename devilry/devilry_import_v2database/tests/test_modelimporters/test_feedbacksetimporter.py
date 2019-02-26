@@ -37,7 +37,7 @@ class TestFeedbackSetImporter(ImporterTestCaseMixin, test.TestCase):
         )
         feedback_set_importer = FeedbackSetImporter(input_root=self.temp_root_dir)
         feedback_set_importer.import_models()
-        self.assertEquals(FeedbackSet.objects.count(), 1)
+        self.assertEqual(FeedbackSet.objects.count(), 1)
 
     def test_importer_feedback_sets_multiple(self):
         test_group = mommy.make('core.AssignmentGroup',
@@ -66,17 +66,17 @@ class TestFeedbackSetImporter(ImporterTestCaseMixin, test.TestCase):
         feedbackset2 = feedback_sets[1]
         feedbackset3 = feedback_sets[2]
 
-        self.assertEquals(feedbackset1.id, 1)
-        self.assertEquals(feedbackset1.feedbackset_type, FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT)
-        self.assertEquals(feedbackset1.created_datetime, feedbackset1.deadline_datetime)
+        self.assertEqual(feedbackset1.id, 1)
+        self.assertEqual(feedbackset1.feedbackset_type, FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT)
+        self.assertEqual(feedbackset1.created_datetime, feedbackset1.deadline_datetime)
 
-        self.assertEquals(feedbackset2.id, 2)
-        self.assertEquals(feedbackset2.feedbackset_type, FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT)
-        self.assertEquals(feedbackset2.created_datetime, feedbackset2.deadline_datetime)
+        self.assertEqual(feedbackset2.id, 2)
+        self.assertEqual(feedbackset2.feedbackset_type, FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT)
+        self.assertEqual(feedbackset2.created_datetime, feedbackset2.deadline_datetime)
 
-        self.assertEquals(feedbackset3.id, 3)
-        self.assertEquals(feedbackset3.feedbackset_type, FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT)
-        self.assertEquals(feedbackset3.created_datetime, feedbackset3.deadline_datetime)
+        self.assertEqual(feedbackset3.id, 3)
+        self.assertEqual(feedbackset3.feedbackset_type, FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT)
+        self.assertEqual(feedbackset3.created_datetime, feedbackset3.deadline_datetime)
 
     def test_auto_sequence_numbered_objects_uses_meta_max_id(self):
         test_group = mommy.make('core.AssignmentGroup')
@@ -87,10 +87,10 @@ class TestFeedbackSetImporter(ImporterTestCaseMixin, test.TestCase):
         )
         feedback_set_importer = FeedbackSetImporter(input_root=self.temp_root_dir)
         feedback_set_importer.import_models()
-        self.assertEquals(FeedbackSet.objects.count(), 1)
+        self.assertEqual(FeedbackSet.objects.count(), 1)
         feedback_set = FeedbackSet.objects.first()
-        self.assertEquals(feedback_set.pk, 13)
-        self.assertEquals(feedback_set.id, 13)
+        self.assertEqual(feedback_set.pk, 13)
+        self.assertEqual(feedback_set.id, 13)
         feedback_set_with_auto_id = mommy.make('devilry_group.FeedbackSet')
-        self.assertEquals(feedback_set_with_auto_id.pk, self._create_model_meta()['max_id']+1)
-        self.assertEquals(feedback_set_with_auto_id.id, self._create_model_meta()['max_id']+1)
+        self.assertEqual(feedback_set_with_auto_id.pk, self._create_model_meta()['max_id']+1)
+        self.assertEqual(feedback_set_with_auto_id.id, self._create_model_meta()['max_id']+1)

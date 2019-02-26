@@ -38,17 +38,17 @@ class TestDownloadFeedbackDraftFileView(TestCase):
 
     def test_403_not_owner_or_superuser(self):
         response = self._get_as(UserBuilder('otheruser').user, self.draftfile.id)
-        self.assertEquals(response.status_code, 403)
+        self.assertEqual(response.status_code, 403)
 
     def test_404_not_found(self):
         response = self._get_as(self.testexaminer, 10001)
-        self.assertEquals(response.status_code, 404)
+        self.assertEqual(response.status_code, 404)
 
     def _test_as(self, user):
         response = self._get_as(user, self.draftfile.id)
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(response['content-type'], 'text/plain')
-        self.assertEquals(response.content, 'A testfile')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['content-type'], 'text/plain')
+        self.assertEqual(response.content, 'A testfile')
         self.assertNotIn('content-disposition', response)
 
     def test_ok_as_owner(self):
@@ -59,6 +59,6 @@ class TestDownloadFeedbackDraftFileView(TestCase):
 
     def test_download_content_disposition(self):
         response = self._get_as(self.testexaminer, self.draftfile.id, download='yes')
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertIn('content-disposition', response)
-        self.assertEquals(response['content-disposition'], 'attachment; filename=test.txt')
+        self.assertEqual(response['content-disposition'], 'attachment; filename=test.txt')

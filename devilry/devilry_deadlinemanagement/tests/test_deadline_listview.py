@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django.template import defaultfilters
 from django.test import override_settings
@@ -46,7 +46,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
             cradmin_role=testassignment,
             cradmin_app=self.__get_mock_app()
         )
-        self.assertEquals('Select deadline to manage', mockresponse.selector.one('title').alltext_normalized)
+        self.assertEqual('Select deadline to manage', mockresponse.selector.one('title').alltext_normalized)
 
     def test_heading(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -55,7 +55,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
             cradmin_role=testassignment,
             cradmin_app=self.__get_mock_app()
         )
-        self.assertEquals('Select deadline',
+        self.assertEqual('Select deadline',
                           mockresponse.selector.one('h1').alltext_normalized)
 
     def test_subheading(self):
@@ -65,7 +65,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
             cradmin_role=testassignment,
             cradmin_app=self.__get_mock_app()
         )
-        self.assertEquals(
+        self.assertEqual(
             mockresponse.selector.one('.devilry-deadlinemanagement-select-deadline-subheading').alltext_normalized,
             'Please choose how you would like to manage the deadline.')
 
@@ -85,7 +85,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
             cradmin_app=self.__get_mock_app(user=testuser),
             requestuser=testuser
         )
-        self.assertEquals(
+        self.assertEqual(
             '{} (Assignment first deadline)'.format(
                 defaultfilters.date(testassignment.first_deadline, 'DATETIME_FORMAT')),
             mockresponse.selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
@@ -106,7 +106,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
             cradmin_app=self.__get_mock_app(user=testuser),
             requestuser=testuser
         )
-        self.assertEquals('candidate',
+        self.assertEqual('candidate',
                           mockresponse.selector.one('.devilry-deadlinmanagement-item-value-groups').alltext_normalized)
 
     def test_deadline_item_value_group_multiple_candidates(self):
@@ -129,7 +129,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
             cradmin_app=self.__get_mock_app(user=testuser),
             requestuser=testuser
         )
-        self.assertEquals('(candidate1 , candidate2)',
+        self.assertEqual('(candidate1 , candidate2)',
                           mockresponse.selector.one('.devilry-deadlinmanagement-item-value-groups').alltext_normalized)
 
     def test_deadline_item_value_multiple_groups(self):
@@ -178,9 +178,9 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
             cradmin_app=self.__get_mock_app(user=testuser),
             requestuser=testuser
         )
-        self.assertNotIn('unanonymizedfullname', mockresponse.response.content)
-        self.assertNotIn('A un-anonymized fullname', mockresponse.response.content)
-        self.assertIn('MyAnonymousID', mockresponse.response.content)
+        self.assertNotContains(mockresponse.response, 'unanonymizedfullname')
+        self.assertNotContains(mockresponse.response, 'A un-anonymized fullname')
+        self.assertContains(mockresponse.response, 'MyAnonymousID')
 
     def test_deadline_item_value_candidate_fully_anonymous(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -200,9 +200,9 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
             cradmin_app=self.__get_mock_app(user=testuser),
             requestuser=testuser
         )
-        self.assertNotIn('unanonymizedfullname', mockresponse.response.content)
-        self.assertNotIn('A un-anonymized fullname', mockresponse.response.content)
-        self.assertIn('MyAnonymousID', mockresponse.response.content)
+        self.assertNotContains(mockresponse.response, 'unanonymizedfullname')
+        self.assertNotContains(mockresponse.response, 'A un-anonymized fullname')
+        self.assertContains(mockresponse.response, 'MyAnonymousID')
 
     def test_listed_deadlines(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -217,7 +217,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
             requestuser=testuser
         )
         self.assertTrue(mockresponse.selector.one('.django-cradmin-listbuilder-itemvalue-titledescription'))
-        self.assertEquals(
+        self.assertEqual(
             '{} (Assignment first deadline)'.format(
                 defaultfilters.date(testassignment.first_deadline, 'DATETIME_FORMAT')),
             mockresponse.selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
@@ -241,7 +241,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
             requestuser=testuser
         )
         self.assertTrue(mockresponse.selector.one('.django-cradmin-listbuilder-itemvalue-titledescription'))
-        self.assertEquals(
+        self.assertEqual(
             '{} (Assignment first deadline)'.format(
                 defaultfilters.date(testassignment.first_deadline, 'DATETIME_FORMAT')),
             mockresponse.selector.one(
@@ -279,10 +279,10 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
             cradmin_app=self.__get_mock_app(user=testuser),
             requestuser=testuser
         )
-        self.assertEquals(2, mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue-titledescription'))
+        self.assertEqual(2, mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue-titledescription'))
         deadline_list = [elem.alltext_normalized for elem in
                          mockresponse.selector.list('.django-cradmin-listbuilder-itemvalue-titledescription-title')]
-        self.assertEquals(2, len(deadline_list))
+        self.assertEqual(2, len(deadline_list))
         self.assertIn(
             '{} (Assignment first deadline)'.format(defaultfilters.date(testassignment.first_deadline, 'DATETIME_FORMAT')),
             deadline_list)

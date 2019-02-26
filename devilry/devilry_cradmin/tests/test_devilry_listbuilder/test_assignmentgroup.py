@@ -325,7 +325,7 @@ class TestPeriodAdminItemValue(test.TestCase):
     def test_anonymous_not_allowed(self):
         testgroup = mommy.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        with self.assertRaisesRegexp(ValueError, '^.*for anonymous assignments.*$'):
+        with self.assertRaisesRegex(ValueError, '^.*for anonymous assignments.*$'):
             devilry_listbuilder.assignmentgroup.PeriodAdminItemValue(value=testgroup, assignment=testgroup.assignment)
 
     def test_examiners(self):
@@ -395,7 +395,7 @@ class TestSubjectAdminItemValue(test.TestCase):
     def test_fully_anonymous_is_not_allowed(self):
         testgroup = mommy.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        with self.assertRaisesRegexp(ValueError, '^.*for fully anonymous assignments.*$'):
+        with self.assertRaisesRegex(ValueError, '^.*for fully anonymous assignments.*$'):
             devilry_listbuilder.assignmentgroup.SubjectAdminItemValue(value=testgroup, assignment=testgroup.assignment)
 
     def test_examiners(self):
@@ -913,7 +913,7 @@ class TestPeriodAdminMultiselectItemValue(test.TestCase):
     def test_anonymous_not_allowed(self):
         testgroup = mommy.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        with self.assertRaisesRegexp(ValueError, '^.*for anonymous assignments.*$'):
+        with self.assertRaisesRegex(ValueError, '^.*for anonymous assignments.*$'):
             devilry_listbuilder.assignmentgroup.PeriodAdminMultiselectItemValue(
                     value=testgroup, assignment=testgroup.assignment)
 
@@ -1008,7 +1008,7 @@ class TestSubjectAdminMultiselectItemValue(test.TestCase):
     def test_fully_anonymous_is_not_allowed(self):
         testgroup = mommy.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        with self.assertRaisesRegexp(ValueError, '^.*for fully anonymous assignments.*$'):
+        with self.assertRaisesRegex(ValueError, '^.*for fully anonymous assignments.*$'):
             devilry_listbuilder.assignmentgroup.SubjectAdminMultiselectItemValue(value=testgroup, assignment=testgroup.assignment)
 
     def test_name(self):

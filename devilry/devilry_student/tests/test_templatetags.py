@@ -1,6 +1,6 @@
 from mock import Mock
 from django.test import TestCase
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup
 
 # from develop.testhelpers.soupselect import cssGet
 # from develop.testhelpers.soupselect import cssExists
@@ -15,7 +15,7 @@ class TestDevilryStudentFeedbackTags(TestCase):
         feedback = Mock()
         feedback.grade = 'A'
         feedback.is_passing_grade = True
-        self.assertEquals(
+        self.assertEqual(
             normalize_whitespace(BeautifulSoup(devilry_student_shortgrade(feedback)).text),
             'A (Passed)'
         )
@@ -24,7 +24,7 @@ class TestDevilryStudentFeedbackTags(TestCase):
         feedback = Mock()
         feedback.grade = 'F'
         feedback.is_passing_grade = False
-        self.assertEquals(
+        self.assertEqual(
             normalize_whitespace(BeautifulSoup(devilry_student_shortgrade(feedback)).text),
             'F (Failed)'
         )
@@ -33,7 +33,7 @@ class TestDevilryStudentFeedbackTags(TestCase):
         feedback = Mock()
         feedback.grade = 'Passed'
         feedback.is_passing_grade = True
-        self.assertEquals(
+        self.assertEqual(
             normalize_whitespace(BeautifulSoup(devilry_student_shortgrade(feedback)).text),
             'Passed'
         )
@@ -42,7 +42,7 @@ class TestDevilryStudentFeedbackTags(TestCase):
         feedback = Mock()
         feedback.grade = 'Failed'
         feedback.is_passing_grade = False
-        self.assertEquals(
+        self.assertEqual(
             normalize_whitespace(BeautifulSoup(devilry_student_shortgrade(feedback)).text),
             'Failed'
         )

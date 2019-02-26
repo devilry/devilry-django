@@ -85,7 +85,7 @@ class AggreatedRelatedStudentInfo(object):
         Returns an iterator over all :class:`.GroupList` objects for this student.
         Shortcut for ``self.assignments.itervalues()``.
         """
-        return self.assignments.itervalues()
+        return iter(self.assignments.values())
 
     def add_group(self, group):
         """
@@ -97,23 +97,23 @@ class AggreatedRelatedStudentInfo(object):
         """
         Prettyprint for debugging.
         """
-        print '{0}:'.format(self.user)
-        for assignmentid, groups in self.assignments.iteritems():
-            print '  - Assignment ID: {0}'.format(assignmentid)
-            print '     - Groups: {0}'.format(len(groups))
+        print('{0}:'.format(self.user))
+        for assignmentid, groups in self.assignments.items():
+            print('  - Assignment ID: {0}'.format(assignmentid))
+            print('     - Groups: {0}'.format(len(groups)))
             for group in groups:
                 if group.feedback:
                     grade = '{0} (points:{1},passed:{2})'.format(group.feedback.grade,
                         group.feedback.points, group.feedback.is_passing_grade)
                 else:
                     grade = None
-                print '    - {0}: {1}'.format(group, grade)
+                print('    - {0}: {1}'.format(group, grade))
 
     def __str__(self):
         """
         Returns a short representation of the object that should be useful when debugging.
         """
-        return u'AggreatedRelatedStudentInfo(user={0}, assignmentcount={1}, grades={2!r})'.format(
+        return 'AggreatedRelatedStudentInfo(user={0}, assignmentcount={1}, grades={2!r})'.format(
             self.user.username,
             len(self.assignments),
             [str(gradelist.get_best_gradestring()) for gradelist in self.iter_groups_by_assignment()]
@@ -136,7 +136,7 @@ class AggreatedRelatedStudentInfo(object):
                 'id': self.relatedstudent.id,
                 'tags': self.relatedstudent.tags,
                 'candidate_id': self.relatedstudent.candidate_id}
-        for assignmentid, grouplist in self.assignments.iteritems():
+        for assignmentid, grouplist in self.assignments.items():
             out['groups_by_assignment'].append({'assignmentid': assignmentid,
                                                 'grouplist': grouplist.serialize()})
         return out
@@ -248,7 +248,7 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
                 on the assignment, and more than 1 if the user is in more than one group on the
                 assignment.
         """
-        return self.result.itervalues()
+        return iter(self.result.values())
 
     def iter_students_that_is_candidate_but_not_in_related(self):
         """
@@ -260,14 +260,14 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
         - :meth:`iter_students_with_feedback_that_is_candidate_but_not_in_related`
         - :meth:`iter_students_with_no_feedback_that_is_candidate_but_not_in_related`
         """
-        return self.ignored_students.itervalues()
+        return iter(self.ignored_students.values())
 
     def iter_students_with_feedback_that_is_candidate_but_not_in_related(self):
         """
         Same as :meth:`.iter_students_that_is_candidate_but_not_in_related`, but it does not include
         the students that have no feedback.
         """
-        for userid, aggregatedgroupinfo in self.ignored_students.iteritems():
+        for userid, aggregatedgroupinfo in self.ignored_students.items():
             if userid in self.ignored_students_with_results:
                 yield aggregatedgroupinfo
 
@@ -278,7 +278,7 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
         except for the students returned by
         :meth:`.iter_students_with_feedback_that_is_candidate_but_not_in_related`
         """
-        for userid, aggregatedgroupinfo in self.ignored_students.iteritems():
+        for userid, aggregatedgroupinfo in self.ignored_students.items():
             if not userid in self.ignored_students_with_results:
                 yield aggregatedgroupinfo
 

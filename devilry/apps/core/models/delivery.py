@@ -4,9 +4,9 @@ from django.db.models import Q, Max
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-import deliverytypes
-from deadline import Deadline
-from filemeta import FileMeta
+from . import deliverytypes
+from .deadline import Deadline
+from .filemeta import FileMeta
 from . import AbstractIsAdmin, AbstractIsExaminer, AbstractIsCandidate
 
 
@@ -262,7 +262,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         f = FileMeta.deliverystore.write_open(filemeta)
         filemeta.save()
         for data in iterable_data:
-            f.write(data)
+            f.write(data.decode('utf-8'))
             filemeta.size += len(data)
         f.close()
         filemeta.save()
@@ -283,8 +283,8 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         super(Delivery, self).clean()
 
     def __unicode__(self):
-        return (u'Delivery(id={id}, number={number}, group={group}, '
-                u'time_of_delivery={time_of_delivery})').format(id=self.id,
+        return ('Delivery(id={id}, number={number}, group={group}, '
+                'time_of_delivery={time_of_delivery})').format(id=self.id,
                                                                 group=self.deadline.assignment_group,
                                                                 number=self.number,
                                                                 time_of_delivery=self.time_of_delivery.isoformat())

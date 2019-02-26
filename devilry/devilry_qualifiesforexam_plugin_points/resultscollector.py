@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 # Devilry imports
 from devilry.devilry_qualifiesforexam.pluginhelpers import PeriodResultsCollector
@@ -40,7 +40,7 @@ class PeriodResultSetCollector(PeriodResultsCollector):
         Iterate over the information for a RelatedStudent, and summarize the points of each FeedbackSet.
         """
         accumulated_score = 0
-        for assignmentid, groupfeedbacksetlist in aggregated_relstudentinfo.assignments.iteritems():
+        for assignmentid, groupfeedbacksetlist in aggregated_relstudentinfo.assignments.items():
             if assignmentid in self.qualifying_assignment_ids or len(self.qualifying_assignment_ids) == 0:
                 feedbackset = groupfeedbacksetlist.get_feedbackset_with_most_points()
                 if feedbackset and feedbackset.grading_points:

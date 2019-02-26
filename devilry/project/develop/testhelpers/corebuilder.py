@@ -38,7 +38,7 @@ class UserBuilder(ReloadableDbBuilderInterface):
     """
 
     def __init__(self, username, full_name=None, email=None, is_superuser=False):
-        email = email or u'{}@example.com'.format(username)
+        email = email or '{}@example.com'.format(username)
         if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
             username = ''
         self.user = get_user_model().objects.create_user(
@@ -49,7 +49,7 @@ class UserBuilder(ReloadableDbBuilderInterface):
             fullname=full_name or '')
 
     def update(self, **attributes):
-        for attrname, value in attributes.iteritems():
+        for attrname, value in attributes.items():
             setattr(self.user, attrname, value)
         self.user.save()
         self.reload_from_db()
@@ -71,7 +71,7 @@ class UserBuilder2(ReloadableDbBuilderInterface):
         self.user.save()
 
     def update(self, **attributes):
-        for attrname, value in attributes.iteritems():
+        for attrname, value in attributes.items():
             setattr(self.user, attrname, value)
         self.user.save()
         self.reload_from_db()
@@ -117,7 +117,7 @@ class CoreBuilderBase(ReloadableDbBuilderInterface):
         setattr(self.get_object(), attribute, value)
 
     def update(self, **attributes):
-        for attribute, value in attributes.iteritems():
+        for attribute, value in attributes.items():
             self.__set_object_value(attribute, value)
         self._save()
         self.reload_from_db()
@@ -328,7 +328,7 @@ class GroupCommentBuilder(CoreBuilderBase):
     @classmethod
     def make(cls, **kwargs):
         feedbacksetbuilder_kwargs = {}
-        for key in kwargs.keys():
+        for key in list(kwargs.keys()):
             if key.startswith('feedback_set__'):
                 feedbacksetbuilder_kwargs[key[len('feedback_set__'):]] = kwargs.pop(key)
         groupbuilder = FeedbackSetBuilder.make(**feedbacksetbuilder_kwargs)
@@ -362,7 +362,7 @@ class FeedbackSetBuilder(CoreBuilderBase):
     @classmethod
     def make(cls, **kwargs):
         groupbuilder_kwargs = {}
-        for key in kwargs.keys():
+        for key in list(kwargs.keys()):
             if key.startswith('group__'):
                 groupbuilder_kwargs[key[len('group__'):]] = kwargs.pop(key)
         groupbuilder = AssignmentGroupBuilder.make(**groupbuilder_kwargs)
@@ -437,7 +437,7 @@ class AssignmentGroupBuilder(CoreBuilderBase):
     @classmethod
     def make(cls, **kwargs):
         assignmentbuilder_kwargs = {}
-        for key in kwargs.keys():
+        for key in list(kwargs.keys()):
             if key.startswith('assignment__'):
                 assignmentbuilder_kwargs[key[len('assignment__'):]] = kwargs.pop(key)
         assignmentbuilder = AssignmentBuilder.make(**assignmentbuilder_kwargs)

@@ -16,14 +16,14 @@ class TestAssignmentGradingConfigurationUpdateView(TestCase, cradmin_testhelpers
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=assignment, viewkwargs={'pk': assignment.id})
-        self.assertEquals(mockresponse.selector.one('title').alltext_normalized,
+        self.assertEqual(mockresponse.selector.one('title').alltext_normalized,
                           'Edit grading configuration')
 
     def test_get_h1(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=assignment, viewkwargs={'pk': assignment.id})
-        self.assertEquals(mockresponse.selector.one('h1').alltext_normalized,
+        self.assertEqual(mockresponse.selector.one('h1').alltext_normalized,
                           'Edit grading configuration')
 
     def __get_radio_labels(self, selector, wrapper_element_id):

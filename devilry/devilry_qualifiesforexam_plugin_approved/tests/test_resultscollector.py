@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 # Django imports
 from django import test
@@ -21,8 +21,8 @@ class TestPeriodResultSetCollector(test.TestCase, test_pluginhelpers.TestPluginH
         data_dict = self._build_data_set()
         collector = resultscollector.PeriodResultSetCollector(period=data_dict['testperiod'])
         qualifying_studentids = collector.get_relatedstudents_that_qualify_for_exam()
-        self.assertEquals(len(qualifying_studentids), 1)
-        self.assertEquals(qualifying_studentids[0], data_dict['relatedstudent'].id)
+        self.assertEqual(len(qualifying_studentids), 1)
+        self.assertEqual(qualifying_studentids[0], data_dict['relatedstudent'].id)
 
     def test_student_fails_with_all_assignments_qualify(self):
         data_dict = self._build_data_set()
@@ -30,7 +30,7 @@ class TestPeriodResultSetCollector(test.TestCase, test_pluginhelpers.TestPluginH
         data_dict['testfeedbacksets'][0].save()
         collector = resultscollector.PeriodResultSetCollector(period=data_dict['testperiod'])
         qualifying_studentids = collector.get_relatedstudents_that_qualify_for_exam()
-        self.assertEquals(len(qualifying_studentids), 0)
+        self.assertEqual(len(qualifying_studentids), 0)
 
     def test_student_pass_with_subset_of_assignments_qualify(self):
         data_dict = self._build_data_set()
@@ -42,8 +42,8 @@ class TestPeriodResultSetCollector(test.TestCase, test_pluginhelpers.TestPluginH
             ]
         )
         qualifying_studentids = collector.get_relatedstudents_that_qualify_for_exam()
-        self.assertEquals(len(qualifying_studentids), 1)
-        self.assertEquals(qualifying_studentids[0], data_dict['relatedstudent'].id)
+        self.assertEqual(len(qualifying_studentids), 1)
+        self.assertEqual(qualifying_studentids[0], data_dict['relatedstudent'].id)
 
     def test_student_fails_with_subset_of_assignments_qualify(self):
         data_dict = self._build_data_set()
@@ -57,7 +57,7 @@ class TestPeriodResultSetCollector(test.TestCase, test_pluginhelpers.TestPluginH
             ]
         )
         qualifying_studentids = collector.get_relatedstudents_that_qualify_for_exam()
-        self.assertEquals(len(qualifying_studentids), 0)
+        self.assertEqual(len(qualifying_studentids), 0)
 
     def test_student_pass_with_one_failed_assignment_not_qualifying(self):
         data_dict = self._build_data_set()
@@ -73,8 +73,8 @@ class TestPeriodResultSetCollector(test.TestCase, test_pluginhelpers.TestPluginH
             ]
         )
         qualifying_studentids = collector.get_relatedstudents_that_qualify_for_exam()
-        self.assertEquals(len(qualifying_studentids), 1)
-        self.assertEquals(qualifying_studentids[0], data_dict['relatedstudent'].id)
+        self.assertEqual(len(qualifying_studentids), 1)
+        self.assertEqual(qualifying_studentids[0], data_dict['relatedstudent'].id)
 
     def test_all_students_pass_with_all_assignments_qualify(self):
         data_dict = self._build_data_set()
@@ -100,7 +100,7 @@ class TestPeriodResultSetCollector(test.TestCase, test_pluginhelpers.TestPluginH
 
         collector = resultscollector.PeriodResultSetCollector(period=data_dict['testperiod'])
         qualifying_studentids = collector.get_relatedstudents_that_qualify_for_exam()
-        self.assertEquals(len(qualifying_studentids), 2)
+        self.assertEqual(len(qualifying_studentids), 2)
         self.assertTrue(relatedstudent.id in qualifying_studentids)
         self.assertTrue(data_dict['relatedstudent'].id in qualifying_studentids)
 
@@ -129,6 +129,6 @@ class TestPeriodResultSetCollector(test.TestCase, test_pluginhelpers.TestPluginH
 
         collector = resultscollector.PeriodResultSetCollector(period=data_dict['testperiod'])
         qualifying_studentids = collector.get_relatedstudents_that_qualify_for_exam()
-        self.assertEquals(len(qualifying_studentids), 1)
+        self.assertEqual(len(qualifying_studentids), 1)
         self.assertTrue(relatedstudent.id not in qualifying_studentids)
         self.assertTrue(data_dict['relatedstudent'].id in qualifying_studentids)

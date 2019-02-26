@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 # 3rd party imports
 from model_mommy import mommy
@@ -22,7 +22,7 @@ class TestStudentSelectionView(test.TestCase, cradmin_testhelpers.TestCaseMixin)
         mommy.make('core.RelatedStudent', period=testperiod, _quantity=20)
 
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
-        self.assertEquals(len(mockresponse.selector.list('.django-cradmin-listbuilder-itemvalue')), 20)
+        self.assertEqual(len(mockresponse.selector.list('.django-cradmin-listbuilder-itemvalue')), 20)
 
     def test_all_students_are_listed(self):
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
@@ -33,6 +33,6 @@ class TestStudentSelectionView(test.TestCase, cradmin_testhelpers.TestCaseMixin)
                 '.django-cradmin-listbuilder-itemvalue-titledescription-description'
         )
         elements_normalized = [element.alltext_normalized for element in selectorlist]
-        self.assertEquals(len(elements_normalized), len(relatedstudents))
+        self.assertEqual(len(elements_normalized), len(relatedstudents))
         for relatedstudent in relatedstudents:
             self.assertIn(relatedstudent.user.shortname, elements_normalized)

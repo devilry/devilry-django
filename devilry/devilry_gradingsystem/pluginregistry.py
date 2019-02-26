@@ -160,7 +160,7 @@ class GradingSystemPluginRegistry(object):
         Each instance is constructed with the given ``assignment`` as their
         first and only argument.
         """
-        for item in self.items.itervalues():
+        for item in self.items.values():
             yield item(assignment)
 
 

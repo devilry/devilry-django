@@ -119,7 +119,7 @@ class DeliveryImporter(ImporterMixin, modelimporter.ModelImporter):
             model_class=self.get_model_super_class())
         for object_dict in directory_parser.iterate_object_dicts():
             if fake:
-                print('Would import: {}'.format(pprint.pformat(object_dict)))
+                print(('Would import: {}'.format(pprint.pformat(object_dict))))
             else:
                 self._create_group_comment_from_object_dict(object_dict=object_dict)
 
@@ -158,7 +158,7 @@ class StaticFeedbackImporter(ImporterMixin, modelimporter.ModelImporter):
             sys.stderr.write('x')
             return []
         commentfiles = []
-        for file_info_dict in file_infos_dict.values():
+        for file_info_dict in list(file_infos_dict.values()):
             mimetype = modelimporter_utils.get_mimetype_from_filename(file_info_dict['filename'])
             comment_file = CommentFile(
                 comment=group_comment,
@@ -211,7 +211,7 @@ class StaticFeedbackImporter(ImporterMixin, modelimporter.ModelImporter):
         with BulkCreator(model_class=CommentFile) as commentfile_bulk_creator:
             for object_dict in self.v2staticfeedback_directoryparser.iterate_object_dicts():
                 if fake:
-                    print('Would import: {}'.format(pprint.pformat(object_dict)))
+                    print(('Would import: {}'.format(pprint.pformat(object_dict))))
                 else:
                     group_comment, commentfiles = self._create_group_comment_from_object_dict(object_dict=object_dict)
                     if commentfiles:
@@ -243,7 +243,7 @@ class FileMetaImporter(ImporterMixin, modelimporter.ModelImporter):
         with BulkCreator(model_class=CommentFile) as commentfile_bulk_creator:
             for object_dict in self.v2filemeta_directoryparser.iterate_object_dicts():
                 if fake:
-                    print('Would import: {}'.format(pprint.pformat(object_dict)))
+                    print(('Would import: {}'.format(pprint.pformat(object_dict))))
                 else:
                     comment_file = self._create_comment_file_from_object_id(object_dict=object_dict)
                     commentfile_bulk_creator.add(comment_file)
@@ -318,6 +318,6 @@ class CommentFileContentImporter(ImporterMixin, modelimporter.ModelImporter):
                 progressdots.increment_progress()
 
         if does_not_exist:
-            print >> sys.stderr, 'Some of the source files did not exist.'
+            print('Some of the source files did not exist.', file=sys.stderr)
             for error in does_not_exist:
-                print >> sys.stderr, '- {}'.format(error)
+                print('- {}'.format(error), file=sys.stderr)

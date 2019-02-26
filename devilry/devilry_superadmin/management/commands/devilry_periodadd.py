@@ -8,14 +8,14 @@ class RecordSaveModCommand(BaseCommand):
     def save_record(self, record, verbosity):
         try:
             record.full_clean()
-        except ValidationError, e:
+        except ValidationError as e:
             errmsg = []
-            for key, messages in e.message_dict.iteritems():
+            for key, messages in e.message_dict.items():
                 errmsg.append('{0}: {1}'.format(key, ' '.join(messages)))
             raise CommandError('\n'.join(errmsg))
         record.save()
         if verbosity > 0:
-            print '"{0}" saved successfully.'.format(record.__class__.__name__, record)
+            print('"{0}" saved successfully.'.format(record.__class__.__name__, record))
 
 
 class Command(RecordSaveModCommand):
@@ -65,7 +65,7 @@ class Command(RecordSaveModCommand):
         # Get the subject
         try:
             self.subject = Subject.objects.get(short_name=subject_short_name)
-        except Subject.DoesNotExist, e:
+        except Subject.DoesNotExist as e:
             raise CommandError('Subject with short name %s does not exist.' % subject_short_name)
         
         verbosity = int(options.get('verbosity', '1'))

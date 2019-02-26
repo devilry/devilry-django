@@ -42,29 +42,29 @@ class TestAssignmentGroup(TestCase):
 
     def test_anonymous_displayname_empty(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        self.assertEquals(
-            u'no students in group'.format(testgroup.id),
+        self.assertEqual(
+            'no students in group'.format(testgroup.id),
             testgroup.get_anonymous_displayname())
 
     def test_anonymous_displayname(self):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('core.Candidate', assignment_group=testgroup,
                    relatedstudent__candidate_id='test')
-        self.assertEquals(
-            u'test'.format(testgroup.id),
+        self.assertEqual(
+            'test'.format(testgroup.id),
             testgroup.get_anonymous_displayname())
 
     def test_short_displayname_empty(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        self.assertEquals(
-            u'group#{} - no students in group'.format(testgroup.id),
+        self.assertEqual(
+            'group#{} - no students in group'.format(testgroup.id),
             testgroup.short_displayname)
 
     def test_short_displayname_empty_anonymous(self):
         testgroup = mommy.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        self.assertEquals(
-            u'no students in group'.format(testgroup.id),
+        self.assertEqual(
+            'no students in group'.format(testgroup.id),
             testgroup.short_displayname)
 
     def test_short_displayname_students(self):
@@ -73,7 +73,7 @@ class TestAssignmentGroup(TestCase):
                    relatedstudent__user__shortname='studenta')
         mommy.make('core.Candidate', assignment_group=testgroup,
                    relatedstudent__user__shortname='studentb')
-        self.assertEquals({'studenta', 'studentb'}, set(testgroup.short_displayname.split(', ')))
+        self.assertEqual({'studenta', 'studentb'}, set(testgroup.short_displayname.split(', ')))
 
     def test_short_displayname_anonymous_candidates(self):
         testgroup = mommy.make('core.AssignmentGroup',
@@ -82,40 +82,40 @@ class TestAssignmentGroup(TestCase):
                    relatedstudent__candidate_id='aa')
         mommy.make('core.Candidate', assignment_group=testgroup,
                    relatedstudent__candidate_id='bb',)
-        self.assertEquals({'aa', 'bb'}, set(testgroup.short_displayname.split(', ')))
+        self.assertEqual({'aa', 'bb'}, set(testgroup.short_displayname.split(', ')))
 
     def test_short_displayname_named(self):
         testgroup = mommy.make('core.AssignmentGroup', name='My group')
         mommy.make('core.Candidate', assignment_group=testgroup,
                    relatedstudent__user__shortname='ignored')
-        self.assertEquals('My group', testgroup.short_displayname)
+        self.assertEqual('My group', testgroup.short_displayname)
 
     def test_short_displayname_named_empty(self):
         testgroup = mommy.make('core.AssignmentGroup', name='My group')
-        self.assertEquals(
-            u'group#{} - no students in group'.format(testgroup.id),
+        self.assertEqual(
+            'group#{} - no students in group'.format(testgroup.id),
             testgroup.short_displayname)
 
     def test_long_displayname_empty(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        self.assertEquals(
-            u'group#{} - no students in group'.format(testgroup.id),
+        self.assertEqual(
+            'group#{} - no students in group'.format(testgroup.id),
             testgroup.long_displayname)
 
     def test_long_displayname_empty_anonymous(self):
         testgroup = mommy.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        self.assertEquals(
-            u'no students in group',
+        self.assertEqual(
+            'no students in group',
             testgroup.long_displayname)
 
     def test_long_displayname_candidates(self):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('core.Candidate', assignment_group=testgroup,
-                   relatedstudent__user__fullname=u'Student \u00E5')
+                   relatedstudent__user__fullname='Student \u00E5')
         mommy.make('core.Candidate', assignment_group=testgroup,
                    relatedstudent__user__shortname='studentb')
-        self.assertEquals({u'Student \u00E5', u'studentb'}, set(testgroup.long_displayname.split(u', ')))
+        self.assertEqual({'Student \u00E5', 'studentb'}, set(testgroup.long_displayname.split(', ')))
 
     def test_long_displayname_anonymous_candidates(self):
         testgroup = mommy.make('core.AssignmentGroup',
@@ -124,18 +124,18 @@ class TestAssignmentGroup(TestCase):
                    relatedstudent__candidate_id='aa')
         mommy.make('core.Candidate', assignment_group=testgroup,
                    relatedstudent__candidate_id='bb',)
-        self.assertEquals({'aa', 'bb'}, set(testgroup.long_displayname.split(', ')))
+        self.assertEqual({'aa', 'bb'}, set(testgroup.long_displayname.split(', ')))
 
     def test_long_displayname_named(self):
         testgroup = mommy.make('core.AssignmentGroup', name='My group')
         mommy.make('core.Candidate', assignment_group=testgroup,
-                   relatedstudent__user__fullname=u'Student \u00E5')
-        self.assertEquals(u'My group (Student \u00E5)', testgroup.long_displayname)
+                   relatedstudent__user__fullname='Student \u00E5')
+        self.assertEqual('My group (Student \u00E5)', testgroup.long_displayname)
 
     def test_long_displayname_named_empty(self):
         testgroup = mommy.make('core.AssignmentGroup', name='My group')
-        self.assertEquals(
-            u'My group (group#{} - no students in group)'.format(testgroup.id),
+        self.assertEqual(
+            'My group (group#{} - no students in group)'.format(testgroup.id),
             testgroup.long_displayname)
 
     def test_close_groups(self):
@@ -146,7 +146,7 @@ class TestAssignmentGroup(TestCase):
         group3builder = assignmentbuilder.add_group()
         for groupbuilder in (group1builder, group2builder, group3builder):
             self.assertTrue(groupbuilder.group.is_open)
-            self.assertEquals(groupbuilder.group.delivery_status, 'no-deadlines')
+            self.assertEqual(groupbuilder.group.delivery_status, 'no-deadlines')
         AssignmentGroup.objects.filter(id__in=(group1builder.group.id, group2builder.group.id))\
             .close_groups()
         group1builder.reload_from_db()
@@ -155,9 +155,9 @@ class TestAssignmentGroup(TestCase):
         self.assertFalse(group1builder.group.is_open)
         self.assertFalse(group2builder.group.is_open)
         self.assertTrue(group3builder.group.is_open)
-        self.assertEquals(group1builder.group.delivery_status, 'closed-without-feedback')
-        self.assertEquals(group2builder.group.delivery_status, 'closed-without-feedback')
-        self.assertEquals(group3builder.group.delivery_status, 'no-deadlines')
+        self.assertEqual(group1builder.group.delivery_status, 'closed-without-feedback')
+        self.assertEqual(group2builder.group.delivery_status, 'closed-without-feedback')
+        self.assertEqual(group3builder.group.delivery_status, 'no-deadlines')
 
     def test_close_groups_queryset_vs_manual(self):
         # Checks that AssignmentGroup.objects.close_groups() works the same as closing and calling save()
@@ -172,8 +172,8 @@ class TestAssignmentGroup(TestCase):
         group2builder.reload_from_db()
         self.assertFalse(group1builder.group.is_open)
         self.assertFalse(group2builder.group.is_open)
-        self.assertEquals(group1builder.group.delivery_status, 'closed-without-feedback')
-        self.assertEquals(group2builder.group.delivery_status, 'closed-without-feedback')
+        self.assertEqual(group1builder.group.delivery_status, 'closed-without-feedback')
+        self.assertEqual(group2builder.group.delivery_status, 'closed-without-feedback')
 
     def test_add_nonelectronic_delivery(self):
         assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
@@ -184,7 +184,7 @@ class TestAssignmentGroup(TestCase):
         group1builder.reload_from_db()
 
         last_delivery = Delivery.objects.get(deadline__assignment_group=group1builder.group)
-        self.assertEquals(last_delivery.delivery_type, deliverytypes.NON_ELECTRONIC)
+        self.assertEqual(last_delivery.delivery_type, deliverytypes.NON_ELECTRONIC)
         self.assertTrue(last_delivery.successful)
 
     def test_last_feedbackset_is_published(self):
@@ -417,7 +417,7 @@ class TestAssignmentGroup(TestCase):
                             deadline_handling=Assignment.DEADLINEHANDLING_HARD)\
             .add_group()
         groupbuilder.add_deadline_in_x_weeks(weeks=1)
-        self.assertEquals(AssignmentGroup.objects.filter_can_add_deliveries().count(), 1)
+        self.assertEqual(AssignmentGroup.objects.filter_can_add_deliveries().count(), 1)
 
     def test_filter_can_add_deliveries_after_hard_deadline(self):
         groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
@@ -425,7 +425,7 @@ class TestAssignmentGroup(TestCase):
                             deadline_handling=Assignment.DEADLINEHANDLING_HARD)\
             .add_group()
         groupbuilder.add_deadline_x_weeks_ago(weeks=1)
-        self.assertEquals(AssignmentGroup.objects.filter_can_add_deliveries().count(), 0)
+        self.assertEqual(AssignmentGroup.objects.filter_can_add_deliveries().count(), 0)
 
     def test_filter_can_add_deliveries_not_on_nonelectronic(self):
         groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
@@ -433,7 +433,7 @@ class TestAssignmentGroup(TestCase):
                             delivery_types=deliverytypes.NON_ELECTRONIC)\
             .add_group()
         groupbuilder.add_deadline_x_weeks_ago(weeks=1)
-        self.assertEquals(AssignmentGroup.objects.filter_can_add_deliveries().count(), 0)
+        self.assertEqual(AssignmentGroup.objects.filter_can_add_deliveries().count(), 0)
 
     def test_filter_can_add_deliveries_before_soft_deadline(self):
         groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
@@ -441,8 +441,8 @@ class TestAssignmentGroup(TestCase):
                             deadline_handling=Assignment.DEADLINEHANDLING_SOFT)\
             .add_group()
         groupbuilder.add_deadline_in_x_weeks(weeks=1)
-        self.assertEquals(AssignmentGroup.objects.filter_can_add_deliveries().count(), 1)
-        self.assertEquals(
+        self.assertEqual(AssignmentGroup.objects.filter_can_add_deliveries().count(), 1)
+        self.assertEqual(
             AssignmentGroup.objects.filter_can_add_deliveries().first(),
             groupbuilder.group)
 
@@ -452,7 +452,7 @@ class TestAssignmentGroup(TestCase):
                             deadline_handling=Assignment.DEADLINEHANDLING_SOFT)\
             .add_group()
         groupbuilder.add_deadline_x_weeks_ago(weeks=1)
-        self.assertEquals(AssignmentGroup.objects.filter_can_add_deliveries().count(), 1)
+        self.assertEqual(AssignmentGroup.objects.filter_can_add_deliveries().count(), 1)
 
     def test_filter_can_add_deliveries_has_delivery(self):
         groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
@@ -460,7 +460,7 @@ class TestAssignmentGroup(TestCase):
             .add_group()
         groupbuilder.add_deadline_in_x_weeks(weeks=1)\
             .add_delivery_x_hours_before_deadline(hours=1)
-        self.assertEquals(AssignmentGroup.objects.filter_can_add_deliveries().count(), 1)
+        self.assertEqual(AssignmentGroup.objects.filter_can_add_deliveries().count(), 1)
 
     def test_filter_can_add_deliveries_not_on_corrected(self):
         groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
@@ -469,7 +469,7 @@ class TestAssignmentGroup(TestCase):
         groupbuilder.add_deadline_in_x_weeks(weeks=1)\
             .add_delivery_x_hours_before_deadline(hours=1)\
             .add_passed_A_feedback(saved_by=UserBuilder('testexaminer').user)
-        self.assertEquals(AssignmentGroup.objects.filter_can_add_deliveries().count(), 0)
+        self.assertEqual(AssignmentGroup.objects.filter_can_add_deliveries().count(), 0)
 
     def test_delete_copied_from_does_not_delete_group(self):
         group1 = mommy.make('core.AssignmentGroup')
@@ -1126,29 +1126,29 @@ class TestAssignmentGroupStatus(TestCase):
         self.group1builder = self.assignmentbuilder.add_group()
 
     def test_no_deadlines(self):
-        self.assertEquals(self.group1builder.group.delivery_status, 'no-deadlines')
-        self.assertEquals(self.group1builder.group.get_status(), 'no-deadlines')
+        self.assertEqual(self.group1builder.group.delivery_status, 'no-deadlines')
+        self.assertEqual(self.group1builder.group.get_status(), 'no-deadlines')
 
     def test_waiting_for_deliveries(self):
         self.group1builder.add_deadline_in_x_weeks(weeks=1)
-        self.assertEquals(self.group1builder.group.delivery_status, 'waiting-for-something')
-        self.assertEquals(self.group1builder.group.get_status(), 'waiting-for-deliveries')
+        self.assertEqual(self.group1builder.group.delivery_status, 'waiting-for-something')
+        self.assertEqual(self.group1builder.group.get_status(), 'waiting-for-deliveries')
 
     def test_waiting_for_feedback(self):
         self.group1builder.add_deadline_x_weeks_ago(weeks=1)
-        self.assertEquals(self.group1builder.group.get_status(), 'waiting-for-feedback')
+        self.assertEqual(self.group1builder.group.get_status(), 'waiting-for-feedback')
 
     def test_corrected(self):
         self.group1builder.add_deadline_in_x_weeks(weeks=1)\
             .add_delivery()\
             .add_passed_feedback(saved_by=UserBuilder('testuser').user)
-        self.assertEquals(self.group1builder.group.delivery_status, 'corrected')
-        self.assertEquals(self.group1builder.group.get_status(), 'corrected')
+        self.assertEqual(self.group1builder.group.delivery_status, 'corrected')
+        self.assertEqual(self.group1builder.group.get_status(), 'corrected')
 
     def test_closed_without_feedback(self):
         self.group1builder.update(is_open=False)
-        self.assertEquals(self.group1builder.group.delivery_status, 'closed-without-feedback')
-        self.assertEquals(self.group1builder.group.get_status(), 'closed-without-feedback')
+        self.assertEqual(self.group1builder.group.delivery_status, 'closed-without-feedback')
+        self.assertEqual(self.group1builder.group.get_status(), 'closed-without-feedback')
 
     def test_non_electronic_always_waiting_for_feedback_before_deadline(self):
         self.assignmentbuilder.update(
@@ -1156,7 +1156,7 @@ class TestAssignmentGroupStatus(TestCase):
         )
         self.group1builder.add_deadline_in_x_weeks(weeks=1)
         self.group1builder.reload_from_db()
-        self.assertEquals(self.group1builder.group.get_status(), 'waiting-for-feedback')
+        self.assertEqual(self.group1builder.group.get_status(), 'waiting-for-feedback')
 
     def test_non_electronic_always_waiting_for_feedback_after_deadline(self):
         self.assignmentbuilder.update(
@@ -1164,7 +1164,7 @@ class TestAssignmentGroupStatus(TestCase):
         )
         self.group1builder.add_deadline_x_weeks_ago(weeks=1)
         self.group1builder.reload_from_db()
-        self.assertEquals(self.group1builder.group.get_status(), 'waiting-for-feedback')
+        self.assertEqual(self.group1builder.group.get_status(), 'waiting-for-feedback')
 
 
 class TestAssignmentGroupManager(TestCase):
@@ -1176,8 +1176,8 @@ class TestAssignmentGroupManager(TestCase):
         group1builder.add_deadline_in_x_weeks(weeks=1)
         group2builder.add_deadline_x_weeks_ago(weeks=1)
         qry = AssignmentGroup.objects.filter_waiting_for_deliveries()
-        self.assertEquals(qry.count(), 1)
-        self.assertEquals(qry[0], group1builder.group)
+        self.assertEqual(qry.count(), 1)
+        self.assertEqual(qry[0], group1builder.group)
 
     def test_filter_waiting_for_deliveries_nonelectronic(self):
         examiner1 = UserBuilder('examiner1').user
@@ -1189,7 +1189,7 @@ class TestAssignmentGroupManager(TestCase):
         group1builder.add_deadline_in_x_weeks(weeks=1)
         group2builder.add_deadline_x_weeks_ago(weeks=1)
         qry = AssignmentGroup.objects.filter_waiting_for_deliveries()
-        self.assertEquals(qry.count(), 0)
+        self.assertEqual(qry.count(), 0)
 
     def test_filter_waiting_for_feedback(self):
         examiner1 = UserBuilder('examiner1').user
@@ -1199,8 +1199,8 @@ class TestAssignmentGroupManager(TestCase):
         group1builder.add_deadline_in_x_weeks(weeks=1)
         group2builder.add_deadline_x_weeks_ago(weeks=1)
         qry = AssignmentGroup.objects.filter_waiting_for_feedback()
-        self.assertEquals(qry.count(), 1)
-        self.assertEquals(qry[0], group2builder.group)
+        self.assertEqual(qry.count(), 1)
+        self.assertEqual(qry[0], group2builder.group)
 
     def test_filter_waiting_for_feedback_nonelectronic(self):
         examiner1 = UserBuilder('examiner1').user
@@ -1212,7 +1212,7 @@ class TestAssignmentGroupManager(TestCase):
         group1builder.add_deadline_in_x_weeks(weeks=1)
         group2builder.add_deadline_x_weeks_ago(weeks=1)
         qry = AssignmentGroup.objects.filter_waiting_for_feedback()
-        self.assertEquals(qry.count(), 2)
+        self.assertEqual(qry.count(), 2)
 
     def test_filter_waiting_for_feedback_nesting(self):
         examiner1 = UserBuilder('examiner1').user
@@ -1225,11 +1225,11 @@ class TestAssignmentGroupManager(TestCase):
         group2builder.add_deadline_in_x_weeks(weeks=1)
         group3builder.add_deadline_x_weeks_ago(weeks=1)
 
-        self.assertEquals(AssignmentGroup.objects.filter_waiting_for_feedback().count(), 2)
-        self.assertEquals(AssignmentGroup.objects.filter_examiner_has_access(examiner1).count(), 2)
+        self.assertEqual(AssignmentGroup.objects.filter_waiting_for_feedback().count(), 2)
+        self.assertEqual(AssignmentGroup.objects.filter_examiner_has_access(examiner1).count(), 2)
         qry = AssignmentGroup.objects.filter_examiner_has_access(examiner1).filter_waiting_for_feedback()
-        self.assertEquals(qry.count(), 1)
-        self.assertEquals(qry[0], group1builder.group)
+        self.assertEqual(qry.count(), 1)
+        self.assertEqual(qry[0], group1builder.group)
 
     def test_filter_is_published(self):
         periodbuilder = SubjectBuilder.quickadd_ducku_duck1010()\
@@ -1246,8 +1246,8 @@ class TestAssignmentGroupManager(TestCase):
                                      publishing_time=arrow.get(timezone.now()).replace(days=+50).datetime)\
             .add_group()
         qry = AssignmentGroup.objects.filter_is_published()
-        self.assertEquals(qry.count(), 1)
-        self.assertEquals(qry[0], group1)
+        self.assertEqual(qry.count(), 1)
+        self.assertEqual(qry[0], group1)
 
     def test_filter_student_has_access(self):
         student1 = UserBuilder('student1').user
@@ -1266,8 +1266,8 @@ class TestAssignmentGroupManager(TestCase):
                                      publishing_time=arrow.get(timezone.now()).replace(days=+50).datetime)\
             .add_group(students=[student1])
         qry = AssignmentGroup.objects.filter_student_has_access(student1)
-        self.assertEquals(qry.count(), 1)
-        self.assertEquals(qry[0], group1)
+        self.assertEqual(qry.count(), 1)
+        self.assertEqual(qry[0], group1)
 
     def test_filter_is_active(self):
         duck1010builder = SubjectBuilder.quickadd_ducku_duck1010()
@@ -1279,8 +1279,8 @@ class TestAssignmentGroupManager(TestCase):
         duck1010builder.add_6month_nextyear_period().add_assignment('week1').add_group()
 
         qry = AssignmentGroup.objects.filter_is_active()
-        self.assertEquals(qry.count(), 1)
-        self.assertEquals(qry[0], currentgroupbuilder.group)
+        self.assertEqual(qry.count(), 1)
+        self.assertEqual(qry[0], currentgroupbuilder.group)
 
 
 class TestAssignmentGroupQuerySetFilterExaminerHasAccess(TestCase):

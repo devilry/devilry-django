@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 # Devilry imports
 from devilry.devilry_qualifiesforexam.views.plugin_base_views import base_multiselect_view

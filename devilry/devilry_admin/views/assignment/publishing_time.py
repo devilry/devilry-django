@@ -1,4 +1,4 @@
-from __future__ import unicode_literals
+
 
 from django.forms import forms
 from django_cradmin.viewhelpers.crudbase import OnlySaveButtonMixin

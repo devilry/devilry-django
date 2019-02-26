@@ -48,8 +48,8 @@ class TestDeliveryImporterImporter(ImporterTestCaseMixin, test.TestCase):
                 candidate_id=candidate.id),
         )
         DeliveryImporter(input_root=self.temp_root_dir).import_models()
-        self.assertEquals(FeedbackSet.objects.count(), 1)
-        self.assertEquals(GroupComment.objects.count(), 1)
+        self.assertEqual(FeedbackSet.objects.count(), 1)
+        self.assertEqual(GroupComment.objects.count(), 1)
 
     def test_importer_pk(self):
         test_student_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -67,8 +67,8 @@ class TestDeliveryImporterImporter(ImporterTestCaseMixin, test.TestCase):
         )
         DeliveryImporter(input_root=self.temp_root_dir).import_models()
         comment = GroupComment.objects.first()
-        self.assertEquals(comment.pk, 3)
-        self.assertEquals(comment.id, 3)
+        self.assertEqual(comment.pk, 3)
+        self.assertEqual(comment.id, 3)
 
     def test_importer_feedback_set(self):
         test_student_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -86,7 +86,7 @@ class TestDeliveryImporterImporter(ImporterTestCaseMixin, test.TestCase):
         )
         DeliveryImporter(input_root=self.temp_root_dir).import_models()
         comment = GroupComment.objects.first()
-        self.assertEquals(comment.feedback_set, test_feedbackset)
+        self.assertEqual(comment.feedback_set, test_feedbackset)
 
     def test_importer_text(self):
         test_student_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -104,7 +104,7 @@ class TestDeliveryImporterImporter(ImporterTestCaseMixin, test.TestCase):
         )
         DeliveryImporter(input_root=self.temp_root_dir).import_models()
         comment = GroupComment.objects.first()
-        self.assertEquals(comment.text, 'Delivery')
+        self.assertEqual(comment.text, 'Delivery')
 
     def test_importer_comment_type(self):
         test_student_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -122,7 +122,7 @@ class TestDeliveryImporterImporter(ImporterTestCaseMixin, test.TestCase):
         )
         DeliveryImporter(input_root=self.temp_root_dir).import_models()
         comment = GroupComment.objects.first()
-        self.assertEquals(comment.comment_type, GroupComment.COMMENT_TYPE_GROUPCOMMENT)
+        self.assertEqual(comment.comment_type, GroupComment.COMMENT_TYPE_GROUPCOMMENT)
 
     def test_importer_comment_part_of_grading_false(self):
         test_student_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -158,7 +158,7 @@ class TestDeliveryImporterImporter(ImporterTestCaseMixin, test.TestCase):
         )
         DeliveryImporter(input_root=self.temp_root_dir).import_models()
         comment = GroupComment.objects.first()
-        self.assertEquals(comment.user, test_student_user)
+        self.assertEqual(comment.user, test_student_user)
 
     def test_importer_user_role(self):
         test_student_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -176,7 +176,7 @@ class TestDeliveryImporterImporter(ImporterTestCaseMixin, test.TestCase):
         )
         DeliveryImporter(input_root=self.temp_root_dir).import_models()
         comment = GroupComment.objects.first()
-        self.assertEquals(comment.user_role, GroupComment.USER_ROLE_STUDENT)
+        self.assertEqual(comment.user_role, GroupComment.USER_ROLE_STUDENT)
 
     def test_auto_sequence_numbered_objects_uses_meta_max_id(self):
         test_student_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -194,10 +194,10 @@ class TestDeliveryImporterImporter(ImporterTestCaseMixin, test.TestCase):
             model_meta=self._create_model_meta()
         )
         DeliveryImporter(input_root=self.temp_root_dir).import_models()
-        self.assertEquals(GroupComment.objects.count(), 1)
+        self.assertEqual(GroupComment.objects.count(), 1)
         comment = GroupComment.objects.first()
-        self.assertEquals(comment.pk, 3)
-        self.assertEquals(comment.id, 3)
+        self.assertEqual(comment.pk, 3)
+        self.assertEqual(comment.id, 3)
         comment_with_auto_id = mommy.make('devilry_group.GroupComment')
-        self.assertEquals(comment_with_auto_id.pk, self._create_model_meta()['max_id']+1)
-        self.assertEquals(comment_with_auto_id.id, self._create_model_meta()['max_id']+1)
+        self.assertEqual(comment_with_auto_id.pk, self._create_model_meta()['max_id']+1)
+        self.assertEqual(comment_with_auto_id.id, self._create_model_meta()['max_id']+1)

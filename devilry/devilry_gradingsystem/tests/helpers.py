@@ -49,9 +49,9 @@ class FeedbackEditorViewTestMixin(object):
 
     def test_get_render_no_feedback_draft(self):
         response = self.get_as(self.get_testexaminer())
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         selector = htmls.S(response.content)
-        self.assertEquals(selector.one('#id_feedbacktext').alltext_normalized, '')
+        self.assertEqual(selector.one('#id_feedbacktext').alltext_normalized, '')
         self.assertFalse(selector.exists('#django_cradmin_messages'))
 
     @unittest.skip('Must be updated to used django cradmin')
@@ -63,7 +63,7 @@ class FeedbackEditorViewTestMixin(object):
             saved_by=self.get_testexaminer())
         response = self.get_as(self.get_testexaminer())
         selector = htmls.S(response.content)
-        self.assertEquals(selector.one('#id_feedbacktext').alltext_normalized, 'Test feedback')
+        self.assertEqual(selector.one('#id_feedbacktext').alltext_normalized, 'Test feedback')
         self.assertIn(
             'Loaded draft saved',
             selector.one('#django_cradmin_messages .alert-info').alltext_normalized)
@@ -79,7 +79,7 @@ class FeedbackEditorViewTestMixin(object):
             saved_by=UserBuilder('someotheruser').user)
         response = self.get_as(self.get_testexaminer())
         selector = htmls.S(response.content)
-        self.assertEquals(selector.one('#id_feedbacktext').alltext_normalized, '')
+        self.assertEqual(selector.one('#id_feedbacktext').alltext_normalized, '')
 
     def test_get_render_other_examiner_has_feedback_draft_draft_sharing(self):
         testdelivery = self.get_empty_delivery_with_testexaminer_as_examiner()
@@ -93,7 +93,7 @@ class FeedbackEditorViewTestMixin(object):
             saved_by=UserBuilder('someotheruser').user)
         response = self.get_as(self.get_testexaminer())
         selector = htmls.S(response.content)
-        self.assertEquals(selector.one('#id_feedbacktext').alltext_normalized, 'Test feedback')
+        self.assertEqual(selector.one('#id_feedbacktext').alltext_normalized, 'Test feedback')
 
     def test_get_render_workflow_default(self):
         response = self.get_as(self.get_testexaminer())
@@ -124,20 +124,20 @@ class FeedbackEditorViewTestMixin(object):
         postdata = self.get_valid_post_data_without_feedbackfile_or_feedbacktext()
         postdata['submit_publish'] = 'publish'
         response = self.post_as(testexaminer, postdata)
-        self.assertEquals(response.status_code, 403)
+        self.assertEqual(response.status_code, 403)
 
     def test_post_with_feedbackfile_no_existing_file(self):
         delivery = self.get_empty_delivery_with_testexaminer_as_examiner()
         testexaminer = self.get_testexaminer()
-        self.assertEquals(delivery.feedbacks.count(), 0)
-        self.assertEquals(delivery.devilry_gradingsystem_feedbackdraft_set.count(), 0)
+        self.assertEqual(delivery.feedbacks.count(), 0)
+        self.assertEqual(delivery.devilry_gradingsystem_feedbackdraft_set.count(), 0)
 
         postdata = self.get_valid_post_data_without_feedbackfile_or_feedbacktext()
         postdata['feedbackfile'] = SimpleUploadedFile('testfile.txt', 'Feedback file test')
         self.post_as(testexaminer, postdata)
 
-        self.assertEquals(delivery.devilry_gradingsystem_feedbackdraft_set.count(), 1)
-        self.assertEquals(FeedbackDraftFile.objects.filter(delivery=delivery).count(), 1)
+        self.assertEqual(delivery.devilry_gradingsystem_feedbackdraft_set.count(), 1)
+        self.assertEqual(FeedbackDraftFile.objects.filter(delivery=delivery).count(), 1)
         feedbackdraftfile = FeedbackDraftFile.objects.get(delivery=delivery)
         self.assertEqual(feedbackdraftfile.filename, 'testfile.txt')
         self.assertEqual(feedbackdraftfile.file.read(), 'Feedback file test')
@@ -152,8 +152,8 @@ class FeedbackEditorViewTestMixin(object):
         postdata['feedbackfile'] = SimpleUploadedFile('testfile.txt', 'Feedback file test')
         self.post_as(testexaminer, postdata)
 
-        self.assertEquals(delivery.devilry_gradingsystem_feedbackdraft_set.count(), 1)
-        self.assertEquals(FeedbackDraftFile.objects.filter(delivery=delivery).count(), 1)
+        self.assertEqual(delivery.devilry_gradingsystem_feedbackdraft_set.count(), 1)
+        self.assertEqual(FeedbackDraftFile.objects.filter(delivery=delivery).count(), 1)
         feedbackdraftfile = FeedbackDraftFile.objects.get(delivery=delivery)
         self.assertEqual(feedbackdraftfile.filename, 'testfile.txt')
         self.assertEqual(feedbackdraftfile.file.read(), 'Feedback file test')
@@ -169,8 +169,8 @@ class FeedbackEditorViewTestMixin(object):
         postdata['feedbackfile-clear'] = 'on'
         self.post_as(testexaminer, postdata)
 
-        self.assertEquals(delivery.devilry_gradingsystem_feedbackdraft_set.count(), 1)
-        self.assertEquals(FeedbackDraftFile.objects.filter(delivery=delivery).count(), 0)
+        self.assertEqual(delivery.devilry_gradingsystem_feedbackdraft_set.count(), 1)
+        self.assertEqual(FeedbackDraftFile.objects.filter(delivery=delivery).count(), 0)
 
     def test_post_update_draft_without_changing_feedbackfile(self):
         delivery = self.get_empty_delivery_with_testexaminer_as_examiner()
@@ -182,8 +182,8 @@ class FeedbackEditorViewTestMixin(object):
         postdata['feedbackfile'] = ''
         self.post_as(testexaminer, postdata)
 
-        self.assertEquals(delivery.devilry_gradingsystem_feedbackdraft_set.count(), 1)
-        self.assertEquals(FeedbackDraftFile.objects.filter(delivery=delivery).count(), 1)
+        self.assertEqual(delivery.devilry_gradingsystem_feedbackdraft_set.count(), 1)
+        self.assertEqual(FeedbackDraftFile.objects.filter(delivery=delivery).count(), 1)
         feedbackdraftfile = FeedbackDraftFile.objects.get(delivery=delivery)
         self.assertEqual(feedbackdraftfile.filename, 'testfile.txt')
         self.assertEqual(feedbackdraftfile.file.read(), 'Feedback file test')
@@ -199,10 +199,10 @@ class FeedbackEditorViewTestMixin(object):
 
         postdata = self.get_valid_post_data_without_feedbackfile_or_feedbacktext()
         postdata['feedbackfile'] = SimpleUploadedFile('testfile.txt', 'Feedback file test')
-        self.assertEquals(FeedbackDraftFile.objects.filter(delivery=delivery).count(), 1)
+        self.assertEqual(FeedbackDraftFile.objects.filter(delivery=delivery).count(), 1)
         self.post_as(testexaminer, postdata)
-        self.assertEquals(FeedbackDraftFile.objects.filter(delivery=delivery).count(), 2)
-        self.assertEquals(FeedbackDraftFile.objects.filter(delivery=delivery, saved_by=testexaminer).count(), 1)
+        self.assertEqual(FeedbackDraftFile.objects.filter(delivery=delivery).count(), 2)
+        self.assertEqual(FeedbackDraftFile.objects.filter(delivery=delivery, saved_by=testexaminer).count(), 1)
 
     def test_post_publish_with_feedbackfile(self):
         delivery = self.get_empty_delivery_with_testexaminer_as_examiner()
@@ -212,11 +212,11 @@ class FeedbackEditorViewTestMixin(object):
         postdata = self.get_valid_post_data_without_feedbackfile_or_feedbacktext()
         postdata['submit_publish'] = 'yes'
 
-        self.assertEquals(StaticFeedback.objects.count(), 0)
+        self.assertEqual(StaticFeedback.objects.count(), 0)
         self.post_as(testexaminer, postdata)
-        self.assertEquals(StaticFeedback.objects.count(), 1)
+        self.assertEqual(StaticFeedback.objects.count(), 1)
         staticfeedback = StaticFeedback.objects.get(delivery=delivery)
-        self.assertEquals(staticfeedback.files.count(), 1)
+        self.assertEqual(staticfeedback.files.count(), 1)
         fileattachment = staticfeedback.files.first()
-        self.assertEquals(fileattachment.filename, 'testfile.txt')
-        self.assertEquals(fileattachment.file.read(), 'Feedback file test')
+        self.assertEqual(fileattachment.filename, 'testfile.txt')
+        self.assertEqual(fileattachment.file.read(), 'Feedback file test')

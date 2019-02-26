@@ -14,13 +14,13 @@ class TestOverviewSubjectListViewApp(TestCase, cradmin_testhelpers.TestCaseMixin
     def test_title(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testuser)
-        self.assertEqual(u'Administrator dashboard',
+        self.assertEqual('Administrator dashboard',
                          mockresponse.selector.one('title').alltext_normalized)
 
     def test_h1(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testuser)
-        self.assertEqual(u'Administrator dashboard',
+        self.assertEqual('Administrator dashboard',
                          mockresponse.selector.one('h1').alltext_normalized)
 
     def __minimal_mockrequest_with_user(self, user):
@@ -105,7 +105,7 @@ class TestOverviewSubjectListViewApp(TestCase, cradmin_testhelpers.TestCaseMixin
             user=testuser, subjectpermissiongroup=[
                 subjectpermissiongroup1,
                 subjectpermissiongroup2])
-        self.assertItemsEqual(
+        self.assertCountEqual(
             [testsubject2],
             list(view._OverviewSubjectListView__get_all_subjects_where_user_is_subjectadmin()))
 
@@ -247,7 +247,7 @@ class TestOverviewSubjectListViewApp(TestCase, cradmin_testhelpers.TestCaseMixin
             subjectpermissiongroup=subjectpermissiongroup,
             periodpermissiongroup=[periodpermissiongroup1, periodpermissiongroup2, periodpermissiongroup3]
         )
-        self.assertItemsEqual(
+        self.assertCountEqual(
             [[testperiod2], [testperiod1], [testperiod3]],
             view._OverviewSubjectListView__get_all_periods_where_user_is_subjectadmin_or_periodadmin()
         )
@@ -281,7 +281,7 @@ class TestOverviewSubjectListViewApp(TestCase, cradmin_testhelpers.TestCaseMixin
             subjectpermissiongroup=subjectpermissiongroup,
             periodpermissiongroup=[periodpermissiongroup1, periodpermissiongroup2, periodpermissiongroup3]
         )
-        self.assertItemsEqual(
+        self.assertCountEqual(
             [[testperiod3, testperiod2], [testperiod1]],
             view._OverviewSubjectListView__get_all_periods_where_user_is_subjectadmin_or_periodadmin()
         )

@@ -46,7 +46,7 @@ INSTALLED_APPS += [
     'devilry.devilry_sandbox',
 
     'devilry.project.develop',
-    'simple_rest',
+    #'simple_rest',
     'ievv_opensource.ievvtasks_development',
 
     # Not apps, but here for the Django test system to discover them:

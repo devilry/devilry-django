@@ -28,14 +28,14 @@ class TestFeedbackFeedDeleteComment(TestCase, cradmin_testhelpers.TestCaseMixin)
                              visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
                              feedback_set=group.feedbackset_set.first())
 
-        self.assertEquals(1, len(group_models.GroupComment.objects.all()))
+        self.assertEqual(1, len(group_models.GroupComment.objects.all()))
 
         self.mock_http302_postrequest(
             cradmin_role=examiner.assignmentgroup,
             requestuser=examiner.relatedexaminer.user,
             viewkwargs={'pk': comment.id})
 
-        self.assertEquals(0, len(group_models.GroupComment.objects.all()))
+        self.assertEqual(0, len(group_models.GroupComment.objects.all()))
 
     def test_delete_comment_is_not_draft(self):
         # Test that PermissionDenied(403) is raised when trying to delete a non-draft GroupComment.
@@ -81,8 +81,8 @@ class TestFeedbackFeedDeleteComment(TestCase, cradmin_testhelpers.TestCaseMixin)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testexaminer.assignmentgroup,
                                                           requestuser=testexaminer.relatedexaminer.user,
                                                           viewkwargs={'pk': testcomment.id})
-        self.assertEquals('Delete', mockresponse.selector.one('.btn-danger').alltext_normalized)
-        self.assertEquals('Cancel', mockresponse.selector.one('.btn-cancel').alltext_normalized)
+        self.assertEqual('Delete', mockresponse.selector.one('.btn-danger').alltext_normalized)
+        self.assertEqual('Cancel', mockresponse.selector.one('.btn-cancel').alltext_normalized)
 
     def test_delete_num_queries(self):
         # Test number of queries executed

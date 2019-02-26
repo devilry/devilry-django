@@ -48,7 +48,7 @@ def devilry_feedback_shortformat(staticfeedback):
     if staticfeedback.grade in ('Passed', 'Failed'):
         return staticfeedback.grade
     else:
-        return u'{} ({})'.format(
+        return '{} ({})'.format(
             staticfeedback.grade,
             format_is_passing_grade(staticfeedback.is_passing_grade))
 

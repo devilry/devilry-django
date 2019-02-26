@@ -40,7 +40,7 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.Test
         group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
         mockresponse = self.mock_getrequest(cradmin_role=examiner.assignmentgroup,
                                             requestuser=examiner.relatedexaminer.user)
-        self.assertEquals(mockresponse.response.status_code, 200)
+        self.assertEqual(mockresponse.response.status_code, 200)
 
     def test_404_on_last_feedbackset_published(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -190,7 +190,7 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.Test
                 }
             })
         group_comment = group_models.GroupComment.objects.all()[0]
-        self.assertEquals(group_comment.visibility, group_models.GroupComment.VISIBILITY_PRIVATE)
+        self.assertEqual(group_comment.visibility, group_models.GroupComment.VISIBILITY_PRIVATE)
 
     def test_get_feedbackset_deadline_history_semi_anonymous_username_not_rendered(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -333,8 +333,8 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
             requestuser=examiner.relatedexaminer.user
         )
         comment_text_elements = mockresponse.selector.list('.devilry-group-comment-text')
-        self.assertEquals('Draft', comment_text_elements[0].alltext_normalized)
-        self.assertEquals('Corrected', comment_text_elements[1].alltext_normalized)
+        self.assertEqual('Draft', comment_text_elements[0].alltext_normalized)
+        self.assertEqual('Corrected', comment_text_elements[1].alltext_normalized)
 
     def test_post_publish_feedbackset_after_deadline(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -357,7 +357,7 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
         feedbacksets = group_models.FeedbackSet.objects.all()
         self.assertIsNotNone(feedbacksets[0].grading_published_datetime)
         cached_group = cache_models.AssignmentGroupCachedData.objects.get(group=testgroup)
-        self.assertEquals(cached_group.last_published_feedbackset, feedbackset)
+        self.assertEqual(cached_group.last_published_feedbackset, feedbackset)
 
     def test_post_publish_feedbackset_after_deadline_grading_system_points(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -380,9 +380,9 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
             })
         feedbacksets = group_models.FeedbackSet.objects.all()
         self.assertIsNotNone(feedbacksets[0].grading_published_datetime)
-        self.assertEquals(10, feedbacksets[0].grading_points)
+        self.assertEqual(10, feedbacksets[0].grading_points)
         cached_group = cache_models.AssignmentGroupCachedData.objects.get(group=testgroup)
-        self.assertEquals(cached_group.last_published_feedbackset, feedbackset)
+        self.assertEqual(cached_group.last_published_feedbackset, feedbackset)
 
     def test_post_publish_feedbackset_after_deadline_grading_system_passed_failed(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -406,9 +406,9 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
             })
         feedbacksets = group_models.FeedbackSet.objects.all()
         self.assertIsNotNone(feedbacksets[0].grading_published_datetime)
-        self.assertEquals(1, feedbacksets[0].grading_points)
+        self.assertEqual(1, feedbacksets[0].grading_points)
         cached_group = cache_models.AssignmentGroupCachedData.objects.get(group=testgroup)
-        self.assertEquals(cached_group.last_published_feedbackset, feedbackset)
+        self.assertEqual(cached_group.last_published_feedbackset, feedbackset)
 
     def test_post_publish_feedbackset_drafts_on_last_feedbackset_only(self):
         assignment = mommy.make_recipe(
@@ -503,10 +503,10 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
             })
         cached_group = cache_models.AssignmentGroupCachedData.objects.get(group=testgroup)
         feedback_comments = group_models.GroupComment.objects.all()
-        self.assertEquals(feedbackset, cached_group.last_published_feedbackset)
+        self.assertEqual(feedbackset, cached_group.last_published_feedbackset)
         self.assertIsNotNone(cached_group.last_published_feedbackset.grading_published_datetime)
-        self.assertEquals(1, cached_group.last_published_feedbackset.grading_points)
-        self.assertEquals(5, len(feedback_comments))
+        self.assertEqual(1, cached_group.last_published_feedbackset.grading_points)
+        self.assertEqual(5, len(feedback_comments))
 
     def test_examiner_publishes_without_comment_text(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -530,9 +530,9 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
             })
         feedbacksets = group_models.FeedbackSet.objects.all()
         self.assertIsNotNone(feedbacksets[0].grading_published_datetime)
-        self.assertEquals(0, group_models.GroupComment.objects.count())
+        self.assertEqual(0, group_models.GroupComment.objects.count())
         cached_group = cache_models.AssignmentGroupCachedData.objects.get(group=testgroup)
-        self.assertEquals(cached_group.last_published_feedbackset, feedbackset)
+        self.assertEqual(cached_group.last_published_feedbackset, feedbackset)
 
     def test_examiner_publishes_with_comment_text(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -555,10 +555,10 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
                 }
             })
         cached_group = cache_models.AssignmentGroupCachedData.objects.get(group=testgroup)
-        self.assertEquals(cached_group.last_published_feedbackset, feedbackset)
+        self.assertEqual(cached_group.last_published_feedbackset, feedbackset)
         self.assertIsNotNone(cached_group.last_published_feedbackset.grading_published_datetime)
-        self.assertEquals(1, group_models.GroupComment.objects.all().count())
-        self.assertEquals('test', group_models.GroupComment.objects.get(feedback_set=feedbackset).text)
+        self.assertEqual(1, group_models.GroupComment.objects.all().count())
+        self.assertEqual('test', group_models.GroupComment.objects.get(feedback_set=feedbackset).text)
 
     def test_examiner_publishes_email_is_sent(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -629,7 +629,7 @@ class TestFeedbackfeedFeedbackFileUploadExaminer(TestCase, cradmin_testhelpers.T
                     'temporary_file_collection_id': temporary_filecollection.id
                 }
             })
-        self.assertEquals(2, comment_models.CommentFile.objects.count())
+        self.assertEqual(2, comment_models.CommentFile.objects.count())
         self.assertEqual(1, group_models.GroupComment.objects.count())
         self.assertIsNotNone(group_models.FeedbackSet.objects.get(id=testfeedbackset.id).grading_published_datetime)
 
@@ -659,6 +659,6 @@ class TestFeedbackfeedFeedbackFileUploadExaminer(TestCase, cradmin_testhelpers.T
                     'temporary_file_collection_id': temporary_filecollection.id
                 }
             })
-        self.assertEquals(2, comment_models.CommentFile.objects.count())
+        self.assertEqual(2, comment_models.CommentFile.objects.count())
         self.assertEqual(1, group_models.GroupComment.objects.count())
         self.assertIsNone(group_models.FeedbackSet.objects.get(id=testfeedbackset.id).grading_published_datetime)

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 # 3rd party imports
 from model_mommy import mommy
@@ -27,7 +27,7 @@ class TestQualificationPreviewView(test.TestCase, cradmin_testhelpers.TestCaseMi
                     'passing_relatedstudentids': [],
                     'plugintypeid': 'some_plugintypeid'
                 })
-        self.assertEquals(mockresponse.response.status_code, 200)
+        self.assertEqual(mockresponse.response.status_code, 200)
 
     def test_get_back_button(self):
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
@@ -47,7 +47,7 @@ class TestQualificationPreviewView(test.TestCase, cradmin_testhelpers.TestCaseMi
                     'passing_relatedstudentids': [],
                     'plugintypeid': 'some_plugintypeid'
                 })
-        self.assertEquals(
+        self.assertEqual(
                 mockresponse.selector.one('#devilry_qualifiesforexam_back_index_button').alltext_normalized,
                 'Back')
 
@@ -69,7 +69,7 @@ class TestQualificationPreviewView(test.TestCase, cradmin_testhelpers.TestCaseMi
                     'passing_relatedstudentids': [],
                     'plugintypeid': 'some_plugintypeid'
                 })
-        self.assertEquals(
+        self.assertEqual(
                 mockresponse.selector.one('#devilry_qualifiesforexam_save_button').alltext_normalized,
                 'Save')
 
@@ -80,7 +80,7 @@ class TestQualificationPreviewView(test.TestCase, cradmin_testhelpers.TestCaseMi
                    status=status_models.Status.READY,
                    plugin='someplugin')
         mockresponse = self.mock_getrequest(cradmin_role=testperiod)
-        self.assertEquals(mockresponse.response.status_code, 302)
+        self.assertEqual(mockresponse.response.status_code, 302)
 
     def test_post_save_302(self):
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
@@ -98,7 +98,7 @@ class TestQualificationPreviewView(test.TestCase, cradmin_testhelpers.TestCaseMi
                     'save': 'unused value',
                 }
             })
-        self.assertEquals(mockresponse.response.status_code, 302)
+        self.assertEqual(mockresponse.response.status_code, 302)
 
     def test_post_save_session_is_deleted(self):
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
@@ -116,7 +116,7 @@ class TestQualificationPreviewView(test.TestCase, cradmin_testhelpers.TestCaseMi
                     'save': 'unused value',
                 }
             })
-        self.assertEquals(len(mockresponse.request.session), 0)
+        self.assertEqual(len(mockresponse.request.session), 0)
 
     def test_post_back_302(self):
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
@@ -127,7 +127,7 @@ class TestQualificationPreviewView(test.TestCase, cradmin_testhelpers.TestCaseMi
                     'back': 'unused value',
                 }
             })
-        self.assertEquals(mockresponse.response.status_code, 302)
+        self.assertEqual(mockresponse.response.status_code, 302)
 
     def test_post_back_session_is_deleted(self):
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
@@ -145,7 +145,7 @@ class TestQualificationPreviewView(test.TestCase, cradmin_testhelpers.TestCaseMi
                     'back': 'unused value',
                 }
             })
-        self.assertEquals(len(mockresponse.request.session), 0)
+        self.assertEqual(len(mockresponse.request.session), 0)
 
     def test_post_save_status(self):
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
@@ -167,10 +167,10 @@ class TestQualificationPreviewView(test.TestCase, cradmin_testhelpers.TestCaseMi
             })
 
         statuses = status_models.Status.objects.filter(period=testperiod)
-        self.assertEquals(len(statuses), 1)
+        self.assertEqual(len(statuses), 1)
         status = statuses[0]
-        self.assertEquals(status.user, admin_user)
-        self.assertEquals(status.status, status_models.Status.READY)
+        self.assertEqual(status.user, admin_user)
+        self.assertEqual(status.status, status_models.Status.READY)
 
     def test_post_save_all_students_qualify(self):
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
@@ -191,7 +191,7 @@ class TestQualificationPreviewView(test.TestCase, cradmin_testhelpers.TestCaseMi
 
         status = status_models.Status.objects.get(period=testperiod)
         qualification_entries = status_models.QualifiesForFinalExam.objects.filter(status=status)
-        self.assertEquals(len(qualification_entries), 20)
+        self.assertEqual(len(qualification_entries), 20)
         for qualification_entry in qualification_entries:
             self.assertTrue(qualification_entry.qualifies)
 
@@ -214,7 +214,7 @@ class TestQualificationPreviewView(test.TestCase, cradmin_testhelpers.TestCaseMi
 
         status = status_models.Status.objects.get(period=testperiod)
         qualification_entries = status_models.QualifiesForFinalExam.objects.filter(status=status)
-        self.assertEquals(len(qualification_entries), 20)
+        self.assertEqual(len(qualification_entries), 20)
         for qualification_entry in qualification_entries:
             self.assertFalse(qualification_entry.qualifies)
 
@@ -241,8 +241,8 @@ class TestQualificationPreviewView(test.TestCase, cradmin_testhelpers.TestCaseMi
         qualifying_students = status_models.QualifiesForFinalExam.objects.filter(status=status, qualifies=True)
         non_qualifying_students = status_models.QualifiesForFinalExam.objects.filter(status=status, qualifies=False)
 
-        self.assertEquals(len(qualifying_students), 10)
-        self.assertEquals(len(non_qualifying_students), 10)
+        self.assertEqual(len(qualifying_students), 10)
+        self.assertEqual(len(non_qualifying_students), 10)
 
         for student_entry in qualifying_students:
             self.assertIn(student_entry.relatedstudent.id, passing_studentids)
@@ -287,7 +287,7 @@ class TestQualificationPreviewViewTableRendering(test.TestCase, cradmin_testhelp
                 'passing_relatedstudentids': [],
                 'plugintypeid': 'someplugin_id'
             })
-        self.assertEquals(len(mockresponse.selector.list('.devilry-qualifiesforexam-tr')), 2)
+        self.assertEqual(len(mockresponse.selector.list('.devilry-qualifiesforexam-tr')), 2)
 
     def test_table_row_is_rendered_multiple_students(self):
         # Tests that 21 rows are rendered, one for the table header and twenty(one for each student)
@@ -299,7 +299,7 @@ class TestQualificationPreviewViewTableRendering(test.TestCase, cradmin_testhelp
                 'passing_relatedstudentids': [],
                 'plugintypeid': 'someplugin_id'
             })
-        self.assertEquals(len(mockresponse.selector.list('.devilry-qualifiesforexam-tr')), 21)
+        self.assertEqual(len(mockresponse.selector.list('.devilry-qualifiesforexam-tr')), 21)
 
     def test_table_data_studentinfo_is_rendered(self):
         # Tests that a td element of class 'devilry-qualifiesforexam-cell-studentinfo' is rendered.
@@ -311,7 +311,7 @@ class TestQualificationPreviewViewTableRendering(test.TestCase, cradmin_testhelp
                 'passing_relatedstudentids': [],
                 'plugintypeid': 'someplugin_id'
             })
-        self.assertEquals(len(mockresponse.selector.list('.devilry-qualifiesforexam-cell-studentinfo')), 1)
+        self.assertEqual(len(mockresponse.selector.list('.devilry-qualifiesforexam-cell-studentinfo')), 1)
 
     def test_table_data_qualify_result_is_rendered(self):
         # Tests that a td element of class 'devilry-qualifiesforexam-cell-qualify' is rendered.
@@ -323,7 +323,7 @@ class TestQualificationPreviewViewTableRendering(test.TestCase, cradmin_testhelp
                 'passing_relatedstudentids': [],
                 'plugintypeid': 'someplugin_id'
             })
-        self.assertEquals(len(mockresponse.selector.list('.devilry-qualifiesforexam-cell-qualify')), 1)
+        self.assertEqual(len(mockresponse.selector.list('.devilry-qualifiesforexam-cell-qualify')), 1)
 
     def test_table_header_cell_data(self):
         # Test a more complete example of data contained in cells for two students, one qualifying and one not.
@@ -336,8 +336,8 @@ class TestQualificationPreviewViewTableRendering(test.TestCase, cradmin_testhelp
                 'plugintypeid': 'someplugin_id'
             })
         table_headers = mockresponse.selector.list('.devilry-qualifiesforexam-th')
-        self.assertEquals(table_headers[0].alltext_normalized, 'Student')
-        self.assertEquals(table_headers[1].alltext_normalized, 'Qualified for final exams')
+        self.assertEqual(table_headers[0].alltext_normalized, 'Student')
+        self.assertEqual(table_headers[1].alltext_normalized, 'Qualified for final exams')
 
     def test_table_student_row_data_student_does_not_qualify(self):
         # Test a more complete example of data contained in cells for two students, one qualifying and one not.
@@ -354,9 +354,9 @@ class TestQualificationPreviewViewTableRendering(test.TestCase, cradmin_testhelp
                 'plugintypeid': 'someplugin_id'
             })
         studentinfo = mockresponse.selector.one('.devilry-qualifiesforexam-cell-studentinfo')
-        self.assertEquals(studentinfo.alltext_normalized, '{} {}'.format(relatedstudent.user.fullname,
+        self.assertEqual(studentinfo.alltext_normalized, '{} {}'.format(relatedstudent.user.fullname,
                                                                          relatedstudent.user.shortname))
-        self.assertEquals(mockresponse.selector.one('.devilry-qualifiesforexam-cell-qualify').alltext_normalized, 'NO')
+        self.assertEqual(mockresponse.selector.one('.devilry-qualifiesforexam-cell-qualify').alltext_normalized, 'NO')
 
     def test_table_student_row_data_student_qualifies(self):
         # Test a more complete example of data contained in cells for two students, one qualifying and one not.
@@ -373,6 +373,6 @@ class TestQualificationPreviewViewTableRendering(test.TestCase, cradmin_testhelp
                 'plugintypeid': 'someplugin_id'
             })
         studentinfo = mockresponse.selector.one('.devilry-qualifiesforexam-cell-studentinfo')
-        self.assertEquals(studentinfo.alltext_normalized, '{} {}'.format(relatedstudent.user.fullname,
+        self.assertEqual(studentinfo.alltext_normalized, '{} {}'.format(relatedstudent.user.fullname,
                                                                          relatedstudent.user.shortname))
-        self.assertEquals(mockresponse.selector.one('.devilry-qualifiesforexam-cell-qualify').alltext_normalized, 'YES')
+        self.assertEqual(mockresponse.selector.one('.devilry-qualifiesforexam-cell-qualify').alltext_normalized, 'YES')

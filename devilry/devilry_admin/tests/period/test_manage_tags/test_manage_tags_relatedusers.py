@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django import test
 from django_cradmin import cradmin_testhelpers
@@ -21,8 +21,8 @@ class TestAddRelatedExaminersToTag(test.TestCase, cradmin_testhelpers.TestCaseMi
         testperiod = mommy.make('core.Period')
         testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='a')
         testrelatedexaminer = mommy.make('core.RelatedExaminer', period=testperiod)
-        self.assertEquals(testrelatedexaminer.periodtag_set.count(), 0)
-        self.assertEquals(testperiodtag.relatedexaminers.count(), 0)
+        self.assertEqual(testrelatedexaminer.periodtag_set.count(), 0)
+        self.assertEqual(testperiodtag.relatedexaminers.count(), 0)
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
             viewkwargs={
@@ -38,8 +38,8 @@ class TestAddRelatedExaminersToTag(test.TestCase, cradmin_testhelpers.TestCaseMi
         relatedexaminer_tag_ids = relatedexaminer.periodtag_set.all().values_list('id', flat=True)
         periodtag = PeriodTag.objects.get(id=testperiodtag.id)
         periodtag_relatedexaminers_ids = periodtag.relatedexaminers.all().values_list('id', flat=True)
-        self.assertEquals(relatedexaminer.periodtag_set.count(), 1)
-        self.assertEquals(periodtag.relatedexaminers.count(), 1)
+        self.assertEqual(relatedexaminer.periodtag_set.count(), 1)
+        self.assertEqual(periodtag.relatedexaminers.count(), 1)
         self.assertIn(relatedexaminer.id, periodtag_relatedexaminers_ids)
         self.assertIn(periodtag.id, relatedexaminer_tag_ids)
 
@@ -49,10 +49,10 @@ class TestAddRelatedExaminersToTag(test.TestCase, cradmin_testhelpers.TestCaseMi
         testrelatedexaminer1 = mommy.make('core.RelatedExaminer', period=testperiod)
         testrelatedexaminer2 = mommy.make('core.RelatedExaminer', period=testperiod)
         testrelatedexaminer3 = mommy.make('core.RelatedExaminer', period=testperiod)
-        self.assertEquals(testrelatedexaminer1.periodtag_set.count(), 0)
-        self.assertEquals(testrelatedexaminer2.periodtag_set.count(), 0)
-        self.assertEquals(testrelatedexaminer3.periodtag_set.count(), 0)
-        self.assertEquals(testperiodtag.relatedexaminers.count(), 0)
+        self.assertEqual(testrelatedexaminer1.periodtag_set.count(), 0)
+        self.assertEqual(testrelatedexaminer2.periodtag_set.count(), 0)
+        self.assertEqual(testrelatedexaminer3.periodtag_set.count(), 0)
+        self.assertEqual(testperiodtag.relatedexaminers.count(), 0)
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
             viewkwargs={
@@ -66,7 +66,7 @@ class TestAddRelatedExaminersToTag(test.TestCase, cradmin_testhelpers.TestCaseMi
         )
         periodtag = PeriodTag.objects.get(id=testperiodtag.id)
         periodtag_relatedexaminers_ids = periodtag.relatedexaminers.all().values_list('id', flat=True)
-        self.assertEquals(len(periodtag_relatedexaminers_ids), 3)
+        self.assertEqual(len(periodtag_relatedexaminers_ids), 3)
         self.assertIn(testrelatedexaminer1.id, periodtag_relatedexaminers_ids)
         self.assertIn(testrelatedexaminer2.id, periodtag_relatedexaminers_ids)
         self.assertIn(testrelatedexaminer3.id, periodtag_relatedexaminers_ids)
@@ -77,10 +77,10 @@ class TestAddRelatedExaminersToTag(test.TestCase, cradmin_testhelpers.TestCaseMi
         testrelatedexaminer1 = mommy.make('core.RelatedExaminer', period=testperiod)
         testrelatedexaminer2 = mommy.make('core.RelatedExaminer', period=testperiod)
         testrelatedexaminer3 = mommy.make('core.RelatedExaminer', period=testperiod)
-        self.assertEquals(testrelatedexaminer1.periodtag_set.count(), 0)
-        self.assertEquals(testrelatedexaminer2.periodtag_set.count(), 0)
-        self.assertEquals(testrelatedexaminer3.periodtag_set.count(), 0)
-        self.assertEquals(testperiodtag.relatedexaminers.count(), 0)
+        self.assertEqual(testrelatedexaminer1.periodtag_set.count(), 0)
+        self.assertEqual(testrelatedexaminer2.periodtag_set.count(), 0)
+        self.assertEqual(testrelatedexaminer3.periodtag_set.count(), 0)
+        self.assertEqual(testperiodtag.relatedexaminers.count(), 0)
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
             viewkwargs={
@@ -110,8 +110,8 @@ class TestRemoveRelatedExaminersFromTag(test.TestCase, cradmin_testhelpers.TestC
         testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='a')
         testrelatedexaminer = mommy.make('core.RelatedExaminer', period=testperiod)
         testperiodtag.relatedexaminers.add(testrelatedexaminer)
-        self.assertEquals(testrelatedexaminer.periodtag_set.count(), 1)
-        self.assertEquals(testperiodtag.relatedexaminers.count(), 1)
+        self.assertEqual(testrelatedexaminer.periodtag_set.count(), 1)
+        self.assertEqual(testperiodtag.relatedexaminers.count(), 1)
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
             viewkwargs={
@@ -125,8 +125,8 @@ class TestRemoveRelatedExaminersFromTag(test.TestCase, cradmin_testhelpers.TestC
         )
         relatedexaminer = RelatedExaminer.objects.get(id=testrelatedexaminer.id)
         periodtag = PeriodTag.objects.get(id=testperiodtag.id)
-        self.assertEquals(relatedexaminer.periodtag_set.count(), 0)
-        self.assertEquals(periodtag.relatedexaminers.count(), 0)
+        self.assertEqual(relatedexaminer.periodtag_set.count(), 0)
+        self.assertEqual(periodtag.relatedexaminers.count(), 0)
 
     def test_remove_multiple_relatedexaminers_to_tag(self):
         testperiod = mommy.make('core.Period')
@@ -137,10 +137,10 @@ class TestRemoveRelatedExaminersFromTag(test.TestCase, cradmin_testhelpers.TestC
         testperiodtag.relatedexaminers.add(testrelatedexaminer1)
         testperiodtag.relatedexaminers.add(testrelatedexaminer2)
         testperiodtag.relatedexaminers.add(testrelatedexaminer3)
-        self.assertEquals(testrelatedexaminer1.periodtag_set.count(), 1)
-        self.assertEquals(testrelatedexaminer2.periodtag_set.count(), 1)
-        self.assertEquals(testrelatedexaminer3.periodtag_set.count(), 1)
-        self.assertEquals(testperiodtag.relatedexaminers.count(), 3)
+        self.assertEqual(testrelatedexaminer1.periodtag_set.count(), 1)
+        self.assertEqual(testrelatedexaminer2.periodtag_set.count(), 1)
+        self.assertEqual(testrelatedexaminer3.periodtag_set.count(), 1)
+        self.assertEqual(testperiodtag.relatedexaminers.count(), 3)
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
             viewkwargs={
@@ -156,10 +156,10 @@ class TestRemoveRelatedExaminersFromTag(test.TestCase, cradmin_testhelpers.TestC
         relatedexaminer1 = RelatedExaminer.objects.get(id=testrelatedexaminer1.id)
         relatedexaminer2 = RelatedExaminer.objects.get(id=testrelatedexaminer2.id)
         relatedexaminer3 = RelatedExaminer.objects.get(id=testrelatedexaminer3.id)
-        self.assertEquals(periodtag.relatedexaminers.count(), 0)
-        self.assertEquals(relatedexaminer1.periodtag_set.count(), 0)
-        self.assertEquals(relatedexaminer2.periodtag_set.count(), 0)
-        self.assertEquals(relatedexaminer3.periodtag_set.count(), 0)
+        self.assertEqual(periodtag.relatedexaminers.count(), 0)
+        self.assertEqual(relatedexaminer1.periodtag_set.count(), 0)
+        self.assertEqual(relatedexaminer2.periodtag_set.count(), 0)
+        self.assertEqual(relatedexaminer3.periodtag_set.count(), 0)
 
     def test_remove_only_selected_relatedexaminers_are_removed(self):
         testperiod = mommy.make('core.Period')
@@ -170,10 +170,10 @@ class TestRemoveRelatedExaminersFromTag(test.TestCase, cradmin_testhelpers.TestC
         testperiodtag.relatedexaminers.add(testrelatedexaminer1)
         testperiodtag.relatedexaminers.add(testrelatedexaminer2)
         testperiodtag.relatedexaminers.add(testrelatedexaminer3)
-        self.assertEquals(testrelatedexaminer1.periodtag_set.count(), 1)
-        self.assertEquals(testrelatedexaminer2.periodtag_set.count(), 1)
-        self.assertEquals(testrelatedexaminer3.periodtag_set.count(), 1)
-        self.assertEquals(testperiodtag.relatedexaminers.count(), 3)
+        self.assertEqual(testrelatedexaminer1.periodtag_set.count(), 1)
+        self.assertEqual(testrelatedexaminer2.periodtag_set.count(), 1)
+        self.assertEqual(testrelatedexaminer3.periodtag_set.count(), 1)
+        self.assertEqual(testperiodtag.relatedexaminers.count(), 3)
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
             viewkwargs={
@@ -202,8 +202,8 @@ class TestAddRelatedStudentsToTag(test.TestCase, cradmin_testhelpers.TestCaseMix
         testperiod = mommy.make('core.Period')
         testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='a')
         testrelatedstudent = mommy.make('core.RelatedStudent', period=testperiod)
-        self.assertEquals(testrelatedstudent.periodtag_set.count(), 0)
-        self.assertEquals(testperiodtag.relatedstudents.count(), 0)
+        self.assertEqual(testrelatedstudent.periodtag_set.count(), 0)
+        self.assertEqual(testperiodtag.relatedstudents.count(), 0)
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
             viewkwargs={
@@ -219,8 +219,8 @@ class TestAddRelatedStudentsToTag(test.TestCase, cradmin_testhelpers.TestCaseMix
         relatedstudent_tag_ids = relatedstudent.periodtag_set.all().values_list('id', flat=True)
         periodtag = PeriodTag.objects.get(id=testperiodtag.id)
         periodtag_relatedstudents_ids = periodtag.relatedstudents.all().values_list('id', flat=True)
-        self.assertEquals(relatedstudent.periodtag_set.count(), 1)
-        self.assertEquals(periodtag.relatedstudents.count(), 1)
+        self.assertEqual(relatedstudent.periodtag_set.count(), 1)
+        self.assertEqual(periodtag.relatedstudents.count(), 1)
         self.assertIn(relatedstudent.id, periodtag_relatedstudents_ids)
         self.assertIn(periodtag.id, relatedstudent_tag_ids)
 
@@ -230,10 +230,10 @@ class TestAddRelatedStudentsToTag(test.TestCase, cradmin_testhelpers.TestCaseMix
         testrelatedstudent1 = mommy.make('core.RelatedStudent', period=testperiod)
         testrelatedstudent2 = mommy.make('core.RelatedStudent', period=testperiod)
         testrelatedstudent3 = mommy.make('core.RelatedStudent', period=testperiod)
-        self.assertEquals(testrelatedstudent1.periodtag_set.count(), 0)
-        self.assertEquals(testrelatedstudent2.periodtag_set.count(), 0)
-        self.assertEquals(testrelatedstudent3.periodtag_set.count(), 0)
-        self.assertEquals(testperiodtag.relatedstudents.count(), 0)
+        self.assertEqual(testrelatedstudent1.periodtag_set.count(), 0)
+        self.assertEqual(testrelatedstudent2.periodtag_set.count(), 0)
+        self.assertEqual(testrelatedstudent3.periodtag_set.count(), 0)
+        self.assertEqual(testperiodtag.relatedstudents.count(), 0)
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
             viewkwargs={
@@ -247,7 +247,7 @@ class TestAddRelatedStudentsToTag(test.TestCase, cradmin_testhelpers.TestCaseMix
         )
         periodtag = PeriodTag.objects.get(id=testperiodtag.id)
         periodtag_relatedstudents_ids = periodtag.relatedstudents.all().values_list('id', flat=True)
-        self.assertEquals(len(periodtag_relatedstudents_ids), 3)
+        self.assertEqual(len(periodtag_relatedstudents_ids), 3)
         self.assertIn(testrelatedstudent1.id, periodtag_relatedstudents_ids)
         self.assertIn(testrelatedstudent2.id, periodtag_relatedstudents_ids)
         self.assertIn(testrelatedstudent3.id, periodtag_relatedstudents_ids)
@@ -258,10 +258,10 @@ class TestAddRelatedStudentsToTag(test.TestCase, cradmin_testhelpers.TestCaseMix
         testrelatedstudent1 = mommy.make('core.RelatedStudent', period=testperiod)
         testrelatedstudent2 = mommy.make('core.RelatedStudent', period=testperiod)
         testrelatedstudent3 = mommy.make('core.RelatedStudent', period=testperiod)
-        self.assertEquals(testrelatedstudent1.periodtag_set.count(), 0)
-        self.assertEquals(testrelatedstudent2.periodtag_set.count(), 0)
-        self.assertEquals(testrelatedstudent3.periodtag_set.count(), 0)
-        self.assertEquals(testperiodtag.relatedstudents.count(), 0)
+        self.assertEqual(testrelatedstudent1.periodtag_set.count(), 0)
+        self.assertEqual(testrelatedstudent2.periodtag_set.count(), 0)
+        self.assertEqual(testrelatedstudent3.periodtag_set.count(), 0)
+        self.assertEqual(testperiodtag.relatedstudents.count(), 0)
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
             viewkwargs={
@@ -291,8 +291,8 @@ class TestRemoveRelatedStudentsFromTag(test.TestCase, cradmin_testhelpers.TestCa
         testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='a')
         testrelatedstudent = mommy.make('core.RelatedStudent', period=testperiod)
         testperiodtag.relatedstudents.add(testrelatedstudent)
-        self.assertEquals(testrelatedstudent.periodtag_set.count(), 1)
-        self.assertEquals(testperiodtag.relatedstudents.count(), 1)
+        self.assertEqual(testrelatedstudent.periodtag_set.count(), 1)
+        self.assertEqual(testperiodtag.relatedstudents.count(), 1)
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
             viewkwargs={
@@ -306,8 +306,8 @@ class TestRemoveRelatedStudentsFromTag(test.TestCase, cradmin_testhelpers.TestCa
         )
         relatedstudent = RelatedStudent.objects.get(id=testrelatedstudent.id)
         periodtag = PeriodTag.objects.get(id=testperiodtag.id)
-        self.assertEquals(relatedstudent.periodtag_set.count(), 0)
-        self.assertEquals(periodtag.relatedstudents.count(), 0)
+        self.assertEqual(relatedstudent.periodtag_set.count(), 0)
+        self.assertEqual(periodtag.relatedstudents.count(), 0)
 
     def test_remove_multiple_relatedstudents_from_tag(self):
         testperiod = mommy.make('core.Period')
@@ -318,10 +318,10 @@ class TestRemoveRelatedStudentsFromTag(test.TestCase, cradmin_testhelpers.TestCa
         testperiodtag.relatedstudents.add(testrelatedstudent1)
         testperiodtag.relatedstudents.add(testrelatedstudent2)
         testperiodtag.relatedstudents.add(testrelatedstudent3)
-        self.assertEquals(testrelatedstudent1.periodtag_set.count(), 1)
-        self.assertEquals(testrelatedstudent2.periodtag_set.count(), 1)
-        self.assertEquals(testrelatedstudent3.periodtag_set.count(), 1)
-        self.assertEquals(testperiodtag.relatedstudents.count(), 3)
+        self.assertEqual(testrelatedstudent1.periodtag_set.count(), 1)
+        self.assertEqual(testrelatedstudent2.periodtag_set.count(), 1)
+        self.assertEqual(testrelatedstudent3.periodtag_set.count(), 1)
+        self.assertEqual(testperiodtag.relatedstudents.count(), 3)
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
             viewkwargs={
@@ -337,10 +337,10 @@ class TestRemoveRelatedStudentsFromTag(test.TestCase, cradmin_testhelpers.TestCa
         relatedstudent1 = RelatedStudent.objects.get(id=testrelatedstudent1.id)
         relatedstudent2 = RelatedStudent.objects.get(id=testrelatedstudent2.id)
         relatedstudent3 = RelatedStudent.objects.get(id=testrelatedstudent3.id)
-        self.assertEquals(periodtag.relatedstudents.count(), 0)
-        self.assertEquals(relatedstudent1.periodtag_set.count(), 0)
-        self.assertEquals(relatedstudent2.periodtag_set.count(), 0)
-        self.assertEquals(relatedstudent3.periodtag_set.count(), 0)
+        self.assertEqual(periodtag.relatedstudents.count(), 0)
+        self.assertEqual(relatedstudent1.periodtag_set.count(), 0)
+        self.assertEqual(relatedstudent2.periodtag_set.count(), 0)
+        self.assertEqual(relatedstudent3.periodtag_set.count(), 0)
 
     def test_remove_only_selected_relatedexaminers_are_removed(self):
         testperiod = mommy.make('core.Period')
@@ -351,10 +351,10 @@ class TestRemoveRelatedStudentsFromTag(test.TestCase, cradmin_testhelpers.TestCa
         testperiodtag.relatedstudents.add(testrelatedstudent1)
         testperiodtag.relatedstudents.add(testrelatedstudent2)
         testperiodtag.relatedstudents.add(testrelatedstudent3)
-        self.assertEquals(testrelatedstudent1.periodtag_set.count(), 1)
-        self.assertEquals(testrelatedstudent2.periodtag_set.count(), 1)
-        self.assertEquals(testrelatedstudent3.periodtag_set.count(), 1)
-        self.assertEquals(testperiodtag.relatedstudents.count(), 3)
+        self.assertEqual(testrelatedstudent1.periodtag_set.count(), 1)
+        self.assertEqual(testrelatedstudent2.periodtag_set.count(), 1)
+        self.assertEqual(testrelatedstudent3.periodtag_set.count(), 1)
+        self.assertEqual(testperiodtag.relatedstudents.count(), 3)
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
             viewkwargs={

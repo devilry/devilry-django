@@ -45,11 +45,11 @@ class TestFeedbackDraftPreviewView(TestCase):
     def test_get_not_examiner_404(self):
         nobody = UserBuilder('nobody').user
         response = self._get_as(nobody, 1)
-        self.assertEquals(response.status_code, 404)
+        self.assertEqual(response.status_code, 404)
 
     def test_get_draft_not_found_404(self):
         response = self._get_as(self.testexaminer, 1)
-        self.assertEquals(response.status_code, 404)
+        self.assertEqual(response.status_code, 404)
 
     def test_render(self):
         draft = FeedbackDraft.objects.create(
@@ -59,19 +59,19 @@ class TestFeedbackDraftPreviewView(TestCase):
             feedbacktext_html='This is a test.'
         )
         response = self._get_as(self.testexaminer, draft.id)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         selector = htmls.S(response.content)
         self.assertTrue(selector.exists('.read-feedback-box'))
-        self.assertEquals(
+        self.assertEqual(
             selector.one('.read-feedback-box .feedback_gradebox .feedback_grade').alltext_normalized,
             '40/100')
-        self.assertEquals(
+        self.assertEqual(
             selector.one('.read-feedback-box .feedback_gradebox .feedback_is_passing_grade').alltext_normalized,
             'passed')
         self.assertIn(
             'django-cradmin-container-focus-success',
             selector.one('.read-feedback-box .feedback_gradebox')['class'])
-        self.assertEquals(
+        self.assertEqual(
             selector.one('.read-feedback-box .devilry-feedback-rendered-view').alltext_normalized,
             'This is a test.')
         self.assertFalse(selector.exists('ul.devilry-feedback-rendered-view-files'))
@@ -90,7 +90,7 @@ class TestFeedbackDraftPreviewView(TestCase):
         draftfile.file.save('test.txt', ContentFile('Test'))
 
         response = self._get_as(self.testexaminer, draft.id)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         selector = htmls.S(response.content)
         self.assertTrue(selector.exists('ul.devilry-feedback-rendered-view-files'))
         self.assertEqual(selector.count('ul.devilry-feedback-rendered-view-files li'), 1)
@@ -106,17 +106,17 @@ class TestFeedbackDraftPreviewView(TestCase):
             feedbacktext_html='<p>This is a test.</p>'
         )
 
-        self.assertEquals(StaticFeedback.objects.count(), 0)
+        self.assertEqual(StaticFeedback.objects.count(), 0)
         response = self._post_as(self.testexaminer, draft.id, {
             'submit_publish': 'yes'
         })
-        self.assertEquals(response.status_code, 302)
-        self.assertEquals(StaticFeedback.objects.count(), 1)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(StaticFeedback.objects.count(), 1)
         staticfeedback = StaticFeedback.objects.first()
-        self.assertEquals(staticfeedback.delivery, self.deliverybuilder.delivery)
-        self.assertEquals(staticfeedback.points, 40)
-        self.assertEquals(staticfeedback.saved_by, self.testexaminer)
-        self.assertEquals(staticfeedback.rendered_view, '<p>This is a test.</p>')
+        self.assertEqual(staticfeedback.delivery, self.deliverybuilder.delivery)
+        self.assertEqual(staticfeedback.points, 40)
+        self.assertEqual(staticfeedback.saved_by, self.testexaminer)
+        self.assertEqual(staticfeedback.rendered_view, '<p>This is a test.</p>')
 
     def test_post_with_draftfile(self):
         draft = FeedbackDraft.objects.create(
@@ -131,12 +131,12 @@ class TestFeedbackDraftPreviewView(TestCase):
             filename='test.txt')
         draftfile.file.save('test.txt', ContentFile('Test'))
 
-        self.assertEquals(StaticFeedback.objects.count(), 0)
+        self.assertEqual(StaticFeedback.objects.count(), 0)
         response = self._post_as(self.testexaminer, draft.id, {
             'submit_publish': 'yes'
         })
-        self.assertEquals(response.status_code, 302)
-        self.assertEquals(StaticFeedback.objects.count(), 1)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(StaticFeedback.objects.count(), 1)
         staticfeedback = StaticFeedback.objects.first()
         self.assertEqual(staticfeedback.files.count(), 1)
         fileattachment = staticfeedback.files.first()

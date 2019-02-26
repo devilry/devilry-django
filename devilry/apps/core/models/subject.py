@@ -2,13 +2,13 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-from abstract_is_candidate import AbstractIsCandidate
-from abstract_is_examiner import AbstractIsExaminer
-from basenode import BaseNode
-from custom_db_fields import ShortNameField, LongNameField
+from .abstract_is_candidate import AbstractIsCandidate
+from .abstract_is_examiner import AbstractIsExaminer
+from .basenode import BaseNode
+from .custom_db_fields import ShortNameField, LongNameField
 from devilry.devilry_account.models import User, SubjectPermissionGroup, PeriodPermissionGroup
 from devilry.utils import devilry_djangoaggregate_functions
-from model_utils import Etag
+from .model_utils import Etag
 
 
 class SubjectQuerySet(models.QuerySet):

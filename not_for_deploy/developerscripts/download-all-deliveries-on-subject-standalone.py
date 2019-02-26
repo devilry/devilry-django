@@ -45,7 +45,7 @@ class DownloadAllDeliveriesOnAssignment(object):
                             delivery_number="%.3d" % delivery.number,
                             filename=filemeta.filename.encode('utf-8'))
                         directory = os.path.dirname(filename)
-                        print "### " + directory
+                        print("### " + directory)
                         if not arguments_dict.get('dry_run'):
                             if not os.path.exists(directory):
                                 os.makedirs(directory)
@@ -87,8 +87,8 @@ if __name__ == "__main__":
         first()
 
     if not assignment:
-        print "There is no assignment matching the arguments of the script"
-        print arguments_dict
+        print("There is no assignment matching the arguments of the script")
+        print(arguments_dict)
         sys.exit(-1)
 
     download_manager = DownloadAllDeliveriesOnAssignment(assignment, arguments_dict)

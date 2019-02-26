@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 import json
 
@@ -111,4 +111,4 @@ class TestAllResultsDownload(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                     'data': {
                         'report': report.id
                     }})
-            self.assertEqual(mockresponse.response.content, 'Test content')
+            self.assertEqual(mockresponse.response.content, b'Test content')

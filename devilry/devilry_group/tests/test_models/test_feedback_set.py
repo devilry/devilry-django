@@ -22,17 +22,17 @@ class TestFeedbackSetModel(TestCase):
         testgroup = mommy.make('core.AssignmentGroup')
         feedbackset = group_mommy.make_first_feedbackset_in_group(
             group=testgroup)
-        self.assertEquals(feedbackset.group, testgroup)
+        self.assertEqual(feedbackset.group, testgroup)
 
     def test_feedbackset_feedbackset_type_default_first_try(self):
         feedbackset = group_mommy.make_first_feedbackset_in_group()
-        self.assertEquals(feedbackset.feedbackset_type, group_models.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT)
+        self.assertEqual(feedbackset.feedbackset_type, group_models.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT)
 
     def test_feedbackset_created_by(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         feedbackset = group_mommy.make_first_feedbackset_in_group(
             created_by=testuser)
-        self.assertEquals(feedbackset.created_by, testuser)
+        self.assertEqual(feedbackset.created_by, testuser)
 
     def test_feedbackset_created_datetime(self):
         feedbackset = group_mommy.make_first_feedbackset_in_group()
@@ -57,13 +57,13 @@ class TestFeedbackSetModel(TestCase):
 
     def test_feedbackset_grading_points(self):
         feedbackset = group_mommy.make_first_feedbackset_in_group(grading_points=10)
-        self.assertEquals(feedbackset.grading_points, 10)
+        self.assertEqual(feedbackset.grading_points, 10)
 
     def test_feedbackset_current_deadline_first_attempt(self):
         test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         test_feedbackset = group_mommy.make_first_feedbackset_in_group(
             group__parentnode=test_assignment)
-        self.assertEquals(test_feedbackset.current_deadline(), test_assignment.first_deadline)
+        self.assertEqual(test_feedbackset.current_deadline(), test_assignment.first_deadline)
 
     def test_feedbackset_current_deadline_not_first_attempt(self):
         test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -71,8 +71,8 @@ class TestFeedbackSetModel(TestCase):
                                       group__parentnode=test_assignment,
                                       deadline_datetime=timezone.now(),
                                       feedbackset_type=group_models.FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT)
-        self.assertEquals(test_feedbackset.current_deadline(), test_feedbackset.deadline_datetime)
-        self.assertNotEquals(test_feedbackset.current_deadline(), test_assignment.first_deadline)
+        self.assertEqual(test_feedbackset.current_deadline(), test_feedbackset.deadline_datetime)
+        self.assertNotEqual(test_feedbackset.current_deadline(), test_assignment.first_deadline)
 
     def test_feedback_set_publish(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -81,10 +81,10 @@ class TestFeedbackSetModel(TestCase):
                 group__parentnode__first_deadline=timezone.now() - timezone.timedelta(days=1))
         result, msg = test_feedbackset.publish(published_by=testuser, grading_points=grading_points)
         self.assertTrue(result)
-        self.assertEquals(msg, '')
+        self.assertEqual(msg, '')
         self.assertIsNotNone(test_feedbackset.grading_published_datetime)
-        self.assertEquals(grading_points, test_feedbackset.grading_points)
-        self.assertEquals(testuser, test_feedbackset.grading_published_by)
+        self.assertEqual(grading_points, test_feedbackset.grading_points)
+        self.assertEqual(testuser, test_feedbackset.grading_published_by)
 
     def test_feedback_set_publish_multiple_feedbackcomments_order(self):
         examiner = mommy.make('core.Examiner')
@@ -116,9 +116,9 @@ class TestFeedbackSetModel(TestCase):
         groupcomments = group_models.GroupComment.objects.\
             filter(feedback_set__id=testfeedbackset.id).\
             order_by('published_datetime')
-        self.assertEquals(groupcomments[0].text, 'comment1')
-        self.assertEquals(groupcomments[1].text, 'comment2')
-        self.assertEquals(groupcomments[2].text, 'comment3')
+        self.assertEqual(groupcomments[0].text, 'comment1')
+        self.assertEqual(groupcomments[1].text, 'comment2')
+        self.assertEqual(groupcomments[2].text, 'comment3')
 
     def test_feedbackset_ignored_without_reason(self):
         test_feedbackset = group_mommy.make_first_feedbackset_in_group(ignored=True)

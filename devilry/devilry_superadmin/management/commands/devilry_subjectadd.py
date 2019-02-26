@@ -8,9 +8,9 @@ class RecordSaveModCommand(BaseCommand):
     def save_record(self, record):
         try:
             record.full_clean()
-        except ValidationError, e:
+        except ValidationError as e:
             errmsg = []
-            for key, messages in e.message_dict.iteritems():
+            for key, messages in e.message_dict.items():
                 errmsg.append('{0}: {1}'.format(key, ' '.join(messages)))
             raise CommandError('\n'.join(errmsg))
         record.save()
@@ -60,5 +60,5 @@ class Command(RecordSaveModCommand):
                         call_command('devilry_permissiongroup_add_subject', short_name, permission_group)
 
                 if verbosity > 0:
-                    print '{} "{}" saved successfully.'.format(
-                        record.__class__.__name__, str(record).encode('utf-8'))
+                    print('{} "{}" saved successfully.'.format(
+                        record.__class__.__name__, str(record).encode('utf-8')))

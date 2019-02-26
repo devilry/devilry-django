@@ -44,7 +44,7 @@ class TestStatus(test.TestCase):
                                  status=status_models.Status.READY,
                                  plugin='plugin')
         current_status = status_models.Status.objects.get_last_status_in_period(period=testperiod)
-        self.assertEquals(current_status, last_status)
+        self.assertEqual(current_status, last_status)
 
     def test_get_qualified_students(self):
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
@@ -60,4 +60,4 @@ class TestStatus(test.TestCase):
                    status=teststatus,
                    qualifies=False,
                    _quantity=10)
-        self.assertEquals(10, len(teststatus.get_qualified_students()))
+        self.assertEqual(10, len(teststatus.get_qualified_students()))

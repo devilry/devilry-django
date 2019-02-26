@@ -61,7 +61,7 @@ class BaseNodeAdmin(admin.ModelAdmin):
         ]
 
     def admins_as_string(self, obj):
-        return u', '.join([user.shortname for user in obj.admins.all()])
+        return ', '.join([user.shortname for user in obj.admins.all()])
 
     admins_as_string.short_description = _("Admins")
 

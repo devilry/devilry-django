@@ -1,4 +1,4 @@
-from __future__ import unicode_literals
+
 
 import itertools
 
@@ -93,11 +93,11 @@ class PostgresBulkInsert(object):
         return [object_dict[id] for id in ids]
 
     def _group_params(self, params):
-        fieldindex_iterator = itertools.cycle(range(len(self.fields)))
+        fieldindex_iterator = itertools.cycle(list(range(len(self.fields))))
         current_row = None
         rows = []
         for index, param in enumerate(params):
-            fieldindex = fieldindex_iterator.next()
+            fieldindex = next(fieldindex_iterator)
             if fieldindex == 0:
                 current_row = []
                 rows.append(current_row)

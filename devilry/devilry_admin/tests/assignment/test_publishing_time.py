@@ -16,7 +16,7 @@ class TestAssignmentPublishingTimeUpdateView(TestCase, cradmin_testhelpers.TestC
     def test_h1(self):
         assignment = mommy.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment, viewkwargs={'pk': assignment.id})
-        self.assertEquals(mockresponse.selector.one('h1').alltext_normalized, 'Edit assignment')
+        self.assertEqual(mockresponse.selector.one('h1').alltext_normalized, 'Edit assignment')
 
 
 class TestPublishNowRedirectView(TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -40,7 +40,7 @@ class TestPublishNowRedirectView(TestCase, cradmin_testhelpers.TestCaseMixin):
         assignment = Assignment.objects.get(id=assignment.id)
         assignment_publishing_time_ignore_sec_and_ms = assignment.publishing_time.replace(second=0, microsecond=0)
         now_ignore_sec_and_ms = timezone.now().replace(second=0, microsecond=0)
-        self.assertEquals(assignment_publishing_time_ignore_sec_and_ms, now_ignore_sec_and_ms)
+        self.assertEqual(assignment_publishing_time_ignore_sec_and_ms, now_ignore_sec_and_ms)
 
     def test_update_publishing_time_on_correct_assignment(self):
         assignment1 = mommy.make('core.Assignment', publishing_time=datetime(2000, 1, 1))
@@ -52,6 +52,6 @@ class TestPublishNowRedirectView(TestCase, cradmin_testhelpers.TestCaseMixin):
         assignment2_publishing_time_ignore_ms = assignment2.publishing_time.replace(microsecond=0)
         assignment3_publishing_time_ignore_ms = assignment3.publishing_time.replace(microsecond=0)
         now_ignore_ms = timezone.now().replace(second=assignment3.publishing_time.second, microsecond=0)
-        self.assertEquals(assignment1_publishing_time_ignore_ms, datetime(2000, 1, 1))
-        self.assertEquals(assignment2_publishing_time_ignore_ms, datetime(2000, 1, 1))
-        self.assertEquals(assignment3_publishing_time_ignore_ms, now_ignore_ms)
+        self.assertEqual(assignment1_publishing_time_ignore_ms, datetime(2000, 1, 1))
+        self.assertEqual(assignment2_publishing_time_ignore_ms, datetime(2000, 1, 1))
+        self.assertEqual(assignment3_publishing_time_ignore_ms, now_ignore_ms)

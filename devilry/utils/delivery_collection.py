@@ -2,7 +2,7 @@ from django.utils.formats import date_format
 from django.http import HttpResponse  
 from django.conf import settings
 
-from stream_archives import StreamableZip, StreamableTar
+from .stream_archives import StreamableZip, StreamableTar
 
 class ArchiveException(Exception):
     "Archive exceptions"
@@ -191,7 +191,7 @@ def _get_dictionary_with_name_matches(assignmentgroups):
     matches = {}
     for assigmentgroup in assignmentgroups:
         name = _get_assignmentgroup_name(assigmentgroup)
-        if matches.has_key(name):
+        if name in matches:
             matches[name] =  matches[name] + 1
         else:
             matches[name] = 1

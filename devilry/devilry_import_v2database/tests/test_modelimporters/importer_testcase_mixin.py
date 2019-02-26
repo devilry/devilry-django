@@ -16,8 +16,8 @@ class ImporterTestCaseMixin(object):
         # for key, value in data.iteritems():
         if model_meta:
             meta_out_file = open('{}/{}.json'.format(self.temp_root_dir, model_name), 'wb')
-            meta_out_file.write(json.dumps(model_meta))
+            meta_out_file.write(json.dumps(model_meta).encode('utf-8'))
             meta_out_file.close()
         fp = open('{}/{}.json'.format(full_path_to_model_folder, data['pk']), 'w+')
         fp.write(json.dumps(data))
-        fp.close()
+        fp.close

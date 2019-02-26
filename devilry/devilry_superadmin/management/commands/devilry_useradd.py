@@ -50,7 +50,7 @@ class Command(BaseCommand):
             'email': options['email'],
             'username': options['username'] or options['username_v2_compat'],
             'is_superuser': options['is_superuser'],
-            'fullname': unicode(options['full_name'], self.inputencoding),
+            'fullname': str(options['full_name'], self.inputencoding),
             'password': options['password']
         }
         if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
@@ -62,6 +62,6 @@ class Command(BaseCommand):
 
         user, created = get_user_model().objects.get_or_create_user(**kwargs)
         if created and verbosity > 0:
-            print 'User "{0}" created successfully.'.format(user.shortname)
+            print('User "{0}" created successfully.'.format(user.shortname))
         else:
             raise CommandError('User "{0}" already exists.'.format(user.shortname))

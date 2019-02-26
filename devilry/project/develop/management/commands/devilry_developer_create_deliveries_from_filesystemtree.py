@@ -88,7 +88,7 @@ class Command(BaseCommand):
 
     def _print_message(self, message):
         if self.verbosity > 0:
-            print message
+            print(message)
 
     def _create_deliveries(self):
         from devilry.apps.core.models import Delivery
@@ -100,7 +100,7 @@ class Command(BaseCommand):
                 first_canididate = assignmentgroup.candidates.all()[0]
             except IndexError:
                 continue
-            for deliverynumber in xrange(number_of_deliveries):
+            for deliverynumber in range(number_of_deliveries):
                 files = self._choose_random_files(random.randint(self.minfiles, self.maxfiles))
                 delivery = Delivery(
                     deadline=assignmentgroup.last_deadline,

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin.devilry_listbuilder.period import AdminItemValue

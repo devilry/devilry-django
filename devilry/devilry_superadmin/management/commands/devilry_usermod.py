@@ -11,9 +11,9 @@ class UserModCommand(BaseCommand):
     def save(self, obj):
         try:
             obj.full_clean()
-        except ValidationError, e:
+        except ValidationError as e:
             errmsg = []
-            for key, messages in e.message_dict.iteritems():
+            for key, messages in e.message_dict.items():
                 errmsg.append('{0}: {1}'.format(key, ' '.join(messages)))
             raise CommandError('\n'.join(errmsg))
         obj.save()
@@ -21,7 +21,7 @@ class UserModCommand(BaseCommand):
     def save_user(self, user, verbosity):
         self.save(user)
         if verbosity > 0:
-            print 'User "{0}" saved successfully.'.format(user.username)
+            print('User "{0}" saved successfully.'.format(user.username))
 
     def save_profile(self, profile):
         self.save(profile)
@@ -75,14 +75,14 @@ class Command(UserModCommand):
         except get_user_model().DoesNotExist:
             raise CommandError('User "{}" does not exist.'.format(options['username_or_email']))
         else:
-            for key, value in kw.iteritems():
+            for key, value in kw.items():
                 setattr(user, key, value)
             if user.password == '':
                 user.set_unusable_password()
             full_name = options.get('full_name')
             if full_name:
                 try:
-                    user.fullname = unicode(full_name, self.inputencoding)
+                    user.fullname = str(full_name, self.inputencoding)
                 except TypeError:
                     user.fullname = full_name
             if options['email']:
@@ -96,4 +96,4 @@ class Command(UserModCommand):
             user.full_clean()
             user.save()
             if verbosity > 0:
-                print 'User "{}" saved successfully.'.format(user.shortname)
+                print('User "{}" saved successfully.'.format(user.shortname))

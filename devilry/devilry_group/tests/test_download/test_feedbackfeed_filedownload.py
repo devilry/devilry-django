@@ -51,7 +51,7 @@ class TestFileDownloadFeedbackfeedView(TestCase, TestCaseMixin):
                 viewkwargs={
                     'commentfile_id': commentfile.id
                 })
-        self.assertEquals(mockresponse.response.content, 'testcontent')
+        self.assertEqual(mockresponse.response.content, b'testcontent')
 
     def test_single_file_download_two_users(self):
         # Test download of single file
@@ -78,8 +78,8 @@ class TestFileDownloadFeedbackfeedView(TestCase, TestCaseMixin):
                 viewkwargs={
                     'commentfile_id': commentfile.id
                 })
-        self.assertEquals(mockresponse1.response.content, 'testcontent')
-        self.assertEquals(mockresponse2.response.content, 'testcontent')
+        self.assertEqual(mockresponse1.response.content, b'testcontent')
+        self.assertEqual(mockresponse2.response.content, b'testcontent')
 
     def test_file_download_user_not_in_group_404(self):
         # Test user can't download if not part of AssignmentGroup

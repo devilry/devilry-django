@@ -25,9 +25,9 @@ class TimeExecution(object):
     def __exit__(self, ttype, value, traceback):
         end_time = timezone.now()
         duration = (end_time - self.start_time).total_seconds()
-        print
-        print '{}: {}s'.format(self.label, duration)
-        print
+        print()
+        print('{}: {}s'.format(self.label, duration))
+        print()
 
 
 def _run_sql(sql):
@@ -225,8 +225,8 @@ class TestBenchMarkAssignmentGroupCommentCountTrigger(test.TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
         group = self.__create_distinct_comments('assignment groups comments: with triggers')
         cached_data = AssignmentGroupCachedData.objects.get(group=group)
-        print "feedbackset_count:", cached_data.feedbackset_count
-        print "public_total_comment_count:", cached_data.public_total_comment_count
-        print "public_student_comment_count:", cached_data.public_student_comment_count
-        print "public_examiner_comment_count:", cached_data.public_examiner_comment_count
-        print "public_admin_comment_count:", cached_data.public_admin_comment_count
+        print("feedbackset_count:", cached_data.feedbackset_count)
+        print("public_total_comment_count:", cached_data.public_total_comment_count)
+        print("public_student_comment_count:", cached_data.public_student_comment_count)
+        print("public_examiner_comment_count:", cached_data.public_examiner_comment_count)
+        print("public_admin_comment_count:", cached_data.public_admin_comment_count)

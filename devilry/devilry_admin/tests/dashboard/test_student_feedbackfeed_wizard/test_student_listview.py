@@ -20,8 +20,8 @@ class TestStudentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.RelatedStudent', user__shortname='studentuser')
         mockresponse = self.mock_http200_getrequest_htmls()
         self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue-titledescription-title'), 1)
-        self.assertIn('studentuser', mockresponse.response.content)
-        self.assertNotIn('notstudentuser', mockresponse.response.content)
+        self.assertContains(mockresponse.response, 'studentuser')
+        self.assertNotContains(mockresponse.response,'notstudentuser')
 
     def test_list_users(self):
         mommy.make('core.RelatedStudent', user__shortname='a', user__fullname='A')
@@ -63,7 +63,7 @@ class TestStudentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def test_backlink(self):
         mockresponse = self.mock_http200_getrequest_htmls()
-        self.assertEquals(1, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
+        self.assertEqual(1, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
         self.assertEqual(
             mock.call(appname='overview', args=(), kwargs={}, viewname='INDEX'),
             mockresponse.request.cradmin_instance.reverse_url.call_args_list[0]

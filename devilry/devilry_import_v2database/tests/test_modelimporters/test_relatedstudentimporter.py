@@ -39,8 +39,8 @@ class TestRelatedStudentImporter(ImporterTestCaseMixin, test.TestCase):
                            data=self._create_related_student_dict(period=test_period, user=test_user))
         relatedstudent_importer = RelatedStudentImporter(input_root=self.temp_root_dir)
         relatedstudent_importer.import_models()
-        self.assertEquals(RelatedStudent.objects.count(), 1)
-        self.assertEquals(PeriodTag.objects.count(), 1)
+        self.assertEqual(RelatedStudent.objects.count(), 1)
+        self.assertEqual(PeriodTag.objects.count(), 1)
 
     def test_importer_related_examiner_pk(self):
         test_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -50,8 +50,8 @@ class TestRelatedStudentImporter(ImporterTestCaseMixin, test.TestCase):
         relatedstudent_importer = RelatedStudentImporter(input_root=self.temp_root_dir)
         relatedstudent_importer.import_models()
         related_examiner = RelatedStudent.objects.first()
-        self.assertEquals(related_examiner.pk, 19)
-        self.assertEquals(related_examiner.id, 19)
+        self.assertEqual(related_examiner.pk, 19)
+        self.assertEqual(related_examiner.id, 19)
 
     def test_importer_period_tag_period(self):
         test_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -61,7 +61,7 @@ class TestRelatedStudentImporter(ImporterTestCaseMixin, test.TestCase):
         relatedstudent_importer = RelatedStudentImporter(input_root=self.temp_root_dir)
         relatedstudent_importer.import_models()
         period_tag = PeriodTag.objects.first()
-        self.assertEquals(period_tag.period, test_period)
+        self.assertEqual(period_tag.period, test_period)
 
     def test_importer_period_tag_single_tag_created(self):
         test_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -71,7 +71,7 @@ class TestRelatedStudentImporter(ImporterTestCaseMixin, test.TestCase):
         relatedstudent_importer = RelatedStudentImporter(input_root=self.temp_root_dir)
         relatedstudent_importer.import_models()
         period_tag = PeriodTag.objects.first()
-        self.assertEquals(period_tag.tag, 'group1')
+        self.assertEqual(period_tag.tag, 'group1')
 
     def test_importer_period_tag_multiple_tags_created(self):
         test_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -83,7 +83,7 @@ class TestRelatedStudentImporter(ImporterTestCaseMixin, test.TestCase):
         relatedstudent_importer = RelatedStudentImporter(input_root=self.temp_root_dir)
         relatedstudent_importer.import_models()
         period_tags_list = [period_tag.tag for period_tag in PeriodTag.objects.all()]
-        self.assertEquals(len(period_tags_list), 2)
+        self.assertEqual(len(period_tags_list), 2)
         self.assertIn('group1', period_tags_list)
         self.assertIn('group2', period_tags_list)
 
@@ -96,7 +96,7 @@ class TestRelatedStudentImporter(ImporterTestCaseMixin, test.TestCase):
         relatedstudent_importer.import_models()
         related_examiner = RelatedStudent.objects.first()
         period_tag = PeriodTag.objects.first()
-        self.assertEquals(period_tag.relatedstudents.count(), 1)
+        self.assertEqual(period_tag.relatedstudents.count(), 1)
         self.assertIn(related_examiner, period_tag.relatedstudents.all())
 
     def test_importer_multiple_period_tags_related_student_is_added(self):
@@ -110,7 +110,7 @@ class TestRelatedStudentImporter(ImporterTestCaseMixin, test.TestCase):
         relatedstudent_importer.import_models()
         related_examiner = RelatedStudent.objects.first()
         period_tags = PeriodTag.objects.all()
-        self.assertEquals(period_tags.count(), 2)
+        self.assertEqual(period_tags.count(), 2)
         for period_tag in period_tags:
             self.assertIn(related_examiner, period_tag.relatedstudents.all())
 
@@ -127,7 +127,7 @@ class TestRelatedStudentImporter(ImporterTestCaseMixin, test.TestCase):
         relatedstudent_importer.import_models()
         related_examiner = RelatedStudent.objects.first()
         period_tags = PeriodTag.objects.all()
-        self.assertEquals(period_tags.count(), 4)
+        self.assertEqual(period_tags.count(), 4)
         for period_tag in period_tags:
             self.assertIn(related_examiner, period_tag.relatedstudents.all())
 
@@ -156,10 +156,10 @@ class TestRelatedStudentImporter(ImporterTestCaseMixin, test.TestCase):
                            model_meta=self._create_model_meta())
         relatedstudent_importer = RelatedStudentImporter(input_root=self.temp_root_dir)
         relatedstudent_importer.import_models()
-        self.assertEquals(RelatedStudent.objects.count(), 1)
+        self.assertEqual(RelatedStudent.objects.count(), 1)
         related_student = RelatedStudent.objects.first()
-        self.assertEquals(related_student.pk, 19)
-        self.assertEquals(related_student.id, 19)
+        self.assertEqual(related_student.pk, 19)
+        self.assertEqual(related_student.id, 19)
         related_student_with_auto_id = mommy.make('core.RelatedStudent')
-        self.assertEquals(related_student_with_auto_id.pk, self._create_model_meta()['max_id']+1)
-        self.assertEquals(related_student_with_auto_id.id, self._create_model_meta()['max_id']+1)
+        self.assertEqual(related_student_with_auto_id.pk, self._create_model_meta()['max_id']+1)
+        self.assertEqual(related_student_with_auto_id.id, self._create_model_meta()['max_id']+1)

@@ -113,7 +113,7 @@ class ConfirmUsers(IsSuperuserPermissionMixin, base.TemplateView):
         context['conflicting_users'] = conflicting_users
         context['confirmation_url'] = urlresolvers.reverse('save_bulkcreated_users', kwargs={'userdata': json_valid_users})
         context['cancel_url'] = urlresolvers.reverse('bulkcreate_users_by_email')
-        print context
+        print(context)
         return context
 
 

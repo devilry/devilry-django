@@ -79,11 +79,11 @@ class TestAccumulatedScoreSelectAssignmentsView(test.TestCase, cradmin_testhelpe
         session['from_select_assignment_view'] = ''
         session['points_threshold'] = 512
         session.save()
-        self.assertEqual(len(self.client.session.keys()), 3)
+        self.assertEqual(len(list(self.client.session.keys())), 3)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=current_assignment,
             sessionmock=self.client.session)
-        self.assertEqual(len(mockresponse.request.session.keys()), 0)
+        self.assertEqual(len(list(mockresponse.request.session.keys())), 0)
 
     def test_post_session_data_set(self):
         current_assignment = mommy.make('core.Assignment')
@@ -91,7 +91,7 @@ class TestAccumulatedScoreSelectAssignmentsView(test.TestCase, cradmin_testhelpe
                                       parentnode=current_assignment.parentnode)
         test_assignment2 = mommy.make('core.Assignment', long_name='Test Assignment 2', max_points=123,
                                       parentnode=current_assignment.parentnode)
-        self.assertEqual(len(self.client.session.keys()), 0)
+        self.assertEqual(len(list(self.client.session.keys())), 0)
         mockresponse = self.mock_http302_postrequest(
             cradmin_role=current_assignment,
             sessionmock=self.client.session,
@@ -101,7 +101,7 @@ class TestAccumulatedScoreSelectAssignmentsView(test.TestCase, cradmin_testhelpe
                     'points_threshold': 123
                 }
             })
-        self.assertEqual(len(mockresponse.request.session.keys()), 3)
+        self.assertEqual(len(list(mockresponse.request.session.keys())), 3)
         self.assertEqual(mockresponse.request.session['from_select_assignment_view'], '')
         self.assertEqual(mockresponse.request.session['points_threshold'], 123)
         self.assertIn(test_assignment1.id, mockresponse.request.session['selected_assignment_ids'])
@@ -119,7 +119,7 @@ class TestAccumulatedScoreSelectAssignmentsView(test.TestCase, cradmin_testhelpe
         session['points_threshold'] = 512
         session.save()
 
-        self.assertEqual(len(self.client.session.keys()), 3)
+        self.assertEqual(len(list(self.client.session.keys())), 3)
         self.assertEqual(self.client.session['from_select_assignment_view'], '')
         self.assertEqual(self.client.session['points_threshold'], 512)
         self.assertIn(125, self.client.session['selected_assignment_ids'])
@@ -135,7 +135,7 @@ class TestAccumulatedScoreSelectAssignmentsView(test.TestCase, cradmin_testhelpe
                 }
             })
 
-        self.assertEqual(len(mockresponse.request.session.keys()), 3)
+        self.assertEqual(len(list(mockresponse.request.session.keys())), 3)
         self.assertEqual(mockresponse.request.session['from_select_assignment_view'], '')
         self.assertEqual(mockresponse.request.session['points_threshold'], 123)
         self.assertIn(test_assignment1.id, mockresponse.request.session['selected_assignment_ids'])
@@ -155,7 +155,7 @@ class TestAccumulatedScoreSelectAssignmentsView(test.TestCase, cradmin_testhelpe
                     'selected_items': [test_assignment1.id, test_assignment2.id]
                 }
             })
-        self.assertEqual(len(self.client.session.keys()), 0)
+        self.assertEqual(len(list(self.client.session.keys())), 0)
         self.assertEqual(mockresponse.selector.one('#error_1_id_points_threshold').alltext_normalized,
                          'This field is required.')
 
@@ -170,7 +170,7 @@ class TestAccumulatedScoreSelectAssignmentsView(test.TestCase, cradmin_testhelpe
                     'points_threshold': 123
                 }
             })
-        self.assertEqual(len(self.client.session.keys()), 0)
+        self.assertEqual(len(list(self.client.session.keys())), 0)
 
 
 class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -473,8 +473,8 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
                 'points_threshold': 50,
                 'from_select_assignment_view': ''
             })
-        self.assertNotIn(relatedstudent.user.fullname, mockresponse.response.content)
-        self.assertNotIn(relatedstudent.user.shortname, mockresponse.response.content)
+        self.assertNotContains(mockresponse.response, relatedstudent.user.fullname)
+        self.assertNotContains(mockresponse.response, relatedstudent.user.shortname)
 
     def test_student_already_on_assignment_is_excluded_with_qualifying_student(self):
         current_assignment = mommy.make('core.Assignment')
@@ -507,10 +507,10 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
                 'points_threshold': 50,
                 'from_select_assignment_view': ''
             })
-        self.assertNotIn(relatedstudent_on_current_assignment.user.fullname, mockresponse.response.content)
-        self.assertNotIn(relatedstudent_on_current_assignment.user.shortname, mockresponse.response.content)
-        self.assertIn(relatedstudent.user.fullname, mockresponse.response.content)
-        self.assertIn(relatedstudent.user.shortname, mockresponse.response.content)
+        self.assertNotContains(mockresponse.response, relatedstudent_on_current_assignment.user.fullname)
+        self.assertNotContains(mockresponse.response, relatedstudent_on_current_assignment.user.shortname)
+        self.assertContains(mockresponse.response, relatedstudent.user.fullname)
+        self.assertContains(mockresponse.response, relatedstudent.user.shortname)
 
     def test_post_success_message(self):
         current_assignment = mommy.make('core.Assignment', long_name='Current Assignment')

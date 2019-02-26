@@ -67,7 +67,7 @@ class AssignmentImporter(modelimporter.ModelImporter):
         with BulkCreator(model_class=Assignment) as assignment_bulk_creator:
             for object_dict in directory_parser.iterate_object_dicts():
                 if fake:
-                    print('Would import: {}'.format(pprint.pformat(object_dict)))
+                    print(('Would import: {}'.format(pprint.pformat(object_dict))))
                 else:
                     assignment = self._create_assignment_from_object_dict(object_dict=object_dict)
                     assignment_bulk_creator.add(assignment)

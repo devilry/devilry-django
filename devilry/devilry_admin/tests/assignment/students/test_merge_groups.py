@@ -134,8 +134,8 @@ class TestMergeGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             })
         self.assertTrue(AssignmentGroup.objects.filter(id=group1.id).exists())
         self.assertFalse(AssignmentGroup.objects.filter(id=group2.id).exists())
-        self.assertEquals(AssignmentGroup.objects.get(id=group1.id).candidates.count(), 2)
-        self.assertEquals(AssignmentGroup.objects.get(id=group1.id).feedbackset_set.count(), 3)
+        self.assertEqual(AssignmentGroup.objects.get(id=group1.id).candidates.count(), 2)
+        self.assertEqual(AssignmentGroup.objects.get(id=group1.id).feedbackset_set.count(), 3)
 
     def test_success_merge_multiple_groups_db(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)

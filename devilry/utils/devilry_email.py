@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from smtplib import SMTPException
 import logging
@@ -50,7 +50,7 @@ def send_message(subject, message, *user_objects_to_send_to, **kwargs):
     try:
         send_mail(subject, plain_message, settings.DEVILRY_EMAIL_DEFAULT_FROM,
                   emails, fail_silently=False, **send_mail_kwargs)
-    except SMTPException, e:
+    except SMTPException as e:
         errormsg = ('SMTPException when sending email to users {users} on addresses {emails}. '
                     'Exception: {exception}'.format(users=','.join([user.shortname for user in user_objects_to_send_to]),
                                                     exception=e))

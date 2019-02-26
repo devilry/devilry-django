@@ -17,7 +17,7 @@ from .importer_testcase_mixin import ImporterTestCaseMixin
 class TestAssignmentGroupImporter(ImporterTestCaseMixin, test.TestCase):
     def _create_model_meta(self):
         return {
-            'model_class_name': 'AssignmentGroup',
+            'model_class_name': 'bAssignmentGroup',
             'max_id': 156,
             'app_label': 'core'
         }
@@ -44,8 +44,8 @@ class TestAssignmentGroupImporter(ImporterTestCaseMixin, test.TestCase):
                            data=self._create_assignmentgroup_dict(assignment=test_assignment))
         group_importer = AssignmentGroupImporter(input_root=self.temp_root_dir)
         group_importer.import_models()
-        self.assertEquals(AssignmentGroup.objects.count(), 1)
-        self.assertEquals(FeedbackSet.objects.count(), 0)
+        self.assertEqual(AssignmentGroup.objects.count(), 1)
+        self.assertEqual(FeedbackSet.objects.count(), 0)
 
     def test_importer_pk(self):
         test_assignment = mommy.make('core.Assignment')
@@ -54,8 +54,8 @@ class TestAssignmentGroupImporter(ImporterTestCaseMixin, test.TestCase):
         group_importer = AssignmentGroupImporter(input_root=self.temp_root_dir)
         group_importer.import_models()
         group = AssignmentGroup.objects.first()
-        self.assertEquals(group.pk, 1)
-        self.assertEquals(group.id, 1)
+        self.assertEqual(group.pk, 1)
+        self.assertEqual(group.id, 1)
 
     def test_importer_name(self):
         test_assignment = mommy.make('core.Assignment')
@@ -64,7 +64,7 @@ class TestAssignmentGroupImporter(ImporterTestCaseMixin, test.TestCase):
         group_importer = AssignmentGroupImporter(input_root=self.temp_root_dir)
         group_importer.import_models()
         group = AssignmentGroup.objects.first()
-        self.assertEquals(group.name, 'Test AssignmentGroup')
+        self.assertEqual(group.name, 'Test AssignmentGroup')
 
     def test_importer_is_open(self):
         test_assignment = mommy.make('core.Assignment')
@@ -82,7 +82,7 @@ class TestAssignmentGroupImporter(ImporterTestCaseMixin, test.TestCase):
         group_importer = AssignmentGroupImporter(input_root=self.temp_root_dir)
         group_importer.import_models()
         group = AssignmentGroup.objects.first()
-        self.assertEquals(group.parentnode, test_assignment)
+        self.assertEqual(group.parentnode, test_assignment)
 
     # def test_importer_imported_model_created(self):
     #     test_assignment = mommy.make('core.Assignment')
@@ -107,10 +107,10 @@ class TestAssignmentGroupImporter(ImporterTestCaseMixin, test.TestCase):
                            model_meta=self._create_model_meta())
         group_importer = AssignmentGroupImporter(input_root=self.temp_root_dir)
         group_importer.import_models()
-        self.assertEquals(AssignmentGroup.objects.count(), 1)
+        self.assertEqual(AssignmentGroup.objects.count(), 1)
         group = AssignmentGroup.objects.first()
-        self.assertEquals(group.pk, 1)
-        self.assertEquals(group.id, 1)
+        self.assertEqual(group.pk, 1)
+        self.assertEqual(group.id, 1)
         group_with_auto_id = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
-        self.assertEquals(group_with_auto_id.pk, self._create_model_meta()['max_id']+1)
-        self.assertEquals(group_with_auto_id.id, self._create_model_meta()['max_id']+1)
+        self.assertEqual(group_with_auto_id.pk, self._create_model_meta()['max_id']+1)
+        self.assertEqual(group_with_auto_id.id, self._create_model_meta()['max_id']+1)

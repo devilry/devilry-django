@@ -42,4 +42,4 @@ class TestFeedbackfeedSidebarBuilder(TestCase):
                 feedbacksets=feedbackset_queryset)
             sidebarbuilder.build()
             sidebarbuilder.get_as_list()
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())

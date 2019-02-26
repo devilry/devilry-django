@@ -1,4 +1,4 @@
-from __future__ import print_function
+
 
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -6,15 +6,15 @@ from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 
-from abstract_applicationkeyvalue import AbstractApplicationKeyValue
-from abstract_is_admin import AbstractIsAdmin
-from abstract_is_candidate import AbstractIsCandidate
-from abstract_is_examiner import AbstractIsExaminer
-from basenode import BaseNode
-from custom_db_fields import ShortNameField, LongNameField
+from .abstract_applicationkeyvalue import AbstractApplicationKeyValue
+from .abstract_is_admin import AbstractIsAdmin
+from .abstract_is_candidate import AbstractIsCandidate
+from .abstract_is_examiner import AbstractIsExaminer
+from .basenode import BaseNode
+from .custom_db_fields import ShortNameField, LongNameField
 from devilry.devilry_account.models import User, PeriodPermissionGroup
-from model_utils import Etag
-from subject import Subject
+from .model_utils import Etag
+from .subject import Subject
 
 
 class PeriodQuerySet(models.QuerySet):

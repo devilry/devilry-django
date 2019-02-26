@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 import mock
 from django import test
@@ -106,14 +106,14 @@ class TestManageDeadlineNewAttemptAllGroupsView(AdminTestCaseMixin):
                 'handle_deadline': self.handle_deadline
             }
         )
-        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_0').__str__())
-        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_1').__str__())
-        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_2').__str__())
-        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_3').__str__())
-        self.assertIn('value="{}"'.format(testgroup1.id), mockresponse.selector.one('#id_selected_items_0').__str__())
-        self.assertIn('value="{}"'.format(testgroup2.id), mockresponse.selector.one('#id_selected_items_1').__str__())
-        self.assertIn('value="{}"'.format(testgroup3.id), mockresponse.selector.one('#id_selected_items_2').__str__())
-        self.assertIn('value="{}"'.format(testgroup4.id), mockresponse.selector.one('#id_selected_items_3').__str__())
+        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_0').__str__().decode('utf-8'))
+        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_1').__str__().decode('utf-8'))
+        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_2').__str__().decode('utf-8'))
+        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_3').__str__().decode('utf-8'))
+        self.assertIn('value="{}"'.format(testgroup1.id), mockresponse.selector.one('#id_selected_items_0').__str__().decode('utf-8'))
+        self.assertIn('value="{}"'.format(testgroup2.id), mockresponse.selector.one('#id_selected_items_1').__str__().decode('utf-8'))
+        self.assertIn('value="{}"'.format(testgroup3.id), mockresponse.selector.one('#id_selected_items_2').__str__().decode('utf-8'))
+        self.assertIn('value="{}"'.format(testgroup4.id), mockresponse.selector.one('#id_selected_items_3').__str__().decode('utf-8'))
 
     def test_all_only_one_group_added_to_form_hidden(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -134,8 +134,8 @@ class TestManageDeadlineNewAttemptAllGroupsView(AdminTestCaseMixin):
                 'handle_deadline': self.handle_deadline
             }
         )
-        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_0').__str__())
-        self.assertIn('value="{}"'.format(testgroup1.id), mockresponse.selector.one('#id_selected_items_0').__str__())
+        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_0').__str__().decode('utf-8'))
+        self.assertIn('value="{}"'.format(testgroup1.id), mockresponse.selector.one('#id_selected_items_0').__str__().decode('utf-8'))
 
     def test_post_only_groups_added_as_form_hidden_input(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -166,11 +166,11 @@ class TestManageDeadlineNewAttemptAllGroupsView(AdminTestCaseMixin):
             }
         )
         feedbacksets = group_models.FeedbackSet.objects.all()
-        self.assertEquals(3, feedbacksets.count())
+        self.assertEqual(3, feedbacksets.count())
         group1 = core_models.AssignmentGroup.objects.get(id=testgroup1.id)
         group2 = core_models.AssignmentGroup.objects.get(id=testgroup2.id)
-        self.assertEquals(new_deadline, group1.cached_data.last_feedbackset.deadline_datetime)
-        self.assertNotEquals(new_deadline, group2.cached_data.last_feedbackset.deadline_datetime)
+        self.assertEqual(new_deadline, group1.cached_data.last_feedbackset.deadline_datetime)
+        self.assertNotEqual(new_deadline, group2.cached_data.last_feedbackset.deadline_datetime)
 
     def test_post_groups_unpublished_raises_error(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -201,7 +201,7 @@ class TestManageDeadlineNewAttemptAllGroupsView(AdminTestCaseMixin):
                     }
                 }
             )
-        self.assertEquals(2, group_models.FeedbackSet.objects.count())
+        self.assertEqual(2, group_models.FeedbackSet.objects.count())
 
 
 class TestSubjectAdminNewAttemptAllGroupsView(TestManageDeadlineNewAttemptAllGroupsView):
@@ -243,14 +243,14 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(AdminTestCaseMixin):
                 'handle_deadline': self.handle_deadline
             }
         )
-        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_0').__str__())
-        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_1').__str__())
-        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_2').__str__())
-        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_3').__str__())
-        self.assertIn('value="{}"'.format(testgroup1.id), mockresponse.selector.one('#id_selected_items_0').__str__())
-        self.assertIn('value="{}"'.format(testgroup2.id), mockresponse.selector.one('#id_selected_items_1').__str__())
-        self.assertIn('value="{}"'.format(testgroup3.id), mockresponse.selector.one('#id_selected_items_2').__str__())
-        self.assertIn('value="{}"'.format(testgroup4.id), mockresponse.selector.one('#id_selected_items_3').__str__())
+        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_0').__str__().decode('utf-8'))
+        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_1').__str__().decode('utf-8'))
+        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_2').__str__().decode('utf-8'))
+        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_3').__str__().decode('utf-8'))
+        self.assertIn('value="{}"'.format(testgroup1.id), mockresponse.selector.one('#id_selected_items_0').__str__().decode('utf-8'))
+        self.assertIn('value="{}"'.format(testgroup2.id), mockresponse.selector.one('#id_selected_items_1').__str__().decode('utf-8'))
+        self.assertIn('value="{}"'.format(testgroup3.id), mockresponse.selector.one('#id_selected_items_2').__str__().decode('utf-8'))
+        self.assertIn('value="{}"'.format(testgroup4.id), mockresponse.selector.one('#id_selected_items_3').__str__().decode('utf-8'))
 
     def test_all_only_one_group_added_to_form_hidden(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -271,8 +271,8 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(AdminTestCaseMixin):
                 'handle_deadline': self.handle_deadline
             }
         )
-        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_0').__str__())
-        self.assertIn('value="{}"'.format(testgroup1.id), mockresponse.selector.one('#id_selected_items_0').__str__())
+        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_0').__str__().decode('utf-8'))
+        self.assertIn('value="{}"'.format(testgroup1.id), mockresponse.selector.one('#id_selected_items_0').__str__().decode('utf-8'))
 
     def test_post_only_groups_added_as_form_hidden_input(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -303,12 +303,12 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(AdminTestCaseMixin):
             }
         )
         feedbacksets = group_models.FeedbackSet.objects.all()
-        self.assertEquals(2, feedbacksets.count())
+        self.assertEqual(2, feedbacksets.count())
         group1 = core_models.AssignmentGroup.objects.get(id=testgroup1.id)
         group2 = core_models.AssignmentGroup.objects.get(id=testgroup2.id)
-        self.assertEquals(group1.cached_data.last_feedbackset, group1.cached_data.first_feedbackset)
-        self.assertEquals(new_deadline, group1.cached_data.last_feedbackset.deadline_datetime)
-        self.assertNotEquals(new_deadline, group2.cached_data.last_feedbackset.deadline_datetime)
+        self.assertEqual(group1.cached_data.last_feedbackset, group1.cached_data.first_feedbackset)
+        self.assertEqual(new_deadline, group1.cached_data.last_feedbackset.deadline_datetime)
+        self.assertNotEqual(new_deadline, group2.cached_data.last_feedbackset.deadline_datetime)
 
     def test_post_groups_published_raises_error(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -339,7 +339,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(AdminTestCaseMixin):
                     }
                 }
             )
-        self.assertEquals(2, group_models.FeedbackSet.objects.count())
+        self.assertEqual(2, group_models.FeedbackSet.objects.count())
 
 
 class TestSubjectAdminMoveDeadlinAllGroupsView(TestManageDeadlineMoveDeadlineAllGroupsView):
@@ -386,10 +386,10 @@ class TestManageDeadlineNewAttemptFromPreviousView(AdminTestCaseMixin):
                 }
             }
         )
-        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_0').__str__())
-        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_1').__str__())
-        self.assertIn('value="{}"'.format(testgroup1.id), mockresponse.selector.one('#id_selected_items_0').__str__())
-        self.assertIn('value="{}"'.format(testgroup2.id), mockresponse.selector.one('#id_selected_items_1').__str__())
+        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_0').__str__().decode('utf-8'))
+        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_1').__str__().decode('utf-8'))
+        self.assertIn('value="{}"'.format(testgroup1.id), mockresponse.selector.one('#id_selected_items_0').__str__().decode('utf-8'))
+        self.assertIn('value="{}"'.format(testgroup2.id), mockresponse.selector.one('#id_selected_items_1').__str__().decode('utf-8'))
 
     def test_post_new_attempt(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -419,17 +419,17 @@ class TestManageDeadlineNewAttemptFromPreviousView(AdminTestCaseMixin):
                 }
             }
         )
-        self.assertEquals(4, group_models.FeedbackSet.objects.count())
-        self.assertEquals(2, group_models.GroupComment.objects.count())
+        self.assertEqual(4, group_models.FeedbackSet.objects.count())
+        self.assertEqual(2, group_models.GroupComment.objects.count())
         group_comments = group_models.GroupComment.objects.all()
         last_feedbackset_group1 = AssignmentGroupCachedData.objects.get(group_id=testgroup1.id).last_feedbackset
         last_feedbackset_group2 = AssignmentGroupCachedData.objects.get(group_id=testgroup2.id).last_feedbackset
-        self.assertEquals(last_feedbackset_group1.deadline_datetime, new_deadline)
-        self.assertEquals(last_feedbackset_group2.deadline_datetime, new_deadline)
+        self.assertEqual(last_feedbackset_group1.deadline_datetime, new_deadline)
+        self.assertEqual(last_feedbackset_group2.deadline_datetime, new_deadline)
         self.assertEqual(last_feedbackset_group1.last_updated_by, testuser)
         self.assertEqual(last_feedbackset_group2.last_updated_by, testuser)
-        self.assertEquals('You have been given a new attempt.', group_comments[0].text)
-        self.assertEquals('You have been given a new attempt.', group_comments[1].text)
+        self.assertEqual('You have been given a new attempt.', group_comments[0].text)
+        self.assertEqual('You have been given a new attempt.', group_comments[1].text)
 
     def test_post_groups_published_raises_error(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -460,7 +460,7 @@ class TestManageDeadlineNewAttemptFromPreviousView(AdminTestCaseMixin):
                     }
                 }
             )
-        self.assertEquals(2, group_models.FeedbackSet.objects.count())
+        self.assertEqual(2, group_models.FeedbackSet.objects.count())
 
 
 class TestSubjectAdminNewAttemptFromPreviousView(TestManageDeadlineNewAttemptFromPreviousView):
@@ -504,10 +504,10 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(AdminTestCaseMixin):
                 }
             }
         )
-        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_0').__str__())
-        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_1').__str__())
-        self.assertIn('value="{}"'.format(testgroup1.id), mockresponse.selector.one('#id_selected_items_0').__str__())
-        self.assertIn('value="{}"'.format(testgroup2.id), mockresponse.selector.one('#id_selected_items_1').__str__())
+        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_0').__str__().decode('utf-8'))
+        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_1').__str__().decode('utf-8'))
+        self.assertIn('value="{}"'.format(testgroup1.id), mockresponse.selector.one('#id_selected_items_0').__str__().decode('utf-8'))
+        self.assertIn('value="{}"'.format(testgroup2.id), mockresponse.selector.one('#id_selected_items_1').__str__().decode('utf-8'))
 
     def test_post_new_attempt(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -537,17 +537,17 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(AdminTestCaseMixin):
                 }
             }
         )
-        self.assertEquals(4, group_models.FeedbackSet.objects.count())
-        self.assertEquals(2, group_models.GroupComment.objects.count())
+        self.assertEqual(4, group_models.FeedbackSet.objects.count())
+        self.assertEqual(2, group_models.GroupComment.objects.count())
         group_comments = group_models.GroupComment.objects.all()
         last_feedbackset_group1 = AssignmentGroupCachedData.objects.get(group_id=testgroup1.id).last_feedbackset
         last_feedbackset_group2 = AssignmentGroupCachedData.objects.get(group_id=testgroup2.id).last_feedbackset
-        self.assertEquals(last_feedbackset_group1.deadline_datetime, new_deadline)
-        self.assertEquals(last_feedbackset_group2.deadline_datetime, new_deadline)
+        self.assertEqual(last_feedbackset_group1.deadline_datetime, new_deadline)
+        self.assertEqual(last_feedbackset_group2.deadline_datetime, new_deadline)
         self.assertEqual(last_feedbackset_group1.last_updated_by, testuser)
         self.assertEqual(last_feedbackset_group2.last_updated_by, testuser)
-        self.assertEquals('You have been given a new attempt.', group_comments[0].text)
-        self.assertEquals('You have been given a new attempt.', group_comments[1].text)
+        self.assertEqual('You have been given a new attempt.', group_comments[0].text)
+        self.assertEqual('You have been given a new attempt.', group_comments[1].text)
 
     def test_post_groups_published_raises_error(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -578,7 +578,7 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(AdminTestCaseMixin):
                     }
                 }
             )
-        self.assertEquals(2, group_models.FeedbackSet.objects.count())
+        self.assertEqual(2, group_models.FeedbackSet.objects.count())
 
 
 class TestSubjectAdminMoveDeadlineFromPreviousView(TestManageDeadlineMoveDeadlineFromPreviousView):

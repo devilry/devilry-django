@@ -103,9 +103,9 @@ class Command(BaseCommand):
         old_candidates = candidate.Candidate.objects.filter(student=old_user)
 
         if options['test']:
-            print 'Migrations:'
+            print('Migrations:')
             for migrate_candidate in old_candidates:
-                print '{}'.format(migrate_candidate)
+                print('{}'.format(migrate_candidate))
         else:
             with transaction.atomic():
                 for migrate_candidate in old_candidates:
@@ -121,4 +121,4 @@ class Command(BaseCommand):
                         CommandError("ValidationError occurred while migrating:\n\t{}", migrate_candidate)
                     else:
                         if options['display_migrations']:
-                            print 'migrated: {}'.format(migrate_candidate)
+                            print('migrated: {}'.format(migrate_candidate))

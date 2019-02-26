@@ -52,7 +52,7 @@ class TestSetupCustomTableView(TestCase, AdminViewTestMixin):
                 'form-INITIAL_FORMS': 0,
                 'form-TOTAL_FORMS': 2
             })
-            self.assertEquals(response.status_code, 302)
+            self.assertEqual(response.status_code, 302)
             self.assignmentbuilder.reload_from_db()
             self.assertFalse(self.assignmentbuilder.assignment.pointtogrademap.invalid)
             self.assertTrue(self.assignmentbuilder.assignment.has_valid_grading_setup())

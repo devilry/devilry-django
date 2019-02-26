@@ -34,9 +34,9 @@ class TestSummaryView(TestCase, AdminViewTestMixin):
         self.assignmentbuilder.update(grading_system_plugin_id=MockPointsPluginApi.id)
         with patch('devilry.apps.core.models.assignment.gradingsystempluginregistry', myregistry):
             response = self.get_as(self.admin1)
-            self.assertEquals(response.status_code, 200)
+            self.assertEqual(response.status_code, 200)
             html = response.content
-            self.assertEquals(cssGet(html, '.page-header h1').text.strip(),
+            self.assertEqual(cssGet(html, '.page-header h1').text.strip(),
                 'Grading system')
 
     def test_no_grading_system_configured(self):
@@ -46,7 +46,7 @@ class TestSummaryView(TestCase, AdminViewTestMixin):
         )
         with patch('devilry.apps.core.models.assignment.gradingsystempluginregistry', myregistry):
             response = self.get_as(self.admin1)
-            self.assertEquals(response.status_code, 200)
+            self.assertEqual(response.status_code, 200)
             html = response.content
             self.assertIn('No grading system configured.', html)
 
@@ -59,7 +59,7 @@ class TestSummaryView(TestCase, AdminViewTestMixin):
                 max_points=None
             )
             response = self.get_as(self.admin1)
-            self.assertEquals(response.status_code, 200)
+            self.assertEqual(response.status_code, 200)
             html = response.content
             self.assertIn('The grading system is not configured correctly.', html)
 
@@ -67,7 +67,7 @@ class TestSummaryView(TestCase, AdminViewTestMixin):
         myregistry = GradingSystemPluginRegistry()
         with patch('devilry.apps.core.models.assignment.gradingsystempluginregistry', myregistry):
             response = self.get_as(self.admin1)
-            self.assertEquals(response.status_code, 200)
+            self.assertEqual(response.status_code, 200)
             html = response.content
             self.assertIn('You can safely reconfigure the grading system for this assignment.', html)
 
@@ -86,7 +86,7 @@ class TestSummaryView(TestCase, AdminViewTestMixin):
         myregistry = GradingSystemPluginRegistry()
         with patch('devilry.apps.core.models.assignment.gradingsystempluginregistry', myregistry):
             response = self.get_as(self.admin1)
-            self.assertEquals(response.status_code, 200)
+            self.assertEqual(response.status_code, 200)
             html = response.content
             self.assertIn('You can reconfigure the grading system for this assignment, but be careful, at least one examiner has saved a feedback draft.', html)
 
@@ -100,7 +100,7 @@ class TestSummaryView(TestCase, AdminViewTestMixin):
         myregistry = GradingSystemPluginRegistry()
         with patch('devilry.apps.core.models.assignment.gradingsystempluginregistry', myregistry):
             response = self.get_as(self.admin1)
-            self.assertEquals(response.status_code, 200)
+            self.assertEqual(response.status_code, 200)
             html = response.content
             self.assertIn('You SHOULD NOT reconfigure the grading system for this assignment.', html)
 
@@ -122,30 +122,30 @@ class TestSummaryViewBreadcrumb(TestCase, AdminViewTestMixin):
         response = self.get_as(self.admin1)
         html = response.content
         breadcrumb = cssFind(html, 'ol.breadcrumb li')
-        self.assertEquals(len(breadcrumb), 5)
-        self.assertEquals(breadcrumb[0].text, 'Subject administrator')
-        self.assertEquals(breadcrumb[1].text, 'duck1010')
-        self.assertEquals(breadcrumb[2].text, 'active')
-        self.assertEquals(breadcrumb[3].text, 'myassignment')
-        self.assertEquals(breadcrumb[4].text, 'Grading system')
+        self.assertEqual(len(breadcrumb), 5)
+        self.assertEqual(breadcrumb[0].text, 'Subject administrator')
+        self.assertEqual(breadcrumb[1].text, 'duck1010')
+        self.assertEqual(breadcrumb[2].text, 'active')
+        self.assertEqual(breadcrumb[3].text, 'myassignment')
+        self.assertEqual(breadcrumb[4].text, 'Grading system')
 
     def test_periodadmin(self):
         self.periodbuilder.add_admins(self.admin1)
         response = self.get_as(self.admin1)
         html = response.content
         breadcrumb = cssFind(html, 'ol.breadcrumb li')
-        self.assertEquals(len(breadcrumb), 4)
-        self.assertEquals(breadcrumb[0].text, 'Subject administrator')
-        self.assertEquals(breadcrumb[1].text, 'duck1010.active')
-        self.assertEquals(breadcrumb[2].text, 'myassignment')
-        self.assertEquals(breadcrumb[3].text, 'Grading system')
+        self.assertEqual(len(breadcrumb), 4)
+        self.assertEqual(breadcrumb[0].text, 'Subject administrator')
+        self.assertEqual(breadcrumb[1].text, 'duck1010.active')
+        self.assertEqual(breadcrumb[2].text, 'myassignment')
+        self.assertEqual(breadcrumb[3].text, 'Grading system')
 
     def test_assignmentadmin(self):
         self.assignmentbuilder.add_admins(self.admin1)
         response = self.get_as(self.admin1)
         html = response.content
         breadcrumb = cssFind(html, 'ol.breadcrumb li')
-        self.assertEquals(len(breadcrumb), 3)
-        self.assertEquals(breadcrumb[0].text, 'Subject administrator')
-        self.assertEquals(breadcrumb[1].text, 'duck1010.active.myassignment')
-        self.assertEquals(breadcrumb[2].text, 'Grading system')
+        self.assertEqual(len(breadcrumb), 3)
+        self.assertEqual(breadcrumb[0].text, 'Subject administrator')
+        self.assertEqual(breadcrumb[1].text, 'duck1010.active.myassignment')
+        self.assertEqual(breadcrumb[2].text, 'Grading system')

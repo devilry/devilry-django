@@ -38,8 +38,8 @@ class TestCandidateImporter(ImporterTestCaseMixin, test.TestCase):
                            data=self._create_candidate_dict(assignment_group=test_group, user=test_user))
         candidate_importer = CandidateImporter(input_root=self.temp_root_dir)
         candidate_importer.import_models()
-        self.assertEquals(Candidate.objects.count(), 1)
-        self.assertEquals(RelatedStudent.objects.count(), 1)
+        self.assertEqual(Candidate.objects.count(), 1)
+        self.assertEqual(RelatedStudent.objects.count(), 1)
 
     def test_importer_pk(self):
         test_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -49,8 +49,8 @@ class TestCandidateImporter(ImporterTestCaseMixin, test.TestCase):
         candidate_importer = CandidateImporter(input_root=self.temp_root_dir)
         candidate_importer.import_models()
         candidate = Candidate.objects.first()
-        self.assertEquals(candidate.pk, 156)
-        self.assertEquals(candidate.id, 156)
+        self.assertEqual(candidate.pk, 156)
+        self.assertEqual(candidate.id, 156)
 
     def test_importer_assignment_group(self):
         test_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -60,7 +60,7 @@ class TestCandidateImporter(ImporterTestCaseMixin, test.TestCase):
         candidate_importer = CandidateImporter(input_root=self.temp_root_dir)
         candidate_importer.import_models()
         candidate = Candidate.objects.first()
-        self.assertEquals(candidate.assignment_group, test_group)
+        self.assertEqual(candidate.assignment_group, test_group)
 
     def test_importer_existing_related_candidate_active_is_true(self):
         test_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -70,7 +70,7 @@ class TestCandidateImporter(ImporterTestCaseMixin, test.TestCase):
                            data=self._create_candidate_dict(assignment_group=test_group, user=test_user))
         candidate_importer = CandidateImporter(input_root=self.temp_root_dir)
         candidate_importer.import_models()
-        self.assertEquals(RelatedStudent.objects.count(), 1)
+        self.assertEqual(RelatedStudent.objects.count(), 1)
         related_candidate = RelatedStudent.objects.first()
         self.assertTrue(related_candidate.active)
 
@@ -81,7 +81,7 @@ class TestCandidateImporter(ImporterTestCaseMixin, test.TestCase):
                            data=self._create_candidate_dict(assignment_group=test_group, user=test_user))
         candidate_importer = CandidateImporter(input_root=self.temp_root_dir)
         candidate_importer.import_models()
-        self.assertEquals(RelatedStudent.objects.count(), 1)
+        self.assertEqual(RelatedStudent.objects.count(), 1)
         related_student = RelatedStudent.objects.first()
         self.assertFalse(related_student.active)
 
@@ -93,7 +93,7 @@ class TestCandidateImporter(ImporterTestCaseMixin, test.TestCase):
         candidate_importer = CandidateImporter(input_root=self.temp_root_dir)
         candidate_importer.import_models()
         candidate = Candidate.objects.first()
-        self.assertEquals(candidate.relatedstudent.user, test_user)
+        self.assertEqual(candidate.relatedstudent.user, test_user)
 
     def test_importer_related_candidate_period(self):
         test_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -103,7 +103,7 @@ class TestCandidateImporter(ImporterTestCaseMixin, test.TestCase):
         candidate_importer = CandidateImporter(input_root=self.temp_root_dir)
         candidate_importer.import_models()
         candidate = Candidate.objects.first()
-        self.assertEquals(candidate.relatedstudent.period, test_group.parentnode.parentnode)
+        self.assertEqual(candidate.relatedstudent.period, test_group.parentnode.parentnode)
 
     # def test_importer_imported_model_created(self):
     #     test_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -130,10 +130,10 @@ class TestCandidateImporter(ImporterTestCaseMixin, test.TestCase):
                            model_meta=self._create_model_meta())
         candidate_importer = CandidateImporter(input_root=self.temp_root_dir)
         candidate_importer.import_models()
-        self.assertEquals(Candidate.objects.count(), 1)
+        self.assertEqual(Candidate.objects.count(), 1)
         candidate = Candidate.objects.first()
-        self.assertEquals(candidate.pk, 156)
-        self.assertEquals(candidate.id, 156)
+        self.assertEqual(candidate.pk, 156)
+        self.assertEqual(candidate.id, 156)
         candidate_with_auto_id = mommy.make('core.Candidate')
-        self.assertEquals(candidate_with_auto_id.pk, self._create_model_meta()['max_id']+1)
-        self.assertEquals(candidate_with_auto_id.id, self._create_model_meta()['max_id']+1)
+        self.assertEqual(candidate_with_auto_id.pk, self._create_model_meta()['max_id']+1)
+        self.assertEqual(candidate_with_auto_id.id, self._create_model_meta()['max_id']+1)

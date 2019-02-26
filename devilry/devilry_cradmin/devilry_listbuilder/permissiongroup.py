@@ -6,7 +6,7 @@ class AbstractSubjectOrPeriodPermissionGroupItemValue(listbuilder.itemvalue.Titl
                     'permissiongroup/subjectorperiodpermissiongroup-itemvalue.django.html'
 
     def get_title(self):
-        return unicode(self.value)
+        return str(self.value)
 
     def get_users(self):
         users = [permissiongroupuser.user

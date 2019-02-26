@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 # 3rd party imports
 from model_mommy import mommy
@@ -27,7 +27,7 @@ class TestQualificationStatusView(test.TestCase, cradmin_testhelpers.TestCaseMix
                 viewkwargs={
                     'statusid': teststatus.id
                 })
-        self.assertEquals(mockresponse.response.status_code, 200)
+        self.assertEqual(mockresponse.response.status_code, 200)
 
     def test_get_retracted_message(self):
         testperiod = mommy.make('core.Period')
@@ -42,7 +42,7 @@ class TestQualificationStatusView(test.TestCase, cradmin_testhelpers.TestCaseMix
                 })
         retracted_message_element = mockresponse.selector.one('#devilry_qualifiesforexam_retracted_message')
         self.assertTrue(retracted_message_element)
-        self.assertEquals(retracted_message_element.alltext_normalized, 'retracted')
+        self.assertEqual(retracted_message_element.alltext_normalized, 'retracted')
 
     def test_get_back_button(self):
         testperiod = mommy.make('core.Period')
@@ -156,7 +156,7 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
                 'passing_relatedstudentids': [],
                 'plugintypeid': 'someplugin_id'
             })
-        self.assertEquals(len(mockresponse.selector.list('.devilry-qualifiesforexam-tr')), 2)
+        self.assertEqual(len(mockresponse.selector.list('.devilry-qualifiesforexam-tr')), 2)
 
     def test_table_row_is_rendered_multiple_students(self):
         # Tests that 21 rows are rendered, one for the table header and twenty(one for each student)
@@ -173,7 +173,7 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
                 'passing_relatedstudentids': [],
                 'plugintypeid': 'someplugin_id'
             })
-        self.assertEquals(len(mockresponse.selector.list('.devilry-qualifiesforexam-tr')), 21)
+        self.assertEqual(len(mockresponse.selector.list('.devilry-qualifiesforexam-tr')), 21)
 
     def test_table_data_studentinfo_is_rendered(self):
         # Tests that a td element of class 'devilry-qualifiesforexam-cell-studentinfo' is rendered.
@@ -190,7 +190,7 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
                 'passing_relatedstudentids': [],
                 'plugintypeid': 'someplugin_id'
             })
-        self.assertEquals(len(mockresponse.selector.list('.devilry-qualifiesforexam-cell-studentinfo')), 1)
+        self.assertEqual(len(mockresponse.selector.list('.devilry-qualifiesforexam-cell-studentinfo')), 1)
 
     def test_table_data_qualify_result_is_rendered(self):
         # Tests that a td element of class 'devilry-qualifiesforexam-cell-qualify' is rendered.
@@ -207,7 +207,7 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
                 'passing_relatedstudentids': [],
                 'plugintypeid': 'someplugin_id'
             })
-        self.assertEquals(len(mockresponse.selector.list('.devilry-qualifiesforexam-cell-qualify')), 1)
+        self.assertEqual(len(mockresponse.selector.list('.devilry-qualifiesforexam-cell-qualify')), 1)
 
     def test_table_header_cell_data(self):
         # Test a more complete example of data contained in cells for two students, one qualifying and one not.
@@ -225,8 +225,8 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
                 'plugintypeid': 'someplugin_id'
             })
         table_headers = mockresponse.selector.list('.devilry-qualifiesforexam-th')
-        self.assertEquals(table_headers[0].alltext_normalized, 'Student')
-        self.assertEquals(table_headers[1].alltext_normalized, 'Qualified for final exams')
+        self.assertEqual(table_headers[0].alltext_normalized, 'Student')
+        self.assertEqual(table_headers[1].alltext_normalized, 'Qualified for final exams')
 
     def test_table_student_row_data_student_does_not_qualify(self):
         # Test a more complete example of data contained in cells for two students, one qualifying and one not.
@@ -252,9 +252,9 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
                 'plugintypeid': 'someplugin_id'
             })
         studentinfo = mockresponse.selector.one('.devilry-qualifiesforexam-cell-studentinfo')
-        self.assertEquals(studentinfo.alltext_normalized, '{} {}'.format(relatedstudent.user.fullname,
+        self.assertEqual(studentinfo.alltext_normalized, '{} {}'.format(relatedstudent.user.fullname,
                                                                          relatedstudent.user.shortname))
-        self.assertEquals(mockresponse.selector.one('.devilry-qualifiesforexam-cell-qualify').alltext_normalized, 'NO')
+        self.assertEqual(mockresponse.selector.one('.devilry-qualifiesforexam-cell-qualify').alltext_normalized, 'NO')
 
     def test_table_student_row_data_student_qualifies(self):
         # Test a more complete example of data contained in cells for two students, one qualifying and one not.
@@ -280,9 +280,9 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
                 'plugintypeid': 'someplugin_id'
             })
         studentinfo = mockresponse.selector.one('.devilry-qualifiesforexam-cell-studentinfo')
-        self.assertEquals(studentinfo.alltext_normalized, '{} {}'.format(relatedstudent.user.fullname,
+        self.assertEqual(studentinfo.alltext_normalized, '{} {}'.format(relatedstudent.user.fullname,
                                                                          relatedstudent.user.shortname))
-        self.assertEquals(mockresponse.selector.one('.devilry-qualifiesforexam-cell-qualify').alltext_normalized, 'YES')
+        self.assertEqual(mockresponse.selector.one('.devilry-qualifiesforexam-cell-qualify').alltext_normalized, 'YES')
 
     def __make_related_student(self, period, fullname, lastname, shortname, candidate_id=None):
         user = mommy.make(settings.AUTH_USER_MODEL, fullname=fullname, lastname=lastname, shortname=shortname)

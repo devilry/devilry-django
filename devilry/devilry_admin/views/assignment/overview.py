@@ -1,4 +1,4 @@
-from __future__ import unicode_literals
+
 
 from django_cradmin import crapp
 from django_cradmin.viewhelpers.detail import DetailRoleView

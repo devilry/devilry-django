@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from devilry.devilry_group.cradmin_instances import crinstance_base
 from devilry.devilry_cradmin import devilry_crinstance

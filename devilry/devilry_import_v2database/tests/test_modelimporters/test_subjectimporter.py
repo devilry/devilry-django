@@ -41,7 +41,7 @@ class TestSubjectImporter(ImporterTestCaseMixin, test.TestCase):
                            data=self._create_subject_dict(test_admin_user=test_admin_user))
         subjectimporter = SubjectImporter(input_root=self.temp_root_dir)
         subjectimporter.import_models()
-        self.assertEquals(Subject.objects.count(), 1)
+        self.assertEqual(Subject.objects.count(), 1)
 
     def test_importer_pk(self):
         test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -50,7 +50,7 @@ class TestSubjectImporter(ImporterTestCaseMixin, test.TestCase):
         subjectimporter = SubjectImporter(input_root=self.temp_root_dir)
         subjectimporter.import_models()
         subject = Subject.objects.first()
-        self.assertEquals(subject.pk, 1)
+        self.assertEqual(subject.pk, 1)
 
     def test_importer_imported_model_with_admins(self):
         test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -58,14 +58,14 @@ class TestSubjectImporter(ImporterTestCaseMixin, test.TestCase):
                            data=self._create_subject_dict(test_admin_user=test_admin_user))
         subjectimporter = SubjectImporter(input_root=self.temp_root_dir)
         subjectimporter.import_models()
-        self.assertEquals(SubjectPermissionGroup.objects.count(), 1)
+        self.assertEqual(SubjectPermissionGroup.objects.count(), 1)
 
     def test_importer_imported_model_without_admins(self):
         self.create_v2dump(model_name='core.subject',
                            data=self._create_subject_dict())
         subjectimporter = SubjectImporter(input_root=self.temp_root_dir)
         subjectimporter.import_models()
-        self.assertEquals(SubjectPermissionGroup.objects.count(), 0)
+        self.assertEqual(SubjectPermissionGroup.objects.count(), 0)
 
     def test_importer_short_name(self):
         test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -74,7 +74,7 @@ class TestSubjectImporter(ImporterTestCaseMixin, test.TestCase):
         subjectimporter = SubjectImporter(input_root=self.temp_root_dir)
         subjectimporter.import_models()
         subject = Subject.objects.first()
-        self.assertEquals(subject.short_name, 'duck1100')
+        self.assertEqual(subject.short_name, 'duck1100')
 
     def test_importer_long_name(self):
         test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -83,7 +83,7 @@ class TestSubjectImporter(ImporterTestCaseMixin, test.TestCase):
         subjectimporter = SubjectImporter(input_root=self.temp_root_dir)
         subjectimporter.import_models()
         subject = Subject.objects.first()
-        self.assertEquals(subject.long_name, 'DUCK1010 - Programming for the natural sciences')
+        self.assertEqual(subject.long_name, 'DUCK1010 - Programming for the natural sciences')
 
     def test_importer_permissiongroups_is_created(self):
         test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -91,13 +91,13 @@ class TestSubjectImporter(ImporterTestCaseMixin, test.TestCase):
                            data=self._create_subject_dict(test_admin_user=test_admin_user))
         subjectimporter = SubjectImporter(input_root=self.temp_root_dir)
         subjectimporter.import_models()
-        self.assertEquals(Subject.objects.count(), 1)
+        self.assertEqual(Subject.objects.count(), 1)
         subject = Subject.objects.first()
-        self.assertEquals(account_models.PermissionGroup.objects.count(), 1)
-        self.assertEquals(account_models.SubjectPermissionGroup.objects.count(), 1)
+        self.assertEqual(account_models.PermissionGroup.objects.count(), 1)
+        self.assertEqual(account_models.SubjectPermissionGroup.objects.count(), 1)
         subjects_for_admin_list = Subject.objects.filter_user_is_admin(test_admin_user)
-        self.assertEquals(len(subjects_for_admin_list), 1)
-        self.assertEquals(subjects_for_admin_list[0], subject)
+        self.assertEqual(len(subjects_for_admin_list), 1)
+        self.assertEqual(subjects_for_admin_list[0], subject)
 
     # def test_importer_imported_model_created(self):
     #     test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -122,10 +122,10 @@ class TestSubjectImporter(ImporterTestCaseMixin, test.TestCase):
                            model_meta=self._create_model_meta())
         subjectimporter = SubjectImporter(input_root=self.temp_root_dir)
         subjectimporter.import_models()
-        self.assertEquals(Subject.objects.count(), 1)
+        self.assertEqual(Subject.objects.count(), 1)
         subject = Subject.objects.first()
-        self.assertEquals(subject.pk, 1)
-        self.assertEquals(subject.id, 1)
+        self.assertEqual(subject.pk, 1)
+        self.assertEqual(subject.id, 1)
         subject_with_auto_id = mommy.make('core.Subject')
-        self.assertEquals(subject_with_auto_id.id, self._create_model_meta()['max_id']+1)
-        self.assertEquals(subject_with_auto_id.pk, self._create_model_meta()['max_id']+1)
+        self.assertEqual(subject_with_auto_id.id, self._create_model_meta()['max_id']+1)
+        self.assertEqual(subject_with_auto_id.pk, self._create_model_meta()['max_id']+1)

@@ -92,6 +92,6 @@ class NodeImporter(modelimporter.ModelImporter):
     def import_models(self, fake=False):
         for object_dict in self.v2node_directoryparser.iterate_object_dicts():
             if fake:
-                print('Would import: {}'.format(pprint.pformat(object_dict)))
+                print(('Would import: {}'.format(pprint.pformat(object_dict))))
             else:
                 self._create_node_permissions_from_object_dict(object_dict=object_dict)

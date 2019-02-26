@@ -36,7 +36,7 @@ class TestSelectPluginView(TestCase, AdminViewTestMixin):
             response = self.get_as(nobody, {
                 'grading_system_plugin_id': MockPointsPluginApi.id
             })
-            self.assertEquals(response.status_code, 404)
+            self.assertEqual(response.status_code, 404)
 
     def test_render(self):
         myregistry = GradingSystemPluginRegistry()
@@ -44,11 +44,11 @@ class TestSelectPluginView(TestCase, AdminViewTestMixin):
         myregistry.add(MockApprovedPluginApi)
         with patch('devilry.devilry_gradingsystem.views.admin.selectplugin.gradingsystempluginregistry', myregistry):
             response = self.get_as(self.admin1)
-            self.assertEquals(response.status_code, 200)
+            self.assertEqual(response.status_code, 200)
             html = response.content
-            self.assertEquals(cssGet(html, '.page-header h1').text.strip(),
+            self.assertEqual(cssGet(html, '.page-header h1').text.strip(),
                 'How would you like to provide feedback to your students?')
-            self.assertEquals(len(cssFind(html, '.devilry_gradingsystem_verbose_selectbox')), 2)
+            self.assertEqual(len(cssFind(html, '.devilry_gradingsystem_verbose_selectbox')), 2)
 
     def test_next_page_requires_configuration(self):
         myregistry = GradingSystemPluginRegistry()
@@ -57,12 +57,12 @@ class TestSelectPluginView(TestCase, AdminViewTestMixin):
             response = self.get_as(self.admin1, {
                 'grading_system_plugin_id': MockRequiresConfigurationPluginApi.id
             })
-            self.assertEquals(response.status_code, 302)
-            self.assertEquals(response["Location"],
+            self.assertEqual(response.status_code, 302)
+            self.assertEqual(response["Location"],
                 'http://testserver/mock/requiresconfiguration/configure/{}'.format(
                     self.assignmentbuilder.assignment.id))
             self.assignmentbuilder.reload_from_db()
-            self.assertEquals(self.assignmentbuilder.assignment.grading_system_plugin_id,
+            self.assertEqual(self.assignmentbuilder.assignment.grading_system_plugin_id,
                 MockRequiresConfigurationPluginApi.id)
 
     def test_next_page_no_configuration_required(self):
@@ -72,12 +72,12 @@ class TestSelectPluginView(TestCase, AdminViewTestMixin):
             response = self.get_as(self.admin1, {
                 'grading_system_plugin_id': MockPointsPluginApi.id
             })
-            self.assertEquals(response.status_code, 302)
+            self.assertEqual(response.status_code, 302)
             self.assertTrue(response["Location"].endswith(
                 reverse('devilry_gradingsystem_admin_setmaxpoints', kwargs={
                     'assignmentid': self.assignmentbuilder.assignment.id})))
             self.assignmentbuilder.reload_from_db()
-            self.assertEquals(self.assignmentbuilder.assignment.grading_system_plugin_id,
+            self.assertEqual(self.assignmentbuilder.assignment.grading_system_plugin_id,
                 MockPointsPluginApi.id)
 
     def test_next_page_invalid_pluginid(self):
@@ -87,5 +87,5 @@ class TestSelectPluginView(TestCase, AdminViewTestMixin):
             response = self.get_as(self.admin1, {
                 'grading_system_plugin_id': 'doesnotexist'
             })
-            self.assertEquals(response.status_code, 200)
+            self.assertEqual(response.status_code, 200)
             self.assertIn('Invalid grading system plugin ID: doesnotexist', response.content)

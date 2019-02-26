@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 # 3rd party imports
 from model_mommy import mommy
@@ -135,12 +135,12 @@ class TestGroupFeedbackSetList(test.TestCase, TestPluginHelper):
         groupfeedbacksetlist = groups_groupedby_relatedstudent_and_assignments.GroupFeedbackSetList()
         serialized_feedbackset = groupfeedbacksetlist._serialize_feedbackset(feedbackset)
 
-        self.assertEquals(serialized_feedbackset['id'], feedbackset.id)
-        self.assertEquals(serialized_feedbackset['grade'], 'NA')
-        self.assertEquals(serialized_feedbackset['points'], feedbackset.grading_points)
-        self.assertEquals(serialized_feedbackset['published_by'], feedbackset.grading_published_by)
-        self.assertEquals(serialized_feedbackset['published'], feedbackset.grading_published_datetime)
-        self.assertEquals(serialized_feedbackset['deadline'], feedbackset.current_deadline())
+        self.assertEqual(serialized_feedbackset['id'], feedbackset.id)
+        self.assertEqual(serialized_feedbackset['grade'], 'NA')
+        self.assertEqual(serialized_feedbackset['points'], feedbackset.grading_points)
+        self.assertEqual(serialized_feedbackset['published_by'], feedbackset.grading_published_by)
+        self.assertEqual(serialized_feedbackset['published'], feedbackset.grading_published_datetime)
+        self.assertEqual(serialized_feedbackset['deadline'], feedbackset.current_deadline())
 
     def test_serialize_group(self):
         # Test serialization of AssignmentGroup
@@ -156,9 +156,9 @@ class TestGroupFeedbackSetList(test.TestCase, TestPluginHelper):
 
         groupfeedbacksetlist = groups_groupedby_relatedstudent_and_assignments.GroupFeedbackSetList()
         serialized_group = groupfeedbacksetlist._serialize_group(testgroup, feedbackset)
-        self.assertEquals(serialized_group['id'], testgroup.id)
-        self.assertEquals(type(serialized_group['feedbackset']), dict)
-        self.assertEquals(serialized_group['status'], testgroup.get_status())
+        self.assertEqual(serialized_group['id'], testgroup.id)
+        self.assertEqual(type(serialized_group['feedbackset']), dict)
+        self.assertEqual(serialized_group['status'], testgroup.get_status())
 
     def test_serialize(self):
         # Test serialization of the entire GroupFeedbackSetList.
@@ -187,9 +187,9 @@ class TestGroupFeedbackSetList(test.TestCase, TestPluginHelper):
         groupfeedbacksetlist.append((testgroup2, test_feedbackset2))
         serialized = groupfeedbacksetlist.serialize()
 
-        self.assertEquals(2, len(serialized))
-        self.assertEquals(serialized[0]['id'], testgroup1.id)
-        self.assertEquals(serialized[1]['id'], testgroup2.id)
+        self.assertEqual(2, len(serialized))
+        self.assertEqual(serialized[0]['id'], testgroup1.id)
+        self.assertEqual(serialized[1]['id'], testgroup2.id)
 
 
 class TestAggregatedRelatedStudentInfoSerializers(test.TestCase, TestPluginHelper):
@@ -205,10 +205,10 @@ class TestAggregatedRelatedStudentInfoSerializers(test.TestCase, TestPluginHelpe
         grouper = groups_groupedby_relatedstudent_and_assignments.GroupsGroupedByRelatedStudentAndAssignment(
             period=dataset_dict['testperiod'],
         )
-        serialized_user = grouper.result.values()[0].serialize()['user']
-        self.assertEquals(serialized_user['id'], dataset_dict['student_user'].id)
-        self.assertEquals(serialized_user['username'], dataset_dict['student_user'].shortname)
-        self.assertEquals(serialized_user['fullname'], dataset_dict['student_user'].fullname)
+        serialized_user = list(grouper.result.values())[0].serialize()['user']
+        self.assertEqual(serialized_user['id'], dataset_dict['student_user'].id)
+        self.assertEqual(serialized_user['username'], dataset_dict['student_user'].shortname)
+        self.assertEqual(serialized_user['fullname'], dataset_dict['student_user'].fullname)
 
     def test_serialize_relatedstudent(self):
         # Test serialization of relatedstudent.
@@ -216,10 +216,10 @@ class TestAggregatedRelatedStudentInfoSerializers(test.TestCase, TestPluginHelpe
         grouper = groups_groupedby_relatedstudent_and_assignments.GroupsGroupedByRelatedStudentAndAssignment(
             period=dataset_dict['testperiod']
         )
-        serialized_relatedstudent = grouper.result.values()[0].serialize()['relatedstudent']
-        self.assertEquals(serialized_relatedstudent['id'], dataset_dict['relatedstudent'].id)
-        self.assertEquals(serialized_relatedstudent['tags'], dataset_dict['relatedstudent'].tags)
-        self.assertEquals(serialized_relatedstudent['candidate_id'], dataset_dict['relatedstudent'].candidate_id)
+        serialized_relatedstudent = list(grouper.result.values())[0].serialize()['relatedstudent']
+        self.assertEqual(serialized_relatedstudent['id'], dataset_dict['relatedstudent'].id)
+        self.assertEqual(serialized_relatedstudent['tags'], dataset_dict['relatedstudent'].tags)
+        self.assertEqual(serialized_relatedstudent['candidate_id'], dataset_dict['relatedstudent'].candidate_id)
 
     def test_serialize_groups_by_assignments(self):
         # Test the serialization of groups by assignment.
@@ -227,24 +227,24 @@ class TestAggregatedRelatedStudentInfoSerializers(test.TestCase, TestPluginHelpe
         grouper = groups_groupedby_relatedstudent_and_assignments.GroupsGroupedByRelatedStudentAndAssignment(
             period=dataset_dict['testperiod'],
         )
-        serialized_groups_by_assignment = grouper.result.values()[0].serialize()['groups_by_assignment']
-        self.assertEquals(serialized_groups_by_assignment[0]['assignmentid'], dataset_dict['testassignments'][0].id)
+        serialized_groups_by_assignment = list(grouper.result.values())[0].serialize()['groups_by_assignment']
+        self.assertEqual(serialized_groups_by_assignment[0]['assignmentid'], dataset_dict['testassignments'][0].id)
 
         # Test serialized group part
         serialized_group = serialized_groups_by_assignment[0]['group_feedbackset_list'][0]
-        self.assertEquals(len(serialized_groups_by_assignment[0]['group_feedbackset_list']), 1)
-        self.assertEquals(serialized_group['id'], dataset_dict['testgroups'][0].id)
-        self.assertEquals(serialized_group['status'], dataset_dict['testgroups'][0].get_status())
+        self.assertEqual(len(serialized_groups_by_assignment[0]['group_feedbackset_list']), 1)
+        self.assertEqual(serialized_group['id'], dataset_dict['testgroups'][0].id)
+        self.assertEqual(serialized_group['status'], dataset_dict['testgroups'][0].get_status())
 
         # Test the serialized feedbackset part
         serialized_feedbackset = serialized_group['feedbackset']
-        self.assertEquals(serialized_feedbackset['id'], dataset_dict['testfeedbacksets'][0].id)
-        self.assertEquals(serialized_feedbackset['points'], dataset_dict['testfeedbacksets'][0].grading_points)
-        self.assertEquals(serialized_feedbackset['published_by'],
+        self.assertEqual(serialized_feedbackset['id'], dataset_dict['testfeedbacksets'][0].id)
+        self.assertEqual(serialized_feedbackset['points'], dataset_dict['testfeedbacksets'][0].grading_points)
+        self.assertEqual(serialized_feedbackset['published_by'],
                           dataset_dict['testfeedbacksets'][0].grading_published_by)
-        self.assertEquals(serialized_feedbackset['published'],
+        self.assertEqual(serialized_feedbackset['published'],
                           dataset_dict['testfeedbacksets'][0].grading_published_datetime)
-        self.assertEquals(serialized_feedbackset['deadline'], dataset_dict['testfeedbacksets'][0].current_deadline())
+        self.assertEqual(serialized_feedbackset['deadline'], dataset_dict['testfeedbacksets'][0].current_deadline())
 
 
 class TestGroupsGroupedByRelatedStudentAndAssignment(test.TestCase, TestPluginHelper):
@@ -260,7 +260,7 @@ class TestGroupsGroupedByRelatedStudentAndAssignment(test.TestCase, TestPluginHe
             period=dataset_dict['testperiod']
         )
         retreived_assignment_ids = [assignment.id for assignment in grouper.assignments]
-        self.assertEquals(len(retreived_assignment_ids), 3)
+        self.assertEqual(len(retreived_assignment_ids), 3)
         self.assertIn(testassignments[0].id, retreived_assignment_ids)
         self.assertIn(testassignments[1].id, retreived_assignment_ids)
         self.assertIn(testassignments[2].id, retreived_assignment_ids)
@@ -269,7 +269,7 @@ class TestGroupsGroupedByRelatedStudentAndAssignment(test.TestCase, TestPluginHe
         dataset_dict = self._build_data_set()
         resultinfo = groups_groupedby_relatedstudent_and_assignments.GroupsGroupedByRelatedStudentAndAssignment(
             period=dataset_dict['testperiod']).result
-        for aggregatedstudentinfo in resultinfo.itervalues():
+        for aggregatedstudentinfo in resultinfo.values():
             self.assertTrue(aggregatedstudentinfo.student_qualifies())
 
     def test_student_does_not_qualify_not_enlisted(self):
@@ -278,7 +278,7 @@ class TestGroupsGroupedByRelatedStudentAndAssignment(test.TestCase, TestPluginHe
         dataset_dict['testcandidates'][2].delete()
         resultinfo = groups_groupedby_relatedstudent_and_assignments.GroupsGroupedByRelatedStudentAndAssignment(
             period=dataset_dict['testperiod']).result
-        for aggregatedstudentinfo in resultinfo.itervalues():
+        for aggregatedstudentinfo in resultinfo.values():
             self.assertFalse(aggregatedstudentinfo.student_qualifies())
 
     def test_student_does_not_qualify_not_enough_points(self):
@@ -288,7 +288,7 @@ class TestGroupsGroupedByRelatedStudentAndAssignment(test.TestCase, TestPluginHe
         dataset_dict['testfeedbacksets'][2].save()
         resultinfo = groups_groupedby_relatedstudent_and_assignments.GroupsGroupedByRelatedStudentAndAssignment(
             period=dataset_dict['testperiod']).result
-        for aggregatedstudentinfo in resultinfo.itervalues():
+        for aggregatedstudentinfo in resultinfo.values():
             self.assertFalse(aggregatedstudentinfo.student_qualifies())
 
     def test_student_qualifies_assignment_not_passed(self):
@@ -299,7 +299,7 @@ class TestGroupsGroupedByRelatedStudentAndAssignment(test.TestCase, TestPluginHe
         resultinfo = groups_groupedby_relatedstudent_and_assignments.GroupsGroupedByRelatedStudentAndAssignment(
             period=dataset_dict['testperiod'],
         ).result
-        for aggregatedstudentinfo in resultinfo.itervalues():
+        for aggregatedstudentinfo in resultinfo.values():
             self.assertTrue(aggregatedstudentinfo.student_qualifies())
 
     def test_student_does_not_qualify_assignment_not_published(self):
@@ -313,5 +313,5 @@ class TestGroupsGroupedByRelatedStudentAndAssignment(test.TestCase, TestPluginHe
         resultinfo = groups_groupedby_relatedstudent_and_assignments.GroupsGroupedByRelatedStudentAndAssignment(
             period=dataset_dict['testperiod']
         ).result
-        for aggregatedstudentinfo in resultinfo.itervalues():
+        for aggregatedstudentinfo in resultinfo.values():
             self.assertFalse(aggregatedstudentinfo.student_qualifies())

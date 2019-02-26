@@ -76,9 +76,9 @@ class OrderedDictFallback(dict, DictMixin):
         if not self:
             raise KeyError('dictionary is empty')
         if last:
-            key = reversed(self).next()
+            key = next(reversed(self))
         else:
-            key = iter(self).next()
+            key = next(iter(self))
         value = self.pop(key)
         return key, value
 
@@ -107,7 +107,7 @@ class OrderedDictFallback(dict, DictMixin):
     def __repr__(self):
         if not self:
             return '%s()' % (self.__class__.__name__,)
-        return '%s(%r)' % (self.__class__.__name__, self.items())
+        return '%s(%r)' % (self.__class__.__name__, list(self.items()))
 
     def copy(self):
         return self.__class__(self)
@@ -122,7 +122,7 @@ class OrderedDictFallback(dict, DictMixin):
     def __eq__(self, other):
         if isinstance(other, OrderedDict):
             return len(self)==len(other) and \
-                   min(p==q for p, q in  zip(self.items(), other.items()))
+                   min(p==q for p, q in  zip(list(self.items()), list(other.items())))
         return dict.__eq__(self, other)
 
     def __ne__(self, other):

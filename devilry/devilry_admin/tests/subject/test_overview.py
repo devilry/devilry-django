@@ -1,4 +1,4 @@
-from __future__ import unicode_literals
+
 
 import mock
 from django.test import TestCase
@@ -25,7 +25,7 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
         testsubject = mommy.make('core.Subject',
                                  long_name='Test Subject')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
-        self.assertEqual(u'Test Subject',
+        self.assertEqual('Test Subject',
                          mockresponse.selector.one('h1').alltext_normalized)
 
     def test_createperiod_link_text(self):
@@ -40,13 +40,13 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
         self.assertEqual(3, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
         self.assertEqual(
-                mock.call(appname=u'edit', args=(), viewname=u'INDEX', kwargs={}),
+                mock.call(appname='edit', args=(), viewname='INDEX', kwargs={}),
                 mockresponse.request.cradmin_instance.reverse_url.call_args_list[0])
         self.assertEqual(
-                mock.call(appname=u'createperiod', args=(), viewname=u'INDEX', kwargs={}),
+                mock.call(appname='createperiod', args=(), viewname='INDEX', kwargs={}),
                 mockresponse.request.cradmin_instance.reverse_url.call_args_list[1])
         self.assertEqual(
-                mock.call(appname=u'admins', args=(), viewname=u'INDEX', kwargs={}),
+                mock.call(appname='admins', args=(), viewname='INDEX', kwargs={}),
                 mockresponse.request.cradmin_instance.reverse_url.call_args_list[2])
 
     def test_periodlist_no_periods(self):

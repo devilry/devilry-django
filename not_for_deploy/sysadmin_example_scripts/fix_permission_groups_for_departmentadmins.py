@@ -17,7 +17,7 @@ permission_group_map = {
 
 def check_permission_groups_exists():
     from devilry.devilry_account.models import PermissionGroup
-    for group_name in permission_group_map.keys():
+    for group_name in list(permission_group_map.keys()):
         if not PermissionGroup.objects.filter(name=group_name).exists():
             raise SystemExit('PermissionGroup with name {} does not exist.'.format(group_name))
 
@@ -27,14 +27,14 @@ def add_subject_to_permission_group(group_name, subject, pretend=True):
     permission_group = PermissionGroup.objects.get(name=group_name, grouptype=PermissionGroup.GROUPTYPE_DEPARTMENTADMIN)
     if not SubjectPermissionGroup.objects.filter(permissiongroup=permission_group, subject=subject).exists():
         if pretend:
-            print 'PRETEND ({}): Adding {}'.format(permission_group.name, subject.short_name)
+            print('PRETEND ({}): Adding {}'.format(permission_group.name, subject.short_name))
         else:
-            print '({}): Adding {}'.format(permission_group.name, subject.short_name)
+            print('({}): Adding {}'.format(permission_group.name, subject.short_name))
             subject_permission_group = SubjectPermissionGroup(permissiongroup=permission_group, subject=subject)
             subject_permission_group.full_clean()  # Do not remove this
             subject_permission_group.save()
     else:
-        print '({}): {} already exists'.format(subject.short_name, permission_group.name)
+        print('({}): {} already exists'.format(subject.short_name, permission_group.name))
 
 
 def create_subject_permission_groups():
@@ -43,7 +43,7 @@ def create_subject_permission_groups():
     no_matches_list = []
     for subject in Subject.objects.all():
         match = False
-        for group_name, subject_short_name_regex in permission_group_map.items():
+        for group_name, subject_short_name_regex in list(permission_group_map.items()):
             if re.match(subject_short_name_regex, subject.short_name):
                 match = True
                 add_subject_to_permission_group(group_name, subject, pretend=pretend)
@@ -51,8 +51,8 @@ def create_subject_permission_groups():
             no_matches_list.append(subject.short_name)
 
     if no_matches_list:
-        print '\nCourses that did not match any regexes: '
-        print ', '.join(no_matches_list)
+        print('\nCourses that did not match any regexes: ')
+        print(', '.join(no_matches_list))
 
 
 def populate_arguments_and_get_parser():

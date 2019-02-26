@@ -49,7 +49,7 @@ class TestAssignmentImporter(ImporterTestCaseMixin, test.TestCase):
                            data=self._create_assignment_dict(period=test_period))
         assignmentimporter = AssignmentImporter(input_root=self.temp_root_dir)
         assignmentimporter.import_models()
-        self.assertEquals(Assignment.objects.count(), 1)
+        self.assertEqual(Assignment.objects.count(), 1)
 
     def test_importer_pk(self):
         test_period = mommy.make_recipe('devilry.apps.core.period_active')
@@ -58,8 +58,8 @@ class TestAssignmentImporter(ImporterTestCaseMixin, test.TestCase):
         assignmentimporter = AssignmentImporter(input_root=self.temp_root_dir)
         assignmentimporter.import_models()
         assignment = Assignment.objects.first()
-        self.assertEquals(assignment.pk, 6)
-        self.assertEquals(assignment.id, 6)
+        self.assertEqual(assignment.pk, 6)
+        self.assertEqual(assignment.id, 6)
 
     def test_importer_short_name(self):
         test_period = mommy.make_recipe('devilry.apps.core.period_active')
@@ -68,7 +68,7 @@ class TestAssignmentImporter(ImporterTestCaseMixin, test.TestCase):
         assignmentimporter = AssignmentImporter(input_root=self.temp_root_dir)
         assignmentimporter.import_models()
         assignment = Assignment.objects.first()
-        self.assertEquals(assignment.short_name, 'week6')
+        self.assertEqual(assignment.short_name, 'week6')
 
     def test_importer_long_name(self):
         test_period = mommy.make_recipe('devilry.apps.core.period_active')
@@ -77,7 +77,7 @@ class TestAssignmentImporter(ImporterTestCaseMixin, test.TestCase):
         assignmentimporter = AssignmentImporter(input_root=self.temp_root_dir)
         assignmentimporter.import_models()
         assignment = Assignment.objects.first()
-        self.assertEquals(assignment.long_name, 'Week 6')
+        self.assertEqual(assignment.long_name, 'Week 6')
 
     def test_importer_points_to_grade_mapper(self):
         test_period = mommy.make_recipe('devilry.apps.core.period_active')
@@ -86,7 +86,7 @@ class TestAssignmentImporter(ImporterTestCaseMixin, test.TestCase):
         assignmentimporter = AssignmentImporter(input_root=self.temp_root_dir)
         assignmentimporter.import_models()
         assignment = Assignment.objects.first()
-        self.assertEquals(assignment.points_to_grade_mapper, Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS)
+        self.assertEqual(assignment.points_to_grade_mapper, Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS)
 
     def test_importer_students_can_create_groups(self):
         test_period = mommy.make_recipe('devilry.apps.core.period_active')
@@ -113,7 +113,7 @@ class TestAssignmentImporter(ImporterTestCaseMixin, test.TestCase):
         assignmentimporter = AssignmentImporter(input_root=self.temp_root_dir)
         assignmentimporter.import_models()
         assignment = Assignment.objects.first()
-        self.assertEquals(assignment.deadline_handling, 0)
+        self.assertEqual(assignment.deadline_handling, 0)
 
     def test_importer_max_points(self):
         test_period = mommy.make_recipe('devilry.apps.core.period_active')
@@ -122,7 +122,7 @@ class TestAssignmentImporter(ImporterTestCaseMixin, test.TestCase):
         assignmentimporter = AssignmentImporter(input_root=self.temp_root_dir)
         assignmentimporter.import_models()
         assignment = Assignment.objects.first()
-        self.assertEquals(assignment.max_points, 2)
+        self.assertEqual(assignment.max_points, 2)
 
     def test_importer_delivery_types(self):
         test_period = mommy.make_recipe('devilry.apps.core.period_active')
@@ -131,7 +131,7 @@ class TestAssignmentImporter(ImporterTestCaseMixin, test.TestCase):
         assignmentimporter = AssignmentImporter(input_root=self.temp_root_dir)
         assignmentimporter.import_models()
         assignment = Assignment.objects.first()
-        self.assertEquals(assignment.delivery_types, 0)
+        self.assertEqual(assignment.delivery_types, 0)
 
     def test_importer_passing_grade_min_points(self):
         test_period = mommy.make_recipe('devilry.apps.core.period_active')
@@ -140,7 +140,7 @@ class TestAssignmentImporter(ImporterTestCaseMixin, test.TestCase):
         assignmentimporter = AssignmentImporter(input_root=self.temp_root_dir)
         assignmentimporter.import_models()
         assignment = Assignment.objects.first()
-        self.assertEquals(assignment.passing_grade_min_points, 1)
+        self.assertEqual(assignment.passing_grade_min_points, 1)
 
     def test_importer_anonymization_mode_anonymous_false(self):
         test_period = mommy.make_recipe('devilry.apps.core.period_active')
@@ -149,7 +149,7 @@ class TestAssignmentImporter(ImporterTestCaseMixin, test.TestCase):
         assignmentimporter = AssignmentImporter(input_root=self.temp_root_dir)
         assignmentimporter.import_models()
         assignment = Assignment.objects.first()
-        self.assertEquals(assignment.anonymizationmode, Assignment.ANONYMIZATIONMODE_OFF)
+        self.assertEqual(assignment.anonymizationmode, Assignment.ANONYMIZATIONMODE_OFF)
 
     def test_importer_anonymization_mode_anonymous_true(self):
         test_period = mommy.make_recipe('devilry.apps.core.period_active')
@@ -160,7 +160,7 @@ class TestAssignmentImporter(ImporterTestCaseMixin, test.TestCase):
         assignmentimporter = AssignmentImporter(input_root=self.temp_root_dir)
         assignmentimporter.import_models()
         assignment = Assignment.objects.first()
-        self.assertEquals(assignment.anonymizationmode, Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        self.assertEqual(assignment.anonymizationmode, Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
 
     def test_importer_grading_system_plugin_id_approved(self):
         test_period = mommy.make_recipe('devilry.apps.core.period_active')
@@ -171,7 +171,7 @@ class TestAssignmentImporter(ImporterTestCaseMixin, test.TestCase):
         assignmentimporter = AssignmentImporter(input_root=self.temp_root_dir)
         assignmentimporter.import_models()
         assignment = Assignment.objects.first()
-        self.assertEquals(assignment.grading_system_plugin_id, Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
+        self.assertEqual(assignment.grading_system_plugin_id, Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
 
     def test_importer_grading_system_plugin_id_points(self):
         test_period = mommy.make_recipe('devilry.apps.core.period_active')
@@ -180,7 +180,7 @@ class TestAssignmentImporter(ImporterTestCaseMixin, test.TestCase):
         assignmentimporter = AssignmentImporter(input_root=self.temp_root_dir)
         assignmentimporter.import_models()
         assignment = Assignment.objects.first()
-        self.assertEquals(assignment.grading_system_plugin_id, Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS)
+        self.assertEqual(assignment.grading_system_plugin_id, Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS)
 
     def test_importer_scale_points_percent(self):
         test_period = mommy.make_recipe('devilry.apps.core.period_active')
@@ -189,7 +189,7 @@ class TestAssignmentImporter(ImporterTestCaseMixin, test.TestCase):
         assignmentimporter = AssignmentImporter(input_root=self.temp_root_dir)
         assignmentimporter.import_models()
         assignment = Assignment.objects.first()
-        self.assertEquals(assignment.scale_points_percent, 100)
+        self.assertEqual(assignment.scale_points_percent, 100)
 
     def test_importer_parentnode(self):
         test_period = mommy.make_recipe('devilry.apps.core.period_active')
@@ -198,7 +198,7 @@ class TestAssignmentImporter(ImporterTestCaseMixin, test.TestCase):
         assignmentimporter = AssignmentImporter(input_root=self.temp_root_dir)
         assignmentimporter.import_models()
         assignment = Assignment.objects.first()
-        self.assertEquals(assignment.parentnode, test_period)
+        self.assertEqual(assignment.parentnode, test_period)
 
     # def test_importer_imported_model_created(self):
     #     test_period = mommy.make_recipe('devilry.apps.core.period_active')
@@ -223,10 +223,10 @@ class TestAssignmentImporter(ImporterTestCaseMixin, test.TestCase):
                            model_meta=self._create_model_meta())
         assignmentimporter = AssignmentImporter(input_root=self.temp_root_dir)
         assignmentimporter.import_models()
-        self.assertEquals(Assignment.objects.count(), 1)
+        self.assertEqual(Assignment.objects.count(), 1)
         assignment = Assignment.objects.first()
-        self.assertEquals(assignment.pk, 6)
-        self.assertEquals(assignment.id, 6)
+        self.assertEqual(assignment.pk, 6)
+        self.assertEqual(assignment.id, 6)
         assignment_with_auto_id = mommy.make('core.Assignment', parentnode=test_period)
-        self.assertEquals(assignment_with_auto_id.pk, self._create_model_meta()['max_id']+1)
-        self.assertEquals(assignment_with_auto_id.id, self._create_model_meta()['max_id']+1)
+        self.assertEqual(assignment_with_auto_id.pk, self._create_model_meta()['max_id']+1)
+        self.assertEqual(assignment_with_auto_id.id, self._create_model_meta()['max_id']+1)

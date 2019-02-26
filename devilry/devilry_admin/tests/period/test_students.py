@@ -1,4 +1,4 @@
-from __future__ import unicode_literals
+
 import mock
 from django import test
 from django.conf import settings

@@ -1,5 +1,5 @@
 # Python imports
-import StringIO
+import io
 import os
 import shutil
 
@@ -38,16 +38,16 @@ class TestZipBackend(TestCase):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
             testpath = 'testpath'
             backend = backend_mock.MockDevilryZipBackend(archive_path=testpath)
-            self.assertEquals(settings.DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY+'testpath.zip', backend.archive_path)
+            self.assertEqual(settings.DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY+'testpath.zip', backend.archive_path)
 
     def test_path_with_zip_extension(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
             testpath = 'testpath'
             backend = backend_mock.MockDevilryZipBackend(archive_path=testpath)
-            self.assertNotEquals(
+            self.assertNotEqual(
                     settings.DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY+'testpath.zip.zip',
                     backend.archive_path)
-            self.assertEquals(
+            self.assertEqual(
                     settings.DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY+'testpath.zip',
                     backend.archive_path)
 
@@ -110,7 +110,7 @@ class TestZipBackend(TestCase):
 
                 # Create testfile
                 filename = 'testfile.txt'
-                testfile = StringIO.StringIO()
+                testfile = io.StringIO()
                 testfile.write(lorem_ipsum)
                 testfile.seek(0)
 
@@ -133,7 +133,7 @@ class TestZipBackend(TestCase):
                 backend = backend_class(archive_path='testfile1', readmode=False)
 
                 # Create testfile
-                testfile = StringIO.StringIO()
+                testfile = io.StringIO()
                 testfile.write('testcontent')
                 testfile.seek(0)
 
@@ -144,7 +144,7 @@ class TestZipBackend(TestCase):
                 # Read from created archive
                 backend.readmode = True
                 archive = backend.read_archive()
-                self.assertEquals('testcontent', archive.read(archive.namelist()[0]))
+                self.assertEqual(b'testcontent', archive.read(archive.namelist()[0]))
 
     def test_read_archive(self):
             # Reads archive and checks that content is as expected.
@@ -157,7 +157,7 @@ class TestZipBackend(TestCase):
                 backend = backend_class(archive_path='testfile', readmode=False)
 
                 # Create testfile
-                testfile = StringIO.StringIO()
+                testfile = io.StringIO()
                 testfile.write('testcontent')
                 testfile.seek(0)
 
@@ -170,8 +170,8 @@ class TestZipBackend(TestCase):
                 # Read from created archive
                 backend.readmode = True
                 archive = backend.read_archive()
-                self.assertEquals('testcontent', archive.read(archive.namelist()[0]))
-                self.assertEquals('testcontent', archive.read(archive.namelist()[1]))
+                self.assertEqual(b'testcontent', archive.read(archive.namelist()[0]))
+                self.assertEqual(b'testcontent', archive.read(archive.namelist()[1]))
 
     def test_deep_nesting(self):
         # Tests deep nesting of folders.
@@ -191,7 +191,7 @@ class TestZipBackend(TestCase):
             backend = backend_class(archive_path='testfile1', readmode=False)
 
             # Create testfile
-            testfile = StringIO.StringIO()
+            testfile = io.StringIO()
             testfile.write('testcontent')
             testfile.seek(0)
 
@@ -224,7 +224,7 @@ class TestTarFileBackend(TestCase):
         backend = PythonTarFileBackend(archive_path='test', archive_name='test', compression='')
         backend.readmode = False
 
-        testfile = StringIO.StringIO()
+        testfile = io.StringIO()
         testfile.write('testcontent')
         testfile.seek(0)
 
@@ -249,7 +249,7 @@ class TestTarFileBackend(TestCase):
         backend = PythonTarFileBackend(archive_path='test', archive_name='test', compression='')
         backend.readmode = False
 
-        testfile = StringIO.StringIO()
+        testfile = io.StringIO()
         testfile.write('testcontent')
         testfile.seek(0)
 
@@ -279,7 +279,7 @@ class TestTarFileBackend(TestCase):
                 compression='gz')
         backend_gz.readmode = False
 
-        testfile = StringIO.StringIO()
+        testfile = io.StringIO()
         testfile.write(lorem_ipsum)
         testfile.seek(0)
 
@@ -309,7 +309,7 @@ class TestTarFileBackend(TestCase):
                 compression='gz')
         backend_gz.readmode = False
 
-        testfile = StringIO.StringIO()
+        testfile = io.StringIO()
         testfile.write(lorem_ipsum)
         testfile.seek(0)
 
@@ -339,7 +339,7 @@ class TestTarFileBackend(TestCase):
                 compression='bz2')
         backend_bz2.readmode = False
 
-        testfile = StringIO.StringIO()
+        testfile = io.StringIO()
         testfile.write(lorem_ipsum)
         testfile.seek(0)
 

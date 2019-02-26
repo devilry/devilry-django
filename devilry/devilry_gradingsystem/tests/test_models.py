@@ -32,12 +32,12 @@ class TestFeedbackDraft(TestCase):
             saved_by=self.testexaminer,
             published=True)
         staticfeedback = feedbackdraft.to_staticfeedback()
-        self.assertEquals(staticfeedback.rendered_view, '<p>Test</p>')
-        self.assertEquals(staticfeedback.points, 30)
-        self.assertEquals(staticfeedback.is_passing_grade, True)
+        self.assertEqual(staticfeedback.rendered_view, '<p>Test</p>')
+        self.assertEqual(staticfeedback.points, 30)
+        self.assertEqual(staticfeedback.is_passing_grade, True)
 
     def test_get_last_feedbackdraft_none(self):
-        self.assertEquals(
+        self.assertEqual(
             FeedbackDraft.get_last_feedbackdraft(assignment=self.assignment1builder.assignment,
                                                  delivery=self.deliverybuilder.delivery,
                                                  user=self.testexaminer),
@@ -51,7 +51,7 @@ class TestFeedbackDraft(TestCase):
             feedbacktext_html='<p>Test</p>',
             points=30,
             saved_by=UserBuilder('otheruser').user)
-        self.assertEquals(
+        self.assertEqual(
             FeedbackDraft.get_last_feedbackdraft(assignment=self.assignment1builder.assignment,
                                                  delivery=self.deliverybuilder.delivery,
                                                  user=self.testexaminer),
@@ -64,7 +64,7 @@ class TestFeedbackDraft(TestCase):
             feedbacktext_html='<p>Test</p>',
             points=30,
             saved_by=UserBuilder('otheruser').user)
-        self.assertEquals(
+        self.assertEqual(
             FeedbackDraft.get_last_feedbackdraft(assignment=self.assignment1builder.assignment,
                                                  delivery=self.deliverybuilder.delivery,
                                                  user=self.testexaminer),
@@ -77,14 +77,14 @@ class TestFeedbackDraft(TestCase):
             feedbacktext_html='<p>Test</p>',
             points=30,
             saved_by=self.testexaminer)
-        self.assertEquals(
+        self.assertEqual(
             FeedbackDraft.get_last_feedbackdraft(assignment=self.assignment1builder.assignment,
                                                  delivery=self.deliverybuilder.delivery,
                                                  user=self.testexaminer),
             feedbackdraft)
 
     def test_get_last_feedbackdraft_for_group_none(self):
-        self.assertEquals(
+        self.assertEqual(
             FeedbackDraft.get_last_feedbackdraft_for_group(assignment=self.assignment1builder.assignment,
                                                            group=self.groupbuilder.group,
                                                            user=self.testexaminer),
@@ -98,7 +98,7 @@ class TestFeedbackDraft(TestCase):
             feedbacktext_html='<p>Test</p>',
             points=30,
             saved_by=UserBuilder('otheruser').user)
-        self.assertEquals(
+        self.assertEqual(
             FeedbackDraft.get_last_feedbackdraft_for_group(assignment=self.assignment1builder.assignment,
                                                            group=self.groupbuilder.group,
                                                            user=self.testexaminer),
@@ -111,7 +111,7 @@ class TestFeedbackDraft(TestCase):
             feedbacktext_html='<p>Test</p>',
             points=30,
             saved_by=UserBuilder('otheruser').user)
-        self.assertEquals(
+        self.assertEqual(
             FeedbackDraft.get_last_feedbackdraft_for_group(assignment=self.assignment1builder.assignment,
                                                            group=self.groupbuilder.group,
                                                            user=self.testexaminer),
@@ -124,7 +124,7 @@ class TestFeedbackDraft(TestCase):
             feedbacktext_html='<p>Test</p>',
             points=30,
             saved_by=self.testexaminer)
-        self.assertEquals(
+        self.assertEqual(
             FeedbackDraft.get_last_feedbackdraft_for_group(assignment=self.assignment1builder.assignment,
                                                            group=self.groupbuilder.group,
                                                            user=self.testexaminer),
@@ -153,9 +153,9 @@ class TestFeedbackDraftFile(TestCase):
         draftfile.file.save('test.txt', ContentFile('Test'))
         staticfeedback = self.deliverybuilder.add_passed_A_feedback(saved_by=self.testexaminer).feedback
         fileattachment = draftfile.to_staticfeedbackfileattachment(staticfeedback)
-        self.assertEquals(fileattachment.filename, 'test.txt')
-        self.assertEquals(fileattachment.file.read(), 'Test')
-        self.assertEquals(fileattachment.staticfeedback, staticfeedback)
+        self.assertEqual(fileattachment.filename, 'test.txt')
+        self.assertEqual(fileattachment.file.read(), 'Test')
+        self.assertEqual(fileattachment.staticfeedback, staticfeedback)
         self.assertIsNotNone(fileattachment.pk)
         self.assertTrue(StaticFeedbackFileAttachment.objects.filter(pk=fileattachment.pk).exists())
 
@@ -165,7 +165,7 @@ class TestFeedbackDraftFile(TestCase):
             delivery=self.deliverybuilder.delivery,
             saved_by=UserBuilder('otheruser').user,
             filename='test.txt')
-        self.assertEquals(
+        self.assertEqual(
             FeedbackDraftFile.objects.filter_accessible_files(assignment=self.assignment1builder.assignment,
                                                               delivery=self.deliverybuilder.delivery,
                                                               user=self.testexaminer).first(),
@@ -176,7 +176,7 @@ class TestFeedbackDraftFile(TestCase):
             delivery=self.deliverybuilder.delivery,
             saved_by=UserBuilder('otheruser').user,
             filename='test.txt')
-        self.assertEquals(
+        self.assertEqual(
             FeedbackDraftFile.objects.filter_accessible_files(assignment=self.assignment1builder.assignment,
                                                               delivery=self.deliverybuilder.delivery,
                                                               user=self.testexaminer).first(),
@@ -187,7 +187,7 @@ class TestFeedbackDraftFile(TestCase):
             delivery=self.deliverybuilder.delivery,
             saved_by=self.testexaminer,
             filename='test.txt')
-        self.assertEquals(
+        self.assertEqual(
             FeedbackDraftFile.objects.filter_accessible_files(assignment=self.assignment1builder.assignment,
                                                               delivery=self.deliverybuilder.delivery,
                                                               user=self.testexaminer).first(),

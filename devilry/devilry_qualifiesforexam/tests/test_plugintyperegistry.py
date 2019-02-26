@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 # Django imports
 from django import test
@@ -17,10 +17,10 @@ class TestPluginSubclassFactory(test.TestCase):
                 human_readable_name='Test plugin',
                 description='Test plugin that does stuff')
         testplugin = testpluginclass()
-        self.assertEquals('test_plugin', testplugin.get_plugintypeid())
-        self.assertEquals('Test plugin', testplugin.get_human_readable_name())
-        self.assertEquals('Test plugin that does stuff', testplugin.get_description())
-        self.assertEquals(None, testplugin.get_plugin_view_class())
+        self.assertEqual('test_plugin', testplugin.get_plugintypeid())
+        self.assertEqual('Test plugin', testplugin.get_human_readable_name())
+        self.assertEqual('Test plugin that does stuff', testplugin.get_description())
+        self.assertEqual(None, testplugin.get_plugin_view_class())
 
 
 class TestPluginTypeRegistry(test.TestCase):
@@ -33,7 +33,7 @@ class TestPluginTypeRegistry(test.TestCase):
             plugintypeid='test_plugin'
         )
         testregistry.add(testpluginclass)
-        self.assertEquals('test_plugin', testregistry['test_plugin'].get_plugintypeid())
+        self.assertEqual('test_plugin', testregistry['test_plugin'].get_plugintypeid())
 
     def test_add_plugin_duplicate(self):
         # Registry should raise error if plugin with same plugintypeid is added.

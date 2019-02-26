@@ -60,6 +60,6 @@ class SubjectImporter(modelimporter.ModelImporter):
         directory_parser.set_max_id_for_models_with_auto_generated_sequence_numbers(model_class=self.get_model_class())
         for object_dict in directory_parser.iterate_object_dicts():
             if fake:
-                print('Would import: {}'.format(pprint.pformat(object_dict)))
+                print(('Would import: {}'.format(pprint.pformat(object_dict))))
             else:
                 self._create_subject_from_object_dict(object_dict=object_dict)

@@ -21,7 +21,7 @@ class TestPeriodQuerySetFilterActive(TestCase):
         mommy.make_recipe('devilry.apps.core.period_old')
         active_period = mommy.make_recipe('devilry.apps.core.period_active')
         mommy.make_recipe('devilry.apps.core.period_future')
-        self.assertEquals(
+        self.assertEqual(
                 set(Period.objects.filter_active()),
                 {active_period})
 
@@ -31,7 +31,7 @@ class TestPeriodQuerySetFilterHasStarted(TestCase):
         old_period = mommy.make_recipe('devilry.apps.core.period_old')
         active_period = mommy.make_recipe('devilry.apps.core.period_active')
         mommy.make_recipe('devilry.apps.core.period_future')
-        self.assertEquals(
+        self.assertEqual(
                 set(Period.objects.filter_has_started()),
                 {old_period, active_period})
 
@@ -410,7 +410,7 @@ class TestPeriodOld(TestCase, TestHelper):
             # Should not raise exception
             obj.etag_update(e.etag)
         obj2 = Period.objects.get(id=obj.id)
-        self.assertEquals(obj2.long_name, 'Updated')
+        self.assertEqual(obj2.long_name, 'Updated')
 
     def test_clean(self):
         self.inf1100_looong.start_time = datetime(2010, 1, 1)
@@ -421,25 +421,25 @@ class TestPeriodOld(TestCase, TestHelper):
 
     def test_where_is_examiner(self):
         q = Period.where_is_examiner(self.examiner1).order_by('short_name')
-        self.assertEquals(q.count(), 2)
-        self.assertEquals(q[0].short_name, 'looong')
-        self.assertEquals(q[1].short_name, 'old')
+        self.assertEqual(q.count(), 2)
+        self.assertEqual(q[0].short_name, 'looong')
+        self.assertEqual(q[1].short_name, 'old')
         # Add on different period
         self.add_to_path('uio.ifi;inf1010.spring10.oblig1.student1:examiner(examiner1)')
-        self.assertEquals(q.count(), 3)
-        self.assertEquals(q[0].short_name, 'looong')
-        self.assertEquals(q[1].short_name, 'old')
-        self.assertEquals(q[2].short_name, 'spring10')
+        self.assertEqual(q.count(), 3)
+        self.assertEqual(q[0].short_name, 'looong')
+        self.assertEqual(q[1].short_name, 'old')
+        self.assertEqual(q[2].short_name, 'spring10')
 
     def test_published_where_is_examiner(self):
         examiner1 = get_user_model().objects.get(shortname='examiner1')
         self.add_to_path('uio.ifi;inf1010.spring10:begins(-1):ends(2).oblig1.student1:examiner(examiner1)')
         q = Period.published_where_is_examiner(examiner1).order_by('short_name')
-        self.assertEquals(q.count(), 3)
+        self.assertEqual(q.count(), 3)
         assignment1010 = self.inf1010_spring10_oblig1_student1.parentnode
         assignment1010.publishing_time = timezone.now() + timedelta(10)
         assignment1010.save()
-        self.assertEquals(q.count(), 2)
+        self.assertEqual(q.count(), 2)
 
     def test_is_empty(self):
         self.assertFalse(self.inf1100_old.is_empty())
@@ -448,8 +448,8 @@ class TestPeriodOld(TestCase, TestHelper):
 
     def test_q_is_active(self):
         activeperiods = Period.objects.filter(Period.q_is_active())
-        self.assertEquals(activeperiods.count(), 1)
+        self.assertEqual(activeperiods.count(), 1)
         self.assertEqual(activeperiods[0], self.inf1100_looong)
         self.inf1100_old.end_time = timezone.now() + timedelta(days=10)
         self.inf1100_old.save()
-        self.assertEquals(Period.objects.filter(Period.q_is_active()).count(), 2)
+        self.assertEqual(Period.objects.filter(Period.q_is_active()).count(), 2)

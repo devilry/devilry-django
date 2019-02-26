@@ -14,5 +14,5 @@ from .v2relatedstudent_directoryparser import V2RelatedStudentDirectoryParser  #
 from .v2delivery_directoryparser import V2DeliveryDirectoryParser  # noqa
 from .v2staticfeedback_directoryparser import V2StaticFeedbackDirectoryParser  # noqa
 from .v2filemeta_directoryparser import V2FileMetaDirectoryParser  # noqa
-from v2qualifiesforexam_status_directoryparser import V2QualifiesForExamStatusDirectoryParser  # noqa
-from v2qualifiesforexam_finalexam_directoryparser import V2QualifiesForFinalExamDirectoryParser  # noqa
+from .v2qualifiesforexam_status_directoryparser import V2QualifiesForExamStatusDirectoryParser  # noqa
+from .v2qualifiesforexam_finalexam_directoryparser import V2QualifiesForFinalExamDirectoryParser  # noqa

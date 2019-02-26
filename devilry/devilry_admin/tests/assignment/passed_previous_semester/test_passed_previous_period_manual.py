@@ -34,7 +34,7 @@ class TestPassAssignmentGroupsView(TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment,
             cradmin_instance=self.__mock_crinstance()
         )
-        self.assertEquals(
+        self.assertEqual(
             2,
             mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue')
         )

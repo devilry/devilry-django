@@ -196,7 +196,7 @@ class UserManager(BaseUserManager):
             if email_username_suffix:
                 if '@' not in email_username_suffix:
                     email_username_suffix = '@{}'.format(email_username_suffix)
-                email = u'{}{}'.format(username, email_username_suffix)
+                email = '{}{}'.format(username, email_username_suffix)
 
         if email:
             user.useremail_set.create(email=email, is_primary=True,
@@ -345,7 +345,7 @@ class UserManager(BaseUserManager):
         for user in users:
             new_username_object = UserEmail(
                     user=user,
-                    email=u'{}{}'.format(user.shortname, settings.DEVILRY_DEFAULT_EMAIL_SUFFIX),
+                    email='{}{}'.format(user.shortname, settings.DEVILRY_DEFAULT_EMAIL_SUFFIX),
                     is_primary=True,
                     use_for_notifications=True)
             new_useremail_objects.append(new_username_object)
@@ -492,7 +492,7 @@ class User(AbstractBaseUser):
         fullname, return ``<fullname> (<shortname>)``.
         """
         if self.fullname:
-            return u'{} ({})'.format(self.fullname, self.shortname)
+            return '{} ({})'.format(self.fullname, self.shortname)
         else:
             return self.shortname
 
@@ -501,7 +501,7 @@ class User(AbstractBaseUser):
         Get the initials of the users name.
         """
         if self.fullname:
-            return u''.join(word[0].upper() for word in self.fullname.split())
+            return ''.join(word[0].upper() for word in self.fullname.split())
         else:
             return self.shortname[0].upper()
 
@@ -941,7 +941,7 @@ class PermissionGroup(models.Model):
             blank=True)
 
     def __unicode__(self):
-        return u'{name} ({grouptype})'.format(
+        return '{name} ({grouptype})'.format(
             name=self.name,
             grouptype=self.get_grouptype_display()
         )

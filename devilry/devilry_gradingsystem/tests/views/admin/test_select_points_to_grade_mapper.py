@@ -31,7 +31,7 @@ class TestSelectPointsToGradeMapperView(TestCase, AdminViewTestMixin):
         self.assignmentbuilder.update(grading_system_plugin_id=1001)
         with patch('devilry.apps.core.models.assignment.gradingsystempluginregistry', myregistry):
             response = self.get_as(self.admin1)
-            self.assertEquals(response.status_code, 404)
+            self.assertEqual(response.status_code, 404)
 
     def test_render(self):
         myregistry = GradingSystemPluginRegistry()
@@ -39,25 +39,25 @@ class TestSelectPointsToGradeMapperView(TestCase, AdminViewTestMixin):
         self.assignmentbuilder.update(grading_system_plugin_id=MockPointsPluginApi.id)
         with patch('devilry.apps.core.models.assignment.gradingsystempluginregistry', myregistry):
             response = self.get_as(self.admin1)
-            self.assertEquals(response.status_code, 200)
+            self.assertEqual(response.status_code, 200)
             html = response.content
-            self.assertEquals(cssGet(html, '.page-header h1').text.strip(),
+            self.assertEqual(cssGet(html, '.page-header h1').text.strip(),
                 'How are results presented to the student?')
-            self.assertEquals(len(cssFind(html, '.devilry_gradingsystem_verbose_selectbox')), 3)
+            self.assertEqual(len(cssFind(html, '.devilry_gradingsystem_verbose_selectbox')), 3)
 
-            self.assertEquals(cssGet(html, '.passed-failed_points_to_grade_mapper_box h2').text.strip(),
+            self.assertEqual(cssGet(html, '.passed-failed_points_to_grade_mapper_box h2').text.strip(),
                 'As passed or failed')
-            self.assertEquals(cssGet(html, '.passed-failed_points_to_grade_mapper_box a.btn')['href'],
+            self.assertEqual(cssGet(html, '.passed-failed_points_to_grade_mapper_box a.btn')['href'],
                 '?points_to_grade_mapper=passed-failed')
 
-            self.assertEquals(cssGet(html, '.raw-points_points_to_grade_mapper_box h2').text.strip(),
+            self.assertEqual(cssGet(html, '.raw-points_points_to_grade_mapper_box h2').text.strip(),
                 'As points')
-            self.assertEquals(cssGet(html, '.raw-points_points_to_grade_mapper_box a.btn')['href'],
+            self.assertEqual(cssGet(html, '.raw-points_points_to_grade_mapper_box a.btn')['href'],
                 '?points_to_grade_mapper=raw-points')
 
-            self.assertEquals(cssGet(html, '.custom-table_points_to_grade_mapper_box h2').text.strip(),
+            self.assertEqual(cssGet(html, '.custom-table_points_to_grade_mapper_box h2').text.strip(),
                 'As a text looked up in a custom table')
-            self.assertEquals(cssGet(html, '.custom-table_points_to_grade_mapper_box a.btn')['href'],
+            self.assertEqual(cssGet(html, '.custom-table_points_to_grade_mapper_box a.btn')['href'],
                 '?points_to_grade_mapper=custom-table')
 
     def test_next_page_select_passing_grade_min_points(self):
@@ -69,13 +69,13 @@ class TestSelectPointsToGradeMapperView(TestCase, AdminViewTestMixin):
             response = self.get_as(self.admin1, {
                 'points_to_grade_mapper': 'passed-failed'
             })
-            self.assertEquals(response.status_code, 302)
+            self.assertEqual(response.status_code, 302)
             self.assertTrue(response["Location"].endswith(
                 reverse('devilry_gradingsystem_admin_setpassing_grade_min_points', kwargs={
                     'assignmentid': self.assignmentbuilder.assignment.id,
                 })))
             self.assignmentbuilder.reload_from_db()
-            self.assertEquals(self.assignmentbuilder.assignment.points_to_grade_mapper, 'passed-failed')
+            self.assertEqual(self.assignmentbuilder.assignment.points_to_grade_mapper, 'passed-failed')
 
     def test_next_page_custom_table(self):
         myregistry = GradingSystemPluginRegistry()
@@ -85,13 +85,13 @@ class TestSelectPointsToGradeMapperView(TestCase, AdminViewTestMixin):
             response = self.get_as(self.admin1, {
                 'points_to_grade_mapper': 'custom-table'
             })
-            self.assertEquals(response.status_code, 302)
+            self.assertEqual(response.status_code, 302)
             self.assertTrue(response["Location"].endswith(
                 reverse('devilry_gradingsystem_admin_setup_custom_table', kwargs={
                     'assignmentid': self.assignmentbuilder.assignment.id,
                 })))
             self.assignmentbuilder.reload_from_db()
-            self.assertEquals(self.assignmentbuilder.assignment.points_to_grade_mapper, 'custom-table')
+            self.assertEqual(self.assignmentbuilder.assignment.points_to_grade_mapper, 'custom-table')
 
     def test_next_page_finished(self):
         myregistry = GradingSystemPluginRegistry()
@@ -102,10 +102,10 @@ class TestSelectPointsToGradeMapperView(TestCase, AdminViewTestMixin):
             response = self.get_as(self.admin1, {
                 'points_to_grade_mapper': 'passed-failed'
             })
-            self.assertEquals(response.status_code, 302)
+            self.assertEqual(response.status_code, 302)
             self.assertTrue(response["Location"].endswith(
                 reverse('devilry_gradingsystem_admin_setpassing_grade_min_points', kwargs={
                     'assignmentid': self.assignmentbuilder.assignment.id,
                 })))
             self.assignmentbuilder.reload_from_db()
-            self.assertEquals(self.assignmentbuilder.assignment.points_to_grade_mapper, 'passed-failed')
+            self.assertEqual(self.assignmentbuilder.assignment.points_to_grade_mapper, 'passed-failed')

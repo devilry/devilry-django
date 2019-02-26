@@ -31,7 +31,7 @@ class GroupsGroupedByRelatedStudentAndAssignmentTest(TestCase):
     def test_iter_assignments(self):
         grouper = GroupsGroupedByRelatedStudentAndAssignment(self.testhelper.sub_p1)
         shortnames = [assignment.short_name for assignment in grouper.iter_assignments()]
-        self.assertEquals(shortnames, ['a1', 'a2', 'a3'])
+        self.assertEqual(shortnames, ['a1', 'a2', 'a3'])
 
     def test_iter_students_that_is_candidate_but_not_in_related_none(self):
         grouper = GroupsGroupedByRelatedStudentAndAssignment(self.testhelper.sub_p1)
@@ -40,30 +40,30 @@ class GroupsGroupedByRelatedStudentAndAssignmentTest(TestCase):
     def test_iter_students_that_is_candidate_but_not_in_related(self):
         grouper = GroupsGroupedByRelatedStudentAndAssignment(self.testhelper.sub_p1)
         ignored = list(grouper.iter_students_that_is_candidate_but_not_in_related())
-        self.assertEquals(len(ignored), 4)
+        self.assertEqual(len(ignored), 4)
         student1_info = None
         for aggregated_relstudentinfo in ignored:
             if aggregated_relstudentinfo.user == self.testhelper.student1:
                 student1_info = aggregated_relstudentinfo
                 break
         grouplists = list(student1_info.iter_groups_by_assignment())
-        self.assertEquals(len(grouplists), 3) # Should match the number of assignments
-        self.assertEquals(len(grouplists[0]), 1)
-        self.assertEquals(grouplists[0][0].feedback, None)
+        self.assertEqual(len(grouplists), 3) # Should match the number of assignments
+        self.assertEqual(len(grouplists[0]), 1)
+        self.assertEqual(grouplists[0][0].feedback, None)
 
     def test_iter_students_with_feedback_that_is_candidate_but_not_in_related_none(self):
         grouper = GroupsGroupedByRelatedStudentAndAssignment(self.testhelper.sub_p1)
-        self.assertEquals(len(list(grouper.iter_students_with_feedback_that_is_candidate_but_not_in_related())), 0)
-        self.assertEquals(len(list(grouper.iter_relatedstudents_with_results())), 0)
+        self.assertEqual(len(list(grouper.iter_students_with_feedback_that_is_candidate_but_not_in_related())), 0)
+        self.assertEqual(len(list(grouper.iter_relatedstudents_with_results())), 0)
 
     def test_iter_students_with_feedback_that_is_candidate_but_not_in_related(self):
         self._add_bad_feedback(self.testhelper.sub_p1_a1_stud1)
         grouper = GroupsGroupedByRelatedStudentAndAssignment(self.testhelper.sub_p1)
         ignored = list(grouper.iter_students_with_feedback_that_is_candidate_but_not_in_related())
-        self.assertEquals(len(ignored), 1)
+        self.assertEqual(len(ignored), 1)
         grouplists = list(ignored[0].iter_groups_by_assignment())
-        self.assertEquals(len(grouplists), 3) # Should match the number of assignments
-        self.assertEquals(grouplists[0][0].feedback.grade, '0/100')
+        self.assertEqual(len(grouplists), 3) # Should match the number of assignments
+        self.assertEqual(grouplists[0][0].feedback.grade, '0/100')
 
     def test_iter_relatedstudents_with_results(self):
         self._add_bad_feedback(self.testhelper.sub_p1_a1_stud1)

@@ -5,7 +5,7 @@ from importlib import import_module
 from django.db.models import fields
 from django.db.models.base import ModelBase
 
-from dot import UmlClassLabel, Association, Node, Edge, UmlField
+from .dot import UmlClassLabel, Association, Node, Edge, UmlField
 
 
 
@@ -177,7 +177,7 @@ class ModelSet(set, GetIdMixin):
         for app in settings.INSTALLED_APPS:
             try:
                 mod = import_module("%s.models" % app)
-            except ImportError, e:
+            except ImportError as e:
                 continue
             for name in dir(mod):
                 var = getattr(mod, name)
@@ -192,4 +192,4 @@ class ModelSet(set, GetIdMixin):
 if __name__ == '__main__':
     models = ModelSet('^(devilry|django\.contrib\.auth)\..*$')
     models.add_installed_apps_models()
-    print models
+    print(models)

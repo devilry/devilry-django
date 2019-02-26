@@ -15,7 +15,7 @@ class AssignmentGroupImporter(modelimporter.ModelImporter):
         try:
             assignment = Assignment.objects.get(id=id)
         except Assignment.DoesNotExist:
-            print('No Assignment with id={} exists for imported AssignmentGroup'.format(id))
+            print(('No Assignment with id={} exists for imported AssignmentGroup'.format(id)))
             return None
         return assignment
 
@@ -42,7 +42,7 @@ class AssignmentGroupImporter(modelimporter.ModelImporter):
         with BulkCreator(model_class=AssignmentGroup) as group_bulk_creator:
             for object_dict in directory_parser.iterate_object_dicts():
                 if fake:
-                    print('Would import: {}'.format(pprint.pformat(object_dict)))
+                    print(('Would import: {}'.format(pprint.pformat(object_dict))))
                 else:
                     group = self._create_assignmentgroup_from_object_dict(object_dict=object_dict)
                     group_bulk_creator.add(group)

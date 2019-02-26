@@ -21,11 +21,11 @@ class TestStreamableArchive(TestCase):
     def setUp(self):
         self.testfile = "testfile.zip"
         self.file1_name = "TestFile1"
-        self.file1_content = u"This is the content of testfile 1 ------------------"
+        self.file1_content = "This is the content of testfile 1 ------------------"
         self.file2_name = "dir1/TestFile2"
-        self.file2_content = u"This is the content of testfile 2 ++++++++++++++++++"
+        self.file2_content = "This is the content of testfile 2 ++++++++++++++++++"
         self.file3_name = "dir1/dir2/TestFile3"
-        self.file3_content = u"This is the content of testfile 3 ******************"
+        self.file3_content = "This is the content of testfile 3 ******************"
 
     def add_files_to_archive(self, archive):
         archive.add_file(self.file1_name, self.file1_content)
@@ -89,7 +89,7 @@ class TestStreamableArchive(TestCase):
     def to_file(self, filename, bytes):
         f = open(filename, "w")
         f.write(bytes)
-        f.close
+        f.close()
     
     def test_tar_add_file(self):
         """
@@ -104,11 +104,11 @@ class TestStreamableArchive(TestCase):
         
         f = tfile.extractfile(tfile.getmember(self.file1_name))
         content = f.read()
-        self.assertEquals(self.file1_content, content)
+        self.assertEqual(self.file1_content, content)
 
         f = tfile.extractfile(tfile.getmember(self.file2_name))
         content = f.read()
-        self.assertEquals(self.file2_content, content)
+        self.assertEqual(self.file2_content, content)
 
         tfile.close()
         os.remove(self.testfile)
@@ -126,11 +126,11 @@ class TestStreamableArchive(TestCase):
         
         f = tfile.extractfile(tfile.getmember(self.file1_name))
         content = f.read()
-        self.assertEquals(self.file1_content, content)
+        self.assertEqual(self.file1_content, content)
 
         f = tfile.extractfile(tfile.getmember(self.file2_name))
         content = f.read()
-        self.assertEquals(self.file2_content, content)
+        self.assertEqual(self.file2_content, content)
 
         tfile.close()
         os.remove(self.testfile)
@@ -155,9 +155,9 @@ class TestStreamableArchive(TestCase):
         content1 = zfile.read(self.file1_name)
         content2 = zfile.read(self.file2_name)
         content3 = zfile.read(self.file3_name)
-        self.assertEquals(self.file1_content, content1)
-        self.assertEquals(self.file2_content, content2)
-        self.assertEquals(self.file3_content, content3)        
+        self.assertEqual(self.file1_content, content1)
+        self.assertEqual(self.file2_content, content2)
+        self.assertEqual(self.file3_content, content3)        
         os.remove(self.testfile)
 
     def test_zip_archive_in_zip_archive(self):
@@ -182,9 +182,9 @@ class TestStreamableArchive(TestCase):
         zfile = ZipFile(open(self.testfile, "r"), "r")
         read_from_zip2 = zfile.read(zipped_file_name)
 
-        #print "zip2_content:", len(zip1_content)
+        #print "zip2_content:", len(zip1_content)j
         #print "read_from_zip2:", len(read_from_zip2)
-        self.assertEquals(read_from_zip2, zip1_content)
+        self.assertEqual(read_from_zip2, zip1_content)
         
         #zfile = ZipFile(open(self.testfile, "r"), "r")
         #content1 = zfile.read(self.file1_name)

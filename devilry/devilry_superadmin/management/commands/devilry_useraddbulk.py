@@ -29,7 +29,7 @@ class Command(UserModCommand):
             usernames = options['username_or_email']
         else:
             if verbosity > 0:
-                print "Reading users from stdin..."
+                print("Reading users from stdin...")
             usernames = sys.stdin.read().split()
 
         users_created_count = 0
@@ -48,5 +48,5 @@ class Command(UserModCommand):
                                                      email=email)
                 users_created_count += 1
         if verbosity > 0:
-            print "Added %d users." % users_created_count
-            print "%s users already existed." % (len(usernames) - users_created_count)
+            print("Added %d users." % users_created_count)
+            print("%s users already existed." % (len(usernames) - users_created_count))

@@ -1,4 +1,4 @@
-from __future__ import unicode_literals
+
 from crispy_forms import layout
 from django import forms
 from django.db import models
@@ -94,7 +94,7 @@ class CreateView(crudbase.OnlySaveButtonMixin, CreateUpdateMixin, create.CreateV
         return super(CreateView, self).dispatch(*args, **kwargs)
 
     def get_pagetitle(self):
-        return u'{} - {}'.format(self.get_pageheading(), self.subject.short_name)
+        return '{} - {}'.format(self.get_pageheading(), self.subject.short_name)
 
     def get_pageheading(self):
         return _('Create new semester')

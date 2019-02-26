@@ -100,7 +100,7 @@ class TestFeedbackSetTriggers(test.TestCase):
         assignment.first_deadline = new_assignment_first_deadline
         assignment.save()
         self.assertEqual(group1.feedbackset_set.first().deadline_datetime, new_assignment_first_deadline)
-        self.assertNotEquals(feedbackset2.deadline_datetime, assignment.first_deadline)
+        self.assertNotEqual(feedbackset2.deadline_datetime, assignment.first_deadline)
 
     def test_on_create_feedbackset_no_deadline_history_created(self):
         assignment = mommy.make('core.Assignment')

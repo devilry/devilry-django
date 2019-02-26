@@ -102,7 +102,7 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
                 'content_object_id': testgroup.parentnode.id
             }
         )
-        self.assertEquals('{"status": "no-files"}', mockresponse.response.content)
+        self.assertEqual(b'{"status": "no-files"}', mockresponse.response.content)
 
     def test_get_status_not_started_unprocessed(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -124,7 +124,7 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
             viewkwargs={
                 'content_object_id': testassignment.id
             })
-        self.assertEquals('{"status": "not-started"}', mockresponse.response.content)
+        self.assertEqual(b'{"status": "not-started"}', mockresponse.response.content)
 
     @override_settings(IEVV_BATCHFRAMEWORK_ALWAYS_SYNCRONOUS=False)
     def test_get_status_not_created_when_archive_meta_has_deleted_datetime(self):
@@ -154,7 +154,7 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
             viewkwargs={
                 'content_object_id': testassignment.id
             })
-        self.assertEquals('{"status": "not-created"}', mockresponse.response.content)
+        self.assertEqual(b'{"status": "not-created"}', mockresponse.response.content)
 
     @override_settings(IEVV_BATCHFRAMEWORK_ALWAYS_SYNCRONOUS=False)
     def test_get_status_not_created_when_new_file_is_added(self):
@@ -183,7 +183,7 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
             viewkwargs={
                 'content_object_id': testassignment.id
             })
-        self.assertEquals(mockresponse.response.content, '{"status": "not-created"}')
+        self.assertEqual(mockresponse.response.content, b'{"status": "not-created"}')
 
     def test_get_status_not_created_user_has_compressed_archive_as_examiner_role_but_not_as_admin(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -211,7 +211,7 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
             viewkwargs={
                 'content_object_id': testassignment.id
             })
-        self.assertEquals(mockresponse.response.content, '{"status": "not-created"}')
+        self.assertEqual(mockresponse.response.content, b'{"status": "not-created"}')
 
     def test_get_status_not_created_when_examiner_history_with_datetime_greater_than_last_compressed_archive(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -237,7 +237,7 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
             viewkwargs={
                 'content_object_id': testassignment.id
             })
-        self.assertEquals(mockresponse.response.content, '{"status": "not-created"}')
+        self.assertEqual(mockresponse.response.content, b'{"status": "not-created"}')
 
     def test_get_status_not_created_when_candidate_history_with_datetime_greater_than_last_compressed_archive(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -263,7 +263,7 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
             viewkwargs={
                 'content_object_id': testassignment.id
             })
-        self.assertEquals(mockresponse.response.content, '{"status": "not-created"}')
+        self.assertEqual(mockresponse.response.content, b'{"status": "not-created"}')
 
     def test_get_status_not_created_when_new_feedbackset_is_created_after_last_compressed_archive(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -289,7 +289,7 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
             viewkwargs={
                 'content_object_id': testassignment.id
             })
-        self.assertEquals(mockresponse.response.content, '{"status": "not-created"}')
+        self.assertEqual(mockresponse.response.content, b'{"status": "not-created"}')
 
     def test_get_status_not_created_when_feedbackset_deadline_is_moved(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -314,7 +314,7 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
             viewkwargs={
                 'content_object_id': testassignment.id
             })
-        self.assertEquals(mockresponse.response.content, '{"status": "not-created"}')
+        self.assertEqual(mockresponse.response.content, b'{"status": "not-created"}')
 
     @override_settings(IEVV_BATCHFRAMEWORK_ALWAYS_SYNCRONOUS=False)
     def test_get_status_not_created_when_new_file_is_added_to_one_of_the_groups(self):
@@ -364,7 +364,7 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
             viewkwargs={
                 'content_object_id': testassignment.id
             })
-        self.assertEquals(mockresponse.response.content, '{"status": "not-created"}')
+        self.assertEqual(mockresponse.response.content, b'{"status": "not-created"}')
 
     def test_get_status_running(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -386,7 +386,7 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
             viewkwargs={
                 'content_object_id': testassignment.id
             })
-        self.assertEquals(mockresponse.response.content, '{"status": "running"}')
+        self.assertEqual(mockresponse.response.content, b'{"status": "running"}')
 
     def test_get_status_finished_with_link_to_downloadurl(self):
         # When the BatchOperation task is complete, it creates a CompressedArchiveMeta entry in
@@ -413,8 +413,8 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
             viewkwargs={
                 'content_object_id': testassignment.id
             })
-        self.assertEquals(mockresponse.response.content,
-                          '{"status": "finished", "download_link": "url-to-downloadview"}')
+        self.assertEqual(mockresponse.response.content,
+                          b'{"status": "finished", "download_link": "url-to-downloadview"}')
 
     @override_settings(IEVV_BATCHFRAMEWORK_ALWAYS_SYNCRONOUS=False)
     def test_post_marks_archive_as_deleted_if_new_files_are_added(self):
@@ -461,7 +461,7 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
             viewkwargs={
                 'content_object_id': testassignment.id
             })
-        self.assertEquals('{"status": "not-started"}', mockresponse.response.content)
+        self.assertEqual(b'{"status": "not-started"}', mockresponse.response.content)
 
     def test_post_compressed_archive_is_saved_as_examiner(self):
         # Tests that status "not-created" is returned when CompressedArchiveMeta has a deleted_datetime
@@ -524,7 +524,7 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
             viewkwargs={
                 'content_object_id': testassignment.id
             })
-        self.assertEquals({'status': 'finished', 'download_link': 'url-to-downloadview'},
+        self.assertEqual({'status': 'finished', 'download_link': 'url-to-downloadview'},
                           json.loads(mockresponse.response.content))
 
         # mock return value for reverse_appurl
@@ -537,5 +537,5 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
                 viewkwargs={
                     'content_object_id': testassignment.id
                 })
-        self.assertEquals('{"status": "finished", "download_link": "url-to-downloadview"}',
+        self.assertEqual(b'{"status": "finished", "download_link": "url-to-downloadview"}',
                           mockresponse.response.content)

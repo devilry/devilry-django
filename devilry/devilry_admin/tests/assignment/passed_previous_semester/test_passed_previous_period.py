@@ -353,7 +353,7 @@ class TestSelectPeriodView(TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
         )
-        self.assertEquals(1, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
+        self.assertEqual(1, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
         self.assertEqual(
             mock.call(appname='passed_previous_period', args=(), kwargs={}, viewname='INDEX'),
             mockresponse.request.cradmin_instance.reverse_url.call_args_list[0]
@@ -490,7 +490,7 @@ class TestPassedPreviousAssignmentView(TestCase, cradmin_testhelpers.TestCaseMix
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
         )
 
-        self.assertEquals(2, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
+        self.assertEqual(2, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
         self.assertEqual(
             mock.call(appname='passed_previous_period', args=(), kwargs={}, viewname='INDEX'),
             mockresponse.request.cradmin_instance.reverse_url.call_args_list[0]
@@ -791,7 +791,7 @@ class TestApprovePreviousView(TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
         )
 
-        self.assertEquals(1, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
+        self.assertEqual(1, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
         self.assertEqual(
             mock.call(appname='passed_previous_period', args=(),
                       kwargs={'period_id': testassignment.parentnode.id}, viewname='assignments'),

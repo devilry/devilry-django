@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 # Python imports
 import os
@@ -197,7 +197,7 @@ class TestAssignmentBatchTask(TestCompressed):
 
             archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testassignment.id)
             zipfileobject = ZipFile(archive_meta.archive_path)
-            self.assertEquals(1, len(zipfileobject.namelist()))
+            self.assertEqual(1, len(zipfileobject.namelist()))
             self.assertTrue(zipfileobject.namelist()[0].startswith('{}'.format('april')))
             self.assertFalse(zipfileobject.namelist()[0].startswith('{}'.format('dewey')))
 
@@ -231,7 +231,7 @@ class TestAssignmentBatchTask(TestCompressed):
                                         'deadline-{}'.format(defaultfilters.date(
                                             testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
                                         'testfile.txt')
-            self.assertEquals('testcontent', zipfileobject.read(path_to_file))
+            self.assertEqual(b'testcontent', zipfileobject.read(path_to_file))
 
     def test_one_group_after_deadline(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
@@ -265,7 +265,7 @@ class TestAssignmentBatchTask(TestCompressed):
                                             testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
                                         'after_deadline_not_part_of_delivery',
                                         'testfile.txt')
-            self.assertEquals('testcontent', zipfileobject.read(path_to_file))
+            self.assertEqual(b'testcontent', zipfileobject.read(path_to_file))
 
     def test_three_groups_before_deadline(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
@@ -321,9 +321,9 @@ class TestAssignmentBatchTask(TestCompressed):
                                                'deadline-{}'.format(defaultfilters.date(
                                                    testfeedbackset_group3.deadline_datetime, 'b.j.Y-H:i')),
                                                'testfile.txt')
-            self.assertEquals('testcontent group 1', zipfileobject.read(path_to_file_group1))
-            self.assertEquals('testcontent group 2', zipfileobject.read(path_to_file_group2))
-            self.assertEquals('testcontent group 3', zipfileobject.read(path_to_file_group3))
+            self.assertEqual(b'testcontent group 1', zipfileobject.read(path_to_file_group1))
+            self.assertEqual(b'testcontent group 2', zipfileobject.read(path_to_file_group2))
+            self.assertEqual(b'testcontent group 3', zipfileobject.read(path_to_file_group3))
 
     def test_three_groups_after_deadline(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
@@ -382,9 +382,9 @@ class TestAssignmentBatchTask(TestCompressed):
                                                    testfeedbackset_group3.deadline_datetime, 'b.j.Y-H:i')),
                                                'after_deadline_not_part_of_delivery',
                                                'testfile.txt')
-            self.assertEquals('testcontent group 1', zipfileobject.read(path_to_file_group1))
-            self.assertEquals('testcontent group 2', zipfileobject.read(path_to_file_group2))
-            self.assertEquals('testcontent group 3', zipfileobject.read(path_to_file_group3))
+            self.assertEqual(b'testcontent group 1', zipfileobject.read(path_to_file_group1))
+            self.assertEqual(b'testcontent group 2', zipfileobject.read(path_to_file_group2))
+            self.assertEqual(b'testcontent group 3', zipfileobject.read(path_to_file_group3))
 
     def test_duplicates(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
@@ -429,8 +429,8 @@ class TestAssignmentBatchTask(TestCompressed):
                     testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
                 'old_duplicates',
                 comment_file_first.get_filename_as_unique_string())
-            self.assertEqual('last upload', zipfileobject.read(path_to_last_file))
-            self.assertEqual('first upload', zipfileobject.read(path_to_old_duplicate_file))
+            self.assertEqual(b'last upload', zipfileobject.read(path_to_last_file))
+            self.assertEqual(b'first upload', zipfileobject.read(path_to_old_duplicate_file))
 
     def test_duplicates_from_different_students(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
@@ -478,8 +478,8 @@ class TestAssignmentBatchTask(TestCompressed):
                     testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
                 'old_duplicates',
                 comment_file_april.get_filename_as_unique_string())
-            self.assertEqual('by dewey', zipfileobject.read(path_to_last_file))
-            self.assertEqual('by april', zipfileobject.read(path_to_old_duplicate_file))
+            self.assertEqual(b'by dewey', zipfileobject.read(path_to_last_file))
+            self.assertEqual(b'by april', zipfileobject.read(path_to_old_duplicate_file))
 
     def test_duplicates_before_and_after_deadline(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
@@ -548,7 +548,7 @@ class TestAssignmentBatchTask(TestCompressed):
                 'after_deadline_not_part_of_delivery',
                 'old_duplicates',
                 comment_file_first_upload_after_deadline.get_filename_as_unique_string())
-            self.assertEqual('last upload', zipfileobject.read(path_to_last_file))
-            self.assertEqual('first upload', zipfileobject.read(path_to_old_duplicate_file))
-            self.assertEqual('last upload after deadline', zipfileobject.read(path_to_last_file_after_deadline))
-            self.assertEqual('first upload after deadline', zipfileobject.read(path_to_old_duplicate_file_after_deadline))
+            self.assertEqual(b'last upload', zipfileobject.read(path_to_last_file))
+            self.assertEqual(b'first upload', zipfileobject.read(path_to_old_duplicate_file))
+            self.assertEqual(b'last upload after deadline', zipfileobject.read(path_to_last_file_after_deadline))
+            self.assertEqual(b'first upload after deadline', zipfileobject.read(path_to_old_duplicate_file_after_deadline))

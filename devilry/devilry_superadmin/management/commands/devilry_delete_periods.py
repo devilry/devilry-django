@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 import arrow
 from django.core.management import call_command
@@ -41,7 +41,7 @@ class Command(BaseCommand):
         self.stdout.write('Are you sure you want to delete these semesters and all underlying data?')
         self.stdout.write(
             self.style.ERROR('This operation can NOT BE UNDONE!'))
-        input_string = raw_input('To confirm, type "{}", to exit type "q": '.format(confirm_string))
+        input_string = input('To confirm, type "{}", to exit type "q": '.format(confirm_string))
         if input_string == confirm_string:
             return
         else:

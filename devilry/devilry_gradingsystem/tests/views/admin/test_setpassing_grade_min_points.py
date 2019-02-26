@@ -33,7 +33,7 @@ class TestSetPassingGradeMinPointsView(TestCase, AdminViewTestMixin):
         self.assignmentbuilder.update(grading_system_plugin_id=1001)
         with patch('devilry.apps.core.models.assignment.gradingsystempluginregistry', myregistry):
             response = self.get_as(self.admin1)
-            self.assertEquals(response.status_code, 404)
+            self.assertEqual(response.status_code, 404)
 
     def test_render(self):
         myregistry = GradingSystemPluginRegistry()
@@ -41,12 +41,12 @@ class TestSetPassingGradeMinPointsView(TestCase, AdminViewTestMixin):
         self.assignmentbuilder.update(grading_system_plugin_id=MockPointsPluginApi.id)
         with patch('devilry.apps.core.models.assignment.gradingsystempluginregistry', myregistry):
             response = self.get_as(self.admin1)
-            self.assertEquals(response.status_code, 200)
+            self.assertEqual(response.status_code, 200)
             html = response.content
-            self.assertEquals(cssGet(html, '.page-header h1').text.strip(),
+            self.assertEqual(cssGet(html, '.page-header h1').text.strip(),
                 'Set the minumum number of points required to pass')
             self.assertTrue(cssExists(html, '#id_passing_grade_min_points'))
-            self.assertEquals(cssGet(html, '#id_passing_grade_min_points')['value'], '1')  # The default value
+            self.assertEqual(cssGet(html, '#id_passing_grade_min_points')['value'], '1')  # The default value
 
     def test_sets_passing_grade_min_points_automatically(self):
         myregistry = GradingSystemPluginRegistry()
@@ -54,12 +54,12 @@ class TestSetPassingGradeMinPointsView(TestCase, AdminViewTestMixin):
         self.assignmentbuilder.update(grading_system_plugin_id=MockApprovedPluginApi.id)
         with patch('devilry.apps.core.models.assignment.gradingsystempluginregistry', myregistry):
             response = self.get_as(self.admin1)
-            self.assertEquals(response.status_code, 302)
+            self.assertEqual(response.status_code, 302)
             self.assertTrue(response["Location"].endswith(
                 reverse('devilry_gradingsystem_admin_summary', kwargs={
                     'assignmentid': self.assignmentbuilder.assignment.id})))
             self.assignmentbuilder.reload_from_db()
-            self.assertEquals(self.assignmentbuilder.assignment.passing_grade_min_points,
+            self.assertEqual(self.assignmentbuilder.assignment.passing_grade_min_points,
                 MockApprovedPluginApi(self.assignmentbuilder.assignment).get_passing_grade_min_points())
 
     def test_render_default_to_current_value(self):
@@ -72,7 +72,7 @@ class TestSetPassingGradeMinPointsView(TestCase, AdminViewTestMixin):
         with patch('devilry.apps.core.models.assignment.gradingsystempluginregistry', myregistry):
             response = self.get_as(self.admin1)
             html = response.content
-            self.assertEquals(cssGet(html, '#id_passing_grade_min_points')['value'], '2030')
+            self.assertEqual(cssGet(html, '#id_passing_grade_min_points')['value'], '2030')
 
     def test_render_custom_table(self):
         myregistry = GradingSystemPluginRegistry()
@@ -86,15 +86,15 @@ class TestSetPassingGradeMinPointsView(TestCase, AdminViewTestMixin):
             (60, 'Good'))
         with patch('devilry.apps.core.models.assignment.gradingsystempluginregistry', myregistry):
             response = self.get_as(self.admin1)
-            self.assertEquals(response.status_code, 200)
+            self.assertEqual(response.status_code, 200)
             html = response.content
-            self.assertEquals(cssGet(html, '.page-header h1').text.strip(),
+            self.assertEqual(cssGet(html, '.page-header h1').text.strip(),
                 'Select the grade required to pass')
             self.assertTrue(cssExists(html, '#id_passing_grade_min_points'))
-            self.assertEquals(len(cssFind(html, '#id_passing_grade_min_points option')), 3)
-            self.assertEquals(cssGet(html, '#id_passing_grade_min_points option[value=0]').text.strip(), 'Bad')
-            self.assertEquals(cssGet(html, '#id_passing_grade_min_points option[value=30]').text.strip(), 'Better')
-            self.assertEquals(cssGet(html, '#id_passing_grade_min_points option[value=60]').text.strip(), 'Good')
+            self.assertEqual(len(cssFind(html, '#id_passing_grade_min_points option')), 3)
+            self.assertEqual(cssGet(html, '#id_passing_grade_min_points option[value=0]').text.strip(), 'Bad')
+            self.assertEqual(cssGet(html, '#id_passing_grade_min_points option[value=30]').text.strip(), 'Better')
+            self.assertEqual(cssGet(html, '#id_passing_grade_min_points option[value=60]').text.strip(), 'Good')
 
 
     def test_post_valid_form(self):
@@ -107,12 +107,12 @@ class TestSetPassingGradeMinPointsView(TestCase, AdminViewTestMixin):
             response = self.post_as(self.admin1, {
                 'passing_grade_min_points': 100
             })
-            self.assertEquals(response.status_code, 302)
+            self.assertEqual(response.status_code, 302)
             self.assertTrue(response["Location"].endswith(
                 reverse('devilry_gradingsystem_admin_summary', kwargs={
                     'assignmentid': self.assignmentbuilder.assignment.id})))
             self.assignmentbuilder.reload_from_db()
-            self.assertEquals(self.assignmentbuilder.assignment.passing_grade_min_points, 100)
+            self.assertEqual(self.assignmentbuilder.assignment.passing_grade_min_points, 100)
 
     def test_post_negative_value_shows_error(self):
         myregistry = GradingSystemPluginRegistry()
@@ -125,8 +125,8 @@ class TestSetPassingGradeMinPointsView(TestCase, AdminViewTestMixin):
             response = self.post_as(self.admin1, {
                 'passing_grade_min_points': -1
             })
-            self.assertEquals(response.status_code, 200)
-            self.assertEquals(self.assignmentbuilder.assignment.passing_grade_min_points, 10) # Unchanged
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(self.assignmentbuilder.assignment.passing_grade_min_points, 10) # Unchanged
             html = response.content
             self.assertIn('Ensure this value is greater than or equal to 0', html)
 
@@ -142,7 +142,7 @@ class TestSetPassingGradeMinPointsView(TestCase, AdminViewTestMixin):
             response = self.post_as(self.admin1, {
                 'passing_grade_min_points': 200
             })
-            self.assertEquals(response.status_code, 200)
-            self.assertEquals(self.assignmentbuilder.assignment.passing_grade_min_points, 10) # Unchanged
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(self.assignmentbuilder.assignment.passing_grade_min_points, 10) # Unchanged
             html = response.content
             self.assertIn('The minumum number of points required to pass must be less than the maximum number of points possible on the assignment', html)

@@ -209,12 +209,12 @@ class TestGroupDetailsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testgroup.assignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'),
             viewkwargs={'pk': testgroup.id})
-        self.assertEquals(2, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
-        self.assertEquals(
+        self.assertEqual(2, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
+        self.assertEqual(
             mock.call(appname='studentoverview', args=(), viewname='INDEX', kwargs={}),
             mockresponse.request.cradmin_instance.reverse_url.call_args_list[0]
         )
-        self.assertEquals(
+        self.assertEqual(
             mock.call(appname='split_group', args=(), viewname='INDEX', kwargs={'pk': testgroup.id}),
             mockresponse.request.cradmin_instance.reverse_url.call_args_list[1]
         )

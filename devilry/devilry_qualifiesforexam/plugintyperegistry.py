@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 # ievv_opensource imports
 from ievv_opensource.utils.singleton import Singleton
@@ -102,7 +102,7 @@ class Registry(Singleton):
         return self._plugintypeclasses[plugintypeid]
 
     def __iter__(self):
-        return iter(self._plugintypeclasses.values())
+        return iter(list(self._plugintypeclasses.values()))
 
     def __contains__(self, plugintypeid):
         return plugintypeid in self._plugintypeclasses

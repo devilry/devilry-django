@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 import mock
 
@@ -36,7 +36,7 @@ class TestFeedbackfeedAdminMixin(test_feedbackfeed_common.TestFeedbackFeedMixin)
                                relatedstudent=mommy.make('core.RelatedStudent'))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
                                                           requestuser=candidate.relatedstudent.user)
-        self.assertEquals(mockresponse.selector.one('title').alltext_normalized,
+        self.assertEqual(mockresponse.selector.one('title').alltext_normalized,
                           candidate.assignment_group.assignment.get_path())
 
     def test_move_deadline_button_rendered_if_deadline_expired_and_feedbackset_is_not_graded(self):
@@ -114,7 +114,7 @@ class TestFeedbackfeedAdminMixin(test_feedbackfeed_common.TestFeedbackFeedMixin)
     def test_get_examiner_discuss_tab_buttons(self):
         testgroup = mommy.make('core.AssignmentGroup')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
-        self.assertEquals(2, mockresponse.selector.count('.devilry-group-feedbackfeed-discuss-button'))
+        self.assertEqual(2, mockresponse.selector.count('.devilry-group-feedbackfeed-discuss-button'))
 
     def test_get_feedbackfeed_event_delivery_passed(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -164,7 +164,7 @@ class TestFeedbackfeedAdminMixin(test_feedbackfeed_common.TestFeedbackFeedMixin)
             PeriodPermissionGroup.objects.get_devilryrole_for_user_on_period(
                 period=period, user=admin))
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment-admin'))
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackfeed_comment_admin(self):
         admin = mommy.make('devilry_account.User', shortname='periodadmin', fullname='Thor the norse god')
@@ -183,7 +183,7 @@ class TestFeedbackfeedAdminMixin(test_feedbackfeed_common.TestFeedbackFeedMixin)
                              visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment-admin'))
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackfeed_periodadmin_raise_404_semi_anonymous(self):
         # Mocks the return value of the crinstance's get_devilry_role_for_requestuser to return the user role.
@@ -200,7 +200,7 @@ class TestFeedbackfeedAdminMixin(test_feedbackfeed_common.TestFeedbackFeedMixin)
         with self.assertRaisesMessage(http.Http404, ''):
             self.mock_getrequest(requestuser=testuser, cradmin_role=testgroup,
                                  cradmin_instance=mockrequest.cradmin_instance)
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackfeed_periodadmin_raise_404_fully_anonymous(self):
         # Mocks the return value of the crinstance's get_devilry_role_for_requestuser to return the user role.
@@ -217,7 +217,7 @@ class TestFeedbackfeedAdminMixin(test_feedbackfeed_common.TestFeedbackFeedMixin)
         with self.assertRaisesMessage(http.Http404, ''):
             self.mock_getrequest(requestuser=testuser, cradmin_role=testgroup,
                                  cradmin_instance=mockrequest.cradmin_instance)
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackfeed_subjectadmin_can_see_student_name_semi_anonymous(self):
         # Mocks the return value of the crinstance's get_devilry_role_for_requestuser to return the user role.
@@ -241,7 +241,7 @@ class TestFeedbackfeedAdminMixin(test_feedbackfeed_common.TestFeedbackFeedMixin)
 
         self.assertFalse(mockresponse.selector.exists('.devilry-core-candidate-anonymous-name'))
         self.assertTrue(mockresponse.selector.exists('.devilry-user-verbose-inline'))
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackfeed_subjectadmin_raise_404_fully_anonymous(self):
         # Mocks the return value of the crinstance's get_devilry_role_for_requestuser to return the user role.
@@ -256,7 +256,7 @@ class TestFeedbackfeedAdminMixin(test_feedbackfeed_common.TestFeedbackFeedMixin)
         with self.assertRaisesMessage(http.Http404, ''):
             self.mock_getrequest(requestuser=testuser, cradmin_role=testgroup,
                                  cradmin_instance=mockrequest.cradmin_instance)
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_periodadmin_no_access(self):
         # Periodadmin does not have access to view when the user is not periodadmin for that period.
@@ -279,7 +279,7 @@ class TestFeedbackfeedAdminMixin(test_feedbackfeed_common.TestFeedbackFeedMixin)
 
         with self.assertRaises(Http404):
             self.mock_getrequest(cradmin_role=testgroup, cradmin_instance=crinstance)
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_subjectadmin_no_access(self):
         # Subjectadmin does not have access to view when the user is not subjectadmin for that perdiod
@@ -302,7 +302,7 @@ class TestFeedbackfeedAdminMixin(test_feedbackfeed_common.TestFeedbackFeedMixin)
 
         with self.assertRaises(Http404):
             self.mock_getrequest(cradmin_role=testgroup, cradmin_instance=crinstance)
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackfeed_download_visible_public_commentfiles_exist(self):
         testassignment = mommy.make('core.Assignment')
@@ -448,7 +448,7 @@ class TestFeedbackfeedAdminMixin(test_feedbackfeed_common.TestFeedbackFeedMixin)
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=admin,
                                                cradmin_instance=mock_cradmininstance)
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_num_queries_with_commentfiles(self):
         """
@@ -493,4 +493,4 @@ class TestFeedbackfeedAdminMixin(test_feedbackfeed_common.TestFeedbackFeedMixin)
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=admin,
                                                cradmin_instance=mock_cradmininstance)
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())

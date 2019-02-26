@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django import http
 from django.contrib import messages
@@ -220,7 +220,7 @@ class SimpleGroupBulkFeedbackView(listbuilderview.View):
         now_without_microseconds = timezone.now().replace(microsecond=0)
         feedbackset_id_list = []
         with transaction.atomic():
-            for feedbackset, data in feedbackset_data_dict.iteritems():
+            for feedbackset, data in feedbackset_data_dict.items():
                 text = data['comment_text']
                 if len(text) > 0:
                     self.__create_grading_groupcomment(feedbackset.id, now_without_microseconds, text)
@@ -240,7 +240,7 @@ class SimpleGroupBulkFeedbackView(listbuilderview.View):
             self.__publish(feedbackset_data_dict)
             messages.success(request,
                              message=ugettext_lazy('Feedback published for {} groups').format(
-                                 len(feedbackset_data_dict.keys())))
+                                 len(list(feedbackset_data_dict.keys()))))
         else:
             messages.warning(request, message=ugettext_lazy('You must set a grade for at least one group.'))
         return http.HttpResponseRedirect(

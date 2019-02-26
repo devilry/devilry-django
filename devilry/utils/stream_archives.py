@@ -173,7 +173,7 @@ class FileStreamTar(tarfile.TarFile):
                                       "another file stream currently active."\
                                       "Close active stream before start a new.")
         tarinfo = copy.copy(tarinfo)
-        buf = tarinfo.tobuf(self.posix)
+        buf = tarinfo.tobuf(format=self.format)
         self.fileobj.write(buf)
         self.offset += len(buf)
         self.members.append(tarinfo)

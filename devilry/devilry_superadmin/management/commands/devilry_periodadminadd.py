@@ -28,7 +28,7 @@ class Command(AdminAddBase):
         subject = self.get_subject(subject_short_name)
         try:
             period = Period.objects.get(short_name=period_short_name, parentnode=subject)
-        except Period.DoesNotExist, e:
+        except Period.DoesNotExist as e:
             raise CommandError('Invalid period_short_name.')
 
         self.basenode = period

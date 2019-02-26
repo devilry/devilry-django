@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 import arrow
 from django.contrib.auth import get_user_model
@@ -58,7 +58,7 @@ class Command(BaseCommand):
     def __confirm_delete(self):
         confirm_string = 'DELETE USERS'
         self.stdout.write(self.style.ERROR('Are you sure you want to delete these users? This operation can NOT BE UNDONE!'))
-        input_string = raw_input('To confirm, type "{}", to exit type "q": '.format(confirm_string))
+        input_string = input('To confirm, type "{}", to exit type "q": '.format(confirm_string))
         if input_string == confirm_string:
             return
         else:

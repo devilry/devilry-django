@@ -7,13 +7,13 @@ def group_assignmentgroups(assignment_groups):
 
     for group in assignment_groups:
         
-        if not dict.has_key(group.parentnode.parentnode.parentnode):
+        if group.parentnode.parentnode.parentnode not in dict:
             subject = Subject(group.parentnode.parentnode.parentnode.short_name)
             dict[group.parentnode.parentnode.parentnode] = subject
 
         dict[group.parentnode.parentnode.parentnode].add_period(group)
 
-    return dict.values()
+    return list(dict.values())
 
 
 def group_assignments(assignments):
@@ -22,13 +22,13 @@ def group_assignments(assignments):
 
     for group in assignments:
         
-        if not dict.has_key(group.parentnode.parentnode.parentnode):
+        if group.parentnode.parentnode.parentnode not in dict:
             subject = Subject(group.parentnode.parentnode.parentnode.short_name)
             dict[group.parentnode.parentnode.parentnode] = subject
 
         dict[group.parentnode.parentnode.parentnode].add_period(group)
 
-    return dict.values()
+    return list(dict.values())
 
 class Subject(object):
 
@@ -41,14 +41,14 @@ class Subject(object):
 
     def add_period(self, assignment_group):
         
-        if not self.periods.has_key(assignment_group.parentnode.parentnode):
+        if assignment_group.parentnode.parentnode not in self.periods:
             period = Period(assignment_group.parentnode.parentnode.short_name)
             self.periods[assignment_group.parentnode.parentnode] = period
 
         self.periods[assignment_group.parentnode.parentnode].add_assignment(assignment_group)
 
     def __iter__(self):
-        return iter(self.periods.values())
+        return iter(list(self.periods.values()))
 
 
 class Period(object):

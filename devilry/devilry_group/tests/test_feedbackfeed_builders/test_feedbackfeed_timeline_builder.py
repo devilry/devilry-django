@@ -52,8 +52,8 @@ class TimelineBuilderTestMixin:
         )
         timeline_builder.build()
         timeline_list = timeline_builder.get_as_list()
-        self.assertEquals(len(timeline_list), 1)
-        self.assertEquals(timeline_list[0]['feedbackset_events'], [])
+        self.assertEqual(len(timeline_list), 1)
+        self.assertEqual(timeline_list[0]['feedbackset_events'], [])
 
     def test_one_feedbackset_published_event(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -72,9 +72,9 @@ class TimelineBuilderTestMixin:
         )
         timeline_builder.build()
         timeline_list = timeline_builder.get_as_list()
-        self.assertEquals(len(timeline_list), 1)
-        self.assertEquals(timeline_list[0]['feedbackset_events'][0]['type'], 'grade')
-        self.assertEquals(timeline_list[0]['feedbackset_events'][0]['grade_points'], testfeedbackset.grading_points)
+        self.assertEqual(len(timeline_list), 1)
+        self.assertEqual(timeline_list[0]['feedbackset_events'][0]['type'], 'grade')
+        self.assertEqual(timeline_list[0]['feedbackset_events'][0]['grade_points'], testfeedbackset.grading_points)
 
     def test_feedback_set_merge_type_ordered_before_not_merge_type_feedback_set(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -97,7 +97,7 @@ class TimelineBuilderTestMixin:
         )
         timeline_builder.build()
         timeline_list = timeline_builder.get_as_list()
-        self.assertEquals(len(timeline_list), 2)
+        self.assertEqual(len(timeline_list), 2)
         self.assertEqual(timeline_list[1]['feedbackset'], testfeedbackset)
 
     def test_feedbackset_mergetype_is_excluded_if_not_published_and_no_comments_visible_to_everyone(self):
@@ -119,7 +119,7 @@ class TimelineBuilderTestMixin:
         )
         timeline_builder.build()
         timeline_list = timeline_builder.get_as_list()
-        self.assertEquals(len(timeline_list), 1) # Auto created first feedbackset for assignment group.
+        self.assertEqual(len(timeline_list), 1) # Auto created first feedbackset for assignment group.
         self.assertNotEqual(timeline_list[0]['feedbackset'], testfeedbackset)
 
     def test_feedbackset_mergetype_added_if_published_but_no_comments_visible_to_everyone(self):
@@ -141,7 +141,7 @@ class TimelineBuilderTestMixin:
         )
         timeline_builder.build()
         timeline_list = timeline_builder.get_as_list()
-        self.assertEquals(len(timeline_list), 2)
+        self.assertEqual(len(timeline_list), 2)
 
     def test_feedbackset_mergetype_added_if_not_published_but_has_comments_visible_to_everyone(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -162,7 +162,7 @@ class TimelineBuilderTestMixin:
         )
         timeline_builder.build()
         timeline_list = timeline_builder.get_as_list()
-        self.assertEquals(len(timeline_list), 2)
+        self.assertEqual(len(timeline_list), 2)
 
     def test_feedbackset_published_grading_points_same_as_first_updated_grading_points(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -187,11 +187,11 @@ class TimelineBuilderTestMixin:
         )
         timeline_builder.build()
         timeline_list = timeline_builder.get_as_list()
-        self.assertEquals(len(timeline_list), 1)
-        self.assertEquals(timeline_list[0]['feedbackset_events'][0]['type'], 'grade')
-        self.assertEquals(timeline_list[0]['feedbackset_events'][0]['grade_points'],
+        self.assertEqual(len(timeline_list), 1)
+        self.assertEqual(timeline_list[0]['feedbackset_events'][0]['type'], 'grade')
+        self.assertEqual(timeline_list[0]['feedbackset_events'][0]['grade_points'],
                              first_grading_points_update.old_grading_points)
-        self.assertNotEquals(timeline_list[0]['feedbackset_events'][0]['grade_points'],
+        self.assertNotEqual(timeline_list[0]['feedbackset_events'][0]['grade_points'],
                           last_grading_points_update.old_grading_points)
 
     def test_updated_grading_points_event_no_updates(self):

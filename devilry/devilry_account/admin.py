@@ -151,7 +151,7 @@ class PermissionGroupAdmin(admin.ModelAdmin):
             .prefetch_related('users')
 
     def get_users(self, permissiongroup):
-        return u', '.join(user.shortname for user in permissiongroup.users.all())
+        return ', '.join(user.shortname for user in permissiongroup.users.all())
     get_users.short_description = _('Users')
 
     def get_inline_instances(self, request, obj=None):

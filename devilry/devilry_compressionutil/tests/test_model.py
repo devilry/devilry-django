@@ -1,6 +1,6 @@
 import os
 import shutil
-import StringIO
+import io
 
 import mock
 from django.conf import settings
@@ -38,7 +38,7 @@ class TestCompressedFileMeta(TestCase):
             shutil.rmtree(self.backend_path, ignore_errors=False)
 
     def __create_testfile(self):
-        testfile = StringIO.StringIO()
+        testfile = io.StringIO()
         testfile.write(lorem_ipsum)
         testfile.seek(0)
         return testfile
@@ -69,13 +69,13 @@ class TestCompressedFileMeta(TestCase):
                     zipfile_backend=mock_backend,
                     user=mommy.make(settings.AUTH_USER_MODEL))
                 archive_meta = CompressedArchiveMeta.objects.get(content_object_id=testcomment.id)
-                self.assertEquals(archive_meta.archive_path, os.path.join(self.backend_path, archivepath))
+                self.assertEqual(archive_meta.archive_path, os.path.join(self.backend_path, archivepath))
 
     def test_generic_foreignkey_comment(self):
         testcomment = mommy.make('devilry_comment.Comment')
         archivemeta = mommy.make('devilry_compressionutil.CompressedArchiveMeta', content_object=testcomment)
-        self.assertEquals(archivemeta.content_object_id, testcomment.id)
-        self.assertEquals(type(archivemeta.content_object), type(testcomment))
+        self.assertEqual(archivemeta.content_object_id, testcomment.id)
+        self.assertEqual(type(archivemeta.content_object), type(testcomment))
 
     def test_archive_path_cannot_be_blank(self):
         with self.assertRaises(IntegrityError):

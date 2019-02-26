@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 import re
 
@@ -16,7 +16,7 @@ class TestURLDatetime(test.TestCase):
 
     def test_url_convert_to_string_and_back(self):
         datetime_original = timezone.now().replace(microsecond=0)
-        print repr(timezone.now())
+        print(repr(timezone.now()))
         datetime_as_string = datetimeutils.datetime_to_url_string(datetime_original)
         datetime_converted_back = datetimeutils.datetime_url_string_to_datetime(datetime_as_string)
-        self.assertEquals(datetime_original, datetime_converted_back)
+        self.assertEqual(datetime_original, datetime_converted_back)

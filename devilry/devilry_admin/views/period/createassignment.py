@@ -168,7 +168,7 @@ class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
         return super(CreateView, self).dispatch(*args, **kwargs)
 
     def get_pagetitle(self):
-        return u'{} - {}'.format(self.get_pageheading(), self.period.get_path())
+        return '{} - {}'.format(self.get_pageheading(), self.period.get_path())
 
     def get_pageheading(self):
         return _('Create new assignment')

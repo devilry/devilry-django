@@ -244,10 +244,10 @@ class StatusRadioFilter(abstractradio.AbstractRadioFilter):
         cssclass = 'label-default'
         if count and has_count_cssclass:
             cssclass = has_count_cssclass
-        return u'<span class="label {}">{}</span>'.format(cssclass, count)
+        return '<span class="label {}">{}</span>'.format(cssclass, count)
 
     def __make_label(self, label, count, has_count_cssclass=None):
-        return mark_safe(u'{label} {count}'.format(
+        return mark_safe('{label} {count}'.format(
             label=label,
             count=self.__count_html(count=count, has_count_cssclass=has_count_cssclass)))
 

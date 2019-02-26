@@ -128,9 +128,9 @@ class TestBaseInfoView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testgroup.assignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'),
             requestuser=testuser)
-        self.assertIn('unanonymizedfullname', mockresponse.response.content)
-        self.assertIn('A un-anonymized fullname', mockresponse.response.content)
-        self.assertNotIn('MyAnonymousID', mockresponse.response.content)
+        self.assertContains(mockresponse.response, 'unanonymizedfullname')
+        self.assertContains(mockresponse.response, 'A un-anonymized fullname')
+        self.assertNotContains(mockresponse.response, 'MyAnonymousID')
 
     def test_anonymizationmode_semi_anonymous_candidates(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -150,9 +150,9 @@ class TestBaseInfoView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testgroup.assignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'),
             requestuser=testuser)
-        self.assertIn('unanonymizedfullname', mockresponse.response.content)
-        self.assertIn('A un-anonymized fullname', mockresponse.response.content)
-        self.assertNotIn('MyAnonymousID', mockresponse.response.content)
+        self.assertContains(mockresponse.response, 'unanonymizedfullname')
+        self.assertContains(mockresponse.response, 'A un-anonymized fullname')
+        self.assertNotContains(mockresponse.response, 'MyAnonymousID')
 
     def test_anonymizationmode_fully_anonymous_candidates(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -172,9 +172,9 @@ class TestBaseInfoView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testgroup.assignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'),
             requestuser=testuser)
-        self.assertIn('unanonymizedfullname', mockresponse.response.content)
-        self.assertIn('A un-anonymized fullname', mockresponse.response.content)
-        self.assertNotIn('MyAnonymousID', mockresponse.response.content)
+        self.assertContains(mockresponse.response, 'unanonymizedfullname')
+        self.assertContains(mockresponse.response, 'A un-anonymized fullname')
+        self.assertNotContains(mockresponse.response, 'MyAnonymousID')
 
     def test_anonymizationmode_fully_anonymous_subjectadmin_no_examiners(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)

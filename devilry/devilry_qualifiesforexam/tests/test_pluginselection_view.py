@@ -118,4 +118,4 @@ class TestPluginSelectionView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(
                 cradmin_role=testperiod,
                 requestuser=testadmin)
-        self.assertEquals(3, len(mockresponse.selector.list('.devilry-django-cradmin-listbuilder-itemframe-goforward')))
+        self.assertEqual(3, len(mockresponse.selector.list('.devilry-django-cradmin-listbuilder-itemframe-goforward')))

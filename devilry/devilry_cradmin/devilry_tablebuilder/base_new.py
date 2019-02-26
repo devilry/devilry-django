@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django_cradmin import renderable
 from django_cradmin.viewhelpers.listbuilder import base

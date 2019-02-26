@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django import test
 from django.contrib import messages
@@ -25,18 +25,18 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod
         )
-        self.assertEquals(mockresponse.selector.one('title').alltext_normalized,
+        self.assertEqual(mockresponse.selector.one('title').alltext_normalized,
                           'Tags on {}'.format(testperiod.parentnode))
 
     def test_static_link_urls(self):
         testperiod = mommy.make('core.Period')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
-        self.assertEquals(2, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
-        self.assertEquals(
+        self.assertEqual(2, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
+        self.assertEqual(
             mock.call(appname='overview', args=(), viewname='INDEX', kwargs={}),
             mockresponse.request.cradmin_instance.reverse_url.call_args_list[0]
         )
-        self.assertEquals(
+        self.assertEqual(
             mock.call(appname='manage_tags', args=(), viewname='add_tag', kwargs={}),
             mockresponse.request.cradmin_instance.reverse_url.call_args_list[1]
         )
@@ -89,7 +89,7 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod
         )
-        self.assertEquals(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 3)
+        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 3)
 
     def test_item_value_all_buttons_text(self):
         testperiod = mommy.make('core.Period')
@@ -97,19 +97,19 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         testperiodtag.relatedexaminers.add(mommy.make('core.RelatedExaminer', period=testperiod))
         testperiodtag.relatedstudents.add(mommy.make('core.RelatedStudent', period=testperiod))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
-        self.assertEquals(
+        self.assertEqual(
             mockresponse.selector.one('#devilry_admin_period_manage_tags_add_students_a').alltext_normalized,
             'Add students'
         )
-        self.assertEquals(
+        self.assertEqual(
             mockresponse.selector.one('#devilry_admin_period_manage_tags_remove_students_a').alltext_normalized,
             'Remove students'
         )
-        self.assertEquals(
+        self.assertEqual(
             mockresponse.selector.one('#devilry_admin_period_manage_tags_add_examiners_a').alltext_normalized,
             'Add examiners'
         )
-        self.assertEquals(
+        self.assertEqual(
             mockresponse.selector.one('#devilry_admin_period_manage_tags_remove_examiners_a').alltext_normalized,
             'Remove examiners'
         )
@@ -128,8 +128,8 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
             cradmin_role=testperiod
         )
         self.assertTrue(mockresponse.selector.exists('.devilry-core-periodtag-relatedstudents'))
-        self.assertEquals(mockresponse.selector.count('.devilry-core-periodtag-relatedstudent'), 2)
-        self.assertEquals(mockresponse.selector.one('.devilry-core-periodtag-relatedstudents').alltext_normalized,
+        self.assertEqual(mockresponse.selector.count('.devilry-core-periodtag-relatedstudent'), 2)
+        self.assertEqual(mockresponse.selector.one('.devilry-core-periodtag-relatedstudents').alltext_normalized,
                           'Students: relatedstudent1 , relatedstudent2')
 
     def test_no_related_students_rendered(self):
@@ -139,7 +139,7 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
             cradmin_role=testperiod
         )
         self.assertFalse(mockresponse.selector.exists('.devilry-core-periodtag-relatedstudents'))
-        self.assertEquals(mockresponse.selector.one('.devilry-core-periodtag-no-relatedstudents').alltext_normalized,
+        self.assertEqual(mockresponse.selector.one('.devilry-core-periodtag-no-relatedstudents').alltext_normalized,
                           'NO STUDENTS')
 
     def test_related_examiners_rendered(self):
@@ -156,7 +156,7 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
             cradmin_role=testperiod
         )
         self.assertTrue(mockresponse.selector.exists('.devilry-core-periodtag-relatedexaminers'))
-        self.assertEquals(mockresponse.selector.count('.devilry-core-periodtag-relatedexaminer'), 2)
+        self.assertEqual(mockresponse.selector.count('.devilry-core-periodtag-relatedexaminer'), 2)
         self.assertIn('Examiners: ',
                       mockresponse.selector.one('.devilry-core-periodtag-relatedexaminers').alltext_normalized)
 
@@ -167,7 +167,7 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
             cradmin_role=testperiod
         )
         self.assertFalse(mockresponse.selector.exists('.devilry-core-periodtag-relatedexaminers'))
-        self.assertEquals(mockresponse.selector.one('.devilry-core-periodtag-no-relatedexaminers').alltext_normalized,
+        self.assertEqual(mockresponse.selector.one('.devilry-core-periodtag-no-relatedexaminers').alltext_normalized,
                           'NO EXAMINERS')
 
     def test_edit_button_rendered_when_prefix_is_blank(self):
@@ -177,7 +177,7 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
             cradmin_role=testperiod
         )
         self.assertTrue(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue-editdelete-editbutton'))
-        self.assertIn('Edit', mockresponse.response.content)
+        self.assertContains(mockresponse.response, 'Edit')
 
     def test_edit_delete_button_not_rendered_on_imported_tag(self):
         testperiod = mommy.make('core.Period')
@@ -213,7 +213,7 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
             cradmin_role=testperiod
         )
         self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue-editdelete-editbutton'))
-        self.assertNotIn('Edit', mockresponse.response.content)
+        self.assertNotContains(mockresponse.response, 'Edit')
 
     def test_delete_button_rendered_when_prefix_is_blank(self):
         testperiod = mommy.make('core.Period')
@@ -222,7 +222,7 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
             cradmin_role=testperiod
         )
         self.assertTrue(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue-editdelete-deletebutton'))
-        self.assertIn('Delete', mockresponse.response.content)
+        self.assertContains(mockresponse.response, 'Delete')
 
     def test_delete_button_not_rendered_when_prefix_is_not_blank(self):
         testperiod = mommy.make('core.Period')
@@ -231,7 +231,7 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
             cradmin_role=testperiod
         )
         self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue-editdelete-deletebutton'))
-        self.assertNotIn('Delete', mockresponse.response.content)
+        self.assertNotContains(mockresponse.response, 'Delete')
 
     def test_remove_examiners_not_rendered(self):
         testperiod = mommy.make('core.Period')
@@ -240,7 +240,7 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
             cradmin_role=testperiod
         )
         self.assertFalse(mockresponse.selector.exists('#devilry_admin_period_manage_tags_remove_examiners_a'))
-        self.assertNotIn('Remove examiners', mockresponse.response.content)
+        self.assertNotContains(mockresponse.response, 'Remove examiners')
 
     def test_remove_examiners_rendered(self):
         testperiod = mommy.make('core.Period')
@@ -251,7 +251,7 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod
         )
-        self.assertEquals(
+        self.assertEqual(
             mockresponse.selector.one('#devilry_admin_period_manage_tags_remove_examiners_a').alltext_normalized,
             'Remove examiners')
 
@@ -262,7 +262,7 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
             cradmin_role=testperiod
         )
         self.assertFalse(mockresponse.selector.exists('#devilry_admin_period_manage_tags_remove_students_a'))
-        self.assertNotIn('Remove students', mockresponse.response.content)
+        self.assertNotContains(mockresponse.response, 'Remove students')
 
     def test_remove_students_rendered(self):
         testperiod = mommy.make('core.Period')
@@ -273,7 +273,7 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod
         )
-        self.assertEquals(
+        self.assertEqual(
             mockresponse.selector.one('#devilry_admin_period_manage_tags_remove_students_a').alltext_normalized,
             'Remove students')
 
@@ -287,9 +287,9 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
                 'filters_string': 'search-tag1'
             }
         )
-        self.assertEquals(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 1)
-        self.assertIn('tag1', mockresponse.response.content)
-        self.assertNotIn('tag2', mockresponse.response.content)
+        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 1)
+        self.assertContains(mockresponse.response, 'tag1')
+        self.assertNotContains(mockresponse.response, 'tag2')
 
     def test_filter_search_on_tag_no_results(self):
         testperiod = mommy.make('core.Period')
@@ -301,9 +301,9 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
                 'filters_string': 'search-tag3'
             }
         )
-        self.assertEquals(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 0)
-        self.assertNotIn('tag1', mockresponse.response.content)
-        self.assertNotIn('tag2', mockresponse.response.content)
+        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 0)
+        self.assertNotContains(mockresponse.response, 'tag1')
+        self.assertNotContains(mockresponse.response, 'tag2')
 
     def test_filter_search_on_student_user_shortname(self):
         testperiod = mommy.make('core.Period')
@@ -319,11 +319,11 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
                 'filters_string': 'search-relatedstudent1'
             }
         )
-        self.assertEquals(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 1)
-        self.assertIn('tag1', mockresponse.response.content)
-        self.assertIn('relatedstudent1', mockresponse.response.content)
-        self.assertNotIn('tag2', mockresponse.response.content)
-        self.assertNotIn('relatedstudent2', mockresponse.response.content)
+        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 1)
+        self.assertContains(mockresponse.response, 'tag1')
+        self.assertContains(mockresponse.response, 'relatedstudent1')
+        self.assertNotContains(mockresponse.response, 'tag2')
+        self.assertNotContains(mockresponse.response, 'relatedstudent2')
 
     def test_filter_search_on_student_user_shortname_matches_both(self):
         testperiod = mommy.make('core.Period')
@@ -339,11 +339,11 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
                 'filters_string': 'search-relatedstudent'
             }
         )
-        self.assertEquals(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 2)
-        self.assertIn('tag1', mockresponse.response.content)
-        self.assertIn('relatedstudent_a', mockresponse.response.content)
-        self.assertIn('tag2', mockresponse.response.content)
-        self.assertIn('relatedstudent_b', mockresponse.response.content)
+        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 2)
+        self.assertContains(mockresponse.response, 'tag1')
+        self.assertContains(mockresponse.response, 'relatedstudent_a')
+        self.assertContains(mockresponse.response, 'tag2')
+        self.assertContains(mockresponse.response, 'relatedstudent_b')
 
     def test_filter_search_on_student_user_shortname_no_result(self):
         testperiod = mommy.make('core.Period')
@@ -359,11 +359,11 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
                 'filters_string': 'search-relatedstudent_c'
             }
         )
-        self.assertEquals(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 0)
-        self.assertNotIn('tag1', mockresponse.response.content)
-        self.assertNotIn('relatedstudent_a', mockresponse.response.content)
-        self.assertNotIn('tag2', mockresponse.response.content)
-        self.assertNotIn('relatedstudent_b', mockresponse.response.content)
+        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 0)
+        self.assertNotContains(mockresponse.response, 'tag1')
+        self.assertNotContains(mockresponse.response, 'relatedstudent_a')
+        self.assertNotContains(mockresponse.response, 'tag2')
+        self.assertNotContains(mockresponse.response, 'relatedstudent_b')
 
     def test_filter_search_on_examiner_user_shortname(self):
         testperiod = mommy.make('core.Period')
@@ -379,11 +379,11 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
                 'filters_string': 'search-relatedexaminer1'
             }
         )
-        self.assertEquals(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 1)
-        self.assertIn('tag1', mockresponse.response.content)
-        self.assertIn('relatedexaminer1', mockresponse.response.content)
-        self.assertNotIn('tag2', mockresponse.response.content)
-        self.assertNotIn('relatedexaminer2', mockresponse.response.content)
+        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 1)
+        self.assertContains(mockresponse.response, 'tag1')
+        self.assertContains(mockresponse.response, 'relatedexaminer1')
+        self.assertNotContains(mockresponse.response, 'tag2')
+        self.assertNotContains(mockresponse.response, 'relatedexaminer2')
 
     def test_filter_search_on_examiner_user_shortname_matches_both(self):
         testperiod = mommy.make('core.Period')
@@ -399,11 +399,11 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
                 'filters_string': 'search-relatedexaminer'
             }
         )
-        self.assertEquals(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 2)
-        self.assertIn('tag1', mockresponse.response.content)
-        self.assertIn('relatedexaminer_a', mockresponse.response.content)
-        self.assertIn('tag2', mockresponse.response.content)
-        self.assertIn('relatedexaminer_b', mockresponse.response.content)
+        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 2)
+        self.assertContains(mockresponse.response, 'tag1')
+        self.assertContains(mockresponse.response, 'relatedexaminer_a')
+        self.assertContains(mockresponse.response, 'tag2')
+        self.assertContains(mockresponse.response, 'relatedexaminer_b')
 
     def test_filter_search_on_examiner_user_shortname_no_result(self):
         testperiod = mommy.make('core.Period')
@@ -419,11 +419,11 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
                 'filters_string': 'search-relatedexaminer_c'
             }
         )
-        self.assertEquals(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 0)
-        self.assertNotIn('tag1', mockresponse.response.content)
-        self.assertNotIn('relatedexaminer_a', mockresponse.response.content)
-        self.assertNotIn('tag2', mockresponse.response.content)
-        self.assertNotIn('relatedexaminer_b', mockresponse.response.content)
+        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 0)
+        self.assertNotContains(mockresponse.response, 'tag1')
+        self.assertNotContains(mockresponse.response, 'relatedexaminer_a')
+        self.assertNotContains(mockresponse.response, 'tag2')
+        self.assertNotContains(mockresponse.response, 'relatedexaminer_b')
 
     def test_filter_radio_show_all_tags(self):
         testperiod = mommy.make('core.Period')
@@ -434,11 +434,11 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
         )
-        self.assertEquals(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 4)
-        self.assertIn('tag1', mockresponse.response.content)
-        self.assertIn('tag2', mockresponse.response.content)
-        self.assertIn('tag3 (imported)', mockresponse.response.content)
-        self.assertIn('tag4 (imported)', mockresponse.response.content)
+        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 4)
+        self.assertContains(mockresponse.response,'tag1')
+        self.assertContains(mockresponse.response, 'tag2')
+        self.assertContains(mockresponse.response, 'tag3 (imported)')
+        self.assertContains(mockresponse.response, 'tag4 (imported)')
 
     def test_filter_radio_show_hidden_tags_only(self):
         testperiod = mommy.make('core.Period')
@@ -451,10 +451,10 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
                 'filters_string': 'is_hidden-show-hidden-tags-only'
             }
         )
-        self.assertEquals(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 1)
-        self.assertNotIn('tag1', mockresponse.response.content)
-        self.assertNotIn('tag2', mockresponse.response.content)
-        self.assertIn('tag3 (imported)', mockresponse.response.content)
+        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 1)
+        self.assertNotContains(mockresponse.response, 'tag1')
+        self.assertNotContains(mockresponse.response, 'tag2')
+        self.assertContains(mockresponse.response, 'tag3 (imported)')
 
     def test_filter_radio_show_visible_tags_only(self):
         testperiod = mommy.make('core.Period')
@@ -468,12 +468,12 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
                 'filters_string': 'is_hidden-show-visible-tags-only'
             }
         )
-        self.assertEquals(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 3)
-        self.assertIn('tag1', mockresponse.response.content)
-        self.assertIn('tag2', mockresponse.response.content)
-        self.assertNotIn('tag3', mockresponse.response.content)
-        self.assertNotIn('tag3 (imported)', mockresponse.response.content)
-        self.assertIn('tag4 (imported)', mockresponse.response.content)
+        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 3)
+        self.assertContains(mockresponse.response, 'tag1')
+        self.assertContains(mockresponse.response, 'tag2')
+        self.assertNotContains(mockresponse.response, 'tag3')
+        self.assertNotContains(mockresponse.response, 'tag3 (imported)')
+        self.assertContains(mockresponse.response, 'tag4 (imported)')
 
     def test_filter_radio_show_custom_tags_only(self):
         testperiod = mommy.make('core.Period')
@@ -486,11 +486,11 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
                 'filters_string': 'is_hidden-show-custom-tags-only'
             }
         )
-        self.assertEquals(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 2)
-        self.assertIn('tag1', mockresponse.response.content)
-        self.assertIn('tag2', mockresponse.response.content)
-        self.assertNotIn('tag3', mockresponse.response.content)
-        self.assertNotIn('tag3 (imported)', mockresponse.response.content)
+        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 2)
+        self.assertContains(mockresponse.response, 'tag1')
+        self.assertContains(mockresponse.response, 'tag2')
+        self.assertNotContains(mockresponse.response, 'tag3')
+        self.assertNotContains(mockresponse.response, 'tag3 (imported)')
 
     def test_filter_radio_show_imported_tags_only(self):
         testperiod = mommy.make('core.Period')
@@ -503,10 +503,10 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
                 'filters_string': 'is_hidden-show-imported-tags-only'
             }
         )
-        self.assertEquals(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 1)
-        self.assertNotIn('tag1', mockresponse.response.content)
-        self.assertNotIn('tag2', mockresponse.response.content)
-        self.assertIn('tag3 (imported)', mockresponse.response.content)
+        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 1)
+        self.assertNotContains(mockresponse.response, 'tag1')
+        self.assertNotContains(mockresponse.response, 'tag2')
+        self.assertContains(mockresponse.response, 'tag3 (imported)')
 
     def test_query_count(self):
         testperiod = mommy.make('core.Period')
@@ -590,11 +590,11 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 }
             }
         )
-        self.assertEquals(
+        self.assertEqual(
             mockresponse.selector.one('#error_1_id_tag_text').alltext_normalized,
             'This field is required.'
         )
-        self.assertEquals(PeriodTag.objects.count(), 0)
+        self.assertEqual(PeriodTag.objects.count(), 0)
 
     def test_only_spaces_raises_validation_error(self):
         testperiod = mommy.make('core.Period')
@@ -606,11 +606,11 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 }
             }
         )
-        self.assertEquals(
+        self.assertEqual(
             mockresponse.selector.one('#error_1_id_tag_text').alltext_normalized,
             'This field is required.'
         )
-        self.assertEquals(PeriodTag.objects.count(), 0)
+        self.assertEqual(PeriodTag.objects.count(), 0)
 
     def test_empty_tags_ignored(self):
         testperiod = mommy.make('core.Period')
@@ -622,7 +622,7 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 }
             }
         )
-        self.assertEquals(PeriodTag.objects.count(), 2)
+        self.assertEqual(PeriodTag.objects.count(), 2)
         period_tags = [periodtag.tag for periodtag in PeriodTag.objects.all()]
         self.assertIn('tag1', period_tags)
         self.assertIn('tag4', period_tags)
@@ -637,7 +637,7 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 }
             }
         )
-        self.assertEquals(PeriodTag.objects.count(), 2)
+        self.assertEqual(PeriodTag.objects.count(), 2)
         period_tags = [periodtag.tag for periodtag in PeriodTag.objects.all()]
         self.assertIn('tag1', period_tags)
         self.assertIn('tag2', period_tags)
@@ -654,7 +654,7 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             },
             messagesmock=messagesmock
         )
-        self.assertEquals(PeriodTag.objects.count(), 4)
+        self.assertEqual(PeriodTag.objects.count(), 4)
         tagslist = [periodtag.tag for periodtag in PeriodTag.objects.all()]
         self.assertIn('tag1', tagslist)
         self.assertIn('tag2', tagslist)
@@ -671,7 +671,7 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 }
             }
         )
-        self.assertEquals(1, PeriodTag.objects.count())
+        self.assertEqual(1, PeriodTag.objects.count())
 
     def test_add_single_tag_another_tag_exists(self):
         testperiod = mommy.make('core.Period')
@@ -684,7 +684,7 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 }
             }
         )
-        self.assertEquals(2, PeriodTag.objects.count())
+        self.assertEqual(2, PeriodTag.objects.count())
 
     def test_add_single_tag_message(self):
         testperiod = mommy.make('core.Period')
@@ -698,7 +698,7 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             },
             messagesmock=messagesmock
         )
-        self.assertEquals(1, PeriodTag.objects.count())
+        self.assertEqual(1, PeriodTag.objects.count())
         messagesmock.add.assert_called_once_with(
             messages.SUCCESS, '1 tag(s) added', '')
 
@@ -714,7 +714,7 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             },
             messagesmock=messagesmock
         )
-        self.assertEquals(2, PeriodTag.objects.count())
+        self.assertEqual(2, PeriodTag.objects.count())
         messagesmock.add.assert_called_once_with(
             messages.SUCCESS, '2 tag(s) added', '')
 
@@ -731,7 +731,7 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 }
             },
         )
-        self.assertEquals(6, PeriodTag.objects.count())
+        self.assertEqual(6, PeriodTag.objects.count())
 
     def test_add_multiple_tags_one_tag_exists_message(self):
         testperiod = mommy.make('core.Period')
@@ -746,7 +746,7 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             },
             messagesmock=messagesmock
         )
-        self.assertEquals(2, PeriodTag.objects.count())
+        self.assertEqual(2, PeriodTag.objects.count())
         messagesmock.add.assert_called_once_with(
             messages.SUCCESS, '1 tag(s) added, 1 tag(s) already existed and were ignored.', '')
 
@@ -760,7 +760,7 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 }
             }
         )
-        self.assertEquals(3, PeriodTag.objects.count())
+        self.assertEqual(3, PeriodTag.objects.count())
 
     def test_add_single_tag_already_exists(self):
         testperiod = mommy.make('core.Period')
@@ -775,7 +775,7 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             },
             messagesmock=messagesmock
         )
-        self.assertEquals(1, PeriodTag.objects.count())
+        self.assertEqual(1, PeriodTag.objects.count())
         messagesmock.add.assert_called_once_with(
             messages.ERROR, 'The tag(s) you wanted to add already exists.', '')
 
@@ -794,7 +794,7 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             },
             messagesmock=messagesmock
         )
-        self.assertEquals(3, PeriodTag.objects.count())
+        self.assertEqual(3, PeriodTag.objects.count())
         messagesmock.add.assert_called_once_with(
             messages.ERROR, 'The tag(s) you wanted to add already exists.', '')
 
@@ -829,7 +829,7 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                     }
                 }
             )
-        self.assertEquals(7, PeriodTag.objects.count())
+        self.assertEqual(7, PeriodTag.objects.count())
 
 
 class TestEditTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -844,7 +844,7 @@ class TestEditTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 'pk': testperiodtag.id
             }
         )
-        self.assertEquals(mockresponse.selector.one('.django-cradmin-page-header-inner > h1').alltext_normalized,
+        self.assertEqual(mockresponse.selector.one('.django-cradmin-page-header-inner > h1').alltext_normalized,
                           'Edit {}'.format(testperiodtag.displayname))
 
     def test_tag_with_prefix_raises_404(self):
@@ -873,7 +873,7 @@ class TestEditTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         )
         with self.assertRaises(PeriodTag.DoesNotExist):
             PeriodTag.objects.get(tag='tag1')
-        self.assertEquals(PeriodTag.objects.count(), 1)
+        self.assertEqual(PeriodTag.objects.count(), 1)
         self.assertIsNotNone(PeriodTag.objects.get(tag='tag2'))
 
     def test_rename_tag_to_existing_tag(self):
@@ -893,8 +893,8 @@ class TestEditTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             },
             messagesmock=messagesmock
         )
-        self.assertIn('tag2 already exists', mockresponse.response.content)
-        self.assertEquals(PeriodTag.objects.count(), 2)
+        self.assertContains(mockresponse.response, 'tag2 already exists')
+        self.assertEqual(PeriodTag.objects.count(), 2)
         self.assertIsNotNone(PeriodTag.objects.get(tag='tag1'))
         self.assertIsNotNone(PeriodTag.objects.get(tag='tag2'))
 
@@ -914,9 +914,9 @@ class TestEditTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             },
             messagesmock=messagesmock
         )
-        self.assertIn('Tag contains a comma(,).', mockresponse.response.content)
-        self.assertEquals(PeriodTag.objects.count(), 1)
-        self.assertEquals(PeriodTag.objects.all()[0].tag, 'tag1')
+        self.assertContains(mockresponse.response, 'Tag contains a comma(,).')
+        self.assertEqual(PeriodTag.objects.count(), 1)
+        self.assertEqual(PeriodTag.objects.all()[0].tag, 'tag1')
 
     def test_error_empty_tag(self):
         testperiod = mommy.make('core.Period')
@@ -934,9 +934,9 @@ class TestEditTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             },
             messagesmock=messagesmock
         )
-        self.assertIn('Tag cannot be empty.', mockresponse.response.content)
-        self.assertEquals(PeriodTag.objects.count(), 1)
-        self.assertEquals(PeriodTag.objects.all()[0].tag, 'tag1')
+        self.assertContains(mockresponse.response, 'Tag cannot be empty.')
+        self.assertEqual(PeriodTag.objects.count(), 1)
+        self.assertEqual(PeriodTag.objects.all()[0].tag, 'tag1')
 
 
 class TestDeleteTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -951,7 +951,7 @@ class TestDeleteTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 'pk': testperiodtag.id
             }
         )
-        self.assertEquals(mockresponse.selector.one('.django-cradmin-page-header-inner > h1').alltext_normalized,
+        self.assertEqual(mockresponse.selector.one('.django-cradmin-page-header-inner > h1').alltext_normalized,
                           'Delete {}'.format(testperiodtag.displayname))
 
     def test_tag_with_prefix_raises_404(self):
@@ -976,7 +976,7 @@ class TestDeleteTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         )
         with self.assertRaises(PeriodTag.DoesNotExist):
             PeriodTag.objects.get(period=testperiod, tag=testperiodtag.tag)
-        self.assertEquals(PeriodTag.objects.count(), 1)
+        self.assertEqual(PeriodTag.objects.count(), 1)
 
 
 class MockAddRelatedExaminerToTagView(manage_tags.RelatedExaminerAddView):
@@ -1010,7 +1010,7 @@ class TestMultiSelectAddRelatedUserView(test.TestCase, cradmin_testhelpers.TestC
                 'tag_id': testperiodtag.id
             }
         )
-        self.assertEquals('Add examiner to a',
+        self.assertEqual('Add examiner to a',
                           mockresponse.selector.one('title').alltext_normalized)
 
     def test_get_relatedusers(self):
@@ -1024,9 +1024,9 @@ class TestMultiSelectAddRelatedUserView(test.TestCase, cradmin_testhelpers.TestC
                 'tag_id': testperiodtag.id
             }
         )
-        self.assertEquals(2, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
-        self.assertIn('shortname_user1', mockresponse.response.content)
-        self.assertIn('shortname_user2', mockresponse.response.content)
+        self.assertEqual(2, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+        self.assertContains(mockresponse.response, 'shortname_user1')
+        self.assertContains(mockresponse.response, 'shortname_user2')
 
     def test_only_users_on_period_are_listed(self):
         testperiod1 = mommy.make('core.Period')
@@ -1041,9 +1041,9 @@ class TestMultiSelectAddRelatedUserView(test.TestCase, cradmin_testhelpers.TestC
                 'tag_id': period1_tag.id
             }
         )
-        self.assertEquals(1, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
-        self.assertIn('shortname_user_testperiod1', mockresponse.response.content)
-        self.assertNotIn('shortname_user_testperiod2', mockresponse.response.content)
+        self.assertEqual(1, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+        self.assertContains(mockresponse.response, 'shortname_user_testperiod1')
+        self.assertNotContains(mockresponse.response, 'shortname_user_testperiod2')
 
     def test_get_only_users_not_registered_on_periodtag_are_selectable(self):
         testperiod = mommy.make('core.Period')
@@ -1059,10 +1059,10 @@ class TestMultiSelectAddRelatedUserView(test.TestCase, cradmin_testhelpers.TestC
                 'tag_id': testperiodtag.id
             }
         )
-        self.assertEquals(2, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
-        self.assertIn('shortname_user1', mockresponse.response.content)
-        self.assertIn('shortname_user2', mockresponse.response.content)
-        self.assertNotIn('shortname_user3', mockresponse.response.content)
+        self.assertEqual(2, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+        self.assertContains(mockresponse.response, 'shortname_user1')
+        self.assertContains(mockresponse.response, 'shortname_user2')
+        self.assertNotContains(mockresponse.response, 'shortname_user3')
 
 
 class TestMultiSelectRemoveRelatedUserView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -1088,7 +1088,7 @@ class TestMultiSelectRemoveRelatedUserView(test.TestCase, cradmin_testhelpers.Te
                 'tag_id': testperiodtag.id
             }
         )
-        self.assertEquals('Remove examiner from a',
+        self.assertEqual('Remove examiner from a',
                           mockresponse.selector.one('title').alltext_normalized)
 
     def test_get_relatedusers(self):
@@ -1104,9 +1104,9 @@ class TestMultiSelectRemoveRelatedUserView(test.TestCase, cradmin_testhelpers.Te
                 'tag_id': testperiodtag.id
             }
         )
-        self.assertEquals(2, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
-        self.assertIn('shortname_user1', mockresponse.response.content)
-        self.assertIn('shortname_user2', mockresponse.response.content)
+        self.assertEqual(2, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+        self.assertContains(mockresponse.response, 'shortname_user1')
+        self.assertContains(mockresponse.response, 'shortname_user2')
 
     def test_only_users_on_period_are_listed(self):
         testperiod1 = mommy.make('core.Period')
@@ -1127,9 +1127,9 @@ class TestMultiSelectRemoveRelatedUserView(test.TestCase, cradmin_testhelpers.Te
                 'tag_id': testperiodtag1.id
             }
         )
-        self.assertEquals(1, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
-        self.assertIn('shortname_user_testperiod1', mockresponse.response.content)
-        self.assertNotIn('shortname_user_testperiod2', mockresponse.response.content)
+        self.assertEqual(1, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+        self.assertContains(mockresponse.response, 'shortname_user_testperiod1')
+        self.assertNotContains(mockresponse.response, 'shortname_user_testperiod2')
 
     def test_get_only_users_registered_on_periodtag_are_selectable(self):
         testperiod = mommy.make('core.Period')
@@ -1145,7 +1145,7 @@ class TestMultiSelectRemoveRelatedUserView(test.TestCase, cradmin_testhelpers.Te
                 'tag_id': testperiodtag.id
             }
         )
-        self.assertEquals(2, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
-        self.assertIn('shortname_user1', mockresponse.response.content)
-        self.assertIn('shortname_user2', mockresponse.response.content)
-        self.assertNotIn('shortname_user3', mockresponse.response.content)
+        self.assertEqual(2, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+        self.assertContains(mockresponse.response, 'shortname_user1')
+        self.assertContains(mockresponse.response, 'shortname_user2')
+        self.assertNotContains(mockresponse.response, 'shortname_user3')

@@ -16,9 +16,9 @@ class TestBackendRegistry(TestCase):
             backend_mock.MockDevilryZipBackendHeroku
         )
 
-        self.assertEquals(backend_mock.MockDevilryZipBackend, mockregistry.get('default'))
-        self.assertEquals(backend_mock.MockDevilryZipBackendS3, mockregistry.get('s3'))
-        self.assertEquals(backend_mock.MockDevilryZipBackendHeroku, mockregistry.get('heroku'))
+        self.assertEqual(backend_mock.MockDevilryZipBackend, mockregistry.get('default'))
+        self.assertEqual(backend_mock.MockDevilryZipBackendS3, mockregistry.get('s3'))
+        self.assertEqual(backend_mock.MockDevilryZipBackendHeroku, mockregistry.get('heroku'))
 
     def test_backend_registry_duplicate_error(self):
         # Raises error when adding the same backend more than once.

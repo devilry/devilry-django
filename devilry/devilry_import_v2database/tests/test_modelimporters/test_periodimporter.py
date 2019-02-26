@@ -43,7 +43,7 @@ class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
                            data=self._create_period_dict(subject=test_subject, test_admin_user=test_admin_user))
         periodimporter = PeriodImporter(input_root=self.temp_root_dir)
         periodimporter.import_models()
-        self.assertEquals(Period.objects.count(), 1)
+        self.assertEqual(Period.objects.count(), 1)
 
     def test_importer_pk(self):
         test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -53,7 +53,7 @@ class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
         periodimporter = PeriodImporter(input_root=self.temp_root_dir)
         periodimporter.import_models()
         period = Period.objects.first()
-        self.assertEquals(period.id, 1)
+        self.assertEqual(period.id, 1)
 
     def test_importer_imported_model_with_admins(self):
         test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -63,7 +63,7 @@ class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
                            data=period_data_dict)
         subjectimporter = PeriodImporter(input_root=self.temp_root_dir)
         subjectimporter.import_models()
-        self.assertEquals(SubjectPermissionGroup.objects.count(), 1)
+        self.assertEqual(SubjectPermissionGroup.objects.count(), 1)
 
     def test_importer_imported_model_without_admins(self):
         test_subject = mommy.make('core.Subject')
@@ -72,7 +72,7 @@ class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
                            data=period_data_dict)
         subjectimporter = PeriodImporter(input_root=self.temp_root_dir)
         subjectimporter.import_models()
-        self.assertEquals(SubjectPermissionGroup.objects.count(), 0)
+        self.assertEqual(SubjectPermissionGroup.objects.count(), 0)
 
     def test_importer_short_name(self):
         test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -82,7 +82,7 @@ class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
         periodimporter = PeriodImporter(input_root=self.temp_root_dir)
         periodimporter.import_models()
         period = Period.objects.first()
-        self.assertEquals(period.short_name, 'testsemester')
+        self.assertEqual(period.short_name, 'testsemester')
 
     def test_importer_long_name(self):
         test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -92,7 +92,7 @@ class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
         periodimporter = PeriodImporter(input_root=self.temp_root_dir)
         periodimporter.import_models()
         period = Period.objects.first()
-        self.assertEquals(period.long_name, 'Testsemester')
+        self.assertEqual(period.long_name, 'Testsemester')
 
     def test_importer_start_time(self):
         test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -103,7 +103,7 @@ class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
         periodimporter.import_models()
         period = Period.objects.first()
         start_time = datetimeutils.from_isoformat('2017-02-14T11:04:46.585')
-        self.assertEquals(period.start_time, start_time)
+        self.assertEqual(period.start_time, start_time)
 
     def test_importer_end_time(self):
         test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -114,7 +114,7 @@ class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
         periodimporter.import_models()
         period = Period.objects.first()
         end_time = datetimeutils.from_isoformat('2017-08-13T11:04:46.585')
-        self.assertEquals(period.end_time, end_time)
+        self.assertEqual(period.end_time, end_time)
 
     def test_importer_subject(self):
         test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -124,7 +124,7 @@ class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
         periodimporter = PeriodImporter(input_root=self.temp_root_dir)
         periodimporter.import_models()
         period = Period.objects.first()
-        self.assertEquals(period.parentnode, test_subject)
+        self.assertEqual(period.parentnode, test_subject)
 
     def test_importer_permissiongroup_is_created(self):
         test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -133,14 +133,14 @@ class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
                            data=self._create_period_dict(subject=test_subject, test_admin_user=test_admin_user))
         periodimporter = PeriodImporter(input_root=self.temp_root_dir)
         periodimporter.import_models()
-        self.assertEquals(Period.objects.count(), 1)
+        self.assertEqual(Period.objects.count(), 1)
         period = Period.objects.first()
-        self.assertEquals(account_models.PermissionGroup.objects.count(), 1)
-        self.assertEquals(account_models.PermissionGroupUser.objects.count(), 1)
-        self.assertEquals(account_models.SubjectPermissionGroup.objects.count(), 1)
+        self.assertEqual(account_models.PermissionGroup.objects.count(), 1)
+        self.assertEqual(account_models.PermissionGroupUser.objects.count(), 1)
+        self.assertEqual(account_models.SubjectPermissionGroup.objects.count(), 1)
         periods_for_admin_list = Period.objects.filter_user_is_admin(test_admin_user)
-        self.assertEquals(len(periods_for_admin_list), 1)
-        self.assertEquals(periods_for_admin_list[0], period)
+        self.assertEqual(len(periods_for_admin_list), 1)
+        self.assertEqual(periods_for_admin_list[0], period)
 
     # def test_importer_imported_model_log_created(self):
     #     test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -167,10 +167,10 @@ class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
                            model_meta=self._create_model_meta())
         periodimporter = PeriodImporter(input_root=self.temp_root_dir)
         periodimporter.import_models()
-        self.assertEquals(Period.objects.count(), 1)
+        self.assertEqual(Period.objects.count(), 1)
         period = Period.objects.first()
-        self.assertEquals(period.pk, 1)
-        self.assertEquals(period.id, 1)
+        self.assertEqual(period.pk, 1)
+        self.assertEqual(period.id, 1)
         period_with_auto_id = mommy.make('core.Period')
-        self.assertEquals(period_with_auto_id.id, self._create_model_meta()['max_id']+1)
-        self.assertEquals(period_with_auto_id.pk, self._create_model_meta()['max_id']+1)
+        self.assertEqual(period_with_auto_id.id, self._create_model_meta()['max_id']+1)
+        self.assertEqual(period_with_auto_id.pk, self._create_model_meta()['max_id']+1)

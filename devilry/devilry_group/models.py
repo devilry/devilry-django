@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 import warnings
 import json
@@ -426,7 +426,7 @@ class FeedbackSet(models.Model):
     )
 
     def __unicode__(self):
-        return u"{} - {} - {} - deadline: {} - points: {}".format(
+        return "{} - {} - {} - deadline: {} - points: {}".format(
                 self.group.assignment,
                 self.feedbackset_type,
                 self.group.get_unanonymized_long_displayname(),
@@ -598,7 +598,7 @@ class FeedbackSet(models.Model):
         if target is None:
             target = FeedbackSet(**feedbackset_kwargs)
         else:
-            for key, value in feedbackset_kwargs.iteritems():
+            for key, value in feedbackset_kwargs.items():
                 setattr(target, key, value)
         target.save()
 
@@ -798,7 +798,7 @@ class FeedbackSetDeadlineHistory(models.Model):
     deadline_new = models.DateTimeField(null=False, blank=False)
 
     def __unicode__(self):
-        return u'Changed {}: from {} to {}'.format(self.changed_datetime, self.deadline_old, self.deadline_new)
+        return 'Changed {}: from {} to {}'.format(self.changed_datetime, self.deadline_old, self.deadline_new)
 
 
 class GroupCommentQuerySet(AbstractGroupCommentQuerySet):
@@ -837,7 +837,7 @@ class GroupComment(AbstractGroupComment):
         null=False, blank=True, default="")
 
     def __unicode__(self):
-        return u"{} - {} - {}".format(self.feedback_set, self.user_role, self.user)
+        return "{} - {} - {}".format(self.feedback_set, self.user_role, self.user)
 
     def clean(self):
         try:

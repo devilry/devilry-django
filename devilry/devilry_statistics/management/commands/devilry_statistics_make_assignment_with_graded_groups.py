@@ -92,7 +92,7 @@ class Command(BaseCommand):
                     shortname='examiner#{}@example.com'.format(num)
                 )
                 examiner_user.save()
-                print('Create examineruser#{}'.format(num))
+                print(('Create examineruser#{}'.format(num)))
                 relatedexaminer = coremodels.RelatedExaminer(
                     user=examiner_user,
                     period=period
@@ -109,25 +109,25 @@ class Command(BaseCommand):
                     parentnode=assignment
                 )
                 assignment_group.save()
-                print('Create assignment group#{}'.format(num))
+                print(('Create assignment group#{}'.format(num)))
 
                 student_user = get_user_model()(
                     fullname='Student#{}'.format(num),
                     shortname='student#{}@example.com'.format(num)
                 )
                 student_user.save()
-                print('Create studentuser#{}'.format(num))
+                print(('Create studentuser#{}'.format(num)))
                 relatedstudent = coremodels.RelatedStudent(
                     user=student_user,
                     period=period
                 )
                 relatedstudent.save()
-                print('Create relatedstudent#{}'.format(num))
+                print(('Create relatedstudent#{}'.format(num)))
                 coremodels.Candidate(
                     relatedstudent=relatedstudent,
                     assignment_group=assignment_group
                 ).save()
-                print('Create candidate#{}'.format(num))
+                print(('Create candidate#{}'.format(num)))
 
                 assignment_groups.append(assignment_group.id)
 

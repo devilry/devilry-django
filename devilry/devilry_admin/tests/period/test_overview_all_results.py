@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django import test
 from django.utils import timezone
@@ -30,7 +30,7 @@ class TestOverviewAllResults(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testperiod,
             requestuser=testuser
         )
-        self.assertEquals('All students results', mockresponse.selector.one('title').alltext_normalized)
+        self.assertEqual('All students results', mockresponse.selector.one('title').alltext_normalized)
 
     def test_backlink_exists(self):
         testperiod = mommy.make('core.Period')
@@ -40,7 +40,7 @@ class TestOverviewAllResults(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestuser=testuser
         )
         self.assertEqual(1, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
-        self.assertEquals(
+        self.assertEqual(
             mock.call(appname='overview', args=(), viewname='INDEX', kwargs={}),
             mockresponse.request.cradmin_instance.reverse_url.call_args_list[0]
         )
@@ -63,7 +63,7 @@ class TestOverviewAllResults(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestuser=testuser
         )
         self.assertFalse(mockresponse.selector.exists('.devilry-tabulardata-list'))
-        self.assertEquals(
+        self.assertEqual(
             'No students on period',
             mockresponse.selector.one('.django-cradmin-listbuilderview-no-items-message').alltext_normalized)
 

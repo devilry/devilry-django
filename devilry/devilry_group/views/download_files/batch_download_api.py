@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django.contrib.contenttypes.models import ContentType
 from django.http.response import JsonResponse, Http404

@@ -8,7 +8,7 @@ class DocProxy(object):
         self.addmany(**languages)
 
     def addmany(self, **languages):
-        for languagecode, url in languages.iteritems():
+        for languagecode, url in languages.items():
             self.add_for_language(languagecode, url)
 
     def add_for_language(self, languagecode, url):

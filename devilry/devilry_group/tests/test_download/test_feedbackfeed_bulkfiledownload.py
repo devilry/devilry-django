@@ -1,6 +1,6 @@
 import datetime
 import shutil
-from StringIO import StringIO
+from io import BytesIO
 from zipfile import ZipFile
 
 from django import test
@@ -54,9 +54,9 @@ class TestBulkFileDownloadBase(AbstractTestCase):
 
         testclass = BulkDownloadTestClass()
         response = testclass.get(None)
-        zipfileobject = ZipFile(StringIO(response.content))
+        zipfileobject = ZipFile(BytesIO(response.content))
         filecontents = zipfileobject.read('test2100.spring2015.oblig1.testuser1/attempt1/testfile1.txt')
-        self.assertEquals(filecontents, "test")
+        self.assertEqual(filecontents, b"test")
 
     def test_multiple_students_in_assignmentgroup(self):
         assignmentgroup1 = mommy.make('core.AssignmentGroup',
@@ -83,9 +83,9 @@ class TestBulkFileDownloadBase(AbstractTestCase):
 
         testclass = BulkDownloadTestClass()
         response = testclass.get(None)
-        zipfileobject = ZipFile(StringIO(response.content))
+        zipfileobject = ZipFile(BytesIO(response.content))
         filecontents = zipfileobject.read('test2100.spring2015.oblig1.testuser1.testuser2/attempt1/testfile1.txt')
-        self.assertEquals(filecontents, "test")
+        self.assertEqual(filecontents, b"test")
 
     def test_multiple_attempts(self):
         assignmentgroup1 = mommy.make('core.AssignmentGroup',
@@ -119,11 +119,11 @@ class TestBulkFileDownloadBase(AbstractTestCase):
 
         testclass = BulkDownloadTestClass()
         response = testclass.get(None)
-        zipfileobject = ZipFile(StringIO(response.content))
+        zipfileobject = ZipFile(BytesIO(response.content))
         filecontents = zipfileobject.read('test2100.spring2015.oblig1.testuser1/attempt1/testfile1.txt')
-        self.assertEquals(filecontents, "test")
+        self.assertEqual(filecontents, b"test")
         filecontents = zipfileobject.read('test2100.spring2015.oblig1.testuser1/attempt2/testfile2.txt')
-        self.assertEquals(filecontents, "test2")
+        self.assertEqual(filecontents, b"test2")
 
     def test_multiple_files_same_attempt_same_name(self):
         assignmentgroup1 = mommy.make('core.AssignmentGroup',
@@ -154,11 +154,11 @@ class TestBulkFileDownloadBase(AbstractTestCase):
 
         testclass = BulkDownloadTestClass()
         response = testclass.get(None)
-        zipfileobject = ZipFile(StringIO(response.content))
+        zipfileobject = ZipFile(BytesIO(response.content))
         filecontents = zipfileobject.read('test2100.spring2015.oblig1.testuser1/attempt1/testfile1.txt')
-        self.assertEquals(filecontents, "test")
+        self.assertEqual(filecontents, b"test")
         filecontents = zipfileobject.read('test2100.spring2015.oblig1.testuser1/attempt1/testfile1-1.txt')
-        self.assertEquals(filecontents, "test2")
+        self.assertEqual(filecontents, b"test2")
 
     def test_multiple_files_same_comment_same_name(self):
         assignmentgroup1 = mommy.make('core.AssignmentGroup',
@@ -186,11 +186,11 @@ class TestBulkFileDownloadBase(AbstractTestCase):
 
         testclass = BulkDownloadTestClass()
         response = testclass.get(None)
-        zipfileobject = ZipFile(StringIO(response.content))
+        zipfileobject = ZipFile(BytesIO(response.content))
         filecontents = zipfileobject.read('test2100.spring2015.oblig1.testuser1/attempt1/testfile1.txt')
-        self.assertEquals(filecontents, "test2")
+        self.assertEqual(filecontents, b"test2")
         filecontents = zipfileobject.read('test2100.spring2015.oblig1.testuser1/attempt1/testfile1-1.txt')
-        self.assertEquals(filecontents, "test3")
+        self.assertEqual(filecontents, b"test3")
 
     def test_file_from_examiner(self):
         assignmentgroup1 = mommy.make('core.AssignmentGroup',
@@ -214,9 +214,9 @@ class TestBulkFileDownloadBase(AbstractTestCase):
 
         testclass = BulkDownloadTestClass()
         response = testclass.get(None)
-        zipfileobject = ZipFile(StringIO(response.content))
+        zipfileobject = ZipFile(BytesIO(response.content))
         filecontents = zipfileobject.read('test2100.spring2015.oblig1.testuser1/attempt1/from_examiner/testfile1.txt')
-        self.assertEquals(filecontents, "test")
+        self.assertEqual(filecontents, b"test")
 
     def test_file_after_deadline(self):
         assignmentgroup1 = mommy.make('core.AssignmentGroup',
@@ -240,10 +240,10 @@ class TestBulkFileDownloadBase(AbstractTestCase):
 
         testclass = BulkDownloadTestClass()
         response = testclass.get(None)
-        zipfileobject = ZipFile(StringIO(response.content))
+        zipfileobject = ZipFile(BytesIO(response.content))
         filecontents = zipfileobject.read(
             'test2100.spring2015.oblig1.testuser1/attempt1/not_part_of_delivery/testfile1.txt')
-        self.assertEquals(filecontents, "test")
+        self.assertEqual(filecontents, b"test")
 
     def test_multiple_assignmentgroups(self):
         assignmentgroup1 = mommy.make('core.AssignmentGroup',
@@ -283,8 +283,8 @@ class TestBulkFileDownloadBase(AbstractTestCase):
 
         testclass = BulkDownloadTestClass()
         response = testclass.get(None)
-        zipfileobject = ZipFile(StringIO(response.content))
+        zipfileobject = ZipFile(BytesIO(response.content))
         filecontents = zipfileobject.read('test2100.spring2015.oblig1.testuser1/attempt1/testfile1.txt')
-        self.assertEquals(filecontents, "test")
+        self.assertEqual(filecontents, b"test")
         filecontents = zipfileobject.read('test2100.spring2015.oblig1.testuser2/attempt1/testfile2.txt')
-        self.assertEquals(filecontents, "test2")
+        self.assertEqual(filecontents, b"test2")

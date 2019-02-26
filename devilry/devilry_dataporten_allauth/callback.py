@@ -1,4 +1,4 @@
-from __future__ import absolute_import
+
 
 from allauth.socialaccount.providers.oauth2.views import OAuth2View
 from requests import RequestException

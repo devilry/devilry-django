@@ -62,7 +62,7 @@ class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_app=mockapp
         )
         self.assertEqual(
-            "/confirm/args=(),kwargs={'selected_students': u'relatedstudents'}",
+            "/confirm/args=(),kwargs={'selected_students': 'relatedstudents'}",
             mockresponse.selector.one(
                 '#devilry_admin_create_groups_choosemethod_relatedstudents_link')['href'])
 
@@ -375,8 +375,7 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             2,
             mockresponse.selector.count('.devilry-admin-listbuilder-relatedstudent-readonlyitemvalue'))
-        self.assertNotIn(relatedstudent3.user.fullname,
-                         mockresponse.response.content)
+        self.assertNotContains(mockresponse.response, relatedstudent3.user.fullname)
 
     def test_get_selected_students_passing_grade_on_assignment_invalid_assignment_id(self):
         testperiod = mommy.make('core.Period')
@@ -408,11 +407,11 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
             grading_points=1)
 
         relatedstudent2 = mommy.make('core.RelatedStudent',
-                                     user__fullname='User that is not candidate',
+                                     user__fullname=b'User that is not candidate',
                                      period=testperiod)
 
         relatedstudent3 = mommy.make('core.RelatedStudent',
-                                     user__fullname='User that did not pass',
+                                     user__fullname=b'User that did not pass',
                                      period=testperiod)
         candidate3 = mommy.make('core.Candidate',
                                 relatedstudent=relatedstudent3,
@@ -422,7 +421,7 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
             grading_points=0)
 
         relatedstudent4 = mommy.make('core.RelatedStudent',
-                                     user__fullname='User that is not on the other assignment',
+                                     user__fullname=b'User that is not on the other assignment',
                                      period=testperiod)
 
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)

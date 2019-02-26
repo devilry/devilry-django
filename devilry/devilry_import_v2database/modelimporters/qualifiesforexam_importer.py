@@ -80,7 +80,7 @@ class StatusImporter(modelimporter.ModelImporter):
         with BulkCreator(model_class=self.get_model_class()) as status_bulk_creator:
             for object_dict in directory_parser.iterate_object_dicts():
                 if fake:
-                    print('Would import: {}'.format(pprint.pformat(object_dict)))
+                    print(('Would import: {}'.format(pprint.pformat(object_dict))))
                 else:
                     status = self._create_status_from_object_dict(object_dict=object_dict)
                     status_bulk_creator.add(status)
@@ -133,7 +133,7 @@ class QualifiesForFinalExamImporter(modelimporter.ModelImporter):
         with BulkCreator(model_class=self.get_model_class()) as qualifies_bulk_creator:
             for object_dict in directory_parser.iterate_object_dicts():
                 if fake:
-                    print('Would import: {}'.format(pprint.pformat(object_dict)))
+                    print(('Would import: {}'.format(pprint.pformat(object_dict))))
                 else:
                     qualifies_for_final_exam = self._create_qualifiesforfinalexam_from_object_dict(object_dict=object_dict)
                     qualifies_bulk_creator.add(qualifies_for_final_exam)

@@ -13,13 +13,13 @@ class TestFrontpage(TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_title(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
-        self.assertEqual(u'Devilry frontpage',
+        self.assertEqual('Devilry frontpage',
                          mockresponse.selector.one('title').alltext_normalized)
 
     def test_h1(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
-        self.assertEqual(u'Choose your role',
+        self.assertEqual('Choose your role',
                          mockresponse.selector.one('h1').alltext_normalized)
 
     def test_user_is_student(self):

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 # Django imports
 from django import test
@@ -28,7 +28,7 @@ class TestPeriodResultSetCollector(test.TestCase, test_pluginhelpers.TestPluginH
             testassignment2.id,
             testassignment3.id
         ])
-        self.assertEquals(collector.min_passing_score, 30)
+        self.assertEqual(collector.min_passing_score, 30)
 
     def test_collector_min_passing_score_with_custom_score(self):
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
@@ -43,7 +43,7 @@ class TestPeriodResultSetCollector(test.TestCase, test_pluginhelpers.TestPluginH
                     testassignment2.id,
                     testassignment3.id
                 ])
-        self.assertEquals(collector.min_passing_score, 20)
+        self.assertEqual(collector.min_passing_score, 20)
 
     def test_student_qualify_with_all_assignments_qualify_without_custom_score(self):
         data_dict = self._build_data_set(
@@ -66,7 +66,7 @@ class TestPeriodResultSetCollector(test.TestCase, test_pluginhelpers.TestPluginH
                     data_dict['testassignments'][2].id
                 ])
         qualifying_studentids = collector.get_relatedstudents_that_qualify_for_exam()
-        self.assertEquals(qualifying_studentids[0], data_dict['relatedstudent'].id)
+        self.assertEqual(qualifying_studentids[0], data_dict['relatedstudent'].id)
 
     def test_student_qualify_with_all_assignments_qualify_with_custom_score(self):
         data_dict = self._build_data_set(
@@ -91,7 +91,7 @@ class TestPeriodResultSetCollector(test.TestCase, test_pluginhelpers.TestPluginH
                     data_dict['testassignments'][2].id
                 ])
         qualifying_studentids = collector.get_relatedstudents_that_qualify_for_exam()
-        self.assertEquals(qualifying_studentids[0], data_dict['relatedstudent'].id)
+        self.assertEqual(qualifying_studentids[0], data_dict['relatedstudent'].id)
 
     def test_student_does_not_qualify_with_all_assignments_qualify_without_custom_score(self):
         data_dict = self._build_data_set(
@@ -108,7 +108,7 @@ class TestPeriodResultSetCollector(test.TestCase, test_pluginhelpers.TestPluginH
                     data_dict['testassignments'][2].id
                 ])
         qualifying_studentids = collector.get_relatedstudents_that_qualify_for_exam()
-        self.assertEquals(len(qualifying_studentids), 0)
+        self.assertEqual(len(qualifying_studentids), 0)
 
     def test_student_does_not_qualify_with_all_assignments_qualify_with_custom_score(self):
         data_dict = self._build_data_set(
@@ -127,7 +127,7 @@ class TestPeriodResultSetCollector(test.TestCase, test_pluginhelpers.TestPluginH
                     data_dict['testassignments'][2].id
                 ])
         qualifying_studentids = collector.get_relatedstudents_that_qualify_for_exam()
-        self.assertEquals(len(qualifying_studentids), 0)
+        self.assertEqual(len(qualifying_studentids), 0)
 
     def test_one_student_qualify_with_all_assignments_qualify_without_custom_score(self):
         # Two students are created for the period where only one student have enough points
@@ -165,7 +165,7 @@ class TestPeriodResultSetCollector(test.TestCase, test_pluginhelpers.TestPluginH
                     data_dict['testassignments'][2].id
                 ])
         qualifying_studentids = collector.get_relatedstudents_that_qualify_for_exam()
-        self.assertEquals(len(qualifying_studentids), 1)
+        self.assertEqual(len(qualifying_studentids), 1)
         self.assertIn(relatedstudent.id, qualifying_studentids)
         self.assertNotIn(data_dict['relatedstudent'].id, qualifying_studentids)
 
@@ -207,6 +207,6 @@ class TestPeriodResultSetCollector(test.TestCase, test_pluginhelpers.TestPluginH
                     data_dict['testassignments'][2].id
                 ])
         qualifying_studentids = collector.get_relatedstudents_that_qualify_for_exam()
-        self.assertEquals(len(qualifying_studentids), 1)
+        self.assertEqual(len(qualifying_studentids), 1)
         self.assertIn(relatedstudent_dewey.id, qualifying_studentids)
         self.assertNotIn(data_dict['relatedstudent'].id, qualifying_studentids)
