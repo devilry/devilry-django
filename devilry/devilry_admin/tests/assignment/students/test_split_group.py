@@ -132,7 +132,7 @@ class TestSplitGroup(TestCase, cradmin_testhelpers.TestCaseMixin):
         candidate = Candidate.objects.get(id=candidate.id)
         self.assertNotEqual(candidate.assignment_group, testgroup)
         testgroup = AssignmentGroup.objects.get(id=testgroup.id)
-        self.assertEqual(1, testgroup.cached_data.candidate_count);
+        self.assertEqual(1, testgroup.cached_data.candidate_count)
 
 
 class TestSplitGroupAnonymization(TestCase, cradmin_testhelpers.TestCaseMixin):
