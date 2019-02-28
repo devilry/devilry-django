@@ -48,7 +48,7 @@ def calculate_signature(secret_key, getdata, request_body):
     """
     # Construct the message from the timestamp and the data in the request
     message = '{}{}{}'.format(
-            ''.join("{}{}".format(k,v) for k, v in sorted(getdata.iteritems())),
+            ''.join("{}{}".format(k,v) for k, v in sorted(iter(getdata.items()))),
             request_body)
 
     # Calculate the signature (HMAC SHA512) according to RFC 2104

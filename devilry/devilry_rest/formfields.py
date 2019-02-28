@@ -12,7 +12,7 @@ class ListOfDictField(forms.Field):
         Validate and clean data.
         """
         super(ListOfDictField, self).validate(value)
-        if value == None:
+        if value is None:
             return []
         if not isinstance(value, (list, tuple)):
             raise ValidationError('Must be a list or tuple, got {0}'.format(type(value).__name__))
@@ -39,6 +39,7 @@ class ListOfDictField(forms.Field):
         self.run_validators(value)
         return value
 
+
 class DictField(forms.Field):
 
     def validate_to_python(self, value):
@@ -46,7 +47,7 @@ class DictField(forms.Field):
         Validate and clean data.
         """
         super(DictField, self).validate(value)
-        if value == None:
+        if value is None:
             return {}
         if not isinstance(value, dict):
             raise ValidationError('Must be a dict, got {0}'.format(type(value).__name__))
@@ -83,7 +84,7 @@ class ListOfTypedField(forms.Field):
         Validate and clean data.
         """
         super(ListOfTypedField, self).validate(valuelist)
-        if valuelist == None:
+        if valuelist is None:
             return []
         if not isinstance(valuelist, (list, tuple)):
             raise ValidationError('Must be a list or tuple, got {0}'.format(type(valuelist).__name__))
@@ -91,7 +92,7 @@ class ListOfTypedField(forms.Field):
         for index, value in enumerate(valuelist):
             try:
                 cleaned_value = self.coerce(value)
-            except ValueError, e:
+            except ValueError as e:
                 raise ValidationError('Item {0}: {1}', index, e)
             else:
                 cleaned.append(cleaned_value)
@@ -107,4 +108,3 @@ class ListOfTypedField(forms.Field):
         value = self.validate_to_python(value)
         self.run_validators(value)
         return value
-

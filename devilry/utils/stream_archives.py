@@ -10,7 +10,7 @@ class MemoryIO(object):
     def __init__(self, initial_bytes=None):
         self.buffer = str()
         self.pos = 0
-        if not initial_bytes == None:
+        if not initial_bytes is None:
             self.buffer = str(initial_bytes)
             self.pos = len(initial_bytes)
             

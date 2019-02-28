@@ -1,4 +1,4 @@
-from UserDict import DictMixin
+from collections import MutableMapping as DictMixin
 
 class OrderedDictFallback(dict, DictMixin):
     """ OrderedDict implementation which works just like OrderedDict
@@ -100,9 +100,9 @@ class OrderedDictFallback(dict, DictMixin):
     pop = DictMixin.pop
     values = DictMixin.values
     items = DictMixin.items
-    iterkeys = DictMixin.iterkeys
-    itervalues = DictMixin.itervalues
-    iteritems = DictMixin.iteritems
+    iterkeys = iter(DictMixin.keys())
+    itervalues = iter(DictMixin.values())
+    iteritems = iter(DictMixin.items())
 
     def __repr__(self):
         if not self:

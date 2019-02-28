@@ -328,7 +328,7 @@ class BaseGroupCommentItemValue(BaseItemValue):
         return True
 
     def is_published(self):
-        return self.group_comment.get_published_datetime() != None
+        return self.group_comment.get_published_datetime() is not None
 
     def get_last_edited_datetime_history(self):
         if hasattr(self.group_comment, 'last_edithistory_datetime'):

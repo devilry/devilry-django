@@ -35,7 +35,7 @@ class ModelsToDiagramDot(list, GetIdMixin):
         for fieldname in model._meta.get_all_field_names():
             field = model._meta.get_field_by_name(fieldname)[0]
             umlfield = self.modelfield_to_umlfield(fieldname, field)
-            if umlfield != None:
+            if umlfield is not None:
                 umlfields.append(umlfield)
         return umlfields
 

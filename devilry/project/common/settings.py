@@ -99,7 +99,7 @@ INSTALLED_APPS = [
     'devilry.devilry_deadlinemanagement',
     'devilry.project.common',
     'devilry.devilry_import_v2database',
-    'devilry.devilry_detektor',
+    #'devilry.devilry_detektor',
     'devilry.devilry_statistics',
     'devilry.devilry_message',
     'devilry.devilry_report',
