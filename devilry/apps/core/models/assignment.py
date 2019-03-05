@@ -34,6 +34,7 @@ class AssignmentQuerySet(models.QuerySet):
     """
     QuerySet for :class:`.Assignment`.
     """
+
     def filter_user_is_admin(self, user):
         """
         Filter the queryset to only include :class:`.Assignment` objects where the
@@ -46,11 +47,11 @@ class AssignmentQuerySet(models.QuerySet):
         if user.is_superuser:
             return self.all()
         else:
-            subjectids_where_is_admin_queryset = Subject.objects\
-                .filter_user_is_admin(user=user)\
+            subjectids_where_is_admin_queryset = Subject.objects \
+                .filter_user_is_admin(user=user) \
                 .values_list('id', flat=True)
             periodids_where_is_admin_queryset = PeriodPermissionGroup.objects \
-                .filter(models.Q(permissiongroup__users=user))\
+                .filter(models.Q(permissiongroup__users=user)) \
                 .values_list('period_id', flat=True)
             return self.filter(
                 # If anonymous, ignore periodadmins
@@ -82,9 +83,9 @@ class AssignmentQuerySet(models.QuerySet):
         Args:
             user: A User object.
         """
-        return self\
+        return self \
             .filter(assignmentgroups__examiners__relatedexaminer__user=user,
-                    assignmentgroups__examiners__relatedexaminer__active=True)\
+                    assignmentgroups__examiners__relatedexaminer__active=True) \
             .distinct()
 
     def filter_user_is_candidate(self, user):
@@ -119,7 +120,7 @@ class AssignmentQuerySet(models.QuerySet):
         Args:
             user: A User object.
         """
-        return self.filter_is_active()\
+        return self.filter_is_active() \
             .filter(assignmentgroups__examiners__relatedexaminer__user=user,
                     assignmentgroups__examiners__relatedexaminer__active=True)
 
@@ -143,17 +144,17 @@ class AssignmentQuerySet(models.QuerySet):
         whenquery = models.Q(
             assignmentgroups__cached_data__last_feedbackset__grading_published_datetime__isnull=True
         ) & (
-            models.Q(
-                ~models.Q(assignmentgroups__cached_data__last_feedbackset=models.F(
-                    'assignmentgroups__cached_data__first_feedbackset')),
-                models.Q(assignmentgroups__cached_data__last_feedbackset__deadline_datetime__lt=now),
-            ) |
-            models.Q(
-                models.Q(assignmentgroups__cached_data__last_feedbackset=models.F(
-                    'assignmentgroups__cached_data__first_feedbackset')),
-                first_deadline__lt=now
-            )
-        )
+                            models.Q(
+                                ~models.Q(assignmentgroups__cached_data__last_feedbackset=models.F(
+                                    'assignmentgroups__cached_data__first_feedbackset')),
+                                models.Q(assignmentgroups__cached_data__last_feedbackset__deadline_datetime__lt=now),
+                            ) |
+                            models.Q(
+                                models.Q(assignmentgroups__cached_data__last_feedbackset=models.F(
+                                    'assignmentgroups__cached_data__first_feedbackset')),
+                                first_deadline__lt=now
+                            )
+                    )
 
         return self.annotate(
             waiting_for_feedback_count=models.Count(
@@ -181,9 +182,9 @@ class AssignmentQuerySet(models.QuerySet):
         """
         from .pointrange_to_grade import PointToGradeMap
         return self.prefetch_related(
-                models.Prefetch('pointtogrademap',
-                                queryset=PointToGradeMap.objects.prefetch_pointrange_to_grade(),
-                                to_attr='prefetched_point_to_grade_map'))
+            models.Prefetch('pointtogrademap',
+                            queryset=PointToGradeMap.objects.prefetch_pointrange_to_grade(),
+                            to_attr='prefetched_point_to_grade_map'))
 
 
 def get_deadline_handling_default():
@@ -452,8 +453,8 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     scale_points_percent = models.PositiveIntegerField(
         default=100,
         help_text=_('Percent to scale points on this assignment by for '
-                   'period overviews. The default is 100, which means '
-                   'no change to the points.'))
+                    'period overviews. The default is 100, which means '
+                    'no change to the points.'))
     first_deadline = models.DateTimeField(blank=False, null=False)
 
     max_points = models.PositiveIntegerField(
@@ -628,8 +629,8 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         :attr:`students_can_not_create_groups_after` is in the future or ``None``.
         """
         return self.students_can_create_groups and (
-            self.students_can_not_create_groups_after is None or
-            self.students_can_not_create_groups_after > timezone.now())
+                self.students_can_not_create_groups_after is None or
+                self.students_can_not_create_groups_after > timezone.now())
 
     def students_must_be_anonymized_for_devilryrole(self, devilryrole):
         """
@@ -849,7 +850,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         extra performance cost.
         """
         if not hasattr(self, '_points_to_grade_map_as_cached_dict'):
-            self._points_to_grade_map_as_cached_dict = self.get_point_to_grade_map()\
+            self._points_to_grade_map_as_cached_dict = self.get_point_to_grade_map() \
                 .as_flat_dict()
         return self._points_to_grade_map_as_cached_dict
 
@@ -912,11 +913,11 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         if self.first_deadline > self.parentnode.end_time or self.first_deadline < self.parentnode.start_time:
             errors['first_deadline'] = _("First deadline must be within %(periodname)s, "
                                          "which lasts from %(start_time)s to %(end_time)s.") % {
-                'periodname': self.parentnode.long_name,
-                'start_time': defaultfilters.date(self.parentnode.start_time,
-                                                  'DATETIME_FORMAT'),
-                'end_time': defaultfilters.date(self.parentnode.end_time, 'DATETIME_FORMAT')
-            }
+                                           'periodname': self.parentnode.long_name,
+                                           'start_time': defaultfilters.date(self.parentnode.start_time,
+                                                                             'DATETIME_FORMAT'),
+                                           'end_time': defaultfilters.date(self.parentnode.end_time, 'DATETIME_FORMAT')
+                                       }
 
     def clean(self):
         """Validate the assignment.
@@ -933,20 +934,20 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             if self.publishing_time < self.parentnode.start_time or self.publishing_time > self.parentnode.end_time:
                 errors['publishing_time'] = _("Publishing time must be within %(periodname)s, "
                                               "which lasts from %(start_time)s to %(end_time)s.") % {
-                    'periodname': self.parentnode.long_name,
-                    'start_time': defaultfilters.date(self.parentnode.start_time,
-                                                      'DATETIME_FORMAT'),
-                    'end_time': defaultfilters.date(self.parentnode.end_time,
-                                                    'DATETIME_FORMAT')
-                }
+                                                'periodname': self.parentnode.long_name,
+                                                'start_time': defaultfilters.date(self.parentnode.start_time,
+                                                                                  'DATETIME_FORMAT'),
+                                                'end_time': defaultfilters.date(self.parentnode.end_time,
+                                                                                'DATETIME_FORMAT')
+                                            }
         if self.first_deadline:
             self._clean_first_deadline(errors)
         if self.passing_grade_min_points > self.max_points:
             errors['passing_grade_min_points'] = _('The minumum number of points required to pass must be less than '
                                                    'the maximum number of points possible for the assignment. The '
                                                    'current maximum is %(max_points)s.') % {
-                'max_points': self.max_points
-            }
+                                                     'max_points': self.max_points
+                                                 }
 
         if errors:
             raise ValidationError(errors)
@@ -981,12 +982,12 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         Returns
             QuerySet: A :class:`devilry.apps.core.models.assignment_group.AssignmentGroup` queryset.
         """
-        return sourceassignment.assignmentgroups\
-            .filter(parentnode_id=sourceassignment.id)\
+        return sourceassignment.assignmentgroups \
+            .filter(parentnode_id=sourceassignment.id) \
             .select_related('cached_data') \
             .filter(
-                cached_data__last_published_feedbackset=models.F('cached_data__last_feedbackset'),
-                cached_data__last_published_feedbackset__grading_points__gte=sourceassignment.passing_grade_min_points)
+            cached_data__last_published_feedbackset=models.F('cached_data__last_feedbackset'),
+            cached_data__last_published_feedbackset__grading_points__gte=sourceassignment.passing_grade_min_points)
 
     def copy_groups_from_another_assignment(self, sourceassignment, passing_grade_only=False):
         """
@@ -1024,19 +1025,19 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
         for group in self.assignmentgroups \
                 .prefetch_related(
-                    models.Prefetch(
-                        'copied_from',
-                        to_attr='copied_from_list',
-                        queryset=AssignmentGroup.objects.prefetch_related(
-                            models.Prefetch('candidates',
-                                            to_attr='candidatelist',
-                                            queryset=Candidate.objects.all()),
-                            models.Prefetch('examiners',
-                                            to_attr='examinerlist',
-                                            queryset=Examiner.objects.all()),
-                        )
-                    )
-                ):
+            models.Prefetch(
+                'copied_from',
+                to_attr='copied_from_list',
+                queryset=AssignmentGroup.objects.prefetch_related(
+                    models.Prefetch('candidates',
+                                    to_attr='candidatelist',
+                                    queryset=Candidate.objects.all()),
+                    models.Prefetch('examiners',
+                                    to_attr='examinerlist',
+                                    queryset=Examiner.objects.all()),
+                )
+            )
+        ):
             for othercandidate in group.copied_from_list.candidatelist:
                 newcandidate = Candidate(
                     assignment_group=group,
@@ -1090,11 +1091,11 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
     def __prefetch_relatedstudents_with_candidates(self):
         from devilry.apps.core.models import Candidate
-        return RelatedStudent.objects\
-            .select_related('user')\
+        return RelatedStudent.objects \
+            .select_related('user') \
             .prefetch_related(
-                models.Prefetch('candidate_set',
-                                queryset=Candidate.objects.select_related('assignment_group')))
+            models.Prefetch('candidate_set',
+                            queryset=Candidate.objects.select_related('assignment_group')))
 
     def setup_examiners_by_relateduser_syncsystem_tags(self):
         from devilry.apps.core.models import Candidate
@@ -1128,3 +1129,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                         relatedexaminer=relatedexaminer) for groupid in groupids])
         if examinerobjects:
             Examiner.objects.bulk_create(examinerobjects)
+
+    def __str__(self):
+        return self.get_path()

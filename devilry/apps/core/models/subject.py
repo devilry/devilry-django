@@ -132,6 +132,9 @@ class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, E
         guaranteed to be unique. """
         return self.short_name
 
+    def __str__(self):
+        return self.get_path()
+
     @property
     def last_active_period(self):
         """
