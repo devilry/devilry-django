@@ -15,6 +15,10 @@ class PeriodResultSetCollector(PeriodResultsCollector):
                 feedbackset = groupfeedbacksetlist.get_feedbackset_with_most_points()
                 if not feedbackset:
                     return False
+                elif (not feedbackset.grading_points) and (feedbackset.group.parentnode.passing_grade_min_points == 0):
+                    break
+                elif not feedbackset.grading_points:
+                    return False
                 elif feedbackset.grading_points < feedbackset.group.parentnode.passing_grade_min_points:
                     return False
         return True
