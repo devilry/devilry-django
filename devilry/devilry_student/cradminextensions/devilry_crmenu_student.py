@@ -2,8 +2,8 @@
 
 from django.template import defaultfilters
 from django.utils.translation import pgettext_lazy
-from django_cradmin import crapp
-from django_cradmin.crinstance import reverse_cradmin_url
+from cradmin_legacy import crapp
+from cradmin_legacy.crinstance import reverse_cradmin_url
 
 from devilry.devilry_cradmin import devilry_crmenu
 

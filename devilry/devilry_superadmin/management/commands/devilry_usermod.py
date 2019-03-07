@@ -68,7 +68,7 @@ class Command(UserModCommand):
             kw['is_superuser'] = False
 
         try:
-            if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
+            if settings.CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND:
                 user = get_user_model().objects.get_by_email(email=options['username_or_email'])
             else:
                 user = get_user_model().objects.get_by_username(username=options['username_or_email'])

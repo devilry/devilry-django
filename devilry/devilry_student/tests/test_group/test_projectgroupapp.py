@@ -4,7 +4,7 @@ from django.http import Http404
 from django.test import TestCase
 from django.utils import timezone
 from django.utils.timezone import datetime, timedelta
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core import devilry_core_mommy_factories as core_mommy
@@ -55,7 +55,7 @@ class TestProjectGroupOverviewView(TestCase, cradmin_testhelpers.TestCaseMixin):
             '{} - {} - {}'.format(testassignment.long_name,
                                   testassignment.parentnode.parentnode.long_name,
                                   testassignment.parentnode.long_name),
-            mockresponse.selector.one('.django-cradmin-page-header-inner > p').alltext_normalized
+            mockresponse.selector.one('.cradmin-legacy-page-header-inner > p').alltext_normalized
         )
 
     def test_group_members_ul_exists(self):
@@ -415,7 +415,7 @@ class TestGroupInviteRespondView(TestCase, cradmin_testhelpers.TestCaseMixin):
             '{} - {} - {}'.format(testassignment.long_name,
                                   testassignment.parentnode.parentnode.long_name,
                                   testassignment.parentnode.long_name),
-            mockresponse.selector.one('.django-cradmin-page-header-inner > .container > p').alltext_normalized
+            mockresponse.selector.one('.cradmin-legacy-page-header-inner > .container > p').alltext_normalized
         )
 
     def test_form_text(self):
@@ -867,7 +867,7 @@ class TestGroupInviteDeleteView(TestCase, cradmin_testhelpers.TestCaseMixin):
                 testassignment.period.long_name
             ),
             mockresponse.selector.one(
-                '.django-cradmin-page-header-inner > p').alltext_normalized
+                '.cradmin-legacy-page-header-inner > p').alltext_normalized
         )
 
     def test_delete_button(self):

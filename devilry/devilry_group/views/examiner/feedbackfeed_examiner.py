@@ -12,10 +12,10 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _, ugettext_lazy, pgettext_lazy
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic import View
-from django_cradmin import crapp
-from django_cradmin.crispylayouts import PrimarySubmit, DefaultSubmit
-from django_cradmin.viewhelpers import update, delete
-from django_cradmin.widgets.datetimepicker import DateTimePickerWidget
+from cradmin_legacy import crapp
+from cradmin_legacy.crispylayouts import PrimarySubmit, DefaultSubmit
+from cradmin_legacy.viewhelpers import update, delete
+from cradmin_legacy.widgets.datetimepicker import DateTimePickerWidget
 
 from devilry.apps.core.models import Assignment
 from devilry.apps.core import models as core_models

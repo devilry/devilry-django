@@ -61,7 +61,7 @@ DEVILRY_SKIP_RQ_TESTS = os.environ.get('DEVILRY_SKIP_RQ_TESTS', 'False') == 'Tru
 DEVILRY_RQ_EMAIL_BACKEND_QUEUENAME = 'email'
 
 
-#: If this is set, and the ``DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND``-setting
+#: If this is set, and the ``CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND``-setting
 #: is ``False``, users will be assigned
 #: ``<username><DEVILRY_DEFAULT_EMAIL_USERNAME_SUFFIX>`` as their primary email
 #: address when they are created.

@@ -8,7 +8,7 @@ import os
 import devilry
 
 from .projectspecific_settings import *  # noqa
-from .django_cradmin_settings import *  # noqa
+from .cradmin_legacy_settings import *  # noqa
 
 DEBUG = False
 
@@ -54,13 +54,13 @@ INSTALLED_APPS = [
     'rest_framework',
     'devilry.devilry_bulkcreate_users',
     'devilry.devilry_cradmin',
-    'django_cradmin',
-    'django_cradmin.apps.cradmin_temporaryfileuploadstore',
+    'cradmin_legacy',
+    'cradmin_legacy.apps.cradmin_temporaryfileuploadstore',
     'devilry.django_decoupled_docs',
 
-    'django_cradmin.apps.cradmin_authenticate',
+    'cradmin_legacy.apps.cradmin_authenticate',
     'devilry.devilry_resetpassword',
-    'django_cradmin.apps.cradmin_resetpassword',
+    'cradmin_legacy.apps.cradmin_resetpassword',
     'django_cradmin.apps.cradmin_generic_token_with_metadata',
 
     'devilry.apps.core.apps.CoreAppConfig',
@@ -128,7 +128,7 @@ TEMPLATES = [
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.request',
-                'django_cradmin.context_processors.cradmin',
+                'cradmin_legacy.context_processors.cradmin',
                 'devilry.project.common.templatecontext.template_variables',
             ],
         },
@@ -172,7 +172,7 @@ gettext_noop = lambda s: s
 LANGUAGES = [('en', gettext_noop('English')),
              ('nb', gettext_noop('Norwegian Bokmal'))]
 
-DJANGO_CRADMIN_MOMENTJS_LOCALE = LANGUAGE_CODE
+CRADMIN_LEGACY_MOMENTJS_LOCALE = LANGUAGE_CODE
 
 
 LOCALE_PATHS = [

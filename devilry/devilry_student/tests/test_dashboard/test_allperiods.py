@@ -4,9 +4,9 @@ from datetime import timedelta
 
 from django import test
 from django.conf import settings
-from django_cradmin import cradmin_testhelpers
-from django_cradmin.crinstance import reverse_cradmin_url
-from django_cradmin import crapp
+from cradmin_legacy import cradmin_testhelpers
+from cradmin_legacy.crinstance import reverse_cradmin_url
+from cradmin_legacy import crapp
 from model_mommy import mommy
 
 from devilry.apps.core.mommy_recipes import OLD_PERIOD_START, ACTIVE_PERIOD_START, ACTIVE_PERIOD_END
@@ -34,7 +34,7 @@ class TestAllPeriodsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 mockresponse.selector.one('h1').alltext_normalized)
 
     def __get_period_count(self, selector):
-        return selector.count('.django-cradmin-listbuilder-itemvalue')
+        return selector.count('.cradmin-legacy-listbuilder-itemvalue')
 
     def test_not_periods_where_not_student(self):
         requestuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -78,11 +78,11 @@ class TestAllPeriodsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=requestuser)
         self.assertEqual(
                 'You are not registered on any courses in Devilry.',
-                mockresponse.selector.one('.django-cradmin-listing-no-items-message').alltext_normalized)
+                mockresponse.selector.one('.cradmin-legacy-listing-no-items-message').alltext_normalized)
 
     def __get_titles(self, selector):
         return [element.alltext_normalized
-                for element in selector.list('.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+                for element in selector.list('.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
 
     def test_orderby_sanity(self):
         requestuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -149,7 +149,7 @@ class TestAllPeriodsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             'Test Subject - Test Period',
             mockresponse.selector.one(
-                    '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized
+                    '.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized
         )
 
     def test_listitem_url(self):
@@ -182,7 +182,7 @@ class TestAllPeriodsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
                 '2 assignments',
                 mockresponse.selector.one(
-                        '.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized)
+                        '.cradmin-legacy-listbuilder-itemvalue-titledescription-description').alltext_normalized)
 
     def test_assignmentcount_multiple_periods(self):
         requestuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -200,7 +200,7 @@ class TestAllPeriodsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         assignmentcounts = {
             element.alltext_normalized
             for element in mockresponse.selector.list(
-                    '.django-cradmin-listbuilder-itemvalue-titledescription-description')}
+                    '.cradmin-legacy-listbuilder-itemvalue-titledescription-description')}
         self.assertEqual(
                 {'1 assignment', '0 assignments'},
                 assignmentcounts)
@@ -250,7 +250,7 @@ class TestAllPeriodsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    user=requestuser,
                    _quantity=allperiods.AllPeriodsView.paginate_by)
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=requestuser)
-        self.assertFalse(mockresponse.selector.exists('.django-cradmin-loadmorepager'))
+        self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-loadmorepager'))
 
     def test_pagination(self):
         requestuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -260,7 +260,7 @@ class TestAllPeriodsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    user=requestuser,
                    _quantity=allperiods.AllPeriodsView.paginate_by + 1)
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=requestuser)
-        self.assertTrue(mockresponse.selector.exists('.django-cradmin-loadmorepager'))
+        self.assertTrue(mockresponse.selector.exists('.cradmin-legacy-loadmorepager'))
 
     def test_querycount(self):
         requestuser = mommy.make(settings.AUTH_USER_MODEL)

@@ -10,8 +10,8 @@ from django.utils.translation import ugettext_lazy
 from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView
-from django_cradmin import crapp
-from django_cradmin.crinstance import reverse_cradmin_url
+from cradmin_legacy import crapp
+from cradmin_legacy.crinstance import reverse_cradmin_url
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import GroupInvite

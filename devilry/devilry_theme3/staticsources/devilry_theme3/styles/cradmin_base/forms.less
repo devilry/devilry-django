@@ -5,21 +5,21 @@
 }
 
 
-.django-cradmin-formsized-wrapper,
-.django-cradmin-form-wrapper .django-cradmin-form {
+.cradmin-legacy-formsized-wrapper,
+.cradmin-legacy-form-wrapper .cradmin-legacy-form {
   max-width: @cradmin-form-max-width;
   margin-left: auto;
   margin-right: auto;
 }
 
-.django-cradmin-form.django-cradmin-form-fullwidth {
+.cradmin-legacy-form.cradmin-legacy-form-fullwidth {
   max-width: 100%;
   margin-left: 0;
   margin-right: 0;
 }
 
-.django-cradmin-form-wrapper {
-  .django-cradmin-form {
+.cradmin-legacy-form-wrapper {
+  .cradmin-legacy-form {
     background: @cradmin-form-bg;
     padding-bottom: 0;
 
@@ -37,13 +37,13 @@
       }
     }
 
-    .django-cradmin-formfield-label-sr-only {
+    .cradmin-legacy-formfield-label-sr-only {
       label {
         .cradmin-sr-only();
       }
     }
 
-    &.django-cradmin-form-noasterisk {
+    &.cradmin-legacy-form-noasterisk {
       label .asteriskField {
         display: none;
       }
@@ -107,65 +107,65 @@ form .alert-block.alert-danger {
 }
 
 
-.django-cradmin-create-foreignkey-select-mode-buttonbar {
+.cradmin-legacy-create-foreignkey-select-mode-buttonbar {
   margin-bottom: (@grid-gutter-width/2);
 }
 
 
-.django-cradmin-datetimepicker {
+.cradmin-legacy-datetimepicker {
   max-width: 250px;
   .clearfix();
 
-  .django-cradmin-datepicker {
+  .cradmin-legacy-datepicker {
     float: left;
     width: 65%;
     padding-right: 5px;
   }
-  .django-cradmin-timepicker {
+  .cradmin-legacy-timepicker {
     float: right;
     width: 35%;
     padding-left: 5px;
   }
 }
 
-.django-cradmin-form-collapsed-section {
-  .django-cradmin-form-collapsed-section-header {
+.cradmin-legacy-form-collapsed-section {
+  .cradmin-legacy-form-collapsed-section-header {
     padding-left: @cradmin-form-sidepadding-left;
     padding-right: @cradmin-form-sidepadding-right;
   }
 }
 
-.django-cradmin-split-timepicker {
+.cradmin-legacy-split-timepicker {
   .clearfix();
-  .django-cradmin-split-timepicker-hour,
-  .django-cradmin-split-timepicker-minute {
+  .cradmin-legacy-split-timepicker-hour,
+  .cradmin-legacy-split-timepicker-minute {
     width: 50%;
     float: left;
   }
-  .django-cradmin-split-timepicker-hour {
+  .cradmin-legacy-split-timepicker-hour {
     padding-right: 5px;
   }
-  .django-cradmin-split-timepicker-minute {
+  .cradmin-legacy-split-timepicker-minute {
     padding-left: 5px;
   }
 }
 
-.django-cradmin-datetimepicker-split-time {
+.cradmin-legacy-datetimepicker-split-time {
   .clearfix();
   max-width: 270px;
 
-  .django-cradmin-datepicker {
+  .cradmin-legacy-datepicker {
     float: left;
     width: 50%;
     padding-right: 5px;
   }
-  .django-cradmin-split-timepicker {
+  .cradmin-legacy-split-timepicker {
     float: right;
     width: 50%;
     padding-left: 5px;
   }
 
-  &.django-cradmin-datetimepicker-split-time-fluid {
+  &.cradmin-legacy-datetimepicker-split-time-fluid {
     max-width: none;
   }
 }
@@ -188,9 +188,9 @@ textarea {
 }
 
 
-.django-cradmin-clearable-textinput {
+.cradmin-legacy-clearable-textinput {
   position: relative;
-  .django-cradmin-clearable-textinput-button {
+  .cradmin-legacy-clearable-textinput-button {
     position: absolute;
     top: 0;
     right: 0;
@@ -199,7 +199,7 @@ textarea {
     &:hover {
       color: @link-color;
     }
-    &.django-cradmin-clearable-textinput-button-visible {
+    &.cradmin-legacy-clearable-textinput-button-visible {
       display: inline-block;
     }
   }

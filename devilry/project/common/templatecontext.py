@@ -30,8 +30,8 @@ def template_variables(request):
         'DEVILRY_ENABLE_MATHJAX': settings.DEVILRY_ENABLE_MATHJAX,
         'DEVILRY_SYNCSYSTEM': settings.DEVILRY_SYNCSYSTEM,
         'DEVILRY_LACKING_PERMISSIONS_URL': urlsetting_or_unsetview('DEVILRY_LACKING_PERMISSIONS_URL'),
-        'DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND': getattr(settings, 'DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND', False),
-        'DJANGO_CRADMIN_FORGOTPASSWORD_URL': getattr(settings, 'DJANGO_CRADMIN_FORGOTPASSWORD_URL', None),
+        'CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND': getattr(settings, 'CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND', False),
+        'CRADMIN_LEGACY_FORGOTPASSWORD_URL': getattr(settings, 'CRADMIN_LEGACY_FORGOTPASSWORD_URL', None),
         'DEVILRY_FRONTPAGE_HEADER_INCLUDE_TEMPLATE': settings.DEVILRY_FRONTPAGE_HEADER_INCLUDE_TEMPLATE,
         'DEVILRY_FRONTPAGE_FOOTER_INCLUDE_TEMPLATE': settings.DEVILRY_FRONTPAGE_FOOTER_INCLUDE_TEMPLATE,
         'DEVILRY_HELP_PAGE_HEADER_INCLUDE_TEMPLATE': settings.DEVILRY_HELP_PAGE_HEADER_INCLUDE_TEMPLATE,
@@ -45,5 +45,5 @@ def template_variables(request):
     language_code = translation.get_language()
     if language_code != 'en':
         # We don't need to set the default translatiion
-        template_variables_dict['DJANGO_CRADMIN_MOMENTJS_LOCALE'] = language_code
+        template_variables_dict['CRADMIN_LEGACY_MOMENTJS_LOCALE'] = language_code
     return template_variables_dict

@@ -3,9 +3,9 @@
 
 from django.http import Http404
 from django.utils.translation import ugettext_lazy, pgettext_lazy
-from django_cradmin import crapp
-from django_cradmin.viewhelpers import listbuilderview
-from django_cradmin.viewhelpers.listbuilder.itemvalue import TitleDescription
+from cradmin_legacy import crapp
+from cradmin_legacy.viewhelpers import listbuilderview
+from cradmin_legacy.viewhelpers.listbuilder.itemvalue import TitleDescription
 
 from devilry.apps.core.group_user_lookup import GroupUserLookup
 from devilry.devilry_cradmin.devilry_listbuilder.feedbackfeed_timeline import StudentGroupCommentItemValueMinimal, \

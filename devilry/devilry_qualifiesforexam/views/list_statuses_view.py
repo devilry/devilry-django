@@ -6,10 +6,10 @@ from django.db import models
 
 # CrAdmin imports
 from django.utils.translation import ugettext_lazy
-from django_cradmin.viewhelpers import listbuilderview
-from django_cradmin.viewhelpers import listbuilder
-from django_cradmin.crinstance import reverse_cradmin_url
-from django_cradmin.viewhelpers import listfilter
+from cradmin_legacy.viewhelpers import listbuilderview
+from cradmin_legacy.viewhelpers import listbuilder
+from cradmin_legacy.crinstance import reverse_cradmin_url
+from cradmin_legacy.viewhelpers import listfilter
 
 
 # Devilry imports

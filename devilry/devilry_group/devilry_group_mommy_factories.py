@@ -213,7 +213,7 @@ def feedbackset_new_attempt_unpublished(group, **kwargs):
 
 def _add_file_to_collection(temporary_filecollection, file_like_object):
     """
-    Creates a :obj:`django_cradmin.apps.cradmin_temporaryfileuploadstore.models.TemporaryFile` for the
+    Creates a :obj:`cradmin_legacy.apps.cradmin_temporaryfileuploadstore.models.TemporaryFile` for the
     ``temporary_filecollection```.
 
     Args:
@@ -229,9 +229,9 @@ def _add_file_to_collection(temporary_filecollection, file_like_object):
 
 def temporary_file_collection_with_tempfile(**collection_attributes):
     """
-    Create a :obj:`django_cradmin.apps.cradmin_temporaryfileuploadstore.models.TemporaryFileCollection`
+    Create a :obj:`cradmin_legacy.apps.cradmin_temporaryfileuploadstore.models.TemporaryFileCollection`
     using ``mommy.make('cradmin_temporaryfileuploadstore.TemporaryFileCollection')`` with a attached default
-    :obj:`django_cradmin.apps.cradmin_temporaryfileuploadstore.models.TemporaryFile`.
+    :obj:`cradmin_legacy.apps.cradmin_temporaryfileuploadstore.models.TemporaryFile`.
 
     Note::
         Use this if you don't care for the actual file, only that a file is added.
@@ -252,7 +252,7 @@ def temporary_file_collection_with_tempfile(**collection_attributes):
 
 def temporary_file_collection_with_tempfiles(file_list=None, **collection_attributes):
     """
-    Create a :obj:`django_cradmin.apps.cradmin_temporaryfileuploadstore.models.TemporaryFileCollection`
+    Create a :obj:`cradmin_legacy.apps.cradmin_temporaryfileuploadstore.models.TemporaryFileCollection`
     using ``mommy.make('cradmin_temporaryfileuploadstore.TemporaryFileCollection')``.
 
     Add files to the ``file_list``, preferably Django`s ``SimpleUploadedFile``.

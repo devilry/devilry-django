@@ -1,7 +1,7 @@
-{% extends "django_cradmin/base.django.html" %}
+{% extends "cradmin_legacy/base.django.html" %}
 {% load i18n %}
 {% load static %}
-{% load cradmin_tags %}
+{% load cradmin_legacy_tags %}
 {% load devilry_core_tags %}
 
 {% block title %}
@@ -20,7 +20,7 @@
 {% block content %}
     {% if examinerusers %}
         <div id="devilry_student_group_contact_hasexaminers"
-                class="container django-cradmin-container-focus">
+                class="container cradmin-legacy-container-focus">
             {% trans "The following people are responsible for giving you feedback on this assignment" %}:
             <ul class="list-unstyled">
                 {% for user in examinerusers %}
@@ -33,7 +33,7 @@
         </div>
     {% else %}
         <div id="devilry_student_group_contact_noexaminers"
-                class="container django-cradmin-container-focus django-cradmin-container-focus-warning">
+                class="container cradmin-legacy-container-focus cradmin-legacy-container-focus-warning">
             {% trans "Nobody is registered as responsible for giving you feedback for this assignment at this time." %}
         </div>
     {% endif %}

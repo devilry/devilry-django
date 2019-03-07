@@ -1,13 +1,13 @@
 {% load i18n %}
 
-<div django-cradmin-bulkfileupload={{ apiparameters|safe }} {# NOTE: The missing quotes are correct - they are added by quoteattr #}
-             class="django-cradmin-bulkfileupload">
+<div cradmin-legacy-bulkfileupload={{ apiparameters|safe }} {# NOTE: The missing quotes are correct - they are added by quoteattr #}
+             class="cradmin-legacy-bulkfileupload">
 
-    <div class="django-cradmin-bulkfileupload-content">
-        <div django-cradmin-bulkfileupload-progress></div>
-        <div django-cradmin-bulkfileupload-rejected-files="{{ invalid_filetype_message }}"></div>
+    <div class="cradmin-legacy-bulkfileupload-content">
+        <div cradmin-legacy-bulkfileupload-progress></div>
+        <div cradmin-legacy-bulkfileupload-rejected-files="{{ invalid_filetype_message }}"></div>
 
-        <div django-cradmin-bulkfileupload-advanced-widget>
+        <div cradmin-legacy-bulkfileupload-advanced-widget>
             {% block droparea-advanced %}
                 <div ng-file-drop
                      ng-model="cradminLastFilesSelectedByUser"
@@ -16,15 +16,15 @@
                      accept="{{ accept }}"
                         {% endif %}
                      allow-dir="false"
-                     class="django-cradmin-bulkfileupload-dropbox"
+                     class="cradmin-legacy-bulkfileupload-dropbox"
                      ng-file-change="filesDropped($files, $event, $rejectedFiles)"
                      drag-over-class="{
-                                            accept:'django-cradmin-bulkfileupload-dropbox-dragover',
-                                            reject:'django-cradmin-bulkfileupload-dropbox-dragover-error',
+                                            accept:'cradmin-legacy-bulkfileupload-dropbox-dragover',
+                                            reject:'cradmin-legacy-bulkfileupload-dropbox-dragover-error',
                                             delay:100}">
                     {% block droparea-advanced-content %}
-                        <div class="django-cradmin-bulkfileupload-dropbox-text">
-                            {% block django-cradmin-bulkfileupload-dropbox-text %}
+                        <div class="cradmin-legacy-bulkfileupload-dropbox-text">
+                            {% block cradmin-legacy-bulkfileupload-dropbox-text %}
                                 {% if dropbox_text %}
                                     {{ dropbox_text }}
                                 {% else %}
@@ -34,9 +34,9 @@
                                         {% trans "Upload files by dragging and dropping them here" %}
                                     {% endif %}
                                 {% endif %}
-                            {% endblock django-cradmin-bulkfileupload-dropbox-text %}
+                            {% endblock cradmin-legacy-bulkfileupload-dropbox-text %}
                         </div>
-                        <div class="django-cradmin-bulkfileupload-dropbox-invalid-filetype-errormessage">
+                        <div class="cradmin-legacy-bulkfileupload-dropbox-invalid-filetype-errormessage">
                             {% block droparea-advanced-content-invalid-filetype-errormessage %}
                                 {% if invalid_filetype_message %}
                                     {{ invalid_filetype_message }}
@@ -49,7 +49,7 @@
                 </div>
             {% endblock droparea-advanced %}
             {% block fileselectbutton-advanced %}
-                <p class="django-cradmin-bulkfileupload-advanced-fileselectbutton-wrapper">
+                <p class="cradmin-legacy-bulkfileupload-advanced-fileselectbutton-wrapper">
                     <button ng-file-select
                             type="button"
                             ng-model="cradminLastFilesSelectedByUser"
@@ -57,7 +57,7 @@
                             {% if accept %}
                             accept="{{ accept }}"
                             {% endif %}
-                            class="btn-link django-cradmin-bulkfileupload-advanced-fileselectbutton">
+                            class="btn-link cradmin-legacy-bulkfileupload-advanced-fileselectbutton">
                         {% block fileselectbutton-advanced-content %}
                             {% if advanced_fileselectbutton_text %}
                                 {{ advanced_fileselectbutton_text }}
@@ -74,14 +74,14 @@
             {% endblock fileselectbutton-advanced %}
         </div>
 
-        <div django-cradmin-bulkfileupload-simple-widget>
+        <div cradmin-legacy-bulkfileupload-simple-widget>
             {% block fileselectbutton-simple %}
-                <p class="django-cradmin-bulkfileupload-simple-button-wrapper">
+                <p class="cradmin-legacy-bulkfileupload-simple-button-wrapper">
                     <button ng-file-select
                             type="button"
                             ng-model="cradminLastFilesSelectedByUser"
                             multiple="{% if singlemode %}false{% else %}true{% endif %}"
-                            class="btn btn-default btn-block django-cradmin-bulkfileupload-simple-button">
+                            class="btn btn-default btn-block cradmin-legacy-bulkfileupload-simple-button">
                         {% block fileselectbutton-simple-content %}
                             {% if simple_fileselectbutton_text %}
                                 {{ simple_fileselectbutton_text }}
@@ -98,7 +98,7 @@
             {% endblock fileselectbutton-simple %}
         </div>
 
-        <input type="hidden" name="{{ hiddenfieldname }}" django-cradmin-bulkfileupload-collectionid-field>
+        <input type="hidden" name="{{ hiddenfieldname }}" cradmin-legacy-bulkfileupload-collectionid-field>
     </div>
 </div>
 

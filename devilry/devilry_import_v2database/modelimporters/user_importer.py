@@ -53,7 +53,7 @@ class UserImporter(modelimporter.ModelImporter):
             ]
         )
         # The shortname is overridden by _create_username() or _create_useremail()
-        # depending on the DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND setting
+        # depending on the CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND setting
         # (See devilry.devilry_account.models.UserName.clean and
         # devilry.devilry_account.models.UserEmail.clean).
         username = object_dict['fields']['username']
@@ -63,7 +63,7 @@ class UserImporter(modelimporter.ModelImporter):
             user.full_clean()
         user.save()
         email = object_dict['fields']['email']
-        if not settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
+        if not settings.CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND:
             self._create_username(user=user, username=username)
         self._create_useremail(user=user, email=email)
         self.log_create(model_object=user, data=object_dict)

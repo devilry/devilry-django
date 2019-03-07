@@ -6,7 +6,7 @@ from model_mommy import mommy
 from django import test
 
 # CrAdmin imports
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 
 # Devilry imports
 from devilry.project.common import settings
@@ -76,7 +76,7 @@ class TestPluginSelectionView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(
                 cradmin_role=testperiod,
                 requestuser=testadmin)
-        self.assertFalse(mockresponse.selector.exists('devilry-django-cradmin-listbuilder-itemframe-goforward'))
+        self.assertFalse(mockresponse.selector.exists('devilry-cradmin-legacy-listbuilder-itemframe-goforward'))
 
     def test_list_single_plugin(self):
         # Add a single plugin to the registry and make sure its listed.
@@ -94,7 +94,7 @@ class TestPluginSelectionView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(
                 cradmin_role=testperiod,
                 requestuser=testadmin)
-        self.assertTrue(mockresponse.selector.one('.devilry-django-cradmin-listbuilder-itemframe-goforward'))
+        self.assertTrue(mockresponse.selector.one('.devilry-cradmin-legacy-listbuilder-itemframe-goforward'))
 
     def test_list_multiple_plugins(self):
         # Add a three plugins and make sure all three plugins are listed.
@@ -118,4 +118,4 @@ class TestPluginSelectionView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(
                 cradmin_role=testperiod,
                 requestuser=testadmin)
-        self.assertEqual(3, len(mockresponse.selector.list('.devilry-django-cradmin-listbuilder-itemframe-goforward')))
+        self.assertEqual(3, len(mockresponse.selector.list('.devilry-cradmin-legacy-listbuilder-itemframe-goforward')))

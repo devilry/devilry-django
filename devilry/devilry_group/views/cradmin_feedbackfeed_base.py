@@ -13,8 +13,8 @@ from django.http import HttpResponseRedirect
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _, ugettext_lazy
-from django_cradmin.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
-from django_cradmin.viewhelpers import create
+from cradmin_legacy.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
+from cradmin_legacy.viewhelpers import create
 
 from devilry.apps.core.models import Assignment
 from devilry.devilry_comment import models as comment_models
@@ -90,8 +90,8 @@ class FeedbackFeedBaseView(create.CreateView):
     template_name = "devilry_group/feedbackfeed.django.html"
     model = group_models.GroupComment
     form_attributes = {
-        'django-cradmin-bulkfileupload-form': '',
-        'django-cradmin-bulkfileupload-form-prevent-window-dragdrop': 'true'
+        'cradmin-legacy-bulkfileupload-form': '',
+        'cradmin-legacy-bulkfileupload-form-prevent-window-dragdrop': 'true'
     }
     submit_use_label = _('Post comment')
 
@@ -313,7 +313,7 @@ class FeedbackFeedBaseView(create.CreateView):
         Get the button layout. This is added to the crispy form layout.
 
         Defaults to a :class:`crispy_forms.layout.Div` with css class
-        ``django_cradmin_submitrow`` containing all the buttons
+        ``cradmin_legacy_submitrow`` containing all the buttons
         returned by :meth:`.get_buttons`.
 
         Returns:
@@ -454,7 +454,7 @@ class FeedbackFeedBaseView(create.CreateView):
         Get a set of files from cradmins ``temporary fileuploadstore``.
 
         Returns:
-            QuerySet: ``django_cradmin.TemporaryFileCollection`` objects.
+            QuerySet: ``cradmin_legacy.TemporaryFileCollection`` objects.
         """
         return TemporaryFileCollection.objects \
             .filter_for_user(self.request.user) \

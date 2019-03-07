@@ -3,7 +3,7 @@
 
 from django.conf import settings
 from django.http import Http404
-from django_cradmin import crapp
+from cradmin_legacy import crapp
 
 from devilry.devilry_group.views.cradmin_comment_history import CommentHistoryView
 from devilry.devilry_group import models as group_models

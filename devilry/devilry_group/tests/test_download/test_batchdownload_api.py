@@ -11,7 +11,7 @@ from django.core.files.base import ContentFile
 from django.http import Http404
 from django.test import override_settings
 from django.utils import timezone
-from django_cradmin.cradmin_testhelpers import TestCaseMixin
+from cradmin_legacy.cradmin_testhelpers import TestCaseMixin
 from ievv_opensource.ievv_batchframework import batchregistry
 from ievv_opensource.ievv_batchframework.models import BatchOperation
 from model_mommy import mommy

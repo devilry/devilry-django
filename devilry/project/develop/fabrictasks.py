@@ -139,7 +139,7 @@ def sync_cradmin_theme_into_devilry_theme(cradmin_root_dir):
     the devilry_theme ``less/`` directory.
     """
     devilry_theme_lessdir = os.path.join(*'devilry/devilry_theme3/staticsources/devilry_theme3/styles'.split('/'))
-    cradmin_lessdir = os.path.join(cradmin_root_dir, *'django_cradmin/static/django_cradmin/src/less'.split('/'))
+    cradmin_lessdir = os.path.join(cradmin_root_dir, *'cradmin_legacy/static/cradmin_legacy/src/less'.split('/'))
     for directory in 'cradmin_base', 'cradmin_theme_default', 'cradmin_theme_topmenu':
         sourcedir = os.path.join(cradmin_lessdir, directory)
         destinationdir = os.path.join(devilry_theme_lessdir, directory)

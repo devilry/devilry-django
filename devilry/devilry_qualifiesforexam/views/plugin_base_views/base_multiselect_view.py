@@ -7,8 +7,8 @@ from django.http import HttpResponseRedirect
 
 # CrAdmin imports
 from django.utils.translation import ugettext_lazy
-from django_cradmin.viewhelpers import multiselect2
-from django_cradmin.viewhelpers import multiselect2view
+from cradmin_legacy.viewhelpers import multiselect2
+from cradmin_legacy.viewhelpers import multiselect2view
 
 # Devilry imports
 from devilry.devilry_qualifiesforexam import models as status_models

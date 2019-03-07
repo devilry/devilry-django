@@ -8,7 +8,7 @@ from django import test
 from django.conf import settings
 from django.http import Http404
 
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql

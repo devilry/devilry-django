@@ -5,9 +5,9 @@ from datetime import timedelta
 from django import test
 from django.conf import settings
 from django.utils import timezone
-from django_cradmin import cradmin_testhelpers
-from django_cradmin import crapp
-from django_cradmin.crinstance import reverse_cradmin_url
+from cradmin_legacy import cradmin_testhelpers
+from cradmin_legacy import crapp
+from cradmin_legacy.crinstance import reverse_cradmin_url
 from model_mommy import mommy
 
 from devilry.apps.core.models import Assignment
@@ -109,7 +109,7 @@ class TestPeriodOverviewView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser, cradmin_role=testperiod)
         self.assertEqual(
                 'No assignments.',
-                mockresponse.selector.one('.django-cradmin-listing-no-items-message').alltext_normalized)
+                mockresponse.selector.one('.cradmin-legacy-listing-no-items-message').alltext_normalized)
 
     def test_assignment_url(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -244,7 +244,7 @@ class TestPeriodOverviewView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     def __get_assignment_titles(self, selector):
         return [element.alltext_normalized
                 for element in selector.list('.devilry-cradmin-groupitemvalue '
-                                             '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+                                             '.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
 
     def test_grouplist_orderby(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -297,7 +297,7 @@ class TestPeriodOverviewView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 'Test Assignment',
                 mockresponse.selector.one(
                         '.devilry-cradmin-groupitemvalue '
-                        '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized
+                        '.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized
         )
 
     def test_grouplist_no_examiners(self):
@@ -445,7 +445,7 @@ class TestPeriodOverviewView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    assignment_group__parentnode__parentnode=testperiod,
                    _quantity=overview.PeriodOverviewView.paginate_by)
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser, cradmin_role=testperiod)
-        self.assertFalse(mockresponse.selector.exists('.django-cradmin-loadmorepager'))
+        self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-loadmorepager'))
 
     def test_pagination(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -454,7 +454,7 @@ class TestPeriodOverviewView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    assignment_group__parentnode__parentnode=testperiod,
                    _quantity=overview.PeriodOverviewView.paginate_by + 1)
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser, cradmin_role=testperiod)
-        self.assertTrue(mockresponse.selector.exists('.django-cradmin-loadmorepager'))
+        self.assertTrue(mockresponse.selector.exists('.cradmin-legacy-loadmorepager'))
 
     def test_querycount(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)

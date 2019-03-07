@@ -7,9 +7,9 @@ import mock
 from django import test
 from django.conf import settings
 from django.utils import timezone
-from django_cradmin import cradmin_testhelpers
-from django_cradmin import crapp
-from django_cradmin.crinstance import reverse_cradmin_url
+from cradmin_legacy import cradmin_testhelpers
+from cradmin_legacy import crapp
+from cradmin_legacy.crinstance import reverse_cradmin_url
 from model_mommy import mommy
 
 from devilry.apps.core.models import Assignment
@@ -117,7 +117,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         selector = htmls.S(mockresponse.selector.one('.devilry-student-dashboard-upcoming-assignments').__str__())
         self.assertEqual(
             selector.one('.devilry-cradmin-groupitemvalue '
-                         '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized,
+                         '.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized,
             'testsubject.testperiod - Test Assignment 1')
 
     def test_one_upcoming_assignments_accross_periods(self):
@@ -139,7 +139,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         selector = htmls.S(mockresponse.selector.one('.devilry-student-dashboard-upcoming-assignments').__str__())
         assignment_name_list = [element.alltext_normalized for element in
                                 selector.list('.devilry-cradmin-groupitemvalue '
-                                              '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+                                              '.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
         self.assertEqual(assignment_name_list[0], 'testsubject.testperiod1 - Test Assignment 1')
         self.assertEqual(assignment_name_list[1], 'testsubject.testperiod2 - Test Assignment 2')
 
@@ -163,7 +163,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         selector = htmls.S(mockresponse.selector.one('.devilry-student-dashboard-upcoming-assignments').__str__())
         assignment_name_list = [element.alltext_normalized for element in
                                 selector.list('.devilry-cradmin-groupitemvalue '
-                                              '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+                                              '.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
         self.assertEqual(assignment_name_list[0], 'testsubject1.testperiod1 - Test Assignment 1')
         self.assertEqual(assignment_name_list[1], 'testsubject2.testperiod2 - Test Assignment 2')
 
@@ -188,7 +188,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         selector = htmls.S(mockresponse.selector.one('.devilry-student-dashboard-upcoming-assignments').__str__())
         assignment_name_list = [element.alltext_normalized for element in
                                 selector.list('.devilry-cradmin-groupitemvalue '
-                                              '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+                                              '.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
         self.assertEqual(assignment_name_list[0], 'testsubject.testperiod - Test Assignment 1')
         self.assertEqual(assignment_name_list[1], 'testsubject.testperiod - Test Assignment 2')
         self.assertEqual(assignment_name_list[2], 'testsubject.testperiod - Test Assignment 3')
@@ -210,7 +210,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             selector.one(
                 '.devilry-cradmin-groupitemvalue '
-                '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized,
+                '.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized,
             'testsubject.testperiod - Test Assignment 1')
 
     def test_user_can_not_see_upcoming_assignments_for_other_students_on_different_assignments(self):
@@ -232,7 +232,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             selector.one(
                 '.devilry-cradmin-groupitemvalue '
-                '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized,
+                '.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized,
             'testsubject.testperiod - Test Assignment 1')
 
     def __get_assignment_count(self, selector):
@@ -281,7 +281,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
                 'You have no active assignments. Use the button below to browse '
                 'inactive assignments and courses.',
-                mockresponse.selector.one('.django-cradmin-listing-no-items-message').alltext_normalized)
+                mockresponse.selector.one('.cradmin-legacy-listing-no-items-message').alltext_normalized)
 
     def test_assignment_url(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -398,7 +398,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     def __get_assignment_titles(self, selector):
         return [element.alltext_normalized
                 for element in selector.list('.devilry-cradmin-groupitemvalue '
-                                             '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+                                             '.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
 
     def test_grouplist_orderby(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -456,7 +456,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             'testsubject.testperiod - Test Assignment',
             mockresponse.selector.one(
                     '.devilry-cradmin-groupitemvalue '
-                    '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized
+                    '.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized
         )
 
     def test_grouplist_no_examiners(self):
@@ -638,7 +638,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    assignment_group__parentnode__parentnode__end_time=ACTIVE_PERIOD_END,
                    _quantity=dashboard.DashboardView.paginate_by)
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
-        self.assertFalse(mockresponse.selector.exists('.django-cradmin-loadmorepager'))
+        self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-loadmorepager'))
 
     def test_pagination(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -647,7 +647,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    assignment_group__parentnode__parentnode__end_time=ACTIVE_PERIOD_END,
                    _quantity=dashboard.DashboardView.paginate_by + 1)
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
-        self.assertTrue(mockresponse.selector.exists('.django-cradmin-loadmorepager'))
+        self.assertTrue(mockresponse.selector.exists('.cradmin-legacy-loadmorepager'))
 
     def test_querycount(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)

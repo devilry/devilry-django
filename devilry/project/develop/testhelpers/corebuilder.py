@@ -39,7 +39,7 @@ class UserBuilder(ReloadableDbBuilderInterface):
 
     def __init__(self, username, full_name=None, email=None, is_superuser=False):
         email = email or '{}@example.com'.format(username)
-        if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
+        if settings.CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND:
             username = ''
         self.user = get_user_model().objects.create_user(
             username=username,

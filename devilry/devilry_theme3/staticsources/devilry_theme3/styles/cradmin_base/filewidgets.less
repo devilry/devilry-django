@@ -1,5 +1,5 @@
-.django-cradmin-form {
-  .django-cradmin-filewidget {
+.cradmin-legacy-form {
+  .cradmin-legacy-filewidget {
     //padding: 10px 15px;
 
     img {
@@ -9,18 +9,18 @@
       margin-bottom: 10px;
     }
 
-    a.django-cradmin-filewidget-fullviewlink {
+    a.cradmin-legacy-filewidget-fullviewlink {
       display: block;
       border: none;
       margin-bottom: 10px;
     }
 
-    .django-cradmin-filewidget-field-and-overlay-wrapper {
+    .cradmin-legacy-filewidget-field-and-overlay-wrapper {
       position: relative;
 
       // Style button and file field the same size
       input[type=file],
-      a.django-cradmin-filewidget-fieldoverlay {
+      a.cradmin-legacy-filewidget-fieldoverlay {
         width: @cradmin-filewidget-button-width;
         height: @cradmin-filewidget-button-height;
         border-radius: @cradmin-filewidget-button-border-radius;
@@ -30,7 +30,7 @@
         overflow: hidden;
       }
 
-      &.django-cradmin-filewidget-field-and-overlay-wrapper-hover {
+      &.cradmin-legacy-filewidget-field-and-overlay-wrapper-hover {
         a.btn.btn-default {
           .btn-default-hoverstyle-mixin();
         }
@@ -48,20 +48,20 @@
       }
     }
 
-    &.django-cradmin-filewidget-clearable {
-      .django-cradmin-filewidget-clear {
+    &.cradmin-legacy-filewidget-clearable {
+      .cradmin-legacy-filewidget-clear {
         margin: @cradmin-filewidget-clear-margin;
       }
     }
   }
 
-  .django-cradmin-imagewidget.django-cradmin-filewidget {
-    &.django-cradmin-filewidget-clearable {
-      .django-cradmin-imagewidget-preview-and-clear {
-        .django-cradmin-imagewidget-preview-and-clear-inner {
+  .cradmin-legacy-imagewidget.cradmin-legacy-filewidget {
+    &.cradmin-legacy-filewidget-clearable {
+      .cradmin-legacy-imagewidget-preview-and-clear {
+        .cradmin-legacy-imagewidget-preview-and-clear-inner {
           display: inline-block;
           position: relative;
-          .django-cradmin-filewidget-clear {
+          .cradmin-legacy-filewidget-clear {
             margin: 0;
             display: inline-block;
             position: absolute;

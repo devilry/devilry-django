@@ -2,7 +2,7 @@
 
 
 # CrAdmin imports
-from django_cradmin import crapp
+from cradmin_legacy import crapp
 
 # Devilry imports
 from .views import pluginselection_view

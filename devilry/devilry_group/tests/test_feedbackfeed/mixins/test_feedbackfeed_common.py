@@ -6,7 +6,7 @@ from django.contrib import messages
 
 from django.utils import formats
 from django.utils import timezone
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
@@ -228,7 +228,7 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin, TestFeedbackFeedGroupCo
             cradmin_role=test_feedbackset.group,
             requestuser=testuser
         )
-        self.assertFalse(mockresponse.selector.exists('.django-cradmin-form-wrapper'))
+        self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-form-wrapper'))
 
     def test_semester_expired_comment_form_not_rendered_message_box(self):
         # Test comment/upload form is not rendered if the semester has expired.
@@ -239,7 +239,7 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin, TestFeedbackFeedGroupCo
             cradmin_role=test_feedbackset.group,
             requestuser=testuser
         )
-        self.assertFalse(mockresponse.selector.exists('.django-cradmin-form-wrapper'))
+        self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-form-wrapper'))
         self.assertTrue(mockresponse.selector.exists('.devilry-feedbackfeed-form-disabled'))
         self.assertEqual(mockresponse.selector.one('.devilry-feedbackfeed-form-disabled').alltext_normalized,
                          'File uploads and comments disabled This assignment is on an inactive semester. '

@@ -11,7 +11,7 @@ from django.db import models
 from django.views import generic
 
 # Devilry/cradmin imports
-from django_cradmin import crapp
+from cradmin_legacy import crapp
 from devilry.devilry_group import models as group_models
 from devilry.devilry_comment.models import CommentFile
 from devilry.devilry_group.models import GroupComment, ImageAnnotationComment

@@ -7,13 +7,13 @@ from django.test import override_settings
 from devilry.devilry_account.models import User
 
 
-@override_settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True)
+@override_settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True)
 class TestUsermodCommand(test.TestCase):
     def __run_management_command(self, *args):
         management.call_command(
             'devilry_usermod', *args)
 
-    @override_settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False)
+    @override_settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False)
     def test_ok_usernames_sanity(self):
         User.objects.create_user(username='test')
         self.__run_management_command('test')

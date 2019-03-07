@@ -7,7 +7,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import Http404
 from django.test import TestCase, override_settings
 from django.utils import timezone
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core import models as core_models
@@ -102,7 +102,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
             requestuser=testuser,
             cradmin_instance=self.__mock_cradmin_instance()
         )
-        self.assertFalse(mockresponse.selector.exists('.django-cradmin-form-wrapper'))
+        self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-form-wrapper'))
 
     def test_assignment_deadline_hard_info_box(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -117,7 +117,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
             requestuser=testuser,
             cradmin_instance=self.__mock_cradmin_instance()
         )
-        self.assertFalse(mockresponse.selector.exists('.django-cradmin-form-wrapper'))
+        self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-form-wrapper'))
         self.assertEqual(mockresponse.selector.one('.devilry-feedbackfeed-form-disabled').alltext_normalized,
                          'File uploads and comments disabled Hard deadlines are enabled for this assignment. '
                          'File upload and commenting is disabled.')

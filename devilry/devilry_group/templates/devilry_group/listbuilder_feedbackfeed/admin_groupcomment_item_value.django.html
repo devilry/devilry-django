@@ -1,7 +1,7 @@
 {% extends 'devilry_group/listbuilder_feedbackfeed/base_groupcomment_item_value.django.html' %}
 
 {% load i18n %}
-{% load cradmin_tags %}
+{% load cradmin_legacy_tags %}
 
 {% block edit-links %}
     <a href="{% cradmin_url instanceid='devilry_group_admin' appname='feedbackfeed' viewname='groupcomment-edit' pk=me.group_comment.id roleid=request.cradmin_role.id %}"

@@ -45,7 +45,7 @@ setup(
         'bleach==1.5.0',
         'html5lib==0.9999999',
         'psycopg2==2.7.3.2',
-        'django_cradmin==1.2.3',
+        'cradmin_legacy==1.3.0a0',
         'ievv_opensource==5.2.2',
         'xlsxwriter==1.1.2',
         'arrow==0.12.0',

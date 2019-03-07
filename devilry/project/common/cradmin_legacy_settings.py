@@ -1,5 +1,5 @@
 """
-The django_cradmin settings used by Devilry.
+The cradmin_legacy settings used by Devilry.
 """
 
 #: If this is ``False``, we assume that users authenticate via a
@@ -11,19 +11,19 @@ The django_cradmin settings used by Devilry.
 import devilry
 from devilry.devilry_cradmin import devilry_css_icon_map
 
-DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND = True
+CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND = True
 
 
-DJANGO_CRADMIN_FORGOTPASSWORD_URL = '/devilry_resetpassword/begin'
-DJANGO_CRADMIN_RESETPASSWORD_FINISHED_REDIRECT_URL = '/'
-DJANGO_CRADMIN_SITENAME = 'Devilry'
+CRADMIN_LEGACY_FORGOTPASSWORD_URL = '/devilry_resetpassword/begin'
+CRADMIN_LEGACY_RESETPASSWORD_FINISHED_REDIRECT_URL = '/'
+CRADMIN_LEGACY_SITENAME = 'Devilry'
 
-DJANGO_CRADMIN_MENU_SCROLL_TOP_FIXED = True
+CRADMIN_LEGACY_MENU_SCROLL_TOP_FIXED = True
 
-DJANGO_CRADMIN_THEME_PATH = 'devilry_theme3/{}/styles/' \
+CRADMIN_LEGACY_THEME_PATH = 'devilry_theme3/{}/styles/' \
                             'cradmin_theme_devilry_mainpages/theme.css'.format(devilry.__version__)
-DJANGO_CRADMIN_SUPERUSERUI_THEME_PATH = 'devilry_theme3/{}/styles/' \
+CRADMIN_LEGACY_SUPERUSERUI_THEME_PATH = 'devilry_theme3/{}/styles/' \
                                         'cradmin_theme_devilry_superuserui/theme.css'.format(devilry.__version__)
 
 
-DJANGO_CRADMIN_CSS_ICON_MAP = devilry_css_icon_map.FONT_AWESOME
+CRADMIN_LEGACY_CSS_ICON_MAP = devilry_css_icon_map.FONT_AWESOME

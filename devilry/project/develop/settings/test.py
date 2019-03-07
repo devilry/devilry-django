@@ -33,7 +33,7 @@ if 'debug_toolbar' in INSTALLED_APPS:
     INSTALLED_APPS.remove('debug_toolbar')
 
 # We need to use this because loads of tests uses username and password to login
-DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND = False
+CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND = False
 AUTHENTICATION_BACKENDS = (
     'devilry.devilry_account.authbackend.default.UsernameAuthBackend',
     'devilry.devilry_account.authbackend.default.EmailAuthBackend',

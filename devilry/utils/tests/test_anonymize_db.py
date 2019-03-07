@@ -77,8 +77,8 @@ class TestAnonymizeUserFast(AnonymizeDbTestMixin, test.TestCase):
             get_user_model().objects.get(id=user.id).shortname,
             '{}'.format(user.id))
 
-    @override_settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True)
-    def test_shortname_is_anonymized_with_email_if_django_cradmin_user_email_auth_backend_is_true(self):
+    @override_settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True)
+    def test_shortname_is_anonymized_with_email_if_cradmin_legacy_user_email_auth_backend_is_true(self):
         user = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser')
         anonymize_database.AnonymizeDatabase().anonymize_user()
         self.assertEqual(

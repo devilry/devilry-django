@@ -1,4 +1,4 @@
-{% extends "django_cradmin/layouts/standalone/focused.django.html" %}
+{% extends "cradmin_legacy/layouts/standalone/focused.django.html" %}
 {% load crispy_forms_tags %}
 {% load i18n %}
 
@@ -24,17 +24,17 @@
             <th>{% trans "Email Address" %}:</th>
             <td> {{ user.email }} </td>
         </tr>
-        {% if not DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND %}
+        {% if not CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND %}
             <tr>
                 <th>{% trans "Username" %}:</th>
                 <td> {{ user.username }} </td>
             </tr>
         {% endif %}
-        {% if DJANGO_CRADMIN_FORGOTPASSWORD_URL %}
+        {% if CRADMIN_LEGACY_FORGOTPASSWORD_URL %}
             <tr>
                 <th>{% trans "Password" %}:</th>
                 <td>
-                    <a href="{{ DJANGO_CRADMIN_FORGOTPASSWORD_URL }}">{% trans "Reset password" %}</a>
+                    <a href="{{ CRADMIN_LEGACY_FORGOTPASSWORD_URL }}">{% trans "Reset password" %}</a>
                 </td>
             </tr>
         {% endif %}

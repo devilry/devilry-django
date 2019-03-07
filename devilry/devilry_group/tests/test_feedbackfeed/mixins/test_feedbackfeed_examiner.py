@@ -81,7 +81,7 @@ class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMix
             requestuser=testuser,
             cradmin_instance=self.__mock_cradmin_instance()
         )
-        self.assertTrue(mockresponse.selector.exists('.django-cradmin-form-wrapper'))
+        self.assertTrue(mockresponse.selector.exists('.cradmin-legacy-form-wrapper'))
         self.assertFalse(mockresponse.selector.exists('.devilry-feedbackfeed-form-disabled'))
 
     def test_get_feedbackfeed_anonymous_student_semi(self):

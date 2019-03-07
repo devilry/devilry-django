@@ -6,8 +6,8 @@ from django.http import Http404
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import ensure_csrf_cookie
-from django_cradmin import crapp
-from django_cradmin.crispylayouts import PrimarySubmit
+from cradmin_legacy import crapp
+from cradmin_legacy.crispylayouts import PrimarySubmit
 
 from devilry.devilry_email.comment_email import comment_email
 from devilry.devilry_group.views import cradmin_feedbackfeed_base

@@ -11,7 +11,7 @@ class DevilryQualifiesForExamAppConfig(AppConfig):
 
     def ready(self):
         # Add models to cradmin superuserui
-        from django_cradmin.superuserui import superuserui_registry
+        from cradmin_legacy.superuserui import superuserui_registry
         appconfig = superuserui_registry.default.add_djangoapp(
                 superuserui_registry.DjangoAppConfig(app_label='devilry_qualifiesforexam'))
         appconfig.add_all_models()

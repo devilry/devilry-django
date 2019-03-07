@@ -1,4 +1,4 @@
-.django-cradmin-floating-fullsize-iframe-wrapper  {
+.cradmin-legacy-floating-fullsize-iframe-wrapper  {
   position: fixed;
   left: 0;
   top: 0;
@@ -9,23 +9,23 @@
   .css3-transition(all @cradmin-floating-iframe-showhide-transition-duration ease-in-out);
   .css3-transform(translate(-100%, 0));
 
-  &.django-cradmin-floating-fullsize-iframe-wrapper-show {
+  &.cradmin-legacy-floating-fullsize-iframe-wrapper-show {
     .css3-transform(translate(0, 0));
   }
 
-  &.django-cradmin-floating-fullsize-iframe-wrapper-with-navbar {
-    .django-cradmin-floating-fullsize-content {
-      .django-cradmin-floating-fullsize-iframe-navbar {
+  &.cradmin-legacy-floating-fullsize-iframe-wrapper-with-navbar {
+    .cradmin-legacy-floating-fullsize-content {
+      .cradmin-legacy-floating-fullsize-iframe-navbar {
         display: block;
       }
-      .django-cradmin-floating-fullsize-iframe-inner {
+      .cradmin-legacy-floating-fullsize-iframe-inner {
         top: @cradmin-floating-iframe-navbar-height;
       }
     }
   }
 
 
-  a.django-cradmin-floating-fullsize-iframe-closebutton  {
+  a.cradmin-legacy-floating-fullsize-iframe-closebutton  {
     position: absolute;
     display: block;
     top: 0;
@@ -39,7 +39,7 @@
     text-decoration: none;
     .css3-transition(all @cradmin-floating-iframe-closebutton-transition-duration ease-in-out);
 
-    .django-cradmin-floating-fullsize-iframe-closebutton-icon {
+    .cradmin-legacy-floating-fullsize-iframe-closebutton-icon {
       position: absolute;
       left: 0;
       right: 0;
@@ -55,7 +55,7 @@
     }
   }
 
-  .django-cradmin-floating-fullsize-content {
+  .cradmin-legacy-floating-fullsize-content {
     position: absolute;
     top: 0;
     left: 0;
@@ -63,7 +63,7 @@
     bottom: 0;
     background: @cradmin-floating-iframe-content-bg;
 
-    .django-cradmin-floating-fullsize-loadspinner {
+    .cradmin-legacy-floating-fullsize-loadspinner {
       color: #ccc;
       font-size: 50px;
       text-align: center;
@@ -72,22 +72,22 @@
       z-index: (@cradmin-floating-iframe-zindex + 1);
     }
 
-    .django-cradmin-floating-fullsize-iframe-navbar {
+    .cradmin-legacy-floating-fullsize-iframe-navbar {
       display: none;
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
       z-index: (@cradmin-floating-iframe-zindex + 1);
-      nav.django-cradmin-menu {
-        .djangoCradminMenuVertical(
+      nav.cradmin-legacy-menu {
+        .cradminLegacyMenuVertical(
           @cradmin-floating-iframe-navbar-height,
           @cradmin-menu-vertical-desktop-item-padding,
           @cradmin-floating-iframe-navbar-height);
       }
     }
 
-    .django-cradmin-floating-fullsize-iframe-inner {
+    .cradmin-legacy-floating-fullsize-iframe-inner {
       overflow: hidden;
       //-webkit-overflow-scrolling: touch;
       position: absolute;
@@ -116,42 +116,42 @@
   }
 
 
-  &.django-cradmin-modelchoicefield-iframe-wrapper {
-    .django-cradmin-floating-fullsize-content {
+  &.cradmin-legacy-modelchoicefield-iframe-wrapper {
+    .cradmin-legacy-floating-fullsize-content {
       background: @cradmin-bodybg;
     }
   }
 }
 
-//#django_cradmin_bodycontentwrapper.django-cradmin-floating-fullsize-iframe-bodycontentwrapper {
+//#cradmin_legacy_bodycontentwrapper.cradmin-legacy-floating-fullsize-iframe-bodycontentwrapper {
   //.css3-transition(all @cradmin-floating-iframe-showhide-transition-duration ease-in-out);
   //position: relative;
-  //&.django-cradmin-floating-fullsize-iframe-bodycontentwrapper-push {
+  //&.cradmin-legacy-floating-fullsize-iframe-bodycontentwrapper-push {
     //.css3-transform(translate((100%-@cradmin-floating-iframe-closebutton-width), 0));
     //.css3-transform(translate((60%), 0));
   //}
 //}
 
 
-body.django-cradmin-formview-page {
+body.cradmin-legacy-formview-page {
   @media (min-width: @screen-md-min) {
-    .django-cradmin-floating-fullsize-iframe-wrapper {
+    .cradmin-legacy-floating-fullsize-iframe-wrapper {
       .css3-transform(translate(-100%, 0));
 
-      &.django-cradmin-floating-fullsize-iframe-wrapper-show {
+      &.cradmin-legacy-floating-fullsize-iframe-wrapper-show {
         .css3-transform(translate(0, 0));
       }
 
-      a.django-cradmin-floating-fullsize-iframe-closebutton {
+      a.cradmin-legacy-floating-fullsize-iframe-closebutton {
         width: auto;
         left: (@screen-md-min - 70px);
         text-align: left;
-        .django-cradmin-floating-fullsize-iframe-closebutton-icon {
+        .cradmin-legacy-floating-fullsize-iframe-closebutton-icon {
           padding-left: 20px;
         }
       }
 
-      .django-cradmin-floating-fullsize-content {
+      .cradmin-legacy-floating-fullsize-content {
         top: 0;
         left: 0;
         width: (@screen-md-min - 70px);
@@ -159,20 +159,20 @@ body.django-cradmin-formview-page {
       }
     }
 
-    //#django_cradmin_bodycontentwrapper.django-cradmin-floating-fullsize-iframe-bodycontentwrapper {
-      //&.django-cradmin-floating-fullsize-iframe-bodycontentwrapper-push {
+    //#cradmin_legacy_bodycontentwrapper.cradmin-legacy-floating-fullsize-iframe-bodycontentwrapper {
+      //&.cradmin-legacy-floating-fullsize-iframe-bodycontentwrapper-push {
       //  .css3-transform(translate((@screen-sm-min - 70px), 0));
       //}
     //}
   }
 
   @media (min-width: @screen-lg-min) {
-    .django-cradmin-floating-fullsize-iframe-wrapper {
-      a.django-cradmin-floating-fullsize-iframe-closebutton {
+    .cradmin-legacy-floating-fullsize-iframe-wrapper {
+      a.cradmin-legacy-floating-fullsize-iframe-closebutton {
         left: (@screen-lg-min - 70px);
       }
 
-      .django-cradmin-floating-fullsize-content {
+      .cradmin-legacy-floating-fullsize-content {
         width: (@screen-lg-min - 70px);
       }
     }
@@ -180,7 +180,7 @@ body.django-cradmin-formview-page {
 }
 
 
-//.django-cradmin-within-iframe {
+//.cradmin-legacy-within-iframe {
 //  .style-scrollbar(@cradmin-floating-iframe-scrollbar-width,
 //    @cradmin-floating-iframe-scrollbar-track-bg,
 //    @cradmin-floating-iframe-scrollbar-thumb-bg,

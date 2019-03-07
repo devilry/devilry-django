@@ -5,7 +5,7 @@
 from model_mommy import mommy
 
 # CrAdmin imports
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 
 # Django imports
 from django import test
@@ -22,7 +22,7 @@ class TestStudentSelectionView(test.TestCase, cradmin_testhelpers.TestCaseMixin)
         mommy.make('core.RelatedStudent', period=testperiod, _quantity=20)
 
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
-        self.assertEqual(len(mockresponse.selector.list('.django-cradmin-listbuilder-itemvalue')), 20)
+        self.assertEqual(len(mockresponse.selector.list('.cradmin-legacy-listbuilder-itemvalue')), 20)
 
     def test_all_students_are_listed(self):
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
@@ -30,7 +30,7 @@ class TestStudentSelectionView(test.TestCase, cradmin_testhelpers.TestCaseMixin)
 
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         selectorlist = mockresponse.selector.list(
-                '.django-cradmin-listbuilder-itemvalue-titledescription-description'
+                '.cradmin-legacy-listbuilder-itemvalue-titledescription-description'
         )
         elements_normalized = [element.alltext_normalized for element in selectorlist]
         self.assertEqual(len(elements_normalized), len(relatedstudents))

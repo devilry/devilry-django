@@ -10,7 +10,7 @@ class DevilryGroupAppConfig(AppConfig):
 
     def ready(self):
         # Add models to cradmin superuserui
-        from django_cradmin.superuserui import superuserui_registry
+        from cradmin_legacy.superuserui import superuserui_registry
         from devilry.devilry_group.views.download_files import backends
         from devilry.devilry_compressionutil import backend_registry
         from ievv_opensource.ievv_batchframework import batchregistry

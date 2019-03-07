@@ -1,7 +1,7 @@
 from django.conf.urls import url
-from django_cradmin.apps.cradmin_resetpassword.views.begin import BeginPasswordResetView
-from django_cradmin.apps.cradmin_resetpassword.views.email_sent import EmailSentView
-from django_cradmin.apps.cradmin_resetpassword.views.reset import ResetPasswordView
+from cradmin_legacy.apps.cradmin_resetpassword.views.begin import BeginPasswordResetView
+from cradmin_legacy.apps.cradmin_resetpassword.views.email_sent import EmailSentView
+from cradmin_legacy.apps.cradmin_resetpassword.views.reset import ResetPasswordView
 
 
 urlpatterns = [

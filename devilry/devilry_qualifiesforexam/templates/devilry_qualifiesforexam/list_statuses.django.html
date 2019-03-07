@@ -1,9 +1,9 @@
-{% extends "django_cradmin/viewhelpers/listbuilderview/filterlist-right.django.html" %}
+{% extends "cradmin_legacy/viewhelpers/listbuilderview/filterlist-right.django.html" %}
 
 {% load devilry_account_tags %}
 {% load crispy_forms_tags %}
 {% load i18n %}
-{% load cradmin_tags %}
+{% load cradmin_legacy_tags %}
 
 {% block title %}
     {{ request.cradmin_role.get_path }}

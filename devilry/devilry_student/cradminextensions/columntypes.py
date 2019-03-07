@@ -1,6 +1,6 @@
 from django.template.loader import render_to_string
-from django_cradmin import crinstance
-from django_cradmin.viewhelpers import objecttable
+from cradmin_legacy import crinstance
+from cradmin_legacy.viewhelpers import objecttable
 from django.utils.translation import ugettext_lazy as _
 
 

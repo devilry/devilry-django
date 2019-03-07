@@ -1,0 +1,28 @@
+{% extends "cradmin_legacy/standalone-base-internal.django.html" %}
+{% load static %}
+
+{% block styles %}
+    {{ block.super }}
+    {% include "devilry_theme3/favicons.django.html" %}
+    {% block custom_styles %}
+        {% include "devilry_deploy/custom_css.django.css" %}
+    {% endblock custom_styles %}
+{% endblock styles %}
+
+{% block global-pre-body %}
+{#    {% if request.user.is_authenticated %}#}
+{#        {% include "devilry_header/header2include.django.html" with devilry_header2_role=request.cradmin_instance.devilry_rolename %}#}
+{#    {% endif %}#}
+{% endblock global-pre-body %}
+
+{% block global-bodyclass %}
+    {% if request.devilryrole_type %}
+        devilry-body-{{ request.devilryrole_type }}
+    {% endif %}
+{% endblock global-bodyclass %}
+
+{% block global-post-body %}
+    {% block devilry_footer %}
+        {% include "devilry_deploy/footer.django.html" %}
+    {% endblock devilry_footer %}
+{% endblock global-post-body %}

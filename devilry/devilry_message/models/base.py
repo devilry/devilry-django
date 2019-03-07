@@ -12,7 +12,7 @@ from django.utils.translation import ugettext_lazy
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.utils import translation
 
-from django_cradmin.apps.cradmin_email import emailutils
+from cradmin_legacy.apps.cradmin_email import emailutils
 
 from ievv_opensource.utils import choices_with_meta
 

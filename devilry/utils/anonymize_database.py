@@ -105,7 +105,7 @@ class AnonymizeDatabase(object):
         """
         Simply sets usernames to the ID of the user.
         """
-        if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
+        if settings.CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND:
             get_user_model().objects.update(
                 fullname='Full Name',
                 lastname='Lastname',
@@ -141,7 +141,7 @@ class AnonymizeDatabase(object):
             if '@' in shortname:
                 shortname = shortname.split('@')[0]
             anonymized_shortname = self.randomize_string(unanonymized_string=shortname)
-            if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
+            if settings.CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND:
                 anonymized_shortname += '@example.com'
             user.shortname = anonymized_shortname
             user.fullname = self.randomize_string(unanonymized_string=user.fullname)

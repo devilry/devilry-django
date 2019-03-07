@@ -6,7 +6,7 @@ body {
   background: @cradmin-bodybg;
 }
 
-#django_cradmin_contentwrapper {
+#cradmin_legacy_contentwrapper {
   background: @cradmin-bodycontent-bg;
   padding-bottom: 15px;
   min-height: 100%;
@@ -23,12 +23,12 @@ body {
 
 }
 
-.django-cradmin-focusedpage-body {
+.cradmin-legacy-focusedpage-body {
   background: @cradmin-bodycontent-bg;
 }
 
-body.django-cradmin-hide-menu {
-  #django_cradmin_contentwrapper {
+body.cradmin-legacy-hide-menu {
+  #cradmin_legacy_contentwrapper {
     @media (min-width: @screen-md-min) {
       padding-left: 0;
     }
@@ -45,7 +45,7 @@ body.django-cradmin-hide-menu {
     width: (@container-lg - @cradmin-default-theme-mainmenu-width);
   }
 
-  &.django-cradmin-container-focus {
+  &.cradmin-legacy-container-focus {
     @media (min-width: @screen-md-min) {
       margin-left: (@grid-gutter-width/2);
       width: (@container-md - @cradmin-default-theme-mainmenu-width - @grid-gutter-width);
@@ -56,8 +56,8 @@ body.django-cradmin-hide-menu {
   }
 }
 
-.django-cradmin-hide-menu {
-  #django_cradmin_contentwrapper {
+.cradmin-legacy-hide-menu {
+  #cradmin_legacy_contentwrapper {
     margin-left: auto;
     margin-right: auto;
   }
@@ -71,7 +71,7 @@ body.django-cradmin-hide-menu {
       width: @container-lg;
     }
 
-    &.django-cradmin-container-focus {
+    &.cradmin-legacy-container-focus {
       @media (min-width: @screen-md-min) {
         width: (@container-md - @grid-gutter-width);
       }
@@ -83,8 +83,8 @@ body.django-cradmin-hide-menu {
 }
 
 
-.django-cradmin-formsized-wrapper,
-.django-cradmin-form-wrapper .django-cradmin-form {
+.cradmin-legacy-formsized-wrapper,
+.cradmin-legacy-form-wrapper .cradmin-legacy-form {
   margin-left: 0;
   margin-right: 0;
 }

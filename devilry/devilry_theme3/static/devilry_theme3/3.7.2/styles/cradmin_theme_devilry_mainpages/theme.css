@@ -4662,15 +4662,15 @@ button.close {
   font-family: 'Quicksand';
   font-style: normal;
   font-weight: 400;
-  src: local('Quicksand Regular'), local('Quicksand-Regular'), url(https://fonts.gstatic.com/s/quicksand/v8/6xKtdSZaM9iE8KbpRA_hK1QI.ttf) format('truetype');
+  src: local('Quicksand Regular'), local('Quicksand-Regular'), url(https://fonts.gstatic.com/s/quicksand/v9/6xKtdSZaM9iE8KbpRA_hK1QI.ttf) format('truetype');
 }
 @font-face {
   font-family: 'Quicksand';
   font-style: normal;
   font-weight: 700;
-  src: local('Quicksand Bold'), local('Quicksand-Bold'), url(https://fonts.gstatic.com/s/quicksand/v8/6xKodSZaM9iE8KbpRA_pkHEYT8L6.ttf) format('truetype');
+  src: local('Quicksand Bold'), local('Quicksand-Bold'), url(https://fonts.gstatic.com/s/quicksand/v9/6xKodSZaM9iE8KbpRA_pkHEYT8L6.ttf) format('truetype');
 }
-#django_cradmin_bodycontentwrapper {
+#cradmin_legacy_bodycontentwrapper {
   width: 100%;
   height: 100%;
 }
@@ -4679,85 +4679,85 @@ body {
   color: #000000;
   letter-spacing: 1px;
 }
-body.django-cradmin-noscroll {
+body.cradmin-legacy-noscroll {
   overflow: hidden;
 }
 a {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0.5);
 }
-.django-cradmin-container-focus {
+.cradmin-legacy-container-focus {
   background: #fff;
   padding-top: 15px;
   padding-bottom: 15px;
   border-bottom: 1px solid #ccc;
 }
-.django-cradmin-container-focus.django-cradmin-container-focus-danger {
+.cradmin-legacy-container-focus.cradmin-legacy-container-focus-danger {
   background: #a0372f;
   border-color: #a0372f;
   color: #fef6f5;
 }
-.django-cradmin-container-focus.django-cradmin-container-focus-danger a {
+.cradmin-legacy-container-focus.cradmin-legacy-container-focus-danger a {
   color: inherit;
   text-decoration: underline;
 }
-.django-cradmin-container-focus.django-cradmin-container-focus-warning {
+.cradmin-legacy-container-focus.cradmin-legacy-container-focus-warning {
   background: #a0372f;
   border-color: #a0372f;
   color: #fef6f5;
 }
-.django-cradmin-container-focus.django-cradmin-container-focus-warning a {
+.cradmin-legacy-container-focus.cradmin-legacy-container-focus-warning a {
   color: inherit;
   text-decoration: underline;
 }
-.django-cradmin-container-focus.django-cradmin-container-focus-info {
+.cradmin-legacy-container-focus.cradmin-legacy-container-focus-info {
   background: #129dc1;
   border-color: #129dc1;
   color: #fff;
 }
-.django-cradmin-container-focus.django-cradmin-container-focus-info a {
+.cradmin-legacy-container-focus.cradmin-legacy-container-focus-info a {
   color: inherit;
   text-decoration: underline;
 }
-.django-cradmin-container-focus.django-cradmin-container-focus-success {
+.cradmin-legacy-container-focus.cradmin-legacy-container-focus-success {
   background: #5aa221;
   border-color: #5aa221;
   color: #fff;
 }
-.django-cradmin-container-focus.django-cradmin-container-focus-success a {
+.cradmin-legacy-container-focus.cradmin-legacy-container-focus-success a {
   color: inherit;
   text-decoration: underline;
 }
 .alert {
   position: relative;
 }
-.alert.django-cradmin-alert-nomargin {
+.alert.cradmin-legacy-alert-nomargin {
   margin: 0;
 }
-.alert.django-cradmin-alert-edge-to-edge {
+.alert.cradmin-legacy-alert-edge-to-edge {
   border-left: none;
   border-right: none;
   border-radius: 0;
 }
-.alert.django-cradmin-alert-edge-to-edge.alert-dismissable {
+.alert.cradmin-legacy-alert-edge-to-edge.alert-dismissable {
   padding-right: 35px;
 }
 @media (min-width: 768px) {
-  .alert.django-cradmin-alert-edge-to-edge.alert-dismissable {
+  .alert.cradmin-legacy-alert-edge-to-edge.alert-dismissable {
     padding-right: 70px;
   }
 }
 .alert.alert-dismissable button.close,
-.alert .django-cradmin-alert-loadspinner {
+.alert .cradmin-legacy-alert-loadspinner {
   position: absolute;
   top: 12px;
   right: 15px;
   color: inherit;
   font-size: 24px;
 }
-ul#django_cradmin_messages {
+ul#cradmin_legacy_messages {
   margin: 0 0 10px 0;
 }
-body.django-cradmin-formview-page ul#django_cradmin_messages {
+body.cradmin-legacy-formview-page ul#cradmin_legacy_messages {
   max-width: none;
 }
 .container-focus {
@@ -4765,39 +4765,39 @@ body.django-cradmin-formview-page ul#django_cradmin_messages {
   padding-bottom: 40px;
   background: #fff;
 }
-.django-cradmin-hide-menu #django_cradmin_contentwrapper {
+.cradmin-legacy-hide-menu #cradmin_legacy_contentwrapper {
   margin-left: auto;
   margin-right: auto;
 }
-.django-cradmin-formsized-wrapper,
-.django-cradmin-form-wrapper .django-cradmin-form {
+.cradmin-legacy-formsized-wrapper,
+.cradmin-legacy-form-wrapper .cradmin-legacy-form {
   max-width: none;
   margin-left: auto;
   margin-right: auto;
 }
-.django-cradmin-form.django-cradmin-form-fullwidth {
+.cradmin-legacy-form.cradmin-legacy-form-fullwidth {
   max-width: 100%;
   margin-left: 0;
   margin-right: 0;
 }
-.django-cradmin-form-wrapper .django-cradmin-form {
+.cradmin-legacy-form-wrapper .cradmin-legacy-form {
   background: #fff;
   padding-bottom: 0;
 }
-.django-cradmin-form-wrapper .django-cradmin-form label {
+.cradmin-legacy-form-wrapper .cradmin-legacy-form label {
   font-weight: normal;
 }
-.django-cradmin-form-wrapper .django-cradmin-form label.requiredField {
+.cradmin-legacy-form-wrapper .cradmin-legacy-form label.requiredField {
   font-weight: bold;
 }
-.django-cradmin-form-wrapper .django-cradmin-form label .asteriskField {
+.cradmin-legacy-form-wrapper .cradmin-legacy-form label .asteriskField {
   color: #dc0000;
   display: inline-block;
   padding-left: 5px;
   font-size: 18px;
   line-height: 22px;
 }
-.django-cradmin-form-wrapper .django-cradmin-form .django-cradmin-formfield-label-sr-only label {
+.cradmin-legacy-form-wrapper .cradmin-legacy-form .cradmin-legacy-formfield-label-sr-only label {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -4807,11 +4807,11 @@ body.django-cradmin-formview-page ul#django_cradmin_messages {
   clip: rect(0, 0, 0, 0);
   border: 0;
 }
-.django-cradmin-form-wrapper .django-cradmin-form.django-cradmin-form-noasterisk label .asteriskField {
+.cradmin-legacy-form-wrapper .cradmin-legacy-form.cradmin-legacy-form-noasterisk label .asteriskField {
   display: none;
 }
-.django-cradmin-form-wrapper .django-cradmin-form fieldset legend,
-.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield label {
+.cradmin-legacy-form-wrapper .cradmin-legacy-form fieldset legend,
+.cradmin-legacy-form-wrapper .cradmin-legacy-form .cradmin-focusfield label {
   display: block;
   margin: 0;
   background: #dcdcdc;
@@ -4820,26 +4820,26 @@ body.django-cradmin-formview-page ul#django_cradmin_messages {
   font-size: 14px;
   line-height: 22px;
 }
-.django-cradmin-form-wrapper .django-cradmin-form fieldset,
-.django-cradmin-form-wrapper .django-cradmin-form .cradmin-globalfields {
+.cradmin-legacy-form-wrapper .cradmin-legacy-form fieldset,
+.cradmin-legacy-form-wrapper .cradmin-legacy-form .cradmin-globalfields {
   margin-bottom: 30px;
 }
-.django-cradmin-form-wrapper .django-cradmin-form fieldset .form-group,
-.django-cradmin-form-wrapper .django-cradmin-form .cradmin-globalfields .form-group {
+.cradmin-legacy-form-wrapper .cradmin-legacy-form fieldset .form-group,
+.cradmin-legacy-form-wrapper .cradmin-legacy-form .cradmin-globalfields .form-group {
   padding: 20px 15px 4px 15px;
   margin: 0;
 }
-.django-cradmin-form-wrapper .django-cradmin-form fieldset .form-group:last-child,
-.django-cradmin-form-wrapper .django-cradmin-form .cradmin-globalfields .form-group:last-child {
+.cradmin-legacy-form-wrapper .cradmin-legacy-form fieldset .form-group:last-child,
+.cradmin-legacy-form-wrapper .cradmin-legacy-form .cradmin-globalfields .form-group:last-child {
   padding-bottom: 30px;
 }
-.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .controls {
+.cradmin-legacy-form-wrapper .cradmin-legacy-form .cradmin-focusfield .controls {
   padding: 20px 15px 4px 15px;
 }
-.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield.cradmin-focusfield-lg .form-group input[type=text],
-.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield.cradmin-focusfield-lg .form-group input[type=email],
-.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield.cradmin-focusfield-lg .form-group input[type=number],
-.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield.cradmin-focusfield-lg .form-group input[type=url] {
+.cradmin-legacy-form-wrapper .cradmin-legacy-form .cradmin-focusfield.cradmin-focusfield-lg .form-group input[type=text],
+.cradmin-legacy-form-wrapper .cradmin-legacy-form .cradmin-focusfield.cradmin-focusfield-lg .form-group input[type=email],
+.cradmin-legacy-form-wrapper .cradmin-legacy-form .cradmin-focusfield.cradmin-focusfield-lg .form-group input[type=number],
+.cradmin-legacy-form-wrapper .cradmin-legacy-form .cradmin-focusfield.cradmin-focusfield-lg .form-group input[type=url] {
   font-size: 24px;
   padding: 10px 12px;
   height: auto;
@@ -4852,99 +4852,99 @@ form .alert-block.alert-danger ul {
 form .alert-block.alert-danger ul li {
   margin: 0;
 }
-.django-cradmin-create-foreignkey-select-mode-buttonbar {
+.cradmin-legacy-create-foreignkey-select-mode-buttonbar {
   margin-bottom: 15px;
 }
-.django-cradmin-datetimepicker {
+.cradmin-legacy-datetimepicker {
   max-width: 250px;
 }
-.django-cradmin-datetimepicker:before,
-.django-cradmin-datetimepicker:after {
+.cradmin-legacy-datetimepicker:before,
+.cradmin-legacy-datetimepicker:after {
   content: " ";
   display: table;
 }
-.django-cradmin-datetimepicker:after {
+.cradmin-legacy-datetimepicker:after {
   clear: both;
 }
-.django-cradmin-datetimepicker:before,
-.django-cradmin-datetimepicker:after {
+.cradmin-legacy-datetimepicker:before,
+.cradmin-legacy-datetimepicker:after {
   content: " ";
   display: table;
 }
-.django-cradmin-datetimepicker:after {
+.cradmin-legacy-datetimepicker:after {
   clear: both;
 }
-.django-cradmin-datetimepicker .django-cradmin-datepicker {
+.cradmin-legacy-datetimepicker .cradmin-legacy-datepicker {
   float: left;
   width: 65%;
   padding-right: 5px;
 }
-.django-cradmin-datetimepicker .django-cradmin-timepicker {
+.cradmin-legacy-datetimepicker .cradmin-legacy-timepicker {
   float: right;
   width: 35%;
   padding-left: 5px;
 }
-.django-cradmin-form-collapsed-section .django-cradmin-form-collapsed-section-header {
+.cradmin-legacy-form-collapsed-section .cradmin-legacy-form-collapsed-section-header {
   padding-left: 15px;
   padding-right: 15px;
 }
-.django-cradmin-split-timepicker:before,
-.django-cradmin-split-timepicker:after {
+.cradmin-legacy-split-timepicker:before,
+.cradmin-legacy-split-timepicker:after {
   content: " ";
   display: table;
 }
-.django-cradmin-split-timepicker:after {
+.cradmin-legacy-split-timepicker:after {
   clear: both;
 }
-.django-cradmin-split-timepicker:before,
-.django-cradmin-split-timepicker:after {
+.cradmin-legacy-split-timepicker:before,
+.cradmin-legacy-split-timepicker:after {
   content: " ";
   display: table;
 }
-.django-cradmin-split-timepicker:after {
+.cradmin-legacy-split-timepicker:after {
   clear: both;
 }
-.django-cradmin-split-timepicker .django-cradmin-split-timepicker-hour,
-.django-cradmin-split-timepicker .django-cradmin-split-timepicker-minute {
+.cradmin-legacy-split-timepicker .cradmin-legacy-split-timepicker-hour,
+.cradmin-legacy-split-timepicker .cradmin-legacy-split-timepicker-minute {
   width: 50%;
   float: left;
 }
-.django-cradmin-split-timepicker .django-cradmin-split-timepicker-hour {
+.cradmin-legacy-split-timepicker .cradmin-legacy-split-timepicker-hour {
   padding-right: 5px;
 }
-.django-cradmin-split-timepicker .django-cradmin-split-timepicker-minute {
+.cradmin-legacy-split-timepicker .cradmin-legacy-split-timepicker-minute {
   padding-left: 5px;
 }
-.django-cradmin-datetimepicker-split-time {
+.cradmin-legacy-datetimepicker-split-time {
   max-width: 270px;
 }
-.django-cradmin-datetimepicker-split-time:before,
-.django-cradmin-datetimepicker-split-time:after {
+.cradmin-legacy-datetimepicker-split-time:before,
+.cradmin-legacy-datetimepicker-split-time:after {
   content: " ";
   display: table;
 }
-.django-cradmin-datetimepicker-split-time:after {
+.cradmin-legacy-datetimepicker-split-time:after {
   clear: both;
 }
-.django-cradmin-datetimepicker-split-time:before,
-.django-cradmin-datetimepicker-split-time:after {
+.cradmin-legacy-datetimepicker-split-time:before,
+.cradmin-legacy-datetimepicker-split-time:after {
   content: " ";
   display: table;
 }
-.django-cradmin-datetimepicker-split-time:after {
+.cradmin-legacy-datetimepicker-split-time:after {
   clear: both;
 }
-.django-cradmin-datetimepicker-split-time .django-cradmin-datepicker {
+.cradmin-legacy-datetimepicker-split-time .cradmin-legacy-datepicker {
   float: left;
   width: 50%;
   padding-right: 5px;
 }
-.django-cradmin-datetimepicker-split-time .django-cradmin-split-timepicker {
+.cradmin-legacy-datetimepicker-split-time .cradmin-legacy-split-timepicker {
   float: right;
   width: 50%;
   padding-left: 5px;
 }
-.django-cradmin-datetimepicker-split-time.django-cradmin-datetimepicker-split-time-fluid {
+.cradmin-legacy-datetimepicker-split-time.cradmin-legacy-datetimepicker-split-time-fluid {
   max-width: none;
 }
 .form-control,
@@ -4967,57 +4967,57 @@ form .alert-block.alert-danger ul li {
 textarea.cradmin-textarea-small {
   height: 60px;
 }
-.django-cradmin-clearable-textinput {
+.cradmin-legacy-clearable-textinput {
   position: relative;
 }
-.django-cradmin-clearable-textinput .django-cradmin-clearable-textinput-button {
+.cradmin-legacy-clearable-textinput .cradmin-legacy-clearable-textinput-button {
   position: absolute;
   top: 0;
   right: 0;
   display: none;
   color: #747474;
 }
-.django-cradmin-clearable-textinput .django-cradmin-clearable-textinput-button:hover {
+.cradmin-legacy-clearable-textinput .cradmin-legacy-clearable-textinput-button:hover {
   color: #262626;
 }
-.django-cradmin-clearable-textinput .django-cradmin-clearable-textinput-button.django-cradmin-clearable-textinput-button-visible {
+.cradmin-legacy-clearable-textinput .cradmin-legacy-clearable-textinput-button.cradmin-legacy-clearable-textinput-button-visible {
   display: inline-block;
 }
-table.table.django-cradmin-table {
+table.table.cradmin-legacy-table {
   margin: 0;
 }
-table.table.django-cradmin-table thead {
+table.table.cradmin-legacy-table thead {
   border-bottom: 1px solid #ccc;
   background: #FAFAFA;
 }
-table.table.django-cradmin-table thead tr th {
+table.table.cradmin-legacy-table thead tr th {
   border: none;
 }
-table.table.django-cradmin-table tbody {
+table.table.cradmin-legacy-table tbody {
   background: #fff;
   border-bottom: 1px solid #ccc;
 }
-table.table.django-cradmin-table tbody tr {
+table.table.cradmin-legacy-table tbody tr {
   border-top: 1px dashed #D9D9D9;
 }
-table.table.django-cradmin-table tbody tr:first-child {
+table.table.cradmin-legacy-table tbody tr:first-child {
   border-top: none;
 }
-table.table.django-cradmin-table tbody tr td {
+table.table.cradmin-legacy-table tbody tr td {
   border: none;
   padding-top: 15px;
   padding-bottom: 15px;
 }
-table.table.django-cradmin-table thead th:first-child,
-table.table.django-cradmin-table tbody th:first-child,
-table.table.django-cradmin-table thead td:first-child,
-table.table.django-cradmin-table tbody td:first-child {
+table.table.cradmin-legacy-table thead th:first-child,
+table.table.cradmin-legacy-table tbody th:first-child,
+table.table.cradmin-legacy-table thead td:first-child,
+table.table.cradmin-legacy-table tbody td:first-child {
   padding-left: 15px;
 }
-table.table.django-cradmin-table thead th:last-child,
-table.table.django-cradmin-table tbody th:last-child,
-table.table.django-cradmin-table thead td:last-child,
-table.table.django-cradmin-table tbody td:last-child {
+table.table.cradmin-legacy-table thead th:last-child,
+table.table.cradmin-legacy-table tbody th:last-child,
+table.table.cradmin-legacy-table thead td:last-child,
+table.table.cradmin-legacy-table tbody td:last-child {
   padding-right: 15px;
 }
 .btn {
@@ -5092,20 +5092,20 @@ table.table.django-cradmin-table tbody td:last-child {
 .btn.btn-cancel:focus {
   color: #000000;
 }
-.django-cradmin-icon-font-lg {
+.cradmin-legacy-icon-font-lg {
   font-size: 20px !important;
 }
-.django-cradmin-icon-font-sm {
+.cradmin-legacy-icon-font-sm {
   font-size: 12px !important;
 }
-.django-cradmin-page-header-outer {
+.cradmin-legacy-page-header-outer {
   padding: 25px 0 12px 0;
   background: none;
   color: #000000;
   border: none;
   margin: 0 0 15px 0;
 }
-.django-cradmin-page-header-outer .django-cradmin-page-header-inner h1 {
+.cradmin-legacy-page-header-outer .cradmin-legacy-page-header-inner h1 {
   padding: 0;
   margin: 0;
   font-size: 21px;
@@ -5113,17 +5113,17 @@ table.table.django-cradmin-table tbody td:last-child {
   vertical-align: middle;
   line-height: 31px;
 }
-.django-cradmin-page-header-outer .django-cradmin-page-header-inner p {
+.cradmin-legacy-page-header-outer .cradmin-legacy-page-header-inner p {
   margin: 0;
 }
-.django-cradmin-page-header-outer.django-cradmin-page-header-outer-secondary {
+.cradmin-legacy-page-header-outer.cradmin-legacy-page-header-outer-secondary {
   padding: 20px 0 22px 0;
   background: #377CA8;
   color: #fff;
   border: none;
   margin: 30px 0 15px 0;
 }
-.django-cradmin-page-header-outer.django-cradmin-page-header-outer-secondary h2 {
+.cradmin-legacy-page-header-outer.cradmin-legacy-page-header-outer-secondary h2 {
   padding: 0;
   margin: 0;
   font-size: 21px;
@@ -5160,7 +5160,7 @@ table.table.django-cradmin-table tbody td:last-child {
   color: #777777;
   background: transparent;
 }
-.django-cradmin-floating-fullsize-iframe-wrapper {
+.cradmin-legacy-floating-fullsize-iframe-wrapper {
   position: fixed;
   left: 0;
   top: 0;
@@ -5175,18 +5175,18 @@ table.table.django-cradmin-table tbody td:last-child {
   -moz-transform: translate(-100%, 0);
   transform: translate(-100%, 0);
 }
-.django-cradmin-floating-fullsize-iframe-wrapper.django-cradmin-floating-fullsize-iframe-wrapper-show {
+.cradmin-legacy-floating-fullsize-iframe-wrapper.cradmin-legacy-floating-fullsize-iframe-wrapper-show {
   -webkit-transform: translate(0, 0);
   -moz-transform: translate(0, 0);
   transform: translate(0, 0);
 }
-.django-cradmin-floating-fullsize-iframe-wrapper.django-cradmin-floating-fullsize-iframe-wrapper-with-navbar .django-cradmin-floating-fullsize-content .django-cradmin-floating-fullsize-iframe-navbar {
+.cradmin-legacy-floating-fullsize-iframe-wrapper.cradmin-legacy-floating-fullsize-iframe-wrapper-with-navbar .cradmin-legacy-floating-fullsize-content .cradmin-legacy-floating-fullsize-iframe-navbar {
   display: block;
 }
-.django-cradmin-floating-fullsize-iframe-wrapper.django-cradmin-floating-fullsize-iframe-wrapper-with-navbar .django-cradmin-floating-fullsize-content .django-cradmin-floating-fullsize-iframe-inner {
+.cradmin-legacy-floating-fullsize-iframe-wrapper.cradmin-legacy-floating-fullsize-iframe-wrapper-with-navbar .cradmin-legacy-floating-fullsize-content .cradmin-legacy-floating-fullsize-iframe-inner {
   top: 50px;
 }
-.django-cradmin-floating-fullsize-iframe-wrapper a.django-cradmin-floating-fullsize-iframe-closebutton {
+.cradmin-legacy-floating-fullsize-iframe-wrapper a.cradmin-legacy-floating-fullsize-iframe-closebutton {
   position: absolute;
   display: block;
   top: 0;
@@ -5202,7 +5202,7 @@ table.table.django-cradmin-table tbody td:last-child {
   -moz-transition: all 0.15s ease-in-out;
   transition: all 0.15s ease-in-out;
 }
-.django-cradmin-floating-fullsize-iframe-wrapper a.django-cradmin-floating-fullsize-iframe-closebutton .django-cradmin-floating-fullsize-iframe-closebutton-icon {
+.cradmin-legacy-floating-fullsize-iframe-wrapper a.cradmin-legacy-floating-fullsize-iframe-closebutton .cradmin-legacy-floating-fullsize-iframe-closebutton-icon {
   position: absolute;
   left: 0;
   right: 0;
@@ -5210,13 +5210,13 @@ table.table.django-cradmin-table tbody td:last-child {
   margin-top: -15px;
   font-size: 30px;
 }
-.django-cradmin-floating-fullsize-iframe-wrapper a.django-cradmin-floating-fullsize-iframe-closebutton:hover,
-.django-cradmin-floating-fullsize-iframe-wrapper a.django-cradmin-floating-fullsize-iframe-closebutton:focus {
+.cradmin-legacy-floating-fullsize-iframe-wrapper a.cradmin-legacy-floating-fullsize-iframe-closebutton:hover,
+.cradmin-legacy-floating-fullsize-iframe-wrapper a.cradmin-legacy-floating-fullsize-iframe-closebutton:focus {
   background: rgba(30, 30, 30, 0.8);
   color: #f8f8f8;
   text-decoration: none;
 }
-.django-cradmin-floating-fullsize-iframe-wrapper .django-cradmin-floating-fullsize-content {
+.cradmin-legacy-floating-fullsize-iframe-wrapper .cradmin-legacy-floating-fullsize-content {
   position: absolute;
   top: 0;
   left: 0;
@@ -5224,7 +5224,7 @@ table.table.django-cradmin-table tbody td:last-child {
   bottom: 0;
   background: #1e1e1e;
 }
-.django-cradmin-floating-fullsize-iframe-wrapper .django-cradmin-floating-fullsize-content .django-cradmin-floating-fullsize-loadspinner {
+.cradmin-legacy-floating-fullsize-iframe-wrapper .cradmin-legacy-floating-fullsize-content .cradmin-legacy-floating-fullsize-loadspinner {
   color: #ccc;
   font-size: 50px;
   text-align: center;
@@ -5232,7 +5232,7 @@ table.table.django-cradmin-table tbody td:last-child {
   background: none;
   z-index: 50001;
 }
-.django-cradmin-floating-fullsize-iframe-wrapper .django-cradmin-floating-fullsize-content .django-cradmin-floating-fullsize-iframe-navbar {
+.cradmin-legacy-floating-fullsize-iframe-wrapper .cradmin-legacy-floating-fullsize-content .cradmin-legacy-floating-fullsize-iframe-navbar {
   display: none;
   position: absolute;
   top: 0;
@@ -5240,42 +5240,42 @@ table.table.django-cradmin-table tbody td:last-child {
   right: 0;
   z-index: 50001;
 }
-.django-cradmin-floating-fullsize-iframe-wrapper .django-cradmin-floating-fullsize-content .django-cradmin-floating-fullsize-iframe-navbar nav.django-cradmin-menu .django-cradmin-menu-mobileheader .django-cradmin-menu-mobiletoggle {
+.cradmin-legacy-floating-fullsize-iframe-wrapper .cradmin-legacy-floating-fullsize-content .cradmin-legacy-floating-fullsize-iframe-navbar nav.cradmin-legacy-menu .cradmin-legacy-menu-mobileheader .cradmin-legacy-menu-mobiletoggle {
   line-height: 50px;
   height: 50px;
 }
 @media (min-width: 992px) {
-  .django-cradmin-floating-fullsize-iframe-wrapper .django-cradmin-floating-fullsize-content .django-cradmin-floating-fullsize-iframe-navbar nav.django-cradmin-menu {
+  .cradmin-legacy-floating-fullsize-iframe-wrapper .cradmin-legacy-floating-fullsize-content .cradmin-legacy-floating-fullsize-iframe-navbar nav.cradmin-legacy-menu {
     height: 50px;
   }
-  .django-cradmin-floating-fullsize-iframe-wrapper .django-cradmin-floating-fullsize-content .django-cradmin-floating-fullsize-iframe-navbar nav.django-cradmin-menu .django-cradmin-menu-content {
+  .cradmin-legacy-floating-fullsize-iframe-wrapper .cradmin-legacy-floating-fullsize-content .cradmin-legacy-floating-fullsize-iframe-navbar nav.cradmin-legacy-menu .cradmin-legacy-menu-content {
     display: block;
     height: 50px;
   }
-  .django-cradmin-floating-fullsize-iframe-wrapper .django-cradmin-floating-fullsize-content .django-cradmin-floating-fullsize-iframe-navbar nav.django-cradmin-menu .django-cradmin-menu-content ul {
+  .cradmin-legacy-floating-fullsize-iframe-wrapper .cradmin-legacy-floating-fullsize-content .cradmin-legacy-floating-fullsize-iframe-navbar nav.cradmin-legacy-menu .cradmin-legacy-menu-content ul {
     display: inline-block;
     height: 50px;
   }
-  .django-cradmin-floating-fullsize-iframe-wrapper .django-cradmin-floating-fullsize-content .django-cradmin-floating-fullsize-iframe-navbar nav.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item {
+  .cradmin-legacy-floating-fullsize-iframe-wrapper .cradmin-legacy-floating-fullsize-content .cradmin-legacy-floating-fullsize-iframe-navbar nav.cradmin-legacy-menu .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-item {
     display: inline-block;
     height: 50px;
   }
-  .django-cradmin-floating-fullsize-iframe-wrapper .django-cradmin-floating-fullsize-content .django-cradmin-floating-fullsize-iframe-navbar nav.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item a {
+  .cradmin-legacy-floating-fullsize-iframe-wrapper .cradmin-legacy-floating-fullsize-content .cradmin-legacy-floating-fullsize-iframe-navbar nav.cradmin-legacy-menu .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-item a {
     height: 50px;
     line-height: 50px;
     display: block;
     padding: 0 16px;
   }
-  .django-cradmin-floating-fullsize-iframe-wrapper .django-cradmin-floating-fullsize-content .django-cradmin-floating-fullsize-iframe-navbar nav.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item.django-cradmin-menu-activeitem .django-cradmin-menu-activeitemwrapper > a,
-  .django-cradmin-floating-fullsize-iframe-wrapper .django-cradmin-floating-fullsize-content .django-cradmin-floating-fullsize-iframe-navbar nav.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item.django-cradmin-menu-activeitem > a {
+  .cradmin-legacy-floating-fullsize-iframe-wrapper .cradmin-legacy-floating-fullsize-content .cradmin-legacy-floating-fullsize-iframe-navbar nav.cradmin-legacy-menu .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-item.cradmin-legacy-menu-activeitem .cradmin-legacy-menu-activeitemwrapper > a,
+  .cradmin-legacy-floating-fullsize-iframe-wrapper .cradmin-legacy-floating-fullsize-content .cradmin-legacy-floating-fullsize-iframe-navbar nav.cradmin-legacy-menu .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-item.cradmin-legacy-menu-activeitem > a {
     font-weight: normal;
   }
-  .django-cradmin-floating-fullsize-iframe-wrapper .django-cradmin-floating-fullsize-content .django-cradmin-floating-fullsize-iframe-navbar nav.django-cradmin-menu .django-cradmin-menu-content ul.django-cradmin-menu-content-footer {
+  .cradmin-legacy-floating-fullsize-iframe-wrapper .cradmin-legacy-floating-fullsize-content .cradmin-legacy-floating-fullsize-iframe-navbar nav.cradmin-legacy-menu .cradmin-legacy-menu-content ul.cradmin-legacy-menu-content-footer {
     margin: 0;
     float: right;
   }
 }
-.django-cradmin-floating-fullsize-iframe-wrapper .django-cradmin-floating-fullsize-content .django-cradmin-floating-fullsize-iframe-inner {
+.cradmin-legacy-floating-fullsize-iframe-wrapper .cradmin-legacy-floating-fullsize-content .cradmin-legacy-floating-fullsize-iframe-inner {
   overflow: hidden;
   position: absolute;
   top: 0;
@@ -5283,7 +5283,7 @@ table.table.django-cradmin-table tbody td:last-child {
   left: 0;
   right: 0;
 }
-.django-cradmin-floating-fullsize-iframe-wrapper .django-cradmin-floating-fullsize-content .django-cradmin-floating-fullsize-iframe-inner iframe {
+.cradmin-legacy-floating-fullsize-iframe-wrapper .cradmin-legacy-floating-fullsize-content .cradmin-legacy-floating-fullsize-iframe-inner iframe {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -5293,29 +5293,29 @@ table.table.django-cradmin-table tbody td:last-child {
   width: 100%;
   border: none;
 }
-.django-cradmin-floating-fullsize-iframe-wrapper.django-cradmin-modelchoicefield-iframe-wrapper .django-cradmin-floating-fullsize-content {
+.cradmin-legacy-floating-fullsize-iframe-wrapper.cradmin-legacy-modelchoicefield-iframe-wrapper .cradmin-legacy-floating-fullsize-content {
   background: #f5f5f5;
 }
 @media (min-width: 992px) {
-  body.django-cradmin-formview-page .django-cradmin-floating-fullsize-iframe-wrapper {
+  body.cradmin-legacy-formview-page .cradmin-legacy-floating-fullsize-iframe-wrapper {
     -webkit-transform: translate(-100%, 0);
     -moz-transform: translate(-100%, 0);
     transform: translate(-100%, 0);
   }
-  body.django-cradmin-formview-page .django-cradmin-floating-fullsize-iframe-wrapper.django-cradmin-floating-fullsize-iframe-wrapper-show {
+  body.cradmin-legacy-formview-page .cradmin-legacy-floating-fullsize-iframe-wrapper.cradmin-legacy-floating-fullsize-iframe-wrapper-show {
     -webkit-transform: translate(0, 0);
     -moz-transform: translate(0, 0);
     transform: translate(0, 0);
   }
-  body.django-cradmin-formview-page .django-cradmin-floating-fullsize-iframe-wrapper a.django-cradmin-floating-fullsize-iframe-closebutton {
+  body.cradmin-legacy-formview-page .cradmin-legacy-floating-fullsize-iframe-wrapper a.cradmin-legacy-floating-fullsize-iframe-closebutton {
     width: auto;
     left: 922px;
     text-align: left;
   }
-  body.django-cradmin-formview-page .django-cradmin-floating-fullsize-iframe-wrapper a.django-cradmin-floating-fullsize-iframe-closebutton .django-cradmin-floating-fullsize-iframe-closebutton-icon {
+  body.cradmin-legacy-formview-page .cradmin-legacy-floating-fullsize-iframe-wrapper a.cradmin-legacy-floating-fullsize-iframe-closebutton .cradmin-legacy-floating-fullsize-iframe-closebutton-icon {
     padding-left: 20px;
   }
-  body.django-cradmin-formview-page .django-cradmin-floating-fullsize-iframe-wrapper .django-cradmin-floating-fullsize-content {
+  body.cradmin-legacy-formview-page .cradmin-legacy-floating-fullsize-iframe-wrapper .cradmin-legacy-floating-fullsize-content {
     top: 0;
     left: 0;
     width: 922px;
@@ -5323,29 +5323,29 @@ table.table.django-cradmin-table tbody td:last-child {
   }
 }
 @media (min-width: 1200px) {
-  body.django-cradmin-formview-page .django-cradmin-floating-fullsize-iframe-wrapper a.django-cradmin-floating-fullsize-iframe-closebutton {
+  body.cradmin-legacy-formview-page .cradmin-legacy-floating-fullsize-iframe-wrapper a.cradmin-legacy-floating-fullsize-iframe-closebutton {
     left: 1130px;
   }
-  body.django-cradmin-formview-page .django-cradmin-floating-fullsize-iframe-wrapper .django-cradmin-floating-fullsize-content {
+  body.cradmin-legacy-formview-page .cradmin-legacy-floating-fullsize-iframe-wrapper .cradmin-legacy-floating-fullsize-content {
     width: 1130px;
   }
 }
-.django-cradmin-form .django-cradmin-filewidget img {
+.cradmin-legacy-form .cradmin-legacy-filewidget img {
   max-width: 300px;
   height: auto;
   display: block;
   margin-bottom: 10px;
 }
-.django-cradmin-form .django-cradmin-filewidget a.django-cradmin-filewidget-fullviewlink {
+.cradmin-legacy-form .cradmin-legacy-filewidget a.cradmin-legacy-filewidget-fullviewlink {
   display: block;
   border: none;
   margin-bottom: 10px;
 }
-.django-cradmin-form .django-cradmin-filewidget .django-cradmin-filewidget-field-and-overlay-wrapper {
+.cradmin-legacy-form .cradmin-legacy-filewidget .cradmin-legacy-filewidget-field-and-overlay-wrapper {
   position: relative;
 }
-.django-cradmin-form .django-cradmin-filewidget .django-cradmin-filewidget-field-and-overlay-wrapper input[type=file],
-.django-cradmin-form .django-cradmin-filewidget .django-cradmin-filewidget-field-and-overlay-wrapper a.django-cradmin-filewidget-fieldoverlay {
+.cradmin-legacy-form .cradmin-legacy-filewidget .cradmin-legacy-filewidget-field-and-overlay-wrapper input[type=file],
+.cradmin-legacy-form .cradmin-legacy-filewidget .cradmin-legacy-filewidget-field-and-overlay-wrapper a.cradmin-legacy-filewidget-fieldoverlay {
   width: 220px;
   height: 40px;
   border-radius: 0;
@@ -5354,19 +5354,19 @@ table.table.django-cradmin-table tbody td:last-child {
   text-overflow: ellipsis;
   overflow: hidden;
 }
-.django-cradmin-form .django-cradmin-filewidget .django-cradmin-filewidget-field-and-overlay-wrapper.django-cradmin-filewidget-field-and-overlay-wrapper-hover a.btn.btn-default {
+.cradmin-legacy-form .cradmin-legacy-filewidget .cradmin-legacy-filewidget-field-and-overlay-wrapper.cradmin-legacy-filewidget-field-and-overlay-wrapper-hover a.btn.btn-default {
   background: #fff;
   border-color: #D9D9D9;
   color: #262626;
 }
 @media (min-width: 768px) {
-  .django-cradmin-form .django-cradmin-filewidget .django-cradmin-filewidget-field-and-overlay-wrapper.django-cradmin-filewidget-field-and-overlay-wrapper-hover a.btn.btn-default {
+  .cradmin-legacy-form .cradmin-legacy-filewidget .cradmin-legacy-filewidget-field-and-overlay-wrapper.cradmin-legacy-filewidget-field-and-overlay-wrapper-hover a.btn.btn-default {
     background: #262626;
     border-color: #262626;
     color: #fff;
   }
 }
-.django-cradmin-form .django-cradmin-filewidget .django-cradmin-filewidget-field-and-overlay-wrapper input[type=file] {
+.cradmin-legacy-form .cradmin-legacy-filewidget .cradmin-legacy-filewidget-field-and-overlay-wrapper input[type=file] {
   opacity: 0 !important;
   position: absolute;
   top: 0;
@@ -5374,14 +5374,14 @@ table.table.django-cradmin-table tbody td:last-child {
   overflow: hidden !important;
   cursor: pointer;
 }
-.django-cradmin-form .django-cradmin-filewidget.django-cradmin-filewidget-clearable .django-cradmin-filewidget-clear {
+.cradmin-legacy-form .cradmin-legacy-filewidget.cradmin-legacy-filewidget-clearable .cradmin-legacy-filewidget-clear {
   margin: 10px 0 0 0;
 }
-.django-cradmin-form .django-cradmin-imagewidget.django-cradmin-filewidget.django-cradmin-filewidget-clearable .django-cradmin-imagewidget-preview-and-clear .django-cradmin-imagewidget-preview-and-clear-inner {
+.cradmin-legacy-form .cradmin-legacy-imagewidget.cradmin-legacy-filewidget.cradmin-legacy-filewidget-clearable .cradmin-legacy-imagewidget-preview-and-clear .cradmin-legacy-imagewidget-preview-and-clear-inner {
   display: inline-block;
   position: relative;
 }
-.django-cradmin-form .django-cradmin-imagewidget.django-cradmin-filewidget.django-cradmin-filewidget-clearable .django-cradmin-imagewidget-preview-and-clear .django-cradmin-imagewidget-preview-and-clear-inner .django-cradmin-filewidget-clear {
+.cradmin-legacy-form .cradmin-legacy-imagewidget.cradmin-legacy-filewidget.cradmin-legacy-filewidget-clearable .cradmin-legacy-imagewidget-preview-and-clear .cradmin-legacy-imagewidget-preview-and-clear-inner .cradmin-legacy-filewidget-clear {
   margin: 0;
   display: inline-block;
   position: absolute;
@@ -5527,36 +5527,36 @@ table.table.django-cradmin-table tbody td:last-child {
     max-width: 250px;
   }
 }
-.django_cradmin_submitrow {
+.cradmin_legacy_submitrow {
   background: none;
   padding: 8px 15px 0 15px;
 }
-.django_cradmin_submitrow.django_cradmin_submitrow_hidden {
+.cradmin_legacy_submitrow.cradmin_legacy_submitrow_hidden {
   display: none;
 }
-.django_cradmin_submitrow .btn {
+.cradmin_legacy_submitrow .btn {
   text-transform: uppercase;
   font-size: 14px;
   line-height: 18px;
   padding: 10px 12px;
   margin-bottom: 8px;
 }
-.django_cradmin_submitrow .btn.btn-default {
+.cradmin_legacy_submitrow .btn.btn-default {
   background: #808080;
   border-color: #808080;
   color: #fff;
 }
-.django_cradmin_submitrow .btn.btn-default:hover {
+.cradmin_legacy_submitrow .btn.btn-default:hover {
   background: #666;
   border-color: #666;
   color: #fff;
 }
-.django_cradmin_submitrow .btn.btn-cancel {
+.cradmin_legacy_submitrow .btn.btn-cancel {
   color: #ccc;
   font-size: 16px;
   text-transform: none;
 }
-.django_cradmin_submitrow .btn.btn-cancel:hover {
+.cradmin_legacy_submitrow .btn.btn-cancel:hover {
   color: #fff;
 }
 .cradmin-acemarkdown textarea.cradmin-acemarkdowntextarea {
@@ -5573,95 +5573,95 @@ table.table.django-cradmin-table tbody td:last-child {
   height: 400px;
   background: #fff;
 }
-.django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea {
+.cradmin-legacy-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea {
   background: #fff;
 }
-.django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea .ace_editor {
+.cradmin-legacy-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea .ace_editor {
   height: 100px;
 }
 @media (min-height: 400px) {
-  .django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea .ace_editor {
+  .cradmin-legacy-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea .ace_editor {
     height: 200px;
   }
 }
 @media (min-height: 500px) {
-  .django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea .ace_editor {
+  .cradmin-legacy-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea .ace_editor {
     height: 300px;
   }
 }
 @media (min-height: 600px) {
-  .django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea .ace_editor {
+  .cradmin-legacy-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea .ace_editor {
     height: 400px;
   }
 }
 @media (min-height: 800px) {
-  .django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea .ace_editor {
+  .cradmin-legacy-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea .ace_editor {
     height: 600px;
   }
 }
-.django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea.cradmin-focus {
+.cradmin-legacy-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea.cradmin-focus {
   background: #fff;
 }
-.django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea.cradmin-focus .ace_editor {
+.cradmin-legacy-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea.cradmin-focus .ace_editor {
   background: #fff;
 }
-ul.django-cradmin-roleselect-list {
+ul.cradmin-legacy-roleselect-list {
   /**
-    ## .django-cradmin-roleselect-list.django-cradmin-roleselect-list-flat
+    ## .cradmin-legacy-roleselect-list.cradmin-legacy-roleselect-list-flat
     The roleselect list rendered as a flat list.
     */
 }
-ul.django-cradmin-roleselect-list.django-cradmin-roleselect-list-flat {
+ul.cradmin-legacy-roleselect-list.cradmin-legacy-roleselect-list-flat {
   list-style: none;
   margin: 0;
   padding: 0;
   background: #fff;
 }
-ul.django-cradmin-roleselect-list.django-cradmin-roleselect-list-flat li {
+ul.cradmin-legacy-roleselect-list.cradmin-legacy-roleselect-list-flat li {
   margin: 0;
   border-bottom: 1px dashed #D9D9D9;
   padding: 15px 0;
 }
-ul.django-cradmin-roleselect-list.django-cradmin-roleselect-list-flat li a {
+ul.cradmin-legacy-roleselect-list.cradmin-legacy-roleselect-list-flat li a {
   display: block;
 }
-ul.django-cradmin-roleselect-list.django-cradmin-roleselect-list-flat li a h2.django-cradmin-roleselect-role-title {
+ul.cradmin-legacy-roleselect-list.cradmin-legacy-roleselect-list-flat li a h2.cradmin-legacy-roleselect-role-title {
   font-size: 20px;
   margin: 0;
   padding: 0;
   font-weight: bold;
 }
-ul.django-cradmin-roleselect-list.django-cradmin-roleselect-list-flat li a .django-cradmin-roleselect-role-description {
+ul.cradmin-legacy-roleselect-list.cradmin-legacy-roleselect-list-flat li a .cradmin-legacy-roleselect-role-description {
   color: #747474;
   font-size: 14px;
 }
-ul.django-cradmin-roleselect-list.django-cradmin-roleselect-list-flat li a .django-cradmin-roleselect-role-description p:last-child {
+ul.cradmin-legacy-roleselect-list.cradmin-legacy-roleselect-list-flat li a .cradmin-legacy-roleselect-role-description p:last-child {
   margin-bottom: 0;
 }
-ul.django-cradmin-roleselect-list.django-cradmin-roleselect-list-flat li a:hover {
+ul.cradmin-legacy-roleselect-list.cradmin-legacy-roleselect-list-flat li a:hover {
   text-decoration: none;
 }
-ul.django-cradmin-roleselect-list.django-cradmin-roleselect-list-flat li a:hover .django-cradmin-roleselect-role-description {
+ul.cradmin-legacy-roleselect-list.cradmin-legacy-roleselect-list-flat li a:hover .cradmin-legacy-roleselect-role-description {
   color: #5a5a5a;
 }
-ul.django-cradmin-roleselect-list.django-cradmin-roleselect-list-flat li:last-child {
+ul.cradmin-legacy-roleselect-list.cradmin-legacy-roleselect-list-flat li:last-child {
   border-bottom: none;
 }
 /**
 # Bulk file upload widget styles
 */
 /**
-## .django-cradmin-bulkfileupload
+## .cradmin-legacy-bulkfileupload
 The bulk file upload widget base styles.
 */
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-overlay-controls {
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-overlay-controls {
   display: none;
 }
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content {
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content {
   padding: 0;
   background: #fff;
 }
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox {
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-dropbox {
   background: #ffffff;
   color: #000000;
   font-weight: bold;
@@ -5673,145 +5673,145 @@ The bulk file upload widget base styles.
   border-color: #e0e0e0;
   border-width: 2px;
 }
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox .django-cradmin-bulkfileupload-dropbox-invalid-filetype-errormessage {
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-dropbox .cradmin-legacy-bulkfileupload-dropbox-invalid-filetype-errormessage {
   display: none;
 }
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox .django-cradmin-bulkfileupload-dropbox-text {
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-dropbox .cradmin-legacy-bulkfileupload-dropbox-text {
   position: relative;
   top: 50%;
   -webkit-transform: translateY(-50%);
   -moz-transform: translateY(-50%);
   transform: translateY(-50%);
 }
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox .django-cradmin-bulkfileupload-dropbox-text p.django-cradmin-bulkfileupload-advanced-fileselectbutton-wrapper {
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-dropbox .cradmin-legacy-bulkfileupload-dropbox-text p.cradmin-legacy-bulkfileupload-advanced-fileselectbutton-wrapper {
   text-align: center;
   margin-bottom: 0;
 }
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox .django-cradmin-bulkfileupload-dropbox-text p.django-cradmin-bulkfileupload-advanced-fileselectbutton-wrapper .django-cradmin-bulkfileupload-advanced-fileselectbutton {
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-dropbox .cradmin-legacy-bulkfileupload-dropbox-text p.cradmin-legacy-bulkfileupload-advanced-fileselectbutton-wrapper .cradmin-legacy-bulkfileupload-advanced-fileselectbutton {
   display: inline-block;
   color: #262626;
 }
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox .django-cradmin-bulkfileupload-dropbox-text p.django-cradmin-bulkfileupload-advanced-fileselectbutton-wrapper .django-cradmin-bulkfileupload-advanced-fileselectbutton:hover {
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-dropbox .cradmin-legacy-bulkfileupload-dropbox-text p.cradmin-legacy-bulkfileupload-advanced-fileselectbutton-wrapper .cradmin-legacy-bulkfileupload-advanced-fileselectbutton:hover {
   color: #262626;
 }
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox.django-cradmin-bulkfileupload-dropbox-dragover {
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-dropbox.cradmin-legacy-bulkfileupload-dropbox-dragover {
   background: #5aa221;
   color: #fff;
   border-style: solid;
   border-color: #5aa221;
 }
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox.django-cradmin-bulkfileupload-dropbox-dragover .django-cradmin-bulkfileupload-dropbox-text p.django-cradmin-bulkfileupload-advanced-fileselectbutton-wrapper {
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-dropbox.cradmin-legacy-bulkfileupload-dropbox-dragover .cradmin-legacy-bulkfileupload-dropbox-text p.cradmin-legacy-bulkfileupload-advanced-fileselectbutton-wrapper {
   display: none;
 }
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox.django-cradmin-bulkfileupload-dropbox-dragover-error {
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-dropbox.cradmin-legacy-bulkfileupload-dropbox-dragover-error {
   background: #a0372f;
   color: #fef6f5;
   border-style: solid;
   border-color: #a0372f;
 }
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox.django-cradmin-bulkfileupload-dropbox-dragover-error .django-cradmin-bulkfileupload-dropbox-invalid-filetype-errormessage {
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-dropbox.cradmin-legacy-bulkfileupload-dropbox-dragover-error .cradmin-legacy-bulkfileupload-dropbox-invalid-filetype-errormessage {
   display: block;
 }
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox.django-cradmin-bulkfileupload-dropbox-dragover-error .django-cradmin-bulkfileupload-dropbox-text {
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-dropbox.cradmin-legacy-bulkfileupload-dropbox-dragover-error .cradmin-legacy-bulkfileupload-dropbox-text {
   display: none;
 }
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content p.django-cradmin-bulkfileupload-simple-button-wrapper {
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content p.cradmin-legacy-bulkfileupload-simple-button-wrapper {
   padding: 10px 15px;
   margin: 0;
 }
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content p.django-cradmin-bulkfileupload-simple-button-wrapper .btn.django-cradmin-bulkfileupload-simple-button {
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content p.cradmin-legacy-bulkfileupload-simple-button-wrapper .btn.cradmin-legacy-bulkfileupload-simple-button {
   padding: 10px 16px;
 }
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item,
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-rejectedfiles p.django-cradmin-bulkfileupload-progress-item,
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-rejectedfile,
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-rejectedfiles p.django-cradmin-bulkfileupload-rejectedfile {
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-progress-item,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-rejectedfile,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-rejectedfile {
   font-weight: normal;
   font-size: 16px;
   margin: 0;
   padding: 20px 15px;
 }
 @media (min-width: 992px) {
-  .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item,
-  .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-rejectedfiles p.django-cradmin-bulkfileupload-progress-item,
-  .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-rejectedfile,
-  .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-rejectedfiles p.django-cradmin-bulkfileupload-rejectedfile {
+  .cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item,
+  .cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-progress-item,
+  .cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-rejectedfile,
+  .cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-rejectedfile {
     padding: 10px 15px;
   }
 }
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item.django-cradmin-bulkfileupload-errorparagraph,
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-rejectedfiles p.django-cradmin-bulkfileupload-progress-item.django-cradmin-bulkfileupload-errorparagraph,
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-rejectedfile.django-cradmin-bulkfileupload-errorparagraph,
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-rejectedfiles p.django-cradmin-bulkfileupload-rejectedfile.django-cradmin-bulkfileupload-errorparagraph {
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item.cradmin-legacy-bulkfileupload-errorparagraph,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-progress-item.cradmin-legacy-bulkfileupload-errorparagraph,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-rejectedfile.cradmin-legacy-bulkfileupload-errorparagraph,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-rejectedfile.cradmin-legacy-bulkfileupload-errorparagraph {
   background: #a0372f;
   color: #fef6f5;
 }
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item.django-cradmin-bulkfileupload-errorparagraph .django-cradmin-bulkfileupload-error-closebutton,
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-rejectedfiles p.django-cradmin-bulkfileupload-progress-item.django-cradmin-bulkfileupload-errorparagraph .django-cradmin-bulkfileupload-error-closebutton,
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-rejectedfile.django-cradmin-bulkfileupload-errorparagraph .django-cradmin-bulkfileupload-error-closebutton,
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-rejectedfiles p.django-cradmin-bulkfileupload-rejectedfile.django-cradmin-bulkfileupload-errorparagraph .django-cradmin-bulkfileupload-error-closebutton {
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item.cradmin-legacy-bulkfileupload-errorparagraph .cradmin-legacy-bulkfileupload-error-closebutton,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-progress-item.cradmin-legacy-bulkfileupload-errorparagraph .cradmin-legacy-bulkfileupload-error-closebutton,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-rejectedfile.cradmin-legacy-bulkfileupload-errorparagraph .cradmin-legacy-bulkfileupload-error-closebutton,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-rejectedfile.cradmin-legacy-bulkfileupload-errorparagraph .cradmin-legacy-bulkfileupload-error-closebutton {
   float: right;
   margin-top: -7px;
   margin-right: -7px;
   color: #fef6f5;
 }
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item.django-cradmin-bulkfileupload-errorparagraph .django-cradmin-bulkfileupload-error-closebutton:hover,
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-rejectedfiles p.django-cradmin-bulkfileupload-progress-item.django-cradmin-bulkfileupload-errorparagraph .django-cradmin-bulkfileupload-error-closebutton:hover,
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-rejectedfile.django-cradmin-bulkfileupload-errorparagraph .django-cradmin-bulkfileupload-error-closebutton:hover,
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-rejectedfiles p.django-cradmin-bulkfileupload-rejectedfile.django-cradmin-bulkfileupload-errorparagraph .django-cradmin-bulkfileupload-error-closebutton:hover {
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item.cradmin-legacy-bulkfileupload-errorparagraph .cradmin-legacy-bulkfileupload-error-closebutton:hover,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-progress-item.cradmin-legacy-bulkfileupload-errorparagraph .cradmin-legacy-bulkfileupload-error-closebutton:hover,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-rejectedfile.cradmin-legacy-bulkfileupload-errorparagraph .cradmin-legacy-bulkfileupload-error-closebutton:hover,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-rejectedfile.cradmin-legacy-bulkfileupload-errorparagraph .cradmin-legacy-bulkfileupload-error-closebutton:hover {
   color: #f8c4bd;
 }
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress {
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress {
   background: #fff;
 }
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item {
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item {
   color: #000000;
 }
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item .django-cradmin-progressbar {
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item .cradmin-legacy-progressbar {
   display: inline-block;
   background: #333;
   width: 100px;
   position: relative;
 }
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item .django-cradmin-progressbar .django-cradmin-progressbar-progress {
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item .cradmin-legacy-progressbar .cradmin-legacy-progressbar-progress {
   display: inline-block;
   height: 100%;
   background: #262626;
 }
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item .django-cradmin-progressbar .django-cradmin-progresspercent {
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item .cradmin-legacy-progressbar .cradmin-legacy-progresspercent {
   position: absolute;
   top: 1px;
   left: 5px;
   font-size: 14px;
   color: #fff;
 }
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item .django-cradmin-bulkfileupload-remove-file-button {
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item .cradmin-legacy-bulkfileupload-remove-file-button {
   float: right;
   margin-top: -7px;
   margin-right: -7px;
   color: #fef6f5;
 }
-.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item .django-cradmin-bulkfileupload-remove-file-button:hover {
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item .cradmin-legacy-bulkfileupload-remove-file-button:hover {
   color: #f8c4bd;
 }
 /**
-## .django-cradmin-bulkfileupload-form-overlay
-Added automatically to the ``<form>`` by the ``django-cradmin-bulkfileupload-form``
-angularjs directive when the ``django-cradmin-bulkfileupload-form-overlay``
+## .cradmin-legacy-bulkfileupload-form-overlay
+Added automatically to the ``<form>`` by the ``cradmin-legacy-bulkfileupload-form``
+angularjs directive when the ``cradmin-legacy-bulkfileupload-form-overlay``
 attribute is ``true``. The css class should also be added to the form in
 python/django code to avoid that the form is visible while the page loads.
 */
-.django-cradmin-bulkfileupload-form-overlay {
+.cradmin-legacy-bulkfileupload-form-overlay {
   display: none;
 }
 /**
-## .django-cradmin-bulkfileupload-overlaywrapper
+## .cradmin-legacy-bulkfileupload-overlaywrapper
 Wrapper around the ``<form>`` added automatically by the
-``django-cradmin-bulkfileupload-form`` angularjs directive. The directive
+``cradmin-legacy-bulkfileupload-form`` angularjs directive. The directive
 also moves the wrapper element from its original place in the DOM to a direct
 child of ``<body>``.
 */
-.django-cradmin-bulkfileupload-overlaywrapper {
+.cradmin-legacy-bulkfileupload-overlaywrapper {
   display: none;
   position: fixed;
   left: 0;
@@ -5821,13 +5821,13 @@ child of ``<body>``.
   height: 100%;
   z-index: 50000;
 }
-.django-cradmin-bulkfileupload-overlaywrapper.django-cradmin-bulkfileupload-overlaywrapper-show {
+.cradmin-legacy-bulkfileupload-overlaywrapper.cradmin-legacy-bulkfileupload-overlaywrapper-show {
   display: block;
 }
-.django-cradmin-bulkfileupload-overlaywrapper .django-cradmin-bulkfileupload-overlay-controls {
+.cradmin-legacy-bulkfileupload-overlaywrapper .cradmin-legacy-bulkfileupload-overlay-controls {
   display: block;
 }
-.django-cradmin-bulkfileupload-overlaywrapper .django-cradmin-bulkfileupload-overlay-controls .django-cradmin-bulkfileupload-hide-overlay-button {
+.cradmin-legacy-bulkfileupload-overlaywrapper .cradmin-legacy-bulkfileupload-overlay-controls .cradmin-legacy-bulkfileupload-hide-overlay-button {
   display: inline-block;
   position: absolute;
   top: 0;
@@ -5836,10 +5836,10 @@ child of ``<body>``.
   font-size: 30px;
   color: #eee;
 }
-.django-cradmin-bulkfileupload-overlaywrapper .django-cradmin-bulkfileupload-overlay-controls .django-cradmin-bulkfileupload-hide-overlay-button:hover {
+.cradmin-legacy-bulkfileupload-overlaywrapper .cradmin-legacy-bulkfileupload-overlay-controls .cradmin-legacy-bulkfileupload-hide-overlay-button:hover {
   color: #fff;
 }
-.django-cradmin-bulkfileupload-overlaywrapper .django-cradmin-bulkfileupload-overlay-controls .django-cradmin-bulkfileupload-backdrop {
+.cradmin-legacy-bulkfileupload-overlaywrapper .cradmin-legacy-bulkfileupload-overlay-controls .cradmin-legacy-bulkfileupload-backdrop {
   display: block;
   position: absolute;
   left: 0;
@@ -5850,7 +5850,7 @@ child of ``<body>``.
   cursor: pointer;
   z-index: 50001;
 }
-.django-cradmin-bulkfileupload-overlaywrapper .django-cradmin-bulkfileupload-overlay-controls .django-cradmin-bulkfileupload-overlay-uploadingmessage {
+.cradmin-legacy-bulkfileupload-overlaywrapper .cradmin-legacy-bulkfileupload-overlay-controls .cradmin-legacy-bulkfileupload-overlay-uploadingmessage {
   display: none;
   position: absolute;
   background: #fff;
@@ -5864,10 +5864,10 @@ child of ``<body>``.
   height: 100%;
   z-index: 50005;
 }
-.django-cradmin-bulkfileupload-overlaywrapper .django-cradmin-bulkfileupload-overlay-controls .django-cradmin-bulkfileupload-overlay-uploadingmessage.django-cradmin-bulkfileupload-overlay-uploadingmessage-visible {
+.cradmin-legacy-bulkfileupload-overlaywrapper .cradmin-legacy-bulkfileupload-overlay-controls .cradmin-legacy-bulkfileupload-overlay-uploadingmessage.cradmin-legacy-bulkfileupload-overlay-uploadingmessage-visible {
   display: block;
 }
-.django-cradmin-bulkfileupload-overlaywrapper .django-cradmin-bulkfileupload-overlay-controls .django-cradmin-bulkfileupload-overlay-uploadingmessage p.django-cradmin-bulkfileupload-overlay-uploadingmessage-text {
+.cradmin-legacy-bulkfileupload-overlaywrapper .cradmin-legacy-bulkfileupload-overlay-controls .cradmin-legacy-bulkfileupload-overlay-uploadingmessage p.cradmin-legacy-bulkfileupload-overlay-uploadingmessage-text {
   position: relative;
   top: 50%;
   -webkit-transform: translateY(-50%);
@@ -5877,7 +5877,7 @@ child of ``<body>``.
   margin: 0;
   padding: 0 20px 0 20px;
 }
-.django-cradmin-bulkfileupload-overlaywrapper .django-cradmin-bulkfileupload-form-overlay {
+.cradmin-legacy-bulkfileupload-overlaywrapper .cradmin-legacy-bulkfileupload-form-overlay {
   display: block;
   z-index: 50002;
   background: #fff;
@@ -5893,46 +5893,46 @@ child of ``<body>``.
   -moz-transform: translateY(-50%);
   transform: translateY(-50%);
 }
-.django-cradmin-bulkfileupload-overlaywrapper .django-cradmin-bulkfileupload-form-overlay .form-group {
+.cradmin-legacy-bulkfileupload-overlaywrapper .cradmin-legacy-bulkfileupload-form-overlay .form-group {
   margin: 0;
 }
-.django-cradmin-bulkfileupload-overlaywrapper .django-cradmin-bulkfileupload-form-overlay .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox {
+.cradmin-legacy-bulkfileupload-overlaywrapper .cradmin-legacy-bulkfileupload-form-overlay .cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-dropbox {
   height: 200px;
 }
 @media (min-height: 400px) {
-  .django-cradmin-bulkfileupload-overlaywrapper .django-cradmin-bulkfileupload-form-overlay .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox {
+  .cradmin-legacy-bulkfileupload-overlaywrapper .cradmin-legacy-bulkfileupload-form-overlay .cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-dropbox {
     height: 180px;
   }
 }
 @media (min-height: 500px) {
-  .django-cradmin-bulkfileupload-overlaywrapper .django-cradmin-bulkfileupload-form-overlay .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox {
+  .cradmin-legacy-bulkfileupload-overlaywrapper .cradmin-legacy-bulkfileupload-form-overlay .cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-dropbox {
     height: 270px;
   }
 }
 @media (min-height: 600px) {
-  .django-cradmin-bulkfileupload-overlaywrapper .django-cradmin-bulkfileupload-form-overlay .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox {
+  .cradmin-legacy-bulkfileupload-overlaywrapper .cradmin-legacy-bulkfileupload-form-overlay .cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-dropbox {
     height: 370px;
   }
 }
 @media (min-height: 700px) {
-  .django-cradmin-bulkfileupload-overlaywrapper .django-cradmin-bulkfileupload-form-overlay .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox {
+  .cradmin-legacy-bulkfileupload-overlaywrapper .cradmin-legacy-bulkfileupload-form-overlay .cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-dropbox {
     height: 470px;
   }
 }
 @media (min-height: 800px) {
-  .django-cradmin-bulkfileupload-overlaywrapper .django-cradmin-bulkfileupload-form-overlay .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox {
+  .cradmin-legacy-bulkfileupload-overlaywrapper .cradmin-legacy-bulkfileupload-form-overlay .cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-dropbox {
     height: 570px;
   }
 }
 @media (min-height: 900px) {
-  .django-cradmin-bulkfileupload-overlaywrapper .django-cradmin-bulkfileupload-form-overlay .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox {
+  .cradmin-legacy-bulkfileupload-overlaywrapper .cradmin-legacy-bulkfileupload-form-overlay .cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-dropbox {
     height: 670px;
   }
 }
-.django-cradmin-bulkfileupload-overlaywrapper.django-cradmin-bulkfileupload-overlaywrapper-window-dragover .django-cradmin-bulkfileupload-overlay-controls {
+.cradmin-legacy-bulkfileupload-overlaywrapper.cradmin-legacy-bulkfileupload-overlaywrapper-window-dragover .cradmin-legacy-bulkfileupload-overlay-controls {
   display: none;
 }
-.django-cradmin-bulkfileupload-overlaywrapper.django-cradmin-bulkfileupload-overlaywrapper-window-dragover .django-cradmin-bulkfileupload-form-overlay {
+.cradmin-legacy-bulkfileupload-overlaywrapper.cradmin-legacy-bulkfileupload-overlaywrapper-window-dragover .cradmin-legacy-bulkfileupload-form-overlay {
   position: absolute;
   left: 0;
   right: 0;
@@ -5946,12 +5946,12 @@ child of ``<body>``.
   -moz-transform: none;
   transform: none;
 }
-.django-cradmin-bulkfileupload-overlaywrapper.django-cradmin-bulkfileupload-overlaywrapper-window-dragover .django-cradmin-bulkfileupload-form-overlay .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress,
-.django-cradmin-bulkfileupload-overlaywrapper.django-cradmin-bulkfileupload-overlaywrapper-window-dragover .django-cradmin-bulkfileupload-form-overlay .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-rejectedfiles,
-.django-cradmin-bulkfileupload-overlaywrapper.django-cradmin-bulkfileupload-overlaywrapper-window-dragover .django-cradmin-bulkfileupload-form-overlay .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-advanced-fileselectbutton-wrapper {
+.cradmin-legacy-bulkfileupload-overlaywrapper.cradmin-legacy-bulkfileupload-overlaywrapper-window-dragover .cradmin-legacy-bulkfileupload-form-overlay .cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress,
+.cradmin-legacy-bulkfileupload-overlaywrapper.cradmin-legacy-bulkfileupload-overlaywrapper-window-dragover .cradmin-legacy-bulkfileupload-form-overlay .cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-rejectedfiles,
+.cradmin-legacy-bulkfileupload-overlaywrapper.cradmin-legacy-bulkfileupload-overlaywrapper-window-dragover .cradmin-legacy-bulkfileupload-form-overlay .cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-advanced-fileselectbutton-wrapper {
   display: none;
 }
-.django-cradmin-bulkfileupload-overlaywrapper.django-cradmin-bulkfileupload-overlaywrapper-window-dragover .django-cradmin-bulkfileupload-form-overlay .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox {
+.cradmin-legacy-bulkfileupload-overlaywrapper.cradmin-legacy-bulkfileupload-overlaywrapper-window-dragover .cradmin-legacy-bulkfileupload-form-overlay .cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-dropbox {
   position: absolute;
   left: 0;
   right: 0;
@@ -5959,21 +5959,21 @@ child of ``<body>``.
   bottom: 0;
   height: 100%;
 }
-.django-cradmin-bulkfileupload-overlaywrapper.django-cradmin-bulkfileupload-overlaywrapper-window-dragover .django-cradmin-bulkfileupload-form-overlay .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox .django-cradmin-bulkfileupload-dropbox-invalid-filetype-errormessage {
+.cradmin-legacy-bulkfileupload-overlaywrapper.cradmin-legacy-bulkfileupload-overlaywrapper-window-dragover .cradmin-legacy-bulkfileupload-form-overlay .cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-dropbox .cradmin-legacy-bulkfileupload-dropbox-invalid-filetype-errormessage {
   display: none;
 }
-.django-cradmin-bulkfileupload-overlaywrapper.django-cradmin-bulkfileupload-overlaywrapper-window-dragover .django-cradmin-bulkfileupload-form-overlay .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox.django-cradmin-bulkfileupload-dropbox-dragover {
+.cradmin-legacy-bulkfileupload-overlaywrapper.cradmin-legacy-bulkfileupload-overlaywrapper-window-dragover .cradmin-legacy-bulkfileupload-form-overlay .cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-dropbox.cradmin-legacy-bulkfileupload-dropbox-dragover {
   background: #5aa221;
   color: #fff;
   border-style: solid;
   border-color: #5aa221;
 }
-.django-cradmin-focusedpage-wrapper {
+.cradmin-legacy-focusedpage-wrapper {
   width: 100%;
   height: 100%;
 }
 @media (min-width: 768px) {
-  .django-cradmin-focusedpage-wrapper {
+  .cradmin-legacy-focusedpage-wrapper {
     margin-top: 110px;
     margin-left: auto;
     margin-right: auto;
@@ -5982,59 +5982,59 @@ child of ``<body>``.
   }
 }
 @media (min-width: 768px) {
-  .django-cradmin-focusedpage-wrapper.django-cradmin-focusedpage-wrapper-narrow {
+  .cradmin-legacy-focusedpage-wrapper.cradmin-legacy-focusedpage-wrapper-narrow {
     width: 400px;
   }
 }
-.django-cradmin-focusedpage-wrapper .django-cradmin-focusedpage-wrapper-inner {
+.cradmin-legacy-focusedpage-wrapper .cradmin-legacy-focusedpage-wrapper-inner {
   background: #fff;
   padding: 24px 30px;
   text-align: left;
   margin-bottom: 30px;
 }
-.django-cradmin-focusedpage-wrapper .django-cradmin-focusedpage-wrapper-inner .page-header {
+.cradmin-legacy-focusedpage-wrapper .cradmin-legacy-focusedpage-wrapper-inner .page-header {
   background: none;
   color: #000000;
   padding: 0 0 25px 0;
   border: none;
   margin: 0;
 }
-.django-cradmin-focusedpage-wrapper .django-cradmin-focusedpage-wrapper-inner .page-header h1 {
+.cradmin-legacy-focusedpage-wrapper .cradmin-legacy-focusedpage-wrapper-inner .page-header h1 {
   margin: 0 0 5px 0;
   font-size: 26px;
   font-weight: bold;
 }
-.django-cradmin-focusedpage-wrapper .django-cradmin-focusedpage-wrapper-inner .page-header p:last-child {
+.cradmin-legacy-focusedpage-wrapper .cradmin-legacy-focusedpage-wrapper-inner .page-header p:last-child {
   margin: 0;
 }
 @media (min-width: 768px) {
-  .django-cradmin-focusedpage-wrapper .django-cradmin-focusedpage-wrapper-inner {
+  .cradmin-legacy-focusedpage-wrapper .cradmin-legacy-focusedpage-wrapper-inner {
     border: 1px solid #ccc;
   }
 }
-nav.django-cradmin-menu {
+nav.cradmin-legacy-menu {
   background: #191919;
 }
-nav.django-cradmin-menu .django-cradmin-menu-content {
+nav.cradmin-legacy-menu .cradmin-legacy-menu-content {
   display: none;
   background: #191919;
 }
-nav.django-cradmin-menu .django-cradmin-menu-content.django-cradmin-menu-content-display {
+nav.cradmin-legacy-menu .cradmin-legacy-menu-content.cradmin-legacy-menu-content-display {
   display: block;
 }
-nav.django-cradmin-menu .django-cradmin-menu-content ul {
+nav.cradmin-legacy-menu .cradmin-legacy-menu-content ul {
   list-style: none;
   margin: 0;
   padding: 0;
 }
-nav.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item .django-cradmin-menu-activeitemwrapper {
+nav.cradmin-legacy-menu .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-item .cradmin-legacy-menu-activeitemwrapper {
   font-size: 16px;
   margin: 0;
   padding: 0;
   border: none;
   line-height: 1.42857143;
 }
-nav.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item a {
+nav.cradmin-legacy-menu .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-item a {
   display: block;
   color: #cccccc;
   padding: 10px 16px 10px 16px;
@@ -6045,23 +6045,23 @@ nav.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-i
   line-height: 1.42857143;
   text-decoration: none;
 }
-nav.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item a:hover {
+nav.cradmin-legacy-menu .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-item a:hover {
   text-decoration: none;
   color: #eee;
 }
-nav.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item.django-cradmin-menu-activeitem .django-cradmin-menu-activeitemwrapper > a,
-nav.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item.django-cradmin-menu-activeitem > a {
+nav.cradmin-legacy-menu .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-item.cradmin-legacy-menu-activeitem .cradmin-legacy-menu-activeitemwrapper > a,
+nav.cradmin-legacy-menu .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-item.cradmin-legacy-menu-activeitem > a {
   color: #eee;
   font-weight: bold;
   text-decoration: none;
 }
-nav.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item.django-cradmin-menu-expandeditem > a {
+nav.cradmin-legacy-menu .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-item.cradmin-legacy-menu-expandeditem > a {
   color: #eee;
 }
-nav.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item.django-cradmin-menu-expandeditem .django-cradmin-menu-childitems ul {
+nav.cradmin-legacy-menu .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-item.cradmin-legacy-menu-expandeditem .cradmin-legacy-menu-childitems ul {
   padding-left: 15px;
 }
-nav.django-cradmin-menu .django-cradmin-menu-mobileheader .django-cradmin-menu-mobiletoggle {
+nav.cradmin-legacy-menu .cradmin-legacy-menu-mobileheader .cradmin-legacy-menu-mobiletoggle {
   display: block;
   text-align: center;
   width: 100%;
@@ -6076,68 +6076,68 @@ nav.django-cradmin-menu .django-cradmin-menu-mobileheader .django-cradmin-menu-m
   color: #cccccc;
   background-color: #191919;
 }
-nav.django-cradmin-menu .django-cradmin-menu-mobileheader .django-cradmin-menu-mobiletoggle:hover,
-nav.django-cradmin-menu .django-cradmin-menu-mobileheader .django-cradmin-menu-mobiletoggle.django-cradmin-menu-mobile-toggle-button-expanded {
+nav.cradmin-legacy-menu .cradmin-legacy-menu-mobileheader .cradmin-legacy-menu-mobiletoggle:hover,
+nav.cradmin-legacy-menu .cradmin-legacy-menu-mobileheader .cradmin-legacy-menu-mobiletoggle.cradmin-legacy-menu-mobile-toggle-button-expanded {
   color: #eee;
   background-color: #0c0c0c;
   outline: none;
   text-decoration: none;
 }
 @media (min-width: 992px) {
-  nav.django-cradmin-menu .django-cradmin-menu-mobileheader {
+  nav.cradmin-legacy-menu .cradmin-legacy-menu-mobileheader {
     display: none;
   }
-  nav.django-cradmin-menu .django-cradmin-menu-content {
+  nav.cradmin-legacy-menu .cradmin-legacy-menu-content {
     display: block;
   }
 }
 @media (min-width: 992px) {
-  nav#django_cradmin_mainmenu.django-cradmin-menu .django-cradmin-menu-content ul.django-cradmin-menu-content-header {
+  nav#cradmin_legacy_mainmenu.cradmin-legacy-menu .cradmin-legacy-menu-content ul.cradmin-legacy-menu-content-header {
     background: #191919;
   }
-  nav#django_cradmin_mainmenu.django-cradmin-menu .django-cradmin-menu-content ul.django-cradmin-menu-content-footer {
+  nav#cradmin_legacy_mainmenu.cradmin-legacy-menu .cradmin-legacy-menu-content ul.cradmin-legacy-menu-content-footer {
     background: #191919;
   }
 }
-nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobileheader .django-cradmin-menu-mobiletoggle {
+nav.cradmin-legacy-menu.cradmin-legacy-menu-vertical .cradmin-legacy-menu-mobileheader .cradmin-legacy-menu-mobiletoggle {
   line-height: 50px;
   height: 50px;
 }
 @media (min-width: 992px) {
-  nav.django-cradmin-menu.django-cradmin-menu-vertical {
+  nav.cradmin-legacy-menu.cradmin-legacy-menu-vertical {
     height: 50px;
   }
-  nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-content {
+  nav.cradmin-legacy-menu.cradmin-legacy-menu-vertical .cradmin-legacy-menu-content {
     display: block;
     height: 50px;
   }
-  nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-content ul {
+  nav.cradmin-legacy-menu.cradmin-legacy-menu-vertical .cradmin-legacy-menu-content ul {
     display: inline-block;
     height: 50px;
   }
-  nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-content ul li.django-cradmin-menu-item {
+  nav.cradmin-legacy-menu.cradmin-legacy-menu-vertical .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-item {
     display: inline-block;
     height: 50px;
   }
-  nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-content ul li.django-cradmin-menu-item a {
+  nav.cradmin-legacy-menu.cradmin-legacy-menu-vertical .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-item a {
     height: 50px;
     line-height: 50px;
     display: block;
     padding: 0 16px;
   }
-  nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-content ul li.django-cradmin-menu-item.django-cradmin-menu-activeitem .django-cradmin-menu-activeitemwrapper > a,
-  nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-content ul li.django-cradmin-menu-item.django-cradmin-menu-activeitem > a {
+  nav.cradmin-legacy-menu.cradmin-legacy-menu-vertical .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-item.cradmin-legacy-menu-activeitem .cradmin-legacy-menu-activeitemwrapper > a,
+  nav.cradmin-legacy-menu.cradmin-legacy-menu-vertical .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-item.cradmin-legacy-menu-activeitem > a {
     font-weight: normal;
   }
-  nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-content ul.django-cradmin-menu-content-footer {
+  nav.cradmin-legacy-menu.cradmin-legacy-menu-vertical .cradmin-legacy-menu-content ul.cradmin-legacy-menu-content-footer {
     margin: 0;
     float: right;
   }
 }
-#django_cradmin_mainmenu_backdrop {
+#cradmin_legacy_mainmenu_backdrop {
   display: none;
 }
-.django-cradmin-modal {
+.cradmin-legacy-modal {
   position: fixed;
   left: 0;
   right: 0;
@@ -6146,10 +6146,10 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
   z-index: 50000;
   display: none;
 }
-.django-cradmin-modal.django-cradmin-modal-visible {
+.cradmin-legacy-modal.cradmin-legacy-modal-visible {
   display: block;
 }
-.django-cradmin-modal .django-cradmin-modal-backdrop {
+.cradmin-legacy-modal .cradmin-legacy-modal-backdrop {
   position: absolute;
   left: 0;
   right: 0;
@@ -6159,7 +6159,7 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
   cursor: pointer;
   z-index: 50001;
 }
-.django-cradmin-modal .django-cradmin-modal-content {
+.cradmin-legacy-modal .cradmin-legacy-modal-content {
   z-index: 50002;
   position: absolute;
   background: #fff;
@@ -6170,14 +6170,14 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
   bottom: 0;
   padding: 15px;
 }
-.django-cradmin-modal .django-cradmin-modal-content > p:last-child,
-.django-cradmin-modal .django-cradmin-modal-content > ul:last-child,
-.django-cradmin-modal .django-cradmin-modal-content > ol:last-child {
+.cradmin-legacy-modal .cradmin-legacy-modal-content > p:last-child,
+.cradmin-legacy-modal .cradmin-legacy-modal-content > ul:last-child,
+.cradmin-legacy-modal .cradmin-legacy-modal-content > ol:last-child {
   padding-bottom: 0;
   margin-bottom: 0;
 }
 @media (min-width: 768px) {
-  .django-cradmin-modal .django-cradmin-modal-content {
+  .cradmin-legacy-modal .cradmin-legacy-modal-content {
     width: 500px;
     top: 30px;
     bottom: auto;
@@ -6195,7 +6195,7 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
     margin-top: -30px;
   }
 }
-@keyframes djangoCradminDatepickerPreviewChangeanimation {
+@keyframes cradminLegacyDatepickerPreviewChangeanimation {
   from {
     opacity: 1;
   }
@@ -6203,21 +6203,21 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
     opacity: 0.5;
   }
 }
-.django-cradmin-datepicker .django-cradmin-datepicker-preview {
+.cradmin-legacy-datepicker .cradmin-legacy-datepicker-preview {
   display: block;
   margin-bottom: 10px;
   margin-right: 0;
 }
 @media (min-width: 768px) {
-  .django-cradmin-datepicker .django-cradmin-datepicker-preview {
+  .cradmin-legacy-datepicker .cradmin-legacy-datepicker-preview {
     float: left;
     margin-right: 12px;
     padding-top: 7px;
   }
 }
-.django-cradmin-datepicker .django-cradmin-datepicker-preview.django-cradmin-datepicker-preview-changeanimate {
-  -webkit-animation-name: djangoCradminDatepickerPreviewChangeanimation;
-  animation-name: djangoCradminDatepickerPreviewChangeanimation;
+.cradmin-legacy-datepicker .cradmin-legacy-datepicker-preview.cradmin-legacy-datepicker-preview-changeanimate {
+  -webkit-animation-name: cradminLegacyDatepickerPreviewChangeanimation;
+  animation-name: cradminLegacyDatepickerPreviewChangeanimation;
   -webkit-animation-duration: 0.5s;
   animation-duration: 0.5s;
   -webkit-animation-timing-function: ease-in-out;
@@ -6227,7 +6227,7 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
   -webkit-animation-iteration-count: 4;
   animation-iteration-count: 4;
 }
-.django-cradmin-datetime-selector {
+.cradmin-legacy-datetime-selector {
   display: none;
   position: absolute;
   left: 0;
@@ -6235,7 +6235,7 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
   top: 0;
   overflow: hidden;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-backdrop {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-backdrop {
   z-index: 1;
   position: absolute;
   top: 0;
@@ -6245,21 +6245,21 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
   background: rgba(0, 0, 0, 0.6);
   display: block;
 }
-.django-cradmin-datetime-selector select.form-control {
+.cradmin-legacy-datetime-selector select.form-control {
   display: inline-block;
   width: auto;
 }
 @media (min-width: 768px) and (min-height: 555px) {
-  .django-cradmin-datetime-selector select.form-control.django-cradmin-datetime-selector-dayselect {
+  .cradmin-legacy-datetime-selector select.form-control.cradmin-legacy-datetime-selector-dayselect {
     display: none;
   }
 }
 @media (min-width: 768px) and (min-height: 555px) {
-  .django-cradmin-datetime-selector .django-cradmin-datetime-selector-date-label {
+  .cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-date-label {
     display: none;
   }
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper {
   z-index: 2;
   position: absolute;
   top: 0;
@@ -6272,7 +6272,7 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
   -webkit-transition: all 0.15s ease-in-out;
   transition: all 0.15s ease-in-out;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-closeoverlay {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-closeoverlay {
   position: absolute;
   left: 0;
   right: 0;
@@ -6280,7 +6280,7 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
   bottom: 0;
   z-index: 1;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-page {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-page {
   z-index: 2;
   position: absolute;
   background: #fff;
@@ -6289,35 +6289,35 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
   height: 100%;
   left: 0;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-page.django-cradmin-datetime-selector-dateview {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-page.cradmin-legacy-datetime-selector-dateview {
   left: 0;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-page.django-cradmin-datetime-selector-timeview {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-page.cradmin-legacy-datetime-selector-timeview {
   display: none;
 }
 @media (min-width: 768px) and (min-height: 555px) {
-  .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-page {
+  .cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-page {
     width: 600px;
     height: 480px;
     bottom: 10px;
     margin-left: -300px;
   }
-  .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-page.django-cradmin-datetime-selector-dateview {
+  .cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-page.cradmin-legacy-datetime-selector-dateview {
     left: 50%;
   }
-  .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-page.django-cradmin-datetime-selector-timeview {
+  .cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-page.cradmin-legacy-datetime-selector-timeview {
     display: block;
     left: 150%;
   }
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-page .django-cradmin-datetime-selector-shortcuts {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-page .cradmin-legacy-datetime-selector-shortcuts {
   position: absolute;
   left: 0;
   right: 0;
   text-align: center;
   bottom: 15px;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-page .django-cradmin-datetime-selector-closebutton {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-page .cradmin-legacy-datetime-selector-closebutton {
   position: absolute;
   right: 0;
   top: 0;
@@ -6325,56 +6325,56 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
   font-size: 20px;
   color: #747474;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-page .django-cradmin-datetime-selector-closebutton:hover,
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-page .django-cradmin-datetime-selector-closebutton:active,
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-page .django-cradmin-datetime-selector-closebutton:focus {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-page .cradmin-legacy-datetime-selector-closebutton:hover,
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-page .cradmin-legacy-datetime-selector-closebutton:active,
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-page .cradmin-legacy-datetime-selector-closebutton:focus {
   text-decoration: none;
   color: #262626;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview {
   padding-top: 15px;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview .django-cradmin-datetime-selector-shortcuts .django-cradmin-datetime-selector-shortcuts-todaybutton {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview .cradmin-legacy-datetime-selector-shortcuts .cradmin-legacy-datetime-selector-shortcuts-todaybutton {
   display: none;
 }
 @media (min-width: 768px) and (min-height: 555px) {
-  .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview .django-cradmin-datetime-selector-shortcuts .django-cradmin-datetime-selector-shortcuts-todaybutton {
+  .cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview .cradmin-legacy-datetime-selector-shortcuts .cradmin-legacy-datetime-selector-shortcuts-todaybutton {
     display: inline-block;
   }
-  .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview .django-cradmin-datetime-selector-shortcuts .django-cradmin-datetime-selector-shortcuts-nowbutton {
+  .cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview .cradmin-legacy-datetime-selector-shortcuts .cradmin-legacy-datetime-selector-shortcuts-nowbutton {
     display: none;
   }
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview .django-cradmin-datetime-selector-selectors-wrapper {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview .cradmin-legacy-datetime-selector-selectors-wrapper {
   display: table;
   width: 100%;
   height: 100%;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview .django-cradmin-datetime-selector-selectors-wrapper .django-cradmin-datetime-selector-selectors {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview .cradmin-legacy-datetime-selector-selectors-wrapper .cradmin-legacy-datetime-selector-selectors {
   text-align: center;
   display: table-cell;
   vertical-align: middle;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview .django-cradmin-datetime-selector-selectors-wrapper .django-cradmin-datetime-selector-selectors .django-cradmin-datetime-selector-timeselectors {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview .cradmin-legacy-datetime-selector-selectors-wrapper .cradmin-legacy-datetime-selector-selectors .cradmin-legacy-datetime-selector-timeselectors {
   margin-top: 15px;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview .django-cradmin-datetime-selector-selectors-wrapper .django-cradmin-datetime-selector-selectors .django-cradmin-datetime-selector-use-button {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview .cradmin-legacy-datetime-selector-selectors-wrapper .cradmin-legacy-datetime-selector-selectors .cradmin-legacy-datetime-selector-use-button {
   margin-top: 15px;
 }
 @media (min-width: 768px) and (min-height: 555px) {
-  .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview .django-cradmin-datetime-selector-selectors-wrapper {
+  .cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview .cradmin-legacy-datetime-selector-selectors-wrapper {
     display: block;
     height: auto;
   }
-  .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview .django-cradmin-datetime-selector-selectors-wrapper .django-cradmin-datetime-selector-selectors {
+  .cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview .cradmin-legacy-datetime-selector-selectors-wrapper .cradmin-legacy-datetime-selector-selectors {
     display: block;
   }
-  .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview .django-cradmin-datetime-selector-selectors-wrapper .django-cradmin-datetime-selector-selectors .django-cradmin-datetime-selector-timeselectors,
-  .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview .django-cradmin-datetime-selector-selectors-wrapper .django-cradmin-datetime-selector-selectors .django-cradmin-datetime-selector-use-button {
+  .cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview .cradmin-legacy-datetime-selector-selectors-wrapper .cradmin-legacy-datetime-selector-selectors .cradmin-legacy-datetime-selector-timeselectors,
+  .cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview .cradmin-legacy-datetime-selector-selectors-wrapper .cradmin-legacy-datetime-selector-selectors .cradmin-legacy-datetime-selector-use-button {
     display: none;
   }
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table {
   width: 100%;
   margin: 0;
   display: none;
@@ -6386,20 +6386,20 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
   height: 400px;
 }
 @media (min-width: 768px) and (min-height: 555px) {
-  .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table {
+  .cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table {
     display: table;
   }
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table thead {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table thead {
   height: 25px;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table thead tr th {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table thead tr th {
   padding: 0 0 6px 0;
   text-align: center;
   width: 14.28571429%;
   vertical-align: bottom;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell {
   margin: 0;
   background: #fff;
   color: #262626;
@@ -6407,7 +6407,7 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
   height: 62.5px;
   position: relative;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell button {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell button {
   display: block;
   position: absolute;
   top: 0;
@@ -6425,7 +6425,7 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
   font-weight: bold;
   white-space: nowrap;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell button .django-cradmin-datetime-selector-daybuttoncell-label {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell button .cradmin-legacy-datetime-selector-daybuttoncell-label {
   display: block;
   position: absolute;
   bottom: 3px;
@@ -6434,83 +6434,83 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
   font-size: 11px;
   font-weight: normal;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell button .django-cradmin-datetime-selector-daybuttoncell-label.django-cradmin-datetime-selector-daybuttoncell-label-today {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell button .cradmin-legacy-datetime-selector-daybuttoncell-label.cradmin-legacy-datetime-selector-daybuttoncell-label-today {
   top: 3px;
   bottom: auto;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell button,
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell button:active,
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell button.active,
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell button:hover {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell button,
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell button:active,
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell button.active,
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell button:hover {
   text-decoration: none;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell button:focus,
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell button:active:focus {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell button:focus,
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell button:active:focus {
   outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-today button {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell.cradmin-legacy-datetime-selector-daybuttoncell-today button {
   background: #fff;
   color: #262626;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-selected button {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell.cradmin-legacy-datetime-selector-daybuttoncell-selected button {
   background: #0c0c0c;
   color: #fff;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-not-in-current-month button {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell.cradmin-legacy-datetime-selector-daybuttoncell-not-in-current-month button {
   background: #fff;
   color: #747474;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-disabled button {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell.cradmin-legacy-datetime-selector-daybuttoncell-disabled button {
   background: #e6e6e6;
   color: #646464;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-disabled button:hover,
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-disabled button:active,
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-disabled button:focus {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell.cradmin-legacy-datetime-selector-daybuttoncell-disabled button:hover,
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell.cradmin-legacy-datetime-selector-daybuttoncell-disabled button:active,
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell.cradmin-legacy-datetime-selector-daybuttoncell-disabled button:focus {
   cursor: not-allowed;
   background: #e6e6e6;
   color: #646464;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-disabled.django-cradmin-datetime-selector-daybuttoncell-not-in-current-month button {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell.cradmin-legacy-datetime-selector-daybuttoncell-disabled.cradmin-legacy-datetime-selector-daybuttoncell-not-in-current-month button {
   background: #cdcdcd;
   color: #7e7e7e;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-disabled.django-cradmin-datetime-selector-daybuttoncell-not-in-current-month button:hover,
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-disabled.django-cradmin-datetime-selector-daybuttoncell-not-in-current-month button:active,
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-disabled.django-cradmin-datetime-selector-daybuttoncell-not-in-current-month button:focus {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell.cradmin-legacy-datetime-selector-daybuttoncell-disabled.cradmin-legacy-datetime-selector-daybuttoncell-not-in-current-month button:hover,
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell.cradmin-legacy-datetime-selector-daybuttoncell-disabled.cradmin-legacy-datetime-selector-daybuttoncell-not-in-current-month button:active,
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell.cradmin-legacy-datetime-selector-daybuttoncell-disabled.cradmin-legacy-datetime-selector-daybuttoncell-not-in-current-month button:focus {
   background: #cdcdcd;
   color: #7e7e7e;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell button:hover,
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-today button:hover,
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-selected button:hover,
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-not-in-current-month button:hover,
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell button:focus,
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-today button:focus,
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-selected button:focus,
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-not-in-current-month button:focus {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell button:hover,
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell.cradmin-legacy-datetime-selector-daybuttoncell-today button:hover,
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell.cradmin-legacy-datetime-selector-daybuttoncell-selected button:hover,
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell.cradmin-legacy-datetime-selector-daybuttoncell-not-in-current-month button:hover,
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell button:focus,
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell.cradmin-legacy-datetime-selector-daybuttoncell-today button:focus,
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell.cradmin-legacy-datetime-selector-daybuttoncell-selected button:focus,
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell.cradmin-legacy-datetime-selector-daybuttoncell-not-in-current-month button:focus {
   background: #262626;
   color: #fff;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell:first-child {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell:first-child {
   border-left: none;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell:last-child {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell:last-child {
   border-right: none;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr:last-child td.django-cradmin-datetime-selector-daybuttoncell {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr:last-child td.cradmin-legacy-datetime-selector-daybuttoncell {
   border-bottom: none;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-timeview {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-timeview {
   padding-left: 50px;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-timeview .django-cradmin-datetime-selector-shortcuts {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-timeview .cradmin-legacy-datetime-selector-shortcuts {
   left: 50px;
   right: 0;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-timeview .django-cradmin-datetime-selector-backbutton {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-timeview .cradmin-legacy-datetime-selector-backbutton {
   display: block;
   position: absolute;
   left: 0;
@@ -6528,25 +6528,25 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
   border-right: 1px solid #e6e6e6;
   background: none;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-timeview .django-cradmin-datetime-selector-backbutton .django-cradmin-datetime-selector-backbutton-icon-outer-wrapper {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-timeview .cradmin-legacy-datetime-selector-backbutton .cradmin-legacy-datetime-selector-backbutton-icon-outer-wrapper {
   display: table;
   width: 100%;
   height: 100%;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-timeview .django-cradmin-datetime-selector-backbutton .django-cradmin-datetime-selector-backbutton-icon-outer-wrapper .django-cradmin-datetime-selector-backbutton-icon-inner-wrapper {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-timeview .cradmin-legacy-datetime-selector-backbutton .cradmin-legacy-datetime-selector-backbutton-icon-outer-wrapper .cradmin-legacy-datetime-selector-backbutton-icon-inner-wrapper {
   display: table-cell;
   vertical-align: middle;
   width: 100%;
   height: 100%;
   text-align: center;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-timeview .django-cradmin-datetime-selector-backbutton .django-cradmin-datetime-selector-backbutton-icon-outer-wrapper .django-cradmin-datetime-selector-backbutton-icon-inner-wrapper .django-cradmin-datetime-selector-backbutton-icon {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-timeview .cradmin-legacy-datetime-selector-backbutton .cradmin-legacy-datetime-selector-backbutton-icon-outer-wrapper .cradmin-legacy-datetime-selector-backbutton-icon-inner-wrapper .cradmin-legacy-datetime-selector-backbutton-icon {
   width: 100%;
   font-size: 25px;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-timeview .django-cradmin-datetime-selector-backbutton:hover,
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-timeview .django-cradmin-datetime-selector-backbutton:focus,
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-timeview .django-cradmin-datetime-selector-backbutton:active {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-timeview .cradmin-legacy-datetime-selector-backbutton:hover,
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-timeview .cradmin-legacy-datetime-selector-backbutton:focus,
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-timeview .cradmin-legacy-datetime-selector-backbutton:active {
   background: #f2f2f2;
   color: #191919;
   text-decoration: none;
@@ -6555,64 +6555,64 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
   -webkit-box-shadow: none;
   box-shadow: none;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-timeview-body-wrapper {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-timeview-body-wrapper {
   display: table;
   width: 100%;
   height: 100%;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-timeview-body-wrapper .django-cradmin-datetime-selector-timeview-body {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-timeview-body-wrapper .cradmin-legacy-datetime-selector-timeview-body {
   display: table-cell;
   text-align: center;
   vertical-align: middle;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-timeview-body-wrapper .django-cradmin-datetime-selector-timeview-body .django-cradmin-datetime-selector-datepreview {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-timeview-body-wrapper .cradmin-legacy-datetime-selector-timeview-body .cradmin-legacy-datetime-selector-datepreview {
   margin-bottom: 15px;
 }
-.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-timeview-body-wrapper .django-cradmin-datetime-selector-timeview-body .django-cradmin-datetime-selector-use-button {
+.cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-timeview-body-wrapper .cradmin-legacy-datetime-selector-timeview-body .cradmin-legacy-datetime-selector-use-button {
   margin-left: 5px;
   vertical-align: bottom;
 }
-.django-cradmin-datetime-selector.django-cradmin-datetime-selector-show {
+.cradmin-legacy-datetime-selector.cradmin-legacy-datetime-selector-show {
   display: block;
 }
-.django-cradmin-datetime-selector.django-cradmin-datetime-selector-show.django-cradmin-datetime-selector-page1 .django-cradmin-datetime-selector-contentwrapper {
+.cradmin-legacy-datetime-selector.cradmin-legacy-datetime-selector-show.cradmin-legacy-datetime-selector-page1 .cradmin-legacy-datetime-selector-contentwrapper {
   -webkit-transform: translate(0, 0);
   -ms-transform: translate(0, 0);
   transform: translate(0, 0);
 }
-.django-cradmin-datetime-selector.django-cradmin-datetime-selector-show.django-cradmin-datetime-selector-page2 .django-cradmin-datetime-selector-contentwrapper {
+.cradmin-legacy-datetime-selector.cradmin-legacy-datetime-selector-show.cradmin-legacy-datetime-selector-page2 .cradmin-legacy-datetime-selector-contentwrapper {
   -webkit-transform: translate(0, 0);
   -ms-transform: translate(0, 0);
   transform: translate(0, 0);
 }
 @media (min-width: 768px) and (min-height: 555px) {
-  .django-cradmin-datetime-selector.django-cradmin-datetime-selector-show.django-cradmin-datetime-selector-page2 .django-cradmin-datetime-selector-contentwrapper {
+  .cradmin-legacy-datetime-selector.cradmin-legacy-datetime-selector-show.cradmin-legacy-datetime-selector-page2 .cradmin-legacy-datetime-selector-contentwrapper {
     -webkit-transform: translate(-100%, 0);
     -ms-transform: translate(-100%, 0);
     transform: translate(-100%, 0);
   }
 }
-.django-cradmin-datetime-selector.django-cradmin-datetime-selector-show.django-cradmin-datetime-selector-page3 .django-cradmin-datetime-selector-backdrop {
+.cradmin-legacy-datetime-selector.cradmin-legacy-datetime-selector-show.cradmin-legacy-datetime-selector-page3 .cradmin-legacy-datetime-selector-backdrop {
   display: none;
 }
-.django-cradmin-datetime-selector.django-cradmin-datetime-selector-show.django-cradmin-datetime-selector-page3 .django-cradmin-datetime-selector-contentwrapper {
+.cradmin-legacy-datetime-selector.cradmin-legacy-datetime-selector-show.cradmin-legacy-datetime-selector-page3 .cradmin-legacy-datetime-selector-contentwrapper {
   -webkit-transform: translate(0, 100%);
   -ms-transform: translate(0, 100%);
   transform: translate(0, 100%);
 }
 @media (min-width: 768px) and (min-height: 555px) {
-  .django-cradmin-datetime-selector.django-cradmin-datetime-selector-show.django-cradmin-datetime-selector-page3 .django-cradmin-datetime-selector-contentwrapper {
+  .cradmin-legacy-datetime-selector.cradmin-legacy-datetime-selector-show.cradmin-legacy-datetime-selector-page3 .cradmin-legacy-datetime-selector-contentwrapper {
     -webkit-transform: translate(-100%, 100%);
     -ms-transform: translate(-100%, 100%);
     transform: translate(-100%, 100%);
   }
 }
 @media (min-width: 768px) and (min-height: 555px) {
-  .django-cradmin-datetime-selector.django-cradmin-datetime-selector-has-shortcuts .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-page {
+  .cradmin-legacy-datetime-selector.cradmin-legacy-datetime-selector-has-shortcuts .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-page {
     height: 545px;
   }
 }
-.django-cradmin-datetime-selector.django-cradmin-datetime-selector-has-shortcuts .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table {
+.cradmin-legacy-datetime-selector.cradmin-legacy-datetime-selector-has-shortcuts .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table {
   bottom: 65px;
 }
 /*
@@ -6620,209 +6620,209 @@ Resets the style of the listbuilder list.
 
 Use other css classes to apply styles.
 */
-.django-cradmin-listbuilder-list {
+.cradmin-legacy-listbuilder-list {
   list-style: none;
   margin: 0;
   padding: 0;
 }
-.django-cradmin-listbuilder-list li {
+.cradmin-legacy-listbuilder-list li {
   margin: 0;
   padding: 0;
 }
 /*
 Styles for the RowList.
 
-Note that the RowList also uses the ``django-cradmin-listbuilder-list`` class.
+Note that the RowList also uses the ``cradmin-legacy-listbuilder-list`` class.
 */
 /*
 Styles for the FloatGridList.
 
-Note that the FloatGridList also uses the ``django-cradmin-listbuilder-list`` class.
+Note that the FloatGridList also uses the ``cradmin-legacy-listbuilder-list`` class.
 */
-.django-cradmin-listbuilder-floatgridlist {
+.cradmin-legacy-listbuilder-floatgridlist {
   clear: both;
 }
-.django-cradmin-listbuilder-floatgridlist:before,
-.django-cradmin-listbuilder-floatgridlist:after {
+.cradmin-legacy-listbuilder-floatgridlist:before,
+.cradmin-legacy-listbuilder-floatgridlist:after {
   content: " ";
   display: table;
 }
-.django-cradmin-listbuilder-floatgridlist:after {
+.cradmin-legacy-listbuilder-floatgridlist:after {
   clear: both;
 }
-.django-cradmin-listbuilder-floatgridlist:before,
-.django-cradmin-listbuilder-floatgridlist:after {
+.cradmin-legacy-listbuilder-floatgridlist:before,
+.cradmin-legacy-listbuilder-floatgridlist:after {
   content: " ";
   display: table;
 }
-.django-cradmin-listbuilder-floatgridlist:after {
+.cradmin-legacy-listbuilder-floatgridlist:after {
   clear: both;
 }
-.django-cradmin-listbuilder-floatgridlist > li {
+.cradmin-legacy-listbuilder-floatgridlist > li {
   display: block;
 }
-.django-cradmin-listbuilder-floatgridlist.django-cradmin-listbuilder-floatgridlist-md > li {
+.cradmin-legacy-listbuilder-floatgridlist.cradmin-legacy-listbuilder-floatgridlist-md > li {
   float: left;
 }
 @media (max-width: 767px) {
-  .django-cradmin-listbuilder-floatgridlist.django-cradmin-listbuilder-floatgridlist-md > li {
+  .cradmin-legacy-listbuilder-floatgridlist.cradmin-legacy-listbuilder-floatgridlist-md > li {
     width: 50%;
   }
-  .django-cradmin-listbuilder-floatgridlist.django-cradmin-listbuilder-floatgridlist-md > li:nth-child(2n+3) {
+  .cradmin-legacy-listbuilder-floatgridlist.cradmin-legacy-listbuilder-floatgridlist-md > li:nth-child(2n+3) {
     clear: left;
   }
 }
 @media (min-width: 768px) and (max-width: 1199px) {
-  .django-cradmin-listbuilder-floatgridlist.django-cradmin-listbuilder-floatgridlist-md > li {
+  .cradmin-legacy-listbuilder-floatgridlist.cradmin-legacy-listbuilder-floatgridlist-md > li {
     width: 25%;
   }
-  .django-cradmin-listbuilder-floatgridlist.django-cradmin-listbuilder-floatgridlist-md > li:nth-child(4n+5) {
+  .cradmin-legacy-listbuilder-floatgridlist.cradmin-legacy-listbuilder-floatgridlist-md > li:nth-child(4n+5) {
     clear: left;
   }
 }
 @media (min-width: 1200px) {
-  .django-cradmin-listbuilder-floatgridlist.django-cradmin-listbuilder-floatgridlist-md > li {
+  .cradmin-legacy-listbuilder-floatgridlist.cradmin-legacy-listbuilder-floatgridlist-md > li {
     width: 20%;
   }
-  .django-cradmin-listbuilder-floatgridlist.django-cradmin-listbuilder-floatgridlist-md > li:nth-child(5n+6) {
+  .cradmin-legacy-listbuilder-floatgridlist.cradmin-legacy-listbuilder-floatgridlist-md > li:nth-child(5n+6) {
     clear: left;
   }
 }
 @media (min-width: 768px) and (max-width: 1199px) {
-  .django-cradmin-listbuilder-floatgridlist.django-cradmin-listbuilder-floatgridlist-lg > li {
+  .cradmin-legacy-listbuilder-floatgridlist.cradmin-legacy-listbuilder-floatgridlist-lg > li {
     float: left;
     width: 50%;
   }
-  .django-cradmin-listbuilder-floatgridlist.django-cradmin-listbuilder-floatgridlist-lg > li:nth-child(2n+3) {
+  .cradmin-legacy-listbuilder-floatgridlist.cradmin-legacy-listbuilder-floatgridlist-lg > li:nth-child(2n+3) {
     clear: left;
   }
 }
 @media (min-width: 1200px) {
-  .django-cradmin-listbuilder-floatgridlist.django-cradmin-listbuilder-floatgridlist-lg > li {
+  .cradmin-legacy-listbuilder-floatgridlist.cradmin-legacy-listbuilder-floatgridlist-lg > li {
     float: left;
     width: 33.33333333%;
   }
-  .django-cradmin-listbuilder-floatgridlist.django-cradmin-listbuilder-floatgridlist-lg > li:nth-child(3n+4) {
+  .cradmin-legacy-listbuilder-floatgridlist.cradmin-legacy-listbuilder-floatgridlist-lg > li:nth-child(3n+4) {
     clear: left;
   }
 }
-ol.django-cradmin-listbuilder-list {
+ol.cradmin-legacy-listbuilder-list {
   font-size: 14px;
 }
-ol.django-cradmin-listbuilder-list h2,
-ol.django-cradmin-listbuilder-list h3 {
+ol.cradmin-legacy-listbuilder-list h2,
+ol.cradmin-legacy-listbuilder-list h3 {
   font-size: 16px;
 }
-ol.django-cradmin-listbuilder-list h2:first-child,
-ol.django-cradmin-listbuilder-list h3:first-child {
+ol.cradmin-legacy-listbuilder-list h2:first-child,
+ol.cradmin-legacy-listbuilder-list h3:first-child {
   margin-top: 0;
   padding-top: 0;
 }
-ol.django-cradmin-listbuilder-list p:last-child,
-ol.django-cradmin-listbuilder-list pre:last-child,
-ol.django-cradmin-listbuilder-list table:last-child,
-ol.django-cradmin-listbuilder-list form:last-child,
-ol.django-cradmin-listbuilder-list h2:last-child,
-ol.django-cradmin-listbuilder-list h3:last-child {
+ol.cradmin-legacy-listbuilder-list p:last-child,
+ol.cradmin-legacy-listbuilder-list pre:last-child,
+ol.cradmin-legacy-listbuilder-list table:last-child,
+ol.cradmin-legacy-listbuilder-list form:last-child,
+ol.cradmin-legacy-listbuilder-list h2:last-child,
+ol.cradmin-legacy-listbuilder-list h3:last-child {
   margin-bottom: 0;
   padding-bottom: 0;
 }
-ol.django-cradmin-listbuilder-list.django-cradmin-listbuilder-rowlist li .django-cradmin-listbuilder-itemframe.django-cradmin-listbuilder-itemframe-defaultspacing {
+ol.cradmin-legacy-listbuilder-list.cradmin-legacy-listbuilder-rowlist li .cradmin-legacy-listbuilder-itemframe.cradmin-legacy-listbuilder-itemframe-defaultspacing {
   margin-top: 0;
   margin-bottom: 5px;
 }
-ol.django-cradmin-listbuilder-list.django-cradmin-listbuilder-floatgridlist li .django-cradmin-listbuilder-itemframe.django-cradmin-listbuilder-itemframe-defaultspacing {
+ol.cradmin-legacy-listbuilder-list.cradmin-legacy-listbuilder-floatgridlist li .cradmin-legacy-listbuilder-itemframe.cradmin-legacy-listbuilder-itemframe-defaultspacing {
   margin-top: 5px;
   margin-bottom: 5px;
 }
 @media (min-width: 768px) {
-  ol.django-cradmin-listbuilder-list.django-cradmin-listbuilder-floatgridlist li .django-cradmin-listbuilder-itemframe.django-cradmin-listbuilder-itemframe-defaultspacing {
+  ol.cradmin-legacy-listbuilder-list.cradmin-legacy-listbuilder-floatgridlist li .cradmin-legacy-listbuilder-itemframe.cradmin-legacy-listbuilder-itemframe-defaultspacing {
     margin: 5px;
   }
 }
-ol.django-cradmin-listbuilder-list:first-child.django-cradmin-listbuilder-rowlist li:first-child .django-cradmin-listbuilder-itemframe.django-cradmin-listbuilder-itemframe-defaultspacing {
+ol.cradmin-legacy-listbuilder-list:first-child.cradmin-legacy-listbuilder-rowlist li:first-child .cradmin-legacy-listbuilder-itemframe.cradmin-legacy-listbuilder-itemframe-defaultspacing {
   margin-top: 0;
 }
-ol.django-cradmin-listbuilder-list li a.django-cradmin-listbuilder-itemframe-link {
+ol.cradmin-legacy-listbuilder-list li a.cradmin-legacy-listbuilder-itemframe-link {
   display: block;
 }
-a.django-cradmin-listbuilder-itemframe-link {
+a.cradmin-legacy-listbuilder-itemframe-link {
   color: #000000;
   text-decoration: none;
 }
-a.django-cradmin-listbuilder-itemframe-link:hover {
+a.cradmin-legacy-listbuilder-itemframe-link:hover {
   color: #000000;
   text-decoration: none;
 }
-ol.django-cradmin-listbuilder-list li .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
+ol.cradmin-legacy-listbuilder-list li .cradmin-legacy-listbuilder-itemvalue.cradmin-legacy-listbuilder-itemvalue-focusbox {
   background: #fff;
   padding: 10px;
 }
-a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
+a.cradmin-legacy-listbuilder-itemframe-link .cradmin-legacy-listbuilder-itemvalue.cradmin-legacy-listbuilder-itemvalue-focusbox {
   border-bottom: 3px solid transparent;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0.5);
 }
 @media (min-width: 768px) {
-  a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
+  a.cradmin-legacy-listbuilder-itemframe-link .cradmin-legacy-listbuilder-itemvalue.cradmin-legacy-listbuilder-itemvalue-focusbox {
     -webkit-transition: all 0.15s ease-in-out;
     -moz-transition: all 0.15s ease-in-out;
     transition: all 0.15s ease-in-out;
   }
 }
-a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox .django-cradmin-listbuilder-itemvalue-titledescription {
+a.cradmin-legacy-listbuilder-itemframe-link .cradmin-legacy-listbuilder-itemvalue.cradmin-legacy-listbuilder-itemvalue-focusbox .cradmin-legacy-listbuilder-itemvalue-titledescription {
   color: #000000;
 }
-a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox .django-cradmin-listbuilder-itemvalue-titledescription .django-cradmin-listbuilder-itemvalue-titledescription-title {
+a.cradmin-legacy-listbuilder-itemframe-link .cradmin-legacy-listbuilder-itemvalue.cradmin-legacy-listbuilder-itemvalue-focusbox .cradmin-legacy-listbuilder-itemvalue-titledescription .cradmin-legacy-listbuilder-itemvalue-titledescription-title {
   color: #262626;
 }
-a.django-cradmin-listbuilder-itemframe-link:hover .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
+a.cradmin-legacy-listbuilder-itemframe-link:hover .cradmin-legacy-listbuilder-itemvalue.cradmin-legacy-listbuilder-itemvalue-focusbox {
   border-color: #262626;
 }
-a.django-cradmin-listbuilder-itemframe-link:hover .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox .django-cradmin-listbuilder-itemvalue-titledescription .django-cradmin-listbuilder-itemvalue-titledescription-title {
+a.cradmin-legacy-listbuilder-itemframe-link:hover .cradmin-legacy-listbuilder-itemvalue.cradmin-legacy-listbuilder-itemvalue-focusbox .cradmin-legacy-listbuilder-itemvalue-titledescription .cradmin-legacy-listbuilder-itemvalue-titledescription-title {
   color: #262626;
   text-decoration: underline;
 }
-ol.django-cradmin-listfilter-filterlist {
+ol.cradmin-legacy-listfilter-filterlist {
   list-style: none;
   margin: 0;
   padding: 0;
 }
-ol.django-cradmin-listfilter-filterlist li {
+ol.cradmin-legacy-listfilter-filterlist li {
   margin: 0;
   padding: 0;
 }
-ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-vertical {
+ol.cradmin-legacy-listfilter-filterlist.cradmin-legacy-listfilter-filterlist-vertical {
   margin-bottom: 20px;
 }
 @media (min-width: 768px) {
-  ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-vertical {
+  ol.cradmin-legacy-listfilter-filterlist.cradmin-legacy-listfilter-filterlist-vertical {
     margin-bottom: 0;
   }
 }
-ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-vertical li {
+ol.cradmin-legacy-listfilter-filterlist.cradmin-legacy-listfilter-filterlist-vertical li {
   margin-top: 18px;
 }
-ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-vertical li:first-child {
+ol.cradmin-legacy-listfilter-filterlist.cradmin-legacy-listfilter-filterlist-vertical li:first-child {
   margin-top: 0;
 }
-ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-horizontal {
+ol.cradmin-legacy-listfilter-filterlist.cradmin-legacy-listfilter-filterlist-horizontal {
   margin-bottom: 10px;
   text-align: center;
 }
-ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-horizontal li {
+ol.cradmin-legacy-listfilter-filterlist.cradmin-legacy-listfilter-filterlist-horizontal li {
   display: inline-block;
   margin-right: 10px;
   text-align: left;
 }
-ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-horizontal li:last-child {
+ol.cradmin-legacy-listfilter-filterlist.cradmin-legacy-listfilter-filterlist-horizontal li:last-child {
   margin-right: 0;
 }
-.django-cradmin-listfilter-target-loading,
-.django-cradmin-listfilter-target-loaderror {
+.cradmin-legacy-listfilter-target-loading,
+.cradmin-legacy-listfilter-target-loaderror {
   position: relative;
 }
-.django-cradmin-listfilter-target-loading .django-cradmin-listfilter-message,
-.django-cradmin-listfilter-target-loaderror .django-cradmin-listfilter-message {
+.cradmin-legacy-listfilter-target-loading .cradmin-legacy-listfilter-message,
+.cradmin-legacy-listfilter-target-loaderror .cradmin-legacy-listfilter-message {
   position: absolute;
   top: 0;
   left: 0;
@@ -6830,178 +6830,178 @@ ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-hor
   padding: 15px;
   text-align: center;
 }
-.django-cradmin-listfilter-target-loading .django-cradmin-listfilter-message .django-cradmin-listfilter-message-loadspinner,
-.django-cradmin-listfilter-target-loaderror .django-cradmin-listfilter-message .django-cradmin-listfilter-message-loadspinner {
+.cradmin-legacy-listfilter-target-loading .cradmin-legacy-listfilter-message .cradmin-legacy-listfilter-message-loadspinner,
+.cradmin-legacy-listfilter-target-loaderror .cradmin-legacy-listfilter-message .cradmin-legacy-listfilter-message-loadspinner {
   margin-bottom: 10px;
   font-size: 22px;
 }
-.django-cradmin-listfilter-target-loading .django-cradmin-listfilter-message .django-cradmin-listfilter-message-text,
-.django-cradmin-listfilter-target-loaderror .django-cradmin-listfilter-message .django-cradmin-listfilter-message-text {
+.cradmin-legacy-listfilter-target-loading .cradmin-legacy-listfilter-message .cradmin-legacy-listfilter-message-text,
+.cradmin-legacy-listfilter-target-loaderror .cradmin-legacy-listfilter-message .cradmin-legacy-listfilter-message-text {
   font-weight: bold;
   display: block;
 }
 @media (min-width: 768px) {
-  .django-cradmin-listfilter-target-loading .django-cradmin-listfilter-message,
-  .django-cradmin-listfilter-target-loaderror .django-cradmin-listfilter-message {
+  .cradmin-legacy-listfilter-target-loading .cradmin-legacy-listfilter-message,
+  .cradmin-legacy-listfilter-target-loaderror .cradmin-legacy-listfilter-message {
     left: 50%;
     margin-left: -150px;
     width: 300px;
     border-radius: 0;
   }
 }
-.django-cradmin-listfilter-target-loading .django-cradmin-listfilter-message.django-cradmin-listfilter-message-loading,
-.django-cradmin-listfilter-target-loaderror .django-cradmin-listfilter-message.django-cradmin-listfilter-message-loading {
+.cradmin-legacy-listfilter-target-loading .cradmin-legacy-listfilter-message.cradmin-legacy-listfilter-message-loading,
+.cradmin-legacy-listfilter-target-loaderror .cradmin-legacy-listfilter-message.cradmin-legacy-listfilter-message-loading {
   background: #129dc1;
   border: 1px solid #129dc1;
   color: #fff;
 }
-.django-cradmin-listfilter-target-loading .django-cradmin-listfilter-message.django-cradmin-listfilter-message-error,
-.django-cradmin-listfilter-target-loaderror .django-cradmin-listfilter-message.django-cradmin-listfilter-message-error {
+.cradmin-legacy-listfilter-target-loading .cradmin-legacy-listfilter-message.cradmin-legacy-listfilter-message-error,
+.cradmin-legacy-listfilter-target-loaderror .cradmin-legacy-listfilter-message.cradmin-legacy-listfilter-message-error {
   background: #a0372f;
   border: 1px solid #a0372f;
   color: #fef6f5;
 }
-.django-cradmin-multiselect2-selected-item {
+.cradmin-legacy-multiselect2-selected-item {
   display: none;
 }
-.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-title {
+.cradmin-legacy-multiselect2-target .cradmin-legacy-multiselect2-target-title {
   font-size: 16px;
   font-weight: bold;
   margin: 20px 0 10px 0;
 }
 @media (min-width: 768px) {
-  .django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-title {
+  .cradmin-legacy-multiselect2-target .cradmin-legacy-multiselect2-target-title {
     margin-top: 0;
     min-height: 28px;
   }
 }
-.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-selected-items .django-cradmin-multiselect2-target-selected-item {
+.cradmin-legacy-multiselect2-target .cradmin-legacy-multiselect2-target-selected-items .cradmin-legacy-multiselect2-target-selected-item {
   background: #fff;
   padding: 10px;
   margin-top: 5px;
 }
-.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-selected-items .django-cradmin-multiselect2-target-selected-item:first-child {
+.cradmin-legacy-multiselect2-target .cradmin-legacy-multiselect2-target-selected-items .cradmin-legacy-multiselect2-target-selected-item:first-child {
   margin-top: 0;
 }
-.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-selected-items .django-cradmin-multiselect2-target-selected-item .django-cradmin-multiselect2-target-selected-item-title {
+.cradmin-legacy-multiselect2-target .cradmin-legacy-multiselect2-target-selected-items .cradmin-legacy-multiselect2-target-selected-item .cradmin-legacy-multiselect2-target-selected-item-title {
   font-size: 16px;
   margin: 0;
   padding: 0;
 }
-.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-selected-items .django-cradmin-multiselect2-target-selected-item .django-cradmin-multiselect2-target-selected-item-description {
+.cradmin-legacy-multiselect2-target .cradmin-legacy-multiselect2-target-selected-items .cradmin-legacy-multiselect2-target-selected-item .cradmin-legacy-multiselect2-target-selected-item-description {
   margin-top: 10px;
   font-size: 14px;
 }
-.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-selected-items .django-cradmin-multiselect2-target-selected-item .django-cradmin-multiselect2-target-selected-item-deselectbutton {
+.cradmin-legacy-multiselect2-target .cradmin-legacy-multiselect2-target-selected-items .cradmin-legacy-multiselect2-target-selected-item .cradmin-legacy-multiselect2-target-selected-item-deselectbutton {
   margin-top: 10px;
 }
-.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-formfields .form-group {
+.cradmin-legacy-multiselect2-target .cradmin-legacy-multiselect2-target-formfields .form-group {
   margin-top: 20px;
   margin-bottom: 20px;
 }
-.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-formfields .form-group .control-label {
+.cradmin-legacy-multiselect2-target .cradmin-legacy-multiselect2-target-formfields .form-group .control-label {
   margin-bottom: 0;
 }
-.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-formfields .form-group .controls {
+.cradmin-legacy-multiselect2-target .cradmin-legacy-multiselect2-target-formfields .form-group .controls {
   margin-top: 7px;
 }
-.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-formfields .form-group .controls .checkbox label {
+.cradmin-legacy-multiselect2-target .cradmin-legacy-multiselect2-target-formfields .form-group .controls .checkbox label {
   font-weight: normal;
   margin-top: 10px;
   margin-bottom: 10px;
 }
-.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-formfields .form-group .controls .checkbox label:first-child {
+.cradmin-legacy-multiselect2-target .cradmin-legacy-multiselect2-target-formfields .form-group .controls .checkbox label:first-child {
   margin-top: 0;
 }
-.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-formfields .form-group .controls .checkbox label:hover {
+.cradmin-legacy-multiselect2-target .cradmin-legacy-multiselect2-target-formfields .form-group .controls .checkbox label:hover {
   color: #262626;
   cursor: pointer;
 }
-.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-formfields .btn {
+.cradmin-legacy-multiselect2-target .cradmin-legacy-multiselect2-target-formfields .btn {
   white-space: normal;
 }
-.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-formfields .django-cradmin-multiselect2-target-submitbuttons {
+.cradmin-legacy-multiselect2-target .cradmin-legacy-multiselect2-target-formfields .cradmin-legacy-multiselect2-target-submitbuttons {
   margin-top: 5px;
 }
-.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-with-items-content {
+.cradmin-legacy-multiselect2-target .cradmin-legacy-multiselect2-target-with-items-content {
   display: none;
 }
-.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-without-items-content {
+.cradmin-legacy-multiselect2-target .cradmin-legacy-multiselect2-target-without-items-content {
   display: block;
 }
-.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-no-items-selected {
+.cradmin-legacy-multiselect2-target .cradmin-legacy-multiselect2-target-no-items-selected {
   display: none;
   color: #747474;
   font-style: italic;
 }
-.django-cradmin-multiselect2-target.django-cradmin-multiselect2-target-with-items .django-cradmin-multiselect2-target-with-items-content {
+.cradmin-legacy-multiselect2-target.cradmin-legacy-multiselect2-target-with-items .cradmin-legacy-multiselect2-target-with-items-content {
   display: block;
 }
-.django-cradmin-multiselect2-target.django-cradmin-multiselect2-target-with-items .django-cradmin-multiselect2-target-without-items-content {
+.cradmin-legacy-multiselect2-target.cradmin-legacy-multiselect2-target-with-items .cradmin-legacy-multiselect2-target-without-items-content {
   display: none;
 }
-.django-cradmin-multiselect2-target.django-cradmin-multiselect2-target-empty-selection-allowed .django-cradmin-multiselect2-target-with-items-content {
+.cradmin-legacy-multiselect2-target.cradmin-legacy-multiselect2-target-empty-selection-allowed .cradmin-legacy-multiselect2-target-with-items-content {
   display: block;
 }
-.django-cradmin-multiselect2-target.django-cradmin-multiselect2-target-empty-selection-allowed .django-cradmin-multiselect2-target-selected-items {
+.cradmin-legacy-multiselect2-target.cradmin-legacy-multiselect2-target-empty-selection-allowed .cradmin-legacy-multiselect2-target-selected-items {
   display: none;
 }
-.django-cradmin-multiselect2-target.django-cradmin-multiselect2-target-empty-selection-allowed .django-cradmin-multiselect2-target-without-items-content {
+.cradmin-legacy-multiselect2-target.cradmin-legacy-multiselect2-target-empty-selection-allowed .cradmin-legacy-multiselect2-target-without-items-content {
   display: none;
 }
-.django-cradmin-multiselect2-target.django-cradmin-multiselect2-target-empty-selection-allowed .django-cradmin-multiselect2-target-no-items-selected {
+.cradmin-legacy-multiselect2-target.cradmin-legacy-multiselect2-target-empty-selection-allowed .cradmin-legacy-multiselect2-target-no-items-selected {
   display: block;
 }
-.django-cradmin-multiselect2-target.django-cradmin-multiselect2-target-empty-selection-allowed.django-cradmin-multiselect2-target-with-items .django-cradmin-multiselect2-target-selected-items {
+.cradmin-legacy-multiselect2-target.cradmin-legacy-multiselect2-target-empty-selection-allowed.cradmin-legacy-multiselect2-target-with-items .cradmin-legacy-multiselect2-target-selected-items {
   display: block;
 }
-.django-cradmin-multiselect2-target.django-cradmin-multiselect2-target-empty-selection-allowed.django-cradmin-multiselect2-target-with-items .django-cradmin-multiselect2-target-no-items-selected {
+.cradmin-legacy-multiselect2-target.cradmin-legacy-multiselect2-target-empty-selection-allowed.cradmin-legacy-multiselect2-target-with-items .cradmin-legacy-multiselect2-target-no-items-selected {
   display: none;
 }
-.django-cradmin-multiselect2-itemvalue .django-cradmin-multiselect2-itemvalue-buttons {
+.cradmin-legacy-multiselect2-itemvalue .cradmin-legacy-multiselect2-itemvalue-buttons {
   margin-top: 8px;
   margin-bottom: 0;
 }
-.django-cradmin-multiselect2-itemvalue .django-cradmin-multiselect2-itemvalue-selectedsummary {
+.cradmin-legacy-multiselect2-itemvalue .cradmin-legacy-multiselect2-itemvalue-selectedsummary {
   display: none;
 }
-.django-cradmin-multiselect2-item-wrapper-selected .django-cradmin-multiselect2-itemvalue .django-cradmin-multiselect2-itemvalue-selectedsummary {
+.cradmin-legacy-multiselect2-item-wrapper-selected .cradmin-legacy-multiselect2-itemvalue .cradmin-legacy-multiselect2-itemvalue-selectedsummary {
   display: block;
   font-size: 14px;
   color: #747474;
 }
-.django-cradmin-multiselect2-item-wrapper-selected .django-cradmin-multiselect2-itemvalue .django-cradmin-multiselect2-itemvalue-selectedsummary .django-cradmin-multiselect2-itemvalue-selectedsummary-prefix-icon {
+.cradmin-legacy-multiselect2-item-wrapper-selected .cradmin-legacy-multiselect2-itemvalue .cradmin-legacy-multiselect2-itemvalue-selectedsummary .cradmin-legacy-multiselect2-itemvalue-selectedsummary-prefix-icon {
   color: #3c763d;
 }
-.django-cradmin-multiselect2-item-wrapper-selected .django-cradmin-multiselect2-itemvalue .django-cradmin-multiselect2-itemvalue-details {
+.cradmin-legacy-multiselect2-item-wrapper-selected .cradmin-legacy-multiselect2-itemvalue .cradmin-legacy-multiselect2-itemvalue-details {
   display: none;
 }
-.django-cradmin-multiselect2-item-wrapper-selected .django-cradmin-multiselect2-itemvalue .django-cradmin-multiselect2-itemvalue-buttons {
+.cradmin-legacy-multiselect2-item-wrapper-selected .cradmin-legacy-multiselect2-itemvalue .cradmin-legacy-multiselect2-itemvalue-buttons {
   display: none;
 }
-.django-cradmin-multiselect2-columnlayout .django-cradmin-multiselect2-listcolumn-buttons .btn {
+.cradmin-legacy-multiselect2-columnlayout .cradmin-legacy-multiselect2-listcolumn-buttons .btn {
   margin-bottom: 5px;
 }
-.django-cradmin-loadmorepager {
+.cradmin-legacy-loadmorepager {
   text-align: center;
   padding-top: 20px;
   padding-bottom: 20px;
 }
-.django-cradmin-loadmorepager.django-cradmin-loadmorepager-hidden {
+.cradmin-legacy-loadmorepager.cradmin-legacy-loadmorepager-hidden {
   display: none;
 }
-.django-cradmin-loadmorepager-target {
+.cradmin-legacy-loadmorepager-target {
   opacity: 1;
   -webkit-transition: opacity 0.2s ease-in-out;
   -moz-transition: opacity 0.2s ease-in-out;
   transition: opacity 0.2s ease-in-out;
 }
-.django-cradmin-loadmorepager-target.django-cradmin-loadmorepager-target-reloading-page1 {
+.cradmin-legacy-loadmorepager-target.cradmin-legacy-loadmorepager-target-reloading-page1 {
   opacity: 0;
 }
-.django-cradmin-loadmorepager-target.django-cradmin-loadmorepager-target-reloading-page1 button,
-.django-cradmin-loadmorepager-target.django-cradmin-loadmorepager-target-reloading-page1 a,
-.django-cradmin-loadmorepager-target.django-cradmin-loadmorepager-target-reloading-page1 input {
+.cradmin-legacy-loadmorepager-target.cradmin-legacy-loadmorepager-target-reloading-page1 button,
+.cradmin-legacy-loadmorepager-target.cradmin-legacy-loadmorepager-target-reloading-page1 a,
+.cradmin-legacy-loadmorepager-target.cradmin-legacy-loadmorepager-target-reloading-page1 input {
   display: none;
 }
 /*
@@ -7020,55 +7020,55 @@ ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-hor
     display: block;
   }
 }
-nav#django_cradmin_mainmenu.django-cradmin-menu .django-cradmin-menu-mobileheader .django-cradmin-menu-mobiletoggle {
+nav#cradmin_legacy_mainmenu.cradmin-legacy-menu .cradmin-legacy-menu-mobileheader .cradmin-legacy-menu-mobiletoggle {
   line-height: 50px;
   height: 50px;
 }
 @media (min-width: 992px) {
-  nav#django_cradmin_mainmenu.django-cradmin-menu {
+  nav#cradmin_legacy_mainmenu.cradmin-legacy-menu {
     height: 60px;
   }
-  nav#django_cradmin_mainmenu.django-cradmin-menu .django-cradmin-menu-content {
+  nav#cradmin_legacy_mainmenu.cradmin-legacy-menu .cradmin-legacy-menu-content {
     display: block;
     height: 60px;
   }
-  nav#django_cradmin_mainmenu.django-cradmin-menu .django-cradmin-menu-content ul {
+  nav#cradmin_legacy_mainmenu.cradmin-legacy-menu .cradmin-legacy-menu-content ul {
     display: inline-block;
     height: 60px;
   }
-  nav#django_cradmin_mainmenu.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item {
+  nav#cradmin_legacy_mainmenu.cradmin-legacy-menu .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-item {
     display: inline-block;
     height: 60px;
   }
-  nav#django_cradmin_mainmenu.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item a {
+  nav#cradmin_legacy_mainmenu.cradmin-legacy-menu .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-item a {
     height: 60px;
     line-height: 60px;
     display: block;
     padding: 0 16px;
   }
-  nav#django_cradmin_mainmenu.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item.django-cradmin-menu-activeitem .django-cradmin-menu-activeitemwrapper > a,
-  nav#django_cradmin_mainmenu.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item.django-cradmin-menu-activeitem > a {
+  nav#cradmin_legacy_mainmenu.cradmin-legacy-menu .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-item.cradmin-legacy-menu-activeitem .cradmin-legacy-menu-activeitemwrapper > a,
+  nav#cradmin_legacy_mainmenu.cradmin-legacy-menu .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-item.cradmin-legacy-menu-activeitem > a {
     font-weight: normal;
   }
-  nav#django_cradmin_mainmenu.django-cradmin-menu .django-cradmin-menu-content ul.django-cradmin-menu-content-footer {
+  nav#cradmin_legacy_mainmenu.cradmin-legacy-menu .cradmin-legacy-menu-content ul.cradmin-legacy-menu-content-footer {
     margin: 0;
     float: right;
   }
 }
-body.django-cradmin-formview-page .django-cradmin-page-header-outer {
+body.cradmin-legacy-formview-page .cradmin-legacy-page-header-outer {
   text-align: center;
 }
-body.django-cradmin-formview-page ul#django_cradmin_messages {
+body.cradmin-legacy-formview-page ul#cradmin_legacy_messages {
   margin-left: auto;
   margin-right: auto;
 }
-.django-cradmin-page-header-outer .django-cradmin-page-header-inner h1 {
+.cradmin-legacy-page-header-outer .cradmin-legacy-page-header-inner h1 {
   font-size: 28px;
 }
-.django-cradmin-page-header-outer .django-cradmin-page-header-inner p {
+.cradmin-legacy-page-header-outer .cradmin-legacy-page-header-inner p {
   margin-bottom: 10px;
 }
-.django-cradmin-page-header-outer .django-cradmin-page-header-inner p:last-child {
+.cradmin-legacy-page-header-outer .cradmin-legacy-page-header-inner p:last-child {
   margin-bottom: 0;
 }
 .alert {
@@ -7078,7 +7078,7 @@ body.django-cradmin-formview-page ul#django_cradmin_messages {
 .alert strong {
   font-style: italic;
 }
-.django-cradmin-listing-no-items-message {
+.cradmin-legacy-listing-no-items-message {
   padding: 10px 15px;
   background: #fff;
   color: #000000;
@@ -7158,38 +7158,38 @@ a.btn {
   border-width: 3px;
   border-radius: 0;
 }
-ol.django-cradmin-listbuilder-list {
+ol.cradmin-legacy-listbuilder-list {
   margin-bottom: 15px;
 }
-ol.django-cradmin-listbuilder-list h2,
-ol.django-cradmin-listbuilder-list h3 {
+ol.cradmin-legacy-listbuilder-list h2,
+ol.cradmin-legacy-listbuilder-list h3 {
   font-size: 19px;
 }
-ol.django-cradmin-listbuilder-list h2:first-child,
-ol.django-cradmin-listbuilder-list h3:first-child {
+ol.cradmin-legacy-listbuilder-list h2:first-child,
+ol.cradmin-legacy-listbuilder-list h3:first-child {
   margin-top: 0;
   padding-top: 0;
   padding-bottom: 0;
   margin-bottom: 5px;
 }
-.django-cradmin-multiselect2-target .form-group {
+.cradmin-legacy-multiselect2-target .form-group {
   margin-top: 20px;
   margin-bottom: 20px;
 }
-.django-cradmin-multiselect2-target .form-group .control-label {
+.cradmin-legacy-multiselect2-target .form-group .control-label {
   margin-bottom: 0;
 }
-.django-cradmin-multiselect2-target .form-group .controls label.checkbox {
+.cradmin-legacy-multiselect2-target .form-group .controls label.checkbox {
   font-weight: normal;
 }
-.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-footer .btn {
+.cradmin-legacy-multiselect2-target .cradmin-legacy-multiselect2-target-footer .btn {
   white-space: normal;
 }
-.django-cradmin-page-header-outer.devilry-page-header-with-backlink .django-cradmin-page-header-inner {
+.cradmin-legacy-page-header-outer.devilry-page-header-with-backlink .cradmin-legacy-page-header-inner {
   position: relative;
   padding-left: 40px;
 }
-.django-cradmin-page-header-outer.devilry-page-header-with-backlink .django-cradmin-page-header-inner a.devilry-page-header-backlink {
+.cradmin-legacy-page-header-outer.devilry-page-header-with-backlink .cradmin-legacy-page-header-inner a.devilry-page-header-backlink {
   font-size: 50px;
   position: absolute;
   top: -22px;
@@ -7199,7 +7199,7 @@ ol.django-cradmin-listbuilder-list h3:first-child {
   height: 30px;
   color: #000000;
 }
-.django-cradmin-page-header-outer.devilry-page-header-with-backlink .django-cradmin-page-header-inner a.devilry-page-header-backlink:hover {
+.cradmin-legacy-page-header-outer.devilry-page-header-with-backlink .cradmin-legacy-page-header-inner a.devilry-page-header-backlink:hover {
   color: #262626;
 }
 .devilry-cradmin-groupitemvalue h2,
@@ -7232,21 +7232,21 @@ ol.django-cradmin-listbuilder-list h3:first-child {
   font-weight: bold;
   color: #a0372f;
 }
-ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-vertical li .django-cradmin-listfilter-radiolist {
+ol.cradmin-legacy-listfilter-filterlist.cradmin-legacy-listfilter-filterlist-vertical li .cradmin-legacy-listfilter-radiolist {
   margin-top: -8px;
 }
-ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-vertical li .django-cradmin-listfilter-radiolist .radio {
+ol.cradmin-legacy-listfilter-filterlist.cradmin-legacy-listfilter-filterlist-vertical li .cradmin-legacy-listfilter-radiolist .radio {
   padding-top: 8px;
   padding-bottom: 8px;
   margin-bottom: 5px;
 }
 @media (min-width: 768px) {
-  ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-vertical li .django-cradmin-listfilter-radiolist .radio {
+  ol.cradmin-legacy-listfilter-filterlist.cradmin-legacy-listfilter-filterlist-vertical li .cradmin-legacy-listfilter-radiolist .radio {
     padding-top: 5px;
     padding-bottom: 5px;
   }
 }
-ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-vertical li .django-cradmin-listfilter-radiolist .radio .label {
+ol.cradmin-legacy-listfilter-filterlist.cradmin-legacy-listfilter-filterlist-vertical li .cradmin-legacy-listfilter-radiolist .radio .label {
   border-radius: 10px;
   float: right;
   height: 20px;
@@ -7276,10 +7276,10 @@ ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-ver
   border-color: #191919;
   color: #fff;
 }
-a.django-cradmin-listbuilder-itemframe-link.devilry-django-cradmin-listbuilder-itemframe-goforward {
+a.cradmin-legacy-listbuilder-itemframe-link.devilry-cradmin-legacy-listbuilder-itemframe-goforward {
   position: relative;
 }
-a.django-cradmin-listbuilder-itemframe-link.devilry-django-cradmin-listbuilder-itemframe-goforward .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+a.cradmin-legacy-listbuilder-itemframe-link.devilry-cradmin-legacy-listbuilder-itemframe-goforward .devilry-cradmin-legacy-listbuilder-itemframe-goforward-icon {
   color: #ddd;
   font-size: 50px;
   position: absolute;
@@ -7292,32 +7292,32 @@ a.django-cradmin-listbuilder-itemframe-link.devilry-django-cradmin-listbuilder-i
   -moz-transition: all 0.15s ease-in-out;
   transition: all 0.15s ease-in-out;
 }
-a.django-cradmin-listbuilder-itemframe-link.devilry-django-cradmin-listbuilder-itemframe-goforward:hover .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+a.cradmin-legacy-listbuilder-itemframe-link.devilry-cradmin-legacy-listbuilder-itemframe-goforward:hover .devilry-cradmin-legacy-listbuilder-itemframe-goforward-icon {
   color: #262626;
 }
-a.django-cradmin-listbuilder-itemframe-link.devilry-django-cradmin-listbuilder-itemframe-goforward .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
+a.cradmin-legacy-listbuilder-itemframe-link.devilry-cradmin-legacy-listbuilder-itemframe-goforward .cradmin-legacy-listbuilder-itemvalue.cradmin-legacy-listbuilder-itemvalue-focusbox {
   padding-right: 55px;
 }
-ol.django-cradmin-listbuilder-list.django-cradmin-listbuilder-rowlist li .django-cradmin-listbuilder-itemframe.django-cradmin-listbuilder-itemframe-defaultspacing {
+ol.cradmin-legacy-listbuilder-list.cradmin-legacy-listbuilder-rowlist li .cradmin-legacy-listbuilder-itemframe.cradmin-legacy-listbuilder-itemframe-defaultspacing {
   margin-top: 0;
   margin-bottom: 8px;
 }
-a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue-titledescription.devilry-django-cradmin-listbuilder-itemvalue-titledescription-description-warning .django-cradmin-listbuilder-itemvalue-titledescription-description,
-.django-cradmin-listbuilder-itemvalue-titledescription-description.devilry-django-cradmin-listbuilder-itemvalue-titledescription-description-warning .django-cradmin-listbuilder-itemvalue-titledescription-description {
+a.cradmin-legacy-listbuilder-itemframe-link .cradmin-legacy-listbuilder-itemvalue-titledescription.devilry-cradmin-legacy-listbuilder-itemvalue-titledescription-description-warning .cradmin-legacy-listbuilder-itemvalue-titledescription-description,
+.cradmin-legacy-listbuilder-itemvalue-titledescription-description.devilry-cradmin-legacy-listbuilder-itemvalue-titledescription-description-warning .cradmin-legacy-listbuilder-itemvalue-titledescription-description {
   color: #8a6d3b;
 }
-a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue-titledescription.devilry-django-cradmin-listbuilder-itemvalue-titledescription-description-muted .django-cradmin-listbuilder-itemvalue-titledescription-description,
-.django-cradmin-listbuilder-itemvalue-titledescription-description.devilry-django-cradmin-listbuilder-itemvalue-titledescription-description-muted .django-cradmin-listbuilder-itemvalue-titledescription-description {
+a.cradmin-legacy-listbuilder-itemframe-link .cradmin-legacy-listbuilder-itemvalue-titledescription.devilry-cradmin-legacy-listbuilder-itemvalue-titledescription-description-muted .cradmin-legacy-listbuilder-itemvalue-titledescription-description,
+.cradmin-legacy-listbuilder-itemvalue-titledescription-description.devilry-cradmin-legacy-listbuilder-itemvalue-titledescription-description-muted .cradmin-legacy-listbuilder-itemvalue-titledescription-description {
   color: #747474;
 }
-.django-cradmin-listbuilder-itemvalue-titledescription.devilry-django-cradmin-listbuilder-itemvalue-titledescription-lg h2,
-.django-cradmin-listbuilder-itemvalue-titledescription.devilry-django-cradmin-listbuilder-itemvalue-titledescription-lg h3 {
+.cradmin-legacy-listbuilder-itemvalue-titledescription.devilry-cradmin-legacy-listbuilder-itemvalue-titledescription-lg h2,
+.cradmin-legacy-listbuilder-itemvalue-titledescription.devilry-cradmin-legacy-listbuilder-itemvalue-titledescription-lg h3 {
   font-size: 22px;
 }
-.django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
+.cradmin-legacy-listbuilder-itemvalue.cradmin-legacy-listbuilder-itemvalue-focusbox {
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
 }
-.django-cradmin-form-wrapper.devilry-django-cradmin-form-wrapper-top-bottom-spacing {
+.cradmin-legacy-form-wrapper.devilry-cradmin-legacy-form-wrapper-top-bottom-spacing {
   padding-top: 15px;
   padding-bottom: 15px;
 }
@@ -7664,10 +7664,10 @@ h3 {
 .paragraph--nomargin {
   margin-bottom: 0;
 }
-#django_cradmin_bodycontentwrapper {
+#cradmin_legacy_bodycontentwrapper {
   padding-bottom: 15px;
 }
-body.django-cradmin-formview-page .django-cradmin-page-header-outer {
+body.cradmin-legacy-formview-page .cradmin-legacy-page-header-outer {
   text-align: left;
 }
 .devilry-body-admin a {
@@ -7702,29 +7702,29 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   border-color: #bc6e04;
   color: #fff;
 }
-.devilry-body-admin a.django-cradmin-listbuilder-itemframe-link {
+.devilry-body-admin a.cradmin-legacy-listbuilder-itemframe-link {
   text-decoration: none;
 }
-.devilry-body-admin a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox.django-cradmin-listbuilder-itemvalue-titledescription {
+.devilry-body-admin a.cradmin-legacy-listbuilder-itemframe-link .cradmin-legacy-listbuilder-itemvalue.cradmin-legacy-listbuilder-itemvalue-focusbox.cradmin-legacy-listbuilder-itemvalue-titledescription {
   color: #000000;
 }
-.devilry-body-admin a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox.django-cradmin-listbuilder-itemvalue-titledescription .django-cradmin-listbuilder-itemvalue-titledescription-title {
+.devilry-body-admin a.cradmin-legacy-listbuilder-itemframe-link .cradmin-legacy-listbuilder-itemvalue.cradmin-legacy-listbuilder-itemvalue-focusbox.cradmin-legacy-listbuilder-itemvalue-titledescription .cradmin-legacy-listbuilder-itemvalue-titledescription-title {
   color: #bc6e04;
 }
-.devilry-body-admin a.django-cradmin-listbuilder-itemframe-link:hover .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
+.devilry-body-admin a.cradmin-legacy-listbuilder-itemframe-link:hover .cradmin-legacy-listbuilder-itemvalue.cradmin-legacy-listbuilder-itemvalue-focusbox {
   border-color: #bc6e04;
 }
-.devilry-body-admin a.django-cradmin-listbuilder-itemframe-link.devilry-django-cradmin-listbuilder-itemframe-goforward .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+.devilry-body-admin a.cradmin-legacy-listbuilder-itemframe-link.devilry-cradmin-legacy-listbuilder-itemframe-goforward .devilry-cradmin-legacy-listbuilder-itemframe-goforward-icon {
   color: #dadada;
 }
-.devilry-body-admin a.django-cradmin-listbuilder-itemframe-link:hover .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+.devilry-body-admin a.cradmin-legacy-listbuilder-itemframe-link:hover .devilry-cradmin-legacy-listbuilder-itemframe-goforward-icon {
   color: #bc6e04;
 }
-.devilry-body-admin nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu {
+.devilry-body-admin nav#cradmin_legacy_mainmenu.cradmin-legacy-menu.devilry-cradmin-legacy-menu {
   border-bottom: 6px solid #e58605;
 }
 @media (min-width: 992px) {
-  .devilry-body-admin nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu {
+  .devilry-body-admin nav#cradmin_legacy_mainmenu.cradmin-legacy-menu.devilry-cradmin-legacy-menu {
     height: 66px;
   }
 }
@@ -7781,29 +7781,29 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   border-color: #0f819e;
   color: #fff;
 }
-.devilry-body-examiner a.django-cradmin-listbuilder-itemframe-link {
+.devilry-body-examiner a.cradmin-legacy-listbuilder-itemframe-link {
   text-decoration: none;
 }
-.devilry-body-examiner a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox.django-cradmin-listbuilder-itemvalue-titledescription {
+.devilry-body-examiner a.cradmin-legacy-listbuilder-itemframe-link .cradmin-legacy-listbuilder-itemvalue.cradmin-legacy-listbuilder-itemvalue-focusbox.cradmin-legacy-listbuilder-itemvalue-titledescription {
   color: #000000;
 }
-.devilry-body-examiner a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox.django-cradmin-listbuilder-itemvalue-titledescription .django-cradmin-listbuilder-itemvalue-titledescription-title {
+.devilry-body-examiner a.cradmin-legacy-listbuilder-itemframe-link .cradmin-legacy-listbuilder-itemvalue.cradmin-legacy-listbuilder-itemvalue-focusbox.cradmin-legacy-listbuilder-itemvalue-titledescription .cradmin-legacy-listbuilder-itemvalue-titledescription-title {
   color: #0f819e;
 }
-.devilry-body-examiner a.django-cradmin-listbuilder-itemframe-link:hover .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
+.devilry-body-examiner a.cradmin-legacy-listbuilder-itemframe-link:hover .cradmin-legacy-listbuilder-itemvalue.cradmin-legacy-listbuilder-itemvalue-focusbox {
   border-color: #0f819e;
 }
-.devilry-body-examiner a.django-cradmin-listbuilder-itemframe-link.devilry-django-cradmin-listbuilder-itemframe-goforward .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+.devilry-body-examiner a.cradmin-legacy-listbuilder-itemframe-link.devilry-cradmin-legacy-listbuilder-itemframe-goforward .devilry-cradmin-legacy-listbuilder-itemframe-goforward-icon {
   color: #dadada;
 }
-.devilry-body-examiner a.django-cradmin-listbuilder-itemframe-link:hover .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+.devilry-body-examiner a.cradmin-legacy-listbuilder-itemframe-link:hover .devilry-cradmin-legacy-listbuilder-itemframe-goforward-icon {
   color: #0f819e;
 }
-.devilry-body-examiner nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu {
+.devilry-body-examiner nav#cradmin_legacy_mainmenu.cradmin-legacy-menu.devilry-cradmin-legacy-menu {
   border-bottom: 6px solid #129dc1;
 }
 @media (min-width: 992px) {
-  .devilry-body-examiner nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu {
+  .devilry-body-examiner nav#cradmin_legacy_mainmenu.cradmin-legacy-menu.devilry-cradmin-legacy-menu {
     height: 66px;
   }
 }
@@ -7860,29 +7860,29 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   border-color: #508f1e;
   color: #fff;
 }
-.devilry-body-student a.django-cradmin-listbuilder-itemframe-link {
+.devilry-body-student a.cradmin-legacy-listbuilder-itemframe-link {
   text-decoration: none;
 }
-.devilry-body-student a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox.django-cradmin-listbuilder-itemvalue-titledescription {
+.devilry-body-student a.cradmin-legacy-listbuilder-itemframe-link .cradmin-legacy-listbuilder-itemvalue.cradmin-legacy-listbuilder-itemvalue-focusbox.cradmin-legacy-listbuilder-itemvalue-titledescription {
   color: #000000;
 }
-.devilry-body-student a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox.django-cradmin-listbuilder-itemvalue-titledescription .django-cradmin-listbuilder-itemvalue-titledescription-title {
+.devilry-body-student a.cradmin-legacy-listbuilder-itemframe-link .cradmin-legacy-listbuilder-itemvalue.cradmin-legacy-listbuilder-itemvalue-focusbox.cradmin-legacy-listbuilder-itemvalue-titledescription .cradmin-legacy-listbuilder-itemvalue-titledescription-title {
   color: #508f1e;
 }
-.devilry-body-student a.django-cradmin-listbuilder-itemframe-link:hover .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
+.devilry-body-student a.cradmin-legacy-listbuilder-itemframe-link:hover .cradmin-legacy-listbuilder-itemvalue.cradmin-legacy-listbuilder-itemvalue-focusbox {
   border-color: #508f1e;
 }
-.devilry-body-student a.django-cradmin-listbuilder-itemframe-link.devilry-django-cradmin-listbuilder-itemframe-goforward .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+.devilry-body-student a.cradmin-legacy-listbuilder-itemframe-link.devilry-cradmin-legacy-listbuilder-itemframe-goforward .devilry-cradmin-legacy-listbuilder-itemframe-goforward-icon {
   color: #dadada;
 }
-.devilry-body-student a.django-cradmin-listbuilder-itemframe-link:hover .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+.devilry-body-student a.cradmin-legacy-listbuilder-itemframe-link:hover .devilry-cradmin-legacy-listbuilder-itemframe-goforward-icon {
   color: #508f1e;
 }
-.devilry-body-student nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu {
+.devilry-body-student nav#cradmin_legacy_mainmenu.cradmin-legacy-menu.devilry-cradmin-legacy-menu {
   border-bottom: 6px solid #61AE24;
 }
 @media (min-width: 992px) {
-  .devilry-body-student nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu {
+  .devilry-body-student nav#cradmin_legacy_mainmenu.cradmin-legacy-menu.devilry-cradmin-legacy-menu {
     height: 66px;
   }
 }
@@ -8063,37 +8063,37 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   color: #262626;
 }
 @media (max-width: 991px) {
-  nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item.devilry-django-cradmin-menuitem-breadcrumb .devilry-django-cradmin-menuitem-breadcrumb-icon {
+  nav#cradmin_legacy_mainmenu.cradmin-legacy-menu.devilry-cradmin-legacy-menu .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-item.devilry-cradmin-legacy-menuitem-breadcrumb .devilry-cradmin-legacy-menuitem-breadcrumb-icon {
     display: none;
   }
-  nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item.devilry-django-cradmin-menuitem-breadcrumb:nth-child(2) a {
+  nav#cradmin_legacy_mainmenu.cradmin-legacy-menu.devilry-cradmin-legacy-menu .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-item.devilry-cradmin-legacy-menuitem-breadcrumb:nth-child(2) a {
     padding-left: 35px;
   }
-  nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item.devilry-django-cradmin-menuitem-breadcrumb:nth-child(3) a {
+  nav#cradmin_legacy_mainmenu.cradmin-legacy-menu.devilry-cradmin-legacy-menu .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-item.devilry-cradmin-legacy-menuitem-breadcrumb:nth-child(3) a {
     padding-left: 50px;
   }
-  nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item.devilry-django-cradmin-menuitem-breadcrumb:nth-child(4) a {
+  nav#cradmin_legacy_mainmenu.cradmin-legacy-menu.devilry-cradmin-legacy-menu .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-item.devilry-cradmin-legacy-menuitem-breadcrumb:nth-child(4) a {
     padding-left: 65px;
   }
-  nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item.devilry-django-cradmin-menuitem-breadcrumb:nth-child(5) a {
+  nav#cradmin_legacy_mainmenu.cradmin-legacy-menu.devilry-cradmin-legacy-menu .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-item.devilry-cradmin-legacy-menuitem-breadcrumb:nth-child(5) a {
     padding-left: 80px;
   }
 }
 @media (min-width: 992px) {
-  nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item.devilry-django-cradmin-menuitem-breadcrumb {
+  nav#cradmin_legacy_mainmenu.cradmin-legacy-menu.devilry-cradmin-legacy-menu .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-item.devilry-cradmin-legacy-menuitem-breadcrumb {
     position: relative;
   }
-  nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item.devilry-django-cradmin-menuitem-breadcrumb a {
+  nav#cradmin_legacy_mainmenu.cradmin-legacy-menu.devilry-cradmin-legacy-menu .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-item.devilry-cradmin-legacy-menuitem-breadcrumb a {
     padding: 0 14px 0 14px;
   }
-  nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item.devilry-django-cradmin-menuitem-breadcrumb .devilry-django-cradmin-menuitem-breadcrumb-icon {
+  nav#cradmin_legacy_mainmenu.cradmin-legacy-menu.devilry-cradmin-legacy-menu .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-item.devilry-cradmin-legacy-menuitem-breadcrumb .devilry-cradmin-legacy-menuitem-breadcrumb-icon {
     color: #444;
     font-size: 34px;
     position: absolute;
     right: -10px;
     top: 13px;
   }
-  nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item.devilry-django-cradmin-menuitem-breadcrumb.django-cradmin-menu-activeitem .devilry-django-cradmin-menuitem-breadcrumb-icon {
+  nav#cradmin_legacy_mainmenu.cradmin-legacy-menu.devilry-cradmin-legacy-menu .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-item.devilry-cradmin-legacy-menuitem-breadcrumb.cradmin-legacy-menu-activeitem .devilry-cradmin-legacy-menuitem-breadcrumb-icon {
     display: none;
   }
 }
@@ -8106,49 +8106,49 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
     text-align: right;
   }
 }
-.django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-student .devilry-frontpage-listbuilder-roleselect-itemvalue {
+.cradmin-legacy-listbuilder-list.devilry-frontpage-roleselectlist a.cradmin-legacy-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-student .devilry-frontpage-listbuilder-roleselect-itemvalue {
   color: #fff;
   border: none;
   background: #508f1e;
 }
-.django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-student .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+.cradmin-legacy-listbuilder-list.devilry-frontpage-roleselectlist a.cradmin-legacy-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-student .devilry-cradmin-legacy-listbuilder-itemframe-goforward-icon {
   color: #fff;
   opacity: 0.3;
 }
-.django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-student:hover .devilry-frontpage-listbuilder-roleselect-itemvalue {
+.cradmin-legacy-listbuilder-list.devilry-frontpage-roleselectlist a.cradmin-legacy-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-student:hover .devilry-frontpage-listbuilder-roleselect-itemvalue {
   background: #61AE24;
 }
-.django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-student:hover .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+.cradmin-legacy-listbuilder-list.devilry-frontpage-roleselectlist a.cradmin-legacy-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-student:hover .devilry-cradmin-legacy-listbuilder-itemframe-goforward-icon {
   opacity: 1;
 }
-.django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-examiner .devilry-frontpage-listbuilder-roleselect-itemvalue {
+.cradmin-legacy-listbuilder-list.devilry-frontpage-roleselectlist a.cradmin-legacy-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-examiner .devilry-frontpage-listbuilder-roleselect-itemvalue {
   color: #fff;
   border: none;
   background: #0f819e;
 }
-.django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-examiner .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+.cradmin-legacy-listbuilder-list.devilry-frontpage-roleselectlist a.cradmin-legacy-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-examiner .devilry-cradmin-legacy-listbuilder-itemframe-goforward-icon {
   color: #fff;
   opacity: 0.3;
 }
-.django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-examiner:hover .devilry-frontpage-listbuilder-roleselect-itemvalue {
+.cradmin-legacy-listbuilder-list.devilry-frontpage-roleselectlist a.cradmin-legacy-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-examiner:hover .devilry-frontpage-listbuilder-roleselect-itemvalue {
   background: #129dc1;
 }
-.django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-examiner:hover .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+.cradmin-legacy-listbuilder-list.devilry-frontpage-roleselectlist a.cradmin-legacy-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-examiner:hover .devilry-cradmin-legacy-listbuilder-itemframe-goforward-icon {
   opacity: 1;
 }
-.django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-anyadmin .devilry-frontpage-listbuilder-roleselect-itemvalue {
+.cradmin-legacy-listbuilder-list.devilry-frontpage-roleselectlist a.cradmin-legacy-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-anyadmin .devilry-frontpage-listbuilder-roleselect-itemvalue {
   color: #fff;
   border: none;
   background: #bc6e04;
 }
-.django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-anyadmin .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+.cradmin-legacy-listbuilder-list.devilry-frontpage-roleselectlist a.cradmin-legacy-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-anyadmin .devilry-cradmin-legacy-listbuilder-itemframe-goforward-icon {
   color: #fff;
   opacity: 0.3;
 }
-.django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-anyadmin:hover .devilry-frontpage-listbuilder-roleselect-itemvalue {
+.cradmin-legacy-listbuilder-list.devilry-frontpage-roleselectlist a.cradmin-legacy-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-anyadmin:hover .devilry-frontpage-listbuilder-roleselect-itemvalue {
   background: #e58605;
 }
-.django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-anyadmin:hover .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+.cradmin-legacy-listbuilder-list.devilry-frontpage-roleselectlist a.cradmin-legacy-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-anyadmin:hover .devilry-cradmin-legacy-listbuilder-itemframe-goforward-icon {
   opacity: 1;
 }
 .comment-form-container {
@@ -9986,29 +9986,29 @@ table.devilry-qualifiesforexam-table tr.devilry-tablebuilder-row:hover td {
   border-color: #bc6e04;
   color: #fff;
 }
-.devilry-qualifiesforexam-plugin-spacing a.django-cradmin-listbuilder-itemframe-link {
+.devilry-qualifiesforexam-plugin-spacing a.cradmin-legacy-listbuilder-itemframe-link {
   text-decoration: none;
 }
-.devilry-qualifiesforexam-plugin-spacing a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox.django-cradmin-listbuilder-itemvalue-titledescription {
+.devilry-qualifiesforexam-plugin-spacing a.cradmin-legacy-listbuilder-itemframe-link .cradmin-legacy-listbuilder-itemvalue.cradmin-legacy-listbuilder-itemvalue-focusbox.cradmin-legacy-listbuilder-itemvalue-titledescription {
   color: #000000;
 }
-.devilry-qualifiesforexam-plugin-spacing a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox.django-cradmin-listbuilder-itemvalue-titledescription .django-cradmin-listbuilder-itemvalue-titledescription-title {
+.devilry-qualifiesforexam-plugin-spacing a.cradmin-legacy-listbuilder-itemframe-link .cradmin-legacy-listbuilder-itemvalue.cradmin-legacy-listbuilder-itemvalue-focusbox.cradmin-legacy-listbuilder-itemvalue-titledescription .cradmin-legacy-listbuilder-itemvalue-titledescription-title {
   color: #bc6e04;
 }
-.devilry-qualifiesforexam-plugin-spacing a.django-cradmin-listbuilder-itemframe-link:hover .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
+.devilry-qualifiesforexam-plugin-spacing a.cradmin-legacy-listbuilder-itemframe-link:hover .cradmin-legacy-listbuilder-itemvalue.cradmin-legacy-listbuilder-itemvalue-focusbox {
   border-color: #bc6e04;
 }
-.devilry-qualifiesforexam-plugin-spacing a.django-cradmin-listbuilder-itemframe-link.devilry-django-cradmin-listbuilder-itemframe-goforward .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+.devilry-qualifiesforexam-plugin-spacing a.cradmin-legacy-listbuilder-itemframe-link.devilry-cradmin-legacy-listbuilder-itemframe-goforward .devilry-cradmin-legacy-listbuilder-itemframe-goforward-icon {
   color: #dadada;
 }
-.devilry-qualifiesforexam-plugin-spacing a.django-cradmin-listbuilder-itemframe-link:hover .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+.devilry-qualifiesforexam-plugin-spacing a.cradmin-legacy-listbuilder-itemframe-link:hover .devilry-cradmin-legacy-listbuilder-itemframe-goforward-icon {
   color: #bc6e04;
 }
-.devilry-qualifiesforexam-plugin-spacing nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu {
+.devilry-qualifiesforexam-plugin-spacing nav#cradmin_legacy_mainmenu.cradmin-legacy-menu.devilry-cradmin-legacy-menu {
   border-bottom: 6px solid #e58605;
 }
 @media (min-width: 992px) {
-  .devilry-qualifiesforexam-plugin-spacing nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu {
+  .devilry-qualifiesforexam-plugin-spacing nav#cradmin_legacy_mainmenu.cradmin-legacy-menu.devilry-cradmin-legacy-menu {
     height: 66px;
   }
 }

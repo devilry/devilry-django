@@ -1,9 +1,9 @@
-{% extends "django_cradmin/base.django.html" %}
+{% extends "cradmin_legacy/base.django.html" %}
 {% load i18n %}
-{% load cradmin_tags %}
-{% load cradmin_icon_tags %}
+{% load cradmin_legacy_tags %}
+{% load cradmin_legacy_icon_tags %}
 {% load crispy_forms_tags %}
-{% load cradmin_icon_tags %}
+{% load cradmin_legacy_icon_tags %}
 
 {% block title %}{% trans "Delete group invite" %}{% endblock title %}
 
@@ -30,7 +30,7 @@
 {% endblock pageheader-inner %}
 
 {% block content %}
-    <div class="container django-cradmin-container-focus">
+    <div class="container cradmin-legacy-container-focus">
         <form action="{{ request.path }}" method="post">{% csrf_token %}
             <p>{% blocktrans with user=groupinvite.sent_to.get_full_name %}Are you sure you want to delete the invite for {{ user }}?{% endblocktrans %}</p>
             <a class="btn btn-default" href="{% cradmin_instance_appindex_url 'projectgroup' %}">{% trans "Cancel" %}</a>

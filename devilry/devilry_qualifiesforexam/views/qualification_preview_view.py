@@ -10,8 +10,8 @@ from django.http import HttpResponseRedirect
 from django.db import models
 
 # CrAdmin imports
-from django_cradmin.crispylayouts import PrimarySubmit
-from django_cradmin.viewhelpers import update
+from cradmin_legacy.crispylayouts import PrimarySubmit
+from cradmin_legacy.viewhelpers import update
 
 # Devilry imports
 from devilry.devilry_qualifiesforexam import models as status_models

@@ -24,7 +24,7 @@ devilry_urls = [
     url(r'^markup/', include('devilry.devilry_markup.urls')),
     url(r'^authenticate/', include('devilry.devilry_authenticate.urls')),
     url(r'^devilry_resetpassword/', include('devilry.devilry_resetpassword.urls')),
-    url(r'^cradmin_temporaryfileuploadstore/', include('django_cradmin.apps.cradmin_temporaryfileuploadstore.urls')),
+    url(r'^cradmin_temporaryfileuploadstore/', include('cradmin_legacy.apps.cradmin_temporaryfileuploadstore.urls')),
 
     url(r'^account/', include('devilry.devilry_account.urls')),
     url(r'^devilry_help/', include('devilry.devilry_help.urls')),

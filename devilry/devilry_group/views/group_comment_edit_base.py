@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.http import Http404, HttpResponseRedirect
 from django.utils.translation import ugettext_lazy
-from django_cradmin.viewhelpers import update
+from cradmin_legacy.viewhelpers import update
 
 from devilry.devilry_cradmin import devilry_acemarkdown
 from devilry.devilry_group import models as group_models

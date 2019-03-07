@@ -53,7 +53,7 @@ class Command(BaseCommand):
             'fullname': str(options['full_name'], self.inputencoding),
             'password': options['password']
         }
-        if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
+        if settings.CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND:
             if not kwargs['email']:
                 raise CommandError('email is required. See --help.')
         else:

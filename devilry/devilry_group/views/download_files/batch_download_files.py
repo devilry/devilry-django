@@ -8,7 +8,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.views import generic
-from django_cradmin import crapp
+from cradmin_legacy import crapp
 
 from devilry.devilry_comment import models as comment_models
 from devilry.devilry_compressionutil import models as archivemodels

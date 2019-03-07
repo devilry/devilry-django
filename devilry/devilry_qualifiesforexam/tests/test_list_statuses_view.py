@@ -10,7 +10,7 @@ from model_mommy import mommy
 from django import test
 
 # CrAdmin imports
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 
 # Devilry imports
 from devilry.devilry_qualifiesforexam.views import list_statuses_view
@@ -54,7 +54,7 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
     def test_no_statuses_for_period_message(self):
         testperiod = mommy.make('core.Period')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
-        no_items_message = mockresponse.selector.one('.django-cradmin-listbuilderview-no-items-message')\
+        no_items_message = mockresponse.selector.one('.cradmin-legacy-listbuilderview-no-items-message')\
             .alltext_normalized
         self.assertEqual(no_items_message, 'No status has been created for this period yet.')
 

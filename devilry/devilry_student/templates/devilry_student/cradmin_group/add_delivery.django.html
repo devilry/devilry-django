@@ -1,4 +1,4 @@
-{% extends "django_cradmin/viewhelpers/formview_base.django.html" %}
+{% extends "cradmin_legacy/viewhelpers/formview_base.django.html" %}
 {% load i18n %}
 {% load static %}
 {% load humanize %}
@@ -32,7 +32,7 @@
     {% else %}
         {% if last_deadline.has_text %}
             <div id="devilry_student_add_delivery_deadlinemessage_wrapper"
-                    class="container django-cradmin-container-focus django-cradmin-container-focus-info">
+                    class="container cradmin-legacy-container-focus cradmin-legacy-container-focus-info">
                 {# WARNING: Do not add any whitespace within this tag - it is styled with white-space: pre-wrap #}
                 <div id="devilry_student_add_delivery_deadlinemessage">{{ last_deadline.text }}</div>
             </div>

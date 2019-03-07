@@ -1,4 +1,4 @@
-{% extends "django_cradmin/base.django.html" %}
+{% extends "cradmin_legacy/base.django.html" %}
 {% load i18n %}
 {% load static %}
 {% load humanize %}
@@ -28,12 +28,12 @@
 
     {% if delivery.last_feedback %}
         <div id="devilry_student_group_deliverydetails_feedback_summary"
-             class="container django-cradmin-container-focus
+             class="container cradmin-legacy-container-focus
                 {% if delivery.last_feedback.is_passing_grade %}
-                    django-cradmin-container-focus-success
+                    cradmin-legacy-container-focus-success
                     devilry-student-deliverydetails-feedbacksummary-passed
                 {% else %}
-                    django-cradmin-container-focus-warning
+                    cradmin-legacy-container-focus-warning
                     devilry-student-deliverydetails-feedbacksummary-failed
                 {% endif %}
              ">
@@ -42,7 +42,7 @@
         </div>
         {% if delivery.last_feedback.rendered_view or delivery.last_feedback.files.exists %}
             <div id="devilry_student_group_deliverydetails_feedback_text"
-                 class="container django-cradmin-container-focus">
+                 class="container cradmin-legacy-container-focus">
                 <div id="devilry_student_group_deliverydetails_feedback_rendered_view"
                         class="devilry-feedback-rendered-view">
                     {% include "devilry_student/include/feedback-rendered-view.django.html" with feedback=delivery.last_feedback only %}
@@ -52,7 +52,7 @@
     {% endif %}
 
     <div id="devilry_student_group_deliverydetails_metadata"
-            class="container {% if not delivery.last_feedback %}django-cradmin-container-focus{% endif %}">
+            class="container {% if not delivery.last_feedback %}cradmin-legacy-container-focus{% endif %}">
         <dl>
             {% if filemetas %}
                 <dt id="devilry_student_group_deliverydetails_files_title">{% trans "Files" %}:</dt>

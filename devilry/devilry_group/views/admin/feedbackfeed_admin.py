@@ -5,8 +5,8 @@ from django import http
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import ensure_csrf_cookie
-from django_cradmin import crapp, crinstance
-from django_cradmin.crispylayouts import PrimarySubmit
+from cradmin_legacy import crapp, crinstance
+from cradmin_legacy.crispylayouts import PrimarySubmit
 
 from devilry.apps.core import models as core_models
 from devilry.devilry_group import models as group_models
