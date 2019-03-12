@@ -25,4 +25,4 @@ pyflakes==0.8.1
 
 transifex-client==0.13.6
 mock==2.0.0
-fabric==1.14.0
+Fabric3==1.14.post1
