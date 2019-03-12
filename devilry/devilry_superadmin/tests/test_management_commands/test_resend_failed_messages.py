@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 
-from StringIO import StringIO
+from io import StringIO
 
 from django import test
 from django.conf import settings
@@ -15,7 +15,7 @@ class TestResendFailedMessagesCommand(test.TestCase):
     def __test_standard_output(self, stdout, num_resent=0, exceeded_resend_limit=0,
                                resend_limit=settings.DEVILRY_MESSAGE_RESEND_LIMIT):
         self.assertEqual(
-            stdout.getvalue().encode(encoding='UTF-8'),
+            stdout.getvalue().encode(encoding='UTF-8').decode(),
             '{num_resent} messages were automatically resent.\n'
             '{exceeded_resend_limit} messages has exceeded the retry limit '
             '(current limit: {resend_limit})\n'.format(
