@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
             name='AssignmentGroupHistory',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('merge_history_json', models.TextField(blank=True, default=b'')),
+                ('merge_history_json', models.TextField(blank=True, default='')),
                 ('assignment_group', models.OneToOneField(null=True, on_delete=django.db.models.deletion.CASCADE, to='core.AssignmentGroup')),
             ],
         ),

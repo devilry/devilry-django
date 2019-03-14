@@ -15,11 +15,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='commentfileimage',
             name='image',
-            field=models.FileField(default=b'', max_length=512, upload_to=devilry.devilry_comment.models.commentfileimage_directory_path, blank=True),
+            field=models.FileField(default='', max_length=512, upload_to=devilry.devilry_comment.models.commentfileimage_directory_path, blank=True),
         ),
         migrations.AlterField(
             model_name='commentfileimage',
             name='thumbnail',
-            field=models.FileField(default=b'', max_length=512, upload_to=devilry.devilry_comment.models.commentfileimage_thumbnail_directory_path, blank=True),
+            field=models.FileField(default='', max_length=512, upload_to=devilry.devilry_comment.models.commentfileimage_thumbnail_directory_path, blank=True),
         ),
     ]

@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='feedbackset',
             name='feedbackset_type',
-            field=models.CharField(default=b'first_attempt', max_length=50, db_index=True, choices=[(b'first_attempt', b'first attempt'), (b'new_attempt', b'new attempt'), (b're_edit', b're edit')]),
+            field=models.CharField(default='first_attempt', max_length=50, db_index=True, choices=[('first_attempt', 'first attempt'), ('new_attempt', 'new attempt'), ('re_edit', 're edit')]),
         ),
     ]

@@ -21,6 +21,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='assignmentgrouphistory',
             name='merge_history_json',
-            field=models.TextField(default=b'{"merge_datetime": null, "state": null, "groups": []}'),
+            field=models.TextField(default='{"merge_datetime": null, "state": null, "groups": []}'),
         ),
     ]

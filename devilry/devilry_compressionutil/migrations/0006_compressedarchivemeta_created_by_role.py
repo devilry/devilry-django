@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='compressedarchivemeta',
             name='created_by_role',
-            field=models.CharField(choices=[(b'student', 'Student'), (b'examiner', 'Examiner'), (b'admin', 'Admin')], default=b'', max_length=255),
+            field=models.CharField(choices=[('student', 'Student'), ('examiner', 'Examiner'), ('admin', 'Admin')], default='', max_length=255),
         ),
     ]

@@ -22,6 +22,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='assignment',
             name='points_to_grade_mapper',
-            field=models.CharField(blank=True, choices=[(b'passed-failed', 'Passed or failed'), (b'raw-points', 'Points'), (b'custom-table', 'Lookup in a table defined by you (A-F, and other grading systems)')], default=b'passed-failed', max_length=25, null=True),
+            field=models.CharField(blank=True, choices=[('passed-failed', 'Passed or failed'), ('raw-points', 'Points'), ('custom-table', 'Lookup in a table defined by you (A-F, and other grading systems)')], default='passed-failed', max_length=25, null=True),
         ),
     ]

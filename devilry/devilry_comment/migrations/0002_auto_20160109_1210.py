@@ -15,16 +15,16 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='comment',
             name='draft_text',
-            field=models.TextField(default=b'', blank=True),
+            field=models.TextField(default='', blank=True),
         ),
         migrations.AlterField(
             model_name='comment',
             name='text',
-            field=models.TextField(default=b'', blank=True),
+            field=models.TextField(default='', blank=True),
         ),
         migrations.AlterField(
             model_name='commentfile',
             name='file',
-            field=models.FileField(default=b'', max_length=512, upload_to=devilry.devilry_comment.models.commentfile_directory_path, blank=True),
+            field=models.FileField(default='', max_length=512, upload_to=devilry.devilry_comment.models.commentfile_directory_path, blank=True),
         ),
     ]

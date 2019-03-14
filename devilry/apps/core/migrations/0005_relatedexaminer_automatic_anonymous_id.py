@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='relatedexaminer',
             name='automatic_anonymous_id',
-            field=models.CharField(default=b'', max_length=255, editable=False, blank=True),
+            field=models.CharField(default='', max_length=255, editable=False, blank=True),
         ),
     ]

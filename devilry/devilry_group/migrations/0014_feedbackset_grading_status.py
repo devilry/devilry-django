@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='feedbackset',
             name='grading_status',
-            field=models.CharField(default=b'grading_status_first_try', max_length=50, db_index=True, choices=[(b'grading_status_first_try', b'grading_status_first_try'), (b'grading_status_new_try', b'grading_status_new_try'), (b'grading_status_re_edit', b'grading_status_re_edit')]),
+            field=models.CharField(default='grading_status_first_try', max_length=50, db_index=True, choices=[('grading_status_first_try', 'grading_status_first_try'), ('grading_status_new_try', 'grading_status_new_try'), ('grading_status_re_edit', 'grading_status_re_edit')]),
         ),
     ]

@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='compressedarchivemeta',
             name='backend_id',
-            field=models.CharField(blank=True, default=b'', max_length=100),
+            field=models.CharField(blank=True, default='', max_length=100),
         ),
         migrations.AddField(
             model_name='compressedarchivemeta',

@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='delivery',
             name='time_of_delivery',
-            field=models.DateTimeField(default=django.utils.timezone.now, help_text=b'Holds the date and time the Delivery was uploaded.', verbose_name='Time of delivery'),
+            field=models.DateTimeField(default=django.utils.timezone.now, help_text='Holds the date and time the Delivery was uploaded.', verbose_name='Time of delivery'),
         ),
         migrations.AlterField(
             model_name='groupinvite',

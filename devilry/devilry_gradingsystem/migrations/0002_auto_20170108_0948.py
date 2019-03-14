@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='feedbackdraft',
             name='feedbacktext_editor',
-            field=models.CharField(choices=[(b'devilry-markdown', b'Markdown editor'), (b'wysiwyg-html', b'WYSIWYG html')], default=b'devilry-markdown', max_length=20),
+            field=models.CharField(choices=[('devilry-markdown', 'Markdown editor'), ('wysiwyg-html', 'WYSIWYG html')], default='devilry-markdown', max_length=20),
         ),
     ]
