@@ -64,7 +64,7 @@ class PointToGradeMap(models.Model):
     """
     objects = PointToGradeMapQuerySet.as_manager()
 
-    assignment = models.OneToOneField(Assignment)
+    assignment = models.OneToOneField(Assignment, on_delete=models.CASCADE)
     invalid = models.BooleanField(default=True)
 
     class Meta:
@@ -243,7 +243,7 @@ class PointRangeToGrade(models.Model):
         The grade that this entry represents a match for.
     """
     objects = PointRangeToGradeManager()
-    point_to_grade_map = models.ForeignKey(PointToGradeMap)
+    point_to_grade_map = models.ForeignKey(PointToGradeMap, on_delete=models.CASCADE)
     minimum_points = models.PositiveIntegerField()
     maximum_points = models.PositiveIntegerField()
     grade = models.CharField(max_length=12)

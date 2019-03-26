@@ -324,7 +324,8 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     long_name = LongNameField()
     gradeform_setup_json = models.TextField(blank=True, null=True)
     parentnode = models.ForeignKey(Period, related_name='assignments',
-                                   verbose_name='Period')
+                                   verbose_name='Period',
+                                   on_delete=models.CASCADE)
     publishing_time = models.DateTimeField(
         verbose_name=_("Publishing time"),
         help_text=_('The time when the assignment is to be published (visible to students and examiners).'))

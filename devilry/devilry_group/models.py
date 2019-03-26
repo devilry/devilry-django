@@ -96,7 +96,7 @@ class AbstractGroupComment(comment_models.Comment):
     """
 
     #: The related feedbackset. See :class:`.FeedbackSet`.
-    feedback_set = models.ForeignKey('FeedbackSet')
+    feedback_set = models.ForeignKey('FeedbackSet', on_delete=models.CASCADE)
 
     #: If this is ``True``, the comment is published when the feedbackset
     #: is published. This means that this comment is part of the feedback/grading
@@ -307,7 +307,7 @@ class FeedbackSet(models.Model):
     objects = FeedbackSetQuerySet.as_manager()
 
     #: The AssignmentGroup that owns this feedbackset.
-    group = models.ForeignKey(assignment_group.AssignmentGroup)
+    group = models.ForeignKey(assignment_group.AssignmentGroup, on_delete=models.CASCADE)
 
     #: This means the feedbackset is basically the first feedbackset.
     #: Choice for :obj:`~.FeedbackSet.feedbackset_type`.
@@ -782,10 +782,10 @@ class FeedbackSetDeadlineHistory(models.Model):
     Logs change in deadline for a FeedbackSet.
     """
     #: The :class:`~.FeedbackSet` the change is for.
-    feedback_set = models.ForeignKey(FeedbackSet)
+    feedback_set = models.ForeignKey(FeedbackSet, on_delete=models.CASCADE)
 
     #: The User that made the deadline change.
-    changed_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
+    changed_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.CASCADE)
 
     #: Time of change.
     #: Defaults to ``timezone.now``.
@@ -898,6 +898,6 @@ class ImageAnnotationComment(AbstractGroupComment):
     """
     objects = ImageAnnotationCommentQuerySet.as_manager()
 
-    image = models.ForeignKey(comment_models.CommentFileImage)
+    image = models.ForeignKey(comment_models.CommentFileImage, on_delete=models.CASCADE)
     x_coordinate = models.PositiveIntegerField()
     y_coordinate = models.PositiveIntegerField()

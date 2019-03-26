@@ -1,6 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Django run all tests" type="DjangoTestsConfigurationType" factoryName="Django tests">
-    <option name="INTERPRETER_OPTIONS" value="" />
+    <module name="devilry-django" />
+    <option name="INTERPRETER_OPTIONS" value="-Wall" />
     <option name="PARENT_ENVS" value="true" />
     <envs>
       <env name="PYTHONUNBUFFERED" value="1" />
@@ -12,8 +13,7 @@
     <option name="IS_MODULE_SDK" value="true" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />
-    <module name="devilry-django" />
-    <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+    <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
     <option name="TARGET" value="devilry" />
     <option name="SETTINGS_FILE" value="" />
     <option name="CUSTOM_SETTINGS" value="false" />

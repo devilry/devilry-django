@@ -153,7 +153,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         default=timezone.now)
     deadline = models.ForeignKey(
         Deadline, related_name='deliveries',
-        verbose_name=_('Deadline'))
+        verbose_name=_('Deadline'), on_delete=models.CASCADE)
     number = models.PositiveIntegerField(
         help_text='The delivery-number within this assignment-group. This number is automatically '
                   'incremented within each AssignmentGroup, starting from 1. Always '
@@ -179,7 +179,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         on_delete=models.SET_NULL,
         help_text='Link to a delivery that this delivery is a copy of. This is set by the copy-method.')
     last_feedback = models.OneToOneField("StaticFeedback", blank=True, null=True,
-                                         related_name='latest_feedback_for_delivery')
+                                         related_name='latest_feedback_for_delivery', on_delete=models.CASCADE)
 
     def _delivered_too_late(self):
         """ Compares the deadline and time of delivery.

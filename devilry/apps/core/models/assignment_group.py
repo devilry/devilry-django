@@ -971,7 +971,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
     objects = AssignmentGroupManager.from_queryset(AssignmentGroupQuerySet)()
 
-    parentnode = models.ForeignKey(Assignment, related_name='assignmentgroups')
+    parentnode = models.ForeignKey(Assignment, related_name='assignmentgroups', on_delete=models.CASCADE)
     name = models.CharField(
         max_length=30, blank=True, null=False, default='',
         help_text='An optional name for the group. Typically used a project '
@@ -1835,7 +1835,7 @@ class AssignmentGroupTag(models.Model):
 
         The tag. Max 20 characters. Can only contain a-z, A-Z, 0-9 and "_".
     """
-    assignment_group = models.ForeignKey(AssignmentGroup, related_name='tags')
+    assignment_group = models.ForeignKey(AssignmentGroup, related_name='tags', on_delete=models.CASCADE)
     tag = models.SlugField(max_length=20, help_text='A tag can contain a-z, A-Z, 0-9 and "_".')
 
     class Meta:

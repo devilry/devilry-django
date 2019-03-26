@@ -613,7 +613,7 @@ class AbstractUserIdentity(models.Model):
         abstract = True
 
     #: Foreign key to the user owning this email address.
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     #: The datetime when this was created.
     created_datetime = models.DateTimeField(
@@ -766,10 +766,10 @@ class PermissionGroupUser(models.Model):
         )
 
     #: The group.
-    permissiongroup = models.ForeignKey('devilry_account.PermissionGroup')
+    permissiongroup = models.ForeignKey('devilry_account.PermissionGroup', on_delete=models.CASCADE)
 
     #: The user.
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return _('%(user)s in group %(permissiongroup)s') % {
@@ -1051,10 +1051,10 @@ class PeriodPermissionGroup(models.Model):
         )
 
     #: The group.
-    permissiongroup = models.ForeignKey('devilry_account.PermissionGroup')
+    permissiongroup = models.ForeignKey('devilry_account.PermissionGroup', on_delete=models.CASCADE)
 
     #: The :class:`devilry.apps.core.Period`.
-    period = models.ForeignKey('core.Period')
+    period = models.ForeignKey('core.Period', on_delete=models.CASCADE)
 
     def __str__(self):
         if self.permissiongroup.is_custom_manageable:
@@ -1203,10 +1203,10 @@ class SubjectPermissionGroup(models.Model):
         )
 
     #: The permissiongroup.
-    permissiongroup = models.ForeignKey('devilry_account.PermissionGroup')
+    permissiongroup = models.ForeignKey('devilry_account.PermissionGroup', on_delete=models.CASCADE)
 
     #: The :class:`devilry.apps.core.Subject`.
-    subject = models.ForeignKey('core.Subject')
+    subject = models.ForeignKey('core.Subject', on_delete=models.CASCADE)
 
     def __str__(self):
         if self.permissiongroup.is_custom_manageable:

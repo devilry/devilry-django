@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                 ('user_role', models.CharField(max_length=42, choices=[(b'student', b'Student'), (b'examiner', b'Examiner'), (b'admin', b'Admin')])),
                 ('comment_type', models.CharField(max_length=42, choices=[(b'imageannotationcomment', b'ImageAnnotationComment'), (b'groupcomment', b'GroupComment')])),
                 ('parent', models.ForeignKey(blank=True, to='devilry_comment.Comment', null=True)),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(

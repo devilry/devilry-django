@@ -85,10 +85,10 @@ class GroupInvite(models.Model):
     To accept/reject an invite (sets the appropriate attributes and sends a notification)
     invite.respond(accepted=True)
     """
-    group = models.ForeignKey(AssignmentGroup)
+    group = models.ForeignKey(AssignmentGroup, on_delete=models.CASCADE)
     sent_datetime = models.DateTimeField(default=timezone.now)
-    sent_by = models.ForeignKey(User, related_name='groupinvite_sent_by_set')
-    sent_to = models.ForeignKey(User, related_name='groupinvite_sent_to_set')
+    sent_by = models.ForeignKey(User, related_name='groupinvite_sent_by_set', on_delete=models.CASCADE)
+    sent_to = models.ForeignKey(User, related_name='groupinvite_sent_to_set', on_delete=models.CASCADE)
 
     accepted = models.NullBooleanField(default=None)
     responded_datetime = models.DateTimeField(

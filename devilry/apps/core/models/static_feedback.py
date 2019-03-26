@@ -64,7 +64,7 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
         Boolean is passing grade?
 
     """
-    delivery = models.ForeignKey(Delivery, related_name='feedbacks')
+    delivery = models.ForeignKey(Delivery, related_name='feedbacks', on_delete=models.CASCADE)
     rendered_view = models.TextField(blank=True,
                                      help_text=('A rendered HTML version of the feedback, containing '
                                                 'whatever the grade-editor chose to dump in this field.'))
@@ -77,7 +77,7 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
                                           help_text=('Time when this feedback was saved. Since StaticFeedback '
                                                      'is immutable, this never changes.'))
     saved_by = models.ForeignKey(User, blank=False, null=False,
-                                 help_text='The user (examiner) who saved this feedback')
+                                 help_text='The user (examiner) who saved this feedback', on_delete=models.CASCADE)
 
     class Meta:
         app_label = 'core'
@@ -246,7 +246,7 @@ class StaticFeedbackFileAttachment(models.Model):
     """
 
     #: The :class:`.StaticFeedback` where that the file is attached to.
-    staticfeedback = models.ForeignKey(StaticFeedback, related_name='files')
+    staticfeedback = models.ForeignKey(StaticFeedback, related_name='files', on_delete=models.CASCADE)
 
     #: The original filename.
     filename = models.TextField(blank=False, null=False)

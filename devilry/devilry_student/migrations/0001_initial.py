@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                 ('uploaded_file', models.FileField(upload_to=devilry.devilry_student.models.uploaded_deliveryfile_path)),
                 ('filename', models.CharField(max_length=255)),
                 ('deadline', models.ForeignKey(to='core.Deadline')),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
         ),
         migrations.AlterUniqueTogether(

@@ -58,17 +58,17 @@ class Candidate(models.Model):
         app_label = 'core'
 
     #: Will be removed in 3.0 - see https://github.com/devilry/devilry-django/issues/810
-    old_reference_not_in_use_student = models.ForeignKey(User, null=True, default=None, blank=True)
+    old_reference_not_in_use_student = models.ForeignKey(User, null=True, default=None, blank=True, on_delete=models.CASCADE)
 
     #: ForeignKey to :class:`devilry.apps.core.models.relateduser.RelatedStudent`
     #: (the model that ties User as student on a Period).
-    relatedstudent = models.ForeignKey(RelatedStudent)
+    relatedstudent = models.ForeignKey(RelatedStudent, on_delete=models.CASCADE)
 
     #: The :class:`devilry.apps.core.models.assignment_group.AssignmentGroup`
     #: where this candidate belongs.
     assignment_group = models.ForeignKey(
         'AssignmentGroup',
-        related_name='candidates')
+        related_name='candidates', on_delete=models.CASCADE)
 
     #: A candidate ID imported from a third party system.
     #: Only used if ``uses_custom_candidate_ids==True`` on the assignment.

@@ -59,4 +59,4 @@ class AssignmentChangeLogItem(AbstractChangeLogItem):
         max_length=50,
         choices=list(ACTIONS.items())
     )
-    assignment = models.ForeignKey(Assignment)
+    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE)

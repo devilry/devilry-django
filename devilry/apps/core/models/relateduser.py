@@ -214,11 +214,12 @@ class RelatedUserBase(models.Model, AbstractIsAdmin):
     #: The period that the user is related to.
     period = models.ForeignKey(Period,
                                verbose_name='Period',
-                               help_text="The period.")
+                               help_text="The period.",
+                               on_delete=models.CASCADE)
 
     #: A User object. Must be unique within this
     #: period.
-    user = models.ForeignKey(User, help_text="The related user.")
+    user = models.ForeignKey(User, help_text="The related user.", on_delete=models.CASCADE)
 
     #: Comma-separated list of tags. Each tag is a word with the following
     #: letters allowed: a-z and 0-9. Each word is separated by a comma, and no
@@ -459,7 +460,7 @@ class RelatedStudent(RelatedUserBase):
 
 class RelatedStudentKeyValue(AbstractApplicationKeyValue, AbstractIsAdmin):
     """ Key/value pair tied to a specific RelatedStudent. """
-    relatedstudent = models.ForeignKey(RelatedStudent)
+    relatedstudent = models.ForeignKey(RelatedStudent, on_delete=models.CASCADE)
     student_can_read = models.BooleanField(
         help_text='Specifies if a student can read the value or not.',
         default=False)

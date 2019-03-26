@@ -29,7 +29,7 @@ class Comment(models.Model):
                              on_delete=models.SET_NULL)
 
     #: if this comment is a reply to another comment, that comment will be parent
-    parent = models.ForeignKey('self', null=True, blank=True)
+    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
 
     #: when was the comment created
     created_datetime = models.DateTimeField(null=False, blank=False, default=timezone.now)
@@ -226,7 +226,7 @@ class CommentFile(models.Model):
     filesize = models.PositiveIntegerField()
 
     #: The comment owning this CommentFile. Permissions are inherited from the comment.
-    comment = models.ForeignKey(Comment)
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
 
     processing_started_datetime = models.DateTimeField(null=True, blank=True)
     processing_completed_datetime = models.DateTimeField(null=True, blank=True)
@@ -336,7 +336,7 @@ class CommentFileImage(models.Model):
     """
     An image representing a single page of a :class:`CommentFile`.
     """
-    comment_file = models.ForeignKey(CommentFile)
+    comment_file = models.ForeignKey(CommentFile, on_delete=models.CASCADE)
 
     image = models.FileField(upload_to=commentfileimage_directory_path,
                              max_length=512,

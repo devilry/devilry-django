@@ -46,7 +46,7 @@ class Migration(migrations.Migration):
                 ('plugin', models.CharField(max_length=500, null=True, blank=True)),
                 ('exported_timestamp', models.DateTimeField(null=True, blank=True)),
                 ('period', models.ForeignKey(related_name='qualifiedforexams_status', to='core.Period')),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ['-createtime'],

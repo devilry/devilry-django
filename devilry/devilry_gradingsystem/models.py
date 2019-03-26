@@ -21,7 +21,7 @@ class FeedbackDraft(models.Model):
     """
     DEFAULT_FEEDBACKTEXT_EDITOR = 'devilry-markdown'
 
-    delivery = models.ForeignKey(Delivery, related_name='devilry_gradingsystem_feedbackdraft_set')
+    delivery = models.ForeignKey(Delivery, related_name='devilry_gradingsystem_feedbackdraft_set', on_delete=models.CASCADE)
     feedbacktext_editor = models.CharField(
         default=DEFAULT_FEEDBACKTEXT_EDITOR,
         max_length=20,
@@ -35,7 +35,7 @@ class FeedbackDraft(models.Model):
         blank=True, null=True)
     points = models.PositiveIntegerField(
         blank=False, null=False)
-    saved_by = models.ForeignKey(User, related_name='devilry_gradingsystem_feedbackdraft_set')
+    saved_by = models.ForeignKey(User, related_name='devilry_gradingsystem_feedbackdraft_set', on_delete=models.CASCADE)
     published = models.BooleanField(
         default=False,
         help_text=('Has this draft been published as a StaticFeedback? '
@@ -44,7 +44,7 @@ class FeedbackDraft(models.Model):
         StaticFeedback,
         blank=True, null=True,
         related_name='devilry_gradingsystem_feedbackdraft_set',
-        help_text='The StaticFeedback where this was published if this draft has been published.')
+        help_text='The StaticFeedback where this was published if this draft has been published.', on_delete=models.CASCADE)
     save_timestamp = models.DateTimeField(
         blank=False, null=False,
         help_text='Time when this feedback was saved. Since FeedbackDraft is immutable, this never changes.')
@@ -139,8 +139,8 @@ class FeedbackDraftFile(models.Model):
 
     Unlike :class:`.FeedbackDraft`, we only keep one copy of the files.
     """
-    delivery = models.ForeignKey(Delivery, related_name='+')
-    saved_by = models.ForeignKey(User, related_name='+')
+    delivery = models.ForeignKey(Delivery, related_name='+', on_delete=models.CASCADE)
+    saved_by = models.ForeignKey(User, related_name='+', on_delete=models.CASCADE)
 
     #: The original filename.
     filename = models.TextField(blank=False, null=False)

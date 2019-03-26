@@ -17,8 +17,8 @@ class DeadlineTag(models.Model):
 
 
 class PeriodTag(models.Model):
-    period = models.OneToOneField(Period, primary_key=True)
-    deadlinetag = models.ForeignKey(DeadlineTag)
+    period = models.OneToOneField(Period, primary_key=True, on_delete=models.CASCADE)
+    deadlinetag = models.ForeignKey(DeadlineTag, on_delete=models.CASCADE)
 
 
 class StatusQuerySet(models.QuerySet):
@@ -104,7 +104,7 @@ class Status(models.Model):
             choices=STATUS_CHOICES)
 
     #: Period the qualifications are for.
-    period = models.ForeignKey(Period, related_name='qualifiedforexams_status')
+    period = models.ForeignKey(Period, related_name='qualifiedforexams_status', on_delete=models.CASCADE)
 
     #: Status created datetime. This is changed if the list updated.
     createtime = models.DateTimeField(default=timezone.now)
@@ -114,7 +114,7 @@ class Status(models.Model):
     message = models.TextField(blank=True, default='')
 
     #: The user that created the qualification list(an admin).
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     #: The plugin used.
     plugin = models.CharField(max_length=500, null=True, blank=True)
@@ -152,10 +152,10 @@ class Status(models.Model):
 
 class QualifiesForFinalExam(models.Model):
     #: The related :obj:`~.devilry.apps.core.RelatedStudent` the qualification is for.
-    relatedstudent = models.ForeignKey(RelatedStudent)
+    relatedstudent = models.ForeignKey(RelatedStudent, on_delete=models.CASCADE)
 
     #: The related :obj:`~.Status` for this student.
-    status = models.ForeignKey(Status, related_name='students')
+    status = models.ForeignKey(Status, related_name='students', on_delete=models.CASCADE)
 
     #: ``True`` if the student qualifies for the exam, else ``False``.
     qualifies = models.NullBooleanField()

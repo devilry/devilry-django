@@ -6,7 +6,7 @@ from django.db import models
 
 class ImportedModel(models.Model):
     #: Foreignkey to Djangos ContentType.
-    content_type = models.ForeignKey(ContentType, related_name='+')
+    content_type = models.ForeignKey(ContentType, related_name='+', on_delete=models.CASCADE)
 
     #: ID of model to store.
     content_object_id = models.PositiveIntegerField(null=False)

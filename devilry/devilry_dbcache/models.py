@@ -17,24 +17,24 @@ class AssignmentGroupCachedData(models.Model):
     #: The :class:`devilry.apps.core.models.assignment_group.AssignmentGroup`
     #: that this model caches data for.
     group = models.OneToOneField(AssignmentGroup, related_name='cached_data',
-                                 editable=False)
+                                 editable=False, on_delete=models.CASCADE)
 
     #: The first :class:`devilry.devilry_group.models.FeedbackSet` in the
     #: group.
     first_feedbackset = models.ForeignKey(FeedbackSet, related_name='+',
-                                          null=True, blank=True, editable=False)
+                                          null=True, blank=True, editable=False, on_delete=models.CASCADE)
 
     #: The last :class:`devilry.devilry_group.models.FeedbackSet` in the
     #: group.
     last_feedbackset = models.ForeignKey(FeedbackSet, related_name='+',
-                                         null=True, blank=True, editable=False)
+                                         null=True, blank=True, editable=False, on_delete=models.CASCADE)
 
     #: The last :class:`devilry.devilry_group.models.FeedbackSet` in the
     #: group with a :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime`.
     #: This also means that the FeedbackSet has
     #: :obj:`~devilry.devilry_group.models.FeedbackSet.grading_points`.
     last_published_feedbackset = models.ForeignKey(FeedbackSet, related_name='+',
-                                                   null=True, blank=True, editable=False)
+                                                   null=True, blank=True, editable=False, on_delete=models.CASCADE)
 
     #: Number of FeedbackSets with :obj:`~devilry.devilry_group.models.FeedbackSet.feedbackset_type`
     #: set to :obj:`~devilry.devilry_group.models.FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT`.

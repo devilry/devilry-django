@@ -17,7 +17,7 @@ class GenericMeta(models.Model):
     Abstract class that implements usage of GenericForeignKey.
     """
     #: Foreignkey to Djangos ContentType.
-    content_type = models.ForeignKey(ContentType, related_name='content_type_compressed_file_meta')
+    content_type = models.ForeignKey(ContentType, related_name='content_type_compressed_file_meta', on_delete=models.CASCADE)
 
     #: ID of model to store.
     content_object_id = models.PositiveIntegerField(null=False)

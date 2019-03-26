@@ -83,7 +83,7 @@ class Migration(migrations.Migration):
                 ('candidate_id', models.CharField(help_text=b'An optional candidate id. This can be anything as long as it is less than 30 characters. Used to show the user on anonymous assignmens.', max_length=30, null=True, blank=True)),
                 ('automatic_anonymous_id', models.CharField(default=b'', help_text=b'An automatically generated anonymous ID.', max_length=255, blank=True)),
                 ('assignment_group', models.ForeignKey(related_name='candidates', to='core.AssignmentGroup')),
-                ('student', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('student', models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(
@@ -139,7 +139,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('automatic_anonymous_id', models.CharField(default=b'', help_text=b'An automatically generated anonymous ID.', max_length=255, blank=True)),
                 ('assignmentgroup', models.ForeignKey(related_name='examiners', to='core.AssignmentGroup')),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
             options={
                 'db_table': 'core_assignmentgroup_examiners',

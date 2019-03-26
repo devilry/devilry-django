@@ -193,7 +193,8 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
     short_name = ShortNameField()
     long_name = LongNameField()
     parentnode = models.ForeignKey(Subject, related_name='periods',
-                                   verbose_name=_('Subject'))
+                                   verbose_name=_('Subject'),
+                                   on_delete=models.CASCADE)
     start_time = models.DateTimeField(
         help_text=_('Start time and end time defines when the period is active.'),
         verbose_name=_('Start time'))
@@ -280,7 +281,7 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
 
 class PeriodApplicationKeyValue(AbstractApplicationKeyValue, AbstractIsAdmin):
     """ Key/value pair tied to a specific Period. """
-    period = models.ForeignKey(Period, help_text="The period where this metadata belongs.")
+    period = models.ForeignKey(Period, help_text="The period where this metadata belongs.", on_delete=models.CASCADE)
 
     class Meta:
         unique_together = ('period', 'application', 'key')

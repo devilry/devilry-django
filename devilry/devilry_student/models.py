@@ -122,10 +122,10 @@ class UploadedDeliveryFile(models.Model):
     objects = UploadedDeliveryFileManager()
 
     #: The :class:`devilry.apps.core.models.Deadline` that the file was uploaded to.
-    deadline = models.ForeignKey(Deadline)
+    deadline = models.ForeignKey(Deadline, on_delete=models.CASCADE)
 
     #: The User that uploaded the file. Only this user has access to the file.
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     #: The datetime when this UploadedDeliveryFile was created.
     uploaded_datetime = models.DateTimeField(auto_now_add=True)

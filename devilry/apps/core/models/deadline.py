@@ -183,7 +183,7 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
     """
     objects = DeadlineManager()
     assignment_group = models.ForeignKey(AssignmentGroup,
-                                         related_name='deadlines')
+                                         related_name='deadlines', on_delete=models.CASCADE)
     deadline = models.DateTimeField(help_text='The time of the deadline.')
     text = models.TextField(blank=True, null=True,
                             help_text='An optional text to show to students and examiners.')

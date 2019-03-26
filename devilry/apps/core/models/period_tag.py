@@ -195,7 +195,7 @@ class PeriodTag(models.Model):
         ]
 
     #: The period(semester) for the tag.
-    period = models.ForeignKey(Period, related_name='period_tag')
+    period = models.ForeignKey(Period, related_name='period_tag', on_delete=models.CASCADE)
 
     #: Used by import scripts.
     #: If tags are imported from another system, the prefix should be used.

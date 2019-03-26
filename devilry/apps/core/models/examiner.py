@@ -22,15 +22,15 @@ class Examiner(models.Model, AbstractIsAdmin):
         db_table = 'core_assignmentgroup_examiners'
 
     #: Will be removed in 3.0 - see https://github.com/devilry/devilry-django/issues/812
-    old_reference_not_in_use_user = models.ForeignKey(User, null=True, default=None, blank=True)
+    old_reference_not_in_use_user = models.ForeignKey(User, null=True, default=None, blank=True, on_delete=models.CASCADE)
 
     #: The :class:`devilry.apps.core.models.assignment_group.AssignmentGroup`
     #: where this examiner belongs.
-    assignmentgroup = models.ForeignKey('AssignmentGroup', related_name='examiners')
+    assignmentgroup = models.ForeignKey('AssignmentGroup', related_name='examiners', on_delete=models.CASCADE)
 
     #: ForeignKey to :class:`devilry.apps.core.models.relateduser.RelatedExaminer`
     #: (the model that ties User as examiner on a Period).
-    relatedexaminer = models.ForeignKey(RelatedExaminer)
+    relatedexaminer = models.ForeignKey(RelatedExaminer, on_delete=models.CASCADE)
 
     def get_anonymous_name(self):
         """

@@ -55,7 +55,7 @@ class FileMeta(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
     """
     MAX_FILENAME_LENGTH = 255
 
-    delivery = models.ForeignKey("core.Delivery", related_name='filemetas')
+    delivery = models.ForeignKey("core.Delivery", related_name='filemetas', on_delete=models.CASCADE)
     filename = models.CharField(max_length=MAX_FILENAME_LENGTH, help_text='Name of the file.')
     size = models.IntegerField(help_text='Size of the file in bytes.')
 
