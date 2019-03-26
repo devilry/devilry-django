@@ -70,7 +70,7 @@ Registering an app as a qualifiesforexam plugin
 Add something like the following to ``yourapp/devilry_plugin.py``::
 
     from devilry_qualifiesforexam.registry import qualifiesforexam_plugins
-    from django.core.urlresolvers import reverse
+    from django.urls import reverse
     from django.utils.translation import ugettext_lazy as _
 
     qualifiesforexam_plugins.add(

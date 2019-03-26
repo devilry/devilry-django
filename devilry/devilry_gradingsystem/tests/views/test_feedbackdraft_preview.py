@@ -1,7 +1,7 @@
 import unittest
 
 from django.core.files.base import ContentFile
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.test import TestCase
 import htmls
 from devilry.apps.core.models import StaticFeedback

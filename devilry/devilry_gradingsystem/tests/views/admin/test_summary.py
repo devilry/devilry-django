@@ -1,6 +1,6 @@
 import unittest
 from mock import patch
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.test import TestCase
 
 from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder

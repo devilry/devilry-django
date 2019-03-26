@@ -1,6 +1,6 @@
 import unittest
 from django.core.files.base import ContentFile
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.test import TestCase
 from django.utils.http import urlencode
 

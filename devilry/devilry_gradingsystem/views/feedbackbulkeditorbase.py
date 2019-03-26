@@ -1,7 +1,7 @@
 from datetime import datetime
 from random import randint
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.http import Http404

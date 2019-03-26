@@ -2,7 +2,7 @@ from django.conf.urls import include
 from django.conf.urls import url
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponseBadRequest, HttpResponsePermanentRedirect
 
 from devilry.devilry_frontpage import crinstance_frontpage

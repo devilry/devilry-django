@@ -1,4 +1,4 @@
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.template import defaultfilters
 from django.utils.translation import ugettext_lazy
 from cradmin_legacy import crapp, crinstance

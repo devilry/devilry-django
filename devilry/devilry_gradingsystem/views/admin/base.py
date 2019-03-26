@@ -1,4 +1,4 @@
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.views.generic.detail import SingleObjectMixin
 from django.http import Http404
 from django.utils.translation import ugettext_lazy as _

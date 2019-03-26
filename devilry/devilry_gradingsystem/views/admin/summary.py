@@ -1,5 +1,5 @@
 from django.views.generic import DetailView
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.shortcuts import redirect
 from django import forms
 

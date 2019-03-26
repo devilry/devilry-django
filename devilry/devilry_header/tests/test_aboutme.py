@@ -1,5 +1,5 @@
 from django.test import TestCase
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 # from develop.testhelpers.soupselect import cssFind

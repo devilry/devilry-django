@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponseRedirect
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from cradmin_legacy.crinstance import reverse_cradmin_url
 
 from devilry.apps.core.models import Delivery

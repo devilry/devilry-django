@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 from django.utils.translation import ugettext_lazy as _
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from devilry.devilry_gradingsystem.pluginregistry import gradingsystempluginregistry
 from devilry.devilry_gradingsystem.pluginregistry import GradingSystemPluginInterface

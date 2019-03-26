@@ -1,6 +1,6 @@
 from crispy_forms import layout
 from django.contrib import messages
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.template import defaultfilters
 from django.views.generic.detail import SingleObjectMixin
 from django.utils.decorators import method_decorator
