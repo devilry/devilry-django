@@ -1,4 +1,4 @@
-{% extends "django_cradmin/viewhelpers/objecttable/objecttable.django.html" %}
+{% extends "cradmin_legacy/viewhelpers/objecttable/objecttable.django.html" %}
 {% load devilry_account_tags %}
 {% load i18n %}
 
@@ -7,9 +7,9 @@
 
     {% if inherited_admin_users %}
         <div id="devilry_admin_listview_inherited_admin_users">
-            <div class="django-cradmin-page-header-outer django-cradmin-page-header-outer-secondary">
+            <div class="cradmin-legacy-page-header-outer cradmin-legacy-page-header-outer-secondary">
                 <div class="container">
-                    <div class="django-cradmin-page-header-inner">
+                    <div class="cradmin-legacy-page-header-inner">
                         <h2>{% trans "Inherited administrators" %}</h2>
                         <p>
                             {% trans "The following administrators is inherited from higher up in the hierarchy." %}

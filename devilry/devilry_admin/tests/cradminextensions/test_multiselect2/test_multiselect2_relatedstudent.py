@@ -17,7 +17,7 @@ class TestSelectedItem(test.TestCase):
         selector = htmls.S(multiselect2_relatedstudent.SelectedItem(value=relatedstudent).render())
         self.assertEqual(
             'test@example.com',
-            selector.one('.django-cradmin-multiselect2-target-selected-item-title').alltext_normalized)
+            selector.one('.cradmin-legacy-multiselect2-target-selected-item-title').alltext_normalized)
 
     def test_title_with_fullname(self):
         relatedstudent = mommy.make('core.RelatedStudent',
@@ -27,14 +27,14 @@ class TestSelectedItem(test.TestCase):
         selector = htmls.S(multiselect2_relatedstudent.SelectedItem(value=relatedstudent).render())
         self.assertEqual(
             'Test User(test@example.com)',
-            selector.one('.django-cradmin-multiselect2-target-selected-item-title').alltext_normalized)
+            selector.one('.cradmin-legacy-multiselect2-target-selected-item-title').alltext_normalized)
 
     def test_description_without_tags(self):
         relatedstudent = mommy.make('core.RelatedStudent')
         relatedstudent = RelatedStudent.objects.prefetch_syncsystemtag_objects().get(id=relatedstudent.id)
         selector = htmls.S(multiselect2_relatedstudent.SelectedItem(value=relatedstudent).render())
         self.assertFalse(
-            selector.exists('.django-cradmin-multiselect2-target-selected-item-description'))
+            selector.exists('.cradmin-legacy-multiselect2-target-selected-item-description'))
 
     # def test_description_with_tags(self):
     #     relatedstudent = mommy.make('core.RelatedStudent')
@@ -44,7 +44,7 @@ class TestSelectedItem(test.TestCase):
     #     selector = htmls.S(multiselect2_relatedstudent.SelectedItem(value=relatedstudent).render())
     #     self.assertEqual(
     #         'a, b',
-    #         selector.one('.django-cradmin-multiselect2-target-selected-item-description').alltext_normalized)
+    #         selector.one('.cradmin-legacy-multiselect2-target-selected-item-description').alltext_normalized)
 
     def test_description_with_tags(self):
         testperiod = mommy.make('core.Period')
@@ -57,7 +57,7 @@ class TestSelectedItem(test.TestCase):
         selector = htmls.S(multiselect2_relatedstudent.ItemValue(value=relatedstudent).render())
         self.assertEqual(
             'a, b',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-description').alltext_normalized)
 
 
 class TestItemValue(test.TestCase):
@@ -69,7 +69,7 @@ class TestItemValue(test.TestCase):
         selector = htmls.S(multiselect2_relatedstudent.ItemValue(value=relatedstudent).render())
         self.assertEqual(
             'test@example.com',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_title_with_fullname(self):
         relatedstudent = mommy.make('core.RelatedStudent',
@@ -79,14 +79,14 @@ class TestItemValue(test.TestCase):
         selector = htmls.S(multiselect2_relatedstudent.ItemValue(value=relatedstudent).render())
         self.assertEqual(
             'Test User(test@example.com)',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_description_without_tags(self):
         relatedstudent = mommy.make('core.RelatedStudent')
         relatedstudent = RelatedStudent.objects.prefetch_syncsystemtag_objects().get(id=relatedstudent.id)
         selector = htmls.S(multiselect2_relatedstudent.ItemValue(value=relatedstudent).render())
         self.assertFalse(
-            selector.exists('.django-cradmin-listbuilder-itemvalue-titledescription-description'))
+            selector.exists('.cradmin-legacy-listbuilder-itemvalue-titledescription-description'))
 
     def test_description_with_tags(self):
         testperiod = mommy.make('core.Period')
@@ -99,7 +99,7 @@ class TestItemValue(test.TestCase):
         selector = htmls.S(multiselect2_relatedstudent.ItemValue(value=relatedstudent).render())
         self.assertEqual(
             'a, b',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-description').alltext_normalized)
 
 
 class TestTarget(test.TestCase):
@@ -107,10 +107,10 @@ class TestTarget(test.TestCase):
         selector = htmls.S(multiselect2_relatedstudent.Target(form=forms.Form()).render(request=mock.MagicMock()))
         self.assertEqual(
             'Selected students',
-            selector.one('.django-cradmin-multiselect2-target-title').alltext_normalized)
+            selector.one('.cradmin-legacy-multiselect2-target-title').alltext_normalized)
 
     def test_without_items_text(self):
         selector = htmls.S(multiselect2_relatedstudent.Target(form=forms.Form()).render(request=mock.MagicMock()))
         self.assertEqual(
             'No students selected',
-            selector.one('.django-cradmin-multiselect2-target-without-items-content').alltext_normalized)
+            selector.one('.cradmin-legacy-multiselect2-target-without-items-content').alltext_normalized)

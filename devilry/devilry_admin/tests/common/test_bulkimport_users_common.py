@@ -1,7 +1,7 @@
 import mock
 from django.http import Http404
 from django.test import TestCase
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 
 from devilry.devilry_account.models import PermissionGroup
 from devilry.devilry_admin.views.common.bulkimport_users_common import AbstractTypeInUsersView
@@ -39,7 +39,7 @@ class AbstractTypeInUsersViewTestMixin(cradmin_testhelpers.TestCaseMixin):
         self.assertTrue(mockresponse.selector.exists('textarea#id_users_blob'))
 
     def test_get_render_form_help_text_email_backend(self):
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             mockresponse = self.mock_http200_getrequest_htmls(
                 cradmin_instance=self.mock_crinstance_with_devilry_role()
             )
@@ -48,7 +48,7 @@ class AbstractTypeInUsersViewTestMixin(cradmin_testhelpers.TestCaseMixin):
                              'by comma (","), space or one user on each line.')
 
     def test_get_render_form_help_text_username_backend(self):
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             mockresponse = self.mock_http200_getrequest_htmls(
                 cradmin_instance=self.mock_crinstance_with_devilry_role()
             )
@@ -57,7 +57,7 @@ class AbstractTypeInUsersViewTestMixin(cradmin_testhelpers.TestCaseMixin):
                              'by comma (","), space or one user on each line.')
 
     def test_get_render_form_placeholder_email_backend(self):
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             mockresponse = self.mock_http200_getrequest_htmls(
                 cradmin_instance=self.mock_crinstance_with_devilry_role()
             )
@@ -65,7 +65,7 @@ class AbstractTypeInUsersViewTestMixin(cradmin_testhelpers.TestCaseMixin):
                              'jane@example.com\njohn@example.com')
 
     def test_get_render_form_placeholder_username_backend(self):
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             mockresponse = self.mock_http200_getrequest_htmls(
                 cradmin_instance=self.mock_crinstance_with_devilry_role()
             )
@@ -80,7 +80,7 @@ class AbstractTypeInUsersViewTestMixin(cradmin_testhelpers.TestCaseMixin):
                          mockresponse.selector.one('#error_1_id_users_blob').alltext_normalized)
 
     def test_post_invalid_emails_simple(self):
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             mockresponse = self.mock_http200_postrequest_htmls(
                 cradmin_instance=self.mock_crinstance_with_devilry_role(),
                 requestkwargs=dict(data={
@@ -90,7 +90,7 @@ class AbstractTypeInUsersViewTestMixin(cradmin_testhelpers.TestCaseMixin):
                              mockresponse.selector.one('#error_1_id_users_blob').alltext_normalized)
 
     def test_post_invalid_emails_multiple(self):
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             mockresponse = self.mock_http200_postrequest_htmls(
                 cradmin_instance=self.mock_crinstance_with_devilry_role(),
                 requestkwargs=dict(data={
@@ -100,7 +100,7 @@ class AbstractTypeInUsersViewTestMixin(cradmin_testhelpers.TestCaseMixin):
                              mockresponse.selector.one('#error_1_id_users_blob').alltext_normalized)
 
     def test_post_invalid_usernames_simple(self):
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             mockresponse = self.mock_http200_postrequest_htmls(
                 cradmin_instance=self.mock_crinstance_with_devilry_role(),
                 requestkwargs=dict(data={
@@ -110,7 +110,7 @@ class AbstractTypeInUsersViewTestMixin(cradmin_testhelpers.TestCaseMixin):
                              mockresponse.selector.one('#error_1_id_users_blob').alltext_normalized)
 
     def test_post_invalid_usernames_multiple(self):
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             mockresponse = self.mock_http200_postrequest_htmls(
                 cradmin_instance=self.mock_crinstance_with_devilry_role(),
                 requestkwargs=dict(data={

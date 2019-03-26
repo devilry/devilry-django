@@ -3,7 +3,7 @@ from django import test
 from django.conf import settings
 from django.contrib import messages
 from django.http import Http404
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 from django.contrib.contenttypes.models import ContentType
 
 from model_mommy import mommy
@@ -26,7 +26,7 @@ class TestAccumulatedScoreSelectAssignmentsView(test.TestCase, cradmin_testhelpe
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=test_assignment
         )
-        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+        self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_no_assignments_on_same_period(self):
         test_period = mommy.make('core.Period')
@@ -35,7 +35,7 @@ class TestAccumulatedScoreSelectAssignmentsView(test.TestCase, cradmin_testhelpe
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=test_assignment1
         )
-        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+        self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_assignment_info(self):
         current_assignment = mommy.make('core.Assignment')
@@ -46,10 +46,10 @@ class TestAccumulatedScoreSelectAssignmentsView(test.TestCase, cradmin_testhelpe
         )
         selector = mockresponse.selector
         self.assertEqual(
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized,
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized,
             'Test Assignment')
         self.assertEqual(
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized,
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-description').alltext_normalized,
             'Max points: 123 Grading plugin: Passed/failed')
 
     def test_assignments_multiple(self):
@@ -63,7 +63,7 @@ class TestAccumulatedScoreSelectAssignmentsView(test.TestCase, cradmin_testhelpe
         )
         selector = mockresponse.selector
         assignment_names = [element.alltext_normalized for element in
-                            selector.list('.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+                            selector.list('.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
         self.assertEqual(len(assignment_names), 2)
         self.assertIn(test_assignment1.long_name, assignment_names)
         self.assertIn(test_assignment2.long_name, assignment_names)
@@ -388,7 +388,7 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
                 'points_threshold': 25,
                 'from_select_assignment_view': ''
             })
-        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 1)
+        self.assertEqual(mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'), 1)
 
     def test_single_assignment_student_does_not_have_enough_points_sanity(self):
         current_assignment = mommy.make('core.Assignment')
@@ -403,7 +403,7 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
                 'points_threshold': 25,
                 'from_select_assignment_view': ''
             })
-        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 0)
+        self.assertEqual(mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'), 0)
 
     def test_multiple_assignments_student_has_enough_points_across_assignment_sanity(self):
         current_assignment = mommy.make('core.Assignment')
@@ -421,7 +421,7 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
                 'points_threshold': 50,
                 'from_select_assignment_view': ''
             })
-        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 1)
+        self.assertEqual(mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'), 1)
 
     def test_student_details(self):
         current_assignment = mommy.make('core.Assignment')
@@ -444,10 +444,10 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
             })
         selector = mockresponse.selector
         self.assertEqual(
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized,
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized,
             'Test User (testuser@example.com)')
         self.assertEqual(
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized,
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-description').alltext_normalized,
             'Grading points total: 55')
 
     def test_student_already_on_assignment_is_excluded(self):

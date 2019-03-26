@@ -1,6 +1,6 @@
 from django import forms
-from django_cradmin.crispylayouts import PrimarySubmit
-from django_cradmin.viewhelpers import formbase
+from cradmin_legacy.crispylayouts import PrimarySubmit
+from cradmin_legacy.viewhelpers import formbase
 
 
 class View(formbase.FormView):

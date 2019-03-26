@@ -1,6 +1,6 @@
 
-from django_cradmin.viewhelpers import listbuilder
-from django_cradmin.viewhelpers import listbuilderview
+from cradmin_legacy.viewhelpers import listbuilder
+from cradmin_legacy.viewhelpers import listbuilderview
 
 from devilry.apps.core.models import RelatedStudent
 # from devilry.apps.core.models.relateduser import RelatedStudentTag

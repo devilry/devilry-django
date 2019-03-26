@@ -9,9 +9,9 @@ from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.template.loader import render_to_string
 from django.utils.translation import pgettext_lazy, ugettext_lazy, pgettext
-from django_cradmin.crispylayouts import PrimarySubmit
-from django_cradmin.viewhelpers import formbase
-from django_cradmin.viewhelpers.crudbase import OnlySaveButtonMixin
+from cradmin_legacy.crispylayouts import PrimarySubmit
+from cradmin_legacy.viewhelpers import formbase
+from cradmin_legacy.viewhelpers.crudbase import OnlySaveButtonMixin
 
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import PointToGradeMap
@@ -104,7 +104,7 @@ class AssignmentGradingConfigurationUpdateView(OnlySaveButtonMixin, formbase.For
     form_class = GradingConfigurationForm
     template_name = 'devilry_admin/assignment/gradingconfiguration-update/' \
                     'gradingconfiguration-update.django.html'
-    extra_form_css_classes = ['django-cradmin-form-noasterisk']
+    extra_form_css_classes = ['cradmin-legacy-form-noasterisk']
     form_attributes = {
         'data-ievv-jsbase-widget': 'devilry-grading-configuration',
         'data-ievv-jsbase-widget-config': json.dumps({

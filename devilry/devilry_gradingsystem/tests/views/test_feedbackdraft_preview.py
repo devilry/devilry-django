@@ -69,7 +69,7 @@ class TestFeedbackDraftPreviewView(TestCase):
             selector.one('.read-feedback-box .feedback_gradebox .feedback_is_passing_grade').alltext_normalized,
             'passed')
         self.assertIn(
-            'django-cradmin-container-focus-success',
+            'cradmin-legacy-container-focus-success',
             selector.one('.read-feedback-box .feedback_gradebox')['class'])
         self.assertEqual(
             selector.one('.read-feedback-box .devilry-feedback-rendered-view').alltext_normalized,

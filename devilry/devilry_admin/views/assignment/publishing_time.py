@@ -1,8 +1,8 @@
 
 
 from django.forms import forms
-from django_cradmin.viewhelpers.crudbase import OnlySaveButtonMixin
-from django_cradmin.viewhelpers.update import UpdateView
+from cradmin_legacy.viewhelpers.crudbase import OnlySaveButtonMixin
+from cradmin_legacy.viewhelpers.update import UpdateView
 from django.views.generic import RedirectView, FormView
 from django.utils import timezone
 

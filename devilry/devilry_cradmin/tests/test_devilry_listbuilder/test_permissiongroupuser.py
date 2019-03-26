@@ -13,7 +13,7 @@ class TestItemValue(test.TestCase):
         selector = htmls.S(devilry_listbuilder.permissiongroupuser.ItemValue(value=relatedstudent).render())
         self.assertEqual(
             'test@example.com',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_title_with_fullname(self):
         relatedstudent = mommy.make('devilry_account.PermissionGroupUser',
@@ -22,7 +22,7 @@ class TestItemValue(test.TestCase):
         selector = htmls.S(devilry_listbuilder.permissiongroupuser.ItemValue(value=relatedstudent).render())
         self.assertEqual(
             'Test User',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_description_without_fullname(self):
         relatedstudent = mommy.make('devilry_account.PermissionGroupUser',
@@ -30,7 +30,7 @@ class TestItemValue(test.TestCase):
                                     user__fullname='')
         selector = htmls.S(devilry_listbuilder.permissiongroupuser.ItemValue(value=relatedstudent).render())
         self.assertFalse(
-            selector.exists('.django-cradmin-listbuilder-itemvalue-titledescription-description'))
+            selector.exists('.cradmin-legacy-listbuilder-itemvalue-titledescription-description'))
 
     def test_description_with_fullname(self):
         relatedstudent = mommy.make('devilry_account.PermissionGroupUser',
@@ -39,4 +39,4 @@ class TestItemValue(test.TestCase):
         selector = htmls.S(devilry_listbuilder.permissiongroupuser.ItemValue(value=relatedstudent).render())
         self.assertEqual(
             'test@example.com',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-description').alltext_normalized)

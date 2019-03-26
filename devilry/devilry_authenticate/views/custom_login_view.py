@@ -1,5 +1,5 @@
 from django.conf import settings
-from django_cradmin.apps.cradmin_authenticate.views.login import LoginView, UsernameLoginForm
+from cradmin_legacy.apps.cradmin_authenticate.views.login import LoginView, UsernameLoginForm
 
 
 class DevilryUsernameLoginForm(UsernameLoginForm):
@@ -11,6 +11,6 @@ class DevilryUsernameLoginForm(UsernameLoginForm):
 
 class CustomLoginView(LoginView):
     def get_form_class(self):
-        if not getattr(settings, 'DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND', False):
+        if not getattr(settings, 'CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND', False):
             return DevilryUsernameLoginForm
         return super(CustomLoginView, self).get_form_class()

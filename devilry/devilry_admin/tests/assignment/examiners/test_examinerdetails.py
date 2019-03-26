@@ -1,6 +1,6 @@
 import mock
 from django import test
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.devilry_admin.views.assignment.examiners import examinerdetails
@@ -118,7 +118,7 @@ class TestExaminerDetailsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
         self.assertEqual(
             2,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_groups_only_where_is_examiner(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -132,4 +132,4 @@ class TestExaminerDetailsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))

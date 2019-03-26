@@ -2,9 +2,9 @@ from django.conf import settings
 from django.db import models
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy, pgettext_lazy, pgettext
-from django_cradmin.viewhelpers import listfilter
-from django_cradmin.viewhelpers.listfilter.basefilters.single import abstractradio
-from django_cradmin.viewhelpers.listfilter.basefilters.single import abstractselect
+from cradmin_legacy.viewhelpers import listfilter
+from cradmin_legacy.viewhelpers.listfilter.basefilters.single import abstractradio
+from cradmin_legacy.viewhelpers.listfilter.basefilters.single import abstractselect
 
 from devilry.apps.core.models import RelatedExaminer, Examiner
 
@@ -127,7 +127,7 @@ class AbstractOrderBy(listfilter.django.single.select.AbstractOrderBy):
 
 class OrderByNotAnonymous(AbstractOrderBy):
     def get_user_ordering_options(self):
-        if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
+        if settings.CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND:
             shortname_ascending_label = pgettext_lazy('orderby', 'Email')
             shortname_descending_label = pgettext_lazy('orderby', 'Email (descending)')
         else:

@@ -1,10 +1,10 @@
 from django.utils.translation import pgettext_lazy
-from django_cradmin import crmenu
-from django_cradmin.crinstance import reverse_cradmin_url
+from cradmin_legacy import crmenu
+from cradmin_legacy.crinstance import reverse_cradmin_url
 from django.template import defaultfilters
 
 from devilry.devilry_cradmin import devilry_crmenu
-from django_cradmin import crapp
+from cradmin_legacy import crapp
 
 
 class Menu(devilry_crmenu.Menu):

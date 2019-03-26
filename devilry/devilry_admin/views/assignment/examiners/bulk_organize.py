@@ -10,10 +10,10 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy, pgettext_lazy
 from django.views.generic import TemplateView
-from django_cradmin import crapp
-from django_cradmin.viewhelpers.mixins import QuerysetForRoleMixin
+from cradmin_legacy import crapp
+from cradmin_legacy.viewhelpers.mixins import QuerysetForRoleMixin
 from devilry.devilry_cradmin import devilry_listfilter
-from django_cradmin.viewhelpers import listbuilder, multiselect2, multiselect2view
+from cradmin_legacy.viewhelpers import listbuilder, multiselect2, multiselect2view
 
 from devilry.apps.core.models import Candidate
 from devilry.apps.core.models import Examiner, RelatedExaminer
@@ -23,8 +23,8 @@ from devilry.devilry_admin.views.assignment.students import groupview_base
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.apps.core.models import period_tag
 from devilry.apps.core.models import AssignmentGroup
-from django_cradmin.viewhelpers.listbuilder import itemvalue
-from django_cradmin.viewhelpers import listbuilderview
+from cradmin_legacy.viewhelpers.listbuilder import itemvalue
+from cradmin_legacy.viewhelpers import listbuilderview
 
 
 class SelectMethodView(TemplateView):

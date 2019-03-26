@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.http import Http404
 from django.test import TestCase
 from django.utils import timezone
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core.models import AssignmentGroup, Candidate
@@ -60,7 +60,7 @@ class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
             3,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue a'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue a'))
 
     def __mock_reverse_appurl(self):
         def reverse_appurl(viewname, args, kwargs):
@@ -122,7 +122,7 @@ class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
             5,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue a'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue a'))
         self.assertFalse(
             mockresponse.selector.exists('#devilry_admin_create_groups_choosemethod_assignment_{}'.format(
                 testassignment.pk)))
@@ -664,7 +664,7 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_relatedstudent_in_assignment_period_included(self):
         testperiod = mommy.make('core.Period')
@@ -675,7 +675,7 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_relatedstudent_with_candidate_on_assignment_is_included(self):
         testperiod = mommy.make('core.Period')
@@ -689,7 +689,7 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_render_relatedstudent_sanity(self):
         # This is tested in detail in the tests for
@@ -705,7 +705,7 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             'Test User(testuser)',
             mockresponse.selector.one(
-                '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+                '.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_render_search(self):
         testperiod = mommy.make('core.Period')
@@ -724,11 +724,11 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
         self.assertEqual(
             'Match User(testuser)',
             mockresponse.selector.one(
-                '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+                '.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_render_orderby_default(self):
         testperiod = mommy.make('core.Period')
@@ -748,7 +748,7 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment)
         titles = [element.alltext_normalized
                   for element in mockresponse.selector.list(
-                      '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+                      '.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
         self.assertEqual(
             ['UserA(x)', 'userb@example.com', 'userc'],
             titles)
@@ -772,7 +772,7 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
             viewkwargs={'filters_string': 'orderby-name_descending'})
         titles = [element.alltext_normalized
                   for element in mockresponse.selector.list(
-                      '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+                      '.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
         self.assertEqual(
             ['userc', 'userb@example.com', 'UserA(x)'],
             titles)
@@ -799,7 +799,7 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
             viewkwargs={'filters_string': 'orderby-lastname_ascending'})
         titles = [element.alltext_normalized
                   for element in mockresponse.selector.list(
-                      '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+                      '.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
         self.assertEqual(
             ['userb@example.com', 'User Aaa(x)', 'User ccc(y)'],
             titles)
@@ -826,7 +826,7 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
             viewkwargs={'filters_string': 'orderby-lastname_descending'})
         titles = [element.alltext_normalized
                   for element in mockresponse.selector.list(
-                      '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+                      '.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
         self.assertEqual(
             ['User ccc(y)', 'User Aaa(x)', 'userb@example.com'],
             titles)
@@ -849,7 +849,7 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
             viewkwargs={'filters_string': 'orderby-shortname_ascending'})
         titles = [element.alltext_normalized
                   for element in mockresponse.selector.list(
-                      '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+                      '.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
         self.assertEqual(
             ['usera@example.com', 'userb@example.com', 'userc@example.com'],
             titles)
@@ -872,7 +872,7 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
             viewkwargs={'filters_string': 'orderby-shortname_descending'})
         titles = [element.alltext_normalized
                   for element in mockresponse.selector.list(
-                      '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+                      '.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
         self.assertEqual(
             ['userc@example.com', 'userb@example.com', 'usera@example.com'],
             titles)

@@ -3,7 +3,7 @@ import mock
 from django import test
 from django import forms
 from django.conf import settings
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.devilry_cradmin import devilry_multiselect2
@@ -17,7 +17,7 @@ class TestSelectedItem(test.TestCase):
         selector = htmls.S(devilry_multiselect2.user.SelectedItem(value=user).render())
         self.assertEqual(
                 'test@example.com',
-                selector.one('.django-cradmin-multiselect2-target-selected-item-title').alltext_normalized)
+                selector.one('.cradmin-legacy-multiselect2-target-selected-item-title').alltext_normalized)
 
     def test_title_with_fullname(self):
         user = mommy.make(settings.AUTH_USER_MODEL,
@@ -26,7 +26,7 @@ class TestSelectedItem(test.TestCase):
         selector = htmls.S(devilry_multiselect2.user.SelectedItem(value=user).render())
         self.assertEqual(
                 'Test User',
-                selector.one('.django-cradmin-multiselect2-target-selected-item-title').alltext_normalized)
+                selector.one('.cradmin-legacy-multiselect2-target-selected-item-title').alltext_normalized)
 
     def test_description_without_fullname(self):
         user = mommy.make(settings.AUTH_USER_MODEL,
@@ -34,7 +34,7 @@ class TestSelectedItem(test.TestCase):
                           fullname='')
         selector = htmls.S(devilry_multiselect2.user.SelectedItem(value=user).render())
         self.assertFalse(
-                selector.exists('.django-cradmin-multiselect2-target-selected-item-description'))
+                selector.exists('.cradmin-legacy-multiselect2-target-selected-item-description'))
 
     def test_description_with_fullname(self):
         user = mommy.make(settings.AUTH_USER_MODEL,
@@ -43,7 +43,7 @@ class TestSelectedItem(test.TestCase):
         selector = htmls.S(devilry_multiselect2.user.SelectedItem(value=user).render())
         self.assertEqual(
                 'test@example.com',
-                selector.one('.django-cradmin-multiselect2-target-selected-item-description').alltext_normalized)
+                selector.one('.cradmin-legacy-multiselect2-target-selected-item-description').alltext_normalized)
 
 
 class TestItemValue(test.TestCase):
@@ -54,7 +54,7 @@ class TestItemValue(test.TestCase):
         selector = htmls.S(devilry_multiselect2.user.ItemValue(value=user).render())
         self.assertEqual(
                 'test@example.com',
-                selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+                selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_title_with_fullname(self):
         user = mommy.make(settings.AUTH_USER_MODEL,
@@ -63,7 +63,7 @@ class TestItemValue(test.TestCase):
         selector = htmls.S(devilry_multiselect2.user.ItemValue(value=user).render())
         self.assertEqual(
                 'Test User',
-                selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+                selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_description_without_fullname(self):
         user = mommy.make(settings.AUTH_USER_MODEL,
@@ -71,7 +71,7 @@ class TestItemValue(test.TestCase):
                           fullname='')
         selector = htmls.S(devilry_multiselect2.user.ItemValue(value=user).render())
         self.assertFalse(
-                selector.exists('.django-cradmin-listbuilder-itemvalue-titledescription-description'))
+                selector.exists('.cradmin-legacy-listbuilder-itemvalue-titledescription-description'))
 
     def test_description_with_fullname(self):
         user = mommy.make(settings.AUTH_USER_MODEL,
@@ -80,7 +80,7 @@ class TestItemValue(test.TestCase):
         selector = htmls.S(devilry_multiselect2.user.ItemValue(value=user).render())
         self.assertEqual(
                 'test@example.com',
-                selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized)
+                selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-description').alltext_normalized)
 
 
 class TestTarget(test.TestCase):
@@ -88,13 +88,13 @@ class TestTarget(test.TestCase):
         selector = htmls.S(devilry_multiselect2.user.Target(form=forms.Form()).render(request=mock.MagicMock()))
         self.assertEqual(
                 'Selected users',
-                selector.one('.django-cradmin-multiselect2-target-title').alltext_normalized)
+                selector.one('.cradmin-legacy-multiselect2-target-title').alltext_normalized)
 
     def test_without_items_text(self):
         selector = htmls.S(devilry_multiselect2.user.Target(form=forms.Form()).render(request=mock.MagicMock()))
         self.assertEqual(
                 'No users selected',
-                selector.one('.django-cradmin-multiselect2-target-without-items-content').alltext_normalized)
+                selector.one('.cradmin-legacy-multiselect2-target-without-items-content').alltext_normalized)
 
 
 class MockMultiselectUsersView(devilry_multiselect2.user.BaseMultiselectUsersView):
@@ -114,15 +114,15 @@ class TestBaseMultiselectUsersView(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.assertEqual(
             'Test User',
             mockresponse.selector.one(
-                    '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+                    '.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
         self.assertEqual(
             'test@example.com',
             mockresponse.selector.one(
-                    '.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized)
+                    '.cradmin-legacy-listbuilder-itemvalue-titledescription-description').alltext_normalized)
 
     def __get_titles(self, selector):
         return [element.alltext_normalized
-                for element in selector.list('.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+                for element in selector.list('.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
 
     def test_ordering(self):
         mommy.make(settings.AUTH_USER_MODEL,
@@ -139,7 +139,7 @@ class TestBaseMultiselectUsersView(test.TestCase, cradmin_testhelpers.TestCaseMi
     def test_selectall_not_available(self):
         mommy.make(settings.AUTH_USER_MODEL)
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=mock.MagicMock())
-        self.assertFalse(mockresponse.selector.exists('.django-cradmin-multiselect2-listcolumn-buttons .btn'))
+        self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-multiselect2-listcolumn-buttons .btn'))
 
     def test_search_shortname(self):
         mommy.make(settings.AUTH_USER_MODEL,

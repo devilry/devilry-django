@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.conf import settings
 from django.http import Http404
 
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 
 import mock
 from model_mommy import mommy
@@ -89,7 +89,7 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod
         )
-        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 3)
+        self.assertEqual(mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'), 3)
 
     def test_item_value_all_buttons_text(self):
         testperiod = mommy.make('core.Period')
@@ -176,7 +176,7 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod
         )
-        self.assertTrue(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue-editdelete-editbutton'))
+        self.assertTrue(mockresponse.selector.exists('.cradmin-legacy-listbuilder-itemvalue-editdelete-editbutton'))
         self.assertContains(mockresponse.response, 'Edit')
 
     def test_edit_delete_button_not_rendered_on_imported_tag(self):
@@ -185,8 +185,8 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod
         )
-        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue-editdelete-editbutton'))
-        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue-editdelete-deletebutton'))
+        self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-listbuilder-itemvalue-editdelete-editbutton'))
+        self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-listbuilder-itemvalue-editdelete-deletebutton'))
 
     def test_hide_button_rendered_when_custom_tag_is_not_hidden(self):
         testperiod = mommy.make('core.Period')
@@ -212,7 +212,7 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod
         )
-        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue-editdelete-editbutton'))
+        self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-listbuilder-itemvalue-editdelete-editbutton'))
         self.assertNotContains(mockresponse.response, 'Edit')
 
     def test_delete_button_rendered_when_prefix_is_blank(self):
@@ -221,7 +221,7 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod
         )
-        self.assertTrue(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue-editdelete-deletebutton'))
+        self.assertTrue(mockresponse.selector.exists('.cradmin-legacy-listbuilder-itemvalue-editdelete-deletebutton'))
         self.assertContains(mockresponse.response, 'Delete')
 
     def test_delete_button_not_rendered_when_prefix_is_not_blank(self):
@@ -230,7 +230,7 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod
         )
-        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue-editdelete-deletebutton'))
+        self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-listbuilder-itemvalue-editdelete-deletebutton'))
         self.assertNotContains(mockresponse.response, 'Delete')
 
     def test_remove_examiners_not_rendered(self):
@@ -287,7 +287,7 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
                 'filters_string': 'search-tag1'
             }
         )
-        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 1)
+        self.assertEqual(mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'), 1)
         self.assertContains(mockresponse.response, 'tag1')
         self.assertNotContains(mockresponse.response, 'tag2')
 
@@ -301,7 +301,7 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
                 'filters_string': 'search-tag3'
             }
         )
-        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 0)
+        self.assertEqual(mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'), 0)
         self.assertNotContains(mockresponse.response, 'tag1')
         self.assertNotContains(mockresponse.response, 'tag2')
 
@@ -319,7 +319,7 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
                 'filters_string': 'search-relatedstudent1'
             }
         )
-        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 1)
+        self.assertEqual(mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'), 1)
         self.assertContains(mockresponse.response, 'tag1')
         self.assertContains(mockresponse.response, 'relatedstudent1')
         self.assertNotContains(mockresponse.response, 'tag2')
@@ -339,7 +339,7 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
                 'filters_string': 'search-relatedstudent'
             }
         )
-        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 2)
+        self.assertEqual(mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'), 2)
         self.assertContains(mockresponse.response, 'tag1')
         self.assertContains(mockresponse.response, 'relatedstudent_a')
         self.assertContains(mockresponse.response, 'tag2')
@@ -359,7 +359,7 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
                 'filters_string': 'search-relatedstudent_c'
             }
         )
-        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 0)
+        self.assertEqual(mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'), 0)
         self.assertNotContains(mockresponse.response, 'tag1')
         self.assertNotContains(mockresponse.response, 'relatedstudent_a')
         self.assertNotContains(mockresponse.response, 'tag2')
@@ -379,7 +379,7 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
                 'filters_string': 'search-relatedexaminer1'
             }
         )
-        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 1)
+        self.assertEqual(mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'), 1)
         self.assertContains(mockresponse.response, 'tag1')
         self.assertContains(mockresponse.response, 'relatedexaminer1')
         self.assertNotContains(mockresponse.response, 'tag2')
@@ -399,7 +399,7 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
                 'filters_string': 'search-relatedexaminer'
             }
         )
-        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 2)
+        self.assertEqual(mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'), 2)
         self.assertContains(mockresponse.response, 'tag1')
         self.assertContains(mockresponse.response, 'relatedexaminer_a')
         self.assertContains(mockresponse.response, 'tag2')
@@ -419,7 +419,7 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
                 'filters_string': 'search-relatedexaminer_c'
             }
         )
-        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 0)
+        self.assertEqual(mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'), 0)
         self.assertNotContains(mockresponse.response, 'tag1')
         self.assertNotContains(mockresponse.response, 'relatedexaminer_a')
         self.assertNotContains(mockresponse.response, 'tag2')
@@ -434,7 +434,7 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
         )
-        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 4)
+        self.assertEqual(mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'), 4)
         self.assertContains(mockresponse.response,'tag1')
         self.assertContains(mockresponse.response, 'tag2')
         self.assertContains(mockresponse.response, 'tag3 (imported)')
@@ -451,7 +451,7 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
                 'filters_string': 'is_hidden-show-hidden-tags-only'
             }
         )
-        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 1)
+        self.assertEqual(mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'), 1)
         self.assertNotContains(mockresponse.response, 'tag1')
         self.assertNotContains(mockresponse.response, 'tag2')
         self.assertContains(mockresponse.response, 'tag3 (imported)')
@@ -468,7 +468,7 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
                 'filters_string': 'is_hidden-show-visible-tags-only'
             }
         )
-        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 3)
+        self.assertEqual(mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'), 3)
         self.assertContains(mockresponse.response, 'tag1')
         self.assertContains(mockresponse.response, 'tag2')
         self.assertNotContains(mockresponse.response, 'tag3')
@@ -486,7 +486,7 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
                 'filters_string': 'is_hidden-show-custom-tags-only'
             }
         )
-        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 2)
+        self.assertEqual(mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'), 2)
         self.assertContains(mockresponse.response, 'tag1')
         self.assertContains(mockresponse.response, 'tag2')
         self.assertNotContains(mockresponse.response, 'tag3')
@@ -503,7 +503,7 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
                 'filters_string': 'is_hidden-show-imported-tags-only'
             }
         )
-        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 1)
+        self.assertEqual(mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'), 1)
         self.assertNotContains(mockresponse.response, 'tag1')
         self.assertNotContains(mockresponse.response, 'tag2')
         self.assertContains(mockresponse.response, 'tag3 (imported)')
@@ -844,7 +844,7 @@ class TestEditTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 'pk': testperiodtag.id
             }
         )
-        self.assertEqual(mockresponse.selector.one('.django-cradmin-page-header-inner > h1').alltext_normalized,
+        self.assertEqual(mockresponse.selector.one('.cradmin-legacy-page-header-inner > h1').alltext_normalized,
                           'Edit {}'.format(testperiodtag.displayname))
 
     def test_tag_with_prefix_raises_404(self):
@@ -951,7 +951,7 @@ class TestDeleteTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 'pk': testperiodtag.id
             }
         )
-        self.assertEqual(mockresponse.selector.one('.django-cradmin-page-header-inner > h1').alltext_normalized,
+        self.assertEqual(mockresponse.selector.one('.cradmin-legacy-page-header-inner > h1').alltext_normalized,
                           'Delete {}'.format(testperiodtag.displayname))
 
     def test_tag_with_prefix_raises_404(self):
@@ -1024,7 +1024,7 @@ class TestMultiSelectAddRelatedUserView(test.TestCase, cradmin_testhelpers.TestC
                 'tag_id': testperiodtag.id
             }
         )
-        self.assertEqual(2, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+        self.assertEqual(2, mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
         self.assertContains(mockresponse.response, 'shortname_user1')
         self.assertContains(mockresponse.response, 'shortname_user2')
 
@@ -1041,7 +1041,7 @@ class TestMultiSelectAddRelatedUserView(test.TestCase, cradmin_testhelpers.TestC
                 'tag_id': period1_tag.id
             }
         )
-        self.assertEqual(1, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+        self.assertEqual(1, mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
         self.assertContains(mockresponse.response, 'shortname_user_testperiod1')
         self.assertNotContains(mockresponse.response, 'shortname_user_testperiod2')
 
@@ -1059,7 +1059,7 @@ class TestMultiSelectAddRelatedUserView(test.TestCase, cradmin_testhelpers.TestC
                 'tag_id': testperiodtag.id
             }
         )
-        self.assertEqual(2, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+        self.assertEqual(2, mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
         self.assertContains(mockresponse.response, 'shortname_user1')
         self.assertContains(mockresponse.response, 'shortname_user2')
         self.assertNotContains(mockresponse.response, 'shortname_user3')
@@ -1104,7 +1104,7 @@ class TestMultiSelectRemoveRelatedUserView(test.TestCase, cradmin_testhelpers.Te
                 'tag_id': testperiodtag.id
             }
         )
-        self.assertEqual(2, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+        self.assertEqual(2, mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
         self.assertContains(mockresponse.response, 'shortname_user1')
         self.assertContains(mockresponse.response, 'shortname_user2')
 
@@ -1127,7 +1127,7 @@ class TestMultiSelectRemoveRelatedUserView(test.TestCase, cradmin_testhelpers.Te
                 'tag_id': testperiodtag1.id
             }
         )
-        self.assertEqual(1, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+        self.assertEqual(1, mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
         self.assertContains(mockresponse.response, 'shortname_user_testperiod1')
         self.assertNotContains(mockresponse.response, 'shortname_user_testperiod2')
 
@@ -1145,7 +1145,7 @@ class TestMultiSelectRemoveRelatedUserView(test.TestCase, cradmin_testhelpers.Te
                 'tag_id': testperiodtag.id
             }
         )
-        self.assertEqual(2, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+        self.assertEqual(2, mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
         self.assertContains(mockresponse.response, 'shortname_user1')
         self.assertContains(mockresponse.response, 'shortname_user2')
         self.assertNotContains(mockresponse.response, 'shortname_user3')

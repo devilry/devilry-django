@@ -1,4 +1,4 @@
-from django_cradmin import crapp
+from cradmin_legacy import crapp
 
 from devilry.devilry_admin.views.assignment.passed_previous_period import overview
 from devilry.devilry_admin.views.assignment.passed_previous_period import passed_previous_period

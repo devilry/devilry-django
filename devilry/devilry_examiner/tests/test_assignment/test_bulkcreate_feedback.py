@@ -5,7 +5,7 @@ import mock
 from django import test
 from django.contrib import messages
 from django.core import mail
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core import models as core_models
@@ -51,7 +51,7 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
         )
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue')
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue')
         )
 
     def test_groups_sanity_unpublished(self):
@@ -67,7 +67,7 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
         )
         self.assertEqual(
             2,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue')
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue')
         )
 
     def test_groups_sanity_published(self):
@@ -87,7 +87,7 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
         )
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue')
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue')
         )
 
     def test_anonymizationmode_off_canidates(self):
@@ -170,7 +170,7 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
         self.assertEqual(
             'usera , userb',
             mockresponse.selector.one(
-                '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+                '.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_group_render_title_name_order_fullname(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -193,7 +193,7 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
         self.assertEqual(
             'A user(userc) , usera , userb',
             mockresponse.selector.one(
-                '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+                '.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_search_nomatch(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -211,7 +211,7 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
                 requestuser=testuser)
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_match_fullname(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -229,7 +229,7 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
                 requestuser=testuser)
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_match_shortname(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -247,7 +247,7 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
                 requestuser=testuser)
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_nomatch_fullname(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -266,7 +266,7 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
                 requestuser=testuser)
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_nomatch_shortname(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -285,7 +285,7 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
                 requestuser=testuser)
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_nomatch_candidate_id_from_candidate(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -304,7 +304,7 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
                 requestuser=testuser)
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_match_automatic_candidate_id_from_relatedstudent(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -324,7 +324,7 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
                 requestuser=testuser)
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_match_automatic_anonymous_id(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -344,7 +344,7 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
                 requestuser=testuser)
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_uses_custom_candidate_ids_nomatch_fullname(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -364,7 +364,7 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
                 requestuser=testuser)
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_uses_custom_candidate_ids_nomatch_shortname(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -384,7 +384,7 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
                 requestuser=testuser)
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_uses_custom_candidate_ids_nomatch_automatic_candidate_id_from_relatedstudent(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -405,7 +405,7 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
                 requestuser=testuser)
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_uses_custom_candidate_ids_nomatch_automatic_anonymous_id(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -426,7 +426,7 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
                 requestuser=testuser)
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_uses_custom_candidate_ids_match_candidate_id_from_candidate(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -446,7 +446,7 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
                 requestuser=testuser)
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_groups_not_selected_by_default(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -462,10 +462,10 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
         )
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-multiselect2-target-with-items'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-target-with-items'))
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-multiselect2-target-selected-item'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-target-selected-item'))
 
     def test_one_group_on_assignment(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -480,7 +480,7 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             requestuser=examiner_user)
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_three_groups_on_assignment(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -503,7 +503,7 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             requestuser=examiner_user)
         self.assertEqual(
             3,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_examiner_only_examiner_on_one_group(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -520,7 +520,7 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             requestuser=examiner_user)
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_examiner_group_access_info(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -545,12 +545,12 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             cradmin_role=testassignment,
             requestuser=examiner_user
         )
-        self.assertEqual(1, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+        self.assertEqual(1, mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
         candidate1_user = candidate1.relatedstudent.user
         self.assertEqual(
             '{}({})'.format(candidate1_user.fullname, candidate1_user.shortname),
             mockresponse.selector.one(
-                '.django-cradmin-multiselect2-itemvalue-details:nth-child(1) '
+                '.cradmin-legacy-multiselect2-itemvalue-details:nth-child(1) '
                 '.devilry-user-verbose-inline-both').alltext_normalized)
 
     def test_groups_with_last_published_feedbackset_do_not_show(self):
@@ -565,7 +565,7 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             cradmin_role=testassignment,
             requestuser=examiner_user
         )
-        self.assertEqual(0, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+        self.assertEqual(0, mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_filter_search_two_students_one_result(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -593,12 +593,12 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             requestuser=examiner_user,
             viewkwargs={'filters_string': 'search-Donald'}
         )
-        self.assertEqual(1, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+        self.assertEqual(1, mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
         candidate1_user = candidate.relatedstudent.user
         self.assertEqual(
             '{}({})'.format(candidate1_user.fullname, candidate1_user.shortname),
             mockresponse.selector.one(
-                '.django-cradmin-multiselect2-itemvalue-details:nth-child(1) '
+                '.cradmin-legacy-multiselect2-itemvalue-details:nth-child(1) '
                 '.devilry-user-verbose-inline-both').alltext_normalized)
 
     def test_filter_search_three_students_two_results(self):
@@ -635,8 +635,8 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             requestuser=examiner_user,
             viewkwargs={'filters_string': 'search-Don'}
         )
-        self.assertEqual(2, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
-        element_lst = mockresponse.selector.list('.django-cradmin-multiselect2-itemvalue-details:nth-child(1) '
+        self.assertEqual(2, mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
+        element_lst = mockresponse.selector.list('.cradmin-legacy-multiselect2-itemvalue-details:nth-child(1) '
                                                  '.devilry-user-verbose-inline-both')
         # normalize text to test on it
         element_lst = [e.alltext_normalized for e in element_lst]

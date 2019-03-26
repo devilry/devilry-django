@@ -1,5 +1,5 @@
-from django_cradmin.crinstance import reverse_cradmin_url
-from django_cradmin import crapp
+from cradmin_legacy.crinstance import reverse_cradmin_url
+from cradmin_legacy import crapp
 
 from devilry.apps.core.models import Subject
 from devilry.devilry_cradmin import devilry_crinstance

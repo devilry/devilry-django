@@ -15,7 +15,7 @@ class TestOnPeriodItemValue(test.TestCase):
         selector = htmls.S(listbuilder_relatedstudent.ReadOnlyItemValue(value=relatedstudent).render())
         self.assertEqual(
             'test@example.com',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_title_with_fullname(self):
         relatedstudent = mommy.make('core.RelatedStudent',
@@ -25,14 +25,14 @@ class TestOnPeriodItemValue(test.TestCase):
         selector = htmls.S(listbuilder_relatedstudent.ReadOnlyItemValue(value=relatedstudent).render())
         self.assertEqual(
             'Test User(test@example.com)',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_description_without_tags(self):
         relatedstudent = mommy.make('core.RelatedStudent')
         relatedstudent = RelatedStudent.objects.prefetch_syncsystemtag_objects().get(id=relatedstudent.id)
         selector = htmls.S(listbuilder_relatedstudent.ReadOnlyItemValue(value=relatedstudent).render())
         self.assertFalse(
-            selector.exists('.django-cradmin-listbuilder-itemvalue-titledescription-description'))
+            selector.exists('.cradmin-legacy-listbuilder-itemvalue-titledescription-description'))
 
     # def test_description_with_tags(self):
     #     relatedstudent = mommy.make('core.RelatedStudent')
@@ -42,7 +42,7 @@ class TestOnPeriodItemValue(test.TestCase):
     #     selector = htmls.S(listbuilder_relatedstudent.ReadOnlyItemValue(value=relatedstudent).render())
     #     self.assertEqual(
     #         'a, b',
-    #         selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized)
+    #         selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-description').alltext_normalized)
 
     def test_description_with_tags(self):
         testperiod = mommy.make('core.Period')
@@ -55,4 +55,4 @@ class TestOnPeriodItemValue(test.TestCase):
         selector = htmls.S(listbuilder_relatedstudent.ReadOnlyItemValue(value=relatedstudent).render())
         self.assertEqual(
             'a, b',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-description').alltext_normalized)

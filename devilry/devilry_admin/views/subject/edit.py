@@ -3,9 +3,9 @@
 from crispy_forms import layout
 from devilry.apps.core.models import Subject
 from django.utils.translation import ugettext_lazy
-from django_cradmin import crapp
-from django_cradmin.viewhelpers import crudbase
-from django_cradmin.viewhelpers import update
+from cradmin_legacy import crapp
+from cradmin_legacy.viewhelpers import crudbase
+from cradmin_legacy.viewhelpers import update
 
 from devilry.devilry_admin.views.dashboard import createsubject
 

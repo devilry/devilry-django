@@ -1,5 +1,5 @@
 from django import test
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 from mock import mock
 from model_mommy import mommy
 

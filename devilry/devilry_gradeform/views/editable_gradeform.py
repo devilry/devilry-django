@@ -5,8 +5,8 @@ from django import forms
 
 from crispy_forms import layout
 
-from django_cradmin import renderable
-from django_cradmin.viewhelpers import crudbase
+from cradmin_legacy import renderable
+from cradmin_legacy.viewhelpers import crudbase
 
 
 class AbstractEditableRenderer(renderable.AbstractRenderable, forms.Form):

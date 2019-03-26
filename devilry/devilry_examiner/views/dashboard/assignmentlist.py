@@ -1,11 +1,11 @@
 
 
 from django.utils.translation import ugettext_lazy, pgettext_lazy
-from django_cradmin import crapp
-from django_cradmin.crinstance import reverse_cradmin_url
-from django_cradmin.viewhelpers import listbuilder
-from django_cradmin.viewhelpers import listbuilderview
-from django_cradmin.viewhelpers import listfilter
+from cradmin_legacy import crapp
+from cradmin_legacy.crinstance import reverse_cradmin_url
+from cradmin_legacy.viewhelpers import listbuilder
+from cradmin_legacy.viewhelpers import listbuilderview
+from cradmin_legacy.viewhelpers import listfilter
 
 from devilry.apps.core import models as coremodels
 from devilry.devilry_cradmin import devilry_listfilter
@@ -29,9 +29,9 @@ class AssignmentItemValue(listbuilder.itemvalue.TitleDescription):
     def get_extra_css_classes_list(self):
         css_classes = ['devilry-examiner-listbuilder-assignmentlist-assignmentitemvalue']
         if self.assignment.waiting_for_feedback_count > 0:
-            css_classes.append('devilry-django-cradmin-listbuilder-itemvalue-titledescription-description-warning')
+            css_classes.append('devilry-cradmin-legacy-listbuilder-itemvalue-titledescription-description-warning')
         else:
-            css_classes.append('devilry-django-cradmin-listbuilder-itemvalue-titledescription-description-muted')
+            css_classes.append('devilry-cradmin-legacy-listbuilder-itemvalue-titledescription-description-muted')
         return css_classes
 
 

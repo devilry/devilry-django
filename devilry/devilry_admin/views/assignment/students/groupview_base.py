@@ -7,11 +7,11 @@ from django.db import models
 from django.db.models.functions import Lower, Concat
 from django.shortcuts import redirect
 from django.utils.translation import pgettext_lazy, ugettext_lazy
-from django_cradmin.viewhelpers import listbuilderview
-from django_cradmin.viewhelpers import multiselect2view
-from django_cradmin.viewhelpers.listbuilder.itemframe import DefaultSpacingItemFrame
-from django_cradmin.viewhelpers.listbuilder.itemvalue import FocusBox, TitleDescription
-from django_cradmin.viewhelpers.listbuilder.lists import RowList
+from cradmin_legacy.viewhelpers import listbuilderview
+from cradmin_legacy.viewhelpers import multiselect2view
+from cradmin_legacy.viewhelpers.listbuilder.itemframe import DefaultSpacingItemFrame
+from cradmin_legacy.viewhelpers.listbuilder.itemvalue import FocusBox, TitleDescription
+from cradmin_legacy.viewhelpers.listbuilder.lists import RowList
 
 from devilry.apps.core import models as coremodels
 from devilry.apps.core.models import Candidate, Examiner, RelatedExaminer, Assignment, AssignmentGroup

@@ -4,7 +4,7 @@ import mock
 from django import test
 from django.conf import settings
 from django.contrib import messages
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 from model_mommy import mommy, timezone
 
 from devilry.apps.core.models import AssignmentGroup
@@ -100,7 +100,7 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestuser=testuser)
         self.assertEqual(
             3,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_submit_button_text(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -111,7 +111,7 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestuser=testuser)
         self.assertEqual(
             'Delete students',
-            mockresponse.selector.one('.django-cradmin-multiselect2-target-formfields .btn').alltext_normalized)
+            mockresponse.selector.one('.cradmin-legacy-multiselect2-target-formfields .btn').alltext_normalized)
 
     def test_target_with_selected_items_title(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -122,7 +122,7 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestuser=testuser)
         self.assertEqual(
             'Delete the following students:',
-            mockresponse.selector.one('.django-cradmin-multiselect2-target-title').alltext_normalized)
+            mockresponse.selector.one('.cradmin-legacy-multiselect2-target-title').alltext_normalized)
 
     def test_exclude_groups_with_groupcomment_from_student_if_not_departmentadmin(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -139,7 +139,7 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestuser=testuser)
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_include_groups_with_groupcomment_from_student_if_departmentadmin(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -155,7 +155,7 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestuser=testuser)
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_exclude_groups_with_groupcomment_from_examiner_if_not_departmentadmin(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -171,7 +171,7 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestuser=testuser)
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_include_groups_with_groupcomment_from_examiner_if_departmentadmin(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -187,7 +187,7 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestuser=testuser)
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_exclude_groups_with_imageannotationcomment_from_student_if_not_departmentadmin(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -203,7 +203,7 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestuser=testuser)
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_include_groups_with_imageannotationcomment_from_student_if_departmentadmin(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -219,7 +219,7 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestuser=testuser)
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_exclude_groups_with_imageannotationcomment_from_examiner_if_not_departmentadmin(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -235,7 +235,7 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestuser=testuser)
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_include_groups_with_imageannotationcomment_from_examiner_if_departmentadmin(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -251,7 +251,7 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestuser=testuser)
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_exclude_groups_with_published_feedback_if_not_departmentadmin(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -265,7 +265,7 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestuser=testuser)
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_include_groups_with_published_feedback_if_departmentadmin(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -279,7 +279,7 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestuser=testuser)
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_post_ok(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -396,7 +396,7 @@ class TestDeleteGroupsFromPreviousAssignmentConfirmView(test.TestCase, cradmin_t
             }
         )
         self.assertTrue(mockresponse.selector.exists('.devilry-admin-delete-groups-confirm-no-groups'))
-        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+        self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_get_no_students_on_assignment_with_past_failing_grade(self):
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
@@ -417,7 +417,7 @@ class TestDeleteGroupsFromPreviousAssignmentConfirmView(test.TestCase, cradmin_t
             }
         )
         self.assertTrue(mockresponse.selector.exists('.devilry-admin-delete-groups-confirm-no-groups'))
-        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+        self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_get_student_on_assignment_with_past_failing_grade(self):
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
@@ -437,7 +437,7 @@ class TestDeleteGroupsFromPreviousAssignmentConfirmView(test.TestCase, cradmin_t
                 'from_assignment_id': past_assignment.id
             }
         )
-        self.assertTrue(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+        self.assertTrue(mockresponse.selector.exists('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_get_multiple_students_on_assignment_only_one_with_past_failing_grade(self):
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
@@ -472,9 +472,9 @@ class TestDeleteGroupsFromPreviousAssignmentConfirmView(test.TestCase, cradmin_t
                 'from_assignment_id': past_assignment.id
             }
         )
-        self.assertTrue(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+        self.assertTrue(mockresponse.selector.exists('.cradmin-legacy-listbuilder-itemvalue'))
         self.assertTrue(
-            mockresponse.selector.one('.django-cradmin-listbuilder-itemvalue').alltext_normalized.startswith(related_student2.user.shortname))
+            mockresponse.selector.one('.cradmin-legacy-listbuilder-itemvalue').alltext_normalized.startswith(related_student2.user.shortname))
 
     def test_get_project_groups_from_current_assignment_with_more_than_one_student_is_excluded(self):
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
@@ -503,7 +503,7 @@ class TestDeleteGroupsFromPreviousAssignmentConfirmView(test.TestCase, cradmin_t
                 'from_assignment_id': past_assignment.id
             }
         )
-        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+        self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-listbuilder-itemvalue'))
         self.assertEqual(self.__get_selected_group_ids_to_be_removed(selector=mockresponse.selector), [])
 
     def test_get_project_groups_from_current_assignment_with_student_comment_is_excluded(self):
@@ -535,7 +535,7 @@ class TestDeleteGroupsFromPreviousAssignmentConfirmView(test.TestCase, cradmin_t
                 'from_assignment_id': past_assignment.id
             }
         )
-        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+        self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-listbuilder-itemvalue'))
         self.assertEqual(self.__get_selected_group_ids_to_be_removed(selector=mockresponse.selector), [])
 
     def test_get_project_groups_from_current_assignment_with_examiner_public_comment_is_excluded(self):
@@ -567,7 +567,7 @@ class TestDeleteGroupsFromPreviousAssignmentConfirmView(test.TestCase, cradmin_t
                 'from_assignment_id': past_assignment.id
             }
         )
-        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+        self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-listbuilder-itemvalue'))
         self.assertEqual(self.__get_selected_group_ids_to_be_removed(selector=mockresponse.selector), [])
 
     def test_get_project_groups_from_current_assignment_draft_comment_is_not_excluded(self):
@@ -599,7 +599,7 @@ class TestDeleteGroupsFromPreviousAssignmentConfirmView(test.TestCase, cradmin_t
                 'from_assignment_id': past_assignment.id
             }
         )
-        self.assertTrue(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+        self.assertTrue(mockresponse.selector.exists('.cradmin-legacy-listbuilder-itemvalue'))
         self.assertEqual(self.__get_selected_group_ids_to_be_removed(selector=mockresponse.selector),
                          [str(current_assignment_group.id)])
 
@@ -632,7 +632,7 @@ class TestDeleteGroupsFromPreviousAssignmentConfirmView(test.TestCase, cradmin_t
                 'from_assignment_id': past_assignment.id
             }
         )
-        self.assertTrue(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+        self.assertTrue(mockresponse.selector.exists('.cradmin-legacy-listbuilder-itemvalue'))
         self.assertEqual(self.__get_selected_group_ids_to_be_removed(selector=mockresponse.selector),
                          [str(current_assignment_group.id)])
 
@@ -663,7 +663,7 @@ class TestDeleteGroupsFromPreviousAssignmentConfirmView(test.TestCase, cradmin_t
                 'from_assignment_id': past_assignment.id
             }
         )
-        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+        self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-listbuilder-itemvalue'))
         self.assertEqual(self.__get_selected_group_ids_to_be_removed(selector=mockresponse.selector), [])
 
     def test_get_project_groups_from_current_assignment_with_new_attempt_is_excluded(self):
@@ -695,7 +695,7 @@ class TestDeleteGroupsFromPreviousAssignmentConfirmView(test.TestCase, cradmin_t
                 'from_assignment_id': past_assignment.id
             }
         )
-        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+        self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-listbuilder-itemvalue'))
         self.assertEqual(self.__get_selected_group_ids_to_be_removed(selector=mockresponse.selector), [])
 
     def test_get_correct_selected_items_single(self):

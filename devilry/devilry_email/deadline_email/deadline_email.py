@@ -1,7 +1,7 @@
 from django.utils.translation import ugettext_lazy
 
 import django_rq
-from django_cradmin.crinstance import reverse_cradmin_url
+from cradmin_legacy.crinstance import reverse_cradmin_url
 
 from devilry.devilry_message.models import Message
 from devilry.devilry_message.utils.subject_generator import SubjectTextGenerator

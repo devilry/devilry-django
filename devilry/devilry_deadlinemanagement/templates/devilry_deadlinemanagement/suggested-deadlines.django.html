@@ -18,8 +18,8 @@
                 {% for suggested_deadline in suggested_deadlines %}
                     <button type="button"
                             class="btn btn-default btn-block btn-xs devilry-deadlinemanagement-suggested-deadline"
-                            django-cradmin-setfieldvalue="{{ suggested_deadline|localtime|devilry_isoformat_datetime }}"
-                            django-cradmin-setfieldvalue-field-id="id_new_deadline">
+                            cradmin-legacy-setfieldvalue="{{ suggested_deadline|localtime|devilry_isoformat_datetime }}"
+                            cradmin-legacy-setfieldvalue-field-id="id_new_deadline">
                         {{ suggested_deadline|localtime|date:"DATETIME_FORMAT" }}
                     </button>
                 {% endfor %}

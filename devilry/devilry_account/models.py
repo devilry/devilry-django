@@ -177,9 +177,9 @@ class UserManager(BaseUserManager):
         Other than that, you can provide any :class:`.User` fields except
         ``shortname``. ``shortname`` is created from username or email (in that order).
         """
-        if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND and username:
+        if settings.CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND and username:
             raise IllegalOperationError('Can not create user with username when the '
-                                        'DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND-setting is True')
+                                        'CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND-setting is True')
         shortname = username or email
         user = self.model(shortname=shortname, **kwargs)
         if password:
@@ -287,7 +287,7 @@ class UserManager(BaseUserManager):
 
         Raises:
             devilry_account.exceptions.IllegalOperationError: If the
-            ``DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND``-setting is ``False``.
+            ``CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND``-setting is ``False``.
 
         Returns:
             A ``(created_users, excluded_emails)``-tuple.
@@ -296,9 +296,9 @@ class UserManager(BaseUserManager):
 
             ``excluded_emails`` is a set of the emails that already existed.
         """
-        if not settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
+        if not settings.CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND:
             raise IllegalOperationError('You can not use bulk_create_from_emails() when '
-                                        'DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND is False.')
+                                        'CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND is False.')
         existing_emails = set(UserEmail.objects.filter(email__in=emails).values_list('email', flat=True))
         existing_shortnames = set(User.objects.filter(shortname__in=emails).values_list('shortname', flat=True))
         existing_emails = existing_emails.union(existing_shortnames)
@@ -363,7 +363,7 @@ class UserManager(BaseUserManager):
 
         Raises:
             devilry_account.exceptions.IllegalOperationError: If the
-            ``DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND``-setting is ``True``.
+            ``CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND``-setting is ``True``.
 
         Returns:
             A ``(created_users, excluded_usernames)``-tuple.
@@ -372,9 +372,9 @@ class UserManager(BaseUserManager):
 
             ``excluded_usernames`` is a set of the usernames that already existed.
         """
-        if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
+        if settings.CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND:
             raise IllegalOperationError('You can not use bulk_create_from_usernames() when '
-                                        'DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND is True.')
+                                        'CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND is True.')
         existing_usernames = set(UserName.objects.filter(username__in=usernames).values_list('username', flat=True))
         existing_shortnames = set(User.objects.filter(shortname__in=usernames).values_list('shortname', flat=True))
         existing_usernames = existing_usernames.union(existing_shortnames)
@@ -678,7 +678,7 @@ class UserEmail(AbstractUserIdentity):
                 other_useremails = other_useremails.exclude(id=self.id)
             other_useremails.update(is_primary=None)
 
-            # if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
+            # if settings.CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND:
             #     user = self.user
             #     if user.shortname != self.email:
             #         user.shortname = self.email
@@ -729,9 +729,9 @@ class UserName(AbstractUserIdentity):
     )
 
     def clean(self):
-        if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
+        if settings.CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND:
             raise ValidationError('Can not create UserName objects when the '
-                                  'DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND is True.')
+                                  'CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND is True.')
         if self.is_primary is False:
             raise ValidationError('is_primary can not be False. Valid values are: True, None.')
         if self.is_primary:

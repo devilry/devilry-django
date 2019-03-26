@@ -9,14 +9,14 @@ from django.http import Http404
 from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy, pgettext_lazy
 from django.views.generic import TemplateView
-from django_cradmin import crapp
-from django_cradmin.crinstance import reverse_cradmin_url
-from django_cradmin.crispylayouts import CradminFormHelper, PrimarySubmit
+from cradmin_legacy import crapp
+from cradmin_legacy.crinstance import reverse_cradmin_url
+from cradmin_legacy.crispylayouts import CradminFormHelper, PrimarySubmit
 
 from devilry.apps.core.models import Candidate, Assignment, AssignmentGroup
 from devilry.devilry_admin.cradminextensions.listbuilder import listbuilder_assignmentgroup
 from devilry.devilry_admin.views.assignment.students import groupview_base
-from django_cradmin.viewhelpers import listbuilder
+from cradmin_legacy.viewhelpers import listbuilder
 
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin import devilry_listfilter
@@ -58,7 +58,7 @@ class ChooseManualSelectItemValue(listbuilder.itemvalue.TitleDescription):
     template_name = 'devilry_admin/assignment/students/delete_groups/choose-period-item-value.django.html'
 
     def get_extra_css_classes_list(self):
-        return ['devilry-django-cradmin-listbuilder-itemvalue-titledescription-lg']
+        return ['devilry-cradmin-legacy-listbuilder-itemvalue-titledescription-lg']
 
     def get_title(self):
         return pgettext_lazy('admin delete_groups', 'Manually')
@@ -402,7 +402,7 @@ class ConfirmView(BulkSelectionDeleteGroupsViewMixin,
 
     def __get_formhelper(self):
         helper = CradminFormHelper()
-        helper.form_class = 'django-cradmin-form-wrapper devilry-django-cradmin-form-wrapper-top-bottom-spacing'
+        helper.form_class = 'cradmin-legacy-form-wrapper devilry-cradmin-legacy-form-wrapper-top-bottom-spacing'
         helper.form_id = 'devilry_admin_delete_groups_confirm_form'
         helper.layout = layout.Layout(
             'selected_items',

@@ -2,8 +2,8 @@
 
 import mock
 from django.test import TestCase
-from django_cradmin import cradmin_testhelpers
-from django_cradmin import crinstance
+from cradmin_legacy import cradmin_testhelpers
+from cradmin_legacy import crinstance
 from model_mommy import mommy
 
 from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_START, ACTIVE_PERIOD_END
@@ -62,7 +62,7 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
         self.assertEqual('Test Period',
                          mockresponse.selector.one(
-                             '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+                             '.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_periodlist_itemrendering_url(self):
         testsubject = mommy.make('core.Subject')
@@ -110,7 +110,7 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
         periodnames = [
             element.alltext_normalized
             for element in mockresponse.selector.list(
-                    '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+                    '.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
         self.assertEqual([
             'Period 3',
             'Period 2',
@@ -129,10 +129,10 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue-titledescription-title')
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue-titledescription-title')
         )
         self.assertEqual(
             'Testsubject Period 1',
             mockresponse.selector.one(
-                    '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized
+                    '.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized
         )

@@ -17,15 +17,15 @@ from django.views.generic import View
 
 from crispy_forms import layout
 
-from django_cradmin import crapp
-from django_cradmin.crinstance import reverse_cradmin_url
-from django_cradmin.crispylayouts import PrimarySubmit
-from django_cradmin.viewhelpers import formbase
-from django_cradmin.viewhelpers import update, delete, crudbase
-from django_cradmin.viewhelpers import listbuilderview
-from django_cradmin.viewhelpers.listbuilder import itemvalue
-from django_cradmin.viewhelpers import multiselect2view
-from django_cradmin.viewhelpers import multiselect2
+from cradmin_legacy import crapp
+from cradmin_legacy.crinstance import reverse_cradmin_url
+from cradmin_legacy.crispylayouts import PrimarySubmit
+from cradmin_legacy.viewhelpers import formbase
+from cradmin_legacy.viewhelpers import update, delete, crudbase
+from cradmin_legacy.viewhelpers import listbuilderview
+from cradmin_legacy.viewhelpers.listbuilder import itemvalue
+from cradmin_legacy.viewhelpers import multiselect2view
+from cradmin_legacy.viewhelpers import multiselect2
 
 from devilry.apps.core.models import PeriodTag
 from devilry.apps.core.models import RelatedStudent, RelatedExaminer

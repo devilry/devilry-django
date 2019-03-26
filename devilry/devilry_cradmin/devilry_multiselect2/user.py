@@ -1,7 +1,7 @@
 from django import forms
 from django.utils.translation import pgettext_lazy
-from django_cradmin.viewhelpers import multiselect2
-from django_cradmin.viewhelpers import multiselect2view
+from cradmin_legacy.viewhelpers import multiselect2
+from cradmin_legacy.viewhelpers import multiselect2view
 
 from devilry.devilry_account.models import User
 from devilry.devilry_cradmin import devilry_listbuilder

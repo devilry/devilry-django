@@ -4,7 +4,7 @@
 import mock
 from django import http
 from django import test
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core import models as core_models
@@ -282,7 +282,7 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
                 })
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_nomatch_shortname(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -313,7 +313,7 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
                 })
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_nomatch_candidate_id_from_candidate(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -344,7 +344,7 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
                 })
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_match_automatic_candidate_id_from_relatedstudent(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -376,7 +376,7 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
                 })
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_match_automatic_anonymous_id(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -408,7 +408,7 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
                 })
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_uses_custom_candidate_ids_nomatch_fullname(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -440,7 +440,7 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
                 })
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_uses_custom_candidate_ids_nomatch_shortname(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -472,7 +472,7 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
                 })
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_uses_custom_candidate_ids_nomatch_automatic_candidate_id_from_relatedstudent(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -505,7 +505,7 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
                 })
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_uses_custom_candidate_ids_nomatch_automatic_anonymous_id(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -538,7 +538,7 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
                 })
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_uses_custom_candidate_ids_match_candidate_id_from_candidate(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -570,7 +570,7 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
                 })
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_three_groups_on_assignment_published(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -599,7 +599,7 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
             })
         self.assertEqual(
             3,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_three_groups_on_assignment_unpublished(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -628,7 +628,7 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
             })
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_get_num_queries(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -912,7 +912,7 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
                 })
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_nomatch_shortname(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -943,7 +943,7 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
                 })
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_nomatch_candidate_id_from_candidate(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -974,7 +974,7 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
                 })
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_match_automatic_candidate_id_from_relatedstudent(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -1006,7 +1006,7 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
                 })
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_match_automatic_anonymous_id(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -1038,7 +1038,7 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
                 })
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_uses_custom_candidate_ids_nomatch_fullname(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -1070,7 +1070,7 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
                 })
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_uses_custom_candidate_ids_nomatch_shortname(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -1102,7 +1102,7 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
                 })
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_uses_custom_candidate_ids_nomatch_automatic_candidate_id_from_relatedstudent(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -1135,7 +1135,7 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
                 })
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_uses_custom_candidate_ids_nomatch_automatic_anonymous_id(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -1168,7 +1168,7 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
                 })
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_uses_custom_candidate_ids_match_candidate_id_from_candidate(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -1200,7 +1200,7 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
                 })
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_three_groups_on_assignment_published(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -1229,7 +1229,7 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
             })
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_three_groups_on_assignment_unpublished(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -1258,7 +1258,7 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
             })
         self.assertEqual(
             3,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_get_num_queries(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',

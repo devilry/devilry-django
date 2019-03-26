@@ -8,7 +8,7 @@ from django import http
 from django import test
 from django.conf import settings
 from django.utils import timezone
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core import models as core_models
@@ -1088,7 +1088,7 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
             }
         )
         earliest_date = mockresponse.selector.list('.devilry-deadlinemanagement-suggested-deadline')[0] \
-            .get('django-cradmin-setfieldvalue')
+            .get('cradmin-legacy-setfieldvalue')
         converted_datetime = from_isoformat_noseconds(earliest_date)
         self.assertTrue(converted_datetime > timezone.now())
         self.assertTrue(converted_datetime < timezone.now() + timezone.timedelta(days=8))
@@ -1114,7 +1114,7 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
         )
         added_days = 7
         for element in mockresponse.selector.list('.devilry-deadlinemanagement-suggested-deadline'):
-            suggested_date = from_isoformat_noseconds(element.get('django-cradmin-setfieldvalue'))
+            suggested_date = from_isoformat_noseconds(element.get('cradmin-legacy-setfieldvalue'))
             self.assertEqual(suggested_date, testfeedbackset.deadline_datetime + timedelta(days=added_days))
             added_days += 7
 
@@ -1140,7 +1140,7 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
             }
         )
         earliest_date = mockresponse.selector.list('.devilry-deadlinemanagement-suggested-deadline')[0] \
-            .get('django-cradmin-setfieldvalue')
+            .get('cradmin-legacy-setfieldvalue')
         converted_datetime = from_isoformat_noseconds(earliest_date)
         self.assertEqual(testfeedbackset.deadline_datetime + timezone.timedelta(days=7), converted_datetime)
 
@@ -1168,7 +1168,7 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
             }
         )
         earliest_date = mockresponse.selector.list('.devilry-deadlinemanagement-suggested-deadline')[0] \
-            .get('django-cradmin-setfieldvalue')
+            .get('cradmin-legacy-setfieldvalue')
         converted_datetime = from_isoformat_noseconds(earliest_date)
         self.assertEqual(testfeedbackset_last.deadline_datetime + timezone.timedelta(days=7),
                           converted_datetime)
@@ -1332,7 +1332,7 @@ class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
             }
         )
         earliest_date = mockresponse.selector.list('.devilry-deadlinemanagement-suggested-deadline')[0]\
-            .get('django-cradmin-setfieldvalue')
+            .get('cradmin-legacy-setfieldvalue')
         converted_datetime = from_isoformat_noseconds(earliest_date)
         now_with_same_time_as_deadline = datetimeutils.datetime_with_same_time(
             testfeedbackset.deadline_datetime, timezone.now())
@@ -1359,7 +1359,7 @@ class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
         )
         added_days = 7
         for element in mockresponse.selector.list('.devilry-deadlinemanagement-suggested-deadline'):
-            suggested_date = from_isoformat_noseconds(element.get('django-cradmin-setfieldvalue'))
+            suggested_date = from_isoformat_noseconds(element.get('cradmin-legacy-setfieldvalue'))
             self.assertEqual(suggested_date, testfeedbackset.deadline_datetime + timedelta(days=added_days))
             added_days += 7
 
@@ -1395,6 +1395,6 @@ class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
             }
         )
         earliest_date = mockresponse.selector.list('.devilry-deadlinemanagement-suggested-deadline')[0]\
-            .get('django-cradmin-setfieldvalue')
+            .get('cradmin-legacy-setfieldvalue')
         converted_datetime = from_isoformat_noseconds(earliest_date)
         self.assertEqual(testfeedbackset2.deadline_datetime + timedelta(days=7), converted_datetime)

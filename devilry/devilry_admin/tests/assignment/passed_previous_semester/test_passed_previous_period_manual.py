@@ -4,7 +4,7 @@ from django.http import Http404
 from django.test import TestCase
 from django.conf import settings
 from django.utils import timezone
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core import devilry_core_mommy_factories as core_mommy
@@ -36,7 +36,7 @@ class TestPassAssignmentGroupsView(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
         self.assertEqual(
             2,
-            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue')
+            mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue')
         )
 
     def test_post_feedback_sanity(self):

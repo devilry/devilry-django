@@ -1,4 +1,4 @@
-from django_cradmin import crinstance
+from cradmin_legacy import crinstance
 
 
 class BaseCrInstanceExaminer(crinstance.BaseCrAdminInstance):

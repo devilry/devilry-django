@@ -1,7 +1,7 @@
-{% extends "django_cradmin/viewhelpers/listbuilder/itemvalue/titledescription.django.html" %}
+{% extends "cradmin_legacy/viewhelpers/listbuilder/itemvalue/titledescription.django.html" %}
 {% load i18n %}
-{% load cradmin_tags %}
-{% load cradmin_icon_tags %}
+{% load cradmin_legacy_tags %}
+{% load cradmin_legacy_icon_tags %}
 {% load devilry_core_tags %}
 
 {% block title-content %}
@@ -9,10 +9,10 @@
 {% endblock title-content %}
 
 {% block description %}
-    <p class="django-cradmin-listbuilder-itemvalue-titledescription-description">
+    <p class="cradmin-legacy-listbuilder-itemvalue-titledescription-description">
         {{ me.assignment.long_name }} - {{ me.period.long_name }}
     </p>
-    <p class="django-cradmin-listbuilder-itemvalue-titledescription-description">
+    <p class="cradmin-legacy-listbuilder-itemvalue-titledescription-description">
         {% devilry_grade_full me.assignment me.feedback.grading_points me.devilryrole %}
         <span class="fa fa-arrow-right"></span>
         {% devilry_grade_full me.current_assignment me.calculated_points me.devilryrole %}

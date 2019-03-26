@@ -14,7 +14,7 @@ class TestSubjectPermissionGroupItemValue(test.TestCase):
                 value=subjectpermissiongroup).render())
         self.assertEqual(
                 'Test subject permission group',
-                selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+                selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_title_is_custom_manageable_true(self):
         subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
@@ -24,7 +24,7 @@ class TestSubjectPermissionGroupItemValue(test.TestCase):
                 value=subjectpermissiongroup).render())
         self.assertEqual(
                 'Course administrators for testsubject',
-                selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+                selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_get_description_no_users(self):
         subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup')
@@ -64,7 +64,7 @@ class TestPeriodPermissionGroupItemValue(test.TestCase):
                 value=periodpermissiongroup).render())
         self.assertEqual(
                 'Test period permission group',
-                selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+                selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_title_is_custom_manageable_true(self):
         periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
@@ -75,7 +75,7 @@ class TestPeriodPermissionGroupItemValue(test.TestCase):
                 value=periodpermissiongroup).render())
         self.assertEqual(
                 'Semester administrators for testsubject.testperiod',
-                selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+                selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_get_description_no_users(self):
         periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup')

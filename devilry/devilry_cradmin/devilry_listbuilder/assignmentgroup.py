@@ -1,6 +1,6 @@
 from django.utils.translation import ugettext_lazy
-from django_cradmin.viewhelpers import listbuilder
-from django_cradmin.viewhelpers import multiselect2
+from cradmin_legacy.viewhelpers import listbuilder
+from cradmin_legacy.viewhelpers import multiselect2
 
 from devilry.apps.core.models import Assignment
 

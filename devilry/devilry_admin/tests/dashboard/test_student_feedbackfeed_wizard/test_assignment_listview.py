@@ -4,7 +4,7 @@ from django.template import defaultfilters
 from django.utils import timezone
 
 from model_mommy import mommy
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 
 from devilry.devilry_account.models import PermissionGroup
 from devilry.devilry_admin.views.dashboard.student_feedbackfeed_wizard import assignment_list
@@ -44,9 +44,9 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
             requestuser=adminuser,
             viewkwargs={'user_id': testuser.id}
         ).selector
-        self.assertEqual(selector.count('.django-cradmin-listbuilder-itemvalue'), 1)
+        self.assertEqual(selector.count('.cradmin-legacy-listbuilder-itemvalue'), 1)
         self.assertEqual(
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized,
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized,
             'Accessible Assignment')
 
     def test_user_can_only_see_assignments_where_user_is_admin_on_period(self):
@@ -69,9 +69,9 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
             requestuser=adminuser,
             viewkwargs={'user_id': testuser.id}
         ).selector
-        self.assertEqual(selector.count('.django-cradmin-listbuilder-itemvalue'), 1)
+        self.assertEqual(selector.count('.cradmin-legacy-listbuilder-itemvalue'), 1)
         self.assertEqual(
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized,
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized,
             'Accessible Assignment')
 
     def __make_simple_assignment_group(self, assignment_long_name='Assignment AAA'):
@@ -102,7 +102,7 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
             viewkwargs={'user_id': testuser.id}
         ).selector
         assignment_longname_list = [element.alltext_normalized for element in
-                                    selector.list('.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+                                    selector.list('.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
         self.assertListEqual(
             [
                 'Assignment C',
@@ -121,7 +121,7 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
             viewkwargs={'user_id': testuser.id}
         ).selector
         self.assertEqual(
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized,
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized,
             testgroup.parentnode.long_name
         )
 
@@ -189,7 +189,7 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
             requestuser=mommy.make(settings.AUTH_USER_MODEL, is_superuser=True),
             viewkwargs={'user_id': teststudent.id, 'filters_string': 'search-NotInGroups'}
         ).selector
-        self.assertEqual(selector.count('.django-cradmin-listbuilder-itemvalue'), 0)
+        self.assertEqual(selector.count('.cradmin-legacy-listbuilder-itemvalue'), 0)
 
     def test_search_other_candidate_in_group_fullname(self):
         teststudent = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
@@ -201,7 +201,7 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
             requestuser=mommy.make(settings.AUTH_USER_MODEL, is_superuser=True),
             viewkwargs={'user_id': teststudent.id, 'filters_string': 'search-Other User'}
         ).selector
-        self.assertEqual(selector.count('.django-cradmin-listbuilder-itemvalue'), 1)
+        self.assertEqual(selector.count('.cradmin-legacy-listbuilder-itemvalue'), 1)
 
     def test_search_other_candidate_in_group_shortname(self):
         teststudent = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
@@ -213,7 +213,7 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
             requestuser=mommy.make(settings.AUTH_USER_MODEL, is_superuser=True),
             viewkwargs={'user_id': teststudent.id, 'filters_string': 'search-other@example.com'}
         ).selector
-        self.assertEqual(selector.count('.django-cradmin-listbuilder-itemvalue'), 1)
+        self.assertEqual(selector.count('.cradmin-legacy-listbuilder-itemvalue'), 1)
 
     def test_search_examiner_nomatch(self):
         teststudent = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
@@ -225,7 +225,7 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
             requestuser=mommy.make(settings.AUTH_USER_MODEL, is_superuser=True),
             viewkwargs={'user_id': teststudent.id, 'filters_string': 'search-NoExaminerMatch'}
         ).selector
-        self.assertEqual(selector.count('.django-cradmin-listbuilder-itemvalue'), 0)
+        self.assertEqual(selector.count('.cradmin-legacy-listbuilder-itemvalue'), 0)
 
     def test_search_examiner_fullname(self):
         teststudent = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
@@ -237,7 +237,7 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
             requestuser=mommy.make(settings.AUTH_USER_MODEL, is_superuser=True),
             viewkwargs={'user_id': teststudent.id, 'filters_string': 'search-Examiner'}
         ).selector
-        self.assertEqual(selector.count('.django-cradmin-listbuilder-itemvalue'), 1)
+        self.assertEqual(selector.count('.cradmin-legacy-listbuilder-itemvalue'), 1)
 
     def test_search_examiner_shortname(self):
         teststudent = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
@@ -249,7 +249,7 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
             requestuser=mommy.make(settings.AUTH_USER_MODEL, is_superuser=True),
             viewkwargs={'user_id': teststudent.id, 'filters_string': 'search-examiner@example.com'}
         ).selector
-        self.assertEqual(selector.count('.django-cradmin-listbuilder-itemvalue'), 1)
+        self.assertEqual(selector.count('.cradmin-legacy-listbuilder-itemvalue'), 1)
 
     def test_search_assignment_long_name(self):
         teststudent = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
@@ -259,7 +259,7 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
             requestuser=mommy.make(settings.AUTH_USER_MODEL, is_superuser=True),
             viewkwargs={'user_id': teststudent.id, 'filters_string': 'search-{}'.format(testgroup.parentnode.long_name)}
         ).selector
-        self.assertEqual(selector.count('.django-cradmin-listbuilder-itemvalue'), 1)
+        self.assertEqual(selector.count('.cradmin-legacy-listbuilder-itemvalue'), 1)
 
     def test_search_assignment_short_name(self):
         teststudent = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
@@ -269,7 +269,7 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
             requestuser=mommy.make(settings.AUTH_USER_MODEL, is_superuser=True),
             viewkwargs={'user_id': teststudent.id, 'filters_string': 'search-{}'.format(testgroup.parentnode.short_name)}
         ).selector
-        self.assertEqual(selector.count('.django-cradmin-listbuilder-itemvalue'), 1)
+        self.assertEqual(selector.count('.cradmin-legacy-listbuilder-itemvalue'), 1)
 
     def test_search_period_long_name(self):
         teststudent = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
@@ -282,7 +282,7 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
                 'filters_string': 'search-{}'.format(testgroup.parentnode.parentnode.long_name)
             }
         ).selector
-        self.assertEqual(selector.count('.django-cradmin-listbuilder-itemvalue'), 1)
+        self.assertEqual(selector.count('.cradmin-legacy-listbuilder-itemvalue'), 1)
 
     def test_search_period_short_name(self):
         teststudent = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
@@ -295,7 +295,7 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
                 'filters_string': 'search-{}'.format(testgroup.parentnode.parentnode.short_name)
             }
         ).selector
-        self.assertEqual(selector.count('.django-cradmin-listbuilder-itemvalue'), 1)
+        self.assertEqual(selector.count('.cradmin-legacy-listbuilder-itemvalue'), 1)
 
     def test_search_subject_long_name(self):
         teststudent = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
@@ -308,7 +308,7 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
                 'filters_string': 'search-{}'.format(testgroup.parentnode.parentnode.parentnode.long_name)
             }
         ).selector
-        self.assertEqual(selector.count('.django-cradmin-listbuilder-itemvalue'), 1)
+        self.assertEqual(selector.count('.cradmin-legacy-listbuilder-itemvalue'), 1)
 
     def test_search_subject_short_name(self):
         teststudent = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
@@ -321,7 +321,7 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
                 'filters_string': 'search-{}'.format(testgroup.parentnode.parentnode.parentnode.short_name)
             }
         ).selector
-        self.assertEqual(selector.count('.django-cradmin-listbuilder-itemvalue'), 1)
+        self.assertEqual(selector.count('.cradmin-legacy-listbuilder-itemvalue'), 1)
 
     def test_order_deadline_ascending(self):
         now = timezone.now()
@@ -339,7 +339,7 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
             viewkwargs={'user_id': testuser.id, 'filters_string': 'orderby_deadline-'}
         ).selector
         assignment_longname_list = [element.alltext_normalized for element in
-                                    selector.list('.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+                                    selector.list('.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
         self.assertListEqual(
             [
                 'Assignment C',
@@ -365,7 +365,7 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
             viewkwargs={'user_id': testuser.id, 'filters_string': 'orderby_deadline-deadline_descending'}
         ).selector
         assignment_longname_list = [element.alltext_normalized for element in
-                                    selector.list('.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+                                    selector.list('.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
         self.assertListEqual(
             [
                 'Assignment A',
@@ -391,7 +391,7 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
             requestuser=mommy.make(settings.AUTH_USER_MODEL, is_superuser=True),
             viewkwargs={'user_id': testuser.id, 'filters_string': 'semester_is_active-'}
         ).selector
-        self.assertEqual(selector.count('.django-cradmin-listbuilder-itemvalue'), 2)
+        self.assertEqual(selector.count('.cradmin-legacy-listbuilder-itemvalue'), 2)
 
     def test_filter_active_periods(self):
         testperiod_old = mommy.make_recipe('devilry.apps.core.period_old')
@@ -409,9 +409,9 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
             requestuser=mommy.make(settings.AUTH_USER_MODEL, is_superuser=True),
             viewkwargs={'user_id': testuser.id, 'filters_string': 'semester_is_active-true'}
         ).selector
-        self.assertEqual(selector.count('.django-cradmin-listbuilder-itemvalue'), 1)
+        self.assertEqual(selector.count('.cradmin-legacy-listbuilder-itemvalue'), 1)
         self.assertEqual(
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized,
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized,
             'Assignment Active'
         )
 
@@ -431,9 +431,9 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
             requestuser=mommy.make(settings.AUTH_USER_MODEL, is_superuser=True),
             viewkwargs={'user_id': testuser.id, 'filters_string': 'semester_is_active-false'}
         ).selector
-        self.assertEqual(selector.count('.django-cradmin-listbuilder-itemvalue'), 1)
+        self.assertEqual(selector.count('.cradmin-legacy-listbuilder-itemvalue'), 1)
         self.assertEqual(
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized,
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized,
             'Assignment Old'
         )
 
@@ -457,4 +457,4 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
                 requestuser=adminuser,
                 viewkwargs={'user_id': testuser.id}
             ).selector
-            self.assertEqual(selector.count('.django-cradmin-listbuilder-itemvalue'), 15)
+            self.assertEqual(selector.count('.cradmin-legacy-listbuilder-itemvalue'), 15)

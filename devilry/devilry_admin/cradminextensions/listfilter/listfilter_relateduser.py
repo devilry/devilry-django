@@ -1,15 +1,15 @@
 from django.conf import settings
 from django.db.models.functions import Lower, Concat
 from django.utils.translation import ugettext_lazy, pgettext_lazy
-from django_cradmin.viewhelpers import listfilter
-from django_cradmin.viewhelpers.listfilter.basefilters.single import abstractselect
+from cradmin_legacy.viewhelpers import listfilter
+from cradmin_legacy.viewhelpers.listfilter.basefilters.single import abstractselect
 
 from devilry.devilry_admin.cradminextensions.listfilter import listfilter_tags
 
 
 class OrderRelatedStudentsFilter(listfilter.django.single.select.AbstractOrderBy):
     def get_ordering_options(self):
-        if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
+        if settings.CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND:
             shortname_ascending_label = ugettext_lazy('Email')
             shortname_descending_label = ugettext_lazy('Email descending')
         else:

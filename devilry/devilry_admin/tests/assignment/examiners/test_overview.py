@@ -2,8 +2,8 @@ import mock
 from django import test
 from django.conf import settings
 from django.http import Http404
-from django_cradmin import cradmin_testhelpers
-from django_cradmin.crinstance import reverse_cradmin_url
+from cradmin_legacy import cradmin_testhelpers
+from cradmin_legacy.crinstance import reverse_cradmin_url
 from model_mommy import mommy
 
 from devilry.apps.core.models import Assignment
@@ -85,7 +85,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestuser=testuser)
         self.assertTrue(mockresponse.selector.exists(
             '#devilry_admin_assignment_examiners_overview_no_relatedexaminers'))
-        self.assertFalse(mockresponse.selector.exists('#django_cradmin_listbuilderview_listwrapper'))
+        self.assertFalse(mockresponse.selector.exists('#cradmin_legacy_listbuilderview_listwrapper'))
 
     def test_examinerlist_no_relatedexaminers_text(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -130,7 +130,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             requestuser=testuser)
-        self.assertFalse(mockresponse.selector.exists('#django_cradmin_listbuilderview_listwrapper'))
+        self.assertFalse(mockresponse.selector.exists('#cradmin_legacy_listbuilderview_listwrapper'))
 
     def test_has_relatedexaminers_sanity(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -140,8 +140,8 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             requestuser=testuser)
-        self.assertTrue(mockresponse.selector.exists('#django_cradmin_listbuilderview_listwrapper'))
-        self.assertEqual(5, mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+        self.assertTrue(mockresponse.selector.exists('#cradmin_legacy_listbuilderview_listwrapper'))
+        self.assertEqual(5, mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
         self.assertFalse(mockresponse.selector.exists(
             '#devilry_admin_assignment_examiners_overview_no_relatedexaminers'))
 

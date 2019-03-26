@@ -1,6 +1,6 @@
 import json
 
-from django_cradmin import renderable
+from cradmin_legacy import renderable
 
 
 class AdvancedViewableGradeForm(renderable.AbstractRenderable):

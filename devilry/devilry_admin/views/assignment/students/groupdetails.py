@@ -5,8 +5,8 @@ from django.db import models
 from django.db.models.functions import Concat
 from django.db.models.functions import Lower
 from django.http import Http404
-from django_cradmin import crapp
-from django_cradmin.viewhelpers import detail
+from cradmin_legacy import crapp
+from cradmin_legacy.viewhelpers import detail
 
 from devilry.apps.core.models import AssignmentGroup, Examiner, Candidate
 from devilry.devilry_cradmin import devilry_listbuilder

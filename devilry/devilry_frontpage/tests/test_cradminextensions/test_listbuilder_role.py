@@ -26,14 +26,14 @@ class TestStudentRoleItemValue(test.TestCase):
         selector = htmls.S(listbuilder_role.StudentRoleItemValue(value=testuser).render())
         self.assertEqual(
             'Student',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_description(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         selector = htmls.S(listbuilder_role.StudentRoleItemValue(value=testuser).render())
         self.assertEqual(
             'Upload deliveries or see your delivery and feedback history.',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-description').alltext_normalized)
 
 
 class TestExaminerRoleItemValue(test.TestCase):
@@ -54,14 +54,14 @@ class TestExaminerRoleItemValue(test.TestCase):
         selector = htmls.S(listbuilder_role.ExaminerRoleItemValue(value=testuser).render())
         self.assertEqual(
             'Examiner',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_description(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         selector = htmls.S(listbuilder_role.ExaminerRoleItemValue(value=testuser).render())
         self.assertEqual(
             'Give students feedback on their deliveries as examiner.',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-description').alltext_normalized)
 
 
 class TestAnyAdminRoleItemValue(test.TestCase):
@@ -82,14 +82,14 @@ class TestAnyAdminRoleItemValue(test.TestCase):
         selector = htmls.S(listbuilder_role.AnyAdminRoleItemValue(value=testuser).render())
         self.assertEqual(
             'Administrator',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_description(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         selector = htmls.S(listbuilder_role.AnyAdminRoleItemValue(value=testuser).render())
         self.assertEqual(
             'Manage departments, courses, semesters and assignments.',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-description').alltext_normalized)
 
 
 class TestStudentRoleItemFrame(test.TestCase):
@@ -109,7 +109,7 @@ class TestStudentRoleItemFrame(test.TestCase):
             inneritem=mock.MagicMock(value=testuser)).render())
         self.assertEqual(
             '/devilry_student/',
-            selector.one('.django-cradmin-listbuilder-itemframe-link')['href'])
+            selector.one('.cradmin-legacy-listbuilder-itemframe-link')['href'])
 
 
 class TestExaminerRoleItemFrame(test.TestCase):
@@ -129,7 +129,7 @@ class TestExaminerRoleItemFrame(test.TestCase):
             inneritem=mock.MagicMock(value=testuser)).render())
         self.assertEqual(
             '/devilry_examiner/',
-            selector.one('.django-cradmin-listbuilder-itemframe-link')['href'])
+            selector.one('.cradmin-legacy-listbuilder-itemframe-link')['href'])
 
 
 class TestAnyAdminRoleItemFrame(test.TestCase):
@@ -149,7 +149,7 @@ class TestAnyAdminRoleItemFrame(test.TestCase):
             inneritem=mock.MagicMock(value=testuser)).render())
         self.assertEqual(
             '/devilry_admin/',
-            selector.one('.django-cradmin-listbuilder-itemframe-link')['href'])
+            selector.one('.cradmin-legacy-listbuilder-itemframe-link')['href'])
 
 
 class TestRoleSelectList(test.TestCase):

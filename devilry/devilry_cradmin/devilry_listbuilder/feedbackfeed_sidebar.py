@@ -1,5 +1,5 @@
 # Devilry/cradmin imports
-from django_cradmin.viewhelpers import listbuilder
+from cradmin_legacy.viewhelpers import listbuilder
 from devilry.devilry_group import models as group_models
 
 

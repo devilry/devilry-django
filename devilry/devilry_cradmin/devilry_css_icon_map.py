@@ -1,4 +1,4 @@
-from django_cradmin import css_icon_map
+from cradmin_legacy import css_icon_map
 
 
 FONT_AWESOME = css_icon_map.FONT_AWESOME.copy()

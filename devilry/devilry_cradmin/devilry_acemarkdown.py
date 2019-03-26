@@ -1,4 +1,4 @@
-from django_cradmin.acemarkdown.widgets import AceMarkdownWidget
+from cradmin_legacy.acemarkdown.widgets import AceMarkdownWidget
 
 
 class Default(AceMarkdownWidget):

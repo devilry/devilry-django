@@ -2,7 +2,7 @@ import unittest
 
 from django.conf import settings
 from django.test import TestCase, RequestFactory
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 from model_mommy import mommy
 from devilry.devilry_account.models import PermissionGroup
 from devilry.devilry_admin.views.dashboard import overview
@@ -288,15 +288,15 @@ class TestOverviewSubjectListViewApp(TestCase, cradmin_testhelpers.TestCaseMixin
 
     # def test_empty_list(self):
     #     mockresponse = self.mock_http200_getrequest_htmls()
-    #     self.assertTrue(mockresponse.selector.exists('.django-cradmin-listing-no-items-message'))
-    #     self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-list'))
+    #     self.assertTrue(mockresponse.selector.exists('.cradmin-legacy-listing-no-items-message'))
+    #     self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-listbuilder-list'))
 
     def test_nonempty_list(self):
         mommy.make('core.Subject')
         requestuser = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=requestuser)
-        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listing-no-items-message'))
-        self.assertTrue(mockresponse.selector.exists('.django-cradmin-listbuilder-list'))
+        self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-listing-no-items-message'))
+        self.assertTrue(mockresponse.selector.exists('.cradmin-legacy-listbuilder-list'))
 
     @unittest.skip('Must be fixed before it is commited to master')
     def test_default_ordering(self):
@@ -307,15 +307,15 @@ class TestOverviewSubjectListViewApp(TestCase, cradmin_testhelpers.TestCaseMixin
         self.assertEqual(
             'A',
             mockresponse.selector.one(
-                '.django-cradmin-listbuilder-list li:nth-child(1)').alltext_normalized)
+                '.cradmin-legacy-listbuilder-list li:nth-child(1)').alltext_normalized)
         self.assertEqual(
             'B',
             mockresponse.selector.one(
-                '.django-cradmin-listbuilder-list li:nth-child(2)').alltext_normalized)
+                '.cradmin-legacy-listbuilder-list li:nth-child(2)').alltext_normalized)
         self.assertEqual(
             'C',
             mockresponse.selector.one(
-                '.django-cradmin-listbuilder-list li:nth-child(3)').alltext_normalized)
+                '.cradmin-legacy-listbuilder-list li:nth-child(3)').alltext_normalized)
 
     def test_createsubject_button_not_superuser_not_rendered(self):
         mommy.make('core.Subject')

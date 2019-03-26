@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.http import Http404
 from django.template import defaultfilters
 from django.test import TestCase
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core import devilry_core_mommy_factories as core_mommy
@@ -535,7 +535,7 @@ class TestPassedPreviousAssignmentViewListbuilder(TestCase, cradmin_testhelpers.
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
         )
         valuelist = [elem.alltext_normalized for elem in mockresponse.selector.list(
-            '.django-cradmin-listbuilder-itemvalue-titledescription-description')]
+            '.cradmin-legacy-listbuilder-itemvalue-titledescription-description')]
         self.assertEqual(2, len(valuelist))
         self.assertIn(
             '{}/{} (max points/passing grade)'.format(testassignment1.max_points,
@@ -564,7 +564,7 @@ class TestPassedPreviousAssignmentViewListbuilder(TestCase, cradmin_testhelpers.
         )
 
         valuelist = [elem.alltext_normalized for elem in mockresponse.selector.list(
-            '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+            '.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
         self.assertEqual(1, len(valuelist))
         self.assertNotIn(
             '{} - {}'.format(testassignment2.long_name, testassignment2.parentnode.long_name),
@@ -609,7 +609,7 @@ class TestPassedPreviousAssignmentViewListbuilder(TestCase, cradmin_testhelpers.
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
         )
         valuelist = [elem.alltext_normalized for elem in mockresponse.selector.list(
-            '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+            '.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
         self.assertEqual(3, len(valuelist))
         self.assertNotIn(
             '{} - {}'.format(testassignment.long_name, testassignment.parentnode.long_name),
@@ -661,7 +661,7 @@ class TestPassedPreviousAssignmentViewListbuilder(TestCase, cradmin_testhelpers.
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
         )
         valuelist = [elem.alltext_normalized for elem in mockresponse.selector.list(
-            '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+            '.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
         self.assertEqual(1, len(valuelist))
         self.assertNotIn(
             '{} - {}'.format(testassignment.long_name, testassignment.parentnode.long_name),
@@ -715,7 +715,7 @@ class TestPassedPreviousAssignmentViewListbuilder(TestCase, cradmin_testhelpers.
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
         )
         valuelist = [elem.alltext_normalized for elem in mockresponse.selector.list(
-            '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+            '.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
         self.assertEqual(1, len(valuelist))
         self.assertNotIn(
             '{} - {}'.format(testassignment.long_name, testassignment.parentnode.long_name),
@@ -840,7 +840,7 @@ class TestCandidateListbuilder(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
 
         valuelist = [elem.alltext_normalized for elem in mockresponse.selector.list(
-            '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+            '.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
         self.assertEqual(1, len(valuelist))
         self.assertIn(
             '{}({})'.format(candidate1.relatedstudent.user.fullname, candidate1.relatedstudent.user.shortname),
@@ -877,7 +877,7 @@ class TestCandidateListbuilder(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
 
         valuelist = [elem.alltext_normalized for elem in mockresponse.selector.list(
-            '.django-cradmin-listbuilder-itemvalue-titledescription-description')]
+            '.cradmin-legacy-listbuilder-itemvalue-titledescription-description')]
         self.assertEqual(2, len(valuelist))
         self.assertIn('{} - {}'.format(testassignment1.long_name, testassignment1.parentnode.long_name), valuelist)
         self.assertIn('passed (1/1) passed (3/3)', valuelist)
@@ -926,7 +926,7 @@ class TestCandidateListbuilder(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
 
         valuelist = [elem.alltext_normalized for elem in mockresponse.selector.list(
-            '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+            '.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
         self.assertEqual(3, len(valuelist))
         self.assertIn(
             '{}({})'.format(candidate1.relatedstudent.user.fullname, candidate1.relatedstudent.user.shortname),

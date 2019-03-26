@@ -1,6 +1,6 @@
 import re
 
-from django_cradmin import crinstance
+from cradmin_legacy import crinstance
 
 from devilry.devilry_frontpage.cradminextensions import devilry_crmenu_frontpage
 from devilry.devilry_frontpage.views import frontpage

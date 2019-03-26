@@ -43,7 +43,7 @@ class TestFullyAnonymousSubjectAdminItemValue(test.TestCase):
             assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
 
 class TestStudentItemValue(test.TestCase):
@@ -68,7 +68,7 @@ class TestStudentItemValue(test.TestCase):
         selector = self.__render_studentitemvalue(group=testgroup)
         self.assertEqual(
             'testsubject.testperiod - Test Assignment',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_title_include_periodpath_false(self):
         testgroup = mommy.make('core.AssignmentGroup',
@@ -78,7 +78,7 @@ class TestStudentItemValue(test.TestCase):
         selector = self.__render_studentitemvalue(group=testgroup, include_periodpath=False)
         self.assertEqual(
             'Test Assignment',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_examiners_not_included(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -190,7 +190,7 @@ class TestExaminerItemValue(test.TestCase):
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_name_semi_anonymous_is_anonymized(self):
         testgroup = mommy.make('core.AssignmentGroup',
@@ -202,7 +202,7 @@ class TestExaminerItemValue(test.TestCase):
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'MyAnonymousID',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_name_fully_anonymous_is_anonymized(self):
         testgroup = mommy.make('core.AssignmentGroup',
@@ -214,7 +214,7 @@ class TestExaminerItemValue(test.TestCase):
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'MyAnonymousID',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_examiners_include_examiners_false(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -320,7 +320,7 @@ class TestPeriodAdminItemValue(test.TestCase):
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_anonymous_not_allowed(self):
         testgroup = mommy.make('core.AssignmentGroup',
@@ -377,7 +377,7 @@ class TestSubjectAdminItemValue(test.TestCase):
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_name_semi_anonymous_is_not_anonymized(self):
         testgroup = mommy.make('core.AssignmentGroup',
@@ -390,7 +390,7 @@ class TestSubjectAdminItemValue(test.TestCase):
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_fully_anonymous_is_not_allowed(self):
         testgroup = mommy.make('core.AssignmentGroup',
@@ -460,7 +460,7 @@ class TestDepartmentAdminItemValue(test.TestCase):
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_name_semi_anonymous_is_not_anonymized(self):
         testgroup = mommy.make('core.AssignmentGroup',
@@ -473,7 +473,7 @@ class TestDepartmentAdminItemValue(test.TestCase):
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_name_fully_anonymous_is_not_anonymized(self):
         testgroup = mommy.make('core.AssignmentGroup',
@@ -486,7 +486,7 @@ class TestDepartmentAdminItemValue(test.TestCase):
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_examiners(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -645,7 +645,7 @@ class TestFullyAnonymousSubjectAdminMultiselectItemValue(test.TestCase):
             assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_arialabels_fully_anonymous_is_not_anonymized(self):
         testgroup = mommy.make('core.AssignmentGroup',
@@ -659,10 +659,10 @@ class TestFullyAnonymousSubjectAdminMultiselectItemValue(test.TestCase):
             assignment=testgroup.assignment).render())
         self.assertEqual(
             'Select "Test User"',
-            selector.one('.django-cradmin-multiselect2-itemvalue-button')['aria-label'])
+            selector.one('.cradmin-legacy-multiselect2-itemvalue-button')['aria-label'])
         self.assertEqual(
             'Deselect "Test User"',
-            selector.one('.django-cradmin-multiselect2-target-selected-item-deselectbutton')['aria-label'])
+            selector.one('.cradmin-legacy-multiselect2-target-selected-item-deselectbutton')['aria-label'])
 
     def test_selected_item_title(self):
         testgroup = mommy.make('core.AssignmentGroup',
@@ -676,7 +676,7 @@ class TestFullyAnonymousSubjectAdminMultiselectItemValue(test.TestCase):
             assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
-            selector.one('.django-cradmin-multiselect2-target-selected-item-title').alltext_normalized)
+            selector.one('.cradmin-legacy-multiselect2-target-selected-item-title').alltext_normalized)
 
 
 class TestExaminerMultiselectItemValue(test.TestCase):
@@ -693,7 +693,7 @@ class TestExaminerMultiselectItemValue(test.TestCase):
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_name_semi_anonymous_is_anonymized(self):
         testgroup = mommy.make('core.AssignmentGroup',
@@ -705,7 +705,7 @@ class TestExaminerMultiselectItemValue(test.TestCase):
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'MyAnonymousID',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_name_fully_anonymous_is_anonymized(self):
         testgroup = mommy.make('core.AssignmentGroup',
@@ -717,7 +717,7 @@ class TestExaminerMultiselectItemValue(test.TestCase):
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'MyAnonymousID',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_selected_item_title_not_anonymous(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -730,7 +730,7 @@ class TestExaminerMultiselectItemValue(test.TestCase):
             assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
-            selector.one('.django-cradmin-multiselect2-target-selected-item-title').alltext_normalized)
+            selector.one('.cradmin-legacy-multiselect2-target-selected-item-title').alltext_normalized)
 
     def test_selected_item_title_semi_anonymous(self):
         testgroup = mommy.make('core.AssignmentGroup',
@@ -743,7 +743,7 @@ class TestExaminerMultiselectItemValue(test.TestCase):
             assignment=testgroup.assignment).render())
         self.assertEqual(
             'MyAnonymousID',
-            selector.one('.django-cradmin-multiselect2-target-selected-item-title').alltext_normalized)
+            selector.one('.cradmin-legacy-multiselect2-target-selected-item-title').alltext_normalized)
 
     def test_selected_item_title_fully_anonymous(self):
         testgroup = mommy.make('core.AssignmentGroup',
@@ -756,7 +756,7 @@ class TestExaminerMultiselectItemValue(test.TestCase):
             assignment=testgroup.assignment).render())
         self.assertEqual(
             'MyAnonymousID',
-            selector.one('.django-cradmin-multiselect2-target-selected-item-title').alltext_normalized)
+            selector.one('.cradmin-legacy-multiselect2-target-selected-item-title').alltext_normalized)
 
     def test_arialabels_not_anonymous(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -769,10 +769,10 @@ class TestExaminerMultiselectItemValue(test.TestCase):
             assignment=testgroup.assignment).render())
         self.assertEqual(
             'Select "Test User"',
-            selector.one('.django-cradmin-multiselect2-itemvalue-button')['aria-label'])
+            selector.one('.cradmin-legacy-multiselect2-itemvalue-button')['aria-label'])
         self.assertEqual(
             'Deselect "Test User"',
-            selector.one('.django-cradmin-multiselect2-target-selected-item-deselectbutton')['aria-label'])
+            selector.one('.cradmin-legacy-multiselect2-target-selected-item-deselectbutton')['aria-label'])
 
     def test_arialabels_semi_anonymous(self):
         testgroup = mommy.make('core.AssignmentGroup',
@@ -785,10 +785,10 @@ class TestExaminerMultiselectItemValue(test.TestCase):
             assignment=testgroup.assignment).render())
         self.assertEqual(
             'Select "MyAnonymousID"',
-            selector.one('.django-cradmin-multiselect2-itemvalue-button')['aria-label'])
+            selector.one('.cradmin-legacy-multiselect2-itemvalue-button')['aria-label'])
         self.assertEqual(
             'Deselect "MyAnonymousID"',
-            selector.one('.django-cradmin-multiselect2-target-selected-item-deselectbutton')['aria-label'])
+            selector.one('.cradmin-legacy-multiselect2-target-selected-item-deselectbutton')['aria-label'])
 
     def test_arialabels_fully_anonymous(self):
         testgroup = mommy.make('core.AssignmentGroup',
@@ -801,10 +801,10 @@ class TestExaminerMultiselectItemValue(test.TestCase):
             assignment=testgroup.assignment).render())
         self.assertEqual(
             'Select "MyAnonymousID"',
-            selector.one('.django-cradmin-multiselect2-itemvalue-button')['aria-label'])
+            selector.one('.cradmin-legacy-multiselect2-itemvalue-button')['aria-label'])
         self.assertEqual(
             'Deselect "MyAnonymousID"',
-            selector.one('.django-cradmin-multiselect2-target-selected-item-deselectbutton')['aria-label'])
+            selector.one('.cradmin-legacy-multiselect2-target-selected-item-deselectbutton')['aria-label'])
 
     def test_examiners_include_examiners_false(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -927,7 +927,7 @@ class TestPeriodAdminMultiselectItemValue(test.TestCase):
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_selected_item_title(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -940,7 +940,7 @@ class TestPeriodAdminMultiselectItemValue(test.TestCase):
             assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
-            selector.one('.django-cradmin-multiselect2-target-selected-item-title').alltext_normalized)
+            selector.one('.cradmin-legacy-multiselect2-target-selected-item-title').alltext_normalized)
 
     def test_arialabels(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -953,10 +953,10 @@ class TestPeriodAdminMultiselectItemValue(test.TestCase):
             assignment=testgroup.assignment).render())
         self.assertEqual(
             'Select "Test User"',
-            selector.one('.django-cradmin-multiselect2-itemvalue-button')['aria-label'])
+            selector.one('.cradmin-legacy-multiselect2-itemvalue-button')['aria-label'])
         self.assertEqual(
             'Deselect "Test User"',
-            selector.one('.django-cradmin-multiselect2-target-selected-item-deselectbutton')['aria-label'])
+            selector.one('.cradmin-legacy-multiselect2-target-selected-item-deselectbutton')['aria-label'])
 
     def test_examiners(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -1021,7 +1021,7 @@ class TestSubjectAdminMultiselectItemValue(test.TestCase):
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_name_semi_anonymous_is_not_anonymized(self):
         testgroup = mommy.make('core.AssignmentGroup',
@@ -1034,7 +1034,7 @@ class TestSubjectAdminMultiselectItemValue(test.TestCase):
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_selected_item_title(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -1047,7 +1047,7 @@ class TestSubjectAdminMultiselectItemValue(test.TestCase):
             assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
-            selector.one('.django-cradmin-multiselect2-target-selected-item-title').alltext_normalized)
+            selector.one('.cradmin-legacy-multiselect2-target-selected-item-title').alltext_normalized)
 
     def test_selected_item_title_semi_anonymous(self):
         testgroup = mommy.make('core.AssignmentGroup',
@@ -1061,7 +1061,7 @@ class TestSubjectAdminMultiselectItemValue(test.TestCase):
             assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
-            selector.one('.django-cradmin-multiselect2-target-selected-item-title').alltext_normalized)
+            selector.one('.cradmin-legacy-multiselect2-target-selected-item-title').alltext_normalized)
 
     def test_arialabels(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -1074,10 +1074,10 @@ class TestSubjectAdminMultiselectItemValue(test.TestCase):
             assignment=testgroup.assignment).render())
         self.assertEqual(
             'Select "Test User"',
-            selector.one('.django-cradmin-multiselect2-itemvalue-button')['aria-label'])
+            selector.one('.cradmin-legacy-multiselect2-itemvalue-button')['aria-label'])
         self.assertEqual(
             'Deselect "Test User"',
-            selector.one('.django-cradmin-multiselect2-target-selected-item-deselectbutton')['aria-label'])
+            selector.one('.cradmin-legacy-multiselect2-target-selected-item-deselectbutton')['aria-label'])
 
     def test_arialabels_semi_anonymous(self):
         testgroup = mommy.make('core.AssignmentGroup',
@@ -1091,10 +1091,10 @@ class TestSubjectAdminMultiselectItemValue(test.TestCase):
             assignment=testgroup.assignment).render())
         self.assertEqual(
             'Select "Test User"',
-            selector.one('.django-cradmin-multiselect2-itemvalue-button')['aria-label'])
+            selector.one('.cradmin-legacy-multiselect2-itemvalue-button')['aria-label'])
         self.assertEqual(
             'Deselect "Test User"',
-            selector.one('.django-cradmin-multiselect2-target-selected-item-deselectbutton')['aria-label'])
+            selector.one('.cradmin-legacy-multiselect2-target-selected-item-deselectbutton')['aria-label'])
 
     def test_examiners(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -1166,7 +1166,7 @@ class TestDepartmentAdminMultiselectItemValue(test.TestCase):
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_name_semi_anonymous_is_not_anonymized(self):
         testgroup = mommy.make('core.AssignmentGroup',
@@ -1179,7 +1179,7 @@ class TestDepartmentAdminMultiselectItemValue(test.TestCase):
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_name_fully_anonymous_is_not_anonymized(self):
         testgroup = mommy.make('core.AssignmentGroup',
@@ -1192,7 +1192,7 @@ class TestDepartmentAdminMultiselectItemValue(test.TestCase):
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_selected_item_title(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -1205,7 +1205,7 @@ class TestDepartmentAdminMultiselectItemValue(test.TestCase):
             assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
-            selector.one('.django-cradmin-multiselect2-target-selected-item-title').alltext_normalized)
+            selector.one('.cradmin-legacy-multiselect2-target-selected-item-title').alltext_normalized)
 
     def test_selected_item_title_semi_anonymous(self):
         testgroup = mommy.make('core.AssignmentGroup',
@@ -1219,7 +1219,7 @@ class TestDepartmentAdminMultiselectItemValue(test.TestCase):
             assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
-            selector.one('.django-cradmin-multiselect2-target-selected-item-title').alltext_normalized)
+            selector.one('.cradmin-legacy-multiselect2-target-selected-item-title').alltext_normalized)
 
     def test_selected_item_title_fully_anonymous(self):
         testgroup = mommy.make('core.AssignmentGroup',
@@ -1233,7 +1233,7 @@ class TestDepartmentAdminMultiselectItemValue(test.TestCase):
             assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
-            selector.one('.django-cradmin-multiselect2-target-selected-item-title').alltext_normalized)
+            selector.one('.cradmin-legacy-multiselect2-target-selected-item-title').alltext_normalized)
 
     def test_examiners(self):
         testgroup = mommy.make('core.AssignmentGroup')

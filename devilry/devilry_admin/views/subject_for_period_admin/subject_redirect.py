@@ -1,7 +1,7 @@
 
 
-from django_cradmin import crapp
-from django_cradmin.crinstance import reverse_cradmin_url
+from cradmin_legacy import crapp
+from cradmin_legacy.crinstance import reverse_cradmin_url
 from django.views.generic import View
 from django.http import HttpResponseRedirect, Http404
 

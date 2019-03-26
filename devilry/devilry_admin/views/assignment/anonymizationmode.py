@@ -2,8 +2,8 @@
 
 from django import forms
 from django.utils.translation import pgettext_lazy, ugettext_lazy
-from django_cradmin.viewhelpers.crudbase import OnlySaveButtonMixin
-from django_cradmin.viewhelpers.update import UpdateView
+from cradmin_legacy.viewhelpers.crudbase import OnlySaveButtonMixin
+from cradmin_legacy.viewhelpers.update import UpdateView
 
 from devilry.apps.core import models as coremodels
 from devilry.apps.core.models import Assignment

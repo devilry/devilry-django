@@ -10,7 +10,7 @@ import mock
 from django import test
 from django.conf import settings
 
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
@@ -88,7 +88,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.assertEqual(
             '{} (Assignment first deadline)'.format(
                 defaultfilters.date(testassignment.first_deadline, 'DATETIME_FORMAT')),
-            mockresponse.selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            mockresponse.selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_deadline_item_value_group_single_candidate(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -216,11 +216,11 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
             cradmin_app=self.__get_mock_app(user=testuser),
             requestuser=testuser
         )
-        self.assertTrue(mockresponse.selector.one('.django-cradmin-listbuilder-itemvalue-titledescription'))
+        self.assertTrue(mockresponse.selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription'))
         self.assertEqual(
             '{} (Assignment first deadline)'.format(
                 defaultfilters.date(testassignment.first_deadline, 'DATETIME_FORMAT')),
-            mockresponse.selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            mockresponse.selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_only_distinct_deadlines_listed(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -240,12 +240,12 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
             cradmin_app=self.__get_mock_app(user=testuser),
             requestuser=testuser
         )
-        self.assertTrue(mockresponse.selector.one('.django-cradmin-listbuilder-itemvalue-titledescription'))
+        self.assertTrue(mockresponse.selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription'))
         self.assertEqual(
             '{} (Assignment first deadline)'.format(
                 defaultfilters.date(testassignment.first_deadline, 'DATETIME_FORMAT')),
             mockresponse.selector.one(
-                '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+                '.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_only_distinct_deadlines_listed_multiple(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -279,9 +279,9 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
             cradmin_app=self.__get_mock_app(user=testuser),
             requestuser=testuser
         )
-        self.assertEqual(2, mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue-titledescription'))
+        self.assertEqual(2, mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue-titledescription'))
         deadline_list = [elem.alltext_normalized for elem in
-                         mockresponse.selector.list('.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+                         mockresponse.selector.list('.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
         self.assertEqual(2, len(deadline_list))
         self.assertIn(
             '{} (Assignment first deadline)'.format(defaultfilters.date(testassignment.first_deadline, 'DATETIME_FORMAT')),

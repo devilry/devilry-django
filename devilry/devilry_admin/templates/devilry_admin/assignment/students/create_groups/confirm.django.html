@@ -1,6 +1,6 @@
-{% extends "django_cradmin/viewhelpers/listbuilderview/filterlist-left.django.html" %}
-{% load cradmin_tags %}
-{% load cradmin_icon_tags %}
+{% extends "cradmin_legacy/viewhelpers/listbuilderview/filterlist-left.django.html" %}
+{% load cradmin_legacy_tags %}
+{% load cradmin_legacy_icon_tags %}
 {% load crispy_forms_tags %}
 {% load i18n %}
 
@@ -28,7 +28,7 @@
 
 {% block content %}
     {% if no_students_found %}
-        <div class="container django-cradmin-container-focus django-cradmin-container-focus-warning
+        <div class="container cradmin-legacy-container-focus cradmin-legacy-container-focus-warning
                     devilry-admin-create-groups-confirm-no-students">
             {% trans "No students matching your selection found." %}
         </div>

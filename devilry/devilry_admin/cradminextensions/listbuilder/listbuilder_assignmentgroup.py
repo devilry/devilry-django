@@ -1,6 +1,6 @@
 
-from django_cradmin.viewhelpers import listbuilder
-from django_cradmin.viewhelpers import listbuilderview
+from cradmin_legacy.viewhelpers import listbuilder
+from cradmin_legacy.viewhelpers import listbuilderview
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_cradmin.devilry_listfilter import assignmentgroup as assignmentgroup_filters

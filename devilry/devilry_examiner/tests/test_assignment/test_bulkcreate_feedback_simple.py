@@ -3,7 +3,7 @@
 
 from django import test
 from django.core import mail
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core import models as core_models

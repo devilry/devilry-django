@@ -1,7 +1,7 @@
 from django import test
 from django.conf import settings
 from django.test import override_settings
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.devilry_account.crapps import account
@@ -79,7 +79,7 @@ class TestIndexView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     def _get_usernames_from_selector(self, selector):
         return [element.alltext_normalized for element in selector.list('.test-username')]
 
-    @override_settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True)
+    @override_settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True)
     def test_get_usernames_email_auth_backend_true(self):
         requestuser = mommy.make(settings.AUTH_USER_MODEL)
         mommy.make('devilry_account.UserName', username='test',
@@ -89,7 +89,7 @@ class TestIndexView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertFalse(mockresponse.selector.exists('.test-usernames-title'))
         self.assertFalse(mockresponse.selector.exists('.test-username'))
 
-    @override_settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False)
+    @override_settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False)
     def test_get_usernames_single(self):
         requestuser = mommy.make(settings.AUTH_USER_MODEL)
         mommy.make('devilry_account.UserName', username='test',
@@ -101,7 +101,7 @@ class TestIndexView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(mockresponse.selector.one('.test-usernames-title').alltext_normalized,
                          'Username')
 
-    @override_settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False)
+    @override_settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False)
     def test_get_usernames_multiple(self):
         requestuser = mommy.make(settings.AUTH_USER_MODEL)
         mommy.make('devilry_account.UserName', username='test1',

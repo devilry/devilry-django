@@ -5,9 +5,9 @@ import json
 
 from django.utils.translation import ugettext_lazy
 
-from django_cradmin import crapp
-from django_cradmin.viewhelpers import listbuilderview
-from django_cradmin.viewhelpers.listbuilderview import FilterListMixin
+from cradmin_legacy import crapp
+from cradmin_legacy.viewhelpers import listbuilderview
+from cradmin_legacy.viewhelpers.listbuilderview import FilterListMixin
 
 from devilry.apps.core import models as core_models
 from devilry.devilry_admin.cradminextensions.listfilter import listfilter_relateduser

@@ -4,7 +4,7 @@ from django import test
 from django.conf import settings
 from django.core import mail
 from django.utils import timezone
-from django_cradmin.crinstance import reverse_cradmin_url
+from cradmin_legacy.crinstance import reverse_cradmin_url
 
 from model_mommy import mommy
 

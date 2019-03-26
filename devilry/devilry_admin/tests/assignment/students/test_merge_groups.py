@@ -3,7 +3,7 @@ from django import test
 from django.conf import settings
 from django.contrib import messages
 from django.http import Http404
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core import devilry_core_mommy_factories as core_mommy
@@ -57,7 +57,7 @@ class TestMergeGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestuser=testuser)
         self.assertEqual(
             3,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_submit_button_text(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -68,7 +68,7 @@ class TestMergeGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestuser=testuser)
         self.assertEqual(
             'Create project group',
-            mockresponse.selector.one('.django-cradmin-multiselect2-target-formfields .btn').alltext_normalized)
+            mockresponse.selector.one('.cradmin-legacy-multiselect2-target-formfields .btn').alltext_normalized)
 
     def test_error_merge_less_than_2_groups(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -185,7 +185,7 @@ class TestMergeGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             })
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_examiner_count_filter(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -206,7 +206,7 @@ class TestMergeGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             })
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_candidate_count_filter_after_merge(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -230,7 +230,7 @@ class TestMergeGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             })
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_examiner_count_filter_after_merge(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -254,7 +254,7 @@ class TestMergeGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             })
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
 
 class TestMergeGroupsAnonymization(test.TestCase, cradmin_testhelpers.TestCaseMixin):

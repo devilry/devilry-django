@@ -1,5 +1,5 @@
-{% extends "django_cradmin/viewhelpers/listbuilder/itemframe/link.django.html" %}
-{% load cradmin_icon_tags %}
+{% extends "cradmin_legacy/viewhelpers/listbuilder/itemframe/link.django.html" %}
+{% load cradmin_legacy_icon_tags %}
 
 {% block content %}
     {% with super_content=block.super %}
@@ -7,6 +7,6 @@
             {{ super_content }}
         {% endblock label %}
     {% endwith %}
-    <span class="{% cradmin_icon 'devilry-link-forward' %} devilry-django-cradmin-listbuilder-itemframe-goforward-icon"
+    <span class="{% cradmin_icon 'devilry-link-forward' %} devilry-cradmin-legacy-listbuilder-itemframe-goforward-icon"
           aria-hidden="true"></span>
 {% endblock content %}

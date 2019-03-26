@@ -1,6 +1,6 @@
-{% extends "django_cradmin/viewhelpers/listbuilderview/filterlist-left.django.html" %}
-{% load cradmin_tags %}
-{% load cradmin_icon_tags %}
+{% extends "cradmin_legacy/viewhelpers/listbuilderview/filterlist-left.django.html" %}
+{% load cradmin_legacy_tags %}
+{% load cradmin_legacy_icon_tags %}
 {% load crispy_forms_tags %}
 {% load i18n %}
 
@@ -77,7 +77,7 @@
         </div>
     </div>
     {% if no_groups_found %}
-        <div class="container django-cradmin-container-focus django-cradmin-container-focus-warning
+        <div class="container cradmin-legacy-container-focus cradmin-legacy-container-focus-warning
                     devilry-admin-delete-groups-confirm-no-groups">
             {% trans "No students found." %}
         </div>

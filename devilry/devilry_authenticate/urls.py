@@ -1,5 +1,5 @@
 from django.conf.urls import url, include
-from django_cradmin.apps.cradmin_authenticate.views import logout
+from cradmin_legacy.apps.cradmin_authenticate.views import logout
 
 from devilry.devilry_authenticate.views import CustomLoginView, allauth_views
 

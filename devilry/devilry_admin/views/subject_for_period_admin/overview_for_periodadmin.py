@@ -1,9 +1,9 @@
 
 
-from django_cradmin import crapp
-from django_cradmin.crinstance import reverse_cradmin_url
-from django_cradmin.viewhelpers import listbuilderview
-from django_cradmin.viewhelpers import listfilter
+from cradmin_legacy import crapp
+from cradmin_legacy.crinstance import reverse_cradmin_url
+from cradmin_legacy.viewhelpers import listbuilderview
+from cradmin_legacy.viewhelpers import listfilter
 
 from devilry.apps.core.models import Period
 from devilry.devilry_cradmin import devilry_listbuilder

@@ -4,7 +4,7 @@ from django import test
 from django.conf import settings
 from django.contrib import messages
 from django.http import Http404
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core.models import RelatedExaminer
@@ -23,7 +23,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def __get_titles(self, selector):
         return [element.alltext_normalized
-                for element in selector.list('.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+                for element in selector.list('.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
 
     def test_title(self):
         testperiod = mommy.make('core.Period',
@@ -121,7 +121,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertEqual(
                 'You have no examiners. Use the buttons above to add examiners.',
-                mockresponse.selector.one('.django-cradmin-listing-no-items-message').alltext_normalized)
+                mockresponse.selector.one('.cradmin-legacy-listing-no-items-message').alltext_normalized)
 
     def test_default_ordering(self):
         testperiod = mommy.make('core.Period')
@@ -441,15 +441,15 @@ class TestAddView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
                 'Test User',
                 mockresponse.selector.one(
-                        '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+                        '.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
         self.assertEqual(
                 'test@example.com',
                 mockresponse.selector.one(
-                        '.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized)
+                        '.cradmin-legacy-listbuilder-itemvalue-titledescription-description').alltext_normalized)
 
     def __get_titles(self, selector):
         return [element.alltext_normalized
-                for element in selector.list('.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+                for element in selector.list('.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
 
     def test_do_not_include_users_already_relatedexaminer(self):
         testperiod = mommy.make('core.Period')
@@ -549,7 +549,7 @@ class TestImportExaminersView(test.TestCase, AbstractTypeInUsersViewTestMixin):
 
     def test_post_valid_with_email_backend_creates_relatedusers(self):
         testperiod = mommy.make('core.Period')
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             self.mock_http302_postrequest(
                     cradmin_instance=self.mock_crinstance_with_devilry_role(),
                     cradmin_role=testperiod,
@@ -564,7 +564,7 @@ class TestImportExaminersView(test.TestCase, AbstractTypeInUsersViewTestMixin):
 
     def test_post_valid_with_email_backend_added_message(self):
         testperiod = mommy.make('core.Period')
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             messagesmock = mock.MagicMock()
             self.mock_http302_postrequest(
                     cradmin_instance=self.mock_crinstance_with_devilry_role(),
@@ -588,7 +588,7 @@ class TestImportExaminersView(test.TestCase, AbstractTypeInUsersViewTestMixin):
         mommy.make('core.RelatedExaminer',
                    period=testperiod,
                    user=testuser)
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             messagesmock = mock.MagicMock()
             self.mock_http302_postrequest(
                     cradmin_instance=self.mock_crinstance_with_devilry_role(),
@@ -612,7 +612,7 @@ class TestImportExaminersView(test.TestCase, AbstractTypeInUsersViewTestMixin):
         mommy.make('core.RelatedExaminer',
                    period=testperiod,
                    user=testuser)
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             messagesmock = mock.MagicMock()
             self.mock_http302_postrequest(
                     cradmin_instance=self.mock_crinstance_with_devilry_role(),
@@ -629,7 +629,7 @@ class TestImportExaminersView(test.TestCase, AbstractTypeInUsersViewTestMixin):
 
     def test_post_valid_with_username_backend_creates_relatedusers(self):
         testperiod = mommy.make('core.Period')
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             self.mock_http302_postrequest(
                     cradmin_instance=self.mock_crinstance_with_devilry_role(),
                     cradmin_role=testperiod,
@@ -644,7 +644,7 @@ class TestImportExaminersView(test.TestCase, AbstractTypeInUsersViewTestMixin):
 
     def test_post_valid_with_username_backend_added_message(self):
         testperiod = mommy.make('core.Period')
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             messagesmock = mock.MagicMock()
             self.mock_http302_postrequest(
                     cradmin_instance=self.mock_crinstance_with_devilry_role(),
@@ -668,7 +668,7 @@ class TestImportExaminersView(test.TestCase, AbstractTypeInUsersViewTestMixin):
         mommy.make('core.RelatedExaminer',
                    period=testperiod,
                    user=testuser)
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             messagesmock = mock.MagicMock()
             self.mock_http302_postrequest(
                     cradmin_instance=self.mock_crinstance_with_devilry_role(),
@@ -692,7 +692,7 @@ class TestImportExaminersView(test.TestCase, AbstractTypeInUsersViewTestMixin):
         mommy.make('core.RelatedExaminer',
                    period=testperiod,
                    user=testuser)
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             messagesmock = mock.MagicMock()
             self.mock_http302_postrequest(
                     cradmin_instance=self.mock_crinstance_with_devilry_role(),

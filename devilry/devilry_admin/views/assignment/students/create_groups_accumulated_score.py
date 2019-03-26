@@ -9,7 +9,7 @@ from django.db.models import Sum
 from django.http import HttpResponseRedirect, Http404
 from django.utils.translation import pgettext_lazy
 
-from django_cradmin.viewhelpers import multiselect2view, multiselect2, listbuilder, listbuilderview
+from cradmin_legacy.viewhelpers import multiselect2view, multiselect2, listbuilder, listbuilderview
 
 from devilry.apps.core.models import Assignment, AssignmentGroup, RelatedStudent, Candidate
 

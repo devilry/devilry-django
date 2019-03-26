@@ -3,7 +3,7 @@ import time
 from django import test
 from django.conf import settings
 from django.contrib import messages
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core.models import AssignmentGroup
@@ -194,7 +194,7 @@ class TestRandomView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
         self.assertEqual(
             3,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_submit_button_text(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -203,7 +203,7 @@ class TestRandomView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
         self.assertEqual(
             'Randomly assign selected students to selected examiners',
-            mockresponse.selector.one('.django-cradmin-multiselect2-target-formfields .btn').alltext_normalized)
+            mockresponse.selector.one('.cradmin-legacy-multiselect2-target-formfields .btn').alltext_normalized)
 
     def test_target_with_selected_items_title(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -212,7 +212,7 @@ class TestRandomView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
         self.assertEqual(
             'Select at least two students:',
-            mockresponse.selector.one('.django-cradmin-multiselect2-target-title').alltext_normalized)
+            mockresponse.selector.one('.cradmin-legacy-multiselect2-target-title').alltext_normalized)
 
     def test_target_examiners_title(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -517,7 +517,7 @@ class TestManualAddView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
         self.assertEqual(
             3,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_submit_button_text(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -526,7 +526,7 @@ class TestManualAddView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
         self.assertEqual(
             'Add selected examiners to selected students',
-            mockresponse.selector.one('.django-cradmin-multiselect2-target-formfields .btn').alltext_normalized)
+            mockresponse.selector.one('.cradmin-legacy-multiselect2-target-formfields .btn').alltext_normalized)
 
     def test_target_with_selected_items_title(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -535,7 +535,7 @@ class TestManualAddView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
         self.assertEqual(
             'Selected students:',
-            mockresponse.selector.one('.django-cradmin-multiselect2-target-title').alltext_normalized)
+            mockresponse.selector.one('.cradmin-legacy-multiselect2-target-title').alltext_normalized)
 
     def test_target_examiners_title(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -737,7 +737,7 @@ class TestManualReplaceView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
         self.assertEqual(
             3,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_submit_button_text(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -746,7 +746,7 @@ class TestManualReplaceView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
         self.assertEqual(
             'Replace selected examiners with current examiners for selected students',
-            mockresponse.selector.one('.django-cradmin-multiselect2-target-formfields .btn').alltext_normalized)
+            mockresponse.selector.one('.cradmin-legacy-multiselect2-target-formfields .btn').alltext_normalized)
 
     def test_target_with_selected_items_title(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -755,7 +755,7 @@ class TestManualReplaceView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
         self.assertEqual(
             'Selected students:',
-            mockresponse.selector.one('.django-cradmin-multiselect2-target-title').alltext_normalized)
+            mockresponse.selector.one('.cradmin-legacy-multiselect2-target-title').alltext_normalized)
 
     def test_target_examiners_title(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -915,7 +915,7 @@ class TestOrganizeByTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment
         )
-        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+        self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_no_related_students_message_link(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -938,7 +938,7 @@ class TestOrganizeByTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment
         )
-        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+        self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_no_related_examiners_message_link(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -976,7 +976,7 @@ class TestOrganizeByTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment
         )
-        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+        self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_no_candidates_in_groups_where_relatedstudent_is_registered_on_tag(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -991,7 +991,7 @@ class TestOrganizeByTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment
         )
-        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+        self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_candidates_in_groups(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -1005,8 +1005,8 @@ class TestOrganizeByTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment
         )
-        self.assertTrue(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
-        self.assertTrue(mockresponse.selector.one('.django-cradmin-listbuilder-itemvalue'))
+        self.assertTrue(mockresponse.selector.exists('.cradmin-legacy-listbuilder-itemvalue'))
+        self.assertTrue(mockresponse.selector.one('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_post(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')

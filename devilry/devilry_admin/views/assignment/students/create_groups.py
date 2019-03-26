@@ -10,10 +10,10 @@ from django.http import Http404
 from django.shortcuts import redirect
 from django.utils.translation import pgettext_lazy, ugettext_lazy
 from django.views.generic import TemplateView
-from django_cradmin import crapp
-from django_cradmin.crispylayouts import PrimarySubmit, CradminFormHelper
-from django_cradmin.viewhelpers import listbuilder
-from django_cradmin.viewhelpers import multiselect2view
+from cradmin_legacy import crapp
+from cradmin_legacy.crispylayouts import PrimarySubmit, CradminFormHelper
+from cradmin_legacy.viewhelpers import listbuilder
+from cradmin_legacy.viewhelpers import multiselect2view
 
 from devilry.apps.core.models import Candidate, AssignmentGroup, RelatedStudent
 from devilry.devilry_admin.cradminextensions.listbuilder import listbuilder_relatedstudent
@@ -30,7 +30,7 @@ class ChoosePeriodItemValue(listbuilder.itemvalue.TitleDescription):
     template_name = 'devilry_admin/assignment/students/create_groups/choose-period-item-value.django.html'
 
     def get_extra_css_classes_list(self):
-        return ['devilry-django-cradmin-listbuilder-itemvalue-titledescription-lg']
+        return ['devilry-cradmin-legacy-listbuilder-itemvalue-titledescription-lg']
 
     def get_title(self):
         return pgettext_lazy('admin create_groups',
@@ -342,7 +342,7 @@ class ConfirmView(CreateGroupsViewMixin,
 
     def __get_formhelper(self):
         helper = CradminFormHelper()
-        helper.form_class = 'django-cradmin-form-wrapper devilry-django-cradmin-form-wrapper-top-bottom-spacing'
+        helper.form_class = 'cradmin-legacy-form-wrapper devilry-cradmin-legacy-form-wrapper-top-bottom-spacing'
         helper.form_id = 'devilry_admin_create_groups_confirm_form'
         helper.layout = layout.Layout(
             'selected_items',

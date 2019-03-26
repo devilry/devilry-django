@@ -1,16 +1,16 @@
 from django.core.urlresolvers import reverse
 from django.template import defaultfilters
 from django.utils.translation import ugettext_lazy
-from django_cradmin import crapp, crinstance
-from django_cradmin import crmenu
-from django_cradmin.crinstance import reverse_cradmin_url
+from cradmin_legacy import crapp, crinstance
+from cradmin_legacy import crmenu
+from cradmin_legacy.crinstance import reverse_cradmin_url
 
 
 class BreadcrumbMenuItem(crmenu.MenuItem):
     template_name = 'devilry_cradmin/devilry_crmenu/breadcrumb-menuitem.django.html'
 
     def get_item_css_class(self):
-        return 'django-cradmin-menu-item devilry-django-cradmin-menuitem-breadcrumb'
+        return 'cradmin-legacy-menu-item devilry-cradmin-legacy-menuitem-breadcrumb'
 
 
 class AccountMenuItem(crmenu.MenuItem):
@@ -21,7 +21,7 @@ class AccountMenuItem(crmenu.MenuItem):
         super(AccountMenuItem, self).__init__(label='', url=url)
 
     def get_item_css_class(self):
-        return 'django-cradmin-menu-item devilry_accountbutton'
+        return 'cradmin-legacy-menu-item devilry_accountbutton'
 
     def get_link_css_class(self):
         return 'devilry_accountbutton__link'

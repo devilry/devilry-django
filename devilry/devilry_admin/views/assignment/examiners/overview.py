@@ -3,10 +3,10 @@
 
 from django.http import Http404
 from django.utils.translation import ugettext_lazy
-from django_cradmin import crapp
-from django_cradmin.crinstance import reverse_cradmin_url
-from django_cradmin.viewhelpers.listbuilder.itemframe import DefaultSpacingItemFrame
-from django_cradmin.viewhelpers.listbuilder.lists import RowList
+from cradmin_legacy import crapp
+from cradmin_legacy.crinstance import reverse_cradmin_url
+from cradmin_legacy.viewhelpers.listbuilder.itemframe import DefaultSpacingItemFrame
+from cradmin_legacy.viewhelpers.listbuilder.lists import RowList
 
 from devilry.apps.core.models import RelatedExaminer, AssignmentGroup
 from devilry.devilry_admin.cradminextensions.listbuilder import listbuilder_relatedexaminer

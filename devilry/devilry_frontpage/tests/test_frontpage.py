@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.test import TestCase
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.devilry_account.models import PermissionGroup

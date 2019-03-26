@@ -170,7 +170,7 @@ class TestUserQuerySet(TestCase):
 
 class TestUserManager(TestCase):
     def test_create_user_username(self):
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             user = User.objects.create_user(username='testuser')
             self.assertEqual(user.shortname, 'testuser')
             self.assertEqual(user.username_set.count(), 1)
@@ -178,7 +178,7 @@ class TestUserManager(TestCase):
             self.assertEqual(user.useremail_set.count(), 0)
 
     def test_create_user_username_fails_with_email_auth_backend(self):
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             with self.assertRaises(IllegalOperationError):
                 User.objects.create_user(username='testuser')
 
@@ -268,12 +268,12 @@ class TestUserManager(TestCase):
             User.objects.get_by_username(username='test@example.com')
 
     def test_bulk_create_from_usernames_not_allowed_with_email_auth_backend(self):
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             with self.assertRaises(IllegalOperationError):
                 User.objects.bulk_create_from_usernames([])
 
     def test_bulk_create_from_usernames_empty_input_list(self):
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             created_users, existing_usernames = User.objects.bulk_create_from_usernames([])
             self.assertEqual(created_users.count(), 0)
             self.assertEqual(User.objects.count(), 0)
@@ -281,7 +281,7 @@ class TestUserManager(TestCase):
             self.assertEqual(set(), existing_usernames)
 
     def test_bulk_create_from_usernames_single_new_user(self):
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             created_users, existing_usernames = User.objects.bulk_create_from_usernames(['testuser'])
 
             self.assertEqual(created_users.count(), 1)
@@ -298,13 +298,13 @@ class TestUserManager(TestCase):
             self.assertEqual(set(), existing_usernames)
 
     def test_bulk_create_from_usernames_create_no_useremail_if_default_email_suffix_is_not_defined(self):
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False,
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False,
                            DEVILRY_DEFAULT_EMAIL_SUFFIX=''):
             User.objects.bulk_create_from_usernames(['testuser'])
             self.assertEqual(UserEmail.objects.count(), 0)
 
     def test_bulk_create_from_usernames_create_useremail_if_a_default_email_suffix_is_defined(self):
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False,
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False,
                            DEVILRY_DEFAULT_EMAIL_SUFFIX='@example.com'):
             User.objects.bulk_create_from_usernames(['testuser'])
             self.assertEqual(UserEmail.objects.count(), 1)
@@ -314,7 +314,7 @@ class TestUserManager(TestCase):
             self.assertTrue(created_useremail_object.use_for_notifications)
 
     def test_bulk_create_from_usernames_multiple_new_users(self):
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             created_users, existing_usernames = User.objects.bulk_create_from_usernames(
                 ['testuser1', 'testuser2', 'testuser3'])
 
@@ -331,7 +331,7 @@ class TestUserManager(TestCase):
             self.assertEqual(set(), existing_usernames)
 
     def test_bulk_create_from_usernames_exclude_existing(self):
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             mommy.make('devilry_account.User', shortname='testuser1')
             mommy.make('devilry_account.UserName', username='testuser2')
 
@@ -349,12 +349,12 @@ class TestUserManager(TestCase):
             self.assertEqual({'testuser1', 'testuser2'}, existing_usernames)
 
     def test_bulk_create_from_emails_not_allowed_with_username_auth_backend(self):
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             with self.assertRaises(IllegalOperationError):
                 User.objects.bulk_create_from_emails([])
 
     def test_bulk_create_from_emails_empty_input_list(self):
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             created_users, existing_emails = User.objects.bulk_create_from_emails([])
             self.assertEqual(created_users.count(), 0)
             self.assertEqual(User.objects.count(), 0)
@@ -362,7 +362,7 @@ class TestUserManager(TestCase):
             self.assertEqual(set(), existing_emails)
 
     def test_bulk_create_from_emails_single_new_user(self):
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             created_users, existing_emails = User.objects.bulk_create_from_emails(
                 ['testuser@example.com'])
 
@@ -382,7 +382,7 @@ class TestUserManager(TestCase):
             self.assertEqual(set(), existing_emails)
 
     def test_bulk_create_from_emails_multiple_new_users(self):
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             created_users, existing_emails = User.objects.bulk_create_from_emails(
                 ['testuser1@example.com', 'testuser2@example.com', 'testuser3@example.com'])
 
@@ -399,7 +399,7 @@ class TestUserManager(TestCase):
             self.assertEqual(set(), existing_emails)
 
     def test_bulk_create_from_emails_exclude_existing(self):
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             mommy.make('devilry_account.User', shortname='testuser1@example.com')
             mommy.make('devilry_account.UserEmail', email='testuser2@example.com')
 
@@ -446,34 +446,34 @@ class TestUserEmail(TestCase):
 
 class TestUserName(TestCase):
     def test_username_unique(self):
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             mommy.make('devilry_account.UserName', username='test')
             with self.assertRaises(IntegrityError):
                 mommy.make('devilry_account.UserName', username='test')
 
     def test_is_primary_unique(self):
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             user = mommy.make('devilry_account.User')
             mommy.make('devilry_account.UserName', user=user, is_primary=True)
             with self.assertRaises(IntegrityError):
                 mommy.make('devilry_account.UserName', user=user, is_primary=True)
 
     def test_is_primary_not_unique_for_none(self):
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             user = mommy.make('devilry_account.User')
             mommy.make('devilry_account.UserName', user=user, is_primary=None)
             mommy.make('devilry_account.UserName', user=user, is_primary=None)
 
     def test_clean_validationerror_if_using_email_backend(self):
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             usernameobject = mommy.make('devilry_account.UserName')
             with self.assertRaisesMessage(ValidationError,
                                           'Can not create UserName objects when the '
-                                          'DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND is True.'):
+                                          'CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND is True.'):
                 usernameobject.clean()
 
     def test_clean_is_primary_can_not_be_false(self):
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             usernameobject = mommy.make('devilry_account.UserName')
             usernameobject.clean()  # No error
             usernameobject.is_primary = False
@@ -482,7 +482,7 @@ class TestUserName(TestCase):
                 usernameobject.clean()
 
     def test_clean_set_is_primary_unsets_other(self):
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             user = mommy.make('devilry_account.User')
             usernameobject1 = mommy.make('devilry_account.UserName',
                                          user=user,

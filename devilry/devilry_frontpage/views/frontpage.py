@@ -1,5 +1,5 @@
 from django.views.generic import TemplateView
-from django_cradmin import crapp
+from cradmin_legacy import crapp
 
 from devilry.devilry_frontpage.cradminextensions.listbuilder import listbuilder_role
 

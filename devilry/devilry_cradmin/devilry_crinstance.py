@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-from django_cradmin import crinstance
+from cradmin_legacy import crinstance
 
 
 class BaseDevilryCrInstance(crinstance.BaseCrAdminInstance):

@@ -8,7 +8,7 @@ from django.db import transaction
 from django.db.models.functions import Concat, Lower
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy
-from django_cradmin.viewhelpers import listbuilderview
+from cradmin_legacy.viewhelpers import listbuilderview
 
 import django_rq
 

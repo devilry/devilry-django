@@ -3,8 +3,8 @@
 from django.contrib import messages
 from django.http import Http404
 from django.utils.translation import ugettext_lazy
-from django_cradmin import crapp
-from django_cradmin.crispylayouts import DangerSubmit
+from cradmin_legacy import crapp
+from cradmin_legacy.crispylayouts import DangerSubmit
 
 from devilry.apps.core.models import RelatedExaminer
 from devilry.devilry_account.models import User, PermissionGroup

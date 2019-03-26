@@ -1,8 +1,8 @@
-{% extends "django_cradmin/viewhelpers/listbuilderview/filterlist-top.django.html" %}
+{% extends "cradmin_legacy/viewhelpers/listbuilderview/filterlist-top.django.html" %}
 
 {% load i18n %}
-{% load cradmin_tags %}
-{% load cradmin_icon_tags %}
+{% load cradmin_legacy_tags %}
+{% load cradmin_legacy_icon_tags %}
 
 {% block pageheader-outer-extraclasses %}
     {{ block.super }}
@@ -80,7 +80,7 @@
         {% cradmin_render_renderable listbuilder_list %}
     {% else %}
         {% block no-items-wrapper %}
-            <p class="django-cradmin-listing-no-items-message django-cradmin-listbuilderview-no-items-message">
+            <p class="cradmin-legacy-listing-no-items-message cradmin-legacy-listbuilderview-no-items-message">
                 {% block no-items-paragraph-contents %}
                     {{ no_items_message }}
                 {% endblock no-items-paragraph-contents %}

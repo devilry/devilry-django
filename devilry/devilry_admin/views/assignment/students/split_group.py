@@ -8,11 +8,11 @@ from django.http import Http404
 from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy
 from django.views.generic.detail import SingleObjectMixin
-from django_cradmin import crapp
-from django_cradmin.crispylayouts import PrimarySubmit
-from django_cradmin.viewhelpers import formbase
-from django_cradmin.viewhelpers.mixins import QuerysetForRoleMixin
-from django_cradmin.widgets.selectwidgets import WrappedSelect
+from cradmin_legacy import crapp
+from cradmin_legacy.crispylayouts import PrimarySubmit
+from cradmin_legacy.viewhelpers import formbase
+from cradmin_legacy.viewhelpers.mixins import QuerysetForRoleMixin
+from cradmin_legacy.widgets.selectwidgets import WrappedSelect
 
 from devilry.apps.core.models import AssignmentGroup, Candidate
 from devilry.apps.core.models.assignment_group import GroupPopNotCandidateError, GroupPopToFewCandidatesError

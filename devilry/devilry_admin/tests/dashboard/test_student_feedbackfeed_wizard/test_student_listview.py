@@ -3,7 +3,7 @@ from django import test
 from django.conf import settings
 
 from model_mommy import mommy
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 
 from devilry.devilry_admin.views.dashboard.student_feedbackfeed_wizard import student_list
 
@@ -19,7 +19,7 @@ class TestStudentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make(settings.AUTH_USER_MODEL, shortname='notstudentuser')
         mommy.make('core.RelatedStudent', user__shortname='studentuser')
         mockresponse = self.mock_http200_getrequest_htmls()
-        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue-titledescription-title'), 1)
+        self.assertEqual(mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue-titledescription-title'), 1)
         self.assertContains(mockresponse.response, 'studentuser')
         self.assertNotContains(mockresponse.response,'notstudentuser')
 
@@ -29,10 +29,10 @@ class TestStudentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.RelatedStudent', user__shortname='c', user__fullname='C')
         mockresponse = self.mock_http200_getrequest_htmls()
         fullname_list = [element.alltext_normalized for element in mockresponse.selector.list(
-            '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+            '.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
         shortname_list = [element.alltext_normalized for element in mockresponse.selector.list(
-            '.django-cradmin-listbuilder-itemvalue-titledescription-description')]
-        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 3)
+            '.cradmin-legacy-listbuilder-itemvalue-titledescription-description')]
+        self.assertEqual(mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'), 3)
         self.assertIn('A', fullname_list)
         self.assertIn('B', fullname_list)
         self.assertIn('C', fullname_list)
@@ -45,21 +45,21 @@ class TestStudentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(
             viewkwargs={'filters_string': 'search-No match'}
         )
-        self.assertEqual(0, mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+        self.assertEqual(0, mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_search_match_fullname(self):
         mommy.make('core.RelatedStudent', user__shortname='shortnamea', user__fullname='FullnameA')
         mockresponse = self.mock_http200_getrequest_htmls(
             viewkwargs={'filters_string': 'search-FullnameA'}
         )
-        self.assertEqual(1, mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+        self.assertEqual(1, mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_search_match_shortname(self):
         mommy.make('core.RelatedStudent', user__shortname='shortnamea', user__fullname='FullnameA')
         mockresponse = self.mock_http200_getrequest_htmls(
             viewkwargs={'filters_string': 'search-shortnamea'}
         )
-        self.assertEqual(1, mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+        self.assertEqual(1, mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_backlink(self):
         mockresponse = self.mock_http200_getrequest_htmls()
@@ -72,7 +72,7 @@ class TestStudentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_pagination(self):
         mommy.make('core.RelatedStudent', _quantity=50)
         mockresponse = self.mock_http200_getrequest_htmls()
-        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 35)
+        self.assertEqual(mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'), 35)
 
     def test_query_count(self):
         mommy.make('core.RelatedStudent', _quantity=10)

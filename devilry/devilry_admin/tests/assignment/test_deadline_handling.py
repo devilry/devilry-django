@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.http import Http404
 from django.test import TestCase
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core.models import Assignment

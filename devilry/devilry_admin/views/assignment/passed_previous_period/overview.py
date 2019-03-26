@@ -7,8 +7,8 @@ from django.views.generic import TemplateView
 from django.http import HttpResponseRedirect
 
 # CrAdmin imports
-from django_cradmin.crinstance import reverse_cradmin_url
-from django_cradmin.viewhelpers import listbuilder
+from cradmin_legacy.crinstance import reverse_cradmin_url
+from cradmin_legacy.viewhelpers import listbuilder
 
 # Devilry imports
 from devilry.apps.core.models import Assignment
@@ -26,7 +26,7 @@ class ItemFrameMixin(object):
     def get_extra_css_classes_list(self):
         css_classes_list = super(ItemFrameMixin, self).get_extra_css_classes_list()
         css_classes_list.append('devilry-qualifiesforexam-plugin-spacing')
-        css_classes_list.append('django-cradmin-listbuilder-itemvalue'
+        css_classes_list.append('cradmin-legacy-listbuilder-itemvalue'
                                 ' devilry-frontpage-listbuilder-roleselect-itemvalue'
                                 ' devilry-frontpage-listbuilder-roleselect-itemvalue-anyadmin'
                                 ' devilry-passed-previous-semester-mode-item-value')

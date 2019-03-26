@@ -5,7 +5,7 @@ from django import test
 from django.conf import settings
 from django.contrib import messages
 from django.http import Http404
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.devilry_account.models import PermissionGroupUser, PermissionGroup, SubjectPermissionGroup
@@ -17,7 +17,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def __get_titles(self, selector):
         return [element.alltext_normalized
-                for element in selector.list('.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+                for element in selector.list('.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
 
     def test_title(self):
         testsubject = mommy.make('core.Subject',
@@ -61,7 +61,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
                 'No manually added course administrators for this course. '
                 'You can add administrators using the button above.',
-                mockresponse.selector.one('.django-cradmin-listing-no-items-message').alltext_normalized)
+                mockresponse.selector.one('.cradmin-legacy-listing-no-items-message').alltext_normalized)
 
     def test_default_ordering(self):
         testsubject = mommy.make('core.Subject')
@@ -162,7 +162,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             element.alltext_normalized
             for element in selector.list(
                 '.devilry-cradmin-subjectandperiodpermissiongroup-list '
-                '.django-cradmin-listbuilder-itemvalue-titledescription-title')}
+                '.cradmin-legacy-listbuilder-itemvalue-titledescription-title')}
 
     def test_other_permissiongroups(self):
         testsubject = mommy.make('core.Subject')
@@ -227,15 +227,15 @@ class TestAddView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
                 'Test User',
                 mockresponse.selector.one(
-                        '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+                        '.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
         self.assertEqual(
                 'test@example.com',
                 mockresponse.selector.one(
-                        '.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized)
+                        '.cradmin-legacy-listbuilder-itemvalue-titledescription-description').alltext_normalized)
 
     def __get_titles(self, selector):
         return [element.alltext_normalized
-                for element in selector.list('.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+                for element in selector.list('.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
 
     def test_exclude_users_in_subjectpermissiongroup(self):
         testsubject = mommy.make('core.Subject')

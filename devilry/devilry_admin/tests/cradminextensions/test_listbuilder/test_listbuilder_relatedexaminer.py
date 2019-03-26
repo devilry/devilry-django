@@ -15,7 +15,7 @@ class TestOnPeriodItemValue(test.TestCase):
         selector = htmls.S(listbuilder_relatedexaminer.OnPeriodItemValue(value=relatedstudent).render())
         self.assertEqual(
             'test@example.com',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_title_with_fullname(self):
         relatedstudent = mommy.make('core.RelatedExaminer',
@@ -24,7 +24,7 @@ class TestOnPeriodItemValue(test.TestCase):
         selector = htmls.S(listbuilder_relatedexaminer.OnPeriodItemValue(value=relatedstudent).render())
         self.assertEqual(
             'Test User',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_description_without_fullname(self):
         relatedstudent = mommy.make('core.RelatedExaminer',
@@ -32,7 +32,7 @@ class TestOnPeriodItemValue(test.TestCase):
                                     user__fullname='')
         selector = htmls.S(listbuilder_relatedexaminer.OnPeriodItemValue(value=relatedstudent).render())
         self.assertFalse(
-            selector.exists('.django-cradmin-listbuilder-itemvalue-titledescription-description'))
+            selector.exists('.cradmin-legacy-listbuilder-itemvalue-titledescription-description'))
 
     def test_description_with_fullname(self):
         relatedstudent = mommy.make('core.RelatedExaminer',
@@ -41,7 +41,7 @@ class TestOnPeriodItemValue(test.TestCase):
         selector = htmls.S(listbuilder_relatedexaminer.OnPeriodItemValue(value=relatedstudent).render())
         self.assertEqual(
             'test@example.com',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-description').alltext_normalized)
 
 
 class TestOnassignmentItemValue(test.TestCase):
@@ -63,7 +63,7 @@ class TestOnassignmentItemValue(test.TestCase):
         selector = htmls.S(listbuilder_relatedexaminer.OnassignmentItemValue(value=relatedexaminer).render())
         self.assertEqual(
             'test@example.com',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_title_with_fullname(self):
         relatedexaminer = mommy.make('core.RelatedExaminer',
@@ -74,7 +74,7 @@ class TestOnassignmentItemValue(test.TestCase):
         selector = htmls.S(listbuilder_relatedexaminer.OnassignmentItemValue(value=relatedexaminer).render())
         self.assertEqual(
             'Test User(test@example.com)',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_summary_no_groups(self):
         relatedexaminer = mommy.make('core.RelatedExaminer')
@@ -83,7 +83,7 @@ class TestOnassignmentItemValue(test.TestCase):
         selector = htmls.S(listbuilder_relatedexaminer.OnassignmentItemValue(value=relatedexaminer).render())
         self.assertEqual(
             'No students',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-description').alltext_normalized)
 
     def test_summary_single_groups_no_projectgroups(self):
         relatedexaminer = mommy.make('core.RelatedExaminer')
@@ -98,7 +98,7 @@ class TestOnassignmentItemValue(test.TestCase):
         selector = htmls.S(listbuilder_relatedexaminer.OnassignmentItemValue(value=relatedexaminer).render())
         self.assertEqual(
             '1 student',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-description').alltext_normalized)
 
     def test_summary_multiple_groups_no_projectgroups(self):
         relatedexaminer = mommy.make('core.RelatedExaminer')
@@ -119,7 +119,7 @@ class TestOnassignmentItemValue(test.TestCase):
         selector = htmls.S(listbuilder_relatedexaminer.OnassignmentItemValue(value=relatedexaminer).render())
         self.assertEqual(
             '2 students',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-description').alltext_normalized)
 
     def test_summary_multiple_groups_with_multiple_candidates(self):
         relatedexaminer = mommy.make('core.RelatedExaminer')
@@ -142,7 +142,7 @@ class TestOnassignmentItemValue(test.TestCase):
         selector = htmls.S(listbuilder_relatedexaminer.OnassignmentItemValue(value=relatedexaminer).render())
         self.assertEqual(
             '3 students in 2 project groups',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-description').alltext_normalized)
 
     def test_summary_single_group_with_multiple_candidates(self):
         relatedexaminer = mommy.make('core.RelatedExaminer')
@@ -159,4 +159,4 @@ class TestOnassignmentItemValue(test.TestCase):
         selector = htmls.S(listbuilder_relatedexaminer.OnassignmentItemValue(value=relatedexaminer).render())
         self.assertEqual(
             '2 students in 1 project group',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-description').alltext_normalized)

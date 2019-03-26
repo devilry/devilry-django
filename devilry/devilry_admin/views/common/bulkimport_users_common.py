@@ -7,8 +7,8 @@ from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.http import HttpResponseRedirect, Http404
 from django.utils.translation import ugettext_lazy
-from django_cradmin.crispylayouts import PrimarySubmit
-from django_cradmin.viewhelpers import formbase
+from cradmin_legacy.crispylayouts import PrimarySubmit
+from cradmin_legacy.viewhelpers import formbase
 
 from devilry.devilry_account.models import PermissionGroup
 
@@ -47,7 +47,7 @@ class AbstractTypeInUsersView(formbase.FormView):
         return set(users_blob_split)
 
     def __get_users_blob_help_text(self):
-        if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
+        if settings.CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND:
             return ugettext_lazy('Type or paste in email addresses separated '
                      'by comma (","), space or one user on each line.')
         else:
@@ -55,7 +55,7 @@ class AbstractTypeInUsersView(formbase.FormView):
                      'by comma (","), space or one user on each line.')
 
     def __get_users_blob_placeholder(self):
-        if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
+        if settings.CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND:
             return ugettext_lazy('jane@example.com\njohn@example.com')
         else:
             return ugettext_lazy('jane\njohn')
@@ -105,7 +105,7 @@ class AbstractTypeInUsersView(formbase.FormView):
                 users_blob = cleaned_data.get('users_blob', None)
                 if users_blob:
                     users = AbstractTypeInUsersView.split_users_blob(users_blob)
-                    if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
+                    if settings.CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND:
                         self.__validate_users_blob_emails(emails=users)
                     else:
                         self.__validate_users_blob_usernames(usernames=users)
@@ -117,7 +117,7 @@ class AbstractTypeInUsersView(formbase.FormView):
         return [
             layout.Div(
                 layout.Field('users_blob', placeholder=self.__get_users_blob_placeholder()),
-                css_class='cradmin-globalfields django-cradmin-formfield-label-sr-only')
+                css_class='cradmin-globalfields cradmin-legacy-formfield-label-sr-only')
         ]
 
     def get_buttons(self):
@@ -135,7 +135,7 @@ class AbstractTypeInUsersView(formbase.FormView):
         raise NotImplementedError()
 
     def form_valid(self, form):
-        if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
+        if settings.CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND:
             self.import_users_from_emails(emails=form.cleaned_users_set)
         else:
             self.import_users_from_usernames(usernames=form.cleaned_users_set)

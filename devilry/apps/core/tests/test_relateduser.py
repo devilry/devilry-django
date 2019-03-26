@@ -59,13 +59,13 @@ class TestRelatedExaminerModel(TestCase):
 class TestRelatedExaminerManager(TestCase):
     def test_bulk_create_from_emails_not_allowed_with_username_auth_backend(self):
         testperiod = mommy.make('core.Period')
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             with self.assertRaises(IllegalOperationError):
                 RelatedExaminer.objects.bulk_create_from_emails(testperiod, [])
 
     def test_bulk_create_from_emails_empty_input_list(self):
         testperiod = mommy.make('core.Period')
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             result = RelatedExaminer.objects.bulk_create_from_emails(testperiod, [])
             self.assertEqual(0, result.created_relatedusers_queryset.count())
             self.assertEqual(0, RelatedExaminer.objects.count())
@@ -73,7 +73,7 @@ class TestRelatedExaminerManager(TestCase):
 
     def test_bulk_create_from_emails_single_new(self):
         testperiod = mommy.make('core.Period')
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             result = RelatedExaminer.objects.bulk_create_from_emails(
                 testperiod, ['testuser@example.com'])
 
@@ -85,7 +85,7 @@ class TestRelatedExaminerManager(TestCase):
 
     def test_bulk_create_from_emails_multiple_new(self):
         testperiod = mommy.make('core.Period')
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             result = RelatedExaminer.objects.bulk_create_from_emails(
                 testperiod, ['testuser1@example.com', 'testuser2@example.com', 'testuser3@example.com'])
 
@@ -100,7 +100,7 @@ class TestRelatedExaminerManager(TestCase):
         mommy.make('core.RelatedExaminer',
                    period=testperiod,
                    user=UserBuilder2().add_emails('testuser1@example.com').user)
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             result = RelatedExaminer.objects.bulk_create_from_emails(
                 period=testperiod,
                 emails=['testuser1@example.com', 'testuser2@example.com'])
@@ -118,7 +118,7 @@ class TestRelatedExaminerManager(TestCase):
         mommy.make('core.RelatedExaminer',
                    period=otherperiod,
                    user=UserBuilder2(shortname='testuser1@example.com').add_emails('testuser1@example.com').user)
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             result = RelatedExaminer.objects.bulk_create_from_emails(
                 period=testperiod,
                 emails=['testuser1@example.com', 'testuser2@example.com'])
@@ -132,13 +132,13 @@ class TestRelatedExaminerManager(TestCase):
 
     def test_bulk_create_from_usernames_not_allowed_with_username_auth_backend(self):
         testperiod = mommy.make('core.Period')
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             with self.assertRaises(IllegalOperationError):
                 RelatedExaminer.objects.bulk_create_from_usernames(testperiod, [])
 
     def test_bulk_create_from_usernames_empty_input_list(self):
         testperiod = mommy.make('core.Period')
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             result = RelatedExaminer.objects.bulk_create_from_usernames(testperiod, [])
             self.assertEqual(0, result.created_relatedusers_queryset.count())
             self.assertEqual(0, RelatedExaminer.objects.count())
@@ -146,7 +146,7 @@ class TestRelatedExaminerManager(TestCase):
 
     def test_bulk_create_from_usernames_single_new(self):
         testperiod = mommy.make('core.Period')
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             result = RelatedExaminer.objects.bulk_create_from_usernames(
                 testperiod, ['testuser'])
 
@@ -158,7 +158,7 @@ class TestRelatedExaminerManager(TestCase):
 
     def test_bulk_create_from_usernames_multiple_new(self):
         testperiod = mommy.make('core.Period')
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             result = RelatedExaminer.objects.bulk_create_from_usernames(
                 testperiod, ['testuser1', 'testuser2', 'testuser3'])
 
@@ -173,7 +173,7 @@ class TestRelatedExaminerManager(TestCase):
         mommy.make('core.RelatedExaminer',
                    period=testperiod,
                    user=UserBuilder2().add_usernames('testuser1').user)
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             result = RelatedExaminer.objects.bulk_create_from_usernames(
                 period=testperiod,
                 usernames=['testuser1', 'testuser2'])
@@ -191,7 +191,7 @@ class TestRelatedExaminerManager(TestCase):
         mommy.make('core.RelatedExaminer',
                    period=otherperiod,
                    user=UserBuilder2(shortname='testuser1').add_usernames('testuser1').user)
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             result = RelatedExaminer.objects.bulk_create_from_usernames(
                 period=testperiod,
                 usernames=['testuser1', 'testuser2'])
@@ -207,13 +207,13 @@ class TestRelatedExaminerManager(TestCase):
 class TestRelatedStudentManager(TestCase):
     def test_bulk_create_from_emails_not_allowed_with_username_auth_backend(self):
         testperiod = mommy.make('core.Period')
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             with self.assertRaises(IllegalOperationError):
                 RelatedStudent.objects.bulk_create_from_emails(testperiod, [])
 
     def test_bulk_create_from_emails_empty_input_list(self):
         testperiod = mommy.make('core.Period')
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             result = RelatedStudent.objects.bulk_create_from_emails(testperiod, [])
             self.assertEqual(0, result.created_relatedusers_queryset.count())
             self.assertEqual(0, RelatedStudent.objects.count())
@@ -221,7 +221,7 @@ class TestRelatedStudentManager(TestCase):
 
     def test_bulk_create_from_emails_single_new(self):
         testperiod = mommy.make('core.Period')
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             result = RelatedStudent.objects.bulk_create_from_emails(
                 testperiod, ['testuser@example.com'])
 
@@ -233,7 +233,7 @@ class TestRelatedStudentManager(TestCase):
 
     def test_bulk_create_from_emails_multiple_new(self):
         testperiod = mommy.make('core.Period')
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             result = RelatedStudent.objects.bulk_create_from_emails(
                 testperiod, ['testuser1@example.com', 'testuser2@example.com', 'testuser3@example.com'])
 
@@ -248,7 +248,7 @@ class TestRelatedStudentManager(TestCase):
         mommy.make('core.RelatedStudent',
                    period=testperiod,
                    user=UserBuilder2().add_emails('testuser1@example.com').user)
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             result = RelatedStudent.objects.bulk_create_from_emails(
                 period=testperiod,
                 emails=['testuser1@example.com', 'testuser2@example.com'])
@@ -266,7 +266,7 @@ class TestRelatedStudentManager(TestCase):
         mommy.make('core.RelatedStudent',
                    period=otherperiod,
                    user=UserBuilder2(shortname='testuser1@example.com').add_emails('testuser1@example.com').user)
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             result = RelatedStudent.objects.bulk_create_from_emails(
                 period=testperiod,
                 emails=['testuser1@example.com', 'testuser2@example.com'])
@@ -280,13 +280,13 @@ class TestRelatedStudentManager(TestCase):
 
     def test_bulk_create_from_usernames_not_allowed_with_username_auth_backend(self):
         testperiod = mommy.make('core.Period')
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             with self.assertRaises(IllegalOperationError):
                 RelatedStudent.objects.bulk_create_from_usernames(testperiod, [])
 
     def test_bulk_create_from_usernames_empty_input_list(self):
         testperiod = mommy.make('core.Period')
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             result = RelatedStudent.objects.bulk_create_from_usernames(testperiod, [])
             self.assertEqual(0, result.created_relatedusers_queryset.count())
             self.assertEqual(0, RelatedStudent.objects.count())
@@ -294,7 +294,7 @@ class TestRelatedStudentManager(TestCase):
 
     def test_bulk_create_from_usernames_single_new(self):
         testperiod = mommy.make('core.Period')
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             result = RelatedStudent.objects.bulk_create_from_usernames(
                 testperiod, ['testuser'])
 
@@ -306,7 +306,7 @@ class TestRelatedStudentManager(TestCase):
 
     def test_bulk_create_from_usernames_multiple_new(self):
         testperiod = mommy.make('core.Period')
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             result = RelatedStudent.objects.bulk_create_from_usernames(
                 testperiod, ['testuser1', 'testuser2', 'testuser3'])
 
@@ -321,7 +321,7 @@ class TestRelatedStudentManager(TestCase):
         mommy.make('core.RelatedStudent',
                    period=testperiod,
                    user=UserBuilder2().add_usernames('testuser1').user)
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             result = RelatedStudent.objects.bulk_create_from_usernames(
                 period=testperiod,
                 usernames=['testuser1', 'testuser2'])
@@ -339,7 +339,7 @@ class TestRelatedStudentManager(TestCase):
         mommy.make('core.RelatedStudent',
                    period=otherperiod,
                    user=UserBuilder2(shortname='testuser1').add_usernames('testuser1').user)
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             result = RelatedStudent.objects.bulk_create_from_usernames(
                 period=testperiod,
                 usernames=['testuser1', 'testuser2'])

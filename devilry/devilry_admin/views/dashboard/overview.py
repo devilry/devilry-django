@@ -8,11 +8,11 @@ from itertools import groupby
 
 from django.utils.translation import ugettext, ugettext_lazy
 from django.views.generic import TemplateView
-from django_cradmin import crapp
-from django_cradmin.crinstance import reverse_cradmin_url
-from django_cradmin.viewhelpers import listbuilderview
-from django_cradmin.viewhelpers import listfilter
-from django_cradmin.viewhelpers import listbuilder
+from cradmin_legacy import crapp
+from cradmin_legacy.crinstance import reverse_cradmin_url
+from cradmin_legacy.viewhelpers import listbuilderview
+from cradmin_legacy.viewhelpers import listfilter
+from cradmin_legacy.viewhelpers import listbuilder
 from devilry.devilry_admin.listbuilder import admindashboard_subject_listbuilder
 from devilry.apps.core import models as coremodels
 

@@ -1,5 +1,5 @@
 
-from django_cradmin.viewhelpers import listbuilder
+from cradmin_legacy.viewhelpers import listbuilder
 
 
 class AdminItemValueMixin(object):

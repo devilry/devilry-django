@@ -3,8 +3,8 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy
 from django.utils.translation import pgettext_lazy
-from django_cradmin.viewhelpers import listfilter
-from django_cradmin.viewhelpers.listfilter.basefilters.single import abstractselect, abstractradio
+from cradmin_legacy.viewhelpers import listfilter
+from cradmin_legacy.viewhelpers.listfilter.basefilters.single import abstractselect, abstractradio
 
 from devilry.apps.core.models import PeriodTag
 

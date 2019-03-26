@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 
-from django_cradmin import renderable
-from django_cradmin.viewhelpers.listbuilder import base
+from cradmin_legacy import renderable
+from cradmin_legacy.viewhelpers.listbuilder import base
 
 
 class AbstractCellRenderer(renderable.AbstractRenderableWithCss):
@@ -60,7 +60,7 @@ class AbstractListAsTable(base.List):
         The header is a distinct part of the list, and is rendered first.
 
         Args:
-            renderable: Must implement the :class:`django_cradmin.renderable.AbstractRenderableWithCss` interface.
+            renderable: Must implement the :class:`cradmin_legacy.renderable.AbstractRenderableWithCss` interface.
         """
         self.header_renderable_list.append(renderable)
 

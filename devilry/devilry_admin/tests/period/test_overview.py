@@ -2,8 +2,8 @@
 import mock
 from django.conf import settings
 from django.test import TestCase
-from django_cradmin import cradmin_testhelpers
-from django_cradmin import crinstance
+from cradmin_legacy import cradmin_testhelpers
+from cradmin_legacy import crinstance
 from model_mommy import mommy
 
 from devilry.apps.core.models import Assignment
@@ -121,7 +121,7 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod, requestuser=periodadmin_user)
         self.assertEqual('Test Assignment',
                          mockresponse.selector.one(
-                             '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+                             '.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_assignmentlist_itemrendering_url(self):
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
@@ -173,7 +173,7 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
         assignmentnames = [
             element.alltext_normalized
             for element in mockresponse.selector.list(
-                    '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+                    '.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
         self.assertEqual([
             'Assignment 3',
             'Assignment 2',
@@ -196,12 +196,12 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
             requestuser=periodadmin_user_testperiod)
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue-titledescription-title')
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue-titledescription-title')
         )
         self.assertEqual(
             'Testperiod Assignment 1',
             mockresponse.selector.one(
-                    '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized
+                    '.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized
         )
 
     def test_period_admin_can_not_see_semi_anonymous_assignments(self):

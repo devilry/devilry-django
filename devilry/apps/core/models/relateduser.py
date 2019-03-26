@@ -126,7 +126,7 @@ class AbstractRelatedUserManager(models.Manager):
 
         Raises:
             devilry_account.exceptions.IllegalOperationError: If the
-                ``DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND``-setting is ``False``.
+                ``CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND``-setting is ``False``.
 
         Returns:
             :class:`.BulkCreateFromEmailsResult` object with detailed information about
@@ -168,7 +168,7 @@ class AbstractRelatedUserManager(models.Manager):
 
         Raises:
             devilry_account.exceptions.IllegalOperationError: If the
-                ``DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND``-setting is ``True``.
+                ``CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND``-setting is ``True``.
 
         Returns:
             :class:`.BulkCreateFromUsernamesResult` object with detailed information about

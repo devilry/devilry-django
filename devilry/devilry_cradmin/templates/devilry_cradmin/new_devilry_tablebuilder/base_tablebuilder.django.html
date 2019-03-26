@@ -1,5 +1,5 @@
 {% load i18n %}
-{% load cradmin_tags %}
+{% load cradmin_legacy_tags %}
 
 <div class="devilry-tabulardata-list devilry-tabulardata-list--as-table">
     <div class="devilry-tabulardata-list__content">
@@ -10,7 +10,7 @@
             {% endfor %}
         </div>
 
-        <div id="django_cradmin_listbuilderview_listwrapper"
+        <div id="cradmin_legacy_listbuilderview_listwrapper"
             class="devilry-tabulardata-list__body"
             aria-live="polite">
             {% for renderable in me.iter_renderables %}

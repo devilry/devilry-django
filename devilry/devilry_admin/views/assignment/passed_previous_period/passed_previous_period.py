@@ -8,11 +8,11 @@ from django.template import defaultfilters
 from django.http import Http404
 from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy
-from django_cradmin import crapp
-from django_cradmin.crispylayouts import PrimarySubmit
-from django_cradmin.viewhelpers import formbase
-from django_cradmin.viewhelpers import listbuilder
-from django_cradmin.viewhelpers import listbuilderview
+from cradmin_legacy import crapp
+from cradmin_legacy.crispylayouts import PrimarySubmit
+from cradmin_legacy.viewhelpers import formbase
+from cradmin_legacy.viewhelpers import listbuilder
+from cradmin_legacy.viewhelpers import listbuilderview
 
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import Candidate

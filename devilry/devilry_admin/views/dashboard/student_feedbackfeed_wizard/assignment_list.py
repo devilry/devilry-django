@@ -6,10 +6,10 @@ from django.db import models
 from django.db.models.functions import Lower, Concat
 from django.utils.translation import ugettext, ugettext_lazy
 
-from django_cradmin.crinstance import reverse_cradmin_url
-from django_cradmin.viewhelpers import listbuilderview
-from django_cradmin.viewhelpers.listbuilder.lists import RowList
-from django_cradmin.viewhelpers.listbuilder.itemframe import DefaultSpacingItemFrame
+from cradmin_legacy.crinstance import reverse_cradmin_url
+from cradmin_legacy.viewhelpers import listbuilderview
+from cradmin_legacy.viewhelpers.listbuilder.lists import RowList
+from cradmin_legacy.viewhelpers.listbuilder.itemframe import DefaultSpacingItemFrame
 
 from devilry.apps.core import models as core_models
 from devilry.devilry_cradmin import devilry_listbuilder

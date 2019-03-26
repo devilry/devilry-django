@@ -1,6 +1,6 @@
 from django import forms
 from django.utils.translation import pgettext_lazy
-from django_cradmin.viewhelpers import multiselect2
+from cradmin_legacy.viewhelpers import multiselect2
 
 from devilry.apps.core.models import RelatedStudent
 from devilry.devilry_admin.cradminextensions.listbuilder import listbuilder_relatedstudent

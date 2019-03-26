@@ -1,6 +1,6 @@
 from django.db.models.functions import Lower, Concat
 from django.utils.translation import ugettext_lazy, pgettext_lazy
-from django_cradmin.viewhelpers import listfilter
+from cradmin_legacy.viewhelpers import listfilter
 
 
 class OrderBy(listfilter.django.single.select.AbstractOrderBy):

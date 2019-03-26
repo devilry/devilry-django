@@ -5,7 +5,7 @@ import mock
 from django import test
 from django.http import Http404
 from django.utils import timezone
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core import devilry_core_mommy_factories
@@ -29,7 +29,7 @@ class TestGroupDetailsRenderable(test.TestCase):
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_name_semi_anonymous_is_not_anonymized(self):
         testgroup = mommy.make('core.AssignmentGroup',
@@ -42,7 +42,7 @@ class TestGroupDetailsRenderable(test.TestCase):
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_name_fully_anonymous_is_not_anonymized(self):
         testgroup = mommy.make('core.AssignmentGroup',
@@ -55,7 +55,7 @@ class TestGroupDetailsRenderable(test.TestCase):
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+            selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_examiners(self):
         testgroup = mommy.make('core.AssignmentGroup')

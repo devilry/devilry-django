@@ -1,6 +1,6 @@
-{% extends "django_cradmin/viewhelpers/listbuilderview/filterlist-right.django.html" %}
+{% extends "cradmin_legacy/viewhelpers/listbuilderview/filterlist-right.django.html" %}
 {% load i18n %}
-{% load cradmin_tags %}
+{% load cradmin_legacy_tags %}
 
 {% block pageheader-inner %}
     {{ block.super }}
@@ -32,7 +32,7 @@
 
 {% block no-items-wrapper %}
     {% if excluding_filters_other_than_status_is_applied %}
-        <p class="django-cradmin-listing-no-items-message django-cradmin-listbuilderview-no-items-message">
+        <p class="cradmin-legacy-listing-no-items-message cradmin-legacy-listbuilderview-no-items-message">
             {% trans "No students found matching your filters/search." %}
         </p>
     {% else %}

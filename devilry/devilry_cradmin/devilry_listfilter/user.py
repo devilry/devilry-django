@@ -1,5 +1,5 @@
 from django.utils.translation import ugettext_lazy
-from django_cradmin.viewhelpers import listfilter
+from cradmin_legacy.viewhelpers import listfilter
 
 
 class Search(listfilter.django.single.textinput.Search):

@@ -3,8 +3,8 @@ from xml.sax.saxutils import quoteattr
 
 from crispy_forms import layout
 from django.template.loader import render_to_string
-from django_cradmin import renderable
-from django_cradmin.viewhelpers import create
+from cradmin_legacy import renderable
+from cradmin_legacy.viewhelpers import create
 from markdown import serializers
 
 

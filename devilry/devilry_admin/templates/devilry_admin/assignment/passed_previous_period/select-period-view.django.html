@@ -1,7 +1,7 @@
-{% extends "django_cradmin/viewhelpers/formview_base.django.html" %}
+{% extends "cradmin_legacy/viewhelpers/formview_base.django.html" %}
 {% load i18n %}
-{% load cradmin_tags %}
-{% load cradmin_icon_tags %}
+{% load cradmin_legacy_tags %}
+{% load cradmin_legacy_icon_tags %}
 
 {% block pageheader-outer-extraclasses %}
    {{ block.super }}
@@ -45,7 +45,7 @@
     </div>
     {% if no_past_period %}
         <div class="container">
-            <h3 class="django-cradmin-listing-no-items-message test-no-previos-period">
+            <h3 class="cradmin-legacy-listing-no-items-message test-no-previos-period">
                 {% blocktrans trimmed with context='select-period-view-no-passed-period' %}
                     There are no prior semesters connected to this assignment.
                 {% endblocktrans %}

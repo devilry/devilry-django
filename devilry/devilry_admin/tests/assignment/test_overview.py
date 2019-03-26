@@ -5,8 +5,8 @@ import mock
 from django.conf import settings
 from django.test import TestCase
 from django.utils import timezone
-from django_cradmin import cradmin_testhelpers
-from django_cradmin.crinstance import reverse_cradmin_url
+from cradmin_legacy import cradmin_testhelpers
+from cradmin_legacy.crinstance import reverse_cradmin_url
 from model_mommy import mommy
 
 from devilry.apps.core import devilry_core_mommy_factories as core_mommy

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 
-from django_cradmin import crapp
-from django_cradmin.crinstance import reverse_cradmin_url
+from cradmin_legacy import crapp
+from cradmin_legacy.crinstance import reverse_cradmin_url
 
 from devilry.devilry_deadlinemanagement.cradmin_app import ExaminerDeadlineManagementApp
 from devilry.devilry_deadlinemanagement.views import deadline_listview

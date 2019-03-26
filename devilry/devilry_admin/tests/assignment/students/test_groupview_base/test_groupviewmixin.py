@@ -4,9 +4,9 @@ import mock
 from django import test
 from django.conf import settings
 from django.utils import timezone
-from django_cradmin import cradmin_testhelpers
-from django_cradmin.viewhelpers import listbuilder
-from django_cradmin.viewhelpers import listbuilderview
+from cradmin_legacy import cradmin_testhelpers
+from cradmin_legacy.viewhelpers import listbuilder
+from cradmin_legacy.viewhelpers import listbuilderview
 from model_mommy import mommy
 
 from devilry.apps.core import devilry_core_mommy_factories
@@ -63,7 +63,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser)
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_search_match_fullname(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -80,7 +80,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser)
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_search_match_shortname(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -97,13 +97,13 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser)
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def __get_titles(self, selector):
         return [
             element.alltext_normalized
             for element in selector.list(
-                '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+                '.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
 
     def test_orderby_default(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -150,13 +150,13 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def __has_orderby_option_label(self, selector, orderby_option_label):
         order_by_labels = {element.alltext_normalized
-                           for element in selector.list('#django_cradmin_listfilter_orderby option')}
+                           for element in selector.list('#cradmin_legacy_listfilter_orderby option')}
         return orderby_option_label in order_by_labels
 
     def test_orderby_shortname_ascending_rendered_emailbackend(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             mockresponse = self.mock_http200_getrequest_htmls(
                 cradmin_role=testassignment,
                 cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
@@ -169,7 +169,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_orderby_shortname_ascending_rendered_usernamebackend(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             mockresponse = self.mock_http200_getrequest_htmls(
                 cradmin_role=testassignment,
                 cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
@@ -740,7 +740,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             requestuser=testuser1)
-        self.assertTrue(mockresponse.selector.exists('#django_cradmin_listfilter_examiner_input'))
+        self.assertTrue(mockresponse.selector.exists('#cradmin_legacy_listfilter_examiner_input'))
 
     def test_render_examiner_filter_if_single_examiner(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -754,7 +754,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             requestuser=testuser)
-        self.assertTrue(mockresponse.selector.exists('#django_cradmin_listfilter_examiner_input'))
+        self.assertTrue(mockresponse.selector.exists('#cradmin_legacy_listfilter_examiner_input'))
 
     def test_render_examiner_filter_choices(self):
         testuser1 = mommy.make(settings.AUTH_USER_MODEL, fullname='A')
@@ -776,7 +776,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestuser=testuser1)
         choices_labels = [
             element.alltext_normalized
-            for element in mockresponse.selector.list('#django_cradmin_listfilter_examiner_input option')]
+            for element in mockresponse.selector.list('#cradmin_legacy_listfilter_examiner_input option')]
         self.assertEqual(
             ['', 'A', 'B', 'c'],
             choices_labels)

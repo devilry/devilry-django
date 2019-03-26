@@ -1,7 +1,7 @@
 from django.utils.translation import ugettext_lazy
-from django_cradmin.viewhelpers.listbuilder.itemvalue import TitleDescription
-from django_cradmin.viewhelpers.listbuilder.lists import RowList
-from django_cradmin.viewhelpers.listbuilder.itemframe import DefaultSpacingItemFrame
+from cradmin_legacy.viewhelpers.listbuilder.itemvalue import TitleDescription
+from cradmin_legacy.viewhelpers.listbuilder.lists import RowList
+from cradmin_legacy.viewhelpers.listbuilder.itemframe import DefaultSpacingItemFrame
 
 
 class WithResultValueRenderable(TitleDescription):
@@ -36,7 +36,7 @@ class WithResultValueRenderable(TitleDescription):
 
     def get_base_css_classes_list(self):
         """
-        Adds the ``django-cradmin-listbuilder-itemvalue-titledescription`` css class
+        Adds the ``cradmin-legacy-listbuilder-itemvalue-titledescription`` css class
         in addition to the classes added by the superclasses.
         """
         return []

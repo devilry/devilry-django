@@ -2,10 +2,10 @@
 
 
 from django.utils.translation import ugettext_lazy
-from django_cradmin import crapp
-from django_cradmin.crinstance import reverse_cradmin_url
-from django_cradmin.viewhelpers.listbuilder.itemframe import DefaultSpacingItemFrame
-from django_cradmin.viewhelpers.listbuilder.lists import RowList
+from cradmin_legacy import crapp
+from cradmin_legacy.crinstance import reverse_cradmin_url
+from cradmin_legacy.viewhelpers.listbuilder.itemframe import DefaultSpacingItemFrame
+from cradmin_legacy.viewhelpers.listbuilder.lists import RowList
 
 from devilry.devilry_admin.views.assignment.students import groupview_base
 from devilry.devilry_cradmin import devilry_listbuilder

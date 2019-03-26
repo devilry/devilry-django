@@ -1,5 +1,5 @@
 from django.test import TestCase
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core.models import Assignment
@@ -24,7 +24,7 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment
         )
         self.assertEqual(
-            mockresponse.selector.one('.django-cradmin-page-header-inner > h1').alltext_normalized,
+            mockresponse.selector.one('.cradmin-legacy-page-header-inner > h1').alltext_normalized,
             'Passed previous semester')
 
     def test_assignment_grading_plugin_not_passed_failed(self):
@@ -45,6 +45,6 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment
         )
         self.assertEqual(len(mockresponse.selector.list('.devilry-passed-previous-semester-mode-item-value')), 2)
-        mode_title_list = [element.alltext_normalized for element in mockresponse.selector.list('.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+        mode_title_list = [element.alltext_normalized for element in mockresponse.selector.list('.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
         self.assertIn('Manually pass students', mode_title_list)
         self.assertIn('Automatically pass students from an earlier semester', mode_title_list)

@@ -1,6 +1,6 @@
 from django.utils.translation import ugettext_lazy
-from django_cradmin.viewhelpers import listbuilder
-from django_cradmin.viewhelpers import listbuilderview
+from cradmin_legacy.viewhelpers import listbuilder
+from cradmin_legacy.viewhelpers import listbuilderview
 
 from devilry.apps.core.models import RelatedExaminer
 from devilry.devilry_admin.cradminextensions.listfilter import listfilter_relateduser

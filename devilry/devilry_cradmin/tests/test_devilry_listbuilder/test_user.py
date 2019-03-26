@@ -14,7 +14,7 @@ class TestItemValue(test.TestCase):
         selector = htmls.S(devilry_listbuilder.user.ItemValue(value=user).render())
         self.assertEqual(
                 'test@example.com',
-                selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+                selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_title_with_fullname(self):
         user = mommy.make(settings.AUTH_USER_MODEL,
@@ -23,7 +23,7 @@ class TestItemValue(test.TestCase):
         selector = htmls.S(devilry_listbuilder.user.ItemValue(value=user).render())
         self.assertEqual(
                 'Test User',
-                selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+                selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_description_without_fullname(self):
         user = mommy.make(settings.AUTH_USER_MODEL,
@@ -31,7 +31,7 @@ class TestItemValue(test.TestCase):
                           fullname='')
         selector = htmls.S(devilry_listbuilder.user.ItemValue(value=user).render())
         self.assertFalse(
-                selector.exists('.django-cradmin-listbuilder-itemvalue-titledescription-description'))
+                selector.exists('.cradmin-legacy-listbuilder-itemvalue-titledescription-description'))
 
     def test_description_with_fullname(self):
         user = mommy.make(settings.AUTH_USER_MODEL,
@@ -40,4 +40,4 @@ class TestItemValue(test.TestCase):
         selector = htmls.S(devilry_listbuilder.user.ItemValue(value=user).render())
         self.assertEqual(
                 'test@example.com',
-                selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized)
+                selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-description').alltext_normalized)

@@ -2,12 +2,12 @@
 from crispy_forms import layout
 from django import forms
 from django.db import models
-from django_cradmin import crapp
-from django_cradmin import crinstance
-from django_cradmin.viewhelpers import create
-from django_cradmin.viewhelpers import crudbase
+from cradmin_legacy import crapp
+from cradmin_legacy import crinstance
+from cradmin_legacy.viewhelpers import create
+from cradmin_legacy.viewhelpers import crudbase
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
-from django_cradmin.widgets.datetimepicker import DateTimePickerWidget
+from cradmin_legacy.widgets.datetimepicker import DateTimePickerWidget
 
 from devilry.apps.core.models import Period
 from devilry.utils import nodenamesuggestor

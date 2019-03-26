@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-from django_cradmin import crapp
+from cradmin_legacy import crapp
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_deadlinemanagement.views import multiselect_groups_view
 from devilry.devilry_deadlinemanagement.views import manage_deadline_view

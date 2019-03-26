@@ -14,9 +14,9 @@ from django.template import defaultfilters
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy, pgettext_lazy
-from django_cradmin.crispylayouts import PrimarySubmitBlock, PrimarySubmit
-from django_cradmin.viewhelpers import formbase
-from django_cradmin.widgets.datetimepicker import DateTimePickerWidget
+from cradmin_legacy.crispylayouts import PrimarySubmitBlock, PrimarySubmit
+from cradmin_legacy.viewhelpers import formbase
+from cradmin_legacy.widgets.datetimepicker import DateTimePickerWidget
 
 from devilry.apps.core import models as core_models
 from devilry.devilry_cradmin import devilry_acemarkdown

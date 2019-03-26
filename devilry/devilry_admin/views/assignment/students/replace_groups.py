@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from django.utils import timezone
 from django.utils.translation import pgettext_lazy
-from django_cradmin import crapp
+from cradmin_legacy import crapp
 
 from devilry.devilry_admin.views.assignment.students import create_groups
 

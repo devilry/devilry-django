@@ -7,7 +7,7 @@ from django.utils import timezone
 from model_mommy import mommy
 import mock
 
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 
 from devilry.apps.core.models import Assignment, AssignmentGroup
 from devilry.devilry_admin.views.period import overview_all_results
@@ -65,7 +65,7 @@ class TestOverviewAllResults(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertFalse(mockresponse.selector.exists('.devilry-tabulardata-list'))
         self.assertEqual(
             'No students on period',
-            mockresponse.selector.one('.django-cradmin-listbuilderview-no-items-message').alltext_normalized)
+            mockresponse.selector.one('.cradmin-legacy-listbuilderview-no-items-message').alltext_normalized)
 
     def test_table_results_points_passed(self):
         testperiod = mommy.make('core.Period')

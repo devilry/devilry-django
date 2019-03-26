@@ -6,8 +6,8 @@ import mock
 from django.conf import settings
 from django.test import TestCase
 from django.utils import timezone
-from django_cradmin import cradmin_testhelpers
-from django_cradmin import crinstance
+from cradmin_legacy import cradmin_testhelpers
+from cradmin_legacy import crinstance
 from model_mommy import mommy
 
 from devilry.apps.core.models import Assignment, Candidate, Examiner, AssignmentGroup
@@ -131,7 +131,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
                 cradmin_role=period)
         suggested_deadline_elements = mockresponse.selector.list(
             '.devilry-admin-createassignment-suggested-deadline')
-        suggested_deadline_values = [element['django-cradmin-setfieldvalue']
+        suggested_deadline_values = [element['cradmin-legacy-setfieldvalue']
                                      for element in suggested_deadline_elements]
         self.assertEqual(suggested_deadline_values, [
             '2015-09-16 13:30',
@@ -156,7 +156,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=period)
         suggested_deadline_elements = mockresponse.selector.list(
             '.devilry-admin-createassignment-suggested-deadline')
-        suggested_deadline_values = [element['django-cradmin-setfieldvalue']
+        suggested_deadline_values = [element['cradmin-legacy-setfieldvalue']
                                      for element in suggested_deadline_elements]
         self.assertEqual(suggested_deadline_values, [
             '3500-09-12 13:30',

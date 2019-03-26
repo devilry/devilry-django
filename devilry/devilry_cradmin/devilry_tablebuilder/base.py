@@ -2,7 +2,7 @@
 
 
 # CrAdmin imports
-from django_cradmin.renderable import AbstractRenderableWithCss
+from cradmin_legacy.renderable import AbstractRenderableWithCss
 
 
 class AbstractContainerRenderer(AbstractRenderableWithCss):

@@ -1,4 +1,4 @@
-{% extends "django_cradmin/viewhelpers/listbuilder/itemvalue/titledescription.django.html" %}
+{% extends "cradmin_legacy/viewhelpers/listbuilder/itemvalue/titledescription.django.html" %}
 {% load i18n %}
 {% load devilry_account_tags %}
 
@@ -7,7 +7,7 @@
 {% endblock title-content %}
 
 {% block description %}
-    <p class="django-cradmin-listbuilder-itemvalue-titledescription-description">
+    <p class="cradmin-legacy-listbuilder-itemvalue-titledescription-description">
         {% if me.get_number_of_groups == 0 %}
             {% trans "No students" %}
         {% else %}

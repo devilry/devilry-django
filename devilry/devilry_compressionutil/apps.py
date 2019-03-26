@@ -6,7 +6,7 @@ class DevilryCompressionUtilAppConfig(AppConfig):
     verbose_name = 'Devilry compression utilities'
 
     def ready(self):
-        from django_cradmin.superuserui import superuserui_registry
+        from cradmin_legacy.superuserui import superuserui_registry
         appconfig = superuserui_registry.default.add_djangoapp(
             superuserui_registry.DjangoAppConfig(app_label='devilry_compressionutil')
         )

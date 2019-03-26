@@ -4,8 +4,8 @@
 import json
 
 from django.utils.translation import pgettext
-from django_cradmin import crapp
-from django_cradmin.viewhelpers.detail import DetailRoleView
+from cradmin_legacy import crapp
+from cradmin_legacy.viewhelpers.detail import DetailRoleView
 
 from devilry.apps.core import models as coremodels
 from devilry.apps.core.models import Examiner, RelatedExaminer

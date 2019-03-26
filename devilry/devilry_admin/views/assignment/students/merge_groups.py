@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.http import Http404
 from django.utils.translation import ugettext_lazy
-from django_cradmin import crapp
+from cradmin_legacy import crapp
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import Candidate

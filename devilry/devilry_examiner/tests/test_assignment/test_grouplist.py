@@ -3,9 +3,9 @@ from datetime import datetime, timedelta
 from django import test
 from django.conf import settings
 from django.utils import timezone
-from django_cradmin import cradmin_testhelpers
-from django_cradmin import crapp
-from django_cradmin.crinstance import reverse_cradmin_url
+from cradmin_legacy import cradmin_testhelpers
+from cradmin_legacy import crapp
+from cradmin_legacy.crinstance import reverse_cradmin_url
 from model_mommy import mommy
 
 from devilry.apps.core import devilry_core_mommy_factories
@@ -57,7 +57,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                                                           requestuser=testuser)
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_groups_sanity(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -70,7 +70,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                                                           requestuser=testuser)
         self.assertEqual(
             2,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_anonymizationmode_off_candidates(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -226,7 +226,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             'usera , userb',
             mockresponse.selector.one(
-                '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+                '.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_group_render_title_name_order_fullname(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -249,7 +249,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             'A user(userc) , usera , userb',
             mockresponse.selector.one(
-                '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+                '.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_group_render_group_url(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -266,7 +266,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 roleid=testgroup.id,
                 viewname=crapp.INDEXVIEW_NAME,
             ),
-            mockresponse.selector.one('a.django-cradmin-listbuilder-itemframe')['href'])
+            mockresponse.selector.one('a.cradmin-legacy-listbuilder-itemframe')['href'])
 
     def test_search_nomatch(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -285,7 +285,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser)
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_search_match_fullname(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -304,7 +304,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser)
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_search_match_shortname(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -323,7 +323,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser)
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_search_anonymous_nomatch_fullname(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -343,7 +343,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser)
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_search_anonymous_nomatch_shortname(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -363,7 +363,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser)
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_search_anonymous_nomatch_candidate_id_from_candidate(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -383,7 +383,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser)
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_search_anonymous_match_automatic_candidate_id_from_relatedstudent(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -404,7 +404,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser)
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_search_anonymous_match_automatic_anonymous_id(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -425,7 +425,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser)
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_search_anonymous_uses_custom_candidate_ids_nomatch_fullname(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -446,7 +446,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser)
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_search_anonymous_uses_custom_candidate_ids_nomatch_shortname(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -467,7 +467,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser)
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_search_anonymous_uses_custom_candidate_ids_nomatch_automatic_candidate_id_from_relatedstudent(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -489,7 +489,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser)
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_search_anonymous_uses_custom_candidate_ids_nomatch_automatic_anonymous_id(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -511,7 +511,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser)
         self.assertEqual(
             0,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_search_anonymous_uses_custom_candidate_ids_match_candidate_id_from_candidate(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -532,13 +532,13 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser)
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def __get_titles(self, selector):
         return [
             element.alltext_normalized
             for element in selector.list(
-                '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+                '.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
 
     def test_orderby_default(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -701,7 +701,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def __has_orderby_option_label(self, selector, orderby_option_label):
         order_by_labels = {element.alltext_normalized
-                           for element in selector.list('#django_cradmin_listfilter_orderby option')}
+                           for element in selector.list('#cradmin_legacy_listfilter_orderby option')}
         return orderby_option_label in order_by_labels
 
     def test_orderby_shortname_ascending_rendered_in_nonanonymous_email(self):
@@ -711,7 +711,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.Examiner',
                    relatedexaminer__user=testuser,
                    assignmentgroup__parentnode=testassignment)
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             mockresponse = self.mock_http200_getrequest_htmls(
                 cradmin_role=testassignment,
                 requestuser=testuser)
@@ -727,7 +727,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.Examiner',
                    relatedexaminer__user=testuser,
                    assignmentgroup__parentnode=testassignment)
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             mockresponse = self.mock_http200_getrequest_htmls(
                 cradmin_role=testassignment,
                 requestuser=testuser)
@@ -743,7 +743,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.Examiner',
                    relatedexaminer__user=testuser,
                    assignmentgroup__parentnode=testassignment)
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             mockresponse = self.mock_http200_getrequest_htmls(
                 cradmin_role=testassignment,
                 requestuser=testuser)
@@ -758,7 +758,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.Examiner',
                    relatedexaminer__user=testuser,
                    assignmentgroup__parentnode=testassignment)
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             mockresponse = self.mock_http200_getrequest_htmls(
                 cradmin_role=testassignment,
                 requestuser=testuser)
@@ -797,7 +797,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.Examiner',
                    relatedexaminer__user=testuser,
                    assignmentgroup__parentnode=testassignment)
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             mockresponse = self.mock_http200_getrequest_htmls(
                 cradmin_role=testassignment,
                 requestuser=testuser)
@@ -811,7 +811,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.Examiner',
                    relatedexaminer__user=testuser,
                    assignmentgroup__parentnode=testassignment)
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             mockresponse = self.mock_http200_getrequest_htmls(
                 cradmin_role=testassignment,
                 requestuser=testuser)
@@ -826,7 +826,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.Examiner',
                    relatedexaminer__user=testuser,
                    assignmentgroup__parentnode=testassignment)
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+        with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             mockresponse = self.mock_http200_getrequest_htmls(
                 cradmin_role=testassignment,
                 requestuser=testuser)
@@ -1401,7 +1401,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             'all students 3',
             mockresponse.selector.one(
-                '#django_cradmin_listfilter_status_input__label').alltext_normalized)
+                '#cradmin_legacy_listfilter_status_input__label').alltext_normalized)
 
     def test_render_status_waiting_for_feedback_label(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -1431,7 +1431,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             'waiting for feedback 2',
             mockresponse.selector.one(
-                '#django_cradmin_listfilter_status_input_waiting-for-feedback_label').alltext_normalized)
+                '#cradmin_legacy_listfilter_status_input_waiting-for-feedback_label').alltext_normalized)
 
     def test_render_status_waiting_for_feedback_label_with_new_attempt(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -1454,7 +1454,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             'waiting for feedback 1',
             mockresponse.selector.one(
-                '#django_cradmin_listfilter_status_input_waiting-for-feedback_label').alltext_normalized)
+                '#cradmin_legacy_listfilter_status_input_waiting-for-feedback_label').alltext_normalized)
 
     def test_render_status_waiting_for_deliveries_label(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -1484,7 +1484,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             'waiting for deliveries 3',
             mockresponse.selector.one(
-                '#django_cradmin_listfilter_status_input_waiting-for-deliveries_label').alltext_normalized)
+                '#cradmin_legacy_listfilter_status_input_waiting-for-deliveries_label').alltext_normalized)
 
     def test_render_status_waiting_for_deliveries_label_with_new_attempt(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -1506,7 +1506,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             'waiting for deliveries 1',
             mockresponse.selector.one(
-                '#django_cradmin_listfilter_status_input_waiting-for-deliveries_label').alltext_normalized)
+                '#cradmin_legacy_listfilter_status_input_waiting-for-deliveries_label').alltext_normalized)
 
     def test_render_status_corrected_label(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -1536,7 +1536,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             'corrected 2',
             mockresponse.selector.one(
-                '#django_cradmin_listfilter_status_input_corrected_label').alltext_normalized)
+                '#cradmin_legacy_listfilter_status_input_corrected_label').alltext_normalized)
 
     def test_filter_is_passing_grade_true(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -1676,7 +1676,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             requestuser=testuser1)
-        self.assertTrue(mockresponse.selector.exists('#django_cradmin_listfilter_examiner_input'))
+        self.assertTrue(mockresponse.selector.exists('#cradmin_legacy_listfilter_examiner_input'))
 
     def test_do_not_render_examiner_filter_if_single_examiner(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -1689,7 +1689,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             requestuser=testuser)
-        self.assertFalse(mockresponse.selector.exists('#django_cradmin_listfilter_examiner_input'))
+        self.assertFalse(mockresponse.selector.exists('#cradmin_legacy_listfilter_examiner_input'))
 
     def test_render_examiner_filter_choices(self):
         testuser1 = mommy.make(settings.AUTH_USER_MODEL, fullname='A')
@@ -1710,7 +1710,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestuser=testuser1)
         choices_labels = [
             element.alltext_normalized
-            for element in mockresponse.selector.list('#django_cradmin_listfilter_examiner_input option')]
+            for element in mockresponse.selector.list('#cradmin_legacy_listfilter_examiner_input option')]
         self.assertEqual(
             ['', 'A', 'B', 'c'],
             choices_labels)
@@ -2103,7 +2103,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser)
         self.assertEqual(
             'No students found matching your filters/search.',
-            mockresponse.selector.one('.django-cradmin-listing-no-items-message').alltext_normalized)
+            mockresponse.selector.one('.cradmin-legacy-listing-no-items-message').alltext_normalized)
 
     def test_filter_waiting_for_feedback_empty(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)

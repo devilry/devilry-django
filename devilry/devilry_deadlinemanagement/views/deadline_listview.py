@@ -7,7 +7,7 @@ from django.template import defaultfilters
 from django.utils import timezone
 from django.utils.translation import pgettext_lazy, ugettext_lazy
 from django.views.generic import TemplateView
-from django_cradmin.viewhelpers import listbuilder
+from cradmin_legacy.viewhelpers import listbuilder
 
 from devilry.devilry_deadlinemanagement.views import viewutils
 from devilry.utils import datetimeutils

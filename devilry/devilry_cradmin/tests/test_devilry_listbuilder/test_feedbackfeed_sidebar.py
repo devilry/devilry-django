@@ -4,7 +4,7 @@ from django import test
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.utils import timezone
-from django_cradmin.cradmin_testhelpers import TestCaseMixin
+from cradmin_legacy.cradmin_testhelpers import TestCaseMixin
 from model_mommy import mommy
 
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql

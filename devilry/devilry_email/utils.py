@@ -42,7 +42,7 @@ def build_feedbackfeed_absolute_url(domain_scheme, group_id, instance_id='devilr
     Returns:
         str: Absolute url to feedbackfeed.
     """
-    from django_cradmin.crinstance import reverse_cradmin_url
+    from cradmin_legacy.crinstance import reverse_cradmin_url
     domain_url_start = domain_scheme.rstrip('/')
     absolute_url = '{}{}'.format(
         domain_url_start,

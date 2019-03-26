@@ -6,7 +6,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.views import generic
 
-from django_cradmin import crapp
+from cradmin_legacy import crapp
 
 from devilry.apps.core import models as core_models
 from devilry.devilry_compressionutil import models as archivemodels

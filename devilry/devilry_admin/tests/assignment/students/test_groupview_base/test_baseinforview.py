@@ -4,7 +4,7 @@ import mock
 from django import test
 from django.conf import settings
 from django.utils import timezone
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core.models import Assignment
@@ -47,7 +47,7 @@ class TestBaseInfoView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser)
         self.assertEqual(
             'No students found matching your filters/search.',
-            mockresponse.selector.one('.django-cradmin-listing-no-items-message').alltext_normalized)
+            mockresponse.selector.one('.cradmin-legacy-listing-no-items-message').alltext_normalized)
 
     def test_filter_all_empty(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -59,7 +59,7 @@ class TestBaseInfoView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestuser=testuser)
         self.assertEqual(
             'No students.',
-            mockresponse.selector.one('.django-cradmin-listing-no-items-message').alltext_normalized)
+            mockresponse.selector.one('.cradmin-legacy-listing-no-items-message').alltext_normalized)
 
     def test_group_render_title_name_order(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -78,7 +78,7 @@ class TestBaseInfoView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             'usera , userb',
             mockresponse.selector.one(
-                '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+                '.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_group_render_title_name_order_fullname(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -101,7 +101,7 @@ class TestBaseInfoView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             'A user(userc) , usera , userb',
             mockresponse.selector.one(
-                '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+                '.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
 
     #

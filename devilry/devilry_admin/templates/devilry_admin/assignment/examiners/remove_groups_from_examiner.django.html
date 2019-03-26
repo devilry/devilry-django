@@ -1,7 +1,7 @@
 {% extends "devilry_admin/assignment/students/groupview_base/base-multiselect-view.django.html" %}
 {% load i18n %}
-{% load cradmin_tags %}
-{% load cradmin_icon_tags %}
+{% load cradmin_legacy_tags %}
+{% load cradmin_legacy_icon_tags %}
 
 {% block title %}
     {% blocktrans trimmed with examiner=relatedexaminer.user.get_full_name %}

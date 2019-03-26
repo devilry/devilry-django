@@ -1,6 +1,6 @@
 
 
-from django_cradmin import crapp
+from cradmin_legacy import crapp
 
 from . import index
 from . import select_language

@@ -1,5 +1,5 @@
-from django_cradmin import crinstance, crapp
-from django_cradmin.crinstance import reverse_cradmin_url
+from cradmin_legacy import crinstance, crapp
+from cradmin_legacy.crinstance import reverse_cradmin_url
 
 from devilry.apps.core.models import Period
 from devilry.devilry_account.models import PeriodPermissionGroup

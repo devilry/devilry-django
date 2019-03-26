@@ -52,7 +52,7 @@ class FeedbackEditorViewTestMixin(object):
         self.assertEqual(response.status_code, 200)
         selector = htmls.S(response.content)
         self.assertEqual(selector.one('#id_feedbacktext').alltext_normalized, '')
-        self.assertFalse(selector.exists('#django_cradmin_messages'))
+        self.assertFalse(selector.exists('#cradmin_legacy_messages'))
 
     @unittest.skip('Must be updated to used django cradmin')
     def test_get_render_has_feedback_draft(self):
@@ -66,10 +66,10 @@ class FeedbackEditorViewTestMixin(object):
         self.assertEqual(selector.one('#id_feedbacktext').alltext_normalized, 'Test feedback')
         self.assertIn(
             'Loaded draft saved',
-            selector.one('#django_cradmin_messages .alert-info').alltext_normalized)
+            selector.one('#cradmin_legacy_messages .alert-info').alltext_normalized)
         self.assertIn(
             devilry_user_displayname(self.get_testexaminer()),
-            selector.one('#django_cradmin_messages .alert-info').alltext_normalized)
+            selector.one('#cradmin_legacy_messages .alert-info').alltext_normalized)
 
     def test_get_render_other_examiner_has_feedback_draft_no_draft_sharing(self):
         FeedbackDraft.objects.create(

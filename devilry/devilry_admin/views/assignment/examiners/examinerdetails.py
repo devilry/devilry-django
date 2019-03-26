@@ -1,6 +1,6 @@
 
 
-from django_cradmin import crapp
+from cradmin_legacy import crapp
 
 from devilry.devilry_admin.views.assignment.examiners import base_single_examinerview
 from devilry.devilry_admin.views.assignment.students import groupview_base

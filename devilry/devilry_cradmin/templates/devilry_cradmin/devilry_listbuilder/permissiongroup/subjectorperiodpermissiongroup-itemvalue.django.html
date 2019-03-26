@@ -1,10 +1,10 @@
-{% extends "django_cradmin/viewhelpers/listbuilder/itemvalue/titledescription.django.html" %}
+{% extends "cradmin_legacy/viewhelpers/listbuilder/itemvalue/titledescription.django.html" %}
 {% load i18n %}
 {% load devilry_account_tags %}
 
 
 {% block title %}
-    <h3 class="django-cradmin-listbuilder-itemvalue-titledescription-title">
+    <h3 class="cradmin-legacy-listbuilder-itemvalue-titledescription-title">
         {% block title-content %}
             {{ me.get_title }}
         {% endblock title-content %}
@@ -12,7 +12,7 @@
 {% endblock title %}
 
 {% block description %}
-    <p class="django-cradmin-listbuilder-itemvalue-titledescription-description">
+    <p class="cradmin-legacy-listbuilder-itemvalue-titledescription-description">
         {% block description-content %}
             {% with users=me.get_users %}
                 {% if users %}

@@ -7,7 +7,7 @@ class AccountAppConfig(AppConfig):
     verbose_name = ugettext_lazy("Devilry account")
 
     def ready(self):
-        from django_cradmin.superuserui import superuserui_registry
+        from cradmin_legacy.superuserui import superuserui_registry
         appconfig = superuserui_registry.default.add_djangoapp(
                 superuserui_registry.DjangoAppConfig(app_label='devilry_account'))
         # page_model = self.get_model('Page')

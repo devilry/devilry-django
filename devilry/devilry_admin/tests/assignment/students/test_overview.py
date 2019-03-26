@@ -1,7 +1,7 @@
 import mock
 from django import test
 from django.conf import settings
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core.models import Assignment
@@ -147,7 +147,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestuser=testuser)
         self.assertEqual(
             3,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_anonymizationmode_fully_anonymous_subjectadmin_no_link(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)

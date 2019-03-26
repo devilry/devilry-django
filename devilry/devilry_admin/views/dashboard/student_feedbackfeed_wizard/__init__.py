@@ -1,4 +1,4 @@
-from django_cradmin import crapp
+from cradmin_legacy import crapp
 
 from devilry.devilry_admin.views.dashboard.student_feedbackfeed_wizard import student_list, assignment_list
 

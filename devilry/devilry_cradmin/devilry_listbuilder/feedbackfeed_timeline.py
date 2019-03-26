@@ -1,6 +1,6 @@
 # Devilry/cradmin imports
 from django.conf import settings
-from django_cradmin.viewhelpers import listbuilder
+from cradmin_legacy.viewhelpers import listbuilder
 
 from devilry.apps.core.group_user_lookup import GroupUserLookup
 from devilry.devilry_comment import models as comment_models

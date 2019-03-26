@@ -5,8 +5,8 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import pgettext_lazy
 
-from django_cradmin.viewhelpers import listfilter
-from django_cradmin.viewhelpers.listfilter.basefilters.single import abstractselect
+from cradmin_legacy.viewhelpers import listfilter
+from cradmin_legacy.viewhelpers.listfilter.basefilters.single import abstractselect
 
 from devilry.devilry_cradmin import devilry_listfilter
 

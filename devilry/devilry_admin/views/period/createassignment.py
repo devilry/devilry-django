@@ -10,12 +10,12 @@ from django.db import models
 from django.http import Http404
 from django.template.loader import render_to_string
 from django.utils import timezone
-from django_cradmin import crapp
-from django_cradmin import crinstance
-from django_cradmin.viewhelpers import create
-from django_cradmin.viewhelpers import crudbase
+from cradmin_legacy import crapp
+from cradmin_legacy import crinstance
+from cradmin_legacy.viewhelpers import create
+from cradmin_legacy.viewhelpers import crudbase
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
-from django_cradmin.widgets.datetimepicker import DateTimePickerWidget
+from cradmin_legacy.widgets.datetimepicker import DateTimePickerWidget
 
 from devilry.apps.core.models import Assignment
 from devilry.utils import datetimeutils

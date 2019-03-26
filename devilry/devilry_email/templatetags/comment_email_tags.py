@@ -1,6 +1,6 @@
 from django import template
 
-from django_cradmin.crinstance import reverse_cradmin_url
+from cradmin_legacy.crinstance import reverse_cradmin_url
 
 register = template.Library()
 

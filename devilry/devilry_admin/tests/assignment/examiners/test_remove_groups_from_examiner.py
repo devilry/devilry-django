@@ -2,7 +2,7 @@ import mock
 from django import test
 from django.contrib import messages
 from django.http import Http404
-from django_cradmin import cradmin_testhelpers
+from cradmin_legacy import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core.models import Examiner
@@ -69,7 +69,7 @@ class TestRemoveGroupsToExaminerView(test.TestCase, cradmin_testhelpers.TestCase
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
         self.assertEqual(
             'Remove students',
-            mockresponse.selector.one('.django-cradmin-multiselect2-target-formfields .btn').alltext_normalized)
+            mockresponse.selector.one('.cradmin-legacy-multiselect2-target-formfields .btn').alltext_normalized)
 
     def test_exclude_groups_that_does_not_have_the_examiner(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -84,7 +84,7 @@ class TestRemoveGroupsToExaminerView(test.TestCase, cradmin_testhelpers.TestCase
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
         self.assertEqual(
             1,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_no_groups_on_examiner(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
