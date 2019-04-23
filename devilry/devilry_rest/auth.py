@@ -26,7 +26,7 @@ def authentication_required(obj):
         #if secret_key:
             #return validate_signature(request, secret_key)
         #else:
-        return request.user.is_authenticated()
+        return request.user.is_authenticated
 
     decorator = request_passes_test(test_func)
     return wrap_object(obj, decorator)

@@ -19,7 +19,7 @@ class CrAdminInstance(crinstance.BaseCrAdminInstance):
         """
         We give any user access to this instance as long as they are authenticated.
         """
-        return self.request.user.is_authenticated()
+        return self.request.user.is_authenticated
 
     def get_titletext_for_role(self, role):
         """
