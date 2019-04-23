@@ -10,7 +10,7 @@ class TracebackLoggingMiddleware(object):
 
     To enable it, add
     'yourapp.middleware.TracebackLoggingMiddleware' to
-    your setting.py's MIDDLEWARE_CLASSES.
+    your setting.py's MIDDLEWARE.
 
     """
     def process_exception(self, request, exception):

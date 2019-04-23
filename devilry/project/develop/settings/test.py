@@ -17,12 +17,12 @@ DEVILRY_FSHIERDELIVERYSTORE_ROOT = join(testfilesdir, 'deliverystorehier')
 DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY = os.path.join(testfilesdir, 'devilry_compressed_archives', '')
 
 #: Remove tracback logging middleware when running tests.
-if 'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware' in MIDDLEWARE_CLASSES:
-    MIDDLEWARE_CLASSES.remove('devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware')
+if 'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware' in MIDDLEWARE:
+    MIDDLEWARE.remove('devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware')
 
 #: Remove django toolbar middleware while running tests.
-if 'debug_toolbar.middleware.DebugToolbarMiddleware' in MIDDLEWARE_CLASSES:
-    MIDDLEWARE_CLASSES.remove('debug_toolbar.middleware.DebugToolbarMiddleware')
+if 'debug_toolbar.middleware.DebugToolbarMiddleware' in MIDDLEWARE:
+    MIDDLEWARE.remove('debug_toolbar.middleware.DebugToolbarMiddleware')
 
 #: Remove django toolbar from installed apps.
 INSTALLED_APPS += [

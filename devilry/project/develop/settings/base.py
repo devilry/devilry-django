@@ -104,10 +104,10 @@ DEVILRY_DEFAULT_EMAIL_SUFFIX = '@example.com'
 # Logging
 #######################################################################
 
-if 'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware' not in MIDDLEWARE_CLASSES:
-    MIDDLEWARE_CLASSES.append('devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware')
+if 'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware' not in MIDDLEWARE:
+    MIDDLEWARE.append('devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware')
 
-# MIDDLEWARE_CLASSES += [
+# MIDDLEWARE += [
     #'devilry.utils.profile.ProfilerMiddleware' # Enable profiling. Just add ?prof=yes to any url to see a profile report
 # ]
 
