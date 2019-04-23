@@ -1,4 +1,4 @@
-from django.core import urlresolvers
+from django import urls
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import edit
 from django.views.generic import base
@@ -90,7 +90,7 @@ class SubmitUsers(IsSuperuserPermissionMixin, edit.FormView):
         :return: url to `confirm_bulkcreated_users` with json dump of valid and conflicting users from validation
         """
         return '{}?valid_users={}&conflicting_users={}'.format(
-                urlresolvers.reverse('confirm_bulkcreated_users'),
+                urls.reverse('confirm_bulkcreated_users'),
                 json.dumps(self.valid_users), json.dumps(self.conflicting_users))
 
 
@@ -111,8 +111,8 @@ class ConfirmUsers(IsSuperuserPermissionMixin, base.TemplateView):
         conflicting_users = json.loads(self.request.GET.get('conflicting_users', {}))
         context['valid_users'] = valid_users
         context['conflicting_users'] = conflicting_users
-        context['confirmation_url'] = urlresolvers.reverse('save_bulkcreated_users', kwargs={'userdata': json_valid_users})
-        context['cancel_url'] = urlresolvers.reverse('bulkcreate_users_by_email')
+        context['confirmation_url'] = urls.reverse('save_bulkcreated_users', kwargs={'userdata': json_valid_users})
+        context['cancel_url'] = urls.reverse('bulkcreate_users_by_email')
         print(context)
         return context
 
