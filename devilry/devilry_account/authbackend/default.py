@@ -56,7 +56,7 @@ class UsernameAuthBackend(AbstractBaseAuthBackend):
     An authentication backend that authenticates a user by username.
     """
 
-    def authenticate(self, password, username):
+    def authenticate(self, request, password, username):
         """
         Find the `User` corresponding to ``username``, verify ``password`` and return user.
 

@@ -67,17 +67,20 @@ class TestUsernameAuthBackend(TestCase):
         self.assertIsNone(user)
 
     def test_authenticate(self):
-        user = self.authbackend.authenticate(username='testuser',
+        user = self.authbackend.authenticate(None,
+                                             username='testuser',
                                              password='test')
         self.assertIsNotNone(user)
         self.assertEqual(self.testuser.pk, user.pk)
 
     def test_authenticate_invalid_password_returns_none(self):
-        user = self.authbackend.authenticate(username='testuser',
+        user = self.authbackend.authenticate(None,
+                                             username='testuser',
                                              password='notcorrectpassword')
         self.assertIsNone(user)
 
     def test_authenticate_invalid_email_returns_none(self):
-        user = self.authbackend.authenticate(username='doesnotexist',
+        user = self.authbackend.authenticate(None,
+                                             username='doesnotexist',
                                              password='test')
         self.assertIsNone(user)

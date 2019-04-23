@@ -19,17 +19,17 @@ class TestAccountMiddleware(test.TestCase):
     def tearDown(self):
         translation.deactivate_all()
 
-    def __make_mock_request(self, user=None, is_authenticated=False, languagecode='en'):
+    def __make_mock_request(self, user=None, languagecode='en'):
         mockrequest = mock.MagicMock()
         mockrequest.session = self.client.session
         mockrequest.session['SELECTED_LANGUAGE_CODE'] = languagecode
         mockrequest.user = user or mock.MagicMock()
-        mockrequest.user.is_authenticated.return_value = is_authenticated
         return mockrequest
 
     def test_process_request_unauthenticated_user(self):
         local_middleware = middleware.LocalMiddleware()
         mockrequest = self.__make_mock_request(languagecode='nb')
+        mockrequest.user.is_authenticated = False
         local_middleware.process_request(request=mockrequest)
         self.assertEqual('nb', translation.get_language())
         self.assertEqual('nb', mockrequest.LANGUAGE_CODE)
@@ -37,7 +37,7 @@ class TestAccountMiddleware(test.TestCase):
     def test_process_request_authenticated_user(self):
         local_middleware = middleware.LocalMiddleware()
         user = mommy.make('devilry_account.User', languagecode='nb')
-        mockrequest = self.__make_mock_request(user=user, is_authenticated=True)
+        mockrequest = self.__make_mock_request(user=user)
         local_middleware.process_request(request=mockrequest)
         self.assertEqual('nb', translation.get_language())
         self.assertEqual('nb', mockrequest.LANGUAGE_CODE)

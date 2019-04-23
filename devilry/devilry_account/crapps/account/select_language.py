@@ -29,7 +29,7 @@ class SelectLanguageView(TemplateView):
 
     def post(self, request, *args, **kwargs):
         selected_languagecode = self.__get_selected_languagecode(data=request.POST)
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             self.__update_user_language_code(request=request, languagecode=selected_languagecode)
             request.session['SELECTED_LANGUAGE_CODE'] = selected_languagecode
         else:

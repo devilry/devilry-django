@@ -7,7 +7,7 @@ from devilry.devilry_account.models import User
 class LocalMiddleware(MiddlewareMixin):
 
     def process_request(self, request):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             user = self.__get_devilry_user(request=request)
             languagecode = user.languagecode
         else:

@@ -28,7 +28,7 @@ class CrAdminInstance(devilry_crinstance.BaseDevilryCrInstance):
         """
         We give any user access to this instance, including unauthenticated users.
         """
-        return self.request.user.is_authenticated()
+        return self.request.user.is_authenticated
 
     @classmethod
     def matches_urlpath(cls, urlpath):
