@@ -34,10 +34,6 @@ Install dependencies/requirements
 *********************************
 
 .. note::
-    Devilry should work perfectly well with only Python 2.7 or later Python2 versions.
-    Devilry does not work with Python3 yet, but we will support it when Django and all
-    our dependencies gets good Python3 support.
-
     We require postgresql to develop Devilry. You only have to have it installed,
     Devilry comes with Django management commands that help you create and work
     with an isolated development database.
@@ -73,14 +69,14 @@ Ubuntu Linux
 
 Setup the development virtualenv
 ================================
-Setup a **Python 2.7** virtualenv::
+Setup a **Python 3.6** virtualenv (make sure you have Python 3.6 installed)::
 
     $ cd devilry-django
-    $ mkvirtualenv -p /usr/local/bin/python2 devilry-django
+    $ mkvirtualenv -p /usr/local/bin/python3 devilry-django
     $ pip install -r requirements/development.txt
 
 
-.. note:: Your path to `python2` may be something other than `/usr/local/bin/python2`.
+.. note:: Your path to `python3` may be something other than `/usr/local/bin/python3`.
 
 
 .. _createdevenvdb:
