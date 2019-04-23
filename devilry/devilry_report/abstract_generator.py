@@ -117,7 +117,7 @@ class AbstractExcelReportGenerator(AbstractReportGenerator):
 
         Adds a single worksheet by default.
 
-        Must return a list of `xlsx.Worksheet`s.
+        Must return a list of `xlsx.Worksheet`.
         """
         return [
             ('default', self.workbook.add_worksheet())
