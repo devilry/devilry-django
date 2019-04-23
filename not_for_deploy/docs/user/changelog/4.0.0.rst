@@ -1,0 +1,7 @@
+.. _4.0.0changelog:
+
+############################
+What is new in Devilry 4.0.0
+############################
+
+No new functionality, but updated Devilry from Python 2.7 to Python 3.6.
