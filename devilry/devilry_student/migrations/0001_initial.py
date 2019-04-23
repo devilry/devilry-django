@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                 ('uploaded_datetime', models.DateTimeField(auto_now_add=True)),
                 ('uploaded_file', models.FileField(upload_to=devilry.devilry_student.models.uploaded_deliveryfile_path)),
                 ('filename', models.CharField(max_length=255)),
-                ('deadline', models.ForeignKey(to='core.Deadline')),
+                ('deadline', models.ForeignKey(to='core.Deadline', on_delete=models.CASCADE)),
                 ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
         ),

@@ -29,7 +29,7 @@ class UpdateView(crudbase.OnlySaveButtonMixin,
         }
 
     def get_success_url(self):
-        return self.request.cradmin_instance.rolefrontpage_url()
+        return str(self.request.cradmin_instance.rolefrontpage_url())
 
 
 class App(crapp.App):

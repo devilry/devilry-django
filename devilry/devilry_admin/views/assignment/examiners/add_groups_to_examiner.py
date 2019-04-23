@@ -28,7 +28,8 @@ class AddGroupsToExaminerView(groupview_base.BaseMultiselectView,
             messages.info(self.request,
                           ugettext_lazy('All students registered on this assignment has already '
                                         'been added to this examiner.'))
-            return redirect(self.get_success_url())
+
+            return redirect(str(self.get_success_url()))
 
     def get_target_renderer_class(self):
         return TargetRenderer
@@ -77,17 +78,18 @@ class AddGroupsToExaminerView(groupview_base.BaseMultiselectView,
         return groupcount, candidatecount
 
     def get_success_url(self):
-        return self.request.cradmin_instance.reverse_url(
+        url = self.request.cradmin_instance.reverse_url(
             appname='examinerdetails',
             viewname=crapp.INDEXVIEW_NAME,
             kwargs={'relatedexaminer_id': self.get_relatedexaminer_id()})
+        return url
 
     def form_valid(self, form):
         groupqueryset = form.cleaned_data['selected_items']
         groupcount, candidatecount = self.__create_examiner_objects(groupqueryset=groupqueryset)
         messages.success(self.request, self.get_success_message(
             groupcount=groupcount, candidatecount=candidatecount))
-        return redirect(self.get_success_url())
+        return redirect(str(self.get_success_url()))
 
 
 class App(crapp.App):

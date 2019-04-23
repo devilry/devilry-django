@@ -192,7 +192,7 @@ class CreateGroupsViewMixin(object):
     def form_valid(self, form):
         self.create_groups_with_candidate_and_feedbackset(
             relatedstudent_queryset=form.cleaned_data['selected_items'])
-        return redirect(self.get_success_url())
+        return redirect(str(self.get_success_url()))
 
     def get_error_url(self):
         raise NotImplementedError()
@@ -209,7 +209,7 @@ class CreateGroupsViewMixin(object):
                        self.request.user.shortname,
                        self.request.user.id,
                        form.errors.as_data())
-        return redirect(self.get_error_url())
+        return redirect(str(self.get_error_url()))
 
 
 class ConfirmView(CreateGroupsViewMixin,

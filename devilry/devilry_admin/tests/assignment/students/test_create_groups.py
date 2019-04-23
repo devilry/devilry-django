@@ -407,11 +407,11 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
             grading_points=1)
 
         relatedstudent2 = mommy.make('core.RelatedStudent',
-                                     user__fullname=b'User that is not candidate',
+                                     user__fullname='User that is not candidate',
                                      period=testperiod)
 
         relatedstudent3 = mommy.make('core.RelatedStudent',
-                                     user__fullname=b'User that did not pass',
+                                     user__fullname='User that did not pass',
                                      period=testperiod)
         candidate3 = mommy.make('core.Candidate',
                                 relatedstudent=relatedstudent3,
@@ -421,7 +421,7 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
             grading_points=0)
 
         relatedstudent4 = mommy.make('core.RelatedStudent',
-                                     user__fullname=b'User that is not on the other assignment',
+                                     user__fullname='User that is not on the other assignment',
                                      period=testperiod)
 
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
@@ -435,11 +435,11 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
             1,
             mockresponse.selector.count('.devilry-admin-listbuilder-relatedstudent-readonlyitemvalue'))
         self.assertNotIn(relatedstudent2.user.fullname,
-                         mockresponse.response.content)
+                         mockresponse.response.content.decode())
         self.assertNotIn(relatedstudent3.user.fullname,
-                         mockresponse.response.content)
+                         mockresponse.response.content.decode())
         self.assertNotIn(relatedstudent4.user.fullname,
-                         mockresponse.response.content)
+                         mockresponse.response.content.decode())
 
     def test_post_ok_creates_groups(self):
         testperiod = mommy.make('core.Period')

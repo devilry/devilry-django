@@ -140,7 +140,7 @@ class AddView(GetCustomManagablePermissionGroupMixin,
         return context
 
     def get_success_url(self):
-        return self.request.cradmin_app.reverse_appindexurl()
+        return str(self.request.cradmin_app.reverse_appindexurl())
 
     def __get_success_message(self, added_users):
         added_users_names = ['"{}"'.format(user.get_full_name()) for user in added_users]

@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='candidate',
             name='relatedstudent',
-            field=models.ForeignKey(default=None, blank=True, to='core.RelatedStudent', null=True),
+            field=models.ForeignKey(default=None, blank=True, to='core.RelatedStudent', null=True, on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='relatedstudent',

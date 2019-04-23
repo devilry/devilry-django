@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='subject',
             name='parentnode',
-            field=models.ForeignKey(related_name='subjects', blank=True, to='core.Node', null=True),
+            field=models.ForeignKey(related_name='subjects', blank=True, to='core.Node', null=True, on_delete=models.CASCADE),
         ),
     ]

@@ -70,7 +70,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('tag', models.SlugField(help_text=b'A tag can contain a-z, A-Z, 0-9 and "_".', max_length=20)),
-                ('assignment_group', models.ForeignKey(related_name='tags', to='core.AssignmentGroup')),
+                ('assignment_group', models.ForeignKey(related_name='tags', to='core.AssignmentGroup', on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ['tag'],
@@ -82,7 +82,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('candidate_id', models.CharField(help_text=b'An optional candidate id. This can be anything as long as it is less than 30 characters. Used to show the user on anonymous assignmens.', max_length=30, null=True, blank=True)),
                 ('automatic_anonymous_id', models.CharField(default=b'', help_text=b'An automatically generated anonymous ID.', max_length=255, blank=True)),
-                ('assignment_group', models.ForeignKey(related_name='candidates', to='core.AssignmentGroup')),
+                ('assignment_group', models.ForeignKey(related_name='candidates', to='core.AssignmentGroup', on_delete=models.CASCADE)),
                 ('student', models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
         ),
@@ -95,7 +95,7 @@ class Migration(migrations.Migration):
                 ('deliveries_available_before_deadline', models.BooleanField(default=False, help_text=b'Should deliveries on this deadline be available to examiners before thedeadline expires? This is set by students.')),
                 ('why_created', models.CharField(default=None, max_length=50, null=True, blank=True, choices=[(None, 'Unknown.'), (b'examiner-gave-another-chance', 'Examiner gave the student another chance.')])),
                 ('added_by', models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, default=None, blank=True, to=settings.AUTH_USER_MODEL, null=True)),
-                ('assignment_group', models.ForeignKey(related_name='deadlines', to='core.AssignmentGroup')),
+                ('assignment_group', models.ForeignKey(related_name='deadlines', to='core.AssignmentGroup', on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ['-deadline'],
@@ -114,7 +114,7 @@ class Migration(migrations.Migration):
                 ('successful', models.BooleanField(default=True, help_text=b'Has the delivery and all its files been uploaded successfully?')),
                 ('alias_delivery', models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, blank=True, to='core.Delivery', help_text=b'Links to another delivery. Used when delivery_type is Alias.', null=True)),
                 ('copy_of', models.ForeignKey(related_name='copies', on_delete=django.db.models.deletion.SET_NULL, blank=True, to='core.Delivery', help_text=b'Link to a delivery that this delivery is a copy of. This is set by the copy-method.', null=True)),
-                ('deadline', models.ForeignKey(related_name='deliveries', verbose_name='Deadline', to='core.Deadline')),
+                ('deadline', models.ForeignKey(related_name='deliveries', on_delete=models.CASCADE, verbose_name='Deadline', to='core.Deadline')),
                 ('delivered_by', models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, blank=True, to='core.Candidate', help_text=b'The candidate that delivered this delivery. If this is None, the delivery was made by an administrator for a student.', null=True)),
             ],
             options={
@@ -130,7 +130,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('full_name', models.CharField(max_length=300, null=True, blank=True)),
                 ('languagecode', models.CharField(max_length=100, null=True, blank=True)),
-                ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
+                ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(
@@ -138,7 +138,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('automatic_anonymous_id', models.CharField(default=b'', help_text=b'An automatically generated anonymous ID.', max_length=255, blank=True)),
-                ('assignmentgroup', models.ForeignKey(related_name='examiners', to='core.AssignmentGroup')),
+                ('assignmentgroup', models.ForeignKey(related_name='examiners', to='core.AssignmentGroup', on_delete=models.CASCADE)),
                 ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
             options={
@@ -152,7 +152,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('filename', models.CharField(help_text=b'Name of the file.', max_length=255)),
                 ('size', models.IntegerField(help_text=b'Size of the file in bytes.')),
-                ('delivery', models.ForeignKey(related_name='filemetas', to='core.Delivery')),
+                ('delivery', models.ForeignKey(related_name='filemetas', to='core.Delivery', on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ['filename'],
@@ -168,9 +168,9 @@ class Migration(migrations.Migration):
                 ('sent_datetime', models.DateTimeField(default=datetime.datetime.now)),
                 ('accepted', models.NullBooleanField(default=None)),
                 ('responded_datetime', models.DateTimeField(default=None, null=True, blank=True)),
-                ('group', models.ForeignKey(to='core.AssignmentGroup')),
-                ('sent_by', models.ForeignKey(related_name='groupinvite_sent_by_set', to=settings.AUTH_USER_MODEL)),
-                ('sent_to', models.ForeignKey(related_name='groupinvite_sent_to_set', to=settings.AUTH_USER_MODEL)),
+                ('group', models.ForeignKey(to='core.AssignmentGroup', on_delete=models.CASCADE)),
+                ('sent_by', models.ForeignKey(related_name='groupinvite_sent_by_set', to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
+                ('sent_to', models.ForeignKey(related_name='groupinvite_sent_to_set', to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(
@@ -181,7 +181,7 @@ class Migration(migrations.Migration):
                 ('long_name', devilry.apps.core.models.custom_db_fields.LongNameField(max_length=100, verbose_name=b'Name', db_index=True)),
                 ('etag', models.DateTimeField(auto_now=True)),
                 ('admins', models.ManyToManyField(to=settings.AUTH_USER_MODEL, blank=True)),
-                ('parentnode', models.ForeignKey(related_name='child_nodes', blank=True, to='core.Node', null=True)),
+                ('parentnode', models.ForeignKey(related_name='child_nodes', blank=True, to='core.Node', null=True, on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ['short_name'],
@@ -211,7 +211,7 @@ class Migration(migrations.Migration):
                 ('application', models.CharField(help_text=b'Application identifier. Max 300 chars.', max_length=300, db_index=True)),
                 ('key', models.CharField(help_text=b'Key. Max 300 chars.', max_length=300, db_index=True)),
                 ('value', models.TextField(help_text=b'Value.', null=True, db_index=True, blank=True)),
-                ('period', models.ForeignKey(help_text=b'The period where this metadata belongs.', to='core.Period')),
+                ('period', models.ForeignKey(help_text=b'The period where this metadata belongs.', to='core.Period', on_delete=models.CASCADE)),
             ],
             bases=(models.Model, devilry.apps.core.models.abstract_is_admin.AbstractIsAdmin),
         ),
@@ -232,7 +232,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('invalid', models.BooleanField(default=True)),
-                ('assignment', models.OneToOneField(to='core.Assignment')),
+                ('assignment', models.OneToOneField(to='core.Assignment', on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(
@@ -240,8 +240,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('tags', models.TextField(help_text=b'Comma-separated list of tags. Each tag is a word with the following letters allowed: a-z, 0-9, ``_`` and ``-``. Each word is separated by a comma, and no whitespace.', null=True, blank=True)),
-                ('period', models.ForeignKey(verbose_name=b'Period', to='core.Period', help_text=b'The period.')),
-                ('user', models.ForeignKey(help_text=b'The related user.', to=settings.AUTH_USER_MODEL)),
+                ('period', models.ForeignKey(verbose_name=b'Period', to='core.Period', help_text=b'The period.', on_delete=models.CASCADE)),
+                ('user', models.ForeignKey(help_text=b'The related user.', to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
             options={
                 'abstract': False,
@@ -253,7 +253,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('tag', models.CharField(max_length=15, db_index=True)),
-                ('relatedexaminer', models.ForeignKey(to='core.RelatedExaminer')),
+                ('relatedexaminer', models.ForeignKey(to='core.RelatedExaminer', on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(
@@ -263,8 +263,8 @@ class Migration(migrations.Migration):
                 ('tags', models.TextField(help_text=b'Comma-separated list of tags. Each tag is a word with the following letters allowed: a-z, 0-9, ``_`` and ``-``. Each word is separated by a comma, and no whitespace.', null=True, blank=True)),
                 ('candidate_id', models.CharField(max_length=30, null=True, blank=True)),
                 ('automatic_anonymous_id', models.CharField(default=b'', max_length=255, editable=False, blank=True)),
-                ('period', models.ForeignKey(verbose_name=b'Period', to='core.Period', help_text=b'The period.')),
-                ('user', models.ForeignKey(help_text=b'The related user.', to=settings.AUTH_USER_MODEL)),
+                ('period', models.ForeignKey(verbose_name=b'Period', to='core.Period', help_text=b'The period.', on_delete=models.CASCADE)),
+                ('user', models.ForeignKey(help_text=b'The related user.', to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
             options={
                 'abstract': False,
@@ -279,7 +279,7 @@ class Migration(migrations.Migration):
                 ('key', models.CharField(help_text=b'Key. Max 300 chars.', max_length=300, db_index=True)),
                 ('value', models.TextField(help_text=b'Value.', null=True, db_index=True, blank=True)),
                 ('student_can_read', models.BooleanField(default=False, help_text=b'Specifies if a student can read the value or not.')),
-                ('relatedstudent', models.ForeignKey(to='core.RelatedStudent')),
+                ('relatedstudent', models.ForeignKey(to='core.RelatedStudent', on_delete=models.CASCADE)),
             ],
             bases=(models.Model, devilry.apps.core.models.abstract_is_admin.AbstractIsAdmin),
         ),
@@ -288,7 +288,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('tag', models.CharField(max_length=15, db_index=True)),
-                ('relatedstudent', models.ForeignKey(to='core.RelatedStudent')),
+                ('relatedstudent', models.ForeignKey(to='core.RelatedStudent', on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(
@@ -300,8 +300,8 @@ class Migration(migrations.Migration):
                 ('points', models.PositiveIntegerField(help_text=b'Number of points given on this feedback.')),
                 ('is_passing_grade', models.BooleanField(default=False, help_text=b'Is this a passing grade?')),
                 ('save_timestamp', models.DateTimeField(help_text=b'Time when this feedback was saved. Since StaticFeedback is immutable, this never changes.', null=True, blank=True)),
-                ('delivery', models.ForeignKey(related_name='feedbacks', to='core.Delivery')),
-                ('saved_by', models.ForeignKey(help_text=b'The user (examiner) who saved this feedback', to=settings.AUTH_USER_MODEL)),
+                ('delivery', models.ForeignKey(related_name='feedbacks', to='core.Delivery', on_delete=models.CASCADE)),
+                ('saved_by', models.ForeignKey(help_text=b'The user (examiner) who saved this feedback', to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ['-save_timestamp'],
@@ -316,7 +316,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('filename', models.TextField()),
                 ('file', models.FileField(upload_to=devilry.apps.core.models.static_feedback.staticfeedback_fileattachment_upload_to)),
-                ('staticfeedback', models.ForeignKey(related_name='files', to='core.StaticFeedback')),
+                ('staticfeedback', models.ForeignKey(related_name='files', to='core.StaticFeedback', on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ['filename'],
@@ -332,7 +332,7 @@ class Migration(migrations.Migration):
                 ('long_name', devilry.apps.core.models.custom_db_fields.LongNameField(max_length=100, verbose_name=b'Name', db_index=True)),
                 ('etag', models.DateTimeField(auto_now_add=True)),
                 ('admins', models.ManyToManyField(to=settings.AUTH_USER_MODEL, blank=True)),
-                ('parentnode', models.ForeignKey(related_name='subjects', to='core.Node')),
+                ('parentnode', models.ForeignKey(related_name='subjects', to='core.Node', on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ['short_name'],
@@ -344,17 +344,17 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='pointrangetograde',
             name='point_to_grade_map',
-            field=models.ForeignKey(to='core.PointToGradeMap'),
+            field=models.ForeignKey(to='core.PointToGradeMap', on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='period',
             name='parentnode',
-            field=models.ForeignKey(related_name='periods', verbose_name=b'Subject', to='core.Subject'),
+            field=models.ForeignKey(related_name='periods', verbose_name=b'Subject', to='core.Subject', on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='delivery',
             name='last_feedback',
-            field=models.OneToOneField(related_name='latest_feedback_for_delivery', null=True, blank=True, to='core.StaticFeedback'),
+            field=models.OneToOneField(related_name='latest_feedback_for_delivery', null=True, blank=True, to='core.StaticFeedback', on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='assignmentgroup',
@@ -369,12 +369,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='assignmentgroup',
             name='parentnode',
-            field=models.ForeignKey(related_name='assignmentgroups', to='core.Assignment'),
+            field=models.ForeignKey(related_name='assignmentgroups', to='core.Assignment', on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='assignment',
             name='parentnode',
-            field=models.ForeignKey(related_name='assignments', verbose_name=b'Period', to='core.Period'),
+            field=models.ForeignKey(related_name='assignments', verbose_name=b'Period', to='core.Period', on_delete=models.CASCADE),
         ),
         migrations.AlterUniqueTogether(
             name='relatedstudentsyncsystemtag',

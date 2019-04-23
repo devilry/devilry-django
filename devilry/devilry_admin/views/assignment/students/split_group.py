@@ -90,7 +90,7 @@ class SplitGroupView(QuerysetForRoleMixin, SingleObjectMixin, formbase.FormView)
                     '%(what)s was removed from the project group'
                 ) % {'what': candidate.relatedstudent.user.get_displayname()}
             )
-        return redirect(self.get_success_url())
+        return redirect(str(self.get_success_url()))
 
     def get_form_kwargs(self):
         kwargs = super(SplitGroupView, self).get_form_kwargs()

@@ -278,7 +278,7 @@ class RandomView(groupview_base.BaseMultiselectView):
             relatedexaminerqueryset=relatedexaminerqueryset
         )
         messages.success(self.request, ugettext_lazy('Randomly organized students to examiners.'))
-        return redirect(self.get_success_url())
+        return redirect(str(self.get_success_url()))
 
 
 class ManualAddOrReplaceExaminersForm(groupview_base.SelectedGroupsForm):
@@ -385,7 +385,7 @@ class BaseManualAddOrReplaceView(groupview_base.BaseMultiselectView):
                 relatedexaminerqueryset=relatedexaminerqueryset)
         messages.success(self.request, self.get_success_message(candidatecount=candidatecount,
                                                                 relatedexaminers=relatedexaminers))
-        return redirect(self.get_success_url())
+        return redirect(str(self.get_success_url()))
 
 
 class ManualAddTargetRenderer(ManualAddOrReplaceTargetRenderer):

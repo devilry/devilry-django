@@ -23,18 +23,18 @@ class Migration(migrations.Migration):
                 ('created_datetime', models.DateTimeField(default=datetime.datetime.now)),
                 ('published_datetime', models.DateTimeField(null=True, blank=True)),
                 ('deadline_datetime', models.DateTimeField(null=True, blank=True)),
-                ('created_by', models.ForeignKey(related_name='created_feedbacksets', to=settings.AUTH_USER_MODEL)),
-                ('group', models.ForeignKey(to='core.AssignmentGroup')),
-                ('published_by', models.ForeignKey(related_name='published_feedbacksets', to=settings.AUTH_USER_MODEL)),
+                ('created_by', models.ForeignKey(related_name='created_feedbacksets', to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
+                ('group', models.ForeignKey(to='core.AssignmentGroup', on_delete=models.CASCADE)),
+                ('published_by', models.ForeignKey(related_name='published_feedbacksets', to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(
             name='GroupComment',
             fields=[
-                ('comment_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='devilry_comment.Comment')),
+                ('comment_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='devilry_comment.Comment', on_delete=models.CASCADE)),
                 ('instant_publish', models.BooleanField(default=False)),
                 ('visible_for_students', models.BooleanField(default=False)),
-                ('feedback_set', models.ForeignKey(to='devilry_group.FeedbackSet')),
+                ('feedback_set', models.ForeignKey(to='devilry_group.FeedbackSet', on_delete=models.CASCADE)),
             ],
             options={
                 'abstract': False,
@@ -44,13 +44,13 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ImageAnnotationComment',
             fields=[
-                ('comment_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='devilry_comment.Comment')),
+                ('comment_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='devilry_comment.Comment', on_delete=models.CASCADE)),
                 ('instant_publish', models.BooleanField(default=False)),
                 ('visible_for_students', models.BooleanField(default=False)),
                 ('x_coordinate', models.PositiveIntegerField()),
                 ('y_coordinate', models.PositiveIntegerField()),
-                ('feedback_set', models.ForeignKey(to='devilry_group.FeedbackSet')),
-                ('image', models.ForeignKey(to='devilry_comment.CommentFileImage')),
+                ('feedback_set', models.ForeignKey(to='devilry_group.FeedbackSet', on_delete=models.CASCADE)),
+                ('image', models.ForeignKey(to='devilry_comment.CommentFileImage', on_delete=models.CASCADE)),
             ],
             options={
                 'abstract': False,

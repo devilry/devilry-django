@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='examiner',
             name='relatedexaminer',
-            field=models.ForeignKey(to='core.RelatedExaminer'),
+            field=models.ForeignKey(to='core.RelatedExaminer', on_delete=models.CASCADE),
         ),
     ]

@@ -20,6 +20,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='candidate',
             name='relatedstudent',
-            field=models.ForeignKey(to='core.RelatedStudent'),
+            field=models.ForeignKey(to='core.RelatedStudent', on_delete=models.CASCADE),
         ),
     ]

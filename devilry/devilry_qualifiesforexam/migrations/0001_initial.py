@@ -24,8 +24,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='PeriodTag',
             fields=[
-                ('period', models.OneToOneField(primary_key=True, serialize=False, to='core.Period')),
-                ('deadlinetag', models.ForeignKey(to='devilry_qualifiesforexam.DeadlineTag')),
+                ('period', models.OneToOneField(primary_key=True, serialize=False, to='core.Period', on_delete=models.CASCADE)),
+                ('deadlinetag', models.ForeignKey(to='devilry_qualifiesforexam.DeadlineTag', on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(
@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('qualifies', models.NullBooleanField()),
-                ('relatedstudent', models.ForeignKey(to='core.RelatedStudent')),
+                ('relatedstudent', models.ForeignKey(to='core.RelatedStudent', on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(
@@ -45,7 +45,7 @@ class Migration(migrations.Migration):
                 ('message', models.TextField(blank=True)),
                 ('plugin', models.CharField(max_length=500, null=True, blank=True)),
                 ('exported_timestamp', models.DateTimeField(null=True, blank=True)),
-                ('period', models.ForeignKey(related_name='qualifiedforexams_status', to='core.Period')),
+                ('period', models.ForeignKey(related_name='qualifiedforexams_status', to='core.Period', on_delete=models.CASCADE)),
                 ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
             options={
@@ -57,7 +57,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='qualifiesforfinalexam',
             name='status',
-            field=models.ForeignKey(related_name='students', to='devilry_qualifiesforexam.Status'),
+            field=models.ForeignKey(related_name='students', to='devilry_qualifiesforexam.Status', on_delete=models.CASCADE),
         ),
         migrations.AlterUniqueTogether(
             name='qualifiesforfinalexam',

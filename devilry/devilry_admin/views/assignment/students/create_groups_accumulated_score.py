@@ -147,7 +147,7 @@ class SelectAssignmentsView(multiselect2view.ListbuilderView):
         self.request.session['selected_assignment_ids'] = [
             assignment.id for assignment in form.cleaned_data['selected_items']
         ]
-        return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl('accumulated-score-preview'))
+        return HttpResponseRedirect(str(self.request.cradmin_app.reverse_appurl('accumulated-score-preview')))
 
 
 class RelatedStudentItemValue(listbuilder.itemvalue.TitleDescription):
@@ -282,9 +282,9 @@ class PreviewRelatedstudentsListView(listbuilderview.View):
             self.__add_students_to_assignment()
             self.__add_success_message()
             self.clear_session_data()
-            return HttpResponseRedirect(self.request.cradmin_app.reverse_appindexurl())
+            return HttpResponseRedirect(str(self.request.cradmin_app.reverse_appindexurl()))
         self.clear_session_data()
-        return HttpResponseRedirect(self.request.cradmin_app.reverse_appindexurl())
+        return HttpResponseRedirect(str(self.request.cradmin_app.reverse_appindexurl()))
 
     def get_context_data(self, **kwargs):
         context = super(PreviewRelatedstudentsListView, self).get_context_data(**kwargs)

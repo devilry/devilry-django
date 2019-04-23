@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='examiner',
             name='relatedexaminer',
-            field=models.ForeignKey(default=None, blank=True, to='core.RelatedExaminer', null=True),
+            field=models.ForeignKey(default=None, blank=True, to='core.RelatedExaminer', null=True, on_delete=models.CASCADE),
         ),
     ]

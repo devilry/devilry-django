@@ -27,7 +27,7 @@ class RemoveGroupsToExaminerView(groupview_base.BaseMultiselectView,
         else:
             messages.info(self.request,
                           ugettext_lazy('No students to remove.'))
-            return redirect(self.get_success_url())
+            return redirect(str(self.get_success_url()))
 
     def get_target_renderer_class(self):
         return TargetRenderer
@@ -85,7 +85,7 @@ class RemoveGroupsToExaminerView(groupview_base.BaseMultiselectView,
         groupcount, candidatecount = self.__remove_examiner_objects(groupqueryset=groupqueryset)
         messages.success(self.request, self.get_success_message(
             groupcount=groupcount, candidatecount=candidatecount))
-        return redirect(self.get_success_url())
+        return redirect(str(self.get_success_url()))
 
 
 class App(crapp.App):

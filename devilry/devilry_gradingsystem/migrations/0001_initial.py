@@ -24,9 +24,9 @@ class Migration(migrations.Migration):
                 ('points', models.PositiveIntegerField()),
                 ('published', models.BooleanField(default=False, help_text=b'Has this draft been published as a StaticFeedback? Setting this to true on create automatically creates a StaticFeedback.')),
                 ('save_timestamp', models.DateTimeField(help_text=b'Time when this feedback was saved. Since FeedbackDraft is immutable, this never changes.')),
-                ('delivery', models.ForeignKey(related_name='devilry_gradingsystem_feedbackdraft_set', to='core.Delivery')),
-                ('saved_by', models.ForeignKey(related_name='devilry_gradingsystem_feedbackdraft_set', to=settings.AUTH_USER_MODEL)),
-                ('staticfeedback', models.OneToOneField(related_name='devilry_gradingsystem_feedbackdraft_set', null=True, blank=True, to='core.StaticFeedback', help_text=b'The StaticFeedback where this was published if this draft has been published.')),
+                ('delivery', models.ForeignKey(related_name='devilry_gradingsystem_feedbackdraft_set', to='core.Delivery', on_delete=models.CASCADE)),
+                ('saved_by', models.ForeignKey(related_name='devilry_gradingsystem_feedbackdraft_set', to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
+                ('staticfeedback', models.OneToOneField(related_name='devilry_gradingsystem_feedbackdraft_set', null=True, blank=True, to='core.StaticFeedback', help_text=b'The StaticFeedback where this was published if this draft has been published.', on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ['-save_timestamp'],
@@ -38,8 +38,8 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('filename', models.TextField()),
                 ('file', models.FileField(upload_to=devilry.devilry_gradingsystem.models.feedback_draft_file_upload_to)),
-                ('delivery', models.ForeignKey(related_name='+', to='core.Delivery')),
-                ('saved_by', models.ForeignKey(related_name='+', to=settings.AUTH_USER_MODEL)),
+                ('delivery', models.ForeignKey(related_name='+', to='core.Delivery', on_delete=models.CASCADE)),
+                ('saved_by', models.ForeignKey(related_name='+', to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ['filename'],

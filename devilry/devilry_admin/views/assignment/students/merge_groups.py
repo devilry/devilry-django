@@ -41,7 +41,7 @@ class MergeGroupsView(groupview_base.BaseMultiselectView):
         if self.get_filters_string():
             return self.get_filterlist_url(self.get_filters_string())
         else:
-            return self.request.cradmin_app.reverse_appindexurl()
+            return str(self.request.cradmin_app.reverse_appindexurl())
 
     def add_filterlist_items(self, filterlist):
         filterlist.append(devilry_listfilter.assignmentgroup.SearchNotAnonymous())

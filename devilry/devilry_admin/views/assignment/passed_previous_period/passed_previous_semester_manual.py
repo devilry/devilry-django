@@ -58,7 +58,7 @@ class PassAssignmentGroupsView(groupview_base.BaseMultiselectView):
         else:
             messages.info(self.request,
                           ugettext_lazy('There are no students on this assignment.'))
-            return redirect(self.get_success_url())
+            return redirect(str(self.get_success_url()))
 
     def get_pagetitle(self):
         return ugettext_lazy('Bulk pass students')
@@ -103,4 +103,4 @@ class PassAssignmentGroupsView(groupview_base.BaseMultiselectView):
         self.__publish_grading_on_current_assignment(
             queryset=queryset,
             published_by=self.request.user)
-        return redirect(self.get_success_url())
+        return redirect(str(self.get_success_url()))

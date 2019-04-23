@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                 ('published_datetime', models.DateTimeField(null=True, blank=True)),
                 ('user_role', models.CharField(max_length=42, choices=[(b'student', b'Student'), (b'examiner', b'Examiner'), (b'admin', b'Admin')])),
                 ('comment_type', models.CharField(max_length=42, choices=[(b'imageannotationcomment', b'ImageAnnotationComment'), (b'groupcomment', b'GroupComment')])),
-                ('parent', models.ForeignKey(blank=True, to='devilry_comment.Comment', null=True)),
+                ('parent', models.ForeignKey(blank=True, to='devilry_comment.Comment', null=True, on_delete=models.CASCADE)),
                 ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
         ),
@@ -37,7 +37,7 @@ class Migration(migrations.Migration):
                 ('processing_started_datetime', models.DateTimeField(null=True, blank=True)),
                 ('processing_completed_datetime', models.DateTimeField(null=True, blank=True)),
                 ('processing_successful', models.BooleanField(default=False)),
-                ('comment', models.ForeignKey(to='devilry_comment.Comment')),
+                ('comment', models.ForeignKey(to='devilry_comment.Comment', on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(
@@ -50,7 +50,7 @@ class Migration(migrations.Migration):
                 ('thumbnail', models.FileField(max_length=512, upload_to=devilry.devilry_comment.models.commentfileimage_thumbnail_directory_path)),
                 ('thumbnail_width', models.PositiveIntegerField()),
                 ('thumbnail_height', models.PositiveIntegerField()),
-                ('comment_file', models.ForeignKey(to='devilry_comment.CommentFile')),
+                ('comment_file', models.ForeignKey(to='devilry_comment.CommentFile', on_delete=models.CASCADE)),
             ],
         ),
     ]

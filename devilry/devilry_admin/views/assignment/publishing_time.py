@@ -20,7 +20,7 @@ class PublishNowRedirectView(RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
         self.__publish_assignment_now()
-        return self.request.cradmin_app.reverse_appindexurl()
+        return str(self.request.cradmin_app.reverse_appindexurl())
 
 
 class AssignmentPublishingTimeUpdateView(OnlySaveButtonMixin, UpdateView):

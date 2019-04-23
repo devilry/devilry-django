@@ -49,7 +49,7 @@ class HideShowPeriodTag(TemplateView):
         period_tag.is_hidden = hide
         period_tag.full_clean()
         period_tag.save()
-        return HttpResponseRedirect(self.request.cradmin_app.reverse_appindexurl())
+        return HttpResponseRedirect(str(self.request.cradmin_app.reverse_appindexurl()))
 
     def __get_tag_id(self, request):
         tag_id = request.GET.get('tag_id', None)
@@ -205,7 +205,7 @@ class AddTagsView(formbase.FormView):
         # Check if all tags to be added exists.
         if len(tags_string_list) == excluded_tags.count():
             self.add_error_message(ugettext_lazy('The tag(s) you wanted to add already exists.'))
-            return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl(viewname='add_tag'))
+            return HttpResponseRedirect(str(self.request.cradmin_app.reverse_appurl(viewname='add_tag')))
 
         # Add success message.
         num_tags_created = self.__create_tags(tags_string_list, excluded_tags)
@@ -290,7 +290,7 @@ class EditDeleteViewMixin(View):
         return PeriodTag.objects.filter(period=role, id=self.tag_id)
 
     def get_success_url(self):
-        return self.request.cradmin_app.reverse_appindexurl()
+        return str(self.request.cradmin_app.reverse_appindexurl())
 
 
 class EditTagView(crudbase.OnlySaveButtonMixin, EditDeleteViewMixin, update.UpdateView):
@@ -453,7 +453,7 @@ class BaseRelatedUserMultiSelectView(multiselect2view.ListbuilderFilterView):
         messages.error(self.request, message=message)
 
     def get_success_url(self):
-        return self.request.cradmin_app.reverse_appindexurl()
+        return str(self.request.cradmin_app.reverse_appindexurl())
 
 
 class AddRelatedUserToTagMultiSelectView(BaseRelatedUserMultiSelectView):

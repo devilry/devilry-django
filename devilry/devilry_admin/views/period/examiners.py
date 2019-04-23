@@ -144,7 +144,7 @@ class ActivateView(SingleRelatedExaminerMixin, devilry_confirmview.View):
         return ugettext_lazy('Back to examiners on semester overview')
 
     def get_success_url(self):
-        return self.request.cradmin_app.reverse_appindexurl()
+        return str(self.request.cradmin_app.reverse_appindexurl())
 
     def __get_success_message(self):
         return ugettext_lazy('%(user)s was re-activated.') % {
@@ -190,7 +190,7 @@ class AddView(devilry_multiselect2.user.BaseMultiselectUsersView):
         return context
 
     def get_success_url(self):
-        return self.request.cradmin_app.reverse_appindexurl()
+        return str(self.request.cradmin_app.reverse_appindexurl())
 
     def __get_success_message(self, added_users):
         added_users_names = ['"{}"'.format(user.get_full_name()) for user in added_users]

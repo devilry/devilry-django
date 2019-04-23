@@ -139,7 +139,7 @@ class AbstractTypeInUsersView(formbase.FormView):
             self.import_users_from_emails(emails=form.cleaned_users_set)
         else:
             self.import_users_from_usernames(usernames=form.cleaned_users_set)
-        return HttpResponseRedirect(self.get_success_url())
+        return HttpResponseRedirect(str(self.get_success_url()))
 
     def get_context_data(self, **kwargs):
         context = super(AbstractTypeInUsersView, self).get_context_data(**kwargs)

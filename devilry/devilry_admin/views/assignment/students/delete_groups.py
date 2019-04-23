@@ -192,7 +192,7 @@ class DeleteGroupsView(groupview_base.BaseMultiselectView):
             .count()
 
     def get_success_url(self):
-        return self.request.cradmin_instance.appindex_url(appname='delete_groups')
+        return str(self.request.cradmin_instance.appindex_url(appname='delete_groups'))
     
     def form_valid(self, form):
         groupqueryset = form.cleaned_data['selected_items']
@@ -267,7 +267,7 @@ class BulkSelectionDeleteGroupsViewMixin(object):
         success_message = self.get_success_message(delete_group_count=selected_assignment_groups_count)
         if success_message:
             messages.success(request=self.request, message=success_message)
-        return redirect(self.get_success_url())
+        return redirect(str(self.get_success_url()))
 
     def get_error_url(self):
         return self.request.get_full_path()
@@ -277,7 +277,7 @@ class BulkSelectionDeleteGroupsViewMixin(object):
 
     def form_invalid(self, form):
         messages.error(self.request, self.form_invalid_message)
-        return redirect(self.get_error_url())
+        return redirect(str(self.get_error_url()))
 
 
 class ConfirmView(BulkSelectionDeleteGroupsViewMixin,

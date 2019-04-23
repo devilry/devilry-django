@@ -275,7 +275,7 @@ class ApprovePreviousAssignments(formbase.FormView):
                     'students': self.__get_candidates_displayname(candidates)
                 }
             )
-        return redirect(self.get_success_url())
+        return redirect(str(self.get_success_url()))
 
     def get_success_url(self):
         return self.request.cradmin_instance.reverse_url(appname="overview", viewname=crapp.INDEXVIEW_NAME)

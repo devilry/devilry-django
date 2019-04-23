@@ -20,7 +20,7 @@ class RequireUnpublishedAssignmentMixin(object):
         assignment = self.request.cradmin_role
         if assignment.publishing_time < timezone.now():
             messages.error(self.request, self.published_assignment_error_message)
-            return redirect(self.request.cradmin_instance.rolefrontpage_url())
+            return redirect(str(self.request.cradmin_instance.rolefrontpage_url()))
         return super(RequireUnpublishedAssignmentMixin, self).dispatch(*args, **kwargs)
 
 
