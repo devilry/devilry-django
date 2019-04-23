@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
             name='PeriodPermissionGroup',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('period', models.ForeignKey(to='core.Period')),
+                ('period', models.ForeignKey(to='core.Period', on_delete=models.CASCADE)),
             ],
             options={
                 'verbose_name': 'Semester permission group',
@@ -44,7 +44,7 @@ class Migration(migrations.Migration):
             name='PermissionGroupUser',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('permissiongroup', models.ForeignKey(to='devilry_account.PermissionGroup')),
+                ('permissiongroup', models.ForeignKey(to='devilry_account.PermissionGroup', on_delete=models.CASCADE)),
                 ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
             options={
@@ -56,8 +56,8 @@ class Migration(migrations.Migration):
             name='SubjectPermissionGroup',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('permissiongroup', models.ForeignKey(to='devilry_account.PermissionGroup')),
-                ('subject', models.ForeignKey(to='core.Subject')),
+                ('permissiongroup', models.ForeignKey(to='devilry_account.PermissionGroup', on_delete=models.CASCADE)),
+                ('subject', models.ForeignKey(to='core.Subject', on_delete=models.CASCADE)),
             ],
             options={
                 'verbose_name': 'Semester permission group',
@@ -72,7 +72,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='periodpermissiongroup',
             name='permissiongroup',
-            field=models.ForeignKey(to='devilry_account.PermissionGroup'),
+            field=models.ForeignKey(to='devilry_account.PermissionGroup', on_delete=models.CASCADE),
         ),
         migrations.AlterUniqueTogether(
             name='subjectpermissiongroup',
