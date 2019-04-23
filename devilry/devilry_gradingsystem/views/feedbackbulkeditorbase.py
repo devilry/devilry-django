@@ -116,7 +116,7 @@ class FeedbackBulkEditorFormView(BulkViewBase):
             randomkey = '{}.{}'.format(timezone.now().strftime('%Y-%m-%d_%H-%M-%S-%f'), randint(0, 10000000))
             sessionkey = 'devilry_gradingsystem_draftids_{}'.format(randomkey)
             self.request.session[sessionkey] = draft_ids
-            return redirect(self._get_preview_redirect_url(randomkey))
+            return redirect(str(self._get_preview_redirect_url(randomkey)))
         else:
             return super(FeedbackBulkEditorFormView, self).submitted_primaryform_valid(form, context_data)
 
@@ -151,7 +151,7 @@ class FeedbackBulkEditorFormView(BulkViewBase):
         if not assignment.has_valid_grading_setup():
             return HttpResponseBadRequest('Grading system is not set up correctly')
         elif 'submit_save_draft' in self.request.POST:
-            return redirect(self.request.path)
+            return redirect(str(self.request.path))
         return super(FeedbackBulkEditorFormView, self).post(*args, **kwargs)
 
     def get_context_data(self, **kwargs):

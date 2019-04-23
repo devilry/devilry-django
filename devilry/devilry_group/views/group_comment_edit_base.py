@@ -82,7 +82,7 @@ class EditGroupCommentBase(update.UpdateView):
 
     def form_invalid(self, form):
         messages.success(self.request, ugettext_lazy('No changes, comment not updated'))
-        return HttpResponseRedirect(self.__get_redirect_url())
+        return HttpResponseRedirect(str(self.__get_redirect_url()))
 
     def save_object(self, form, commit=False):
         comment = super(EditGroupCommentBase, self).save_object(form=form, commit=True)
@@ -104,4 +104,4 @@ class EditGroupCommentBase(update.UpdateView):
             kwargs=self.kwargs)
 
     def get_success_url(self):
-        return self.__get_redirect_url()
+        return str(self.__get_redirect_url())

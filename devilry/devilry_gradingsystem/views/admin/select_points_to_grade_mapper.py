@@ -36,7 +36,7 @@ class SelectPointsToGradeMapperView(AssignmentSingleObjectRequiresValidPluginMix
             self.form = PointsToGradeMapperForm(self.request.GET, instance=assignment)
             if self.form.is_valid():
                 self.form.save()
-                return redirect(self._get_next_page_url(points_to_grade_mapper))
+                return redirect(str(self._get_next_page_url(points_to_grade_mapper)))
         return super(SelectPointsToGradeMapperView, self).get(*args, **kwargs)
 
     def get_context_data(self, **kwargs):

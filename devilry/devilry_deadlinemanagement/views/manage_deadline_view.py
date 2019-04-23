@@ -111,7 +111,7 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
             if self.initial_selected_form_is_valid():
                 return self.render_to_response(self.get_context_data(form=self.get_form()))
             else:
-                return redirect(self.get_previous_view_url())
+                return redirect(str(self.get_previous_view_url()))
         else:
             return super(ManageDeadlineView, self).post(request, *args, **kwargs)
 
@@ -430,7 +430,7 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
         messages.success(self.request, message=message)
 
     def get_success_url(self):
-        return self.request.cradmin_app.reverse_appindexurl()
+        return str(self.request.cradmin_app.reverse_appindexurl())
 
 
 class ManageDeadlineAllGroupsView(ManageDeadlineView):

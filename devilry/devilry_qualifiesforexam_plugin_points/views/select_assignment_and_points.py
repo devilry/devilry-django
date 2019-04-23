@@ -84,4 +84,4 @@ class PluginSelectAssignmentsAndPointsView(base_multiselect_view.QualificationIt
         # Attach collected data to session.
         self.request.session['passing_relatedstudentids'] = passing_relatedstudentids
         self.request.session['plugintypeid'] = PluginSelectAssignmentsAndPointsView.plugintypeid
-        return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl('preview'))
+        return HttpResponseRedirect(str(self.request.cradmin_app.reverse_appurl('preview')))

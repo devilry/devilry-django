@@ -281,7 +281,7 @@ class ExaminerPublicDiscussView(ExaminerBaseFeedbackFeedView):
         self.__send_comment_email(comment=comment)
 
     def get_success_url(self):
-        return self.request.cradmin_app.reverse_appurl(viewname='public-discuss')
+        return str(self.request.cradmin_app.reverse_appurl(viewname='public-discuss'))
 
 
 class ExaminerWithAdminsDiscussView(ExaminerBaseFeedbackFeedView):
@@ -320,7 +320,7 @@ class ExaminerWithAdminsDiscussView(ExaminerBaseFeedbackFeedView):
         self.__send_email_to_examiners(comment=comment)
 
     def get_success_url(self):
-        return self.request.cradmin_app.reverse_appurl(viewname='examiner-admin-discuss')
+        return str(self.request.cradmin_app.reverse_appurl(viewname='examiner-admin-discuss'))
 
 
 class EditGradeForm(forms.ModelForm):
@@ -503,7 +503,7 @@ class GroupCommentDeleteView(GroupCommentEditDeleteMixin, delete.DeleteView):
             id=self.kwargs.get('pk')).exclude_comment_is_not_draft_from_user(self.request.user)
 
     def get_success_url(self):
-        return self.request.cradmin_app.reverse_appindexurl()
+        return str(self.request.cradmin_app.reverse_appindexurl())
 
 
 class GroupCommentEditView(EditGroupCommentBase):
@@ -519,8 +519,8 @@ class ExaminerFeedbackfeedRedirectView(View):
         # redirect to feedback view.
         if not group.cached_data.last_feedbackset.grading_published_datetime \
                 and group.cached_data.last_feedbackset.deadline_datetime < timezone.now():
-            return redirect(self.request.cradmin_app.reverse_appurl(viewname='feedback'))
-        return redirect(self.request.cradmin_app.reverse_appurl(viewname='public-discuss'))
+            return redirect(str(self.request.cradmin_app.reverse_appurl(viewname='feedback')))
+        return redirect(str(self.request.cradmin_app.reverse_appurl(viewname='public-discuss')))
 
 
 class App(crapp.App):

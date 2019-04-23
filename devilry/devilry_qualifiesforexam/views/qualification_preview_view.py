@@ -73,7 +73,7 @@ class AbstractQualificationPreviewView(generic.FormView):
         return builder
 
     def form_valid(self, form):
-        return HttpResponseRedirect(self.request.cradmin_app.reverse_appindexurl())
+        return HttpResponseRedirect(str(self.request.cradmin_app.reverse_appindexurl()))
 
 
 class QualificationPreviewView(AbstractQualificationPreviewView):
@@ -93,18 +93,18 @@ class QualificationPreviewView(AbstractQualificationPreviewView):
             request: ``HttpRequest`` with the attached cradmin_role.
         """
         if 'plugintypeid' not in request.session or 'passing_relatedstudentids' not in request.session:
-            return HttpResponseRedirect(self.request.cradmin_app.reverse_appindexurl())
+            return HttpResponseRedirect(str(self.request.cradmin_app.reverse_appindexurl()))
         status = status_models.Status.objects\
             .filter(period=self.request.cradmin_role)\
             .filter(status=status_models.Status.READY)\
             .order_by('-createtime').first()
         if status:
-            return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl(
+            return HttpResponseRedirect(str(self.request.cradmin_app.reverse_appurl(
                 viewname='show-status',
                 kwargs={
                     'roleid': self.request.cradmin_role.id
                 }
-            ))
+            )))
         return super(QualificationPreviewView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -161,13 +161,13 @@ class QualificationPreviewView(AbstractQualificationPreviewView):
         if 'save' in self.request.POST:
             status = self._create_status(plugintypeid)
             self._bulk_create_relatedstudents(status, passing_relatedstudentids)
-            return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl(
+            return HttpResponseRedirect(str(self.request.cradmin_app.reverse_appurl(
                 viewname='show-status',
                 kwargs={
                     'roleid': self.request.cradmin_role.id,
                     'statusid': status.id
                 }
-            ))
+            )))
         return super(QualificationPreviewView, self).form_valid(form)
 
 

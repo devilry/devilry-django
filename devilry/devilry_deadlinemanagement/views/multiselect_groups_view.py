@@ -194,7 +194,7 @@ class AssignmentGroupMultiSelectListFilterView(viewutils.DeadlineManagementMixin
         """
         Defaults to the apps indexview.
         """
-        return self.request.cradmin_app.reverse_appindexurl()
+        return str(self.request.cradmin_app.reverse_appindexurl())
 
     def get_filterlist_url(self, filters_string):
         return self.request.cradmin_app.reverse_appurl(

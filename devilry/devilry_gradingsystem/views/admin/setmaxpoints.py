@@ -62,7 +62,7 @@ class SetMaxPointsDisplay(SetMaxPointsComminMixin, DetailView):
             assignment.set_max_points(pluginapi.get_max_points())
             assignment.full_clean()
             assignment.save()
-            return redirect(self.get_success_url())
+            return redirect(str(self.get_success_url()))
         else:
             return super(SetMaxPointsDisplay, self).get(*args, **kwargs)
 

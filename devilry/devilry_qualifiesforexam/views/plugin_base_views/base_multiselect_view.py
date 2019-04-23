@@ -192,13 +192,13 @@ class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForEx
         period = self.request.cradmin_role
         status = status_models.Status.objects.get_last_status_in_period(period=period)
         if status and status.status == status_models.Status.READY:
-            return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl(
+            return HttpResponseRedirect(str(self.request.cradmin_app.reverse_appurl(
                 viewname='show-status',
                 kwargs={
                     'roleid': self.request.cradmin_role.id,
                     'statusid': status.id
                 }
-            ))
+            )))
         return super(QualificationItemListView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset_for_role(self, role):
@@ -293,4 +293,4 @@ class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForEx
         # Attach collected data to session.
         self.request.session['passing_relatedstudentids'] = passing_relatedstudentids
         self.request.session['plugintypeid'] = self.get_plugintypeid()
-        return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl('preview'))
+        return HttpResponseRedirect(str(self.request.cradmin_app.reverse_appurl('preview')))

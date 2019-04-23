@@ -261,7 +261,7 @@ class AbstractAssignmentGroupMultiSelectListFilterView(multiselect2view.Listbuil
         """
         Defaults to the apps indexview.
         """
-        return self.request.cradmin_app.reverse_appindexurl()
+        return str(self.request.cradmin_app.reverse_appindexurl())
 
     def form_valid(self, form):
         return super(AbstractAssignmentGroupMultiSelectListFilterView, self).form_valid(form)

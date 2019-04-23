@@ -69,7 +69,7 @@ class SetPassingGradeMinPointsDisplay(SetPassingGradeMinPointsCommonMixin, Detai
             assignment.set_passing_grade_min_points(pluginapi.get_passing_grade_min_points())
             assignment.full_clean()
             assignment.save()
-            return redirect(self.get_success_url())
+            return redirect(str(self.get_success_url()))
         else:
             return super(SetPassingGradeMinPointsDisplay, self).get(*args, **kwargs)
 

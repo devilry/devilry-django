@@ -69,4 +69,4 @@ class PluginSelectStudentsView(base_multiselect_view.QualificationItemListView, 
     def form_valid(self, form):
         self.request.session['passing_relatedstudentids'] = self.get_qualifying_itemids(posted_form=form)
         self.request.session['plugintypeid'] = PluginSelectStudentsView.plugintypeid
-        return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl('preview'))
+        return HttpResponseRedirect(str(self.request.cradmin_app.reverse_appurl('preview')))

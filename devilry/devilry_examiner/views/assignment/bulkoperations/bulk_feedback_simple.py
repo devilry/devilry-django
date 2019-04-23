@@ -243,9 +243,9 @@ class SimpleGroupBulkFeedbackView(listbuilderview.View):
                                  len(list(feedbackset_data_dict.keys()))))
         else:
             messages.warning(request, message=ugettext_lazy('You must set a grade for at least one group.'))
-        return http.HttpResponseRedirect(
+        return http.HttpResponseRedirect(str(
             self.request.cradmin_app.reverse_appurl(viewname='bulk-feedback-simple')
-        )
+        ))
 
     def get_context_data(self, **kwargs):
         context_data = super(SimpleGroupBulkFeedbackView, self).get_context_data(**kwargs)

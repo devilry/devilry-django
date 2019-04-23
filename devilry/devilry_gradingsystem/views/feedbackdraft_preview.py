@@ -90,4 +90,4 @@ class FeedbackDraftPreviewView(DetailView):
                     staticfeedback=draft.staticfeedback)
             return redirect('devilry_examiner_singledeliveryview', deliveryid=delivery.id)
         else:
-            return redirect(delivery.assignment.get_gradingsystem_plugin_api().get_edit_feedback_url(delivery.id))
+            return redirect(str(delivery.assignment.get_gradingsystem_plugin_api().get_edit_feedback_url(delivery.id)))

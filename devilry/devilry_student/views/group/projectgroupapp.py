@@ -106,7 +106,7 @@ class ProjectGroupOverviewView(TemplateView):
                     'student': form.cleaned_invite.sent_to.get_displayname()
                 })
             )
-        return redirect(self.get_success_url())
+        return redirect(str(self.get_success_url()))
 
     def get_context_data(self, **kwargs):
         context = super(ProjectGroupOverviewView, self).get_context_data(**kwargs)
@@ -189,7 +189,7 @@ class GroupInviteRespondView(DetailView):
                             'student': invite.sent_by.get_displayname()
                         })
                 )
-        return redirect(self.get_declined_or_error_url())
+        return redirect(str(self.get_declined_or_error_url()))
 
 
 class GroupInviteRespondViewStandalone(DetailView):
@@ -320,7 +320,7 @@ class GroupInviteRespondViewStandalone(DetailView):
                             'student': invite.sent_by.get_displayname()
                         })
                 )
-                return redirect(self.get_success_url())
+                return redirect(str(self.get_success_url()))
             else:
                 messages.success(
                     self.request,
@@ -329,7 +329,7 @@ class GroupInviteRespondViewStandalone(DetailView):
                             'student': invite.sent_by.get_displayname()
                         })
                 )
-            return redirect(self.decline_url())
+            return redirect(str(self.decline_url()))
 
 
 class GroupInviteDeleteView(DeleteView):
@@ -353,7 +353,7 @@ class GroupInviteDeleteView(DeleteView):
                 'student': self.get_object().sent_to.get_displayname()
             })
         )
-        return self.request.cradmin_app.reverse_appindexurl()
+        return str(self.request.cradmin_app.reverse_appindexurl())
 
     def post(self, *args, **kwargs):
         invite = self.get_object()

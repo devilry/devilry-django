@@ -91,7 +91,7 @@ class AdminPublicDiscussView(AdminBaseFeedbackFeedView):
         self.__send_comment_email(comment=comment)
 
     def get_success_url(self):
-        return self.request.cradmin_app.reverse_appindexurl()
+        return str(self.request.cradmin_app.reverse_appindexurl())
 
 
 class AdminWithExaminersDiscussView(AdminBaseFeedbackFeedView):
@@ -130,7 +130,7 @@ class AdminWithExaminersDiscussView(AdminBaseFeedbackFeedView):
         self.__send_email_to_examiners(comment=comment)
 
     def get_success_url(self):
-        return self.request.cradmin_app.reverse_appurl(viewname='admin-examiner-discuss')
+        return str(self.request.cradmin_app.reverse_appurl(viewname='admin-examiner-discuss'))
 
 
 class AdminEditGroupCommentView(EditGroupCommentBase):

@@ -43,7 +43,7 @@ class SelectPluginView(AssignmentSingleObjectMixin, DetailView):
             self.form = AssignmentForm(self.request.GET, instance=assignment)
             if self.form.is_valid():
                 self.form.save()
-                return redirect(self._get_next_page_url(grading_system_plugin_id))
+                return redirect(str(self._get_next_page_url(grading_system_plugin_id)))
         return super(SelectPluginView, self).get(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
