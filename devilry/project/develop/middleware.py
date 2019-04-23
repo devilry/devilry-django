@@ -1,8 +1,10 @@
 from django.contrib import auth
 from django.conf import settings
+from django.utils.deprecation import MiddlewareMixin
 
 
-class FakeLoginMiddleware(object):
+
+class FakeLoginMiddleware(object, MiddlewareMixin):
     """
     Login using ?fakeuser=USERNAME as long as settings.DEBUG is true.
 
@@ -15,7 +17,7 @@ class FakeLoginMiddleware(object):
             # If the user is already authenticated and that user is the user we are
             # getting passed in the headers, then the correct user is already
             # persisted in the session and we don't need to continue.
-            if request.user.is_authenticated():
+            if request.user.is_authenticated:
                 if request.user.username == username:
                     return
 

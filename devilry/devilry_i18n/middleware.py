@@ -1,19 +1,20 @@
 from django.conf import settings
 from django.utils.cache import patch_vary_headers
 from django.utils import translation
+from django.utils.deprecation import MiddlewareMixin
 
 
-class LocaleMiddleware(object):
+class LocaleMiddleware(object, MiddlewareMixin):
     """
     Locale selecting middleware that will look at the languagecode in the
     DevilryUserProfile of the authenticated user.
 
-    Must be added to ``settings.MIDDLEWARE_CLASSES`` after
+    Must be added to ``settings.MIDDLEWARE`` after
     ``django.contrib.auth.middleware.AuthenticationMiddleware``.
     """
 
     def _get_language(self, request):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             languagecode = request.user.languagecode
             if languagecode:
                 languages_dict = dict(settings.LANGUAGES)
