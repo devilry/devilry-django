@@ -4,7 +4,7 @@ from django.utils.deprecation import MiddlewareMixin
 
 
 
-class FakeLoginMiddleware(object, MiddlewareMixin):
+class FakeLoginMiddleware(MiddlewareMixin):
     """
     Login using ?fakeuser=USERNAME as long as settings.DEBUG is true.
 

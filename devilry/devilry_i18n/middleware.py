@@ -4,7 +4,7 @@ from django.utils import translation
 from django.utils.deprecation import MiddlewareMixin
 
 
-class LocaleMiddleware(object, MiddlewareMixin):
+class LocaleMiddleware(MiddlewareMixin):
     """
     Locale selecting middleware that will look at the languagecode in the
     DevilryUserProfile of the authenticated user.
