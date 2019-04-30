@@ -1,9 +1,11 @@
 import logging
 
+from django.utils.deprecation import MiddlewareMixin
+
 logger = logging.getLogger(__name__)
 
 
-class TracebackLoggingMiddleware(object):
+class TracebackLoggingMiddleware(MiddlewareMixin):
     """Middleware that logs exceptions.
 
     See http://djangosnippets.org/snippets/421/.

@@ -4,8 +4,9 @@ from io import StringIO
 import pstats
 
 from django.conf import settings
+from django.utils.deprecation import MiddlewareMixin
 
-class ProfilerMiddleware(object):
+class ProfilerMiddleware(MiddlewareMixin):
     def process_view(self, request, callback, callback_args, callback_kwargs):
         if settings.DEBUG and 'prof' in request.GET:
             self.profiler = cProfile.Profile()
