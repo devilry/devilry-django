@@ -23,7 +23,7 @@ class EmailAuthBackend(AbstractBaseAuthBackend):
     An authentication backend that authenticates a user by email.
     """
 
-    def authenticate(self, password, email):
+    def authenticate(self, request, password, email):
         """
         Find the `User` corresponding to ``email``, verify ``password`` and return user.
 

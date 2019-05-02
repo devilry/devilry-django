@@ -27,7 +27,7 @@ setup(
         'django-crispy-forms==1.7.2',
         'openpyxl==1.6.1',
         'django==2.0.13',
-        # 'django >= 1.11.17, < 1.12',
+        # 'django==1.11.20',
         # 'django==1.9.13',
         'URLObject==2.4.3',
         # 'django-simple-rest==1.4.1',
