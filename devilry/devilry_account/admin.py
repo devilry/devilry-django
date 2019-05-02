@@ -73,7 +73,6 @@ class DevilryUserAdmin(UserAdmin):
         ('Metadata', {'fields': [
             'datetime_joined',
             'last_login',
-            'lastname',
         ]})
     ]
     readonly_fields = ['datetime_joined', 'last_login']

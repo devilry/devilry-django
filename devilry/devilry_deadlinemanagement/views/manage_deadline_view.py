@@ -102,14 +102,14 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
         if not self.can_move_deadline():
             raise Http404()
         form = self.get_instantiated_form()
-        return self.render(self.get_context_data(form=form))
+        return self.render_to_response(self.get_context_data(form=form))
 
     def post(self, request, *args, **kwargs):
         if not self.can_move_deadline():
             raise Http404()
         if self.post_from_previous_view:
             if self.initial_selected_form_is_valid():
-                return self.render(self.get_context_data(form=self.get_form()))
+                return self.render_to_response(self.get_context_data(form=self.get_form()))
             else:
                 return redirect(str(self.get_previous_view_url()))
         else:

@@ -299,7 +299,7 @@ class GroupInviteRespondViewStandalone(DetailView):
             self.errormessage = ' '.join(e.messages)
 
         context = self.get_context_data(object=self.object)
-        return self.render(context)
+        return self.render_to_response(context)
 
     def post(self, *args, **kwargs):
         invite = self.get_object()
