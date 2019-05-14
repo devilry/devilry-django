@@ -15,4 +15,4 @@ class ImportedModel(models.Model):
     content_object = GenericForeignKey('content_type', 'content_object_id')
 
     #: JSON data from imported v2 models.
-    data = JSONField(default={})
+    data = JSONField(default=dict)
