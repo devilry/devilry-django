@@ -2,7 +2,7 @@
 
 from django.contrib import messages
 from django.shortcuts import redirect
-from django.utils.translation import ugettext_lazy, ungettext_lazy
+from django.utils.translation import gettext_lazy, ngettext_lazy
 from cradmin_legacy import crapp
 
 from devilry.apps.core.models import Examiner
@@ -13,7 +13,7 @@ from devilry.devilry_cradmin import devilry_listbuilder
 
 class TargetRenderer(devilry_listbuilder.assignmentgroup.GroupTargetRenderer):
     def get_submit_button_text(self):
-        return ugettext_lazy('Add students')
+        return gettext_lazy('Add students')
 
 
 class AddGroupsToExaminerView(groupview_base.BaseMultiselectView,
@@ -26,8 +26,8 @@ class AddGroupsToExaminerView(groupview_base.BaseMultiselectView,
             return response
         else:
             messages.info(self.request,
-                          ugettext_lazy('All students registered on this assignment has already '
-                                        'been added to this examiner.'))
+                          gettext_lazy("All students registered on this assignment has already "
+                                        "been added to this examiner."))
 
             return redirect(str(self.get_success_url()))
 
@@ -51,11 +51,11 @@ class AddGroupsToExaminerView(groupview_base.BaseMultiselectView,
 
     def get_success_message(self, groupcount, candidatecount):
         if groupcount == candidatecount:
-            return ugettext_lazy('Added %(count)s students.') % {
+            return gettext_lazy('Added %(count)s students.') % {
                 'count': candidatecount
             }
         else:
-            return ungettext_lazy(
+            return ngettext_lazy(
                 'Added %(groupcount)s project group with %(studentcount)s students.',
                 'Added %(groupcount)s project groups with %(studentcount)s students.',
                 groupcount

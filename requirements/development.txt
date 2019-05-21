@@ -5,7 +5,7 @@ django-debug-toolbar==1.9
 
 # django_dbdev==0.9.4
 django_dbdev==1.1.0
-model-mommy==1.5.0
+model-mommy==1.6.0
 
 # Required by the soupselect tests
 BeautifulSoup4==4.7.1
@@ -24,5 +24,5 @@ tox==1.7.2
 pyflakes==0.8.1
 
 transifex-client==0.13.6
-mock==2.0.0
+mock==3.0.5
 fabric==1.14.0
