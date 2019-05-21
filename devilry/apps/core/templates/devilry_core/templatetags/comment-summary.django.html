@@ -3,33 +3,33 @@
 <span class="devilry-core-comment-summary">
     <span class="devilry-core-comment-summary-studentcomments">
         {% if group.cached_data.public_student_comment_count == 1 %}
-            {% blocktrans with commentcount=group.cached_data.public_student_comment_count %}
+            {% blocktrans trimmed with commentcount=group.cached_data.public_student_comment_count %}
                 {{ commentcount }} comment from student.
             {% endblocktrans %}
         {% else %}
-            {% blocktrans with commentcount=group.cached_data.public_student_comment_count%}
+            {% blocktrans trimmed with commentcount=group.cached_data.public_student_comment_count%}
                 {{ commentcount }} comments from student.
             {% endblocktrans %}
         {% endif %}
     </span>
     <span class="devilry-core-comment-summary-studentfiles">
         {% if group.cached_data.public_student_file_upload_count == 1 %}
-            {% blocktrans with filecount=group.cached_data.public_student_file_upload_count %}
+            {% blocktrans trimmed with filecount=group.cached_data.public_student_file_upload_count %}
                 {{ filecount }} file from student.
             {% endblocktrans %}
         {% else %}
-            {% blocktrans with filecount=group.cached_data.public_student_file_upload_count %}
+            {% blocktrans trimmed with filecount=group.cached_data.public_student_file_upload_count %}
                 {{ filecount }} files from student.
             {% endblocktrans %}
         {% endif %}
     </span>
     <span class="devilry-core-comment-summary-examinercomments">
         {% if group.cached_data.public_examiner_comment_count == 1 %}
-            {% blocktrans with commentcount=group.cached_data.public_examiner_comment_count %}
+            {% blocktrans trimmed with commentcount=group.cached_data.public_examiner_comment_count %}
                 {{ commentcount }} comment from examiner.
             {% endblocktrans %}
         {% else %}
-            {% blocktrans with commentcount=group.cached_data.public_examiner_comment_count %}
+            {% blocktrans trimmed with commentcount=group.cached_data.public_examiner_comment_count %}
                 {{ commentcount }} comments from examiner.
             {% endblocktrans %}
         {% endif %}
@@ -37,11 +37,11 @@
     {% if group.number_of_private_groupcomments_from_user > 0 %}
         <span class="devilry-core-comment-summary-unpublishedcomments">
             {% if group.number_of_private_groupcomments_from_user == 1 %}
-                {% blocktrans with commentcount=group.number_of_private_groupcomments_from_user %}
+                {% blocktrans trimmed with commentcount=group.number_of_private_groupcomments_from_user %}
                     {{ commentcount }} unpublished comment from you.
                 {% endblocktrans %}
             {% else %}
-                {% blocktrans with commentcount=group.number_of_private_groupcomments_from_user %}
+                {% blocktrans trimmed with commentcount=group.number_of_private_groupcomments_from_user %}
                     {{ commentcount }} unpublished comments from you.
                 {% endblocktrans %}
             {% endif %}

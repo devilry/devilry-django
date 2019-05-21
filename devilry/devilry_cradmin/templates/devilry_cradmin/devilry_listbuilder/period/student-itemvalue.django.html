@@ -7,11 +7,15 @@
 {% endblock title-content %}
 
 {% block description-content %}
-    {% blocktrans trimmed count assignmentcount=me.period.assignmentcount_for_studentuser %}
-        {{ assignmentcount }} assignment
-    {% plural %}
-        {{ assignmentcount }} assignments
-    {% endblocktrans %}
+    {% if me.period.assignmentcount_for_studentuser == 1%}
+        {% blocktrans trimmed with assignmentcount=me.period.assignmentcount_for_studentuser %}
+            {{ assignmentcount }} assignment
+        {% endblocktrans %}
+    {% else %}
+        {% blocktrans trimmed with assignmentcount=me.period.assignmentcount_for_studentuser %}
+            {{ assignmentcount }} assignments
+        {% endblocktrans %}
+    {% endif %}
 {% endblock description-content %}
 
 
