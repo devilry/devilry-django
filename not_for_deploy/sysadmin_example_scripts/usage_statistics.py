@@ -47,7 +47,7 @@ def get_number_of_deliveries(from_datetime, to_datetime):
     comment_file_queryset = CommentFile.objects\
         .filter(comment_id__in=group_comment_queryset.values_list('id', flat=True))
 
-    return comment_file_queryset.count()
+    return comment_file_queryset.distinct('comment').count()
 
 
 def get_unique_logins(from_datetime):
