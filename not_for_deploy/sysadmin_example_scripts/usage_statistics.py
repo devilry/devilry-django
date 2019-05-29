@@ -6,6 +6,7 @@ from datetime import datetime
 import arrow
 
 from django.contrib.auth import get_user_model
+from django.db.models import Count
 from django.utils import timezone
 
 
@@ -43,11 +44,10 @@ def get_number_of_deliveries(from_datetime, to_datetime):
     # group_comment_queryset = group_comment_queryset\
     #     .filter(published_datetime__gte=models.F('feedback_set__deadline_datetime'))
 
-    #: Get all Comments with files from the fetched comments.
-    comment_file_queryset = CommentFile.objects\
-        .filter(comment_id__in=group_comment_queryset.values_list('id', flat=True))
+    #: Annotate with file count on each comment (a delivery).
+    group_comment_queryset = group_comment_queryset.annotate(file_num=Count('commentfile'))
 
-    return comment_file_queryset.count()
+    return group_comment_queryset.filter(file_num__gt=0).count()
 
 
 def get_unique_logins(from_datetime):
