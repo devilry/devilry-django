@@ -17,7 +17,6 @@ def get_number_of_deliveries(from_datetime, to_datetime):
     Simply counts the number of comments posted by students with files on
     all FeedbackSets with deadlines within the from and to datetime arguments.
     """
-    from devilry.devilry_comment.models import CommentFile
     from devilry.devilry_group.models import GroupComment, FeedbackSet
 
     #: Get all `FeedbackSets` with deadlines within the from and to datetime range.
