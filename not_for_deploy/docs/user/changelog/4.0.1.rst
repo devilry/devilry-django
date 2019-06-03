@@ -1,0 +1,7 @@
+.. _4.0.1changelog:
+
+############################
+What is new in Devilry 4.0.1
+############################
+
+- Removed str decode on unicode string.
