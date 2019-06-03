@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='assignment',
             name='uses_custom_candidate_ids',
-            field=models.BooleanField(default=False, help_text=b'If this is enabled, the assignment does not inherit candidate IDs from the semester, and instead have their own set of candidate IDs only for this assignment.'),
+            field=models.BooleanField(default=False, help_text='If this is enabled, the assignment does not inherit candidate IDs from the semester, and instead have their own set of candidate IDs only for this assignment.'),
         ),
     ]

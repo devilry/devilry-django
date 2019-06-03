@@ -50,7 +50,7 @@ class Command(BaseCommand):
             'email': options['email'],
             'username': options['username'] or options['username_v2_compat'],
             'is_superuser': options['is_superuser'],
-            'fullname': str(options['full_name'], self.inputencoding),
+            'fullname': options['full_name'],
             'password': options['password']
         }
         if settings.CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND:

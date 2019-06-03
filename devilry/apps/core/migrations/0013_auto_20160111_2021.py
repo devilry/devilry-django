@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='assignment',
             name='deprecated_field_anonymous',
-            field=models.BooleanField(default=False, help_text=b'Deprecated anonymous field. Will be removed in 3.1.', verbose_name=b'Anonymous? (deprectated field)', editable=False),
+            field=models.BooleanField(default=False, help_text='Deprecated anonymous field. Will be removed in 3.1.', verbose_name='Anonymous? (deprectated field)', editable=False),
         ),
     ]

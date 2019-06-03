@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='feedbackset',
             name='gradeform_data_json',
-            field=models.TextField(default=b'', blank=True),
+            field=models.TextField(default='', blank=True),
         ),
     ]

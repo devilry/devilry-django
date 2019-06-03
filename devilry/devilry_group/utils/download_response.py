@@ -45,8 +45,9 @@ def download_response(content_path, content_name, content_type, content_size, st
         response = http.StreamingHttpResponse(filewrapper, content_type=content_type)
     else:
         response = http.HttpResponse(filewrapper, content_type=content_type)
-    response['content-disposition'] = 'attachment; filename={}'\
-        .format(content_name.encode('ascii', 'replace'))
+    response['content-disposition'] = 'attachment; filename={}'.format(
+        content_name.encode('ascii', 'replace').decode()
+    )
     response['content-length'] = content_size
 
     return response

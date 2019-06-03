@@ -2760,7 +2760,7 @@ msgid ""
 msgstr ""
 "Når du klikker på \"Last ned resultater\"-knappen vil du sendt til siden for "
 "nedlasting, og en rapport vil bli generert på xlsx-format(Excel). "
-"Nedlastingen vil starte så for rapporten er ferdig."
+"Nedlastingen vil starte så fort rapporten er ferdig."
 
 #: devilry/devilry_admin/templates/devilry_admin/period/all_results_overview/devilry_all_results_overview.django.html:42
 msgid ""

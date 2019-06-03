@@ -1,0 +1,12 @@
+.. _3.7.3changelog:
+
+############################
+What is new in Devilry 3.7.3
+############################
+
+
+Fixes / improvements
+####################
+
+- Updated `devilry_resend_failed_messages`-management command with info to stdout.
+

@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='groupcomment',
             name='visibility',
-            field=models.CharField(default=b'visible-to-everyone', max_length=50, db_index=True, choices=[(b'visible-to-examiner-and-admins', b'Visible to examiners and admins'), (b'visible-to-everyone', b'visible-to-everyone')]),
+            field=models.CharField(default='visible-to-everyone', max_length=50, db_index=True, choices=[('visible-to-examiner-and-admins', 'Visible to examiners and admins'), ('visible-to-everyone', 'visible-to-everyone')]),
         ),
         migrations.AddField(
             model_name='imageannotationcomment',
@@ -29,6 +29,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='imageannotationcomment',
             name='visibility',
-            field=models.CharField(default=b'visible-to-everyone', max_length=50, db_index=True, choices=[(b'visible-to-examiner-and-admins', b'Visible to examiners and admins'), (b'visible-to-everyone', b'visible-to-everyone')]),
+            field=models.CharField(default='visible-to-everyone', max_length=50, db_index=True, choices=[('visible-to-examiner-and-admins', 'Visible to examiners and admins'), ('visible-to-everyone', 'visible-to-everyone')]),
         ),
     ]

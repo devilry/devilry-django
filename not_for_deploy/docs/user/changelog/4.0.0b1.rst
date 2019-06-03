@@ -1,0 +1,7 @@
+.. _4.0.0b1changelog:
+
+##############################
+What is new in Devilry 4.0.0b1
+##############################
+
+Updated Devilry from Python 2.7 to Python 3.6

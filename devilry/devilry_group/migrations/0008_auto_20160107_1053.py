@@ -14,11 +14,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='groupcomment',
             name='visibility',
-            field=models.CharField(default=b'visible-to-everyone', max_length=100, db_index=True, choices=[(b'visible-to-examiner-and-admins', b'Visible to examiners and admins'), (b'visible-to-everyone', b'visible-to-everyone')]),
+            field=models.CharField(default='visible-to-everyone', max_length=100, db_index=True, choices=[('visible-to-examiner-and-admins', 'Visible to examiners and admins'), ('visible-to-everyone', 'visible-to-everyone')]),
         ),
         migrations.AlterField(
             model_name='imageannotationcomment',
             name='visibility',
-            field=models.CharField(default=b'visible-to-everyone', max_length=100, db_index=True, choices=[(b'visible-to-examiner-and-admins', b'Visible to examiners and admins'), (b'visible-to-everyone', b'visible-to-everyone')]),
+            field=models.CharField(default='visible-to-everyone', max_length=100, db_index=True, choices=[('visible-to-examiner-and-admins', 'Visible to examiners and admins'), ('visible-to-everyone', 'visible-to-everyone')]),
         ),
     ]

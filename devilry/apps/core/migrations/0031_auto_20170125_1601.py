@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='assignment',
             name='grading_system_plugin_id',
-            field=models.CharField(blank=True, choices=[(b'devilry_gradingsystemplugin_approved', 'PASSED/FAILED. The examiner selects passed or failed.'), (b'devilry_gradingsystemplugin_points', 'POINTS. The examiner types in the number of points to award the student(s) for this assignment.')], default=b'devilry_gradingsystemplugin_approved', max_length=300, null=True),
+            field=models.CharField(blank=True, choices=[('devilry_gradingsystemplugin_approved', 'PASSED/FAILED. The examiner selects passed or failed.'), ('devilry_gradingsystemplugin_points', 'POINTS. The examiner types in the number of points to award the student(s) for this assignment.')], default='devilry_gradingsystemplugin_approved', max_length=300, null=True),
         ),
         migrations.AlterField(
             model_name='assignment',

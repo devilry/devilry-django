@@ -40,7 +40,7 @@ class Migration(migrations.Migration):
             name='Status',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('status', models.SlugField(max_length=30, choices=[(b'ready', 'Ready for export'), (b'almostready', 'Most students are ready for export'), (b'notready', 'Not ready for export (retracted)')])),
+                ('status', models.SlugField(max_length=30, choices=[('ready', 'Ready for export'), ('almostready', 'Most students are ready for export'), ('notready', 'Not ready for export (retracted)')])),
                 ('createtime', models.DateTimeField(auto_now_add=True)),
                 ('message', models.TextField(blank=True)),
                 ('plugin', models.CharField(max_length=500, null=True, blank=True)),

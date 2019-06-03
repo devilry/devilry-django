@@ -258,13 +258,14 @@ class FeedbackSetQuerySet(models.QuerySet):
 
     def has_public_comment_files_from_students(self, feedback_set):
         """
-        Does the FeedbackSet have any public ``CommentFile``s from students?
+        Does the :class:`devilry.devilry_group.models.FeedbackSet` have any
+        public :class:`devilry.devilry_comment.models.CommentFile` from students?
 
         Args:
-            feedback_set: The ``FeedbackSet`` to check.
+            feedback_set: The `FeedbackSet` to check.
 
         Returns:
-            bool: ``True`` if any public student files, else ``False``.
+            ``True`` if any public student files, else ``False``.
         """
         from devilry.devilry_comment import models as comment_models
         group_comment_ids = GroupComment.objects \
@@ -278,10 +279,10 @@ class FeedbackSetQuerySet(models.QuerySet):
 
     def filter_public_comment_files_from_students(self):
         """
-        Get all ``FeedbackSet``s with public comments from students.
+        Get all `devilry.devilry_group.models.FeedbackSet` with public comments from students.
 
         Returns:
-            QuerySet: A ``FeedbackSet`` queryset.
+            QuerySet: A `FeedbackSet` queryset.
         """
         from devilry.devilry_comment import models as comment_models
         comment_file_ids = comment_models.CommentFile.objects.all()\
@@ -436,13 +437,13 @@ class FeedbackSet(models.Model):
     @classmethod
     def clean_deadline(cls, deadline_datetime):
         return deadline_datetime.replace(microsecond=0)
-    
+
     @property
     def is_merge_type(self):
         return self.feedbackset_type == self.FEEDBACKSET_TYPE_MERGE_FIRST_ATTEMPT or \
                self.feedbackset_type == self.FEEDBACKSET_TYPE_MERGE_NEW_ATTEMPT or \
                self.feedbackset_type == self.FEEDBACKSET_TYPE_MERGE_RE_EDIT
-    
+
     def clean(self):
         """
         Check for situations that should result in error.

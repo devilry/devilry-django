@@ -46,8 +46,9 @@ class FileDownloadFeedbackfeedView(generic.TemplateView):
         # Load file as chunks rather than loading the whole file into memory
         filewrapper = FileWrapper(comment_file.file)
         response = http.HttpResponse(filewrapper, content_type=comment_file.mimetype)
-        response['content-disposition'] = 'attachment; filename=%s' % \
-            comment_file.filename.encode('ascii', 'replace')
+        response['content-disposition'] = 'attachment; filename={}'.format(
+            comment_file.filename.encode('ascii', 'replace').decode()
+        )
         response['content-length'] = comment_file.filesize
 
         return response

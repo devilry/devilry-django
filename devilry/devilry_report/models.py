@@ -56,8 +56,8 @@ class DevilryReport(models.Model):
 
     #: The generator type.
     #:
-    #:  This is specified in a subclass of
-    #: :class:`~.devilry.devilry_report.abstract_generator.AbstractReportGenerator`.
+    #: This is specified in a subclass
+    #: of :class:`devilry.devilry_report.abstract_generator.AbstractReportGenerator`.
     generator_type = models.CharField(
         null=False, blank=False, max_length=255
     )

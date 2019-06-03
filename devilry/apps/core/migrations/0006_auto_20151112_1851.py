@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='assignmentgroup',
             name='name',
-            field=models.CharField(default=b'', help_text=b'An optional name for the group. Typically used a project name on project assignments.', max_length=30, blank=True),
+            field=models.CharField(default='', help_text='An optional name for the group. Typically used a project name on project assignments.', max_length=30, blank=True),
         ),
     ]
