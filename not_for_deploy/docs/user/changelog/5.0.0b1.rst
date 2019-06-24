@@ -1,0 +1,7 @@
+.. _5.0.0b1changelog:
+
+##############################
+What is new in Devilry 5.0.0b1
+##############################
+
+Updated to Django 2.2
