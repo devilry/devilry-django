@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-21 15:03+0200\n"
-"PO-Revision-Date: 2019-05-21 15:51+0200\n"
+"POT-Creation-Date: 2019-07-24 15:23+0200\n"
+"PO-Revision-Date: 2019-07-24 15:24+0200\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.2\n"
 
 #: devilry/apps/core/admin.py:66
 msgid "Admins"
@@ -3085,11 +3085,20 @@ msgstr "Legg til/rediger semesteradministratorere"
 msgid "Utilities"
 msgstr "Verktøy"
 
-#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:103
+#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:102
+msgid ""
+"You do not have access to the \"Overview of all results\" or \"Qualified for "
+"final exams\" utilities due to one or more of the assignments being semi-"
+"anonymous."
+msgstr ""
+"Du har ikke tilgang til \"Oversikt av alle resultater\" eller \"Kvalifisert "
+"til avsluttende eksamen\" fordi en eller flere av oppgavene er anonymisert."
+
+#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:111
 msgid "Overview of all results"
 msgstr "Oversikt av alle resultater"
 
-#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:107
+#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:115
 #: devilry/devilry_qualifiesforexam/tablebuilder/tablebuilder.py:33
 #: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/includes/qualification_table.django.html:9
 #: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:45
@@ -6039,41 +6048,41 @@ msgstr ""
 "En kommentar fra en retter kan kun være privat hvis den tilhører "
 "karaktersetting."
 
-#: devilry/devilry_group/models.py:337
+#: devilry/devilry_group/models.py:338
 msgid "first attempt"
 msgstr "første forsøk"
 
-#: devilry/devilry_group/models.py:338
+#: devilry/devilry_group/models.py:339
 msgid "new attempt"
 msgstr "nytt forsøk"
 
-#: devilry/devilry_group/models.py:339
+#: devilry/devilry_group/models.py:340
 msgid "re edit"
 msgstr "re-rediger"
 
-#: devilry/devilry_group/models.py:340
+#: devilry/devilry_group/models.py:341
 msgid "merge first attempt"
 msgstr "flett første forsøk"
 
-#: devilry/devilry_group/models.py:341
+#: devilry/devilry_group/models.py:342
 msgid "merge new attempt"
 msgstr "flett nytt forsøk"
 
-#: devilry/devilry_group/models.py:342
+#: devilry/devilry_group/models.py:343
 msgid "merge re edit"
 msgstr "flett re-rediger"
 
-#: devilry/devilry_group/models.py:464
+#: devilry/devilry_group/models.py:465
 msgid "FeedbackSet can not be ignored without a reason"
 msgstr "Tilbakemeldingssett kan ikke ignoreres uten en årsak"
 
-#: devilry/devilry_group/models.py:468
+#: devilry/devilry_group/models.py:469
 msgid "FeedbackSet can not have a ignored reason without being set to ignored."
 msgstr ""
 "Tilbakemeldingssett må være innstilt til ignorer når en årsak for ignorering "
 "blir oppgitt."
 
-#: devilry/devilry_group/models.py:473
+#: devilry/devilry_group/models.py:474
 msgid ""
 "Ignored FeedbackSet can not have grading_published_datetime, grading_points "
 "or grading_published_by set."
@@ -6081,17 +6090,17 @@ msgstr ""
 "Ignorer Tilbakemeldingssett kan ikke ha grading_published_datetime, "
 "grading_points eller grading_published_by set."
 
-#: devilry/devilry_group/models.py:479
+#: devilry/devilry_group/models.py:480
 msgid "A FeedbackSet can not be published without being published by someone."
 msgstr ""
 "Et sett av tilbakemeldinger må publiseres av noen før det kan publiseres."
 
-#: devilry/devilry_group/models.py:484
+#: devilry/devilry_group/models.py:485
 msgid "A FeedbackSet can not be published without providing \"points\"."
 msgstr ""
 "Et sett av tilbakemeldinger can ikke publiseres uten å sette \"poeng\"."
 
-#: devilry/devilry_group/models.py:533
+#: devilry/devilry_group/models.py:534
 msgid ""
 "This assignment is on an inactive semester. File upload and commenting is "
 "disabled."
@@ -6099,7 +6108,7 @@ msgstr ""
 "Denne oppgaven er på et inaktivt semester. Filopplasting og kommentering er "
 "ikke tilgjengelig."
 
-#: devilry/devilry_group/models.py:539
+#: devilry/devilry_group/models.py:540
 msgid ""
 "Hard deadlines are enabled for this assignment. File upload and commenting "
 "is disabled."
@@ -6561,12 +6570,6 @@ msgid "Email Address"
 msgstr "E-postadresse"
 
 #: devilry/devilry_header/templates/devilry_header/about_me.django.html:37
-#: ievv-coderefactor-logs/2019-03-07T10:57:25.891728-log.txt:8779
-#: ievv-coderefactor-logs/2019-03-07T10:57:25.891728-log.txt:8781
-#: ievv-coderefactor-logs/2019-03-07T10:58:29.638142-log.txt:8779
-#: ievv-coderefactor-logs/2019-03-07T10:58:29.638142-log.txt:8781
-#: ievv-coderefactor-logs/2019-03-07T11:35:31.219145-log.txt:8779
-#: ievv-coderefactor-logs/2019-03-07T11:35:31.219145-log.txt:8781
 msgid "Reset password"
 msgstr "Tilbakestill passord"
 
@@ -6771,16 +6774,16 @@ msgstr "Status (klar)"
 msgid "Status (not ready)"
 msgstr "Stauts (ikke klar)"
 
-#: devilry/devilry_qualifiesforexam/views/list_statuses_view.py:93
+#: devilry/devilry_qualifiesforexam/views/list_statuses_view.py:92
 msgid "No status has been created for this period yet."
 msgstr "Det er ennå ikke opprettet noen status for denne perioden."
 
-#: devilry/devilry_qualifiesforexam/views/list_statuses_view.py:97
+#: devilry/devilry_qualifiesforexam/views/list_statuses_view.py:96
 #, python-format
 msgid "Status overview for %(what)s"
 msgstr "Status oversikt for %(what)s"
 
-#: devilry/devilry_qualifiesforexam/views/list_statuses_view.py:99
+#: devilry/devilry_qualifiesforexam/views/list_statuses_view.py:98
 msgid ""
 "You can either choose a plugin to create a new status, or you can select a "
 "retracted status."
@@ -6807,11 +6810,11 @@ msgstr "Valgte %(what)s"
 msgid "No %(what)s selected"
 msgstr "Ingen %(what)s valgt"
 
-#: devilry/devilry_qualifiesforexam/views/pluginselection_view.py:61
+#: devilry/devilry_qualifiesforexam/views/pluginselection_view.py:60
 msgid "How do students qualify for final exams?"
 msgstr "Hvordan kvalifiserer studenter til avsluttende eksamen?"
 
-#: devilry/devilry_qualifiesforexam/views/pluginselection_view.py:63
+#: devilry/devilry_qualifiesforexam/views/pluginselection_view.py:62
 msgid ""
 "Select one of the options from the list. Each option starts a wizard that "
 "ends with a preview of the results before you get the option to save"
