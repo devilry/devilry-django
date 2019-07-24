@@ -97,16 +97,25 @@
         </div>
         <div class="devilry-dashboard-container">
             <h2>{% trans "Utilities" %}</h2>
-            <p>
-                <a href="{% cradmin_instance_appindex_url appname='overview_all_results' %}"
-                        class="btn btn-default btn-sm">
-                    {% trans "Overview of all results" %}
-                </a>
-                <a href="{% cradmin_instance_url appname='qualifiesforexam' viewname='INDEX' %}"
-                        class="btn btn-default btn-sm">
-                    {% trans "Qualified for final exams" %}
-                </a>
-            </p>
+            {% if period_admin_access_restricted %}
+                <p class="text-muted devilry-admin-period-utils-restricted">
+                    {% blocktrans trimmed %}
+                        You do not have access to the "Overview of all results" or "Qualified for final exams"
+                        utilities due to one or more of the assignments being semi-anonymous.
+                    {% endblocktrans %}
+                </p>
+            {% else %}
+                <p>
+                    <a href="{% cradmin_instance_appindex_url appname='overview_all_results' %}"
+                            class="btn btn-default btn-sm">
+                        {% trans "Overview of all results" %}
+                    </a>
+                    <a href="{% cradmin_instance_url appname='qualifiesforexam' viewname='INDEX' %}"
+                            class="btn btn-default btn-sm">
+                        {% trans "Qualified for final exams" %}
+                    </a>
+                </p>
+            {% endif %}
         </div>
     </div>
 {% endblock content %}

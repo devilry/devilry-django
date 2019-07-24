@@ -211,7 +211,8 @@ class RelatedStudentsAllResultsOverview(FilterListMixin, listbuilderview.View):
 
 class App(crapp.App):
     appurls = [
-        crapp.Url(r'^all-results-overview$', RelatedStudentsAllResultsOverview.as_view(),
+        crapp.Url(r'^all-results-overview$',
+                  RelatedStudentsAllResultsOverview.as_view(),
                   name=crapp.INDEXVIEW_NAME),
         crapp.Url(r'^all-results-overview/filter/(?P<filters_string>.+)?$',
                   RelatedStudentsAllResultsOverview.as_view(),

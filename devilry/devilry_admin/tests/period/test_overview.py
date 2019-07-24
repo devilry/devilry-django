@@ -8,6 +8,7 @@ from model_mommy import mommy
 
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.mommy_recipes import ASSIGNMENT_ACTIVEPERIOD_START_FIRST_DEADLINE, ACTIVE_PERIOD_START
+from devilry.devilry_account.models import PermissionGroup
 from devilry.devilry_admin.views.period import overview
 from devilry.devilry_account import models as account_models
 from devilry.utils import datetimeutils
@@ -80,7 +81,12 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def test_link_urls(self):
         testperiod = mommy.make('core.Period')
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+        mock_crinstance = mock.MagicMock()
+        mock_crinstance.semester_admin_access_semi_anonymous_assignments_restricted.return_value = False
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod,
+            cradmin_instance=mock_crinstance
+        )
         self.assertEqual(8, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
         self.assertEqual(
                 mock.call(appname='edit', args=(), viewname='INDEX', kwargs={}),
@@ -106,6 +112,38 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
                 mock.call(appname='qualifiesforexam', args=(), viewname='INDEX', kwargs={}),
                 mockresponse.request.cradmin_instance.reverse_url.call_args_list[7])
+
+    def test_link_urls_utils_restricted(self):
+        testperiod = mommy.make('core.Period')
+        mock_crinstance = mock.MagicMock()
+        mock_crinstance.semester_admin_access_semi_anonymous_assignments_restricted.return_value = True
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod,
+            cradmin_instance=mock_crinstance
+        )
+        self.assertEqual(6, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
+        self.assertEqual(
+            mock.call(appname='edit', args=(), viewname='INDEX', kwargs={}),
+            mockresponse.request.cradmin_instance.reverse_url.call_args_list[0])
+        self.assertEqual(
+            mock.call(appname='createassignment', args=(), viewname='INDEX', kwargs={}),
+            mockresponse.request.cradmin_instance.reverse_url.call_args_list[1])
+        self.assertEqual(
+            mock.call(appname='students', args=(), viewname='INDEX', kwargs={}),
+            mockresponse.request.cradmin_instance.reverse_url.call_args_list[2])
+        self.assertEqual(
+            mock.call(appname='examiners', args=(), viewname='INDEX', kwargs={}),
+            mockresponse.request.cradmin_instance.reverse_url.call_args_list[3])
+        self.assertEqual(
+            mock.call(appname='manage_tags', args=(), viewname='INDEX', kwargs={}),
+            mockresponse.request.cradmin_instance.reverse_url.call_args_list[4])
+        self.assertEqual(
+            mock.call(appname='admins', args=(), viewname='INDEX', kwargs={}),
+            mockresponse.request.cradmin_instance.reverse_url.call_args_list[5])
+        self.assertEqual(
+            mockresponse.selector.one('.devilry-admin-period-utils-restricted').alltext_normalized,
+            'You do not have access to the "Overview of all results" or "Qualified for final exams" '
+            'utilities due to one or more of the assignments being semi-anonymous.')
 
     def test_assignmentlist_no_assignments(self):
         testperiod = mommy.make('core.Period')

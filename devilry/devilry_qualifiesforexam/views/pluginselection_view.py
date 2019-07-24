@@ -25,7 +25,6 @@ class SelectPluginView(TemplateView):
         """
         Redirect to show status if a ready status already exists.
         """
-        # status = status_models.Status.objects.order_by('-createtime').first()
         period = self.request.cradmin_role
         status = status_models.Status.objects.get_last_status_in_period(period=period)
         if status and status.status == status_models.Status.READY:

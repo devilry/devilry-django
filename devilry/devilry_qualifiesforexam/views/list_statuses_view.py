@@ -86,7 +86,6 @@ class ListStatusesView(listbuilderview.FilterListMixin, listbuilderview.View):
                     queryset=status_models.Status.objects.filter(period=period)
             )
         ).get(id=period.id)
-        # return status_models.Status.objects.filter(period=period)
         return period_queryset.qualifiedforexams_status.all()
 
     def get_no_items_message(self):
