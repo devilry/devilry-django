@@ -71,6 +71,8 @@ class Overview(listbuilderview.FilterListMixin, listbuilderview.View):
         context = super(Overview, self).get_context_data(**kwargs)
         context['relatedstudent_count'] = self.__get_relatedstudent_count()
         context['relatedexaminer_count'] = self.__get_relatedexaminer_count()
+        context['period_admin_access_restricted'] = self.request.cradmin_instance\
+            .period_admin_access_semi_anonymous_assignments_restricted()
         return context
 
 

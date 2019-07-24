@@ -2,6 +2,7 @@
 
 
 from django import test
+from django.http import Http404
 from django.utils import timezone
 
 from model_mommy import mommy
@@ -23,11 +24,29 @@ class TestOverviewAllResults(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     def setUp(self):
         customsql.AssignmentGroupDbCacheCustomSql().initialize()
 
+    def get_mock_cradmin_crinstance(self):
+        mock_crinstance = mock.MagicMock()
+        mock_crinstance.semester_admin_access_semi_anonymous_assignments_restricted.return_value = False
+        return mock_crinstance
+
+    def test_semester_admin_restricted_access_raises_404(self):
+        mock_crinstance = mock.MagicMock()
+        mock_crinstance.semester_admin_access_semi_anonymous_assignments_restricted.return_value = True
+        testperiod = mommy.make('core.Period')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        with self.assertRaises(Http404):
+            self.mock_http200_getrequest_htmls(
+                cradmin_role=testperiod,
+                cradmin_instance=mock_crinstance,
+                requestuser=testuser
+            )
+
     def test_title(self):
         testperiod = mommy.make('core.Period')
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
+            cradmin_instance=self.get_mock_cradmin_crinstance(),
             requestuser=testuser
         )
         self.assertEqual('All students results', mockresponse.selector.one('title').alltext_normalized)
@@ -37,6 +56,7 @@ class TestOverviewAllResults(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
+            cradmin_instance=self.get_mock_cradmin_crinstance(),
             requestuser=testuser
         )
         self.assertEqual(1, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
@@ -51,6 +71,7 @@ class TestOverviewAllResults(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.RelatedStudent', period=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
+            cradmin_instance=self.get_mock_cradmin_crinstance(),
             requestuser=testuser
         )
         self.assertTrue(mockresponse.selector.one('.devilry-tabulardata-list'))
@@ -60,6 +81,7 @@ class TestOverviewAllResults(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
+            cradmin_instance=self.get_mock_cradmin_crinstance(),
             requestuser=testuser
         )
         self.assertFalse(mockresponse.selector.exists('.devilry-tabulardata-list'))
@@ -77,6 +99,7 @@ class TestOverviewAllResults(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         group_factory.feedbackset_first_attempt_published(group=testgroup, grading_points=1)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
+            cradmin_instance=self.get_mock_cradmin_crinstance(),
             requestuser=requestuser
         )
         self.assertTrue(mockresponse.selector.exists('.devilry-overview-all-results-result-cell'))
@@ -92,6 +115,7 @@ class TestOverviewAllResults(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         group_factory.feedbackset_first_attempt_published(group=testgroup, grading_points=0)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
+            cradmin_instance=self.get_mock_cradmin_crinstance(),
             requestuser=requestuser
         )
         self.assertTrue(mockresponse.selector.exists('.devilry-overview-all-results-result-cell'))
@@ -104,6 +128,7 @@ class TestOverviewAllResults(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.RelatedStudent', period=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
+            cradmin_instance=self.get_mock_cradmin_crinstance(),
             requestuser=requestuser
         )
         self.assertTrue(mockresponse.selector.exists('.devilry-overview-all-results-result-cell'))
@@ -121,6 +146,7 @@ class TestOverviewAllResults(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             group=testgroup, deadline_datetime=timezone.now() + timezone.timedelta(days=1))
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
+            cradmin_instance=self.get_mock_cradmin_crinstance(),
             requestuser=requestuser
         )
         self.assertTrue(mockresponse.selector.exists('.devilry-overview-all-results-result-cell'))
@@ -138,6 +164,7 @@ class TestOverviewAllResults(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             group=testgroup, deadline_datetime=timezone.now() - timezone.timedelta(days=1))
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
+            cradmin_instance=self.get_mock_cradmin_crinstance(),
             requestuser=requestuser
         )
         self.assertTrue(mockresponse.selector.exists('.devilry-overview-all-results-result-cell'))
@@ -156,6 +183,7 @@ class TestOverviewAllResults(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             group=testgroup, deadline_datetime=timezone.now() - timezone.timedelta(days=1))
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
+            cradmin_instance=self.get_mock_cradmin_crinstance(),
             requestuser=requestuser
         )
         self.assertTrue(mockresponse.selector.exists('.devilry-overview-all-results-result-cell'))
@@ -179,6 +207,7 @@ class TestOverviewAllResults(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    feedback_set=feedbackset)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
+            cradmin_instance=self.get_mock_cradmin_crinstance(),
             requestuser=requestuser
         )
         self.assertTrue(mockresponse.selector.exists('.devilry-overview-all-results-result-cell'))

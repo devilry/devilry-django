@@ -1,8 +1,9 @@
 from cradmin_legacy import crinstance, crapp
 from cradmin_legacy.crinstance import reverse_cradmin_url
+from django.http import Http404
 
-from devilry.apps.core.models import Period
-from devilry.devilry_account.models import PeriodPermissionGroup
+from devilry.apps.core.models import Period, Assignment
+from devilry.devilry_account.models import PeriodPermissionGroup, PermissionGroup
 from devilry.devilry_admin.cradminextensions import devilry_crmenu_admin
 from devilry.devilry_cradmin import devilry_crmenu
 from devilry.devilry_cradmin import devilry_crinstance
@@ -83,8 +84,8 @@ class CrAdminInstance(devilry_crinstance.BaseCrInstanceAdmin):
     def matches_urlpath(cls, urlpath):
         return urlpath.startswith('/devilry_admin/period')
 
-    def __get_devilryrole_for_requestuser(self):
-        period = self.request.cradmin_role
+    def __get_devilryrole_for_requestuser(self, period=None):
+        period = period or self.request.cradmin_role
         devilryrole = PeriodPermissionGroup.objects.get_devilryrole_for_user_on_period(
             user=self.request.user,
             period=period
@@ -95,7 +96,7 @@ class CrAdminInstance(devilry_crinstance.BaseCrInstanceAdmin):
 
         return devilryrole
 
-    def get_devilryrole_for_requestuser(self):
+    def get_devilryrole_for_requestuser(self, period=None):
         """
         Get the devilryrole for the requesting user on the current
         period (request.cradmin_instance).
@@ -105,5 +106,42 @@ class CrAdminInstance(devilry_crinstance.BaseCrInstanceAdmin):
         exept that this method raises ValueError if it does not find a role.
         """
         if not hasattr(self, '_devilryrole_for_requestuser'):
-            self._devilryrole_for_requestuser = self.__get_devilryrole_for_requestuser()
+            self._devilryrole_for_requestuser = self.__get_devilryrole_for_requestuser(period=period)
         return self._devilryrole_for_requestuser
+
+    def period_admin_access_semi_anonymous_assignments_restricted(self, period=None):
+        """
+        Check if an admin should be restricted access to due being a
+        period-admin only and the period has one or more semi-anonymous
+        assignments
+
+        This method can be used to check whether access should be restricted for
+        some elements, e.g. in a view or a template.
+
+        Returns:
+            (bool): ``True`` if access should be restriced, else ``False``.
+        """
+        devilryrole = self.get_devilryrole_for_requestuser(period=period)
+        period = period or self.request.cradmin_role
+        semi_anonymous_assignments_exist = Assignment.objects\
+            .filter(parentnode=period)\
+            .filter(anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)\
+            .exists()
+        if semi_anonymous_assignments_exist and devilryrole == PermissionGroup.GROUPTYPE_PERIODADMIN:
+            return True
+        return False
+
+    def get_role_from_rolequeryset(self, role):
+        """
+        Overriden to check if the requestuser has access to specific apps using this
+        CrAdmin-instance if the requestuser is a period-admin and the period has any
+        semi-anonymous assignments.
+        """
+        role = super().get_role_from_rolequeryset(role=role)
+
+        requesting_appname = self.request.cradmin_app.appname
+        if requesting_appname in ['qualifiesforexam', 'overview_all_results']:
+            if self.period_admin_access_semi_anonymous_assignments_restricted(period=role):
+                raise Http404()
+
+        return role
