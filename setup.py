@@ -26,7 +26,7 @@ setup(
         'gunicorn==19.9.0',
         'django-crispy-forms==1.7.2',
         'openpyxl==1.6.1',
-        'django==2.2.1',
+        'django==2.2.*',
         'URLObject==2.4.3',
         'mimeparse==0.1.3',
         'django_errortemplates==1.0.1',
