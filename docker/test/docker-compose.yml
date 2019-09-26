@@ -1,0 +1,38 @@
+version: '3'
+services:
+  django:
+    build:
+      context: ../../
+      dockerfile: docker/test/Dockerfile
+    image: devilry-test
+    container_name: devilry-test
+    environment:
+      DOCKER_DB_HOST: db
+      DOCKER_DB_PORT: 5432
+      DJANGOENV: "test"
+      DJANGO_SETTINGS_MODULE: "devilry.project.settingsproxy"
+      REDIS_HOST: "redis"
+      REDIS_PORT: "6379"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    stdin_open: true
+    tty: true
+    volumes:
+      - "../../:/usr/src/app:delegated"
+      - "~/:/hosthome/:delegated"
+  db:
+    image: postgres:11
+    container_name: devilry-test-db
+    environment:
+      POSTGRES_PASSWORD: dbdev
+      POSTGRES_USER: dbdev
+      POSTGRES_DB: dbdev
+    ports:
+      - "27100:5432"
+  redis:
+    image: redis
+    container_name: devilry-test-redis
+    expose:
+      - 6379

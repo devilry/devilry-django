@@ -78,3 +78,6 @@ DEVILRY_V2_DATABASE_PRINT_PROGRESS_DOTS = False
 RQ_QUEUES['default']['ASYNC'] = False
 RQ_QUEUES['email']['ASYNC'] = False
 RQ_QUEUES['highpriority']['ASYNC'] = False
+
+DATABASES['default']['PORT'] = os.environ.get('DOCKER_DB_PORT', DATABASES['default']['PORT'])
+DATABASES['default']['HOST'] = os.environ.get('DOCKER_DB_HOST', DATABASES['default']['HOST'])
