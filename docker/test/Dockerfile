@@ -1,4 +1,3 @@
-
 FROM python:3.6-alpine
 
 # - build-base for compiler etc.
@@ -9,11 +8,19 @@ FROM python:3.6-alpine
 # - npm for installing yarn (easiest to install via npm)
 # - libnotify because some npm packages we use requires it
 # - git and openssh-client because we have npm github deps
-RUN apk update && apk add build-base postgresql-dev libffi-dev libxslt-dev nodejs npm libnotify git openssh-client sassc gettext
+RUN apk update && apk add build-base postgresql-dev libffi-dev libxslt-dev nodejs npm libnotify git openssh-client sassc gettext postgresql redis
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 ENV APP_ROOT_PATH /usr/src/app
 RUN mkdir -p $APP_ROOT_PATH
+RUN chown -R appuser:appgroup $APP_ROOT_PATH
+RUN chmod 2777 $APP_ROOT_PATH
 
+RUN mkdir -p /var/run/postgresql && chown -R appuser:appgroup /var/run/postgresql && chmod 2777 /var/run/postgresql
+
+ENV PGDATA /var/lib/postgresql/data
+# this 777 will be replaced by 700 at runtime (allows semi-arbitrary "--user" values)
+RUN mkdir -p "$PGDATA" && chown -R appuser:appgroup "$PGDATA" && chmod 777 "$PGDATA"
 WORKDIR $APP_ROOT_PATH
 
 
@@ -29,8 +36,12 @@ WORKDIR $APP_ROOT_PATH
 COPY . .
 #COPY requirements.txt requirements.txt
 #COPY requirements requirements
+# RUN redis-server
 RUN pip install -r requirements/development.txt
-
+ENV DOCKER_DB_HOST localhost
+ENV DOCKER_DB_PORT 24376
+ENV DOCKER_REDIS_PORT 6379
+ENV DOCKER_REDIS_HOST localhost
 # Install yarn
 RUN npm install --global yarn
 
