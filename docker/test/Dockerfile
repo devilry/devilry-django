@@ -46,10 +46,10 @@ ENV DOCKER_REDIS_HOST localhost
 RUN npm install --global yarn
 
 # Specify the port we expose, and how to signal stopserver
-EXPOSE 8000
+#EXPOSE 8000
 STOPSIGNAL SIGINT
 
 # We use wait-for https://github.com/Eficode/wait-for to wait for
 # postgres to really be up before starting django dev server.
 # See: https://docs.docker.com/compose/startup-order/ for more info.
-CMD [ "/bin/sh", "./docker/test/run_test.sh" ]
+#CMD [ "/bin/sh", "./docker/test/run_test.sh" ]
