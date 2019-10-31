@@ -7,6 +7,9 @@
     </span>
 {% else %}
     {% devilry_user_verbose_inline candidate.relatedstudent.user %}
+    {% if candidate.relatedstudent.candidate_id %}
+        <small >{{ candidate.relatedstudent.candidate_id }}</small>
+    {% endif %}
     {% if not candidate.relatedstudent.active %}
         <strong class="text-danger">[{% trans "Inactive" %}]</strong>
     {% endif %}
