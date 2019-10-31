@@ -88,6 +88,7 @@ def devilry_single_candidate_long_displayname(assignment, candidate, devilryrole
         'candidate': candidate,
         'anonymous': assignment.students_must_be_anonymized_for_devilryrole(
             devilryrole=devilryrole),
+        'assignment_anonymous': assignment.is_anonymous,
         'anonymous_name': candidate.get_anonymous_name(assignment=assignment)
     }
 
