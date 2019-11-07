@@ -1,0 +1,7 @@
+.. _4.0.2changelog:
+
+############################
+What is new in Devilry 4.0.2
+############################
+
+- Fixed access restriction to period-utilities when the period has assignments that are anonymized for semester admins.
