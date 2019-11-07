@@ -1,0 +1,8 @@
+.. _4.0.3changelog:
+
+############################
+What is new in Devilry 4.0.3
+############################
+
+- Fix bug with LaTex math parsing in comments that lead to crash. Has been reported as a problem with uploading
+  files on assignments, which is just one of multiple problems that was caused by this bug.
