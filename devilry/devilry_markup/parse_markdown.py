@@ -14,4 +14,6 @@ def markdown_full(inputMarkdown):
             'def_list', # Support definition lists
             'tables', # Support tables
         ])
-    return md.convert(inputMarkdown)
+    html = md.convert(inputMarkdown)
+    html = html.replace('{{', '{ {').replace('}}', '} }')
+    return html
