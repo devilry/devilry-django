@@ -42,7 +42,6 @@ setup(
         'httplib2==0.7.7',
         'dj-static>=0.0.6',
         'dj-database-url>=0.3.0',
-        'bleach==3.1.1',
         'html5lib==0.9999999',
         'psycopg2==2.7.3.2',
         'django_cradmin==1.2.5',
