@@ -75,8 +75,7 @@ def update_notifications_for_user(user):
         if user.useremail_set.filter(email__endswith=from_email_suffix).exists():
             matched_email = user.useremail_set.filter(email__endswith=from_email_suffix).first()
             username = matched_email.email.split('@')[0]
-            matched_email.email = f'{username}{new_primary_email_suffix}'
-            new_email = matched_email.email
+            new_email = f'{username}{new_primary_email_suffix}'
 
             # Prevent generating duplicates (which is an IntegrityError enforced by the unique constraint in the database)
             if not UserEmail.objects.filter(email=new_email).exists():
