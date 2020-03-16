@@ -66,7 +66,7 @@ def update_notifications_for_user(user):
     Swap from one email suffix to another, and set the primary and notification
     email to the email address maching the new suffix.
     """
-    from devilry.devilry_account.models import UserEmail
+    from devilry.devilry_account.models import UserEmail, UserName
     from_email_suffixes = ['@old.shit.example.com', '@oldstuff.example.com', '@superoldstuff.example.com']
     new_primary_email_suffix = '@example.com'
 
@@ -74,7 +74,7 @@ def update_notifications_for_user(user):
     for from_email_suffix in from_email_suffixes:
         if user.useremail_set.filter(email__endswith=from_email_suffix).exists():
             matched_email = user.useremail_set.filter(email__endswith=from_email_suffix).first()
-            username = matched_email.email.split('@')[0]
+            username = user.shortname
             new_email = f'{username}{new_primary_email_suffix}'
 
             # Prevent generating duplicates (which is an IntegrityError enforced by the unique constraint in the database)
