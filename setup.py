@@ -39,7 +39,7 @@ setup(
         'redis==3.0.1',
         'python-dateutil==2.8',
         'pytz==2018.9',
-        'httplib2==0.7.7',
+        'httplib2==0.18.0',
         'dj-static>=0.0.6',
         'dj-database-url>=0.3.0',
         'html5lib==0.9999999',
