@@ -3,7 +3,7 @@
     "@babel/polyfill": "^7.0.0-beta.47",
     "chart.js": "^2.7.2",
     "ievv_jsbase": "git+ssh://git@github.com/appressoas/ievv_jsbase.git#2.0.0-beta.7",
-    "lodash": "^4.17.10"
+    "lodash": "^4.17.19"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.47",
