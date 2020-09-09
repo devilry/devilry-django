@@ -1,0 +1,7 @@
+.. _5.0.0rc1changelog:
+
+###############################
+What is new in Devilry 5.0.0rc1
+###############################
+
+Further stabilization of the 5.0 release - first release candidate.
