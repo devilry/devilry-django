@@ -1,0 +1,7 @@
+.. _5.0.0changelog:
+
+############################
+What is new in Devilry 5.0.0
+############################
+
+Version change from 5.0.0rc1 to 5.0.0
