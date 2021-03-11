@@ -1,4 +1,3 @@
-
 #######
 Devilry
 #######
@@ -21,6 +20,8 @@ Develop
 =======
 If you just want to get up a development environment to test out Devilry on you own machine,
 read the developer section of our `developer docs <http://devilry.readthedocs.org>`_.
+
+If you want to use our Docker setup for development, read `not_for_deploy/guides/develop-with-docker.md <not_for_deploy/guides/develop-with-docker.md>`_.
 
 
 Health
