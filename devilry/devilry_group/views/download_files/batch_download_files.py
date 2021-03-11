@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-
-
 from wsgiref.util import FileWrapper
+import re
 
 from django import http
 from django.contrib.contenttypes.models import ContentType
@@ -46,9 +45,8 @@ class FileDownloadFeedbackfeedView(generic.TemplateView):
         # Load file as chunks rather than loading the whole file into memory
         filewrapper = FileWrapper(comment_file.file)
         response = http.HttpResponse(filewrapper, content_type=comment_file.mimetype)
-        response['content-disposition'] = 'attachment; filename={}'.format(
-            comment_file.filename.encode('ascii', 'replace').decode()
-        )
+        filename = re.subn(r'[^a-zA-Z0-9._ -]', '', comment_file.filename.encode('ascii', 'replace').decode())[0]
+        response['content-disposition'] = 'attachment; filename={}'.format(filename)
         response['content-length'] = comment_file.filesize
 
         return response
