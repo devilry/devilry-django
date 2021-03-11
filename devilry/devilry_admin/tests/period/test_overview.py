@@ -82,7 +82,7 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_link_urls(self):
         testperiod = mommy.make('core.Period')
         mock_crinstance = mock.MagicMock()
-        mock_crinstance.semester_admin_access_semi_anonymous_assignments_restricted.return_value = False
+        mock_crinstance.period_admin_access_semi_anonymous_assignments_restricted.return_value = False
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             cradmin_instance=mock_crinstance
@@ -116,7 +116,7 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_link_urls_utils_restricted(self):
         testperiod = mommy.make('core.Period')
         mock_crinstance = mock.MagicMock()
-        mock_crinstance.semester_admin_access_semi_anonymous_assignments_restricted.return_value = True
+        mock_crinstance.period_admin_access_semi_anonymous_assignments_restricted.return_value = True
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             cradmin_instance=mock_crinstance

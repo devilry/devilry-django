@@ -26,20 +26,7 @@ class TestOverviewAllResults(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def get_mock_cradmin_crinstance(self):
         mock_crinstance = mock.MagicMock()
-        mock_crinstance.semester_admin_access_semi_anonymous_assignments_restricted.return_value = False
         return mock_crinstance
-
-    def test_semester_admin_restricted_access_raises_404(self):
-        mock_crinstance = mock.MagicMock()
-        mock_crinstance.semester_admin_access_semi_anonymous_assignments_restricted.return_value = True
-        testperiod = mommy.make('core.Period')
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        with self.assertRaises(Http404):
-            self.mock_http200_getrequest_htmls(
-                cradmin_role=testperiod,
-                cradmin_instance=mock_crinstance,
-                requestuser=testuser
-            )
 
     def test_title(self):
         testperiod = mommy.make('core.Period')
