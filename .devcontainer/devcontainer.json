@@ -1,7 +1,7 @@
 // For format details, see https://aka.ms/vscode-remote/devcontainer.json or this file's README at:
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.134.0/containers/python-3
 {
-	"name": "turafak dockerdev",
+	"name": "devilry-django dockerdev",
 	"build": {
 		"dockerfile": "Dockerfile",
 		"context": ".."
@@ -42,7 +42,7 @@
 		
 		// Mount a persistent directory for yarn, pip and pipenv caches + dbdev_tempdata.
 		// Speeds up builds, and speeds up the postgres database.
-		"source=turafak_dockerdev_persistent,destination=/home/codemonkey/persistent/"
+		"source=devilry-django_dockerdev_persistent,destination=/home/codemonkey/persistent/"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
