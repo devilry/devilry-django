@@ -1,0 +1,6 @@
+ARG PYTHON_VERSION="3.8"
+ARG NODE_VERSION="14"
+ARG POSTGRES_VERSION="12"
+FROM appresso/dev-python:py${PYTHON_VERSION}-node${NODE_VERSION}-psql${POSTGRES_VERSION}
+
+ENV PATH="/home/codemonkey/.local/bin/:${PATH}"

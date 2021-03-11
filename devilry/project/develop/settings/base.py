@@ -37,6 +37,7 @@ DATABASES = {
     'default': DBSETTINGS
 }
 DATABASES['default']['PORT'] = 24376
+DBDEV_DATADIR = os.environ.get('DBDEV_DATADIR', 'dbdev_tempdata')
 
 ALLOWED_HOSTS = ['*']
 
