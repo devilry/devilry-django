@@ -5,6 +5,7 @@ from django.db.models.functions import Lower, Concat
 from cradmin_legacy import crapp
 from cradmin_legacy.crinstance import reverse_cradmin_url
 from cradmin_legacy.viewhelpers import listbuilderview
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 from devilry.apps.core import models as coremodels
 from devilry.apps.core.models import Candidate, Examiner, RelatedExaminer
@@ -209,7 +210,7 @@ class GroupListView(listbuilderview.FilterListMixin,
 class App(crapp.App):
     appurls = [
         crapp.Url(r'^$',
-                  GroupListView.as_view(),
+                  ensure_csrf_cookie(GroupListView.as_view()),
                   name=crapp.INDEXVIEW_NAME),
         crapp.Url(r'^filter/(?P<filters_string>.+)?$',
                   GroupListView.as_view(),
