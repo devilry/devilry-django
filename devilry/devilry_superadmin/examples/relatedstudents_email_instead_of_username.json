@@ -1,0 +1,9 @@
+[
+    {"email":"student0@example.com", "tags":"group3,group2"},
+    {"email":"student1@example.com", "tags":"group3,group2", "candidate_id":"sec42"},
+    {"email":"student0@example.com", "tags":"group2"},
+    {"email":"donald@example.com", "tags":"group3,group2", "candidate_id":"sec44"},
+    {"email":"scrooge@example.com", "tags":"group3,specialneeds", "candidate_id":"sec45"},
+    {"email":"daisy@example.com", "tags":"group3,group2", "candidate_id":"sec46"},
+    {"email":"student5@example.com", "tags":"group2", "candidate_id":"sec47"}
+]
