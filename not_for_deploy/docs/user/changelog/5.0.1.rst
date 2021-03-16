@@ -1,0 +1,12 @@
+.. _5.0.1changelog:
+
+############################
+What is new in Devilry 5.0.1
+############################
+
+Bugfixes and python package updates:
+
+- Compressed archives aren't dicarded when candidate numbers are changed.
+- Files with commas in their filenames are not saved correctly when downloaded
+- Batch task that builds compressed archive doesn't trigger
+- Update numpy and psycopg2 versions.
