@@ -19,7 +19,7 @@ setup(
     packages=find_packages(exclude=["devilry_rest"]),
     install_requires=[
         'setuptools',
-        'pyyaml==3.13',
+        'pyyaml==5.4',
         'Markdown==2.6.11',
         'Pygments==2.0',
         'flup==1.0.3',
