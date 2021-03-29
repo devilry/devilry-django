@@ -21,7 +21,7 @@ setup(
         'setuptools',
         'pyyaml==3.13',
         'Markdown==2.6.11',
-        'Pygments==2.0',
+        'Pygments==2.7.4',
         'flup==1.0.3',
         'gunicorn==19.9.0',
         'django-crispy-forms==1.7.2',
