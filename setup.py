@@ -49,7 +49,7 @@ setup(
         'arrow==0.12.0',
         'detektor==1.1.0-beta.012',
         'html2text==2018.1.9',
-        'djangorestframework==3.8.2',
+        'djangorestframework==3.12.4',
         # For django-allauth
         'django-allauth==0.42.*',
         'certifi==2017.11.5',
