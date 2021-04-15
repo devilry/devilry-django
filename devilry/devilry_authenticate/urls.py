@@ -1,17 +1,35 @@
-from django.conf.urls import url, include
+from django.urls import path, include
 from cradmin_legacy.apps.cradmin_authenticate.views import logout
 
 from devilry.devilry_authenticate.views import CustomLoginView, allauth_views
 
 urlpatterns = [
-    url(r'^login$', CustomLoginView.as_view(), name='cradmin-authenticate-login'),
-    url(r'^logout$', logout.cradmin_logoutview, name='cradmin-authenticate-logout'),
+    path('login', CustomLoginView.as_view(), name='cradmin-authenticate-login'),
+    path('logout', logout.cradmin_logoutview, name='cradmin-authenticate-logout'),
 
-    url(r"^allauth/login/$",
+    path('allauth/login/',
         allauth_views.AllauthLoginView.as_view(),
-        name="account_login"),
-    url(r"^allauth/logout/$",
+        name='account_login'),
+    path('allauth/logout/',
         allauth_views.AllauthLogoutView.as_view(),
-        name="account_logout"),
-    url(r'^allauth/', include('allauth.urls')),
+        name='account_logout'),
+    path('allauth/', include('allauth.urls')),
 ]
+
+# from django.conf.urls import url, include
+# from cradmin_legacy.apps.cradmin_authenticate.views import logout
+
+# from devilry.devilry_authenticate.views import CustomLoginView, allauth_views
+
+# urlpatterns = [
+#     url(r'^login$', CustomLoginView.as_view(), name='cradmin-authenticate-login'),
+#     url(r'^logout$', logout.cradmin_logoutview, name='cradmin-authenticate-logout'),
+
+#     url(r"^allauth/login/$",
+#         allauth_views.AllauthLoginView.as_view(),
+#         name="account_login"),
+#     url(r"^allauth/logout/$",
+#         allauth_views.AllauthLogoutView.as_view(),
+#         name="account_logout"),
+#     url(r'^allauth/', include('allauth.urls')),
+# ]
