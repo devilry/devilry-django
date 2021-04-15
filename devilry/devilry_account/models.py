@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _, ugettext_lazy
+from django.utils.translation import gettext_lazy
 
 from devilry.devilry_account.exceptions import IllegalOperationError
 
@@ -405,9 +405,9 @@ class User(AbstractBaseUser):
 
     #: Is this user a superuser?
     is_superuser = models.BooleanField(
-            verbose_name=_('superuser status'),
+            verbose_name=gettext_lazy('superuser status'),
             default=False,
-            help_text=_('Designates that this user has all permissions without '
+            help_text=gettext_lazy('Designates that this user has all permissions without '
                         'explicitly assigning them.'))
 
     #: Short name for the user.
@@ -419,50 +419,50 @@ class User(AbstractBaseUser):
             blank=False, null=False,
             editable=True,
             unique=True,
-            help_text=_('The short name for the user. This is set automatically to the '
+            help_text=gettext_lazy('The short name for the user. This is set automatically to the '
                         'email or username depending on the method used for authentication.')
     )
 
     #: Full name of the user. Optional.
     fullname = models.TextField(
-            verbose_name=_('Full name'),
+            verbose_name=gettext_lazy('Full name'),
             blank=True, default="", null=False)
 
     #: The last name of the user. Optional.
     #: Used to sort by last name.
     lastname = models.TextField(
-            verbose_name=_('Last name'),
+            verbose_name=gettext_lazy('Last name'),
             blank=True, default="", null=False)
 
     #: The datetime the user was created.
     datetime_joined = models.DateTimeField(
-            verbose_name=_('date joined'),
+            verbose_name=gettext_lazy('date joined'),
             default=timezone.now)
 
     #: Datetime when this account was suspended.
     suspended_datetime = models.DateTimeField(
             null=True, blank=True,
-            verbose_name=_('Suspension time'),
-            help_text=_('Time when the account was suspended'))
+            verbose_name=gettext_lazy('Suspension time'),
+            help_text=gettext_lazy('Time when the account was suspended'))
 
     #: Reason why the account is suspended.
     suspended_reason = models.TextField(
             blank=True, default='',
-            verbose_name=_('Reason for suspension'))
+            verbose_name=gettext_lazy('Reason for suspension'))
 
     #: The language code for the preferred language for the user.
     languagecode = models.CharField(
             max_length=10, blank=True, null=False,
             default='',
-            verbose_name=_('Preferred language')
+            verbose_name=gettext_lazy('Preferred language')
     )
 
     USERNAME_FIELD = 'shortname'
     REQUIRED_FIELDS = []
 
     class Meta:
-        verbose_name = _('User')
-        verbose_name_plural = _('Users')
+        verbose_name = gettext_lazy('User')
+        verbose_name_plural = gettext_lazy('Users')
 
     @property
     def is_staff(self):
@@ -525,9 +525,9 @@ class User(AbstractBaseUser):
 
     def clean(self):
         if self.suspended_datetime is None and self.suspended_reason != '':
-            raise ValidationError(_('Can not provide a reason for suspension when suspension time is blank.'))
+            raise ValidationError(gettext_lazy('Can not provide a reason for suspension when suspension time is blank.'))
         if not self.shortname:
-            raise ValidationError(_('Short name is required.'))
+            raise ValidationError(gettext_lazy('Short name is required.'))
         if self.fullname:
             self.lastname = self.fullname.split()[-1]
 
@@ -637,8 +637,8 @@ class UserEmail(AbstractUserIdentity):
     """
 
     class Meta:
-        verbose_name = _('Email address')
-        verbose_name_plural = _('Email addresses')
+        verbose_name = gettext_lazy('Email address')
+        verbose_name_plural = gettext_lazy('Email addresses')
         unique_together = [
             ('user', 'is_primary')
         ]
@@ -646,7 +646,7 @@ class UserEmail(AbstractUserIdentity):
     #: The email address of the user.
     #: Must be unique.
     email = models.EmailField(
-            verbose_name=_('Email'),
+            verbose_name=gettext_lazy('Email'),
             unique=True,
             max_length=255)
 
@@ -654,18 +654,18 @@ class UserEmail(AbstractUserIdentity):
     #: A user can have multiple notification emails.
     use_for_notifications = models.BooleanField(
             default=True,
-            verbose_name=_('Send notifications to this email address?'))
+            verbose_name=gettext_lazy('Send notifications to this email address?'))
 
     #: Is this the primary email for the user?
     #: Valid values are: ``None`` and ``True``, and only
     #: one UserEmail per user can have ``is_primary=True``.
     is_primary = models.NullBooleanField(
-            verbose_name=_('Is this your primary email?'),
+            verbose_name=gettext_lazy('Is this your primary email?'),
             choices=[
-                (None, _('No')),
-                (True, _('Yes'))
+                (None, gettext_lazy('No')),
+                (True, gettext_lazy('Yes'))
             ],
-            help_text=_('Your primary email is the email address used when we '
+            help_text=gettext_lazy('Your primary email is the email address used when we '
                         'need to display a single email address.')
     )
 
@@ -685,7 +685,7 @@ class UserEmail(AbstractUserIdentity):
             #         user.save()
 
     def __str__(self):
-        return _('%(email)s - User%(userid)s#%(userhortname)s') % {
+        return gettext_lazy('%(email)s - User%(userid)s#%(userhortname)s') % {
             'email': self.email,
             'userid': self.user_id,
             'userhortname': self.user.shortname
@@ -701,8 +701,8 @@ class UserName(AbstractUserIdentity):
     """
 
     class Meta:
-        verbose_name = _('Username')
-        verbose_name_plural = _('Usernames')
+        verbose_name = gettext_lazy('Username')
+        verbose_name_plural = gettext_lazy('Usernames')
         unique_together = [
             ('user', 'is_primary')
         ]
@@ -710,7 +710,7 @@ class UserName(AbstractUserIdentity):
     #: The username of the user.
     #: Must be unique.
     username = models.CharField(
-            verbose_name=_('Username'),
+            verbose_name=gettext_lazy('Username'),
             unique=True,
             max_length=255)
 
@@ -718,12 +718,12 @@ class UserName(AbstractUserIdentity):
     #: Valid values are: ``None`` and ``True``, and only
     #: one UserName per user can have ``is_primary=True``.
     is_primary = models.NullBooleanField(
-            verbose_name=_('Is this your primary username?'),
+            verbose_name=gettext_lazy('Is this your primary username?'),
             choices=[
-                (None, _('No')),
-                (True, _('Yes'))
+                (None, gettext_lazy('No')),
+                (True, gettext_lazy('Yes'))
             ],
-            help_text=_('Your primary username is shown alongside your full '
+            help_text=gettext_lazy('Your primary username is shown alongside your full '
                         'name to identify you to teachers, examiners and '
                         'other students.')
     )
@@ -746,7 +746,7 @@ class UserName(AbstractUserIdentity):
             #     user.save()
 
     def __str__(self):
-        return _('%(username)s - User%(userid)s') % {
+        return gettext_lazy('%(username)s - User%(userid)s') % {
             'username': self.username,
             'userid': self.user_id
         }
@@ -759,8 +759,8 @@ class PermissionGroupUser(models.Model):
     """
 
     class Meta:
-        verbose_name = _('Permission group user')
-        verbose_name_plural = _('Permission group users')
+        verbose_name = gettext_lazy('Permission group user')
+        verbose_name_plural = gettext_lazy('Permission group users')
         unique_together = (
             ('permissiongroup', 'user'),
         )
@@ -772,7 +772,7 @@ class PermissionGroupUser(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return _('%(user)s in group %(permissiongroup)s') % {
+        return gettext_lazy('%(user)s in group %(permissiongroup)s') % {
             'user': self.user.shortname,
             'permissiongroup': self.permissiongroup.name,
         }
@@ -865,42 +865,42 @@ class PermissionGroup(models.Model):
 
     #: Choices for :obj:`~.PermissionGroup.grouptype`.
     GROUPTYPE_CHOICES = (
-        (GROUPTYPE_DEPARTMENTADMIN, _('Department administrator group')),
-        (GROUPTYPE_SUBJECTADMIN, _('Course administrator group')),
-        (GROUPTYPE_PERIODADMIN, _('Semester administrator group')),
+        (GROUPTYPE_DEPARTMENTADMIN, gettext_lazy('Department administrator group')),
+        (GROUPTYPE_SUBJECTADMIN, gettext_lazy('Course administrator group')),
+        (GROUPTYPE_PERIODADMIN, gettext_lazy('Semester administrator group')),
     )
 
     class Meta:
-        verbose_name = _('Permission group')
-        verbose_name_plural = _('Permission group')
+        verbose_name = gettext_lazy('Permission group')
+        verbose_name_plural = gettext_lazy('Permission group')
 
     #: The name of the group. Must be unique.
     name = models.CharField(
             max_length=255,
             null=False, blank=False, unique=True,
-            verbose_name=_('Name'),
-            help_text=_('A unique name for this group.'))
+            verbose_name=gettext_lazy('Name'),
+            help_text=gettext_lazy('A unique name for this group.'))
 
     #: The time this group was created.
     created_datetime = models.DateTimeField(
             null=False, auto_now_add=True,
             editable=False,
-            verbose_name=_('Created time'),
-            help_text=_('The time when this group was created.'))
+            verbose_name=gettext_lazy('Created time'),
+            help_text=gettext_lazy('The time when this group was created.'))
 
     #: Last time this group was updated.
     updated_datetime = models.DateTimeField(
             null=False, auto_now=True,
             editable=False,
-            verbose_name=_('Last updated time'),
-            help_text=_('The time when this group last updated.'))
+            verbose_name=gettext_lazy('Last updated time'),
+            help_text=gettext_lazy('The time when this group last updated.'))
 
     #: Last time this group was updated from a third party sync system.
     syncsystem_update_datetime = models.DateTimeField(
             null=True,
             editable=False,
-            verbose_name=_('Last updated from syncsystem time'),
-            help_text=_('The time when this group last updated from a third party sync system.'))
+            verbose_name=gettext_lazy('Last updated from syncsystem time'),
+            help_text=gettext_lazy('The time when this group last updated from a third party sync system.'))
 
     #: The grouptype determines what kind of object a group can be added to:
     #:
@@ -911,8 +911,8 @@ class PermissionGroup(models.Model):
             max_length=30,
             choices=GROUPTYPE_CHOICES,
             null=False, blank=False,
-            verbose_name=_('Permission group type'),
-            help_text=_('Course and semester administrator groups can only be assigned to a single '
+            verbose_name=gettext_lazy('Permission group type'),
+            help_text=gettext_lazy('Course and semester administrator groups can only be assigned to a single '
                         'course or semester. Department administrator groups can be assigned to multiple '
                         'courses. You can not change this for existing permission groups.')
     )
@@ -928,8 +928,8 @@ class PermissionGroup(models.Model):
     #: If grouptype is ``departmentadmin``, this can not be ``True``.
     is_custom_manageable = models.BooleanField(
             default=False,
-            verbose_name=_('Custom manageable?'),
-            help_text=_('Is this group mageable by non-superusers. Can not be enabled for '
+            verbose_name=gettext_lazy('Custom manageable?'),
+            help_text=gettext_lazy('Is this group mageable by non-superusers. Can not be enabled for '
                         'department administrator groups.')
     )
 
@@ -937,7 +937,7 @@ class PermissionGroup(models.Model):
     users = models.ManyToManyField(
             through=PermissionGroupUser,
             to=User,
-            verbose_name=_('Users in this group'),
+            verbose_name=gettext_lazy('Users in this group'),
             blank=True)
 
     def __str__(self):
@@ -948,12 +948,12 @@ class PermissionGroup(models.Model):
 
     def clean(self):
         if self.grouptype == self.GROUPTYPE_DEPARTMENTADMIN and self.is_custom_manageable:
-            raise ValidationError(_('Department administrator groups can not be '
+            raise ValidationError(gettext_lazy('Department administrator groups can not be '
                                     'custom manageable.'))
         if self.id is not None:
             currently_stored_group = PermissionGroup.objects.get(id=self.id)
             if currently_stored_group.grouptype != self.grouptype:
-                raise ValidationError(_('Permission group type can not be changed.'))
+                raise ValidationError(gettext_lazy('Permission group type can not be changed.'))
 
 
 class PeriodPermissionGroupQuerySet(models.QuerySet):
@@ -1044,8 +1044,8 @@ class PeriodPermissionGroup(models.Model):
     objects = PeriodPermissionGroupQuerySet.as_manager()
 
     class Meta:
-        verbose_name = _('Semester permission group')
-        verbose_name_plural = _('Semester permission groups')
+        verbose_name = gettext_lazy('Semester permission group')
+        verbose_name_plural = gettext_lazy('Semester permission groups')
         unique_together = (
             ('permissiongroup', 'period'),
         )
@@ -1058,7 +1058,7 @@ class PeriodPermissionGroup(models.Model):
 
     def __str__(self):
         if self.permissiongroup.is_custom_manageable:
-            return ugettext_lazy('Semester administrators for %(period)s') % {
+            return gettext_lazy('Semester administrators for %(period)s') % {
                 'period': self.period.get_path(),
             }
         else:
@@ -1066,7 +1066,7 @@ class PeriodPermissionGroup(models.Model):
 
     def clean(self):
         if self.permissiongroup.grouptype != PermissionGroup.GROUPTYPE_PERIODADMIN:
-            raise ValidationError(_(
+            raise ValidationError(gettext_lazy(
                     'Only semesters can be added to semester administrator permission groups.'))
         if self.permissiongroup.is_custom_manageable:
             queryset = PeriodPermissionGroup.objects \
@@ -1074,7 +1074,7 @@ class PeriodPermissionGroup(models.Model):
             if self.id is not None:
                 queryset = queryset.exclude(id=self.id)
             if queryset.exists():
-                raise ValidationError(_('Only a single editable permission group '
+                raise ValidationError(gettext_lazy('Only a single editable permission group '
                                         'is allowed for a semester.'))
 
 
@@ -1196,8 +1196,8 @@ class SubjectPermissionGroup(models.Model):
     objects = SubjectPermissionGroupQuerySet.as_manager()
 
     class Meta:
-        verbose_name = _('Course permission group')
-        verbose_name_plural = _('Course permission groups')
+        verbose_name = gettext_lazy('Course permission group')
+        verbose_name_plural = gettext_lazy('Course permission groups')
         unique_together = (
             ('permissiongroup', 'subject'),
         )
@@ -1210,7 +1210,7 @@ class SubjectPermissionGroup(models.Model):
 
     def __str__(self):
         if self.permissiongroup.is_custom_manageable:
-            return ugettext_lazy('Course administrators for %(subject)s') % {
+            return gettext_lazy('Course administrators for %(subject)s') % {
                 'subject': self.subject.short_name,
             }
         else:
@@ -1219,7 +1219,7 @@ class SubjectPermissionGroup(models.Model):
     def clean(self):
         if self.permissiongroup.grouptype not in [PermissionGroup.GROUPTYPE_SUBJECTADMIN,
                                                   PermissionGroup.GROUPTYPE_DEPARTMENTADMIN]:
-            raise ValidationError(_(
+            raise ValidationError(gettext_lazy(
                     'Courses can only be added to course and department administrator permission groups.'))
         if self.permissiongroup.is_custom_manageable:
             queryset = SubjectPermissionGroup.objects \
@@ -1227,5 +1227,5 @@ class SubjectPermissionGroup(models.Model):
             if self.id is not None:
                 queryset = queryset.exclude(id=self.id)
             if queryset.exists():
-                raise ValidationError(_('Only a single editable permission group '
+                raise ValidationError(gettext_lazy('Only a single editable permission group '
                                         'is allowed for a course.'))

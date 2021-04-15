@@ -4,7 +4,7 @@
 from django import forms
 from django.db import models
 from django.db.models.functions import Lower, Concat
-from django.utils.translation import ugettext_lazy, pgettext_lazy
+from django.utils.translation import gettext_lazy, pgettext_lazy
 from cradmin_legacy.viewhelpers import multiselect2
 from cradmin_legacy.viewhelpers import multiselect2view
 
@@ -38,9 +38,9 @@ class SelectedAssignmentGroupForm(forms.Form):
     #: A wysiwig editor for writing a feedback message.
     feedback_comment_text = forms.CharField(
         widget=devilry_acemarkdown.Small,
-        help_text=ugettext_lazy('Add a general comment to the feedback'),
-        initial=ugettext_lazy('Delivery has been corrected.'),
-        label=ugettext_lazy('Feedback comment text')
+        help_text=gettext_lazy('Add a general comment to the feedback'),
+        initial=gettext_lazy('Delivery has been corrected.'),
+        label=gettext_lazy('Feedback comment text')
     )
 
     def __init__(self, *args, **kwargs):
@@ -57,7 +57,7 @@ class AssignmentGroupTargetRenderer(multiselect2.target_renderer.Target):
     selected_target_renderer = devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue
 
     #: A descriptive name for the items selected.
-    descriptive_item_name = ugettext_lazy('assignment group')
+    descriptive_item_name = gettext_lazy('assignment group')
 
     def get_submit_button_text(self):
         return pgettext_lazy(

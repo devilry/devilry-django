@@ -5,7 +5,7 @@
 from django.db import models
 
 # CrAdmin imports
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 from cradmin_legacy.viewhelpers import listbuilderview
 from cradmin_legacy.viewhelpers import listbuilder
 from cradmin_legacy.crinstance import reverse_cradmin_url
@@ -48,11 +48,11 @@ class OrderStatusFilter(listfilter.django.single.select.AbstractOrderBy):
     def get_ordering_options(self):
         return [
             ('status (ready)', {
-                'label': ugettext_lazy('Status (ready)'),
+                'label': gettext_lazy('Status (ready)'),
                 'order_by': ['-status']
             }),
             ('status (not ready)', {
-                'label': ugettext_lazy('Status (not ready)'),
+                'label': gettext_lazy('Status (not ready)'),
                 'order_by': ['status']
             })
         ]
@@ -89,12 +89,12 @@ class ListStatusesView(listbuilderview.FilterListMixin, listbuilderview.View):
         return period_queryset.qualifiedforexams_status.all()
 
     def get_no_items_message(self):
-        return ugettext_lazy('No status has been created for this period yet.')
+        return gettext_lazy('No status has been created for this period yet.')
 
     def get_context_data(self, **kwargs):
         context_data = super(ListStatusesView, self).get_context_data(**kwargs)
-        context_data['headline'] = ugettext_lazy('Status overview for %(what)s') % {'what': self.request.cradmin_role}
-        context_data['help_text'] = ugettext_lazy(
+        context_data['headline'] = gettext_lazy('Status overview for %(what)s') % {'what': self.request.cradmin_role}
+        context_data['help_text'] = gettext_lazy(
             'You can either choose a plugin to create a new status, or you can select a '
             'retracted status.'
         )

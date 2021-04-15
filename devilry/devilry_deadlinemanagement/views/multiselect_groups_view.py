@@ -3,8 +3,7 @@
 
 from crispy_forms import layout
 from django import forms
-from django.utils.translation import pgettext_lazy
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy, pgettext_lazy
 from cradmin_legacy.viewhelpers import multiselect2
 from cradmin_legacy.viewhelpers import multiselect2view
 
@@ -17,7 +16,7 @@ from devilry.devilry_deadlinemanagement.views import viewutils
 
 class SelectedAssignmentGroupForm(forms.Form):
     qualification_modelclass = core_models.AssignmentGroup
-    invalid_qualification_item_message = ugettext_lazy(
+    invalid_qualification_item_message = gettext_lazy(
         'Something went wrong. This may happen if someone else performed a similar operation '
         'while you where selecting. Refresh the page and try again')
 
@@ -49,7 +48,7 @@ class AssignmentGroupTargetRenderer(multiselect2.target_renderer.Target):
     selected_target_renderer = devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue
 
     #: A descriptive name for the items selected.
-    descriptive_item_name = ugettext_lazy('groups')
+    descriptive_item_name = gettext_lazy('groups')
 
     def get_move_deadline_text(self):
         return pgettext_lazy(

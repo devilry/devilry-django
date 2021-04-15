@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.db import models
 from django.db import transaction
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import Candidate
@@ -143,42 +143,42 @@ class GroupInvite(models.Model):
                 .get(id=candidate_id)\
                 .relatedstudent.user
         except Candidate.DoesNotExist:
-            raise ValidationError(ugettext_lazy('The selected student is not eligible to join the group.'))
+            raise ValidationError(gettext_lazy('The selected student is not eligible to join the group.'))
 
     def clean(self):
         if self.accepted and not self.responded_datetime:
             self.responded_datetime = timezone.now()
         if self.sent_by and not self.group.candidates.filter(relatedstudent__user=self.sent_by).exists():
-            raise ValidationError(ugettext_lazy('The user sending an invite must be a Candiate on the group.'))
+            raise ValidationError(gettext_lazy('The user sending an invite must be a Candiate on the group.'))
         if self.sent_to and self.group.candidates.filter(relatedstudent__user=self.sent_to).exists():
-            raise ValidationError(ugettext_lazy('The student is already a member of the group.'))
+            raise ValidationError(gettext_lazy('The student is already a member of the group.'))
         if GroupInvite.objects.filter_no_response() \
                 .filter(group=self.group, sent_to=self.sent_to) \
                 .exclude(id=self.id).exists():
             raise ValidationError(
-                ugettext_lazy('The student is already invited to join the group, but they have not responded yet.'))
+                gettext_lazy('The student is already invited to join the group, but they have not responded yet.'))
 
         assignment = self.group.assignment
         if assignment.students_can_create_groups:
             if assignment.students_can_not_create_groups_after and \
                             assignment.students_can_not_create_groups_after < timezone.now():
-                raise ValidationError(ugettext_lazy(
+                raise ValidationError(gettext_lazy(
                     'Creating project groups without administrator approval is not '
                     'allowed on this assignment anymore. Please contact you course '
                     'administrator if you think this is wrong.'))
         else:
             raise ValidationError(
-                ugettext_lazy('This assignment does not allow students to form project groups on their own.'))
+                gettext_lazy('This assignment does not allow students to form project groups on their own.'))
 
         if not Assignment.objects.filter(id=assignment.id).filter_user_is_candidate(self.sent_to):
-            raise ValidationError(ugettext_lazy('The invited student is not registered on this assignment.'))
+            raise ValidationError(gettext_lazy('The invited student is not registered on this assignment.'))
 
         if self.accepted:
             sent_to_group = AssignmentGroup.objects.filter(parentnode=assignment) \
                 .filter_user_is_candidate(self.sent_to) \
                 .first()
             if sent_to_group.cached_data.candidate_count > 1:
-                raise ValidationError(ugettext_lazy(
+                raise ValidationError(gettext_lazy(
                     'The invited student is already in a project group with more than 1 students.'))
 
     def respond(self, accepted):
@@ -195,9 +195,9 @@ class GroupInvite(models.Model):
         invite.
         """
         if self.accepted:
-            raise ValidationError(ugettext_lazy('This invite has already been accepted.'))
+            raise ValidationError(gettext_lazy('This invite has already been accepted.'))
         if self.accepted is not None and not self.accepted:
-            raise ValidationError(ugettext_lazy('This invite has already been declined.'))
+            raise ValidationError(gettext_lazy('This invite has already been declined.'))
         self.accepted = accepted
         self.responded_datetime = timezone.now()
         self.full_clean()
@@ -219,10 +219,10 @@ class GroupInvite(models.Model):
     def _send_response_notification(self):
         sent_to_displayname = self.sent_to.get_full_name()
         if self.accepted:
-            subject = ugettext_lazy('{user} accepted your project group invite').format(user=sent_to_displayname)
+            subject = gettext_lazy('{user} accepted your project group invite').format(user=sent_to_displayname)
             template_name = 'devilry_core/groupinvite_accepted.django.txt'
         else:
-            subject = ugettext_lazy('{user} rejected your project group invite').format(user=sent_to_displayname)
+            subject = gettext_lazy('{user} rejected your project group invite').format(user=sent_to_displayname)
             template_name = 'devilry_core/groupinvite_rejected.django.txt'
         assignment = self.group.assignment
         send_templated_message(subject, template_name, {
@@ -248,12 +248,12 @@ class GroupInvite(models.Model):
 
         """
         if self.accepted is not None:
-            raise ValueError(ugettext_lazy('Can not send notification for an accepted GroupInvite.'))
+            raise ValueError(gettext_lazy('Can not send notification for an accepted GroupInvite.'))
         elif self.id is None:
-            raise ValueError(ugettext_lazy('Can not send notification for an unsaved GroupInvite.'))
+            raise ValueError(gettext_lazy('Can not send notification for an unsaved GroupInvite.'))
         sent_by_displayname = self.sent_by.get_displayname()
         assignment = self.group.assignment
-        subject = ugettext_lazy('Project group invite for {assignment}').format(assignment=assignment.get_path())
+        subject = gettext_lazy('Project group invite for {assignment}').format(assignment=assignment.get_path())
         template_name = 'devilry_core/groupinvite_invite.django.txt'
         url = request.build_absolute_uri(reverse('devilry_student_groupinvite_respond', kwargs={'invite_id': self.id}))
         send_templated_message(subject, template_name, {

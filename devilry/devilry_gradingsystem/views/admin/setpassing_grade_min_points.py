@@ -4,7 +4,7 @@ from django.views.generic.edit import UpdateView
 from django.views.generic import DetailView
 from django.views.generic import View
 from django import forms
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout
 from crispy_forms.layout import Field
@@ -27,7 +27,7 @@ class PassingGradeMinPointsForm(forms.ModelForm):
 
         if assignment.points_to_grade_mapper == 'custom-table':
             self.fields['passing_grade_min_points'] = forms.TypedChoiceField(
-                label=_('Select the grade required to pass the assignment'),
+                label=gettext_lazy('Select the grade required to pass the assignment'),
                 coerce=int,
                 choices=assignment.get_point_to_grade_map().as_choices()
             )

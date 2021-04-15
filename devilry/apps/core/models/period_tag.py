@@ -3,7 +3,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 
 from devilry.apps.core.models.relateduser import RelatedStudent, RelatedExaminer
 from devilry.apps.core.models.period import Period
@@ -238,5 +238,5 @@ class PeriodTag(models.Model):
     def clean(self):
         if len(self.tag) == 0:
             raise ValidationError({
-                'tag': ugettext_lazy('Field cannot be blank.')
+                'tag': gettext_lazy('Field cannot be blank.')
             })

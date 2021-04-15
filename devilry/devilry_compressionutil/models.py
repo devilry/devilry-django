@@ -7,7 +7,7 @@ from django.db import models
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy, pgettext_lazy
+from django.utils.translation import gettext_lazy, pgettext_lazy
 
 from devilry.devilry_compressionutil import backend_registry
 
@@ -151,7 +151,7 @@ class CompressedArchiveMeta(GenericMeta):
     def clean(self):
         if backend_registry.Registry.get_instance().get(self.backend_id) is None:
             raise ValidationError({
-                'backend_id': ugettext_lazy('backend_id must refer to a valid backend')
+                'backend_id': gettext_lazy('backend_id must refer to a valid backend')
             })
 
     def __str__(self):

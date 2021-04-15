@@ -3,7 +3,7 @@
 
 import json
 
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 
 from cradmin_legacy import crapp
 from cradmin_legacy.viewhelpers import listbuilderview
@@ -151,10 +151,10 @@ class RelatedStudentsAllResultsOverview(FilterListMixin, listbuilderview.View):
     template_name = "devilry_admin/period/all_results_overview/devilry_all_results_overview.django.html"
 
     def get_pagetitle(self):
-        return ugettext_lazy('All students results')
+        return gettext_lazy('All students results')
 
     def get_no_items_message(self):
-        return ugettext_lazy('No students on period')
+        return gettext_lazy('No students on period')
 
     def get_filterlist_position(self):
         return 'top'

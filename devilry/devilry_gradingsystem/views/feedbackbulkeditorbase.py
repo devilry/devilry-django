@@ -3,7 +3,7 @@ from random import randint
 
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy
 from django.http import Http404
 from django import forms
 from django.shortcuts import redirect
@@ -34,7 +34,7 @@ class FeedbackBulkEditorOptionsForm(OptionsForm):
             cleaned_groups = self.cleaned_groups
             groups_with_no_deliveries = cleaned_groups.exclude_groups_with_deliveries()
             if groups_with_no_deliveries.exists():
-                raise forms.ValidationError(_('One or more of the selected groups has no deliveries.'))
+                raise forms.ValidationError(gettext_lazy('One or more of the selected groups has no deliveries.'))
             else:
                 self.cleaned_groups = cleaned_groups
         return cleaned_data
@@ -47,7 +47,7 @@ class FeedbackBulkEditorFormBase(FeedbackBulkEditorOptionsForm):
 
     def _add_feedbacktext_field(self):
         self.fields['feedbacktext'] = forms.CharField(
-            label=_('Feedback text'),
+            label=gettext_lazy('Feedback text'),
             required=False)
 
     def get_feedbacktext_layout_elements(self):

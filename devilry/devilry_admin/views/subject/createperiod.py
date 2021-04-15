@@ -6,7 +6,7 @@ from cradmin_legacy import crapp
 from cradmin_legacy import crinstance
 from cradmin_legacy.viewhelpers import create
 from cradmin_legacy.viewhelpers import crudbase
-from django.utils.translation import ugettext_lazy as _, pgettext_lazy
+from django.utils.translation import gettext_lazy, pgettext_lazy
 from cradmin_legacy.widgets.datetimepicker import DateTimePickerWidget
 
 from devilry.apps.core.models import Period
@@ -25,7 +25,7 @@ class CreateUpdateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(CreateUpdateForm, self).__init__(*args, **kwargs)
-        self.fields['long_name'].help_text = _('Type the name of your semester.')
+        self.fields['long_name'].help_text = gettext_lazy('Type the name of your semester.')
         self.fields['start_time'].widget = DateTimePickerWidget(
             required=True,
             buttonlabel_novalue=pgettext_lazy('CrAdmin datetime picker typo fix', 'Select a date/time')
@@ -62,9 +62,9 @@ class CreateUpdateMixin(object):
     def get_field_layout(self):
         return [
             layout.Div(
-                layout.Field('long_name', placeholder=_('Example: Spring 2025'),
+                layout.Field('long_name', placeholder=gettext_lazy('Example: Spring 2025'),
                              focusonme='focusonme'),
-                layout.Field('short_name', placeholder=_('Example: spring2025')),
+                layout.Field('short_name', placeholder=gettext_lazy('Example: spring2025')),
                 layout.Div(
                     layout.Div(
                         layout.Field('start_time'),
@@ -97,7 +97,7 @@ class CreateView(crudbase.OnlySaveButtonMixin, CreateUpdateMixin, create.CreateV
         return '{} - {}'.format(self.get_pageheading(), self.subject.short_name)
 
     def get_pageheading(self):
-        return _('Create new semester')
+        return gettext_lazy('Create new semester')
 
     def get_form_kwargs(self):
         kwargs = super(CreateView, self).get_form_kwargs()

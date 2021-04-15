@@ -8,7 +8,7 @@ from django import forms
 from django.contrib import messages
 from django.http import Http404
 from django.shortcuts import redirect
-from django.utils.translation import pgettext_lazy, ugettext_lazy
+from django.utils.translation import pgettext_lazy, gettext_lazy
 from django.views.generic import TemplateView
 from cradmin_legacy import crapp
 from cradmin_legacy.crispylayouts import PrimarySubmit, CradminFormHelper
@@ -220,9 +220,9 @@ class ConfirmView(CreateGroupsViewMixin,
     SELECTED_STUDENTS_PASSING_GRADE_ON_ASSIGNMENT = 'passing_grade_on_assignment'
     SELECTED_STUDENTS_RELATEDSTUDENTS = 'relatedstudents'
     SELECTED_STUDENTS_CHOICES_MAP = {
-        SELECTED_STUDENTS_ALL_ON_ASSIGNMENT: ugettext_lazy('All students on %(assignment)s'),
-        SELECTED_STUDENTS_PASSING_GRADE_ON_ASSIGNMENT: ugettext_lazy('Students with passing grade on %(assignment)s'),
-        SELECTED_STUDENTS_RELATEDSTUDENTS: ugettext_lazy('All students on %(period)s'),
+        SELECTED_STUDENTS_ALL_ON_ASSIGNMENT: gettext_lazy('All students on %(assignment)s'),
+        SELECTED_STUDENTS_PASSING_GRADE_ON_ASSIGNMENT: gettext_lazy('Students with passing grade on %(assignment)s'),
+        SELECTED_STUDENTS_RELATEDSTUDENTS: gettext_lazy('All students on %(period)s'),
     }
 
     def get_period(self):

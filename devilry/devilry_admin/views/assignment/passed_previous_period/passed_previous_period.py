@@ -7,7 +7,7 @@ from django import forms
 from django.template import defaultfilters
 from django.http import Http404
 from django.shortcuts import redirect
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 from cradmin_legacy import crapp
 from cradmin_legacy.crispylayouts import PrimarySubmit
 from cradmin_legacy.viewhelpers import formbase
@@ -61,7 +61,7 @@ class SelectPeriodView(formbase.FormView):
         return super(SelectPeriodView, self).dispatch(request, *args, **kwargs)
 
     def get_pagetitle(self):
-        return ugettext_lazy('Select the earliest semester you want to approve for')
+        return gettext_lazy('Select the earliest semester you want to approve for')
 
     def __get_period_queryset(self):
         return Period.objects.filter(
@@ -73,7 +73,7 @@ class SelectPeriodView(formbase.FormView):
 
     def get_buttons(self):
         return [
-            PrimarySubmit('Next', ugettext_lazy('Next'))
+            PrimarySubmit('Next', gettext_lazy('Next'))
         ]
 
     def get_field_layout(self):
@@ -144,7 +144,7 @@ class PassedPreviousAssignmentView(listbuilderview.View):
         ).select_related('parentnode__parentnode')
 
     def get_pagetitle(self):
-        return ugettext_lazy('Confirm assignments')
+        return gettext_lazy('Confirm assignments')
 
     def get_context_data(self, **kwargs):
         context = super(PassedPreviousAssignmentView, self).get_context_data(**kwargs)
@@ -211,7 +211,7 @@ class ApprovePreviousAssignments(formbase.FormView):
         return super(ApprovePreviousAssignments, self).dispatch(request, *args, **kwargs)
 
     def get_pagetitle(self):
-        return ugettext_lazy('Approve assignments')
+        return gettext_lazy('Approve assignments')
 
     def __get_candidate_listbuilder(self):
         listbuilder = CandidateListbuilder(self.assignment, self.devilryrole, self.util_class)
@@ -229,7 +229,7 @@ class ApprovePreviousAssignments(formbase.FormView):
 
     def get_buttons(self):
         return [
-            PrimarySubmit('Confirm', ugettext_lazy('Confirm'))
+            PrimarySubmit('Confirm', gettext_lazy('Confirm'))
         ]
 
     def get_field_layout(self):
@@ -254,23 +254,23 @@ class ApprovePreviousAssignments(formbase.FormView):
         except SomeCandidatesDoesNotQualifyToPass as e:
             messages.warning(
                 self.request,
-                ugettext_lazy('Some students does not qualify to pass the assignment.')
+                gettext_lazy('Some students does not qualify to pass the assignment.')
             )
         except NoCandidatesPassed:
             messages.warning(
                 self.request,
-                ugettext_lazy('No students are qualified to get approved '
+                gettext_lazy('No students are qualified to get approved '
                               'for this assignment from a previous assignment.')
             )
         except:
             messages.warning(
                 self.request,
-                ugettext_lazy('An error occurred.')
+                gettext_lazy('An error occurred.')
             )
         else:
             messages.success(
                 self.request,
-                ugettext_lazy(
+                gettext_lazy(
                     '%(students)s was marked as approved for this assignment.') % {
                     'students': self.__get_candidates_displayname(candidates)
                 }

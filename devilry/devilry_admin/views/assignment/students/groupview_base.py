@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.db import models
 from django.db.models.functions import Lower, Concat
 from django.shortcuts import redirect
-from django.utils.translation import pgettext_lazy, ugettext_lazy
+from django.utils.translation import pgettext_lazy
 from cradmin_legacy.viewhelpers import listbuilderview
 from cradmin_legacy.viewhelpers import multiselect2view
 from cradmin_legacy.viewhelpers.listbuilder.itemframe import DefaultSpacingItemFrame

@@ -2,7 +2,7 @@
 
 from crispy_forms import layout
 from django import forms
-from django.utils.translation import ugettext_lazy as _, ugettext_lazy
+from django.utils.translation import gettext_lazy
 from cradmin_legacy import crapp
 from cradmin_legacy import crinstance
 from cradmin_legacy.viewhelpers import create
@@ -21,16 +21,16 @@ class CreateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(CreateForm, self).__init__(*args, **kwargs)
-        self.fields['long_name'].help_text = _('Type the name of your course.')
+        self.fields['long_name'].help_text = gettext_lazy('Type the name of your course.')
 
 
 class CreateUpdateMixin(object):
     def get_field_layout(self):
         return [
             layout.Div(
-                layout.Field('long_name', placeholder=ugettext_lazy('Example: DUCK1010 Object Oriented Programming'),
+                layout.Field('long_name', placeholder=gettext_lazy('Example: DUCK1010 Object Oriented Programming'),
                              focusonme='focusonme'),
-                layout.Field('short_name', placeholder=ugettext_lazy('Example: duck1010')),
+                layout.Field('short_name', placeholder=gettext_lazy('Example: duck1010')),
                 css_class='cradmin-globalfields'
             )
         ]
@@ -42,7 +42,7 @@ class CreateView(crudbase.OnlySaveButtonMixin, CreateUpdateMixin, create.CreateV
     template_name = 'devilry_cradmin/viewhelpers/devilry_createview_with_backlink.django.html'
 
     def get_pagetitle(self):
-        return ugettext_lazy('Create new course')
+        return gettext_lazy('Create new course')
 
     def get_success_url(self):
         return crinstance.reverse_cradmin_url(

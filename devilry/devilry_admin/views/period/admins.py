@@ -3,7 +3,7 @@
 from django.contrib import messages
 from django.db import models
 from django.http import Http404
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 from cradmin_legacy import crapp
 from cradmin_legacy.crispylayouts import DangerSubmit
 from cradmin_legacy.viewhelpers import listbuilderview
@@ -97,7 +97,7 @@ class Overview(GetCustomManagablePermissionGroupMixin, listbuilderview.View):
 
 class AddAdminsTarget(devilry_multiselect2.user.Target):
     def get_submit_button_text(self):
-        return ugettext_lazy('Add selected users as semester admins')
+        return gettext_lazy('Add selected users as semester admins')
 
 
 class AddView(GetCustomManagablePermissionGroupMixin,
@@ -145,7 +145,7 @@ class AddView(GetCustomManagablePermissionGroupMixin,
     def __get_success_message(self, added_users):
         added_users_names = ['"{}"'.format(user.get_full_name()) for user in added_users]
         added_users_names.sort()
-        return ugettext_lazy('Added %(usernames)s.') % {
+        return gettext_lazy('Added %(usernames)s.') % {
             'usernames': ', '.join(added_users_names)
         }
 
@@ -213,13 +213,13 @@ class DeleteView(GetCustomManagablePermissionGroupMixin, devilry_confirmview.Vie
         return super(DeleteView, self).dispatch(request, *args, **kwargs)
 
     def get_pagetitle(self):
-        return ugettext_lazy('Remove semester administrator: %(user)s?') % {
+        return gettext_lazy('Remove semester administrator: %(user)s?') % {
             'user': self.permissiongroupuser.user.get_full_name(),
         }
 
     def get_confirm_message(self):
         period = self.request.cradmin_role
-        return ugettext_lazy(
+        return gettext_lazy(
                 'Are you sure you want to remove %(user)s as semester administrator '
                 'for %(period)s? You can re-add a removed administrator at any time.'
         ) % {
@@ -228,7 +228,7 @@ class DeleteView(GetCustomManagablePermissionGroupMixin, devilry_confirmview.Vie
         }
 
     def get_submit_button_label(self):
-        return ugettext_lazy('Remove')
+        return gettext_lazy('Remove')
 
     def get_submit_button_class(self):
         return DangerSubmit
@@ -237,11 +237,11 @@ class DeleteView(GetCustomManagablePermissionGroupMixin, devilry_confirmview.Vie
         return self.request.cradmin_app.reverse_appindexurl()
 
     def get_backlink_label(self):
-        return ugettext_lazy('Back to admins on semester overview')
+        return gettext_lazy('Back to admins on semester overview')
 
     def __get_success_message(self):
         period = self.request.cradmin_role
-        return ugettext_lazy('%(user)s is no longer semester administrator for %(period)s.') % {
+        return gettext_lazy('%(user)s is no longer semester administrator for %(period)s.') % {
             'user': self.permissiongroupuser.user.get_full_name(),
             'period': period.get_path(),
         }

@@ -3,7 +3,7 @@
 
 # Django imports
 from django import forms
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 from django.views import generic
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
@@ -285,13 +285,13 @@ class RetractStatusForm(forms.ModelForm):
         fields = ['message']
         model = status_models.Status
         help_texts = {
-            'message': ugettext_lazy('Provide a message as to why the Status needs to be retracted.')
+            'message': gettext_lazy('Provide a message as to why the Status needs to be retracted.')
         }
 
     def __init__(self, *args, **kwargs):
         super(RetractStatusForm, self).__init__(*args, **kwargs)
         self.fields['message'].required = True
-        self.fields['message'].label = ugettext_lazy('Message')
+        self.fields['message'].label = gettext_lazy('Message')
 
     @classmethod
     def get_field_layout(cls):
@@ -308,7 +308,7 @@ class StatusRetractView(update.UpdateView):
     model = status_models.Status
 
     def get_pagetitle(self):
-        return ugettext_lazy('Why is the status retracted?')
+        return gettext_lazy('Why is the status retracted?')
 
     def get_buttons(self):
         buttons = [
@@ -351,4 +351,4 @@ class StatusRetractView(update.UpdateView):
         return self.request.cradmin_app.reverse_appindexurl()
 
     def get_form_invalid_message(self, form):
-        return ugettext_lazy('Cannot retract status without a message.')
+        return gettext_lazy('Cannot retract status without a message.')

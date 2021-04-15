@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy
 from django.utils import timezone
 
 from . import deliverytypes
@@ -198,8 +198,8 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         null=True, blank=True, default=None,
         max_length=50,
         choices=(
-            (None, _('Unknown.')),
-            ('examiner-gave-another-chance', _('Examiner gave the student another chance.')),
+            (None, gettext_lazy('Unknown.')),
+            ('examiner-gave-another-chance', gettext_lazy('Examiner gave the student another chance.')),
         )
     )
 

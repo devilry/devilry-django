@@ -2,7 +2,7 @@
 
 from django.contrib import messages
 from django.shortcuts import redirect
-from django.utils.translation import ugettext_lazy, ungettext_lazy
+from django.utils.translation import gettext_lazy, ngettext_lazy
 from cradmin_legacy import crapp
 
 from devilry.apps.core.models import Examiner
@@ -13,7 +13,7 @@ from devilry.devilry_cradmin import devilry_listbuilder
 
 class TargetRenderer(devilry_listbuilder.assignmentgroup.GroupTargetRenderer):
     def get_submit_button_text(self):
-        return ugettext_lazy('Remove students')
+        return gettext_lazy('Remove students')
 
 
 class RemoveGroupsToExaminerView(groupview_base.BaseMultiselectView,
@@ -26,7 +26,7 @@ class RemoveGroupsToExaminerView(groupview_base.BaseMultiselectView,
             return response
         else:
             messages.info(self.request,
-                          ugettext_lazy('No students to remove.'))
+                          gettext_lazy('No students to remove.'))
             return redirect(str(self.get_success_url()))
 
     def get_target_renderer_class(self):
@@ -49,11 +49,11 @@ class RemoveGroupsToExaminerView(groupview_base.BaseMultiselectView,
 
     def get_success_message(self, groupcount, candidatecount):
         if groupcount == candidatecount:
-            return ugettext_lazy('Removed %(count)s students.') % {
+            return gettext_lazy('Removed %(count)s students.') % {
                 'count': candidatecount
             }
         else:
-            return ungettext_lazy(
+            return ngettext_lazy(
                 'Removed %(groupcount)s project group with %(studentcount)s students.',
                 'Removed %(groupcount)s project groups with %(studentcount)s students.',
                 groupcount

@@ -2,7 +2,7 @@
 
 from crispy_forms import layout
 from devilry.apps.core.models import Subject
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 from cradmin_legacy import crapp
 from cradmin_legacy.viewhelpers import crudbase
 from cradmin_legacy.viewhelpers import update
@@ -24,7 +24,7 @@ class UpdateView(crudbase.OnlySaveButtonMixin,
 
     def get_pagetitle(self):
         subject = self.request.cradmin_role
-        return ugettext_lazy('Edit %(subject)s') % {
+        return gettext_lazy('Edit %(subject)s') % {
             'subject': subject.get_path()
         }
 

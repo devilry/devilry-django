@@ -1,6 +1,6 @@
 
 
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 from cradmin_legacy.viewhelpers.crudbase import OnlySaveButtonMixin
 from cradmin_legacy.viewhelpers.update import UpdateView
 
@@ -13,7 +13,7 @@ class AssignmentProjectGroupUpdateView(OnlySaveButtonMixin, UpdateView):
     fields = ['students_can_create_groups', 'students_can_not_create_groups_after']
 
     def get_pagetitle(self):
-        return ugettext_lazy('Edit project group settings')
+        return gettext_lazy('Edit project group settings')
 
     def get_queryset_for_role(self, role):
         return self.model.objects.filter(id=self.request.cradmin_role.id)

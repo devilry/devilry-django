@@ -8,7 +8,7 @@ from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.template.loader import render_to_string
-from django.utils.translation import pgettext_lazy, ugettext_lazy, pgettext
+from django.utils.translation import pgettext_lazy, gettext_lazy, pgettext
 from cradmin_legacy.crispylayouts import PrimarySubmit
 from cradmin_legacy.viewhelpers import formbase
 from cradmin_legacy.viewhelpers.crudbase import OnlySaveButtonMixin
@@ -19,15 +19,15 @@ from devilry.apps.core.models import PointToGradeMap
 
 class GradingConfigurationForm(forms.Form):
     error_messages = {
-        'point_to_grade_map_json_invalid_format': ugettext_lazy(
+        'point_to_grade_map_json_invalid_format': gettext_lazy(
             'The grade to points table must have at least 2 rows. The first row must '
             'have 0 as points.'
         ),
-        'max_points_too_small_for_point_to_grade_map': ugettext_lazy(
+        'max_points_too_small_for_point_to_grade_map': gettext_lazy(
             'The grade to points table has points that is larger than the '
             'maximum number of points.'
         ),
-        'max_points_larger_than_passing_grade_min_points': ugettext_lazy(
+        'max_points_larger_than_passing_grade_min_points': gettext_lazy(
             'Must be larger than the minimum number of points required to pass.'
         )
     }
@@ -169,7 +169,7 @@ class AssignmentGradingConfigurationUpdateView(OnlySaveButtonMixin, formbase.For
 
     def get_buttons(self):
         return [
-            PrimarySubmit('save', ugettext_lazy('Save')),
+            PrimarySubmit('save', gettext_lazy('Save')),
         ]
 
     def __create_point_to_grade_map(self, form, assignment):
@@ -193,7 +193,7 @@ class AssignmentGradingConfigurationUpdateView(OnlySaveButtonMixin, formbase.For
             self.__create_point_to_grade_map(form=form, assignment=assignment)
             messages.success(
                 request=self.request,
-                message=ugettext_lazy('Saved Grading configuration for assignment')
+                message=gettext_lazy('Saved Grading configuration for assignment')
             )
         return super(AssignmentGradingConfigurationUpdateView, self).form_valid(form)
 

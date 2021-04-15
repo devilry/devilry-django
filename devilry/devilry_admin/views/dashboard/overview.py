@@ -6,7 +6,7 @@ from devilry.devilry_cradmin.devilry_listbuilder.period import AdminItemValue
 from django.db import models
 from itertools import groupby
 
-from django.utils.translation import ugettext, ugettext_lazy
+from django.utils.translation import gettext, gettext_lazy
 from django.views.generic import TemplateView
 from cradmin_legacy import crapp
 from cradmin_legacy.crinstance import reverse_cradmin_url
@@ -43,11 +43,11 @@ class OrderSubjectFilter(listfilter.django.single.select.AbstractOrderBy):
     def get_ordering_options(self):
         return [
             ('', {  # This will be the default sort order
-                'label': ugettext_lazy('Short Name'),
+                'label': gettext_lazy('Short Name'),
                 'order_by': ['short_name'],
             }),
             ('short_name_descending', {
-                'label': ugettext_lazy('Short Name (descending)'),
+                'label': gettext_lazy('Short Name (descending)'),
                 'order_by': ['-short_name'],
             }),
         ]
@@ -55,10 +55,10 @@ class OrderSubjectFilter(listfilter.django.single.select.AbstractOrderBy):
 
 class SubjectListMatchResultRenderable(WithResultValueRenderable):
     def get_object_name_singular(self, num_matches):
-        return ugettext_lazy('course')
+        return gettext_lazy('course')
 
     def get_object_name_plural(self, num_matches):
-        return ugettext_lazy('courses')
+        return gettext_lazy('courses')
 
 
 class RowListBuilder(RowListWithMatchResults):
@@ -74,7 +74,7 @@ class OverviewSubjectListView(listbuilderview.FilterListMixin, listbuilderview.V
     paginate_by = 50
 
     def get_pageheading(self):
-        return ugettext("Administrator dashboard")
+        return gettext("Administrator dashboard")
 
     def get_pagetitle(self):
         return self.get_pageheading()
@@ -104,7 +104,7 @@ class OverviewSubjectListView(listbuilderview.FilterListMixin, listbuilderview.V
             label_is_screenreader_only=True,
             modelfields=['long_name']))
         filterlist.append(OrderSubjectFilter(
-            slug='short_name', label=ugettext_lazy('Short name')))
+            slug='short_name', label=gettext_lazy('Short name')))
 
     def get_filterlist_url(self, filters_string):
         """

@@ -14,7 +14,7 @@ from cradmin_legacy import crapp
 from cradmin_legacy import crinstance
 from cradmin_legacy.viewhelpers import create
 from cradmin_legacy.viewhelpers import crudbase
-from django.utils.translation import ugettext_lazy as _, pgettext_lazy
+from django.utils.translation import gettext_lazy, pgettext_lazy
 from cradmin_legacy.widgets.datetimepicker import DateTimePickerWidget
 
 from devilry.apps.core.models import Assignment
@@ -27,7 +27,7 @@ class CreateForm(forms.ModelForm):
     IMPORT_STUDENTS_NONE = 'none'
 
     student_import_option = forms.ChoiceField(
-        label=_('Import students'),
+        label=gettext_lazy('Import students'),
         required=True,
         choices=[]
     )
@@ -46,14 +46,14 @@ class CreateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.period = kwargs.pop('period')
         super(CreateForm, self).__init__(*args, **kwargs)
-        self.fields['long_name'].help_text = _(
+        self.fields['long_name'].help_text = gettext_lazy(
             'Type the name of your assignment.')
-        self.fields['short_name'].help_text = _(
+        self.fields['short_name'].help_text = gettext_lazy(
             'Up to 20 letters of lowercase english letters (a-z), '
             'numbers, underscore ("_") and hyphen ("-").')
 
         # Set student import options data.
-        self.fields['student_import_option'].help_text = _('Choose how you would like to set up students for the new '
+        self.fields['student_import_option'].help_text = gettext_lazy('Choose how you would like to set up students for the new '
                                                            'assignment. You can add all students from the semester, no '
                                                            'students or copy students and examiners from previous '
                                                            'assignments.')
@@ -67,8 +67,8 @@ class CreateForm(forms.ModelForm):
                 minutes=settings.DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES),
             maximum_datetime=self.period.end_time)
         self.fields['first_deadline'].required = True
-        self.fields['first_deadline'].label = _('Set first deadline')
-        self.fields['first_deadline'].help_text = _(
+        self.fields['first_deadline'].label = gettext_lazy('Set first deadline')
+        self.fields['first_deadline'].help_text = gettext_lazy(
             'The first deadline for this assignment. This is shared by all the '
             'students on the assignment.'
         )
@@ -87,16 +87,16 @@ class CreateForm(forms.ModelForm):
     def default_import_options(self):
         return [
             ('', '----'),
-            ('all', _('All students on semester')),
-            ('none', _('No students'))
+            ('all', gettext_lazy('All students on semester')),
+            ('none', gettext_lazy('No students'))
         ]
 
     def __create_grouped_choice_tuple_for_assignment(self, assignment):
         return (
             assignment.long_name,
             tuple([
-                ('{}_all'.format(assignment.id), _('Copy all students')),
-                ('{}_passed'.format(assignment.id), _('Copy students with passing grade'))
+                ('{}_all'.format(assignment.id), gettext_lazy('Copy all students')),
+                ('{}_passed'.format(assignment.id), gettext_lazy('Copy students with passing grade'))
             ]))
 
     def __create_student_import_choices(self):
@@ -145,7 +145,7 @@ class CreateForm(forms.ModelForm):
             seconds=10))
         raise ValidationError({
             # Translators: The "delay" is formatted as "X hours/minutes from now"
-            'first_deadline': _('First deadline must be at least %(delay)s.') % {
+            'first_deadline': gettext_lazy('First deadline must be at least %(delay)s.') % {
                 'delay': publishing_time_naturaltime
             }
         })
@@ -171,7 +171,7 @@ class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
         return '{} - {}'.format(self.get_pageheading(), self.period.get_path())
 
     def get_pageheading(self):
-        return _('Create new assignment')
+        return gettext_lazy('Create new assignment')
 
     def get_form_kwargs(self):
         kwargs = super(CreateView, self).get_form_kwargs()
@@ -218,9 +218,9 @@ class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
     def get_field_layout(self):
         return [
             layout.Div(
-                layout.Field('long_name', placeholder=_('Example: Assignment 1'),
+                layout.Field('long_name', placeholder=gettext_lazy('Example: Assignment 1'),
                              focusonme='focusonme'),
-                layout.Field('short_name', placeholder=_('Example: assignment1')),
+                layout.Field('short_name', placeholder=gettext_lazy('Example: assignment1')),
                 layout.Field('student_import_option'),
                 # layout.HTML(self.__render_help_box()),
                 layout.Div(
@@ -252,7 +252,7 @@ class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
         try:
             assignment_id = int(student_import_option.split('_')[0])
         except ValueError:
-            raise ValidationError(_('Something went wrong'))
+            raise ValidationError(gettext_lazy('Something went wrong'))
         try:
             assignment = Assignment.objects\
                 .filter_is_active()\
@@ -308,17 +308,17 @@ class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
     def get_context_data(self, **kwargs):
         context = super(CreateView, self).get_context_data(**kwargs)
         context['backlink_url'] = self.get_backlink_url()
-        context['import_option_not_selected_text'] = _('Choose how you would like to set up students for the new '
+        context['import_option_not_selected_text'] = gettext_lazy('Choose how you would like to set up students for the new '
                                                        'assignment. You can add all students from the semester, no '
                                                        'students or copy students and examiners from previous '
                                                        'assignments.')
-        context['import_option_all_selected_text'] = _('Will import all students on the semester if any.')
-        context['import_option_none_selected_text'] = _('Will not import any students. You have to manually configure '
+        context['import_option_all_selected_text'] = gettext_lazy('Will import all students on the semester if any.')
+        context['import_option_none_selected_text'] = gettext_lazy('Will not import any students. You have to manually configure '
                                                         'students from the assignment-dashboard.')
-        context['import_option_assignment_all_selected_text'] = _('Copy all students from this assignment. '
+        context['import_option_assignment_all_selected_text'] = gettext_lazy('Copy all students from this assignment. '
                                                                   'This will copy the group and examiner setup from '
                                                                   'the selected assignment.')
-        context['import_option_assignment_passing_selected_text'] = _('Copy students from this assignment with passing '
+        context['import_option_assignment_passing_selected_text'] = gettext_lazy('Copy students from this assignment with passing '
                                                                       'grade only. This will copy the group and '
                                                                       'examiner setup from the selected assignment.')
         return context

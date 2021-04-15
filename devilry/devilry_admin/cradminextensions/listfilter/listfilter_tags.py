@@ -1,8 +1,7 @@
 
 
 from django.db import models
-from django.utils.translation import ugettext_lazy
-from django.utils.translation import pgettext_lazy
+from django.utils.translation import gettext_lazy, pgettext_lazy
 from cradmin_legacy.viewhelpers import listfilter
 from cradmin_legacy.viewhelpers.listfilter.basefilters.single import abstractselect, abstractradio
 
@@ -27,10 +26,10 @@ class Search(listfilter.django.single.textinput.Search):
         return 'search'
 
     def get_label(self):
-        return ugettext_lazy('Search')
+        return gettext_lazy('Search')
 
     def get_placeholder(self):
-        return ugettext_lazy('Search listed objects ...')
+        return gettext_lazy('Search listed objects ...')
 
 
 class IsHiddenFilter(abstractselect.AbstractBoolean):
@@ -61,11 +60,11 @@ class IsHiddenRadioFilter(abstractradio.AbstractRadioFilter):
 
     def get_choices(self):
         return [
-            ('', ugettext_lazy('show all tags')),
-            ('show-hidden-tags-only', ugettext_lazy('hidden tags only')),
-            ('show-visible-tags-only', ugettext_lazy('visible tags only')),
-            ('show-custom-tags-only', ugettext_lazy('custom tags only')),
-            ('show-imported-tags-only', ugettext_lazy('imported tags only')),
+            ('', gettext_lazy('show all tags')),
+            ('show-hidden-tags-only', gettext_lazy('hidden tags only')),
+            ('show-visible-tags-only', gettext_lazy('visible tags only')),
+            ('show-custom-tags-only', gettext_lazy('custom tags only')),
+            ('show-imported-tags-only', gettext_lazy('imported tags only')),
         ]
 
     def filter(self, queryobject):

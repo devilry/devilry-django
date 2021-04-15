@@ -1,5 +1,5 @@
 from django.db import models
-from django.utils.translation import ugettext_lazy, pgettext_lazy
+from django.utils.translation import pgettext_lazy
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_group.models import FeedbackSet

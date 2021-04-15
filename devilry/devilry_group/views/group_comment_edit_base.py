@@ -6,7 +6,7 @@ from django import forms
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.http import Http404, HttpResponseRedirect
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 from cradmin_legacy.viewhelpers import update
 
 from devilry.devilry_cradmin import devilry_acemarkdown
@@ -52,10 +52,10 @@ class EditGroupCommentBase(update.UpdateView):
         return super(EditGroupCommentBase, self).dispatch(request, *args, **kwargs)
 
     def get_pagetitle(self):
-        return ugettext_lazy('Edit comment')
+        return gettext_lazy('Edit comment')
 
     def get_pageheading(self):
-        return ugettext_lazy('Edit comment')
+        return gettext_lazy('Edit comment')
 
     def get_queryset_for_role(self, role):
         return group_models.GroupComment.objects.filter(
@@ -81,7 +81,7 @@ class EditGroupCommentBase(update.UpdateView):
         ]
 
     def form_invalid(self, form):
-        messages.success(self.request, ugettext_lazy('No changes, comment not updated'))
+        messages.success(self.request, gettext_lazy('No changes, comment not updated'))
         return HttpResponseRedirect(str(self.__get_redirect_url()))
 
     def save_object(self, form, commit=False):
@@ -89,7 +89,7 @@ class EditGroupCommentBase(update.UpdateView):
         return comment
 
     def get_success_message(self, object):
-        messages.success(self.request, ugettext_lazy('Comment updated!'))
+        messages.success(self.request, gettext_lazy('Comment updated!'))
 
     def __get_redirect_url(self):
         """

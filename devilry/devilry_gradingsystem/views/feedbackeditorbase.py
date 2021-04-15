@@ -5,7 +5,7 @@ from django.template import defaultfilters
 from django.views.generic.detail import SingleObjectMixin
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy
 from django import forms
 from django.views.generic import FormView
 from django.shortcuts import redirect
@@ -57,7 +57,7 @@ class FeedbackEditorSingleDeliveryObjectMixin(SingleObjectMixin):
     def get(self, *args, **kwargs):
         self._setup_common_data()
         if self.last_draft:
-            messages.info(self.request, _('Loaded draft saved %(save_datetime)s by %(user)s.') % {
+            messages.info(self.request, gettext_lazy('Loaded draft saved %(save_datetime)s by %(user)s.') % {
                 'user': devilry_user_displayname(self.last_draft.saved_by),
                 'save_datetime': defaultfilters.date(self.last_draft.save_timestamp, 'SHORT_DATETIME_FORMAT'),
             })
@@ -150,14 +150,14 @@ class FeedbackEditorFormBase(forms.Form):
         # else:
         #     feedbacktext_editor = FeedbackDraft.DEFAULT_FEEDBACKTEXT_EDITOR
         self.fields['feedbacktext'] = forms.CharField(
-            label=_('Feedback text (optional)'),
+            label=gettext_lazy('Feedback text (optional)'),
             required=False)
 
         feedbackfile_helptext = None
         # if self.feedbackfile:
-        #     feedbackfile_helptext = _('')
+        #     feedbackfile_helptext = gettext_lazy('')
         self.fields['feedbackfile'] = forms.FileField(
-            label=_('Attach a file file to your feedback (optional)'),
+            label=gettext_lazy('Attach a file file to your feedback (optional)'),
             required=False,
             help_text=feedbackfile_helptext,
             widget=FeedbackEditorFileWidget(feedbackfile=self.feedbackfile))

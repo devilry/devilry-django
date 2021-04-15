@@ -11,7 +11,7 @@ from django.db import transaction
 from django.http import Http404
 from django.http import HttpResponseRedirect
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy, pgettext_lazy
+from django.utils.translation import gettext_lazy, pgettext_lazy
 from django.views.generic import TemplateView
 from django.views.generic import View
 
@@ -74,7 +74,7 @@ class TagListBuilderListView(listbuilderview.FilterListMixin, listbuilderview.Vi
     paginate_by = 10
 
     def get_pagetitle(self):
-        return ugettext_lazy('Tags on %(what)s') % {'what': self.request.cradmin_role.parentnode}
+        return gettext_lazy('Tags on %(what)s') % {'what': self.request.cradmin_role.parentnode}
 
     def add_filterlist_items(self, filterlist):
         filterlist.append(listfilter_tags.Search())
@@ -111,8 +111,8 @@ class CreatePeriodTagForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(CreatePeriodTagForm, self).__init__(*args, **kwargs)
-        self.fields['tag_text'].label = ugettext_lazy('Tags')
-        self.fields['tag_text'].help_text = ugettext_lazy(
+        self.fields['tag_text'].label = gettext_lazy('Tags')
+        self.fields['tag_text'].help_text = gettext_lazy(
             'Enter tags here. Tags must be in a comma separated format, '
             'e.g: tag1, tag2, tag3. '
             'Each tag may be up to 15 characters long.'
@@ -132,21 +132,21 @@ class CreatePeriodTagForm(forms.Form):
     def clean(self):
         super(CreatePeriodTagForm, self).clean()
         if 'tag_text' not in self.cleaned_data or len(self.cleaned_data['tag_text']) == 0:
-            raise ValidationError(ugettext_lazy('Tag field is empty.'))
+            raise ValidationError(gettext_lazy('Tag field is empty.'))
         tags_list = self.get_added_tags_list()
         if len(tags_list) == 0:
             if len(tags_list) > 15:
                 raise ValidationError(
-                    {'tag_text': ugettext_lazy('Wrong format. Example: tag1, tag2, tag3')}
+                    {'tag_text': gettext_lazy('Wrong format. Example: tag1, tag2, tag3')}
                 )
         for tag in tags_list:
             if len(tag) > 15:
                 raise ValidationError(
-                    {'tag_text': ugettext_lazy('One or more tags exceed the limit of 15 characters.')}
+                    {'tag_text': gettext_lazy('One or more tags exceed the limit of 15 characters.')}
                 )
             if tags_list.count(tag) > 1:
                 raise ValidationError(
-                    {'tag_text': ugettext_lazy('"%(what)s" occurs more than once in the form.') % {'what': tag}}
+                    {'tag_text': gettext_lazy('"%(what)s" occurs more than once in the form.') % {'what': tag}}
                 )
 
 
@@ -174,7 +174,7 @@ class AddTagsView(formbase.FormView):
 
     def get_buttons(self):
         return [
-            PrimarySubmit('add_tags', ugettext_lazy('Add tags'))
+            PrimarySubmit('add_tags', gettext_lazy('Add tags'))
         ]
 
     def get_success_url(self):
@@ -204,14 +204,14 @@ class AddTagsView(formbase.FormView):
 
         # Check if all tags to be added exists.
         if len(tags_string_list) == excluded_tags.count():
-            self.add_error_message(ugettext_lazy('The tag(s) you wanted to add already exists.'))
+            self.add_error_message(gettext_lazy('The tag(s) you wanted to add already exists.'))
             return HttpResponseRedirect(str(self.request.cradmin_app.reverse_appurl(viewname='add_tag')))
 
         # Add success message.
         num_tags_created = self.__create_tags(tags_string_list, excluded_tags)
-        message = ugettext_lazy('%(created)d tag(s) added') % {'created': num_tags_created}
+        message = gettext_lazy('%(created)d tag(s) added') % {'created': num_tags_created}
         if excluded_tags.count() > 0:
-            message += ugettext_lazy(
+            message += gettext_lazy(
                 ', %(excluded)d tag(s) already existed and were ignored.') % {
                 'excluded': excluded_tags.count()
             }
@@ -246,8 +246,8 @@ class EditPeriodTagForm(forms.ModelForm):
         self.period = kwargs.pop('period')
         self.tagobject = kwargs.pop('tagobject')
         super(EditPeriodTagForm, self).__init__(*args, **kwargs)
-        self.fields['tag'].label = ugettext_lazy('Tag name')
-        self.fields['tag'].help_text = ugettext_lazy(
+        self.fields['tag'].label = gettext_lazy('Tag name')
+        self.fields['tag'].help_text = gettext_lazy(
             'Rename the tag here. Up to 15 characters. '
             'Can contain any character except comma(,)'
         )
@@ -256,15 +256,15 @@ class EditPeriodTagForm(forms.ModelForm):
         cleaned_data = super(EditPeriodTagForm, self).clean()
         if 'tag' not in self.cleaned_data or len(self.cleaned_data['tag']) == 0:
             raise ValidationError(
-                {'tag': ugettext_lazy('Tag cannot be empty.')}
+                {'tag': gettext_lazy('Tag cannot be empty.')}
             )
         tag = cleaned_data['tag']
         if PeriodTag.objects.filter(period=self.period, tag=tag).exists():
             if tag != self.tagobject.tag:
-                raise ValidationError(ugettext_lazy('%(what)s already exists') % {'what': tag})
+                raise ValidationError(gettext_lazy('%(what)s already exists') % {'what': tag})
         if ',' in tag:
             raise ValidationError(
-                {'tag': ugettext_lazy('Tag contains a comma(,).')}
+                {'tag': gettext_lazy('Tag contains a comma(,).')}
             )
         return cleaned_data
 
@@ -301,7 +301,7 @@ class EditTagView(crudbase.OnlySaveButtonMixin, EditDeleteViewMixin, update.Upda
     form_class = EditPeriodTagForm
 
     def get_pagetitle(self):
-        return ugettext_lazy('Edit %(what)s') % {
+        return gettext_lazy('Edit %(what)s') % {
             'what': self.tag.displayname
         }
 
@@ -316,7 +316,7 @@ class EditTagView(crudbase.OnlySaveButtonMixin, EditDeleteViewMixin, update.Upda
     def save_object(self, form, commit=True):
         period_tag = super(EditTagView, self).save_object(form=form, commit=False)
         period_tag.modified_datetime = timezone.now()
-        self.add_success_messages(ugettext_lazy('Tag successfully edited.'))
+        self.add_success_messages(gettext_lazy('Tag successfully edited.'))
         return super(EditTagView, self).save_object(form=form, commit=True)
 
     def get_form_kwargs(self):
@@ -346,7 +346,7 @@ class DeleteTagView(EditDeleteViewMixin, delete.DeleteView):
 
 
 class SelectedRelatedUsersForm(forms.Form):
-    invalid_item_selected_message = ugettext_lazy(
+    invalid_item_selected_message = gettext_lazy(
         'Invalid user was selected. This may happen if someone else added or '
         'removed one or more of the available users while you were selecting. '
         'Please try again.'
@@ -462,7 +462,7 @@ class AddRelatedUserToTagMultiSelectView(BaseRelatedUserMultiSelectView):
     """
     def get_pagetitle(self):
         tag_displayname = self.get_period_tag().displayname
-        return ugettext_lazy(
+        return gettext_lazy(
             'Add %(user)s to %(tag)s') % {
             'user': self.relateduser_string,
             'tag': tag_displayname
@@ -483,7 +483,7 @@ class AddRelatedUserToTagMultiSelectView(BaseRelatedUserMultiSelectView):
         related_users = form.cleaned_data['selected_items']
         self.add_related_users(period_tag=period_tag, related_users=related_users)
         self.add_success_message(
-            message=ugettext_lazy(
+            message=gettext_lazy(
                 '%(number_users)d %(user_string)s added successfully.'
             ) % {
                 'number_users': len(related_users),
@@ -500,7 +500,7 @@ class RemoveRelatedUserFromTagMultiSelectView(BaseRelatedUserMultiSelectView):
     """
     def get_pagetitle(self):
         tag_displayname = self.get_period_tag().displayname
-        return ugettext_lazy(
+        return gettext_lazy(
             'Remove %(user)s from %(tag)s'
         ) % {
             'user': self.relateduser_string,
@@ -522,7 +522,7 @@ class RemoveRelatedUserFromTagMultiSelectView(BaseRelatedUserMultiSelectView):
         related_users = form.cleaned_data['selected_items']
         self.remove_related_users(period_tag=period_tag, related_users=related_users)
         self.add_success_message(
-            message=ugettext_lazy(
+            message=gettext_lazy(
                 '%(number_users)d %(user_string)s removed successfully'
             ) % {
                 'number_users': len(related_users),
@@ -533,22 +533,22 @@ class RemoveRelatedUserFromTagMultiSelectView(BaseRelatedUserMultiSelectView):
 
 
 class SelectedRelatedExaminerForm(SelectedRelatedUsersForm):
-    invalid_item_selected_message = ugettext_lazy('Invalid examiner was selected.')
+    invalid_item_selected_message = gettext_lazy('Invalid examiner was selected.')
 
 
 class SelectedRelatedStudentForm(SelectedRelatedUsersForm):
-    invalid_item_selected_message = ugettext_lazy('Invalid student was selected.')
+    invalid_item_selected_message = gettext_lazy('Invalid student was selected.')
 
 
 class ExaminerMultiSelectViewMixin(object):
     model = RelatedExaminer
-    relateduser_string = ugettext_lazy('examiner')
+    relateduser_string = gettext_lazy('examiner')
     form_class = SelectedRelatedExaminerForm
 
 
 class StudentMultiSelectViewMixin(object):
     model = RelatedStudent
-    relateduser_string = ugettext_lazy('student')
+    relateduser_string = gettext_lazy('student')
     form_class = SelectedRelatedStudentForm
 
 

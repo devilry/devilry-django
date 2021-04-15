@@ -1,4 +1,4 @@
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 
 import django_rq
 from cradmin_legacy.crinstance import reverse_cradmin_url
@@ -18,10 +18,10 @@ class FeedbackSubjectTextGenerator(SubjectTextGenerator):
         if not self.feedback_type:
             raise ValueError('Missing mailtype')
         if self.feedback_type == 'feedback_created':
-            return ugettext_lazy('Feedback for %(assignment_name)s') % {
+            return gettext_lazy('Feedback for %(assignment_name)s') % {
                 'assignment_name': self.assignment.long_name}
         if self.feedback_type == 'feedback_edited':
-            return ugettext_lazy('Feedback updated for %(assignment_name)s') % {
+            return gettext_lazy('Feedback updated for %(assignment_name)s') % {
                 'assignment_name': self.assignment.long_name}
 
 

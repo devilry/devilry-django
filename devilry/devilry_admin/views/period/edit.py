@@ -1,6 +1,6 @@
 
 
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 from cradmin_legacy import crapp
 from cradmin_legacy.viewhelpers import crudbase
 from cradmin_legacy.viewhelpers import update
@@ -21,7 +21,7 @@ class UpdateView(crudbase.OnlySaveButtonMixin, createperiod.CreateUpdateMixin,
 
     def get_pagetitle(self):
         period = self.request.cradmin_role
-        return ugettext_lazy('Edit %(period)s') % {
+        return gettext_lazy('Edit %(period)s') % {
             'period': period.get_path()
         }
 

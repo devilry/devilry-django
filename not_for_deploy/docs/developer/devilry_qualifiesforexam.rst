@@ -71,13 +71,13 @@ Add something like the following to ``yourapp/devilry_plugin.py``::
 
     from devilry_qualifiesforexam.registry import qualifiesforexam_plugins
     from django.urls import reverse
-    from django.utils.translation import ugettext_lazy as _
+    from django.utils.translation import gettext_lazy
 
     qualifiesforexam_plugins.add(
         id='myapp',
         url=reverse('myapp-myplugin'), # The url of the view to use for step/page 2 in the workflow - the input parameters (see above) is added to this url.
-        title=_('My plugin'),
-        description=_('Does <strong>this</strong> and <em>that</em>.')
+        title=gettext_lazy('My plugin'),
+        description=gettext_lazy('Does <strong>this</strong> and <em>that</em>.')
     )
 
 

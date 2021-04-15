@@ -1,4 +1,4 @@
-from django.utils.translation import ugettext
+from django.utils.translation import gettext
 
 from django.conf import settings
 from django.utils import translation
@@ -23,4 +23,4 @@ def get_devilry_hard_deadline_info_text(setting_name):
     except KeyError:
         raise ValueError("User error: The {} must contain a '__default' info setting. "
                          "This exists by default and has been wrongly removed during setup.".format(setting_name))
-    return ugettext(default_info)
+    return gettext(default_info)

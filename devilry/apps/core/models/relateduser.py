@@ -9,7 +9,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
 from django.db.models.expressions import RawSQL
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 
 from .abstract_applicationkeyvalue import AbstractApplicationKeyValue
 from .abstract_is_admin import AbstractIsAdmin
@@ -342,7 +342,7 @@ class RelatedExaminer(RelatedUserBase):
         if self.automatic_anonymous_id:
             return self.automatic_anonymous_id
         else:
-            return ugettext_lazy('Automatic anonymous ID missing')
+            return gettext_lazy('Automatic anonymous ID missing')
 
     @property
     def relatedusertag_set(self):
@@ -439,7 +439,7 @@ class RelatedStudent(RelatedUserBase):
         if self.automatic_anonymous_id:
             return self.automatic_anonymous_id
         else:
-            return ugettext_lazy('Automatic anonymous ID missing')
+            return gettext_lazy('Automatic anonymous ID missing')
 
     @property
     def relatedusertag_set(self):

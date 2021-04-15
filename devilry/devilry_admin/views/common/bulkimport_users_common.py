@@ -6,7 +6,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.http import HttpResponseRedirect, Http404
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 from cradmin_legacy.crispylayouts import PrimarySubmit
 from cradmin_legacy.viewhelpers import formbase
 
@@ -15,7 +15,7 @@ from devilry.devilry_account.models import PermissionGroup
 
 class AbstractTypeInUsersView(formbase.FormView):
     users_blob_split_pattern = re.compile(r'[,;\s]+')
-    create_button_label = ugettext_lazy('Save')
+    create_button_label = gettext_lazy('Save')
     template_name = 'devilry_admin/common/abstract-type-in-users.django.html'
 
     def dispatch(self, request, *args, **kwargs):
@@ -48,17 +48,17 @@ class AbstractTypeInUsersView(formbase.FormView):
 
     def __get_users_blob_help_text(self):
         if settings.CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND:
-            return ugettext_lazy('Type or paste in email addresses separated '
+            return gettext_lazy('Type or paste in email addresses separated '
                      'by comma (","), space or one user on each line.')
         else:
-            return ugettext_lazy('Type or paste in usernames separated '
+            return gettext_lazy('Type or paste in usernames separated '
                      'by comma (","), space or one user on each line.')
 
     def __get_users_blob_placeholder(self):
         if settings.CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND:
-            return ugettext_lazy('jane@example.com\njohn@example.com')
+            return gettext_lazy('jane@example.com\njohn@example.com')
         else:
-            return ugettext_lazy('jane\njohn')
+            return gettext_lazy('jane\njohn')
 
     def get_form_class(self):
         users_blob_help_text = self.__get_users_blob_help_text()
@@ -80,7 +80,7 @@ class AbstractTypeInUsersView(formbase.FormView):
                 if invalid_emails:
                     self.add_error(
                         'users_blob',
-                        ugettext_lazy('Invalid email addresses: %(emails)s') % {
+                        gettext_lazy('Invalid email addresses: %(emails)s') % {
                             'emails': ', '.join(sorted(invalid_emails))
                         }
                     )
@@ -95,7 +95,7 @@ class AbstractTypeInUsersView(formbase.FormView):
                 if invalid_usernames:
                     self.add_error(
                         'users_blob',
-                        ugettext_lazy('Invalid usernames: %(usernames)s') % {
+                        gettext_lazy('Invalid usernames: %(usernames)s') % {
                             'usernames': ', '.join(sorted(invalid_usernames))
                         }
                     )

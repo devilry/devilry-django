@@ -1,5 +1,5 @@
 from django import urls
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy
 from django.views.generic import edit
 from django.views.generic import base
 from django import forms
@@ -13,7 +13,7 @@ from devilry.devilry_bulkcreate_users import create_users
 
 
 class EmailListForm(forms.Form):
-    email_list = forms.CharField(label=_("New user e-mails"), required=True, widget=forms.Textarea)
+    email_list = forms.CharField(label=gettext_lazy("New user e-mails"), required=True, widget=forms.Textarea)
 
     def __init__(self, *args, **kwargs):
         super(EmailListForm, self).__init__(*args, **kwargs)
@@ -21,11 +21,11 @@ class EmailListForm(forms.Form):
         self.helper.form_action = ""
         self.helper.layout = layout.Layout(
             layout.Fieldset(
-                _('Enter list of e-mails for new users'),
+                gettext_lazy('Enter list of e-mails for new users'),
                 'email_list'
             ),
             layout.Div(
-                layout.Submit('submit', _('Submit'), css_class='btn btn-primary')
+                layout.Submit('submit', gettext_lazy('Submit'), css_class='btn btn-primary')
             )
         )
 

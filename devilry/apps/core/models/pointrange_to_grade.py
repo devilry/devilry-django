@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
-from django.utils.translation import ugettext_lazy as _, ugettext_lazy
+from django.utils.translation import gettext_lazy
 
 from .assignment import Assignment
 
@@ -78,7 +78,7 @@ class PointToGradeMap(models.Model):
             first_entry = mapentries[0]
             if first_entry.minimum_points != 0:
                 raise NonzeroSmallesMinimalPointsValidationError(
-                    _('The smallest entry in the map must have minimum points set to '
+                    gettext_lazy('The smallest entry in the map must have minimum points set to '
                       '0 (current value is {minimum_points}).').format(
                         minimum_points=first_entry.minimum_points))
             last_entry = mapentries[-1]
@@ -102,7 +102,7 @@ class PointToGradeMap(models.Model):
             minimum_points, grade = entry
             if grade in gradeset:
                 raise DuplicateGradeError(
-                    _('{grade} occurs multiple times in the map. A grade must be unique within the map.'.format(
+                    gettext_lazy('{grade} occurs multiple times in the map. A grade must be unique within the map.'.format(
                         grade=grade)))
             gradeset.add(grade)
             if index == len(minimum_points_to_grade_list) - 1:
@@ -255,7 +255,7 @@ class PointRangeToGrade(models.Model):
 
     def clean(self):
         if self.minimum_points > self.point_to_grade_map.assignment.max_points:
-            raise ValidationError(ugettext_lazy(
+            raise ValidationError(gettext_lazy(
                 'Can not have values in the grade table that is larger than '
                 'maximum number of points.'))
         if self.minimum_points >= self.maximum_points:

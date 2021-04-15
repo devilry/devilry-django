@@ -10,7 +10,7 @@ from django.db import models
 from django.db.models import OuterRef
 from django.db.models.functions import Coalesce
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 from ievv_opensource.utils import choices_with_meta
 
 from devilry.apps.core.models import assignment_group
@@ -158,12 +158,12 @@ class AbstractGroupComment(comment_models.Comment):
         if self.user_role == 'student':
             if self.visibility != AbstractGroupComment.VISIBILITY_VISIBLE_TO_EVERYONE:
                 raise ValidationError({
-                    'visibility': ugettext_lazy('A student comment is always visible to everyone'),
+                    'visibility': gettext_lazy('A student comment is always visible to everyone'),
                 })
         if self.user_role == 'examiner':
             if not self.part_of_grading and self.visibility == AbstractGroupComment.VISIBILITY_PRIVATE:
                 raise ValidationError({
-                    'visibility': ugettext_lazy('A examiner comment can only be private if part of grading.')
+                    'visibility': gettext_lazy('A examiner comment can only be private if part of grading.')
                 })
 
     def get_published_datetime(self):
@@ -335,12 +335,12 @@ class FeedbackSet(models.Model):
 
     #: Grading status choices for :obj:`~.FeedbackSet.feedbackset_type`.
     FEEDBACKSET_TYPE_CHOICES = [
-        (FEEDBACKSET_TYPE_FIRST_ATTEMPT, ugettext_lazy('first attempt')),
-        (FEEDBACKSET_TYPE_NEW_ATTEMPT, ugettext_lazy('new attempt')),
-        (FEEDBACKSET_TYPE_RE_EDIT, ugettext_lazy('re edit')),
-        (FEEDBACKSET_TYPE_MERGE_FIRST_ATTEMPT, ugettext_lazy('merge first attempt')),
-        (FEEDBACKSET_TYPE_MERGE_NEW_ATTEMPT, ugettext_lazy('merge new attempt')),
-        (FEEDBACKSET_TYPE_MERGE_RE_EDIT, ugettext_lazy('merge re edit')),
+        (FEEDBACKSET_TYPE_FIRST_ATTEMPT, gettext_lazy('first attempt')),
+        (FEEDBACKSET_TYPE_NEW_ATTEMPT, gettext_lazy('new attempt')),
+        (FEEDBACKSET_TYPE_RE_EDIT, gettext_lazy('re edit')),
+        (FEEDBACKSET_TYPE_MERGE_FIRST_ATTEMPT, gettext_lazy('merge first attempt')),
+        (FEEDBACKSET_TYPE_MERGE_NEW_ATTEMPT, gettext_lazy('merge new attempt')),
+        (FEEDBACKSET_TYPE_MERGE_RE_EDIT, gettext_lazy('merge re edit')),
     ]
 
     #: Sets the type of the feedbackset.
@@ -462,27 +462,27 @@ class FeedbackSet(models.Model):
         """
         if self.ignored and len(self.ignored_reason) == 0:
             raise ValidationError({
-                'ignored': ugettext_lazy('FeedbackSet can not be ignored without a reason')
+                'ignored': gettext_lazy('FeedbackSet can not be ignored without a reason')
             })
         elif len(self.ignored_reason) > 0 and not self.ignored:
             raise ValidationError({
-                'ignored_reason': ugettext_lazy('FeedbackSet can not have a ignored reason '
+                'ignored_reason': gettext_lazy('FeedbackSet can not have a ignored reason '
                                                 'without being set to ignored.')
             })
         elif self.ignored and (self.grading_published_datetime or self.grading_points or self.grading_published_by):
             raise ValidationError({
-                'ignored': ugettext_lazy('Ignored FeedbackSet can not have grading_published_datetime, '
+                'ignored': gettext_lazy('Ignored FeedbackSet can not have grading_published_datetime, '
                                          'grading_points or grading_published_by set.')
             })
         else:
             if self.grading_published_datetime is not None and self.grading_published_by is None:
                 raise ValidationError({
-                    'grading_published_datetime': ugettext_lazy('A FeedbackSet can not be published '
+                    'grading_published_datetime': gettext_lazy('A FeedbackSet can not be published '
                                                                 'without being published by someone.'),
                 })
             if self.grading_published_datetime is not None and self.grading_points is None:
                 raise ValidationError({
-                    'grading_published_datetime': ugettext_lazy('A FeedbackSet can not be published '
+                    'grading_published_datetime': gettext_lazy('A FeedbackSet can not be published '
                                                                 'without providing "points".'),
                 })
         self.deadline_datetime = FeedbackSet.clean_deadline(self.deadline_datetime)
@@ -531,13 +531,13 @@ class FeedbackSet(models.Model):
         now = timezone.now()
         if period.start_time > now or period.end_time < now:
             raise PeriodExpiredException(
-                message=ugettext_lazy('This assignment is on an inactive semester. '
+                message=gettext_lazy('This assignment is on an inactive semester. '
                                       'File upload and commenting is disabled.')
             )
         if assignment.deadline_handling_is_hard() and self.deadline_datetime < now:
             if comment_user_role == comment_models.Comment.USER_ROLE_STUDENT:
                 raise HardDeadlineExpiredException(
-                    message=ugettext_lazy('Hard deadlines are enabled for this assignment. '
+                    message=gettext_lazy('Hard deadlines are enabled for this assignment. '
                                           'File upload and commenting is disabled.')
                 )
 

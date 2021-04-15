@@ -5,7 +5,7 @@ from django.db import models
 from django.db import transaction
 from django.db.models import Q
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _, pgettext_lazy
+from django.utils.translation import gettext_lazy, pgettext_lazy
 from ievv_opensource.ievv_batchframework.models import BatchOperation
 
 from . import deliverytypes
@@ -989,10 +989,10 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         max_length=30, blank=True, null=True,
         help_text='The delivery_status of a group',
         choices=(
-            ("no-deadlines", _("No deadlines")),
-            ("corrected", _("Corrected")),
-            ("closed-without-feedback", _("Closed without feedback")),
-            ("waiting-for-something", _("Waiting for something")),
+            ("no-deadlines", gettext_lazy("No deadlines")),
+            ("corrected", gettext_lazy("Corrected")),
+            ("closed-without-feedback", gettext_lazy("Closed without feedback")),
+            ("waiting-for-something", gettext_lazy("Waiting for something")),
         ))
 
     #: Foreignkey to :class:`ievv_opensource.ievv_batchframework.models.BatchOperation`.
@@ -1563,7 +1563,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         """
         if self.parentnode_id != target.parentnode_id:
             raise ValidationError(
-                _('Cannot merge self into target, self and target is not part of same AssignmentGroup')
+                gettext_lazy('Cannot merge self into target, self and target is not part of same AssignmentGroup')
             )
 
     def set_all_target_feedbacksets_to_merge_type(self, target):
@@ -1616,7 +1616,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             ValidationError if we are not able to merge groups
         """
         if len(groups) < 2:
-            raise ValidationError(_('Cannot merge less than 2 groups'))
+            raise ValidationError(gettext_lazy('Cannot merge less than 2 groups'))
 
         from devilry.apps.core.models import AssignmentGroupHistory
 

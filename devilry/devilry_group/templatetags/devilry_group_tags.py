@@ -1,7 +1,7 @@
 from django import template
 import os.path
 
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 
 from devilry.devilry_markup import parse_markdown
 
@@ -61,16 +61,16 @@ def devilry_verbosenumber(value, number):
         str: Verbose version of number.
     """
     numbers = {
-        1: ugettext_lazy('first'),
-        2: ugettext_lazy('second'),
-        3: ugettext_lazy('third'),
-        4: ugettext_lazy('fourth'),
-        5: ugettext_lazy('fifth'),
-        6: ugettext_lazy('sixth'),
-        7: ugettext_lazy('seventh'),
-        8: ugettext_lazy('eighth'),
-        9: ugettext_lazy('ninth'),
-        10: ugettext_lazy('tenth')
+        1: gettext_lazy('first'),
+        2: gettext_lazy('second'),
+        3: gettext_lazy('third'),
+        4: gettext_lazy('fourth'),
+        5: gettext_lazy('fifth'),
+        6: gettext_lazy('sixth'),
+        7: gettext_lazy('seventh'),
+        8: gettext_lazy('eighth'),
+        9: gettext_lazy('ninth'),
+        10: gettext_lazy('tenth')
     }
 
     if number <= 10:

@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy, pgettext_lazy
+from django.utils.translation import pgettext_lazy
 from cradmin_legacy import crapp
 from cradmin_legacy.crinstance import reverse_cradmin_url
 from cradmin_legacy.viewhelpers import listbuilder

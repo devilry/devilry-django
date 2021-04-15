@@ -8,7 +8,7 @@ from django.db import models
 from django.db.models import Q
 from django.template import defaultfilters
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _, pgettext_lazy, ugettext_lazy
+from django.utils.translation import gettext_lazy, pgettext_lazy
 
 from .abstract_is_candidate import AbstractIsCandidate
 from .abstract_is_examiner import AbstractIsExaminer
@@ -317,8 +317,8 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         app_label = 'core'
         unique_together = ('short_name', 'parentnode')
         ordering = ['short_name']
-        verbose_name = _('assignment')
-        verbose_name_plural = _('assignments')
+        verbose_name = gettext_lazy('assignment')
+        verbose_name_plural = gettext_lazy('assignments')
 
     short_name = ShortNameField()
     long_name = LongNameField()
@@ -327,8 +327,8 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                                    verbose_name='Period',
                                    on_delete=models.CASCADE)
     publishing_time = models.DateTimeField(
-        verbose_name=_("Publishing time"),
-        help_text=_('The time when the assignment is to be published (visible to students and examiners).'))
+        verbose_name=gettext_lazy("Publishing time"),
+        help_text=gettext_lazy('The time when the assignment is to be published (visible to students and examiners).'))
 
     #: Deprecated anonymous field.
     #: Will be removed in 3.1.
@@ -417,7 +417,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     #:   you are member of a group with ``grouptype="departmentadmin"`` and has access to
     #:   the assignment. Course admins can not edit examiners after the first feedback is provided.
     anonymizationmode = models.CharField(
-        verbose_name=ugettext_lazy('Anonymization mode'),
+        verbose_name=gettext_lazy('Anonymization mode'),
         max_length=15,
         choices=ANONYMIZATIONMODE_CHOICES,
         default=ANONYMIZATIONMODE_OFF,
@@ -433,17 +433,17 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     delivery_types = models.PositiveIntegerField(
         default=deliverytypes.ELECTRONIC,
         choices=deliverytypes.as_choices_tuple(),
-        help_text=_('This option controls what types of deliveries this '
+        help_text=gettext_lazy('This option controls what types of deliveries this '
                     'assignment accepts. See the Delivery documentation '
                     'for more info.'))
     deadline_handling = models.PositiveIntegerField(
         default=get_deadline_handling_default,
-        verbose_name=_('Deadline handling'),
+        verbose_name=gettext_lazy('Deadline handling'),
         choices=(
-            (DEADLINEHANDLING_SOFT, _('Soft deadlines')),
-            (DEADLINEHANDLING_HARD, _('Hard deadlines'))
+            (DEADLINEHANDLING_SOFT, gettext_lazy('Soft deadlines')),
+            (DEADLINEHANDLING_HARD, gettext_lazy('Hard deadlines'))
         ),
-        help_text=_(
+        help_text=gettext_lazy(
             'With HARD deadlines, students will be unable to make deliveries when a deadline has expired. '
             'With SOFT deadlines students will be able to make deliveries after the deadline '
             'has expired. All deliveries after their deadline are clearly highligted. '
@@ -453,7 +453,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             'expired is clearly marked for both students and examiners.'))
     scale_points_percent = models.PositiveIntegerField(
         default=100,
-        help_text=_('Percent to scale points on this assignment by for '
+        help_text=gettext_lazy('Percent to scale points on this assignment by for '
                     'period overviews. The default is 100, which means '
                     'no change to the points.'))
     first_deadline = models.DateTimeField(blank=False, null=False)
@@ -546,25 +546,25 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
     students_can_create_groups = models.BooleanField(
         default=False,
-        verbose_name=_('Students can create project groups?'),
-        help_text=_('Select this if students should be allowed to join/leave groups. '
+        verbose_name=gettext_lazy('Students can create project groups?'),
+        help_text=gettext_lazy('Select this if students should be allowed to join/leave groups. '
                     'Even if this is not selected, you can still organize your students '
                     'in groups manually.'))
     students_can_not_create_groups_after = models.DateTimeField(
         default=None, null=True, blank=True,
-        verbose_name=_('Students can not create project groups after'),
-        help_text=_('Students can not create project groups after this time. '
+        verbose_name=gettext_lazy('Students can not create project groups after'),
+        help_text=gettext_lazy('Students can not create project groups after this time. '
                     'Ignored if "Students can create project groups" is not selected.'))
 
     feedback_workflow = models.CharField(
         blank=True, null=False, default='', max_length=50,
-        verbose_name=_('Feedback workflow'),
+        verbose_name=gettext_lazy('Feedback workflow'),
         choices=(
             ('',
-             _('Simple - Examiners write feedback, and publish it whenever '
+             gettext_lazy('Simple - Examiners write feedback, and publish it whenever '
                'they want. Does not handle coordination of multiple examiners at all.')),
             ('trusted-cooperative-feedback-editing',
-             _('Trusted cooperative feedback editing - Examiners can only save feedback drafts. '
+             gettext_lazy('Trusted cooperative feedback editing - Examiners can only save feedback drafts. '
                'Examiners share the same feedback drafts, which means that one examiner can '
                'start writing feedback and another can continue. '
                'When an administrator is notified by their examiners that they have finished '
@@ -912,7 +912,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         self.first_deadline = self.first_deadline.replace(second=0, microsecond=0)
 
         if self.first_deadline > self.parentnode.end_time or self.first_deadline < self.parentnode.start_time:
-            errors['first_deadline'] = _("First deadline must be within %(periodname)s, "
+            errors['first_deadline'] = gettext_lazy("First deadline must be within %(periodname)s, "
                                          "which lasts from %(start_time)s to %(end_time)s.") % {
                                            'periodname': self.parentnode.long_name,
                                            'start_time': defaultfilters.date(self.parentnode.start_time,
@@ -933,7 +933,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         errors = {}
         if self.publishing_time is not None and self.parentnode_id is not None:
             if self.publishing_time < self.parentnode.start_time or self.publishing_time > self.parentnode.end_time:
-                errors['publishing_time'] = _("Publishing time must be within %(periodname)s, "
+                errors['publishing_time'] = gettext_lazy("Publishing time must be within %(periodname)s, "
                                               "which lasts from %(start_time)s to %(end_time)s.") % {
                                                 'periodname': self.parentnode.long_name,
                                                 'start_time': defaultfilters.date(self.parentnode.start_time,
@@ -944,7 +944,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         if self.first_deadline:
             self._clean_first_deadline(errors)
         if self.passing_grade_min_points > self.max_points:
-            errors['passing_grade_min_points'] = _('The minumum number of points required to pass must be less than '
+            errors['passing_grade_min_points'] = gettext_lazy('The minumum number of points required to pass must be less than '
                                                    'the maximum number of points possible for the assignment. The '
                                                    'current maximum is %(max_points)s.') % {
                                                      'max_points': self.max_points
@@ -1003,7 +1003,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         from devilry.apps.core.models import Examiner
 
         if self.assignmentgroups.exists():
-            raise AssignmentHasGroupsError(_('The assignment has students. You can not '
+            raise AssignmentHasGroupsError(gettext_lazy('The assignment has students. You can not '
                                              'copy use this on assignments with students.'))
 
         # Step1: Bulk create the groups with no candidates or examiners, but set copied_from.
@@ -1067,7 +1067,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         from devilry.apps.core.models import Candidate
 
         if self.assignmentgroups.exists():
-            raise AssignmentHasGroupsError(_('The assignment has students. You can not '
+            raise AssignmentHasGroupsError(gettext_lazy('The assignment has students. You can not '
                                              'copy use this on assignments with students.'))
 
         # We iterate over relatedstudents twice, so we

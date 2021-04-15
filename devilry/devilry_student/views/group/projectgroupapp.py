@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.shortcuts import redirect
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView
@@ -19,11 +19,11 @@ from devilry.apps.core.models import GroupInvite
 
 class CreateForm(forms.ModelForm):
     sent_to = forms.TypedChoiceField(
-        label=ugettext_lazy('Send invitation to'),
+        label=gettext_lazy('Send invitation to'),
         choices=[],
         required=True,
         coerce=int,
-        help_text=ugettext_lazy('Select the student you want to invite to your group.'))
+        help_text=gettext_lazy('Select the student you want to invite to your group.'))
 
     class Meta:
         model = AssignmentGroup
@@ -48,7 +48,7 @@ class CreateForm(forms.ModelForm):
         self.helper.layout = Layout(
             'sent_to',
             ButtonHolder(
-                Submit('submit', ugettext_lazy('Send invitation'))
+                Submit('submit', gettext_lazy('Send invitation'))
             )
         )
 
@@ -102,7 +102,7 @@ class ProjectGroupOverviewView(TemplateView):
             form.cleaned_invite.send_invite_notification(self.request)
             messages.success(
                 self.request,
-                ugettext_lazy('Invite sent to %(student)s.' % {
+                gettext_lazy('Invite sent to %(student)s.' % {
                     'student': form.cleaned_invite.sent_to.get_displayname()
                 })
             )
@@ -175,7 +175,7 @@ class GroupInviteRespondView(DetailView):
             if accepted:
                 messages.success(
                     self.request,
-                    ugettext_lazy(
+                    gettext_lazy(
                         'Joined the group by invitation from %(student)s.' % {
                             'student': invite.sent_by.get_displayname()
                         })
@@ -184,7 +184,7 @@ class GroupInviteRespondView(DetailView):
             else:
                 messages.success(
                     self.request,
-                    ugettext_lazy(
+                    gettext_lazy(
                         'Declined group invitation from %(student)s.' % {
                             'student': invite.sent_by.get_displayname()
                         })
@@ -269,21 +269,21 @@ class GroupInviteRespondViewStandalone(DetailView):
         """
         group = self.get_current_group(invite)
         if group.cached_data.candidate_count > 1:
-            raise ValidationError(ugettext_lazy('You are already part of a group with more than one student!'))
+            raise ValidationError(gettext_lazy('You are already part of a group with more than one student!'))
         if invite.accepted:
-            raise ValidationError(ugettext_lazy('You have already accepted this invite'))
+            raise ValidationError(gettext_lazy('You have already accepted this invite'))
         if invite.accepted is not None and not invite.accepted:
-            raise ValidationError(ugettext_lazy('You have already declined this invite'))
+            raise ValidationError(gettext_lazy('You have already declined this invite'))
         if invite.group.assignment.students_can_create_groups:
             if invite.group.assignment.students_can_not_create_groups_after and \
                             invite.group.assignment.students_can_not_create_groups_after < timezone.now():
-                raise ValidationError(ugettext_lazy(
+                raise ValidationError(gettext_lazy(
                     'Creating project groups without administrator approval is not '
                     'allowed on this assignment anymore. Please contact you course '
                     'administrator if you think this is wrong.'))
         else:
             raise ValidationError(
-                ugettext_lazy('This assignment does not allow students to form project groups on their own.'))
+                gettext_lazy('This assignment does not allow students to form project groups on their own.'))
 
     def get_context_data(self, **kwargs):
         context = super(GroupInviteRespondViewStandalone, self).get_context_data(**kwargs)
@@ -315,7 +315,7 @@ class GroupInviteRespondViewStandalone(DetailView):
             if accepted:
                 messages.success(
                     self.request,
-                    ugettext_lazy(
+                    gettext_lazy(
                         'Joined the group by invitation from %(student)s.' % {
                             'student': invite.sent_by.get_displayname()
                         })
@@ -324,7 +324,7 @@ class GroupInviteRespondViewStandalone(DetailView):
             else:
                 messages.success(
                     self.request,
-                    ugettext_lazy(
+                    gettext_lazy(
                         'Declined group invitation from %(student)s.' % {
                             'student': invite.sent_by.get_displayname()
                         })
@@ -349,7 +349,7 @@ class GroupInviteDeleteView(DeleteView):
     def get_success_url(self):
         messages.success(
             self.request,
-            ugettext_lazy('Removed project group invitation %(student)s.' % {
+            gettext_lazy('Removed project group invitation %(student)s.' % {
                 'student': self.get_object().sent_to.get_displayname()
             })
         )

@@ -6,7 +6,7 @@ from django import forms
 from django.http import HttpResponseRedirect
 
 # CrAdmin imports
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 from cradmin_legacy.viewhelpers import multiselect2
 from cradmin_legacy.viewhelpers import multiselect2view
 
@@ -27,7 +27,7 @@ class SelectedQualificationForm(forms.Form):
     Subclass this if extra fields needs to be added.
     """
     qualification_modelclass = core_models.Assignment
-    invalid_qualification_item_message = ugettext_lazy('Invalid qualification items was selected.')
+    invalid_qualification_item_message = gettext_lazy('Invalid qualification items was selected.')
 
     #: The items selected as ModelMultipleChoiceField.
     #: If some or all items should be selected by default, override this.
@@ -93,28 +93,28 @@ class QualificationItemTargetRenderer(multiselect2.target_renderer.Target):
     selected_target_renderer = SelectedQualificationItem
 
     #: A descriptive name for the items selected.
-    descriptive_item_name = ugettext_lazy('assignments')
+    descriptive_item_name = gettext_lazy('assignments')
 
     def get_submit_button_text(self):
         """
         Returns:
             str: The text that should be shown on the submit button.
         """
-        return ugettext_lazy('Submit selected %(what)s') % {'what': self.descriptive_item_name}
+        return gettext_lazy('Submit selected %(what)s') % {'what': self.descriptive_item_name}
 
     def get_with_items_title(self):
         """
         Returns:
             str: The text that should be shown when items are selected.
         """
-        return ugettext_lazy('Selected %(what)s') % {'what': self.descriptive_item_name}
+        return gettext_lazy('Selected %(what)s') % {'what': self.descriptive_item_name}
 
     def get_without_items_text(self):
         """
         Returns:
             str: The text that should be shown when no items are selected.
         """
-        return ugettext_lazy('No %(what)s selected') % {'what': self.descriptive_item_name}
+        return gettext_lazy('No %(what)s selected') % {'what': self.descriptive_item_name}
 
 
 class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForExamPluginViewMixin):

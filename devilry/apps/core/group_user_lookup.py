@@ -1,5 +1,5 @@
 from django.template import Template, Context
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 
 from devilry.apps.core import models as core_models
 
@@ -54,7 +54,7 @@ class UserInfo(object):
 
     def get_unanonymized_long_name_from_user(self, user, html=False):
         if user is None:
-            fallback = ugettext_lazy('Deleted user')
+            fallback = gettext_lazy('Deleted user')
             if html:
                 return self._render_span(cssclass='text-danger', content=fallback)
             else:
@@ -66,7 +66,7 @@ class UserInfo(object):
 
     def get_unanonymized_short_name_from_user(self, user, html=False):
         if user is None:
-            fallback = ugettext_lazy('Deleted user')
+            fallback = gettext_lazy('Deleted user')
             if html:
                 return self._render_span(cssclass='text-danger', content=fallback)
             else:
@@ -85,7 +85,7 @@ class UserInfo(object):
         else:
             raise ValueError('Can only call __get_anonymized_name_from_user '
                              'with user_role "examiner" or "student".')
-        return ugettext_lazy('User removed from semester')
+        return gettext_lazy('User removed from semester')
 
     def get_anonymized_name_from_user(self, user, user_role, html=False):
         name = self.__get_anonymized_name_from_user(user=user, user_role=user_role)

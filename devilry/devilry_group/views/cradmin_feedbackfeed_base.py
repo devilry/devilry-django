@@ -12,7 +12,7 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.template.loader import render_to_string
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _, ugettext_lazy
+from django.utils.translation import gettext_lazy
 from cradmin_legacy.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
 from cradmin_legacy.viewhelpers import create
 
@@ -45,7 +45,7 @@ class GroupCommentForm(forms.ModelForm):
                     super(GroupCommentForm, self).clean()
                     if len(self.cleaned_data['text']) == 0 and self.cleaned_data['temporary_file_collection_id'] is None:
                         raise ValidationError({
-                          'text': ugettext_lazy('A comment must have either text or a file attached, or both.'
+                          'text': gettext_lazy('A comment must have either text or a file attached, or both.'
                                                 ' An empty comment is not allowed.')
                         })
 
@@ -75,7 +75,7 @@ class StandardGroupCommentForm(GroupCommentForm):
         super(GroupCommentForm, self).clean()
         if len(self.cleaned_data['text']) == 0 and self.cleaned_data['temporary_file_collection_id'] is None:
             raise ValidationError({
-              'text': ugettext_lazy('A comment must have either text or a file attached, or both.'
+              'text': gettext_lazy('A comment must have either text or a file attached, or both.'
                                     ' An empty comment is not allowed.')
             })
 
@@ -93,7 +93,7 @@ class FeedbackFeedBaseView(create.CreateView):
         'cradmin-legacy-bulkfileupload-form': '',
         'cradmin-legacy-bulkfileupload-form-prevent-window-dragdrop': 'true'
     }
-    submit_use_label = _('Post comment')
+    submit_use_label = gettext_lazy('Post comment')
 
     class Meta:
         abstract = True
@@ -487,4 +487,4 @@ class FeedbackFeedBaseView(create.CreateView):
         return True
 
     def get_success_message(self, object):
-        return _('Comment added!')
+        return gettext_lazy('Comment added!')

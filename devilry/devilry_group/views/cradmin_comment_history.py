@@ -2,7 +2,7 @@
 
 
 from django.http import Http404
-from django.utils.translation import ugettext_lazy, pgettext_lazy
+from django.utils.translation import gettext_lazy, pgettext_lazy
 from cradmin_legacy import crapp
 from cradmin_legacy.viewhelpers import listbuilderview
 from cradmin_legacy.viewhelpers.listbuilder.itemvalue import TitleDescription
@@ -39,10 +39,10 @@ class CommentHistoryView(listbuilderview.View):
     value_renderer_class = GroupCommentEditHistoryValue
 
     def get_pagetitle(self):
-        return ugettext_lazy('Comment edit history')
+        return gettext_lazy('Comment edit history')
 
     def get_pageheading(self):
-        return ugettext_lazy('Comment edit history')
+        return gettext_lazy('Comment edit history')
 
     def dispatch(self, request, *args, **kwargs):
         if 'group_comment_id' not in kwargs:
@@ -59,7 +59,7 @@ class CommentHistoryView(listbuilderview.View):
         return super(CommentHistoryView, self).dispatch(request, *args, **kwargs)
 
     def get_no_items_message(self):
-        return ugettext_lazy('No items')
+        return gettext_lazy('No items')
 
     def get_queryset_for_role(self, role):
         raise NotImplementedError()

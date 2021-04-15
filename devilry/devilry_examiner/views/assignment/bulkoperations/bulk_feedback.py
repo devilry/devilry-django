@@ -6,7 +6,7 @@ from django.db import models
 from django.db import transaction
 from django.http import HttpResponseRedirect, Http404
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy, pgettext_lazy
+from django.utils.translation import gettext_lazy, pgettext_lazy
 from django.views.generic import View
 
 import django_rq
@@ -94,7 +94,7 @@ class AbstractBulkFeedbackListView(bulk_operations_grouplist.AbstractAssignmentG
     template_name = 'devilry_examiner/assignment/bulk_create_feedback.django.html'
 
     def get_pagetitle(self):
-        return ugettext_lazy('Bulk create feedback')
+        return gettext_lazy('Bulk create feedback')
 
     def get_filterlist_url(self, filters_string):
         raise NotImplementedError()
@@ -168,7 +168,7 @@ class AbstractBulkFeedbackListView(bulk_operations_grouplist.AbstractAssignmentG
         return super(AbstractBulkFeedbackListView, self).form_valid(form=form)
 
     def add_success_message(self, anonymous_display_names):
-        message = ugettext_lazy('Bulk added feedback for %(group_names)s') % {
+        message = gettext_lazy('Bulk added feedback for %(group_names)s') % {
             'group_names': ', '.join(anonymous_display_names)}
         messages.success(self.request, message=message)
 

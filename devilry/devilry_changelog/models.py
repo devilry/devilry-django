@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy
 from devilry.apps.core.models import Assignment
 
 
@@ -36,9 +36,9 @@ class AbstractChangeLogItem(models.Model):
         max_length=15,
         default=STATUS_FINISHED,
         choices=(
-            (STATUS_IN_PROGRESS, _('in progress')),
-            (STATUS_FAILED, _('failed')),
-            (STATUS_FINISHED, _('finished')),
+            (STATUS_IN_PROGRESS, gettext_lazy('in progress')),
+            (STATUS_FAILED, gettext_lazy('failed')),
+            (STATUS_FINISHED, gettext_lazy('finished')),
         )
     )
 
@@ -50,9 +50,9 @@ class AbstractChangeLogItem(models.Model):
 
 class AssignmentChangeLogItem(AbstractChangeLogItem):
     ACTIONS = {
-        'update-anonymous-ids': _('Update all candidate IDs and anonymous IDs.'),
-        # 'change-publishing-time': _(''),
-        # 'change-first-deadline': _(''),
+        'update-anonymous-ids': gettext_lazy('Update all candidate IDs and anonymous IDs.'),
+        # 'change-publishing-time': gettext_lazy(''),
+        # 'change-first-deadline': gettext_lazy(''),
     }
 
     actions = models.CharField(

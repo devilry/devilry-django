@@ -1,4 +1,4 @@
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 from cradmin_legacy.viewhelpers.listbuilder.itemvalue import TitleDescription
 from cradmin_legacy.viewhelpers.listbuilder.lists import RowList
 from cradmin_legacy.viewhelpers.listbuilder.itemframe import DefaultSpacingItemFrame
@@ -28,7 +28,7 @@ class WithResultValueRenderable(TitleDescription):
             object_name = self.get_object_name_singular(num_matches=num_matches)
         else:
             object_name = self.get_object_name_plural(num_matches=num_matches)
-        return ugettext_lazy('Found %(result_num)s of %(total_num)s %(object_name)s') % {
+        return gettext_lazy('Found %(result_num)s of %(total_num)s %(object_name)s') % {
             'result_num': self.kwargs['num_matches'],
             'total_num': self.kwargs['num_total'],
             'object_name': object_name

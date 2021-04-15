@@ -2,7 +2,7 @@
 
 
 # Django imports
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 from django.views.generic import TemplateView
 from django.http import HttpResponseRedirect
 
@@ -57,8 +57,8 @@ class SelectPluginView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context_data = super(SelectPluginView, self).get_context_data(**kwargs)
-        context_data['headline'] = ugettext_lazy('How do students qualify for final exams?')
-        context_data['help_text'] = ugettext_lazy(
+        context_data['headline'] = gettext_lazy('How do students qualify for final exams?')
+        context_data['help_text'] = gettext_lazy(
             'Select one of the options from the list. '
             'Each option starts a wizard that ends with a preview of the results before you get the option to save'
         )

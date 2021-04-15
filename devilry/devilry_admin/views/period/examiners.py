@@ -2,7 +2,7 @@
 
 from django.contrib import messages
 from django.http import Http404
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 from cradmin_legacy import crapp
 from cradmin_legacy.crispylayouts import DangerSubmit
 
@@ -78,13 +78,13 @@ class DeactivateView(SingleRelatedExaminerMixin, devilry_confirmview.View):
     View used to deactivate examiners from a period.
     """
     def get_pagetitle(self):
-        return ugettext_lazy('Deactivate examiner: %(user)s?') % {
+        return gettext_lazy('Deactivate examiner: %(user)s?') % {
             'user': self.relatedexaminer.user.get_full_name(),
         }
 
     def get_confirm_message(self):
         period = self.request.cradmin_role
-        return ugettext_lazy(
+        return gettext_lazy(
                 'Are you sure you want to make %(user)s '
                 'an inactive examiner for %(period)s? Inactive examiners '
                 'can not access any assignments within the semester. '
@@ -95,7 +95,7 @@ class DeactivateView(SingleRelatedExaminerMixin, devilry_confirmview.View):
         }
 
     def get_submit_button_label(self):
-        return ugettext_lazy('Deactivate')
+        return gettext_lazy('Deactivate')
 
     def get_submit_button_class(self):
         return DangerSubmit
@@ -104,10 +104,10 @@ class DeactivateView(SingleRelatedExaminerMixin, devilry_confirmview.View):
         return self.request.cradmin_app.reverse_appindexurl()
 
     def get_backlink_label(self):
-        return ugettext_lazy('Back to examiners on semester overview')
+        return gettext_lazy('Back to examiners on semester overview')
 
     def __get_success_message(self):
-        return ugettext_lazy('%(user)s was deactivated.') % {
+        return gettext_lazy('%(user)s was deactivated.') % {
             'user': self.relatedexaminer.user.get_full_name(),
         }
 
@@ -125,15 +125,15 @@ class ActivateView(SingleRelatedExaminerMixin, devilry_confirmview.View):
         return context
 
     def get_pagetitle(self):
-        return ugettext_lazy('Re-activate examiner: %(user)s?') % {
+        return gettext_lazy('Re-activate examiner: %(user)s?') % {
             'user': self.relatedexaminer.user.get_full_name()
         }
 
     def get_submit_button_label(self):
-        return ugettext_lazy('Re-activate')
+        return gettext_lazy('Re-activate')
 
     def get_confirm_message(self):
-        return ugettext_lazy('Please confirm that you want to re-activate %(user)s.') % {
+        return gettext_lazy('Please confirm that you want to re-activate %(user)s.') % {
             'user': self.relatedexaminer.user.get_full_name()
         }
 
@@ -141,13 +141,13 @@ class ActivateView(SingleRelatedExaminerMixin, devilry_confirmview.View):
         return self.request.cradmin_app.reverse_appindexurl()
 
     def get_backlink_label(self):
-        return ugettext_lazy('Back to examiners on semester overview')
+        return gettext_lazy('Back to examiners on semester overview')
 
     def get_success_url(self):
         return str(self.request.cradmin_app.reverse_appindexurl())
 
     def __get_success_message(self):
-        return ugettext_lazy('%(user)s was re-activated.') % {
+        return gettext_lazy('%(user)s was re-activated.') % {
             'user': self.relatedexaminer.user.get_full_name()
         }
 
@@ -160,7 +160,7 @@ class ActivateView(SingleRelatedExaminerMixin, devilry_confirmview.View):
 
 class AddExaminersTarget(devilry_multiselect2.user.Target):
     def get_submit_button_text(self):
-        return ugettext_lazy('Add selected examiners')
+        return gettext_lazy('Add selected examiners')
 
 
 class AddView(devilry_multiselect2.user.BaseMultiselectUsersView):
@@ -195,7 +195,7 @@ class AddView(devilry_multiselect2.user.BaseMultiselectUsersView):
     def __get_success_message(self, added_users):
         added_users_names = ['"{}"'.format(user.get_full_name()) for user in added_users]
         added_users_names.sort()
-        return ugettext_lazy('Added %(usernames)s.') % {
+        return gettext_lazy('Added %(usernames)s.') % {
             'usernames': ', '.join(added_users_names)
         }
 
@@ -217,30 +217,30 @@ class AddView(devilry_multiselect2.user.BaseMultiselectUsersView):
 
 
 class ImportExaminersView(bulkimport_users_common.AbstractTypeInUsersView):
-    create_button_label = ugettext_lazy('Bulk import examiners')
+    create_button_label = gettext_lazy('Bulk import examiners')
 
     def get_backlink_url(self):
         return self.request.cradmin_app.reverse_appindexurl()
 
     def get_backlink_label(self):
-        return ugettext_lazy('Back to examiners on semester overview')
+        return gettext_lazy('Back to examiners on semester overview')
 
     def get_pagetitle(self):
-        return ugettext_lazy('Bulk import examiners')
+        return gettext_lazy('Bulk import examiners')
 
     def import_users_from_emails(self, emails):
         period = self.request.cradmin_role
         result = RelatedExaminer.objects.bulk_create_from_emails(period=period, emails=emails)
         if result.new_relatedusers_was_created():
-            messages.success(self.request, ugettext_lazy('Added %(count)s new examiners to %(period)s.') % {
+            messages.success(self.request, gettext_lazy('Added %(count)s new examiners to %(period)s.') % {
                 'count': result.created_relatedusers_queryset.count(),
                 'period': period.get_path()
             })
         else:
-            messages.warning(self.request, ugettext_lazy('No new examiners was added.'))
+            messages.warning(self.request, gettext_lazy('No new examiners was added.'))
 
         if result.existing_relateduser_emails_set:
-            messages.info(self.request, ugettext_lazy('%(count)s users was already examiner on %(period)s.') % {
+            messages.info(self.request, gettext_lazy('%(count)s users was already examiner on %(period)s.') % {
                 'count': len(result.existing_relateduser_emails_set),
                 'period': period.get_path()
             })
@@ -249,15 +249,15 @@ class ImportExaminersView(bulkimport_users_common.AbstractTypeInUsersView):
         period = self.request.cradmin_role
         result = RelatedExaminer.objects.bulk_create_from_usernames(period=period, usernames=usernames)
         if result.new_relatedusers_was_created():
-            messages.success(self.request, ugettext_lazy('Added %(count)s new examiners to %(period)s.') % {
+            messages.success(self.request, gettext_lazy('Added %(count)s new examiners to %(period)s.') % {
                 'count': result.created_relatedusers_queryset.count(),
                 'period': period.get_path()
             })
         else:
-            messages.warning(self.request, ugettext_lazy('No new examiners was added.'))
+            messages.warning(self.request, gettext_lazy('No new examiners was added.'))
 
         if result.existing_relateduser_usernames_set:
-            messages.info(self.request, ugettext_lazy('%(count)s users was already examiner on %(period)s.') % {
+            messages.info(self.request, gettext_lazy('%(count)s users was already examiner on %(period)s.') % {
                 'count': len(result.existing_relateduser_usernames_set),
                 'period': period.get_path()
             })

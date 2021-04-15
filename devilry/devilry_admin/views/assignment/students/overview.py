@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 from cradmin_legacy import crapp
 from cradmin_legacy.crinstance import reverse_cradmin_url
 from cradmin_legacy.viewhelpers.listbuilder.itemframe import DefaultSpacingItemFrame
@@ -28,10 +28,10 @@ class NonAnonymousGroupItemFrame(devilry_listbuilder.common.GoForwardLinkItemFra
 
 class StudentGroupListMatchResultRenderable(WithResultValueRenderable):
     def get_object_name_singular(self, num_matches):
-        return ugettext_lazy('student')
+        return gettext_lazy('student')
 
     def get_object_name_plural(self, num_matches):
-        return ugettext_lazy('students')
+        return gettext_lazy('students')
 
 
 class RowListWithMatchResults(RowList):

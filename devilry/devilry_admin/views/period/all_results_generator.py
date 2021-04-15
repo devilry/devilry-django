@@ -2,7 +2,7 @@
 
 
 from django.utils import translation
-from django.utils.translation import pgettext, ugettext
+from django.utils.translation import pgettext, gettext
 
 from devilry.devilry_admin.views.period.overview_all_results_collector import PeriodAllResultsCollector
 from devilry.devilry_email.utils import activate_translation_for_user
@@ -121,9 +121,9 @@ class AllResultsExcelReportGenerator(AbstractExcelReportGenerator):
 
     def get_work_sheets(self):
         return [
-            ('grades', self.workbook.add_worksheet(name=ugettext('Grades'))),
-            ('points', self.workbook.add_worksheet(name=ugettext('Points'))),
-            ('passed', self.workbook.add_worksheet(name=ugettext('Passed Failed')))
+            ('grades', self.workbook.add_worksheet(name=gettext('Grades'))),
+            ('points', self.workbook.add_worksheet(name=gettext('Points'))),
+            ('passed', self.workbook.add_worksheet(name=gettext('Passed Failed')))
         ]
 
     def generate(self, file_like_object):

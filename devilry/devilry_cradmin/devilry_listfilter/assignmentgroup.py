@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext_lazy, pgettext_lazy, pgettext
+from django.utils.translation import gettext_lazy, pgettext_lazy, pgettext
 from cradmin_legacy.viewhelpers import listfilter
 from cradmin_legacy.viewhelpers.listfilter.basefilters.single import abstractradio
 from cradmin_legacy.viewhelpers.listfilter.basefilters.single import abstractselect
@@ -13,7 +13,7 @@ class AbstractSearch(listfilter.django.single.textinput.Search):
     def __init__(self, label_is_screenreader_only=True):
         super(AbstractSearch, self).__init__(
             slug='search',
-            label=ugettext_lazy('Search'),
+            label=gettext_lazy('Search'),
             label_is_screenreader_only=label_is_screenreader_only
         )
 
@@ -21,7 +21,7 @@ class AbstractSearch(listfilter.django.single.textinput.Search):
         return super(AbstractSearch, self).filter(queryobject=queryobject)
 
     def get_placeholder(self):
-        return ugettext_lazy('Search listed objects ...')
+        return gettext_lazy('Search listed objects ...')
 
 
 class SearchNotAnonymous(AbstractSearch):

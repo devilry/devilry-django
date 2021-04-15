@@ -2,7 +2,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q, Max
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy
 
 from . import deliverytypes
 from .deadline import Deadline
@@ -148,12 +148,12 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         verbose_name="Type of delivery",
         help_text='0: Electronic delivery, 1: Non-electronic delivery, 2: Alias delivery. Default: 0.')
     time_of_delivery = models.DateTimeField(
-        verbose_name=_('Time of delivery'),
+        verbose_name=gettext_lazy('Time of delivery'),
         help_text='Holds the date and time the Delivery was uploaded.',
         default=timezone.now)
     deadline = models.ForeignKey(
         Deadline, related_name='deliveries',
-        verbose_name=_('Deadline'), on_delete=models.CASCADE)
+        verbose_name=gettext_lazy('Deadline'), on_delete=models.CASCADE)
     number = models.PositiveIntegerField(
         help_text='The delivery-number within this assignment-group. This number is automatically '
                   'incremented within each AssignmentGroup, starting from 1. Always '

@@ -1,4 +1,4 @@
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 from cradmin_legacy.viewhelpers import listbuilder
 from cradmin_legacy.viewhelpers import multiselect2
 
@@ -341,10 +341,10 @@ class DepartmentAdminMultiselectItemValue(DepartmentAdminItemValueMixin, Multise
 
 class GroupTargetRenderer(multiselect2.target_renderer.Target):
     def get_with_items_title(self):
-        return ugettext_lazy('Selected students:')
+        return gettext_lazy('Selected students:')
 
     def get_submit_button_text(self):
-        return ugettext_lazy('Save')
+        return gettext_lazy('Save')
 
     def get_without_items_text(self):
-        return ugettext_lazy('No students selected')
+        return gettext_lazy('No students selected')

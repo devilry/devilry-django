@@ -1,7 +1,7 @@
 from django.urls import reverse
 from django.views.generic.detail import SingleObjectMixin
 from django.http import Http404
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy
 
 from devilry.apps.core.models import Assignment
 from devilry.devilry_gradingsystem.pluginregistry import GradingSystemPluginNotInRegistryError
@@ -60,14 +60,14 @@ class WizardSteps(object):
         self.by_slug = {}
 
         if pluginapi.requires_configuration:
-            self.add_step('configure_plugin', _('Configure'))
+            self.add_step('configure_plugin', gettext_lazy('Configure'))
         if not pluginapi.sets_max_points_automatically:
-            self.add_step('setmaxpoints', _('Set the maximum possible number of points'))
-        self.add_step('select_points_to_grade_mapper', _('Select how results are presented to the students'))
+            self.add_step('setmaxpoints', gettext_lazy('Set the maximum possible number of points'))
+        self.add_step('select_points_to_grade_mapper', gettext_lazy('Select how results are presented to the students'))
         if assignment.points_to_grade_mapper == 'custom-table':
-            self.add_step('setup_custom_table', _('Map points to grade'))
+            self.add_step('setup_custom_table', gettext_lazy('Map points to grade'))
         if not pluginapi.sets_passing_grade_min_points_automatically:
-            self.add_step('setpassing_grade_min_points', _('Set the minumum number of points required to pass'))
+            self.add_step('setpassing_grade_min_points', gettext_lazy('Set the minumum number of points required to pass'))
 
     def add_step(self, slug, title):
         index = len(self.ordered)

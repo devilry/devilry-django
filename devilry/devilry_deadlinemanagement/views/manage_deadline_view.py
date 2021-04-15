@@ -13,7 +13,7 @@ from django.shortcuts import redirect
 from django.template import defaultfilters
 from django.template.loader import render_to_string
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy, pgettext_lazy
+from django.utils.translation import gettext_lazy, pgettext_lazy
 from cradmin_legacy.crispylayouts import PrimarySubmitBlock, PrimarySubmit
 from cradmin_legacy.viewhelpers import formbase
 from cradmin_legacy.widgets.datetimepicker import DateTimePickerWidget
@@ -39,12 +39,12 @@ class SelectedItemsForm(forms.Form):
 class ManageDeadlineForm(SelectedItemsForm):
     comment_text = forms.CharField(
         widget=devilry_acemarkdown.Small,
-        help_text=ugettext_lazy('Add a suitable comment describing why the the deadline was changed.'),
-        label=ugettext_lazy('Comment Text')
+        help_text=gettext_lazy('Add a suitable comment describing why the the deadline was changed.'),
+        label=gettext_lazy('Comment Text')
     )
 
     new_deadline = forms.DateTimeField(
-        label=ugettext_lazy('New deadline')
+        label=gettext_lazy('New deadline')
     )
 
     def __init__(self, *args, **kwargs):
@@ -54,7 +54,7 @@ class ManageDeadlineForm(SelectedItemsForm):
             buttonlabel_novalue=pgettext_lazy('CrAdmin datetime picker typo fix', 'Select a date/time'),
             minimum_datetime=self.get_minimum_datetime()
         )
-        self.fields['new_deadline'].help_text = ugettext_lazy('Pick a date and time from the '
+        self.fields['new_deadline'].help_text = gettext_lazy('Pick a date and time from the '
                                                               'calendar, or select one of the suggested deadlines.')
 
     def get_minimum_datetime(self):
@@ -127,7 +127,7 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
         return self.post_type_received_data in self.request.POST
 
     def get_pagetitle(self):
-        return ugettext_lazy('Manage deadline %(deadline)s') % {
+        return gettext_lazy('Manage deadline %(deadline)s') % {
             'deadline': defaultfilters.date(timezone.localtime(self.deadline), 'DATETIME_FORMAT')
         }
 
@@ -245,7 +245,7 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
     def get_field_layout(self):
         return [
             layout.Div(
-                layout.Field('comment_text', placeholder=ugettext_lazy('test placeholder')),
+                layout.Field('comment_text', placeholder=gettext_lazy('test placeholder')),
                 layout.Div(
                     layout.Div(
                         'new_deadline',
@@ -265,8 +265,8 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
 
     def get_submit_button_text(self):
         if self.post_move_deadline:
-            return ugettext_lazy('Move deadline')
-        return ugettext_lazy('Give new attempt')
+            return gettext_lazy('Move deadline')
+        return gettext_lazy('Give new attempt')
 
     def __create_groupcomment(self, feedback_set_id, publishing_time, text):
         """
@@ -425,7 +425,7 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
         return super(ManageDeadlineView, self).form_valid(form)
 
     def add_success_message(self, anonymous_display_names):
-        message = ugettext_lazy('Deadline managed for %(group_names)s') % {
+        message = gettext_lazy('Deadline managed for %(group_names)s') % {
             'group_names': ', '.join(anonymous_display_names)}
         messages.success(self.request, message=message)
 

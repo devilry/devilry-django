@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect
 from django import forms
 
 # Devilry imports
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 
 from devilry.devilry_qualifiesforexam.views.plugin_base_views import base_multiselect_view
 from devilry.devilry_qualifiesforexam.views.plugin_base_views.base_multiselect_view import SelectedQualificationItem, \
@@ -23,7 +23,7 @@ class PluginSelectAssignmentsAndPoints(base_multiselect_view.SelectedQualificati
     min_points_to_achieve = forms.IntegerField(
             min_value=0,
             required=False,
-            help_text=ugettext_lazy(
+            help_text=gettext_lazy(
                 'If no points are given, the sum of all the qualifying assignments minimum points is needed '
                 'to qualify.'),
     )

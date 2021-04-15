@@ -7,7 +7,7 @@ from django.db import models
 from django.db import transaction
 from django.db.models.functions import Concat, Lower
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 from cradmin_legacy.viewhelpers import listbuilderview
 
 import django_rq
@@ -87,9 +87,9 @@ class ListAsTable(base_new.AbstractListAsTable):
         super(ListAsTable, self).__init__(**kwargs)
 
     def add_header(self):
-        self.append_header_renderable(ColumnHeader(header_text=ugettext_lazy('Students in groups')))
-        self.append_header_renderable(ColumnHeader(header_text=ugettext_lazy('Grading')))
-        self.append_header_renderable(ColumnHeader(header_text=ugettext_lazy('Comment text')))
+        self.append_header_renderable(ColumnHeader(header_text=gettext_lazy('Students in groups')))
+        self.append_header_renderable(ColumnHeader(header_text=gettext_lazy('Grading')))
+        self.append_header_renderable(ColumnHeader(header_text=gettext_lazy('Comment text')))
 
     def add_rows(self):
         for group in self.assignment_groups:
@@ -239,10 +239,10 @@ class SimpleGroupBulkFeedbackView(listbuilderview.View):
         if feedbackset_data_dict:
             self.__publish(feedbackset_data_dict)
             messages.success(request,
-                             message=ugettext_lazy('Feedback published for {} groups').format(
+                             message=gettext_lazy('Feedback published for {} groups').format(
                                  len(list(feedbackset_data_dict.keys()))))
         else:
-            messages.warning(request, message=ugettext_lazy('You must set a grade for at least one group.'))
+            messages.warning(request, message=gettext_lazy('You must set a grade for at least one group.'))
         return http.HttpResponseRedirect(str(
             self.request.cradmin_app.reverse_appurl(viewname='bulk-feedback-simple')
         ))
@@ -255,7 +255,7 @@ class SimpleGroupBulkFeedbackView(listbuilderview.View):
         return context_data
 
     def get_pagetitle(self):
-        return ugettext_lazy('Simple bulk feedback')
+        return gettext_lazy('Simple bulk feedback')
 
     def get_no_items_message(self):
-        return ugettext_lazy('No groups to receive feedback')
+        return gettext_lazy('No groups to receive feedback')

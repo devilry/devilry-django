@@ -1,5 +1,5 @@
 from django import template
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy
 from django.template.defaultfilters import stringfilter
 from devilry.devilry_gradingsystem.models import FeedbackDraft
 
@@ -10,33 +10,33 @@ register = template.Library()
 @stringfilter
 def formatted_status(value):
     if value == 'waiting-for-feedback':
-        return _("Waiting for feedback")
+        return gettext_lazy("Waiting for feedback")
     elif value == 'waiting-for-deliveries':
-        return _("Waiting for deliveries")
+        return gettext_lazy("Waiting for deliveries")
     elif value == 'no-deadlines':
-        return _("No deadlines")
+        return gettext_lazy("No deadlines")
     elif value == 'corrected':
-        return _("Corrected")
+        return gettext_lazy("Corrected")
     elif value == 'closed-without-feedback':
-        return _("Closed without feedback")
+        return gettext_lazy("Closed without feedback")
     return value
 
 
 @register.filter
 def format_is_passing_grade(is_passing_grade):
     if is_passing_grade:
-        return _('passed')
+        return gettext_lazy('passed')
     else:
-        return _('failed')
+        return gettext_lazy('failed')
 
 
 @register.filter
 def formatted_delivery_count(count):
     if count == 0:
-        return _("No deliveries")
+        return gettext_lazy("No deliveries")
     if count == 1:
-        return _("{0} delivery received").format(count)
-    return _("{0} deliveries received").format(count)
+        return gettext_lazy("{0} delivery received").format(count)
+    return gettext_lazy("{0} deliveries received").format(count)
 
 
 @register.filter
@@ -48,15 +48,15 @@ def get_feedback_url(assignment):
 @stringfilter
 def status_to_buttontext(value):
     if value == 'waiting-for-feedback':
-        return _("Write feedback")
+        return gettext_lazy("Write feedback")
     elif value == 'waiting-for-deliveries':
-        return _("Waiting for deliveries")
+        return gettext_lazy("Waiting for deliveries")
     elif value == 'no-deadlines':
-        return _("No deadlines")
+        return gettext_lazy("No deadlines")
     elif value == 'corrected':
-        return _("Show feedback")
+        return gettext_lazy("Show feedback")
     elif value == 'closed-without-feedback':
-        return _("Closed without feedback")
+        return gettext_lazy("Closed without feedback")
     return value
 
 

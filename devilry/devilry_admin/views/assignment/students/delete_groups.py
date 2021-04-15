@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.db import models
 from django.http import Http404
 from django.shortcuts import redirect
-from django.utils.translation import ugettext_lazy, pgettext_lazy
+from django.utils.translation import gettext_lazy, pgettext_lazy
 from django.views.generic import TemplateView
 from cradmin_legacy import crapp
 from cradmin_legacy.crinstance import reverse_cradmin_url
@@ -136,10 +136,10 @@ class ChooseMethod(TemplateView):
 
 class DeleteGroupsTargetRenderer(devilry_listbuilder.assignmentgroup.GroupTargetRenderer):
     def get_submit_button_text(self):
-        return ugettext_lazy('Delete students')
+        return gettext_lazy('Delete students')
 
     def get_with_items_title(self):
-        return ugettext_lazy('Delete the following students:')
+        return gettext_lazy('Delete the following students:')
 
 
 class DeleteGroupsView(groupview_base.BaseMultiselectView):
@@ -182,7 +182,7 @@ class DeleteGroupsView(groupview_base.BaseMultiselectView):
         return context
 
     def get_success_message(self, candidatecount):
-        return ugettext_lazy('Deleted %(count)s students from this assignment.') % {
+        return gettext_lazy('Deleted %(count)s students from this assignment.') % {
             'count': candidatecount
         }
 

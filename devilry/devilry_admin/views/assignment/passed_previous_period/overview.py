@@ -2,7 +2,7 @@
 
 
 # Django imports
-from django.utils.translation import ugettext
+from django.utils.translation import gettext
 from django.views.generic import TemplateView
 from django.http import HttpResponseRedirect
 
@@ -47,10 +47,10 @@ class ManualPassModeItemFrame(ItemFrameMixin, devilry_listbuilder.common.GoForwa
 
 class ManualPassModeItemValue(listbuilder.itemvalue.TitleDescription):
     def get_title(self):
-        return ugettext('Manually pass students')
+        return gettext('Manually pass students')
 
     def get_description(self):
-        return ugettext('Manually select students that has passed this assignment, or it\'s equivalent, on a previous '
+        return gettext('Manually select students that has passed this assignment, or it\'s equivalent, on a previous '
                         'semester. This is for simplifying bulk-passing students on an assignment for an admin, '
                         'you don\'t actually select a semester.')
 
@@ -72,10 +72,10 @@ class AutoPassPreviousPeriodItemFrame(ItemFrameMixin, devilry_listbuilder.common
 
 class AutoPassPreviousPeriodItemValue(listbuilder.itemvalue.TitleDescription):
     def get_title(self):
-        return ugettext('Automatically pass students from an earlier semester')
+        return gettext('Automatically pass students from an earlier semester')
 
     def get_description(self):
-        return ugettext('Automatically pass students from earlier semester by selecting the semester you want to '
+        return gettext('Automatically pass students from earlier semester by selecting the semester you want to '
                         'get the results from. This requires that the assignment has the same shortname as the '
                         'previous assignment.')
 

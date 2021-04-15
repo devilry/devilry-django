@@ -3,7 +3,7 @@
 from crispy_forms import layout
 from django import forms
 from django.http import Http404
-from django.utils.translation import pgettext_lazy, ugettext_lazy
+from django.utils.translation import pgettext_lazy
 from cradmin_legacy.viewhelpers.crudbase import OnlySaveButtonMixin
 from cradmin_legacy.viewhelpers.update import UpdateView
 

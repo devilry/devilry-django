@@ -1,6 +1,6 @@
 import re
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy
 from django.core.exceptions import ValidationError
 from django.db import models
 
@@ -17,9 +17,9 @@ class ShortNameField(models.SlugField):
     def __init__(self, *args, **kwargs):
         kw = dict(
             max_length=20,
-            verbose_name=_('Short name'),
+            verbose_name=gettext_lazy('Short name'),
             db_index=True,
-            help_text=_('Up to 20 letters of lowercase english letters (a-z), '
+            help_text=gettext_lazy('Up to 20 letters of lowercase english letters (a-z), '
                         'numbers, underscore ("_") and hyphen ("-"). Used when the '
                         'name takes too much space.')
         )
@@ -29,7 +29,7 @@ class ShortNameField(models.SlugField):
     def validate(self, value, *args, **kwargs):
         super(ShortNameField, self).validate(value, *args, **kwargs)
         if not self.patt.match(value):
-            raise ValidationError(_(
+            raise ValidationError(gettext_lazy(
                 "Can only contain numbers, lowercase letters, '_' and '-'. "))
 
 
@@ -37,7 +37,7 @@ class LongNameField(models.CharField):
     def __init__(self, *args, **kwargs):
         kw = dict(
             max_length=100,
-            verbose_name=_('Name'),
+            verbose_name=gettext_lazy('Name'),
             db_index=True)
         kw.update(kwargs)
         super(LongNameField, self).__init__(*args, **kw)

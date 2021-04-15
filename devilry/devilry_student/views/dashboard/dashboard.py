@@ -2,7 +2,7 @@
 
 from django.db import models
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy, pgettext_lazy
+from django.utils.translation import gettext_lazy, pgettext_lazy
 from cradmin_legacy import crapp
 from cradmin_legacy.crinstance import reverse_cradmin_url
 from cradmin_legacy.viewhelpers import listbuilderview
@@ -107,7 +107,7 @@ class DashboardView(listbuilderview.FilterListMixin,
     def add_filterlist_items(self, filterlist):
         filterlist.append(listfilter.django.single.textinput.Search(
             slug='search',
-            label=ugettext_lazy('Search'),
+            label=gettext_lazy('Search'),
             label_is_screenreader_only=True,
             modelfields=[
                 'parentnode__long_name',

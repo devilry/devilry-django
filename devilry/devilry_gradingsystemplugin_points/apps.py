@@ -1,5 +1,5 @@
 from django.apps import AppConfig
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy
 from django.urls import reverse
 
 from devilry.devilry_gradingsystem.pluginregistry import gradingsystempluginregistry
@@ -8,8 +8,8 @@ from devilry.devilry_gradingsystem.pluginregistry import GradingSystemPluginInte
 
 class PointsPluginApi(GradingSystemPluginInterface):
     id = 'devilry_gradingsystemplugin_points'
-    title = _('Points')
-    description = _('Choose a number between zero and a maximum that you specify on the next page.')
+    title = gettext_lazy('Points')
+    description = gettext_lazy('Choose a number between zero and a maximum that you specify on the next page.')
 
     def get_edit_feedback_url(self, deliveryid):
         return reverse('devilry_gradingsystemplugin_points_feedbackeditor', kwargs={'deliveryid': deliveryid})

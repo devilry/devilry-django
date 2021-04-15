@@ -1,5 +1,5 @@
 from django import forms
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout
 from crispy_forms.layout import Field
@@ -14,8 +14,8 @@ from devilry.devilry_gradingsystem.models import FeedbackDraft
 
 class ApprovedFeedbackEditorForm(FeedbackEditorFormBase):
     points = forms.BooleanField(
-        label=_('Passed?'),
-        help_text=_('Check to provide a passing grade.'),
+        label=gettext_lazy('Passed?'),
+        help_text=gettext_lazy('Check to provide a passing grade.'),
         initial=True,
         required=False)
 
@@ -45,8 +45,8 @@ class ApprovedFeedbackEditorView(FeedbackEditorFormView):
 
 class ApprovedFeedbackBulkEditorForm(FeedbackBulkEditorFormBase):
     points = forms.BooleanField(
-        label=_('Passed?'),
-        help_text=_('Check to provide a passing grade.'),
+        label=gettext_lazy('Passed?'),
+        help_text=gettext_lazy('Check to provide a passing grade.'),
         required=False)
 
     def __init__(self, *args, **kwargs):

@@ -1,7 +1,7 @@
 import re
 
 from django import template
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy
 
 from devilry.apps.core.models import Assignment
 from devilry.utils import datetimeutils
@@ -35,9 +35,9 @@ def devilry_user_displayname(user):
 @register.filter
 def format_is_passing_grade(is_passing_grade):
     if is_passing_grade:
-        return _('passed')
+        return gettext_lazy('passed')
     else:
-        return _('failed')
+        return gettext_lazy('failed')
 
 
 @register.filter

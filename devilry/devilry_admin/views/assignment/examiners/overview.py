@@ -2,7 +2,7 @@
 
 
 from django.http import Http404
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 from cradmin_legacy import crapp
 from cradmin_legacy.crinstance import reverse_cradmin_url
 from cradmin_legacy.viewhelpers.listbuilder.itemframe import DefaultSpacingItemFrame
@@ -32,10 +32,10 @@ class ExaminerDetailPageLinkFrame(devilry_listbuilder.common.GoForwardLinkItemFr
 
 class ExaminerGroupListMatchResultRenderable(WithResultValueRenderable):
     def get_object_name_singular(self, num_matches):
-        return ugettext_lazy('examiner')
+        return gettext_lazy('examiner')
 
     def get_object_name_plural(self, num_matches):
-        return ugettext_lazy('examiners')
+        return gettext_lazy('examiners')
 
 
 class RowListWithMatchResults(RowList):
@@ -73,7 +73,7 @@ class Overview(listbuilder_relatedexaminer.ListViewBase):
         self.assignment = self.request.cradmin_role
         devilryrole = self.request.cradmin_instance.get_devilryrole_for_requestuser()
         if self.assignment.is_fully_anonymous and devilryrole != 'departmentadmin':
-            raise Http404(ugettext_lazy('Only department admins have permission to edit examiners '
+            raise Http404(gettext_lazy('Only department admins have permission to edit examiners '
                                         'for fully anonymous assignments.'))
         return super(Overview, self).dispatch(request, *args, **kwargs)
 

@@ -1,7 +1,7 @@
 from django.template.loader import render_to_string
 from cradmin_legacy import crinstance
 from cradmin_legacy.viewhelpers import objecttable
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy
 
 
 class DeliverySummaryColumn(objecttable.SingleActionColumn):
@@ -10,7 +10,7 @@ class DeliverySummaryColumn(objecttable.SingleActionColumn):
     context_object_name = 'delivery'
 
     def get_header(self):
-        return _('Delivery')
+        return gettext_lazy('Delivery')
 
     def get_actionurl(self, delivery):
         return crinstance.reverse_cradmin_url(
@@ -54,8 +54,8 @@ class NaturaltimeColumn(objecttable.PlainTextColumn):
 
 
 class BooleanColumn(objecttable.PlainTextColumn):
-    true_label = _('True')
-    false_label = _('False')
+    true_label = gettext_lazy('True')
+    false_label = gettext_lazy('False')
 
     def get_true_value(self):
         return self.true_label
@@ -75,5 +75,5 @@ class BooleanColumn(objecttable.PlainTextColumn):
 
 
 class BooleanYesNoColumn(BooleanColumn):
-    true_label = _('Yes')
-    false_label = _('No')
+    true_label = gettext_lazy('Yes')
+    false_label = gettext_lazy('No')

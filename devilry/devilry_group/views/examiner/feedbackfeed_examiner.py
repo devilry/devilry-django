@@ -9,7 +9,7 @@ from django.http import Http404
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _, ugettext_lazy, pgettext_lazy
+from django.utils.translation import gettext_lazy, pgettext_lazy
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic import View
 from cradmin_legacy import crapp
@@ -44,8 +44,8 @@ class PassedFailedFeedbackForm(AbstractFeedbackForm):
     #: Set delivery as passed or failed.
     passed = forms.ChoiceField(
         choices=(
-            ('Passed', ugettext_lazy('Passed')),
-            ('Failed', ugettext_lazy('Failed'))
+            ('Passed', gettext_lazy('Passed')),
+            ('Failed', gettext_lazy('Failed'))
         ),
         label=pgettext_lazy('grading', 'Grade'),
         help_text=pgettext_lazy('grading', 'Choose grade'),
@@ -73,7 +73,7 @@ class PointsFeedbackForm(AbstractFeedbackForm):
     points = forms.IntegerField(
             required=True,
             min_value=0,
-            label=_('Points'))
+            label=gettext_lazy('Points'))
 
     def __init__(self, *args, **kwargs):
         super(PointsFeedbackForm, self).__init__(*args, **kwargs)
@@ -187,10 +187,10 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
         buttons = super(ExaminerFeedbackView, self).get_buttons()
         buttons.extend([
             DefaultSubmit('examiner_add_comment_to_feedback_draft',
-                          _('Save draft and preview'),
+                          gettext_lazy('Save draft and preview'),
                           css_class='btn btn-default'),
             PrimarySubmit('examiner_publish_feedback',
-                          _('Publish feedback'),
+                          gettext_lazy('Publish feedback'),
                           css_class='btn btn-primary')
         ])
         return buttons
@@ -218,7 +218,7 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
             published_by=user,
             grading_points=form.get_grading_points())
         if result is False:
-            messages.error(self.request, ugettext_lazy(error_msg))
+            messages.error(self.request, gettext_lazy(error_msg))
         else:
             feedback_email.bulk_send_feedback_created_email(
                 assignment_id=self.request.cradmin_role.parentnode_id,
@@ -229,7 +229,7 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
     def save_object(self, form, commit=False):
         comment = super(ExaminerFeedbackView, self).save_object(form=form)
         if comment.feedback_set.grading_published_datetime is not None:
-            messages.warning(self.request, ugettext_lazy('Feedback is already published!'))
+            messages.warning(self.request, gettext_lazy('Feedback is already published!'))
         else:
             if 'examiner_add_comment_to_feedback_draft' in self.request.POST:
                 # If comment is part of a draft, the comment should only be visible to
@@ -260,7 +260,7 @@ class ExaminerPublicDiscussView(ExaminerBaseFeedbackFeedView):
         buttons.extend([
             PrimarySubmit(
                 'examiner_add_public_comment',
-                _('Add comment'),
+                gettext_lazy('Add comment'),
                 css_class='btn btn-default')
         ])
         return buttons
@@ -301,7 +301,7 @@ class ExaminerWithAdminsDiscussView(ExaminerBaseFeedbackFeedView):
         buttons.extend([
             PrimarySubmit(
                 'examiner_add_comment_for_examiners_and_admins',
-                _('Add note'))
+                gettext_lazy('Add note'))
         ])
         return buttons
 
@@ -342,9 +342,9 @@ class EditGradePointsForm(EditGradeForm):
             min_value=0,
             max_value=self.feedbackset.group.parentnode.max_points,
             initial=self.feedbackset.grading_points)
-        self.fields['grading_points'].label = ugettext_lazy('Grading')
+        self.fields['grading_points'].label = gettext_lazy('Grading')
         self.fields['grading_points'].help_text = \
-            ugettext_lazy(
+            gettext_lazy(
                 'Give a score between {} to {} where {} is the minimum amount of points needed to pass.'.format(
                     0,
                     self.feedbackset.group.parentnode.max_points,
@@ -365,8 +365,8 @@ class EditGradePassedFailedForm(EditGradeForm):
             required=True,
             initial=''
         )
-        self.fields['grading_points'].label = ugettext_lazy('Grading')
-        self.fields['grading_points'].help_text = ugettext_lazy('Check the box to give a passing grade')
+        self.fields['grading_points'].label = gettext_lazy('Grading')
+        self.fields['grading_points'].help_text = gettext_lazy('Check the box to give a passing grade')
 
     def get_points_to_select_value(self, feedbackset):
         assignment = feedbackset.group.parentnode
@@ -397,7 +397,7 @@ class ExaminerEditGradeView(update.UpdateView):
         return super(ExaminerEditGradeView, self).dispatch(request, *args, **kwargs)
 
     def get_pagetitle(self):
-        return ugettext_lazy('Edit grade')
+        return gettext_lazy('Edit grade')
 
     def get_queryset_for_role(self, role):
         return group_models.FeedbackSet.objects.filter(group=role)
@@ -495,7 +495,7 @@ class GroupCommentDeleteView(GroupCommentEditDeleteMixin, delete.DeleteView):
         return super(GroupCommentDeleteView, self).dispatch(request, *args, **kwargs)
 
     def get_object_preview(self):
-        return ugettext_lazy('Groupcomment')
+        return gettext_lazy('Groupcomment')
 
     def get_queryset_for_role(self, role):
         return group_models.GroupComment.objects.filter(

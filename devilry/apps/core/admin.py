@@ -6,7 +6,7 @@ from django.utils.html import format_html
 from devilry.apps.core.models import AssignmentGroup, Subject, Period, Assignment, PeriodTag, \
     CandidateAssignmentGroupHistory, ExaminerAssignmentGroupHistory, Examiner, RelatedStudent, RelatedExaminer, \
     AssignmentGroupHistory
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy
 
 
 class ExaminerAdmin(admin.ModelAdmin):
@@ -63,7 +63,7 @@ class BaseNodeAdmin(admin.ModelAdmin):
     def admins_as_string(self, obj):
         return ', '.join([user.shortname for user in obj.admins.all()])
 
-    admins_as_string.short_description = _("Admins")
+    admins_as_string.short_description = gettext_lazy("Admins")
 
     def get_queryset(self, request):
         return super(BaseNodeAdmin, self).get_queryset(request) \
@@ -94,7 +94,7 @@ class PeriodAdmin(BaseNodeAdmin):
 
     def get_subject(self, obj):
         return obj.subject.short_name
-    get_subject.short_description = _('Subject')
+    get_subject.short_description = gettext_lazy('Subject')
     get_subject.admin_order_field = 'parentnode__short_name'
 
 
@@ -122,12 +122,12 @@ class AssignmentAdmin(BaseNodeAdmin):
 
     def get_subject(self, obj):
         return obj.subject.short_name
-    get_subject.short_description = _('Subject')
+    get_subject.short_description = gettext_lazy('Subject')
     get_subject.admin_order_field = 'parentnode__parentnode__short_name'
 
     def get_period(self, obj):
         return obj.period.short_name
-    get_period.short_description = _('Period')
+    get_period.short_description = gettext_lazy('Period')
     get_period.admin_order_field = 'parentnode__short_name'
 
 
@@ -186,17 +186,17 @@ class AssignmentGroupAdmin(admin.ModelAdmin):
 
     def get_subject(self, obj):
         return obj.subject.short_name
-    get_subject.short_description = _('Subject')
+    get_subject.short_description = gettext_lazy('Subject')
     get_subject.admin_order_field = 'parentnode__parentnode__parentnode__short_name'
 
     def get_period(self, obj):
         return obj.period.short_name
-    get_period.short_description = _('Period')
+    get_period.short_description = gettext_lazy('Period')
     get_period.admin_order_field = 'parentnode__parentnode__short_name'
 
     def get_assignment(self, obj):
         return obj.assignment.short_name
-    get_assignment.short_description = _('Assignment')
+    get_assignment.short_description = gettext_lazy('Assignment')
     get_assignment.admin_order_field = 'parentnode__short_name'
 
     def get_queryset(self, request):

@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.urls import reverse
 from django.db import models
 from django.db.models import Q
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy
 from django.utils import timezone
 
 from .abstract_is_admin import AbstractIsAdmin
@@ -201,7 +201,7 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
         max_points = assignment.max_points
         if self.points > max_points:
             raise ValidationError(
-                _('You are not allowed to give more than {max_points} points on this assignment.').format(
+                gettext_lazy('You are not allowed to give more than {max_points} points on this assignment.').format(
                     max_points=max_points))
 
     def __str__(self):

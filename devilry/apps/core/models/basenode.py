@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy
 
 from .abstract_is_admin import AbstractIsAdmin
 from .save_interface import SaveInterface
@@ -50,7 +50,7 @@ class BaseNode(SaveInterface):
             this is up to a Node with ``parentnode==None``.
         """
         return self.parentnode.get_path() + "." + self.short_name
-    get_path.short_description = _('Path')
+    get_path.short_description = gettext_lazy('Path')
 
     def get_admins(self):
         """ Get a string with the shortname of all administrators on this node
@@ -59,7 +59,7 @@ class BaseNode(SaveInterface):
         Note that admins on parentnode(s) is not included.
         """
         return ', '.join([u.shortname for u in self.admins.all()])
-    get_admins.short_description = _('Administrators')
+    get_admins.short_description = gettext_lazy('Administrators')
 
     def _get_inherited_admins(self, admins):
         for admin in self.admins.all():

@@ -1,7 +1,7 @@
 
 
 from django import forms
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 from cradmin_legacy.viewhelpers.crudbase import OnlySaveButtonMixin
 from cradmin_legacy.viewhelpers.update import UpdateView
 from cradmin_legacy.widgets.datetimepicker import DateTimePickerWidget
@@ -19,7 +19,7 @@ class AssignmentFirstDeadlineForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(AssignmentFirstDeadlineForm, self).__init__(*args, **kwargs)
         self.fields['first_deadline'].widget = DateTimePickerWidget()
-        self.fields['first_deadline'].label = ugettext_lazy('First deadline')
+        self.fields['first_deadline'].label = gettext_lazy('First deadline')
 
 
 class AssignmentFirstDeadlineUpdateView(OnlySaveButtonMixin, UpdateView):
@@ -33,7 +33,7 @@ class AssignmentFirstDeadlineUpdateView(OnlySaveButtonMixin, UpdateView):
         return AssignmentFirstDeadlineForm
 
     def get_pagetitle(self):
-        return ugettext_lazy('Edit first deadline')
+        return gettext_lazy('Edit first deadline')
 
     def get_queryset_for_role(self, role):
         return self.model.objects.filter(id=self.kwargs['pk'])

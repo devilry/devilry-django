@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-from django.utils.translation import ugettext_lazy, ugettext
+from django.utils.translation import gettext_lazy, gettext
 
 import logging
 import django_rq
@@ -31,27 +31,27 @@ class CommentSubjectTextGenerator(SubjectTextGenerator):
         if self.is_receipt:
             after_deadline = self.comment.published_datetime > self.comment.feedback_set.deadline_datetime
             if after_deadline:
-                subject_text = ugettext_lazy('You added a new comment AFTER THE DEADLINE for %(assignment_name)s') % {
+                subject_text = gettext_lazy('You added a new comment AFTER THE DEADLINE for %(assignment_name)s') % {
                     'assignment_name': self.comment.feedback_set.group.parentnode.long_name
                 }
             else:
-                subject_text = ugettext_lazy('You added a new delivery/comment for %(assignment_name)s') % {
+                subject_text = gettext_lazy('You added a new delivery/comment for %(assignment_name)s') % {
                     'assignment_name': self.comment.feedback_set.group.parentnode.long_name
                 }
             return subject_text
         if self.comment.user_role == Comment.USER_ROLE_STUDENT:
             if self.comment.published_datetime > self.comment.feedback_set.deadline_datetime:
-                return ugettext('A student added a new comment AFTER THE DEADLINE for %(assignment_name)s') % {
+                return gettext('A student added a new comment AFTER THE DEADLINE for %(assignment_name)s') % {
                     'assignment_name': self.comment.feedback_set.group.parentnode.long_name
                 }
-            return ugettext('A student added a new delivery/comment for %(assignment_name)s') % {
+            return gettext('A student added a new delivery/comment for %(assignment_name)s') % {
                 'assignment_name': self.comment.feedback_set.group.parentnode.long_name
             }
         elif self.comment.user_role == Comment.USER_ROLE_EXAMINER:
-            return ugettext('An examiner added a new comment for %(assignment_name)s') % {
+            return gettext('An examiner added a new comment for %(assignment_name)s') % {
                 'assignment_name': self.comment.feedback_set.group.parentnode.long_name
             }
-        return ugettext('An admin added a new comment for %(assignment_name)s') % {
+        return gettext('An admin added a new comment for %(assignment_name)s') % {
             'assignment_name': self.comment.feedback_set.group.parentnode.long_name
         }
 

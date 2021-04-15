@@ -3,7 +3,7 @@
 
 from django import http
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy
 from django.views.decorators.csrf import ensure_csrf_cookie
 from cradmin_legacy import crapp, crinstance
 from cradmin_legacy.crispylayouts import PrimarySubmit
@@ -71,7 +71,7 @@ class AdminPublicDiscussView(AdminBaseFeedbackFeedView):
         buttons.extend([
             PrimarySubmit(
                 'admin_add_public_comment',
-                _('Add comment'),
+                gettext_lazy('Add comment'),
                 css_class='btn btn-default')
         ])
         return buttons
@@ -111,7 +111,7 @@ class AdminWithExaminersDiscussView(AdminBaseFeedbackFeedView):
         buttons.extend([
             PrimarySubmit(
                 'admin_add_comment_for_examiners_and_admins',
-                _('Add note'))
+                gettext_lazy('Add note'))
         ])
         return buttons
 

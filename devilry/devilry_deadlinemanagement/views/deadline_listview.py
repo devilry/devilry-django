@@ -5,7 +5,7 @@ import collections
 
 from django.template import defaultfilters
 from django.utils import timezone
-from django.utils.translation import pgettext_lazy, ugettext_lazy
+from django.utils.translation import pgettext_lazy, gettext_lazy
 from django.views.generic import TemplateView
 from cradmin_legacy.viewhelpers import listbuilder
 
@@ -42,7 +42,7 @@ class SelectDeadlineItemValue(listbuilder.itemvalue.TitleDescription):
     def get_title(self):
         formatted_deadline = defaultfilters.date(timezone.localtime(self.value), 'DATETIME_FORMAT')
         if self.value == self.assignment.first_deadline:
-            return ugettext_lazy('%(deadline)s (Assignment first deadline)') % {
+            return gettext_lazy('%(deadline)s (Assignment first deadline)') % {
                 'deadline': formatted_deadline
             }
         return formatted_deadline

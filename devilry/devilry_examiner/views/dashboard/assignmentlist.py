@@ -1,6 +1,6 @@
 
 
-from django.utils.translation import ugettext_lazy, pgettext_lazy
+from django.utils.translation import gettext_lazy, pgettext_lazy
 from cradmin_legacy import crapp
 from cradmin_legacy.crinstance import reverse_cradmin_url
 from cradmin_legacy.viewhelpers import listbuilder
@@ -20,11 +20,11 @@ class AssignmentItemValue(listbuilder.itemvalue.TitleDescription):
 
     def get_description(self):
         if self.assignment.waiting_for_feedback_count > 0:
-            return ugettext_lazy('%(waiting_for_feedback_count)s waiting for feedback') % {
+            return gettext_lazy('%(waiting_for_feedback_count)s waiting for feedback') % {
                 'waiting_for_feedback_count': self.assignment.waiting_for_feedback_count
             }
         else:
-            return ugettext_lazy('Nobody waiting for feedback')
+            return gettext_lazy('Nobody waiting for feedback')
 
     def get_extra_css_classes_list(self):
         css_classes = ['devilry-examiner-listbuilder-assignmentlist-assignmentitemvalue']
@@ -68,7 +68,7 @@ class AssignmentListView(listbuilderview.FilterListMixin,
     def add_filterlist_items(self, filterlist):
         filterlist.append(listfilter.django.single.textinput.Search(
             slug='search',
-            label=ugettext_lazy('Search'),
+            label=gettext_lazy('Search'),
             label_is_screenreader_only=True,
             modelfields=[
                 'long_name',

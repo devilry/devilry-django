@@ -4,7 +4,7 @@
 from django.conf import settings
 from django.http import Http404
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy
 from django.views.decorators.csrf import ensure_csrf_cookie
 from cradmin_legacy import crapp
 from cradmin_legacy.crispylayouts import PrimarySubmit
@@ -42,7 +42,7 @@ class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
         buttons.extend([
             PrimarySubmit(
                 'student_add_comment',
-                _('Add delivery or question')
+                gettext_lazy('Add delivery or question')
             )
         ])
         return buttons

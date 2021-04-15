@@ -1,4 +1,4 @@
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 
 import django_rq
 from cradmin_legacy.crinstance import reverse_cradmin_url
@@ -18,10 +18,10 @@ class DeadlineSubjectTextGenerator(SubjectTextGenerator):
         if not self.deadline_type:
             raise ValueError('Missing mailtype')
         if self.deadline_type == 'new_attempt':
-            return ugettext_lazy('New attempt for %(assignment_name)s') % {
+            return gettext_lazy('New attempt for %(assignment_name)s') % {
                 'assignment_name': self.assignment.long_name}
         if self.deadline_type == 'moved':
-            return ugettext_lazy('Deadline moved for %(assignment_name)s') % {
+            return gettext_lazy('Deadline moved for %(assignment_name)s') % {
                 'assignment_name': self.assignment.long_name}
 
 

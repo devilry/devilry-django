@@ -1,6 +1,5 @@
 from django.urls import reverse
 from django.template import defaultfilters
-from django.utils.translation import ugettext_lazy
 from cradmin_legacy import crapp, crinstance
 from cradmin_legacy import crmenu
 from cradmin_legacy.crinstance import reverse_cradmin_url

@@ -8,7 +8,7 @@ from django.contrib.auth import get_user_model
 from django.db import models, transaction
 from django.template.loader import render_to_string
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.utils import translation
 
@@ -70,16 +70,16 @@ class Message(models.Model):
     #: - ``sent``: The message has been sent without any errors.
     STATUS_CHOICES = choices_with_meta.ChoicesWithMeta(
         choices_with_meta.Choice(value='draft',
-                                 label=ugettext_lazy('Draft')),
+                                 label=gettext_lazy('Draft')),
         choices_with_meta.Choice(value='preparing',
-                                 label=ugettext_lazy('Preparing for sending'),
-                                 description=ugettext_lazy('Building the list of actual users to send to.')),
+                                 label=gettext_lazy('Preparing for sending'),
+                                 description=gettext_lazy('Building the list of actual users to send to.')),
         choices_with_meta.Choice(value='sending',
-                                 label=ugettext_lazy('Sending')),
+                                 label=gettext_lazy('Sending')),
         choices_with_meta.Choice(value='error',
-                                 label=ugettext_lazy('Error')),
+                                 label=gettext_lazy('Error')),
         choices_with_meta.Choice(value='sent',
-                                 label=ugettext_lazy('Sent'))
+                                 label=gettext_lazy('Sent'))
     )
 
     #: The "send"-status of a message.
@@ -348,13 +348,13 @@ class MessageReceiver(models.Model):
     #:
     STATUS_CHOICES = choices_with_meta.ChoicesWithMeta(
         choices_with_meta.Choice(value='not_sent',
-                                 label=ugettext_lazy('Not sent')),
+                                 label=gettext_lazy('Not sent')),
         choices_with_meta.Choice(value='failed',
-                                 label=ugettext_lazy('Failed')),
+                                 label=gettext_lazy('Failed')),
         choices_with_meta.Choice(value='error',
-                                 label=ugettext_lazy('Error')),
+                                 label=gettext_lazy('Error')),
         choices_with_meta.Choice(value='sent',
-                                 label=ugettext_lazy('Sent'))
+                                 label=gettext_lazy('Sent'))
     )
 
     #: The status of the message.

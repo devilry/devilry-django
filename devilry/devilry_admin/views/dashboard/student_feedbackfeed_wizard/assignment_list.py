@@ -4,7 +4,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models.functions import Lower, Concat
-from django.utils.translation import ugettext, ugettext_lazy
+from django.utils.translation import gettext, gettext_lazy
 
 from cradmin_legacy.crinstance import reverse_cradmin_url
 from cradmin_legacy.viewhelpers import listbuilderview
@@ -54,10 +54,10 @@ class DepartmentAdminItemValueByAssignment(devilry_listbuilder.assignmentgroup.D
 
 class AssignmentListMatchResultRenderable(WithResultValueRenderable):
     def get_object_name_singular(self, num_matches):
-        return ugettext_lazy('assignment')
+        return gettext_lazy('assignment')
 
     def get_object_name_plural(self, num_matches):
-        return ugettext_lazy('assignments')
+        return gettext_lazy('assignments')
 
 
 class RowListWithMatchResults(RowList):
@@ -103,7 +103,7 @@ class StudentAssignmentGroupListView(listbuilderview.FilterListMixin, listbuilde
         return user.get_short_name()
 
     def get_pagetitle(self):
-        return ugettext('Assignments for %(user_shortname)s') % {'user_shortname': self.user_displayname}
+        return gettext('Assignments for %(user_shortname)s') % {'user_shortname': self.user_displayname}
 
     def get_filterlist_url(self, filters_string):
         return self.request.cradmin_app.reverse_appurl(

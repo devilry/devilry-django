@@ -4,7 +4,7 @@
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.http import Http404
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 from cradmin_legacy import crapp
 
 from devilry.apps.core.models import AssignmentGroup
@@ -16,7 +16,7 @@ from devilry.devilry_cradmin import devilry_listfilter
 
 class MergeGroupsTargetRenderer(devilry_listbuilder.assignmentgroup.GroupTargetRenderer):
     def get_submit_button_text(self):
-        return ugettext_lazy('Create project group')
+        return gettext_lazy('Create project group')
 
 
 class MergeGroupsView(groupview_base.BaseMultiselectView):
@@ -79,12 +79,12 @@ class MergeGroupsView(groupview_base.BaseMultiselectView):
         except ValidationError as e:
             messages.warning(
                 self.request,
-                ugettext_lazy(str(e.message)))
+                gettext_lazy(str(e.message)))
         else:
             candidates_short_name = self.__get_merged_candidates_short_name(self.target_group)
             messages.success(
                 self.request,
-                ugettext_lazy("A group with %(what)s has been created!") % {'what': candidates_short_name}
+                gettext_lazy("A group with %(what)s has been created!") % {'what': candidates_short_name}
             )
         return super(MergeGroupsView, self).form_valid(form)
 

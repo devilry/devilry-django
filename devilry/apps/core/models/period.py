@@ -3,7 +3,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy
 from django.utils import timezone
 
 from .abstract_applicationkeyvalue import AbstractApplicationKeyValue
@@ -187,20 +187,20 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
         app_label = 'core'
         unique_together = ('short_name', 'parentnode')
         ordering = ['short_name']
-        verbose_name = _('semester')
-        verbose_name_plural = _('semesters')
+        verbose_name = gettext_lazy('semester')
+        verbose_name_plural = gettext_lazy('semesters')
 
     short_name = ShortNameField()
     long_name = LongNameField()
     parentnode = models.ForeignKey(Subject, related_name='periods',
-                                   verbose_name=_('Subject'),
+                                   verbose_name=gettext_lazy('Subject'),
                                    on_delete=models.CASCADE)
     start_time = models.DateTimeField(
-        help_text=_('Start time and end time defines when the period is active.'),
-        verbose_name=_('Start time'))
+        help_text=gettext_lazy('Start time and end time defines when the period is active.'),
+        verbose_name=gettext_lazy('Start time'))
     end_time = models.DateTimeField(
-        help_text=_('Start time and end time defines when the period is active.'),
-        verbose_name=_('End time'))
+        help_text=gettext_lazy('Start time and end time defines when the period is active.'),
+        verbose_name=gettext_lazy('End time'))
     admins = models.ManyToManyField(User, blank=True)
     etag = models.DateTimeField(auto_now_add=True)
 
@@ -228,7 +228,7 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
         """
         if self.start_time and self.end_time:
             if self.start_time > self.end_time:
-                raise ValidationError(_('Start time must be before end time.'))
+                raise ValidationError(gettext_lazy('Start time must be before end time.'))
         super(Period, self).clean(*args, **kwargs)
 
     def is_active(self):

@@ -6,7 +6,7 @@ from django import forms
 from django.contrib import messages
 from django.http import Http404
 from django.shortcuts import redirect
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 from django.views.generic.detail import SingleObjectMixin
 from cradmin_legacy import crapp
 from cradmin_legacy.crispylayouts import PrimarySubmit
@@ -51,14 +51,14 @@ class SplitGroupView(QuerysetForRoleMixin, SingleObjectMixin, formbase.FormView)
         return super(SplitGroupView, self).dispatch(request, *args, **kwargs)
 
     def get_pagetitle(self):
-        return ugettext_lazy('Split students from project group')
+        return gettext_lazy('Split students from project group')
 
     def __get_candidate_queryset(self):
         return self.group.candidates.select_related('relatedstudent__user')
 
     def get_button_layout(self):
         return [
-            PrimarySubmit('split', ugettext_lazy('Split'))
+            PrimarySubmit('split', gettext_lazy('Split'))
         ]
 
     def get_queryset_for_role(self, role):
@@ -76,17 +76,17 @@ class SplitGroupView(QuerysetForRoleMixin, SingleObjectMixin, formbase.FormView)
         except GroupPopNotCandidateError:
             messages.warning(
                 self.request,
-                ugettext_lazy('student is not part of project group')
+                gettext_lazy('student is not part of project group')
             )
         except GroupPopToFewCandidatesError as e:
             messages.warning(
                 self.request,
-                ugettext_lazy('Cannot split student if there is less than 2 students in project group.')
+                gettext_lazy('Cannot split student if there is less than 2 students in project group.')
             )
         else:
             messages.success(
                 self.request,
-                ugettext_lazy(
+                gettext_lazy(
                     '%(what)s was removed from the project group'
                 ) % {'what': candidate.relatedstudent.user.get_displayname()}
             )

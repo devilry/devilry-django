@@ -1,4 +1,4 @@
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 from cradmin_legacy.viewhelpers import listbuilder
 from cradmin_legacy.viewhelpers import listbuilderview
 
@@ -22,7 +22,7 @@ class ListViewBase(listbuilderview.FilterListMixin, listbuilderview.View):
             filterlist.append(listfilter_relateduser.TagSelectFilter(period=period))
 
     def get_no_items_message(self):
-        return ugettext_lazy('No examiners found matching your filters/search.')
+        return gettext_lazy('No examiners found matching your filters/search.')
 
 
 class VerticalFilterListView(ListViewBase):

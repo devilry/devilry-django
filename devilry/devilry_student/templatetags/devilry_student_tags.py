@@ -1,7 +1,7 @@
 from django import template
 from django.template.loader import render_to_string
 from django.template.defaultfilters import stringfilter
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy
 
 register = template.Library()
 
@@ -27,13 +27,13 @@ def devilry_student_shortgrade(feedback):
 @stringfilter
 def devilry_humanize_groupstatus(status):
     if status == 'waiting-for-feedback':
-        return _("Waiting for feedback")
+        return gettext_lazy("Waiting for feedback")
     elif status == 'waiting-for-deliveries':
-        return _("Waiting for deliveries or for deadline to expire")
+        return gettext_lazy("Waiting for deliveries or for deadline to expire")
     elif status == 'no-deadlines':
-        return _("No deadlines")
+        return gettext_lazy("No deadlines")
     elif status == 'corrected':
-        return _("Corrected")
+        return gettext_lazy("Corrected")
     elif status == 'closed-without-feedback':
-        return _("Closed without feedback")
+        return gettext_lazy("Closed without feedback")
     return status

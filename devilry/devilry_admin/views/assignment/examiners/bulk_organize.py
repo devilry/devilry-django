@@ -8,7 +8,7 @@ from django.contrib import messages
 from django.db import models
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
-from django.utils.translation import ugettext_lazy, pgettext_lazy
+from django.utils.translation import gettext_lazy, pgettext_lazy
 from django.views.generic import TemplateView
 from cradmin_legacy import crapp
 from cradmin_legacy.viewhelpers.mixins import QuerysetForRoleMixin
@@ -63,7 +63,7 @@ class OrganizeByTagListbuilderView(listbuilderview.View):
         return HttpResponseRedirect(self.request.cradmin_app.reverse_appindexurl())
 
     def get_pagetitle(self):
-        return ugettext_lazy('Organize examiners on tags')
+        return gettext_lazy('Organize examiners on tags')
 
     def __relatedstudent_queryset(self):
         return RelatedStudent.objects\
@@ -173,12 +173,12 @@ class OrganizeByTagListbuilderView(listbuilderview.View):
 
 
 class RandomOrganizeForm(groupview_base.SelectedGroupsForm):
-    selected_relatedexaminers_invalid_choice_message = ugettext_lazy(
+    selected_relatedexaminers_invalid_choice_message = gettext_lazy(
             'You must select at least two examiners.')
     selected_relatedexaminers = forms.ModelMultipleChoiceField(
         queryset=RelatedExaminer.objects.none(),
         widget=forms.CheckboxSelectMultiple(),
-        label=ugettext_lazy('Select at least two examiners:'),
+        label=gettext_lazy('Select at least two examiners:'),
         required=False
     )
 
@@ -205,10 +205,10 @@ class RandomOrganizeForm(groupview_base.SelectedGroupsForm):
 
 class RandomOrganizeTargetRenderer(devilry_listbuilder.assignmentgroup.GroupTargetRenderer):
     def get_with_items_title(self):
-        return ugettext_lazy('Select at least two students:')
+        return gettext_lazy('Select at least two students:')
 
     def get_submit_button_text(self):
-        return ugettext_lazy('Randomly assign selected students to selected examiners')
+        return gettext_lazy('Randomly assign selected students to selected examiners')
 
     def get_field_layout(self):
         return [
@@ -277,17 +277,17 @@ class RandomView(groupview_base.BaseMultiselectView):
             groupqueryset=groupqueryset,
             relatedexaminerqueryset=relatedexaminerqueryset
         )
-        messages.success(self.request, ugettext_lazy('Randomly organized students to examiners.'))
+        messages.success(self.request, gettext_lazy('Randomly organized students to examiners.'))
         return redirect(str(self.get_success_url()))
 
 
 class ManualAddOrReplaceExaminersForm(groupview_base.SelectedGroupsForm):
-    selected_relatedexaminers_required_message = ugettext_lazy(
+    selected_relatedexaminers_required_message = gettext_lazy(
             'You must select at least one examiner.')
     selected_relatedexaminers = forms.ModelMultipleChoiceField(
         queryset=RelatedExaminer.objects.none(),
         widget=forms.CheckboxSelectMultiple(),
-        label=ugettext_lazy('Select examiners:'),
+        label=gettext_lazy('Select examiners:'),
         required=True,
         error_messages={
             'required': selected_relatedexaminers_required_message
@@ -390,7 +390,7 @@ class BaseManualAddOrReplaceView(groupview_base.BaseMultiselectView):
 
 class ManualAddTargetRenderer(ManualAddOrReplaceTargetRenderer):
     def get_submit_button_text(self):
-        return ugettext_lazy('Add selected examiners to selected students')
+        return gettext_lazy('Add selected examiners to selected students')
 
 
 class ManualAddView(BaseManualAddOrReplaceView):
@@ -408,12 +408,12 @@ class ManualAddView(BaseManualAddOrReplaceView):
         return {examiner.relatedexaminer_id for examiner in group.examiners.all()}
 
     def get_success_message_formatting_string(self):
-        return ugettext_lazy('Added %(count)s students to %(examinernames)s.')
+        return gettext_lazy('Added %(count)s students to %(examinernames)s.')
 
 
 class ManualReplaceTargetRenderer(ManualAddOrReplaceTargetRenderer):
     def get_submit_button_text(self):
-        return ugettext_lazy('Replace selected examiners with current examiners for selected students')
+        return gettext_lazy('Replace selected examiners with current examiners for selected students')
 
 
 class ManualReplaceView(BaseManualAddOrReplaceView):
@@ -433,14 +433,14 @@ class ManualReplaceView(BaseManualAddOrReplaceView):
         return []
 
     def get_success_message_formatting_string(self):
-        return ugettext_lazy('Made %(examinernames)s examiner for %(count)s students, replacing any previous '
+        return gettext_lazy('Made %(examinernames)s examiner for %(count)s students, replacing any previous '
                              'examiners for those students.')
 
 
 
 class SelectedExaminerForm(forms.Form):
     model = Examiner
-    invalid_item_message = ugettext_lazy(
+    invalid_item_message = gettext_lazy(
         'Something went wrong. This may happen if someone else performed a similar operation '
         'while you where selecting. Refresh the page and try again')
 
@@ -486,7 +486,7 @@ class ExaminerTargetRenderer(multiselect2.target_renderer.Target):
     selected_target_renderer = devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue
 
     #: A descriptive name for the items selected.
-    descriptive_item_name = ugettext_lazy('examiners')
+    descriptive_item_name = gettext_lazy('examiners')
 
 
 class ExaminerMultiSelectListFilterView(multiselect2view.ListbuilderView):

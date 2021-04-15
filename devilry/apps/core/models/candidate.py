@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.db import models
-from django.utils.translation import ugettext_lazy as _, ugettext_lazy
 
 from devilry.apps.core.models import RelatedStudent
 from devilry.devilry_account.models import User

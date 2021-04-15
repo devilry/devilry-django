@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.contrib.auth import models as authmodels
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy
 
 from devilry.devilry_account.models import SubjectPermissionGroup, PeriodPermissionGroup
 from devilry.devilry_account.models import User, UserEmail, UserName, PermissionGroup, PermissionGroupUser
@@ -21,8 +21,8 @@ class UserNameInline(admin.StackedInline):
 
 class UserEditForm(forms.ModelForm):
     password = ReadOnlyPasswordHashField(
-        label=_("Password"),
-        help_text=_("Raw passwords are not stored, so there is no way to see "
+        label=gettext_lazy("Password"),
+        help_text=gettext_lazy("Raw passwords are not stored, so there is no way to see "
                     "this user's password, but you can change the password "
                     "using <a href=\"password/\">this form</a>."))
 
@@ -151,7 +151,7 @@ class PermissionGroupAdmin(admin.ModelAdmin):
 
     def get_users(self, permissiongroup):
         return ', '.join(user.shortname for user in permissiongroup.users.all())
-    get_users.short_description = _('Users')
+    get_users.short_description = gettext_lazy('Users')
 
     def get_inline_instances(self, request, obj=None):
         inline_instances = [

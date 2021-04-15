@@ -1,10 +1,10 @@
 from django.apps import AppConfig
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 
 
 class AccountAppConfig(AppConfig):
     name = 'devilry.devilry_account'
-    verbose_name = ugettext_lazy("Devilry account")
+    verbose_name = gettext_lazy("Devilry account")
 
     def ready(self):
         from cradmin_legacy.superuserui import superuserui_registry

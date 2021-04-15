@@ -1,5 +1,5 @@
 from django import forms
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout
 from crispy_forms.layout import Field
@@ -20,9 +20,9 @@ class PointsFeedbackEditorFormMixin(object):
             required=True,
             min_value = 0,
             max_value = self.assignment.max_points,
-            help_text = _('Number between 0 and {max_points}.').format(
+            help_text = gettext_lazy('Number between 0 and {max_points}.').format(
                 max_points=self.assignment.max_points),
-            label=_('Points'))
+            label=gettext_lazy('Points'))
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Field('points')

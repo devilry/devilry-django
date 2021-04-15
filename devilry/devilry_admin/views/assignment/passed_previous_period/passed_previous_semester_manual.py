@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.db import transaction
 from django.http import Http404
 from django.shortcuts import redirect
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 
 from devilry.devilry_cradmin import devilry_acemarkdown
 from devilry.devilry_admin.views.assignment.students import groupview_base
@@ -15,10 +15,10 @@ from devilry.devilry_group.models import FeedbacksetPassedPreviousPeriod
 
 class TargetRenderer(devilry_listbuilder.assignmentgroup.GroupTargetRenderer):
     def get_submit_button_text(self):
-        return ugettext_lazy('Pass students')
+        return gettext_lazy('Pass students')
 
     def get_with_items_title(self):
-        return ugettext_lazy('Students to pass')
+        return gettext_lazy('Students to pass')
 
     def get_field_layout(self):
         return [
@@ -35,9 +35,9 @@ class SelectedAssignmentGroupsForm(groupview_base.SelectedGroupsForm):
         super(SelectedAssignmentGroupsForm, self).__init__(*args, **kwargs)
         self.fields['feedback_comment_text'] = forms.CharField(
             widget=devilry_acemarkdown.Small,
-            help_text=ugettext_lazy('Add a general comment to the feedback'),
-            initial=ugettext_lazy('Delivery has been corrected. Passed in a previous semester.'),
-            label=ugettext_lazy('Feedback comment text')
+            help_text=gettext_lazy('Add a general comment to the feedback'),
+            initial=gettext_lazy('Delivery has been corrected. Passed in a previous semester.'),
+            label=gettext_lazy('Feedback comment text')
         )
 
 
@@ -57,11 +57,11 @@ class PassAssignmentGroupsView(groupview_base.BaseMultiselectView):
             return response
         else:
             messages.info(self.request,
-                          ugettext_lazy('There are no students on this assignment.'))
+                          gettext_lazy('There are no students on this assignment.'))
             return redirect(str(self.get_success_url()))
 
     def get_pagetitle(self):
-        return ugettext_lazy('Bulk pass students')
+        return gettext_lazy('Bulk pass students')
 
     def get_form_class(self):
         return SelectedAssignmentGroupsForm

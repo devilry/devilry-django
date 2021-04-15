@@ -3,7 +3,7 @@
 
 from django.db import models
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy
 from django.core.exceptions import ValidationError
 
 from devilry.apps.core.models import RelatedStudent
@@ -90,9 +90,9 @@ class Status(models.Model):
 
     #: Choice list for status on the qualification list.
     STATUS_CHOICES = [
-        (READY, _('Ready for export')),
-        (ALMOSTREADY, _('Most students are ready for export')),
-        (NOTREADY, _('Not ready for export (retracted)')),
+        (READY, gettext_lazy('Ready for export')),
+        (ALMOSTREADY, gettext_lazy('Most students are ready for export')),
+        (NOTREADY, gettext_lazy('Not ready for export (retracted)')),
     ]
 
     #: The status of the qualification list.
@@ -125,8 +125,8 @@ class Status(models.Model):
 
     class Meta:
         ordering = ['-createtime']
-        verbose_name = _('Qualified for final exam status')
-        verbose_name_plural = _('Qualified for final exam statuses')
+        verbose_name = gettext_lazy('Qualified for final exam status')
+        verbose_name_plural = gettext_lazy('Qualified for final exam statuses')
 
     def get_status_text(self):
         return self.status

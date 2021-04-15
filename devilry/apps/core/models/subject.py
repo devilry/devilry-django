@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy
 
 from .abstract_is_candidate import AbstractIsCandidate
 from .abstract_is_examiner import AbstractIsExaminer
@@ -119,8 +119,8 @@ class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, E
     class Meta:
         app_label = 'core'
         ordering = ['short_name']
-        verbose_name = _('course')
-        verbose_name_plural = _('courses')
+        verbose_name = gettext_lazy('course')
+        verbose_name_plural = gettext_lazy('courses')
 
     short_name = ShortNameField(unique=True)
     long_name = LongNameField()

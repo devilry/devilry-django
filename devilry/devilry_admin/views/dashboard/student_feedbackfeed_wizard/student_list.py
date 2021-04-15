@@ -2,7 +2,7 @@
 
 
 from django.contrib.auth import get_user_model
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 
 from cradmin_legacy.crinstance import reverse_cradmin_url
 from cradmin_legacy.viewhelpers import listbuilderview
@@ -32,10 +32,10 @@ class UserItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
 
 class StudentUserListMatchResultRenderable(WithResultValueRenderable):
     def get_object_name_singular(self, num_matches):
-        return ugettext_lazy('student')
+        return gettext_lazy('student')
 
     def get_object_name_plural(self, num_matches):
-        return ugettext_lazy('students')
+        return gettext_lazy('students')
 
 
 class RowListWithMatchResults(RowList):
@@ -67,7 +67,7 @@ class UserListView(listbuilderview.FilterListMixin, listbuilderview.View):
     paginate_by = 35
 
     def get_pagetitle(self):
-        return ugettext_lazy('Select a student')
+        return gettext_lazy('Select a student')
 
     def get_filterlist_url(self, filters_string):
         return self.request.cradmin_app.reverse_appurl(
