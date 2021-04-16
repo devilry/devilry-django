@@ -4,6 +4,7 @@ import os
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.test import TestCase
+from django.core import management
 from django.utils import timezone
 
 from model_mommy import mommy
@@ -15,25 +16,41 @@ from devilry.devilry_account.models import SubjectPermissionGroup, PeriodPermiss
 from devilry.devilry_comment.models import Comment, CommentFile
 from devilry.devilry_group.models import FeedbackSet, GroupComment
 from devilry.devilry_superadmin.delete_periods.period_delete import PeriodDelete
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 
 
 class TestPeriodDelete(TestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
     def tearDown(self):
         # Ignores errors if the path is not created.
         shutil.rmtree('devilry_testfiles/filestore/', ignore_errors=True)
 
+    def __run_management_command(self, iso_datetime_string, delete_empty_subjects=False):
+        management.call_command(
+            'devilry_delete_periods',
+            iso_datetime_string,
+            delete_empty_subjects=delete_empty_subjects,
+            skip_confirm_delete=True)
+
     def test_end_time_not_less_than(self):
-        mommy.make('core.Period', end_time=timezone.now() + timezone.timedelta(days=10))
-        PeriodDelete(end_time_older_than_datetime=timezone.now()).delete()
+        mommy.make('core.Period', end_time=timezone.now() - timezone.timedelta(days=5))
+
+        older_than_datetime = timezone.now() - timezone.timedelta(days=10)
+        with self.assertRaises(SystemExit):
+            self.__run_management_command(iso_datetime_string=older_than_datetime.isoformat())
+
         self.assertEqual(Period.objects.count(), 1)
 
     def test_only_deletes_periods_older_than_sanity(self):
-        testperiod1 = mommy.make('core.Period', end_time=timezone.now() + timezone.timedelta(days=1))
-        testperiod2 = mommy.make('core.Period', end_time=timezone.now() + timezone.timedelta(days=2))
-        testperiod3 = mommy.make('core.Period', end_time=timezone.now() - timezone.timedelta(days=1))
-        testperiod4 = mommy.make('core.Period', end_time=timezone.now() - timezone.timedelta(days=2))
+        testperiod1 = mommy.make('core.Period', end_time=timezone.now() - timezone.timedelta(days=1))
+        testperiod2 = mommy.make('core.Period', end_time=timezone.now() - timezone.timedelta(days=9))
+        testperiod3 = mommy.make('core.Period', end_time=timezone.now() - timezone.timedelta(days=11))
+        testperiod4 = mommy.make('core.Period', end_time=timezone.now() - timezone.timedelta(days=12))
 
-        PeriodDelete(end_time_older_than_datetime=timezone.now()).delete()
+        older_than_datetime = timezone.now() - timezone.timedelta(days=10)
+        self.__run_management_command(iso_datetime_string=older_than_datetime.isoformat())
 
         self.assertTrue(Period.objects.filter(id=testperiod1.id).exists())
         self.assertTrue(Period.objects.filter(id=testperiod2.id).exists())
@@ -52,7 +69,7 @@ class TestPeriodDelete(TestCase):
 
         to_delete_testfeedbackset = mommy.make(
             'devilry_group.FeedbackSet',
-            group__parentnode__parentnode__end_time=timezone.now())
+            group__parentnode__parentnode__end_time=timezone.now() - timezone.timedelta(days=10))
         to_delete_testcomment = mommy.make('devilry_group.GroupComment', feedback_set=to_delete_testfeedbackset)
         to_delete_commentfile = mommy.make('devilry_comment.CommentFile',
                                         comment=to_delete_testcomment, filename='testfile.txt')
@@ -62,44 +79,53 @@ class TestPeriodDelete(TestCase):
         self.assertTrue(os.path.exists(file_path))
         self.assertTrue(os.path.exists(to_delete_file_path))
 
-        PeriodDelete(end_time_older_than_datetime=timezone.now() + timezone.timedelta(days=10)).delete()
+        older_than_datetime = timezone.now() - timezone.timedelta(days=5)
+        self.__run_management_command(iso_datetime_string=older_than_datetime.isoformat())
 
         self.assertTrue(os.path.exists(file_path))
         self.assertFalse(os.path.exists(to_delete_file_path))
 
     def test_excludes_initially_empty_subjects(self):
         subject_without_period = mommy.make('core.Subject')
-        mommy.make('core.Period', end_time=timezone.now())
+        mommy.make('core.Period', end_time=timezone.now() - timezone.timedelta(days=10))
         self.assertEqual(Subject.objects.count(), 2)
         self.assertEqual(Period.objects.count(), 1)
-        PeriodDelete(end_time_older_than_datetime=timezone.now() + timezone.timedelta(days=10),
-                     delete_empty_subjects=True).delete()
+
+
+        older_than_datetime = timezone.now() - timezone.timedelta(days=5)
+        self.__run_management_command(iso_datetime_string=older_than_datetime.isoformat(), delete_empty_subjects=True)
+
         self.assertEqual(Subject.objects.get(), subject_without_period)
         self.assertEqual(Period.objects.count(), 0)
 
     def test_subject_not_deleted_if_not_all_periods_are_deleted(self):
         testsubject = mommy.make('core.Subject')
-        mommy.make('core.Period', parentnode=testsubject, end_time=timezone.now())
+        mommy.make('core.Period', parentnode=testsubject, end_time=timezone.now() - timezone.timedelta(days=10))
         period_not_deleted = mommy.make('core.Period', parentnode=testsubject,
                                         end_time=timezone.now() + timezone.timedelta(days=50))
         self.assertEqual(Subject.objects.count(), 1)
         self.assertEqual(Period.objects.count(), 2)
-        PeriodDelete(end_time_older_than_datetime=timezone.now() + timezone.timedelta(days=10)).delete()
+        
+        older_than_datetime = timezone.now() - timezone.timedelta(days=5)
+        self.__run_management_command(iso_datetime_string=older_than_datetime.isoformat())
+        
         self.assertEqual(Subject.objects.get(), testsubject)
         self.assertEqual(Period.objects.get(), period_not_deleted)
 
     def testsubject_deleted_if_all_periods_are_deleted(self):
         testsubject = mommy.make('core.Subject')
-        mommy.make('core.Period', parentnode=testsubject, end_time=timezone.now())
+        mommy.make('core.Period', parentnode=testsubject, end_time=timezone.now() - timezone.timedelta(days=10))
         self.assertEqual(Subject.objects.count(), 1)
         self.assertEqual(Period.objects.count(), 1)
-        PeriodDelete(end_time_older_than_datetime=timezone.now() + timezone.timedelta(days=10),
-                     delete_empty_subjects=True).delete()
+        
+        older_than_datetime = timezone.now() - timezone.timedelta(days=5)
+        self.__run_management_command(iso_datetime_string=older_than_datetime.isoformat(), delete_empty_subjects=True)
+        
         self.assertEqual(Subject.objects.count(), 0)
         self.assertEqual(Period.objects.count(), 0)
 
     def test_deletes_stored_file_for_comment(self):
-        testperiod = mommy.make('core.Period', end_time=timezone.now())
+        testperiod = mommy.make('core.Period', end_time=timezone.now() - timezone.timedelta(days=10))
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         testfeedbackset = mommy.make('devilry_group.FeedbackSet', group=testgroup)
@@ -108,11 +134,14 @@ class TestPeriodDelete(TestCase):
         commentfile.file.save('testfile.txt', ContentFile('testcontent'))
         file_path = commentfile.file.path
         self.assertTrue(os.path.exists(file_path))
-        PeriodDelete(end_time_older_than_datetime=timezone.now() + timezone.timedelta(days=10)).delete()
+        
+        older_than_datetime = timezone.now() - timezone.timedelta(days=5)
+        self.__run_management_command(iso_datetime_string=older_than_datetime.isoformat())
+        
         self.assertFalse(os.path.exists(file_path))
 
     def test_deletes_multiple_stored_files_for_comment(self):
-        testperiod = mommy.make('core.Period', end_time=timezone.now())
+        testperiod = mommy.make('core.Period', end_time=timezone.now() - timezone.timedelta(days=10))
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         testfeedbackset = mommy.make('devilry_group.FeedbackSet', group=testgroup)
@@ -125,7 +154,10 @@ class TestPeriodDelete(TestCase):
         file_path2 = commentfile2.file.path
         self.assertTrue(os.path.exists(file_path1))
         self.assertTrue(os.path.exists(file_path2))
-        PeriodDelete(end_time_older_than_datetime=timezone.now() + timezone.timedelta(days=10)).delete()
+        
+        older_than_datetime = timezone.now() - timezone.timedelta(days=5)
+        self.__run_management_command(iso_datetime_string=older_than_datetime.isoformat())
+        
         self.assertFalse(os.path.exists(file_path1))
         self.assertFalse(os.path.exists(file_path2))
         self.assertEqual(GroupComment.objects.count(), 0)
@@ -133,7 +165,7 @@ class TestPeriodDelete(TestCase):
         self.assertEqual(CommentFile.objects.count(), 0)
 
     def test_deletes_stored_files_for_multiple_comments(self):
-        testperiod = mommy.make('core.Period', end_time=timezone.now())
+        testperiod = mommy.make('core.Period', end_time=timezone.now() - timezone.timedelta(days=10))
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         testfeedbackset = mommy.make('devilry_group.FeedbackSet', group=testgroup)
@@ -147,7 +179,10 @@ class TestPeriodDelete(TestCase):
         file_path2 = commentfile2.file.path
         self.assertTrue(os.path.exists(file_path1))
         self.assertTrue(os.path.exists(file_path2))
-        PeriodDelete(end_time_older_than_datetime=timezone.now() + timezone.timedelta(days=10)).delete()
+        
+        older_than_datetime = timezone.now() - timezone.timedelta(days=5)
+        self.__run_management_command(iso_datetime_string=older_than_datetime.isoformat())
+        
         self.assertFalse(os.path.exists(file_path1))
         self.assertFalse(os.path.exists(file_path2))
         self.assertEqual(GroupComment.objects.count(), 0)
@@ -155,7 +190,7 @@ class TestPeriodDelete(TestCase):
         self.assertEqual(CommentFile.objects.count(), 0)
 
     def test_deletes_multiple_stored_files_for_multiple_comments(self):
-        testperiod = mommy.make('core.Period', end_time=timezone.now())
+        testperiod = mommy.make('core.Period', end_time=timezone.now() - timezone.timedelta(days=10))
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         testfeedbackset = mommy.make('devilry_group.FeedbackSet', group=testgroup)
@@ -181,7 +216,9 @@ class TestPeriodDelete(TestCase):
         self.assertTrue(os.path.exists(file_path2_1))
         self.assertTrue(os.path.exists(file_path2_2))
 
-        PeriodDelete(end_time_older_than_datetime=timezone.now() + timezone.timedelta(days=10)).delete()
+        older_than_datetime = timezone.now() - timezone.timedelta(days=5)
+        self.__run_management_command(iso_datetime_string=older_than_datetime.isoformat())
+
         self.assertFalse(os.path.exists(file_path1_1))
         self.assertFalse(os.path.exists(file_path1_2))
         self.assertFalse(os.path.exists(file_path2_1))
@@ -191,7 +228,7 @@ class TestPeriodDelete(TestCase):
         self.assertEqual(CommentFile.objects.count(), 0)
 
     def test_candidates_and_related_students_are_deleted(self):
-        testperiod = mommy.make('core.Period', end_time=timezone.now())
+        testperiod = mommy.make('core.Period', end_time=timezone.now() - timezone.timedelta(days=10))
         mommy.make('core.PeriodTag', period=testperiod)
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
@@ -200,12 +237,15 @@ class TestPeriodDelete(TestCase):
 
         self.assertEqual(RelatedStudent.objects.count(), 1)
         self.assertEqual(Candidate.objects.count(), 1)
-        PeriodDelete(end_time_older_than_datetime=timezone.now() + timezone.timedelta(days=10)).delete()
+        
+        older_than_datetime = timezone.now() - timezone.timedelta(days=5)
+        self.__run_management_command(iso_datetime_string=older_than_datetime.isoformat())
+        
         self.assertEqual(RelatedStudent.objects.count(), 0)
         self.assertEqual(Candidate.objects.count(), 0)
 
     def test_examiners_and_related_examiners_are_deleted(self):
-        testperiod = mommy.make('core.Period', end_time=timezone.now())
+        testperiod = mommy.make('core.Period', end_time=timezone.now() - timezone.timedelta(days=10))
         mommy.make('core.PeriodTag', period=testperiod)
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
@@ -214,29 +254,37 @@ class TestPeriodDelete(TestCase):
 
         self.assertEqual(RelatedExaminer.objects.count(), 1)
         self.assertEqual(Examiner.objects.count(), 1)
-        PeriodDelete(end_time_older_than_datetime=timezone.now() + timezone.timedelta(days=10)).delete()
+        
+        older_than_datetime = timezone.now() - timezone.timedelta(days=5)
+        self.__run_management_command(iso_datetime_string=older_than_datetime.isoformat())
+        
         self.assertEqual(RelatedExaminer.objects.count(), 0)
         self.assertEqual(Examiner.objects.count(), 0)
 
     def test_assignment_groups_are_deleted(self):
-        testperiod = mommy.make('core.Period', end_time=timezone.now())
+        testperiod = mommy.make('core.Period', end_time=timezone.now() - timezone.timedelta(days=10))
         mommy.make('core.PeriodTag', period=testperiod)
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
         mommy.make('core.AssignmentGroup', parentnode=testassignment)
-
         self.assertEqual(AssignmentGroup.objects.count(), 1)
-        PeriodDelete(end_time_older_than_datetime=timezone.now() + timezone.timedelta(days=10)).delete()
+        
+        older_than_datetime = timezone.now() - timezone.timedelta(days=5)
+        self.__run_management_command(iso_datetime_string=older_than_datetime.isoformat())
+
         self.assertEqual(AssignmentGroup.objects.count(), 0)
 
     def test_feedbacksets_are_deleted(self):
-        testperiod = mommy.make('core.Period', end_time=timezone.now())
+        testperiod = mommy.make('core.Period', end_time=timezone.now() - timezone.timedelta(days=10))
         mommy.make('core.PeriodTag', period=testperiod)
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         mommy.make('devilry_group.FeedbackSet', group=testgroup)
 
-        self.assertEqual(FeedbackSet.objects.count(), 1)
-        PeriodDelete(end_time_older_than_datetime=timezone.now() + timezone.timedelta(days=10)).delete()
+        self.assertEqual(FeedbackSet.objects.count(), 2)
+
+        older_than_datetime = timezone.now() - timezone.timedelta(days=5)
+        self.__run_management_command(iso_datetime_string=older_than_datetime.isoformat())
+
         self.assertEqual(FeedbackSet.objects.count(), 0)
 
     def test_sanity_delete_cascade(self):
@@ -246,7 +294,7 @@ class TestPeriodDelete(TestCase):
                    user=mommy.make(settings.AUTH_USER_MODEL),
                    permissiongroup=subjectpermissiongroup.permissiongroup)
 
-        testperiod = mommy.make('core.Period', parentnode=testsubject, end_time=timezone.now())
+        testperiod = mommy.make('core.Period', parentnode=testsubject, end_time=timezone.now() - timezone.timedelta(days=10))
         periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup', period=testperiod)
         mommy.make('devilry_account.PermissionGroupUser',
                    user=mommy.make(settings.AUTH_USER_MODEL),
@@ -273,12 +321,12 @@ class TestPeriodDelete(TestCase):
         self.assertEqual(AssignmentGroup.objects.count(), 1)
         self.assertEqual(Examiner.objects.count(), 1)
         self.assertEqual(Candidate.objects.count(), 1)
-        self.assertEqual(FeedbackSet.objects.count(), 1)
+        self.assertEqual(FeedbackSet.objects.count(), 2)
         self.assertEqual(GroupComment.objects.count(), 1)
         self.assertEqual(Comment.objects.count(), 1)
 
-        PeriodDelete(end_time_older_than_datetime=timezone.now() + timezone.timedelta(days=10),
-                     delete_empty_subjects=True).delete()
+        older_than_datetime = timezone.now() - timezone.timedelta(days=5)
+        self.__run_management_command(iso_datetime_string=older_than_datetime.isoformat(), delete_empty_subjects=True)
 
         self.assertEqual(Subject.objects.count(), 0)
         self.assertEqual(SubjectPermissionGroup.objects.count(), 0)
