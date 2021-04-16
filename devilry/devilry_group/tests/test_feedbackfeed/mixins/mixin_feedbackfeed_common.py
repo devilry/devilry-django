@@ -14,7 +14,7 @@ from devilry.devilry_group import models
 from devilry.devilry_group import models as group_models
 
 
-class TestFeedbackFeedHeaderMixin(cradmin_testhelpers.TestCaseMixin):
+class MixinTestFeedbackFeedHeader(cradmin_testhelpers.TestCaseMixin):
     """
     Tests the header of the feedbackfeed and elements that should be rendered inside it.
     """
@@ -60,7 +60,7 @@ def _get_mock_cradmin_instance():
     return mockrequest.cradmin_instance
 
 
-class TestFeedbackFeedGroupCommentMixin(cradmin_testhelpers.TestCaseMixin):
+class MixinTestFeedbackFeedGroupComment(cradmin_testhelpers.TestCaseMixin):
     """
     Tests the rendering of GroupComment in a feedbackfeed.
     """
@@ -205,7 +205,7 @@ class TestFeedbackFeedGroupCommentMixin(cradmin_testhelpers.TestCaseMixin):
         self.assertEqual('(admin)', mockresponse.selector.one('.comment-created-by-role-text').alltext_normalized)
 
 
-class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin, TestFeedbackFeedGroupCommentMixin):
+class MixinTestFeedbackFeed(MixinTestFeedbackFeedHeader, MixinTestFeedbackFeedGroupComment):
     """
     Mixin testclass for all feedbackfeed tests.
 

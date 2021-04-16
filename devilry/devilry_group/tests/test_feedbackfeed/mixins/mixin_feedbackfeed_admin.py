@@ -15,10 +15,10 @@ from devilry.devilry_account.models import PeriodPermissionGroup
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.cradmin_instances import crinstance_admin
-from devilry.devilry_group.tests.test_feedbackfeed.mixins import test_feedbackfeed_common
+from devilry.devilry_group.tests.test_feedbackfeed.mixins import mixin_feedbackfeed_common
 
 
-class TestFeedbackfeedAdminMixin(test_feedbackfeed_common.TestFeedbackFeedMixin):
+class MixinTestFeedbackfeedAdmin(mixin_feedbackfeed_common.MixinTestFeedbackFeed):
     """
     Mixin testclass for admin feedbackfeed tests.
 

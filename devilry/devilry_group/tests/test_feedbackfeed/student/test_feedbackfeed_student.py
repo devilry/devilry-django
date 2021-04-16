@@ -16,13 +16,13 @@ from devilry.devilry_compressionutil.models import CompressedArchiveMeta
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group import models as group_models
-from devilry.devilry_group.tests.test_feedbackfeed.mixins import test_feedbackfeed_common
+from devilry.devilry_group.tests.test_feedbackfeed.mixins import mixin_feedbackfeed_common
 from devilry.devilry_group.views.student import feedbackfeed_student
 from devilry.devilry_compressionutil import backend_registry
 from devilry.devilry_compressionutil.backends import backend_mock
 
 
-class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFeedMixin):
+class TestFeedbackfeedStudent(TestCase, mixin_feedbackfeed_common.MixinTestFeedbackFeed):
     """
     General testing of what gets rendered to student view.
     """

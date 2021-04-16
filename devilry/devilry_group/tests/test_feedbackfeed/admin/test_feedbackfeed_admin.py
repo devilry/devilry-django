@@ -18,13 +18,13 @@ from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.apps.core import models as core_models
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group import models as group_models
-from devilry.devilry_group.tests.test_feedbackfeed.mixins.test_feedbackfeed_admin import TestFeedbackfeedAdminMixin
+from devilry.devilry_group.tests.test_feedbackfeed.mixins import mixin_feedbackfeed_admin
 from devilry.devilry_group.views.admin import feedbackfeed_admin
 from devilry.devilry_comment import models as comment_models
 from devilry.devilry_group.views import group_comment_edit_base
 
 
-class TestFeedbackfeedAdminDiscussPublicView(TestCase, TestFeedbackfeedAdminMixin):
+class TestFeedbackfeedAdminDiscussPublicView(TestCase, mixin_feedbackfeed_admin.MixinTestFeedbackfeedAdmin):
     viewclass = feedbackfeed_admin.AdminPublicDiscussView
 
     def setUp(self):
@@ -301,7 +301,7 @@ class TestFeedbackfeedAdminDiscussPublicView(TestCase, TestFeedbackfeedAdminMixi
         self.assertEqual('Test comment', group_comments[0].text)
 
 
-class TestFeedbackfeedAdminWithExaminersDiscussView(TestCase, TestFeedbackfeedAdminMixin):
+class TestFeedbackfeedAdminWithExaminersDiscussView(TestCase, mixin_feedbackfeed_admin.MixinTestFeedbackfeedAdmin):
     viewclass = feedbackfeed_admin.AdminWithExaminersDiscussView
 
     def setUp(self):

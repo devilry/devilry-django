@@ -15,11 +15,11 @@ from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group import models as group_models
 from devilry.apps.core import models as core_models
-from devilry.devilry_group.tests.test_feedbackfeed.mixins import test_feedbackfeed_examiner
+from devilry.devilry_group.tests.test_feedbackfeed.mixins import mixin_feedbackfeed_examiner
 from devilry.devilry_group.views.examiner import feedbackfeed_examiner
 
 
-class TestFeedbackfeedExaminerDiscussMixin(test_feedbackfeed_examiner.TestFeedbackfeedExaminerMixin):
+class MixinTestFeedbackfeedExaminerDiscuss(mixin_feedbackfeed_examiner.MixinTestFeedbackfeedExaminer):
 
     def test_get_examiner_first_attempt_feedback_tab_does_not_exist_if_last_feedbackset_is_published(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -235,7 +235,7 @@ class TestFeedbackfeedExaminerDiscussMixin(test_feedbackfeed_examiner.TestFeedba
         self.assertIn('The grade was changed from failed (0/1) to passed (1/1) by Test User(test@example.com)', event_text_list[3])
 
 
-class TestFeedbackfeedExaminerPublicDiscuss(TestCase, TestFeedbackfeedExaminerDiscussMixin):
+class TestFeedbackfeedExaminerPublicDiscuss(TestCase, MixinTestFeedbackfeedExaminerDiscuss):
     viewclass = feedbackfeed_examiner.ExaminerPublicDiscussView
 
     def setUp(self):
@@ -400,7 +400,7 @@ class TestFeedbackfeedExaminerPublicDiscuss(TestCase, TestFeedbackfeedExaminerDi
         self.assertEqual('This is a comment', posted_comment.text)
 
 
-class TestFeedbackfeedExaminerWithAdminDiscuss(TestCase, TestFeedbackfeedExaminerDiscussMixin):
+class TestFeedbackfeedExaminerWithAdminDiscuss(TestCase, MixinTestFeedbackfeedExaminerDiscuss):
     viewclass = feedbackfeed_examiner.ExaminerWithAdminsDiscussView
 
     def setUp(self):
@@ -566,7 +566,7 @@ class TestFeedbackfeedExaminerWithAdminDiscuss(TestCase, TestFeedbackfeedExamine
 
 
 class TestFeedbackfeedPublicDiscussFileUploadExaminer(TestCase,
-                                                      test_feedbackfeed_examiner.TestFeedbackfeedExaminerMixin):
+                                                      mixin_feedbackfeed_examiner.MixinTestFeedbackfeedExaminer):
     viewclass = feedbackfeed_examiner.ExaminerPublicDiscussView
 
     def setUp(self):
@@ -752,7 +752,7 @@ class TestFeedbackfeedPublicDiscussFileUploadExaminer(TestCase,
 
 
 class TestFeedbackfeedExaminerWithAdminDiscussFileUpload(TestCase,
-                                                         test_feedbackfeed_examiner.TestFeedbackfeedExaminerMixin):
+                                                         mixin_feedbackfeed_examiner.MixinTestFeedbackfeedExaminer):
     viewclass = feedbackfeed_examiner.ExaminerWithAdminsDiscussView
 
     def setUp(self):

@@ -9,10 +9,10 @@ from devilry.apps.core import models as core_models
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.models import GroupComment
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
-from devilry.devilry_group.tests.test_feedbackfeed.mixins import test_feedbackfeed_common
+from devilry.devilry_group.tests.test_feedbackfeed.mixins import mixin_feedbackfeed_common
 
 
-class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMixin):
+class MixinTestFeedbackfeedExaminer(mixin_feedbackfeed_common.MixinTestFeedbackFeed):
     """
     Mixin testclass for examiner feedbackfeed tests.
 
