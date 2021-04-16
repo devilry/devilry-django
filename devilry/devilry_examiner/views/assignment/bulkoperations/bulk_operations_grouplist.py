@@ -146,8 +146,12 @@ class AbstractAssignmentGroupMultiSelectListFilterView(multiselect2view.Listbuil
                 'relatedstudent__user__fullname',
             )\
             .order_by(
-                Lower(Concat('relatedstudent__user__fullname',
-                             'relatedstudent__user__shortname')))
+                Lower(
+                    Concat(
+                        'relatedstudent__user__fullname',
+                        'relatedstudent__user__shortname',
+                        output_field=models.CharField()
+                    )))
 
     def get_examiner_queryset(self):
         return core_models.Examiner.objects\
@@ -160,8 +164,12 @@ class AbstractAssignmentGroupMultiSelectListFilterView(multiselect2view.Listbuil
                 'relatedexaminer__user__fullname',
             )\
             .order_by(
-                Lower(Concat('relatedexaminer__user__fullname',
-                             'relatedexaminer__user__shortname')))
+                Lower(
+                    Concat(
+                        'relatedexaminer__user__fullname',
+                        'relatedexaminer__user__shortname',
+                        output_field=models.CharField()
+                    )))
 
     def get_annotations_for_queryset(self, queryset):
         """

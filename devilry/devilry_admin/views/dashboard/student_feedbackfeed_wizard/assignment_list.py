@@ -134,8 +134,11 @@ class StudentAssignmentGroupListView(listbuilderview.FilterListMixin, listbuilde
                 'relatedstudent__user__fullname',
             ) \
             .order_by(
-            Lower(Concat('relatedstudent__user__fullname',
-                         'relatedstudent__user__shortname')))
+            Lower(
+                Concat(
+                    'relatedstudent__user__fullname',
+                    'relatedstudent__user__shortname',
+                    output_field=models.CharField())))
         examinerqueryset = core_models.Examiner.objects \
             .select_related('relatedexaminer__user') \
             .only(
@@ -147,8 +150,11 @@ class StudentAssignmentGroupListView(listbuilderview.FilterListMixin, listbuilde
                 'relatedexaminer__user__fullname',
             ) \
             .order_by(
-            Lower(Concat('relatedexaminer__user__fullname',
-                         'relatedexaminer__user__shortname')))
+            Lower(
+                Concat(
+                    'relatedexaminer__user__fullname',
+                    'relatedexaminer__user__shortname',
+                    output_field=models.CharField())))
         candidates_ids_for_user = candidatequeryset.filter(
             relatedstudent__user_id=self.user_id)\
             .values_list('assignment_group_id', flat=True)

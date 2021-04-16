@@ -117,8 +117,12 @@ class SimpleGroupBulkFeedbackView(listbuilderview.View):
                 'relatedstudent__user__fullname'
             )\
             .order_by(
-                Lower(Concat('relatedstudent__user__fullname',
-                             'relatedstudent__user__shortname')))
+                Lower(
+                    Concat(
+                        'relatedstudent__user__fullname',
+                        'relatedstudent__user__shortname',
+                        output_field=models.CharField()
+                    )))
 
     def get_queryset_for_role(self, role):
         return core_models.AssignmentGroup.objects\

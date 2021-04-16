@@ -1,3 +1,4 @@
+from django.db import models
 from django.db.models.functions import Lower, Concat
 from django.utils.translation import gettext_lazy, pgettext_lazy
 from cradmin_legacy.viewhelpers import listfilter
@@ -14,15 +15,23 @@ class OrderBy(listfilter.django.single.select.AbstractOrderBy):
         return [
             ('name_ascending', {
                 'label': gettext_lazy('Name'),
-                'order_by': [Lower(Concat('parentnode__parentnode__short_name',
-                                          'parentnode__short_name',
-                                          'long_name'))],
+                'order_by': [Lower(
+                    Concat(
+                        'parentnode__parentnode__short_name',
+                        'parentnode__short_name',
+                        'long_name',
+                        output_field=models.CharField()
+                    ))],
             }),
             ('name_descending', {
                 'label': gettext_lazy('Name (descending)'),
-                'order_by': [Lower(Concat('parentnode__parentnode__short_name',
-                                          'parentnode__short_name',
-                                          'long_name')).desc()],
+                'order_by': [Lower(
+                    Concat(
+                        'parentnode__parentnode__short_name',
+                        'parentnode__short_name',
+                        'long_name',
+                        output_field=models.CharField()
+                    )).desc()],
             }),
         ]
 
@@ -52,14 +61,22 @@ class OrderByFullPath(OrderBy):
         return [
             ('name_ascending', {
                 'label': gettext_lazy('Name'),
-                'order_by': [Lower(Concat('parentnode__parentnode__short_name',
-                                          'parentnode__short_name',
-                                          'long_name'))],
+                'order_by': [Lower(
+                    Concat(
+                        'parentnode__parentnode__short_name',
+                        'parentnode__short_name',
+                        'long_name',
+                        output_field=models.CharField()
+                    ))],
             }),
             ('name_descending', {
                 'label': gettext_lazy('Name (descending)'),
-                'order_by': [Lower(Concat('parentnode__parentnode__short_name',
-                                          'parentnode__short_name',
-                                          'long_name')).desc()],
+                'order_by': [Lower(
+                    Concat(
+                        'parentnode__parentnode__short_name',
+                        'parentnode__short_name',
+                        'long_name',
+                        output_field=models.CharField()
+                    )).desc()],
             }),
         ]

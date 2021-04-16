@@ -46,8 +46,12 @@ class DevilryGroupCrInstanceMixin(object):
         return Candidate.objects \
             .select_related('relatedstudent') \
             .order_by(
-                Lower(Concat('relatedstudent__user__fullname',
-                             'relatedstudent__user__shortname')))
+                Lower(
+                    Concat(
+                        'relatedstudent__user__fullname',
+                        'relatedstudent__user__shortname',
+                        output_field=models.CharField()
+                    )))
 
     def _get_examinerqueryset(self):
         """Get examiners.
@@ -58,8 +62,12 @@ class DevilryGroupCrInstanceMixin(object):
         return Examiner.objects \
             .select_related('relatedexaminer') \
             .order_by(
-                Lower(Concat('relatedexaminer__user__fullname',
-                             'relatedexaminer__user__shortname')))
+                Lower(
+                    Concat(
+                        'relatedexaminer__user__fullname',
+                        'relatedexaminer__user__shortname',
+                        output_field=models.CharField()
+                    )))
 
     def _get_assignment_group_cacheddata_queryset(self):
         return AssignmentGroupCachedData.objects\

@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.db import models
 from django.db.models.functions import Lower, Concat
 from django.utils.translation import gettext_lazy, pgettext_lazy
 from cradmin_legacy.viewhelpers import listfilter
@@ -21,11 +22,13 @@ class OrderRelatedStudentsFilter(listfilter.django.single.select.AbstractOrderBy
         return [
             ('', {
                 'label': gettext_lazy('Name'),
-                'order_by': [Lower(Concat('user__fullname', 'user__shortname'))],
+                'order_by': [Lower(Concat(
+                    'user__fullname', 'user__shortname', output_field=models.CharField()))],
             }),
             ('name_descending', {
                 'label': gettext_lazy('Name descending'),
-                'order_by': [Lower(Concat('user__fullname', 'user__shortname')).desc()],
+                'order_by': [Lower(Concat(
+                    'user__fullname', 'user__shortname', output_field=models.CharField())).desc()],
             }),
             ('lastname_ascending', {
                 'label': gettext_lazy('Last name'),

@@ -95,8 +95,12 @@ class GroupListView(listbuilderview.FilterListMixin,
                 'relatedstudent__user__fullname',
             )\
             .order_by(
-                Lower(Concat('relatedstudent__user__fullname',
-                             'relatedstudent__user__shortname')))
+                Lower(
+                    Concat(
+                        'relatedstudent__user__fullname',
+                        'relatedstudent__user__shortname',
+                        output_field=models.CharField()
+                    )))
         examinerqueryset = Examiner.objects\
             .select_related('relatedexaminer__user')\
             .only(
@@ -107,8 +111,12 @@ class GroupListView(listbuilderview.FilterListMixin,
                 'relatedexaminer__user__fullname',
             )\
             .order_by(
-                Lower(Concat('relatedexaminer__user__fullname',
-                             'relatedexaminer__user__shortname')))
+                Lower(
+                    Concat(
+                        'relatedexaminer__user__fullname',
+                        'relatedexaminer__user__shortname',
+                        output_field=models.CharField()
+                    )))
         queryset = coremodels.AssignmentGroup.objects\
             .filter_examiner_has_access(user=self.request.user)\
             .filter(parentnode=assignment)\
@@ -191,7 +199,13 @@ class GroupListView(listbuilderview.FilterListMixin,
         return RelatedExaminer.objects\
             .filter(id__in=self.__get_distinct_relatedexaminer_ids())\
             .select_related('user')\
-            .order_by(Lower(Concat('user__fullname', 'user__shortname')))
+            .order_by(
+                Lower(
+                    Concat(
+                        'user__fullname',
+                        'user__shortname',
+                        output_field=models.CharField()
+                    )))
 
     def get_context_data(self, **kwargs):
         context = super(GroupListView, self).get_context_data(**kwargs)

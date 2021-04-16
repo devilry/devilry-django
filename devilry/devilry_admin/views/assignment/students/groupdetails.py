@@ -24,13 +24,19 @@ class GroupDetailsView(detail.DetailView):
         candidatequeryset = Candidate.objects\
             .select_related('relatedstudent__user')\
             .order_by(
-                Lower(Concat('relatedstudent__user__fullname',
-                             'relatedstudent__user__shortname')))
+                Lower(
+                    Concat(
+                        'relatedstudent__user__fullname',
+                        'relatedstudent__user__shortname',
+                        output_field=models.CharField())))
         examinerqueryset = Examiner.objects\
             .select_related('relatedexaminer__user')\
             .order_by(
-                Lower(Concat('relatedexaminer__user__fullname',
-                             'relatedexaminer__user__shortname')))
+                Lower(
+                    Concat(
+                        'relatedexaminer__user__fullname',
+                        'relatedexaminer__user__shortname',
+                        output_field=models.CharField())))
         return AssignmentGroup.objects\
             .filter(parentnode=assignment)\
             .prefetch_related(
