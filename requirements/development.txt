@@ -25,3 +25,9 @@ pyflakes==0.8.1
 
 mock==3.0.5
 Fabric3==1.14.post1
+
+# Pytest
+pytest==5.3.5
+pytest-django==3.8.0
+pytest-env==0.6.2
+

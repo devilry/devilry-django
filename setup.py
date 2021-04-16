@@ -60,6 +60,7 @@ setup(
         'requests==2.19.1',
         'requests-oauthlib==0.8.0',
         'urllib3==1.22',
-        'pycountry==17.9.23'
+        'pycountry==17.9.23',
+        'six==1.15.0'
     ]
 )
