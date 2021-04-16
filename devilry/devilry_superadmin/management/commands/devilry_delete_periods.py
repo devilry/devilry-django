@@ -35,6 +35,13 @@ class Command(BaseCommand):
             default=False,
             help='If all semesters within a subject are deleted, delete the subject as well.'
         )
+        parser.add_argument(
+            '--skip-confirm-delete',
+            dest='skip_confirm_delete',
+            action='store_true',
+            default=False,
+            help='Skips confirm delete. This is mostly here for the automated tests. In most cases you DO NOT want to skip the confirm message, which will give you summary before the delete operation.'
+        )
 
     def __confirm_delete(self):
         confirm_string = 'DELETE SEMESTERS'
@@ -55,6 +62,7 @@ class Command(BaseCommand):
         delete_older_than_datetime = datetimeutils.from_isoformat(
             options['datetime']).replace(second=0, microsecond=0)
         delete_empty_subjects = options['delete_empty_subjects']
+        skip_confirm_delete = options['skip_confirm_delete']
 
         now = timezone.now()
         if delete_older_than_datetime >= now:
@@ -74,9 +82,9 @@ class Command(BaseCommand):
             raise SystemExit()
 
         self.stdout.write('###########################################################\n'
-                          '# Delete all semesters that ended before: {}\n'
-                          '# Delete subjects if all semester are deleted: {}'
-                          '\n###########################################################'.format(
+                        '# Delete all semesters that ended before: {}\n'
+                        '# Delete subjects if all semester are deleted: {}'
+                        '\n###########################################################'.format(
             arrow.get(delete_older_than_datetime).format('MMM D. YYYY HH:mm'),
             'YES' if delete_empty_subjects else 'NO'
         ))
@@ -95,7 +103,8 @@ class Command(BaseCommand):
         self.stdout.write('\n')
 
         # User must confirm the deletion.
-        self.__confirm_delete()
+        if not skip_confirm_delete:
+            self.__confirm_delete()
 
         # Start deletion
         with transaction.atomic():
