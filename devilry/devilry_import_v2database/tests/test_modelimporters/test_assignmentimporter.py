@@ -1,3 +1,5 @@
+import unittest
+
 from django import test
 from django.contrib.contenttypes.models import ContentType
 from model_mommy import mommy
@@ -8,6 +10,7 @@ from devilry.devilry_import_v2database.models import ImportedModel
 from .importer_testcase_mixin import ImporterTestCaseMixin
 
 
+@unittest.skip('Not relevant anymore, keep for history.')
 class TestAssignmentImporter(ImporterTestCaseMixin, test.TestCase):
     def _create_model_meta(self):
         return {

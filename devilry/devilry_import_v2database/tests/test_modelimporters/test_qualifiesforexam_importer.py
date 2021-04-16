@@ -1,3 +1,5 @@
+import unittest
+
 from django import test
 from django.conf import settings
 from django.utils import timezone
@@ -15,6 +17,7 @@ from devilry.devilry_qualifiesforexam_plugin_students.plugin import StudentSelec
 from devilry.devilry_qualifiesforexam_plugin_points.plugin import PointsPlugin
 
 
+@unittest.skip('Not relevant anymore, keep for history.')
 class TestStatusImporter(ImporterTestCaseMixin, test.TestCase):
     def _create_model_meta(self, max_id):
         return {
@@ -181,6 +184,7 @@ class TestStatusImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(status_with_auto_id.id, max_id+1)
 
 
+@unittest.skip('Not relevant anymore, keep for history.')
 class TestQualifiesForFinalExamImporter(ImporterTestCaseMixin, test.TestCase):
     def _create_model_meta(self, max_id):
         return {

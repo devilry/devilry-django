@@ -1,3 +1,5 @@
+import unittest
+
 from django import test
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
@@ -12,6 +14,7 @@ from devilry.utils import datetimeutils
 from .importer_testcase_mixin import ImporterTestCaseMixin
 
 
+@unittest.skip('Not relevant anymore, keep for history.')
 class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
     def _create_model_meta(self):
         return {

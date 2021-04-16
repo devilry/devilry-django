@@ -1,3 +1,5 @@
+import unittest
+
 from django.contrib.contenttypes.models import ContentType
 
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
@@ -14,6 +16,7 @@ from devilry.devilry_import_v2database.modelimporters.assignmentgroup_importer i
 from .importer_testcase_mixin import ImporterTestCaseMixin
 
 
+@unittest.skip('Not relevant anymore, keep for history.')
 class TestAssignmentGroupImporter(ImporterTestCaseMixin, test.TestCase):
     def _create_model_meta(self):
         return {

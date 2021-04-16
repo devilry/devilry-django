@@ -1,3 +1,5 @@
+import unittest
+
 from django import test
 from django.contrib.auth import get_user_model
 from django.conf import settings
@@ -11,6 +13,7 @@ from devilry.devilry_import_v2database.modelimporters.user_importer import UserI
 from devilry.devilry_account.models import UserEmail, UserName
 
 
+@unittest.skip('Not relevant anymore, keep for history.')
 class TestUserImporter(ImporterTestCaseMixin, test.TestCase):
 
     def _create_model_meta(self):

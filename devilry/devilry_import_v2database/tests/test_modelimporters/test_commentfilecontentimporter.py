@@ -1,6 +1,7 @@
 import os
 import shutil
 import tempfile
+import unittest
 
 from django import test
 from django.conf import settings
@@ -12,6 +13,7 @@ from devilry.devilry_import_v2database.modelimporters.delivery_feedback_importer
 from .importer_testcase_mixin import ImporterTestCaseMixin
 
 
+@unittest.skip('Not relevant anymore, keep for history.')
 class TestCommentFileContentImporter(ImporterTestCaseMixin, test.TestCase):
     def setUp(self):
         self.v2_delivery_root_temp_dir = tempfile.mkdtemp()

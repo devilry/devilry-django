@@ -1,3 +1,5 @@
+import unittest
+
 from django.contrib.contenttypes.models import ContentType
 
 from devilry.devilry_import_v2database.models import ImportedModel
@@ -12,6 +14,7 @@ from devilry.devilry_import_v2database.modelimporters.relateduser_importer impor
 from .importer_testcase_mixin import ImporterTestCaseMixin
 
 
+@unittest.skip('Not relevant anymore, keep for history.')
 class TestRelatedStudentImporter(ImporterTestCaseMixin, test.TestCase):
     def _create_model_meta(self):
         return {

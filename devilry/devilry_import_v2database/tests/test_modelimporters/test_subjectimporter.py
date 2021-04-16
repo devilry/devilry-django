@@ -1,3 +1,5 @@
+import unittest
+
 from django.contrib.contenttypes.models import ContentType
 
 from devilry.devilry_account.models import PermissionGroup, SubjectPermissionGroup
@@ -13,6 +15,7 @@ from devilry.devilry_import_v2database.modelimporters.subject_importer import Su
 from .importer_testcase_mixin import ImporterTestCaseMixin
 
 
+@unittest.skip('Not relevant anymore, keep for history.')
 class TestSubjectImporter(ImporterTestCaseMixin, test.TestCase):
     def _create_model_meta(self):
         return {

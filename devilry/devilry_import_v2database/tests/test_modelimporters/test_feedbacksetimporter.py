@@ -1,3 +1,5 @@
+import unittest
+
 from django import test
 from django.utils import timezone
 from model_mommy import mommy
@@ -7,6 +9,7 @@ from devilry.devilry_import_v2database.modelimporters.feedbackset_importer impor
 from .importer_testcase_mixin import ImporterTestCaseMixin
 
 
+@unittest.skip('Not relevant anymore, keep for history.')
 class TestFeedbackSetImporter(ImporterTestCaseMixin, test.TestCase):
     def _create_model_meta(self):
         return {

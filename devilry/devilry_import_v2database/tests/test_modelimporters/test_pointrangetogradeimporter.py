@@ -1,3 +1,5 @@
+import unittest
+
 from django import test
 from model_mommy import mommy
 
@@ -6,6 +8,7 @@ from devilry.devilry_import_v2database.modelimporters.pointrange_to_grade_import
 from .importer_testcase_mixin import ImporterTestCaseMixin
 
 
+@unittest.skip('Not relevant anymore, keep for history.')
 class TestPointRangeToGradeMapImporter(ImporterTestCaseMixin, test.TestCase):
     def _create_model_meta(self):
         return {

@@ -1,5 +1,6 @@
 import os
 import tempfile
+import unittest
 
 import shutil
 from django import test
@@ -15,6 +16,7 @@ from devilry.devilry_import_v2database.modelimporters.delivery_feedback_importer
 from .importer_testcase_mixin import ImporterTestCaseMixin
 
 
+@unittest.skip('Not relevant anymore, keep for history.')
 class TestStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
     def setUp(self):
         self.v2_media_root_temp_dir = tempfile.mkdtemp()
@@ -295,6 +297,7 @@ class TestStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
             self.assertEqual(comment_file.mimetype, 'text/x-python')
 
 
+@unittest.skip('Not relevant anymore, keep for history.')
 class TestDeliveryAndStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
     """
     Tests to make sure StaticFeedbacks are created with an auto incremented sequence number that should

@@ -1,3 +1,5 @@
+import unittest
+
 from devilry.devilry_account.models import PermissionGroup, SubjectPermissionGroup
 from devilry.devilry_import_v2database.models import ImportedModel
 from django import test
@@ -11,6 +13,7 @@ from devilry.devilry_import_v2database.modelimporters.node_importer import NodeI
 from .importer_testcase_mixin import ImporterTestCaseMixin
 
 
+@unittest.skip('Not relevant anymore, keep for history.')
 class TestNodeImporter(ImporterTestCaseMixin, test.TestCase):
     def _create_node_dict(self, test_subject_ids=None, test_admin_user_ids=None):
         return {

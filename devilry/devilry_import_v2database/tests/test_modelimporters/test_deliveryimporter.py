@@ -1,3 +1,5 @@
+import unittest
+
 from django import test
 from django.conf import settings
 
@@ -8,6 +10,7 @@ from devilry.devilry_import_v2database.modelimporters.delivery_feedback_importer
 from .importer_testcase_mixin import ImporterTestCaseMixin
 
 
+@unittest.skip('Not relevant anymore, keep for history.')
 class TestDeliveryImporterImporter(ImporterTestCaseMixin, test.TestCase):
     def _create_model_meta(self):
         return {

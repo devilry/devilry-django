@@ -1,3 +1,4 @@
+import unittest
 from django import test
 
 from django.conf import settings
@@ -9,6 +10,7 @@ from dateutil.parser import parse
 from devilry.devilry_import_v2database.scripts import user_add_missing_data_from_json
 
 
+@unittest.skip('Not relevant anymore, keep for history.')
 class TestScript(test.TestCase):
     def __make_v2_user_json_data(self, pk, username, last_login):
         return {
