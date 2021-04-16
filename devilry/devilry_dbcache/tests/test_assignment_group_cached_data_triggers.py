@@ -208,7 +208,7 @@ class TestAssignmentGroupCachedDataCandidateCount(test.TestCase):
         group = mommy.make('core.AssignmentGroup')
         core_mommy.candidate(group=group)
         core_mommy.examiner(group=group)
-        with self.assertNumQueries(25):
+        with self.assertNumQueries(23):
             group.delete()
 
     def test_candidate_count_when_candidate_moved(self):
@@ -1536,5 +1536,5 @@ class TestAssignmentGroupDelete(test.TestCase):
         group_mommy.feedbackset_first_attempt_published(group=testgroup)
         group_mommy.feedbackset_new_attempt_published(group=testgroup)
         group_mommy.feedbackset_new_attempt_unpublished(group=testgroup)
-        with self.assertNumQueries(25):
+        with self.assertNumQueries(23):
             testgroup.delete()
