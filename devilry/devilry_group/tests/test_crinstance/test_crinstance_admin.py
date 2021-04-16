@@ -3,11 +3,15 @@ from django import test
 from django.conf import settings
 from model_mommy import mommy
 
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_account import models as account_models
 from devilry.devilry_group.cradmin_instances import crinstance_admin
 
 
 class TestCrinstanceAdmin(test.TestCase):
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_get_rolequeryset_not_admin(self):
         mommy.make('core.AssignmentGroup', parentnode=mommy.make('core.Assignment'))

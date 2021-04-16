@@ -3,10 +3,14 @@ from django import test
 from django.conf import settings
 from model_mommy import mommy
 
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group.cradmin_instances import crinstance_examiner
+from devilry.devilry_group.models import FeedbackSet
 
 
 class TestCrinstanceExaminer(test.TestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_get_titletext_for_role(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -64,11 +68,10 @@ class TestCrinstanceExaminer(test.TestCase):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup = mommy.make('core.AssignmentGroup',
                                parentnode=testassignment)
-        feedbackset = mommy.make('devilry_group.FeedbackSet',
-                                 group=testgroup)
+        feedbackset = FeedbackSet.objects.get(group=testgroup)
         mommy.make('core.Examiner',
                    relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup,)
+                   assignmentgroup=testgroup)
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser
         crinstance = crinstance_examiner.ExaminerCrInstance(request=mockrequest)
@@ -79,11 +82,9 @@ class TestCrinstanceExaminer(test.TestCase):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         unrelated_feedbackset = mommy.make('devilry_group.FeedbackSet')
-        mommy.make('devilry_group.FeedbackSet',
-                   group=testgroup)
         mommy.make('core.Examiner',
                    relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup,)
+                   assignmentgroup=testgroup)
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser
         crinstance = crinstance_examiner.ExaminerCrInstance(request=mockrequest)
