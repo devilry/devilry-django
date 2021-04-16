@@ -9,7 +9,6 @@ from devilry.devilry_group.cradmin_instances import crinstance_admin
 
 
 class TestCrinstanceAdmin(test.TestCase):
-
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
