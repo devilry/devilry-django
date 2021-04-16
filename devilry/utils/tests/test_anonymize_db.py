@@ -9,6 +9,7 @@ from devilry.devilry_account.models import UserEmail, UserName
 from devilry.devilry_comment.models import Comment, CommentEditHistory, CommentFile
 from devilry.devilry_group.models import GroupComment, GroupCommentEditHistory
 from devilry.utils import anonymize_database
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 
 
 class AnonymizeDbTestMixin:
@@ -20,6 +21,9 @@ class AnonymizeDbTestMixin:
 
 
 class TestAnonymizeString(test.TestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
     def test_simple_lowercase_string(self):
         string_to_anonymize = 'test'
         anonymized_string = anonymize_database.AnonymizeDatabase().randomize_string(
@@ -70,6 +74,9 @@ class TestAnonymizeString(test.TestCase):
 
 
 class TestAnonymizeUserFast(AnonymizeDbTestMixin, test.TestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
     def test_anonymize_user_shortname(self):
         user = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser')
         anonymize_database.AnonymizeDatabase().anonymize_user()
@@ -169,6 +176,9 @@ class TestAnonymizeUserFast(AnonymizeDbTestMixin, test.TestCase):
 
 
 class TestAnonymizeUser(AnonymizeDbTestMixin, test.TestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
     def test_anonymize_user_shortname(self):
         shortname_to_anonymize = 'testuser'
         mommy.make(settings.AUTH_USER_MODEL, shortname=shortname_to_anonymize)
@@ -224,6 +234,9 @@ class TestAnonymizeUser(AnonymizeDbTestMixin, test.TestCase):
 
 
 class TestAnonymizeCommentFast(test.TestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
     def test_anonymize_comment_text(self):
         comment_text = 'This is a comment.'
         testcomment = mommy.make('devilry_comment.Comment', text=comment_text)
@@ -237,9 +250,10 @@ class TestAnonymizeCommentFast(test.TestCase):
         self.assertEqual(testedithistory.post_edit_text, 'Test')
         self.assertEqual(testedithistory.pre_edit_text, 'Tst')
         anonymize_database.AnonymizeDatabase().anonymize_comments()
+
         self.assertFalse(CommentEditHistory.objects.filter(post_edit_text='Test', pre_edit_text='Tst').exists())
-        self.assertEqual(CommentEditHistory.objects.get().post_edit_text, anonymize_database.lorem_ipsum)
-        self.assertEqual(CommentEditHistory.objects.get().pre_edit_text, anonymize_database.lorem_ipsum)
+        self.assertEqual(CommentEditHistory.objects.first().post_edit_text, anonymize_database.lorem_ipsum)
+        self.assertEqual(CommentEditHistory.objects.first().pre_edit_text, anonymize_database.lorem_ipsum)
 
     def test_anonymize_comment_file_name(self):
         testcommentfile = mommy.make('devilry_comment.CommentFile', filename='Test.txt')
