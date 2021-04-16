@@ -23,7 +23,7 @@ class BooleanCount(Aggregate):
             'False' if self.extra['distinct'] == '' else 'True',
         )
 
-    def convert_value(self, value, expression, connection, context):
+    def convert_value(self, value, expression, connection, context=None):
         if value is None:
             return False
         return bool(value)
