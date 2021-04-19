@@ -4,9 +4,9 @@ from django.test import TestCase
 from django.utils import timezone
 from django.utils.timezone import timedelta
 from django.urls import reverse
-from model_mommy import mommy
+from model_bakery import baker
 
-from devilry.apps.core import devilry_core_mommy_factories as core_mommy
+from devilry.apps.core import devilry_core_baker_factories as core_baker
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import GroupInvite
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
@@ -17,11 +17,11 @@ class TestGroupInviteErrors(TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_user_sending_is_not_part_of_the_group(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testgroup.parentnode)
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testgroup.parentnode)
-        sent_by = core_mommy.candidate(testgroup1).relatedstudent.user
-        sent_to = core_mommy.candidate(testgroup2).relatedstudent.user
+        testgroup = baker.make('core.AssignmentGroup')
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testgroup.parentnode)
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testgroup.parentnode)
+        sent_by = core_baker.candidate(testgroup1).relatedstudent.user
+        sent_to = core_baker.candidate(testgroup2).relatedstudent.user
 
         with self.assertRaisesMessage(
                 ValidationError,
@@ -34,9 +34,9 @@ class TestGroupInviteErrors(TestCase):
             invite.full_clean()
 
     def test_student_already_member_of_the_group(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        sent_by = core_mommy.candidate(testgroup).relatedstudent.user
-        sent_to = core_mommy.candidate(testgroup).relatedstudent.user
+        testgroup = baker.make('core.AssignmentGroup')
+        sent_by = core_baker.candidate(testgroup).relatedstudent.user
+        sent_to = core_baker.candidate(testgroup).relatedstudent.user
 
         with self.assertRaisesMessage(
                 ValidationError,
@@ -49,11 +49,11 @@ class TestGroupInviteErrors(TestCase):
             invite.full_clean()
 
     def test_student_already_invited_but_not_responded(self):
-        testgroup = mommy.make('core.AssignmentGroup', parentnode__students_can_create_groups=True)
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testgroup.parentnode)
-        sent_by = core_mommy.candidate(testgroup).relatedstudent.user
-        sent_to = core_mommy.candidate(testgroup1).relatedstudent.user
-        mommy.make('core.GroupInvite', group=testgroup, sent_by=sent_by, sent_to=sent_to)
+        testgroup = baker.make('core.AssignmentGroup', parentnode__students_can_create_groups=True)
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testgroup.parentnode)
+        sent_by = core_baker.candidate(testgroup).relatedstudent.user
+        sent_to = core_baker.candidate(testgroup1).relatedstudent.user
+        baker.make('core.GroupInvite', group=testgroup, sent_by=sent_by, sent_to=sent_to)
 
         with self.assertRaisesMessage(
                 ValidationError,
@@ -66,12 +66,12 @@ class TestGroupInviteErrors(TestCase):
             invite.full_clean()
 
     def test_create_groups_expired(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__students_can_create_groups=True,
                                parentnode__students_can_not_create_groups_after=timezone.now() - timedelta(days=1))
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testgroup.parentnode)
-        sent_by = core_mommy.candidate(testgroup).relatedstudent.user
-        sent_to = core_mommy.candidate(testgroup1).relatedstudent.user
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testgroup.parentnode)
+        sent_by = core_baker.candidate(testgroup).relatedstudent.user
+        sent_to = core_baker.candidate(testgroup1).relatedstudent.user
 
         with self.assertRaisesMessage(
                 ValidationError,
@@ -86,11 +86,11 @@ class TestGroupInviteErrors(TestCase):
             invite.full_clean()
 
     def test_assignment_does_not_allow_students_to_form_groups(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__students_can_create_groups=False)
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testgroup.parentnode)
-        sent_by = core_mommy.candidate(testgroup).relatedstudent.user
-        sent_to = core_mommy.candidate(testgroup1).relatedstudent.user
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testgroup.parentnode)
+        sent_by = core_baker.candidate(testgroup).relatedstudent.user
+        sent_to = core_baker.candidate(testgroup1).relatedstudent.user
 
         with self.assertRaisesMessage(
                 ValidationError,
@@ -103,10 +103,10 @@ class TestGroupInviteErrors(TestCase):
             invite.full_clean()
 
     def test_student_sent_to_is_not_registerd_on_assignment(self):
-        testgroup = mommy.make('core.AssignmentGroup', parentnode__students_can_create_groups=True)
-        testgroup1 = mommy.make('core.AssignmentGroup')
-        sent_by = core_mommy.candidate(testgroup).relatedstudent.user
-        sent_to = core_mommy.candidate(testgroup1).relatedstudent.user
+        testgroup = baker.make('core.AssignmentGroup', parentnode__students_can_create_groups=True)
+        testgroup1 = baker.make('core.AssignmentGroup')
+        sent_by = core_baker.candidate(testgroup).relatedstudent.user
+        sent_to = core_baker.candidate(testgroup1).relatedstudent.user
 
         with self.assertRaisesMessage(
                 ValidationError,
@@ -119,11 +119,11 @@ class TestGroupInviteErrors(TestCase):
             invite.full_clean()
 
     def test_student_sent_to_is_already_in_a_group_with_more_than_one_student(self):
-        testgroup = mommy.make('core.AssignmentGroup', parentnode__students_can_create_groups=True)
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testgroup.parentnode)
-        sent_by = core_mommy.candidate(testgroup).relatedstudent.user
-        sent_to = core_mommy.candidate(testgroup1).relatedstudent.user
-        core_mommy.candidate(testgroup1)
+        testgroup = baker.make('core.AssignmentGroup', parentnode__students_can_create_groups=True)
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testgroup.parentnode)
+        sent_by = core_baker.candidate(testgroup).relatedstudent.user
+        sent_to = core_baker.candidate(testgroup1).relatedstudent.user
+        core_baker.candidate(testgroup1)
 
         with self.assertRaisesMessage(
                 ValidationError,
@@ -137,10 +137,10 @@ class TestGroupInviteErrors(TestCase):
             invite.full_clean()
 
     def test_sanity(self):
-        testgroup = mommy.make('core.AssignmentGroup', parentnode__students_can_create_groups=True)
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testgroup.parentnode)
-        sent_by = core_mommy.candidate(testgroup).relatedstudent.user
-        sent_to = core_mommy.candidate(testgroup1).relatedstudent.user
+        testgroup = baker.make('core.AssignmentGroup', parentnode__students_can_create_groups=True)
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testgroup.parentnode)
+        sent_by = core_baker.candidate(testgroup).relatedstudent.user
+        sent_to = core_baker.candidate(testgroup1).relatedstudent.user
         invite = GroupInvite(
             group=testgroup,
             sent_by=sent_by,
@@ -153,10 +153,10 @@ class TestGroupInviteErrors(TestCase):
         self.assertIsNotNone(invite.sent_datetime)
 
     def test_sanity_accepted(self):
-        testgroup = mommy.make('core.AssignmentGroup', parentnode__students_can_create_groups=True)
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testgroup.parentnode)
-        sent_by = core_mommy.candidate(testgroup).relatedstudent.user
-        sent_to = core_mommy.candidate(testgroup1).relatedstudent.user
+        testgroup = baker.make('core.AssignmentGroup', parentnode__students_can_create_groups=True)
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testgroup.parentnode)
+        sent_by = core_baker.candidate(testgroup).relatedstudent.user
+        sent_to = core_baker.candidate(testgroup1).relatedstudent.user
         invite = GroupInvite(
             group=testgroup,
             sent_by=sent_by,
@@ -176,47 +176,47 @@ class TestGroupInviteQueryset(TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_queryset_sanity(self):
-        mommy.make('core.GroupInvite', id=100)
+        baker.make('core.GroupInvite', id=100)
         self.assertEqual(GroupInvite.objects.all().first().id, 100)
 
     def test_filter_accepted(self):
-        mommy.make('core.GroupInvite', accepted=None, id=10)
-        mommy.make('core.GroupInvite', accepted=False, id=11)
-        mommy.make('core.GroupInvite', accepted=True, id=100)
-        mommy.make('core.GroupInvite', accepted=True, id=101)
+        baker.make('core.GroupInvite', accepted=None, id=10)
+        baker.make('core.GroupInvite', accepted=False, id=11)
+        baker.make('core.GroupInvite', accepted=True, id=100)
+        baker.make('core.GroupInvite', accepted=True, id=101)
         self.assertEqual(
             set(invite.id for invite in GroupInvite.objects.filter_accepted()),
             {100, 101}
         )
 
     def test_filter_no_response(self):
-        mommy.make('core.GroupInvite', accepted=None, id=10)
-        mommy.make('core.GroupInvite', accepted=None, id=11)
-        mommy.make('core.GroupInvite', accepted=True, id=100)
-        mommy.make('core.GroupInvite', accepted=False, id=101)
+        baker.make('core.GroupInvite', accepted=None, id=10)
+        baker.make('core.GroupInvite', accepted=None, id=11)
+        baker.make('core.GroupInvite', accepted=True, id=100)
+        baker.make('core.GroupInvite', accepted=False, id=101)
         self.assertEqual(
             set(invite.id for invite in GroupInvite.objects.filter_no_response()),
             {10, 11}
         )
 
     def test_filter_rejected(self):
-        mommy.make('core.GroupInvite', accepted=False, id=10)
-        mommy.make('core.GroupInvite', accepted=False, id=11)
-        mommy.make('core.GroupInvite', accepted=True, id=100)
-        mommy.make('core.GroupInvite', accepted=None, id=101)
+        baker.make('core.GroupInvite', accepted=False, id=10)
+        baker.make('core.GroupInvite', accepted=False, id=11)
+        baker.make('core.GroupInvite', accepted=True, id=100)
+        baker.make('core.GroupInvite', accepted=None, id=101)
         self.assertEqual(
             set(invite.id for invite in GroupInvite.objects.filter_rejected()),
             {10, 11}
         )
 
     def test_filter_unanswered_received_invites(self):
-        group = mommy.make('core.AssignmentGroup')
-        sent_by = core_mommy.candidate(group=group).relatedstudent.user
-        sent_to = core_mommy.candidate(group=group).relatedstudent.user
-        mommy.make('core.GroupInvite', sent_by=sent_by, sent_to=sent_to, accepted=False, id=10)
-        mommy.make('core.GroupInvite', sent_by=sent_by, sent_to=sent_to, accepted=None, id=11)
-        mommy.make('core.GroupInvite', sent_by=sent_by, sent_to=sent_to, accepted=True, id=100)
-        mommy.make('core.GroupInvite', sent_by=sent_by, sent_to=sent_to, accepted=None, id=101)
+        group = baker.make('core.AssignmentGroup')
+        sent_by = core_baker.candidate(group=group).relatedstudent.user
+        sent_to = core_baker.candidate(group=group).relatedstudent.user
+        baker.make('core.GroupInvite', sent_by=sent_by, sent_to=sent_to, accepted=False, id=10)
+        baker.make('core.GroupInvite', sent_by=sent_by, sent_to=sent_to, accepted=None, id=11)
+        baker.make('core.GroupInvite', sent_by=sent_by, sent_to=sent_to, accepted=True, id=100)
+        baker.make('core.GroupInvite', sent_by=sent_by, sent_to=sent_to, accepted=None, id=101)
 
         self.assertEqual(
             set(invite.id for invite in GroupInvite.objects.filter_unanswered_received_invites(sent_to)),
@@ -224,39 +224,39 @@ class TestGroupInviteQueryset(TestCase):
         )
 
     def test_filter_unanswered_sent_invites(self):
-        group = mommy.make('core.AssignmentGroup')
-        mommy.make('core.GroupInvite', group=group, accepted=False, id=10)
-        mommy.make('core.GroupInvite', group=group, accepted=None, id=11)
-        mommy.make('core.GroupInvite', group=group, accepted=True, id=100)
-        mommy.make('core.GroupInvite', group=group, accepted=None, id=101)
+        group = baker.make('core.AssignmentGroup')
+        baker.make('core.GroupInvite', group=group, accepted=False, id=10)
+        baker.make('core.GroupInvite', group=group, accepted=None, id=11)
+        baker.make('core.GroupInvite', group=group, accepted=True, id=100)
+        baker.make('core.GroupInvite', group=group, accepted=None, id=101)
         self.assertEqual(
             set(invite.id for invite in GroupInvite.objects.filter_unanswered_sent_invites(group)),
             {11, 101}
         )
 
     def test_filter_allowed_to_create_groups(self):
-        assignment_expired = mommy.make(
+        assignment_expired = baker.make(
             'core.Assignment',
             students_can_create_groups=True,
             students_can_not_create_groups_after=timezone.now() - timedelta(days=1)
         )
-        assignment_not_expired = mommy.make(
+        assignment_not_expired = baker.make(
             'core.Assignment',
             students_can_create_groups=True,
             students_can_not_create_groups_after=timezone.now() + timedelta(days=1)
         )
-        assignment_not_allowed = mommy.make('core.Assignment', students_can_create_groups=False)
-        assignment_allowed = mommy.make('core.Assignment', students_can_create_groups=True)
+        assignment_not_allowed = baker.make('core.Assignment', students_can_create_groups=False)
+        assignment_allowed = baker.make('core.Assignment', students_can_create_groups=True)
 
-        group1 = mommy.make('core.AssignmentGroup', parentnode=assignment_expired)
-        group2 = mommy.make('core.AssignmentGroup', parentnode=assignment_not_expired)
-        group3 = mommy.make('core.AssignmentGroup', parentnode=assignment_not_allowed)
-        group4 = mommy.make('core.AssignmentGroup', parentnode=assignment_allowed)
+        group1 = baker.make('core.AssignmentGroup', parentnode=assignment_expired)
+        group2 = baker.make('core.AssignmentGroup', parentnode=assignment_not_expired)
+        group3 = baker.make('core.AssignmentGroup', parentnode=assignment_not_allowed)
+        group4 = baker.make('core.AssignmentGroup', parentnode=assignment_allowed)
 
-        mommy.make('core.GroupInvite', group=group1, id=10)
-        mommy.make('core.GroupInvite', group=group2, id=11)
-        mommy.make('core.GroupInvite', group=group3, id=100)
-        mommy.make('core.GroupInvite', group=group4, id=101)
+        baker.make('core.GroupInvite', group=group1, id=10)
+        baker.make('core.GroupInvite', group=group2, id=11)
+        baker.make('core.GroupInvite', group=group3, id=100)
+        baker.make('core.GroupInvite', group=group4, id=101)
         self.assertEqual(
             set(invite.id for invite in GroupInvite.objects.filter_allowed_to_create_groups()),
             {11, 101}
@@ -276,11 +276,11 @@ class GroupInviteRespond(TestCase):
         return FakeRequest()
 
     def test_respond_reject(self):
-        group1 = mommy.make('core.AssignmentGroup', parentnode__students_can_create_groups=True)
-        group2 = mommy.make('core.AssignmentGroup', parentnode=group1.parentnode)
-        student1 = core_mommy.candidate(group=group1).relatedstudent.user
-        student2 = core_mommy.candidate(group=group2).relatedstudent.user
-        invite = mommy.make('core.GroupInvite', sent_by=student1, sent_to=student2, group=group1)
+        group1 = baker.make('core.AssignmentGroup', parentnode__students_can_create_groups=True)
+        group2 = baker.make('core.AssignmentGroup', parentnode=group1.parentnode)
+        student1 = core_baker.candidate(group=group1).relatedstudent.user
+        student2 = core_baker.candidate(group=group2).relatedstudent.user
+        invite = baker.make('core.GroupInvite', sent_by=student1, sent_to=student2, group=group1)
         invite.respond(False)
         self.assertFalse(GroupInvite.objects.get(id=invite.id).accepted)
         group = AssignmentGroup.objects.filter_user_is_candidate(student2)
@@ -288,11 +288,11 @@ class GroupInviteRespond(TestCase):
         self.assertEqual(group.first().id, group2.id)
 
     def test_respond_accept(self):
-        group1 = mommy.make('core.AssignmentGroup', parentnode__students_can_create_groups=True)
-        group2 = mommy.make('core.AssignmentGroup', parentnode=group1.parentnode)
-        student1 = core_mommy.candidate(group=group1).relatedstudent.user
-        student2 = core_mommy.candidate(group=group2).relatedstudent.user
-        invite = mommy.make('core.GroupInvite', sent_by=student1, sent_to=student2, group=group1)
+        group1 = baker.make('core.AssignmentGroup', parentnode__students_can_create_groups=True)
+        group2 = baker.make('core.AssignmentGroup', parentnode=group1.parentnode)
+        student1 = core_baker.candidate(group=group1).relatedstudent.user
+        student2 = core_baker.candidate(group=group2).relatedstudent.user
+        invite = baker.make('core.GroupInvite', sent_by=student1, sent_to=student2, group=group1)
         invite.respond(True)
         self.assertTrue(GroupInvite.objects.get(id=invite.id).accepted)
         group = AssignmentGroup.objects.filter_user_is_candidate(student2)
@@ -302,25 +302,25 @@ class GroupInviteRespond(TestCase):
         self.assertFalse(AssignmentGroup.objects.filter(id=group2.id).exists())
 
     def test_num_queries_accept(self):
-        group1 = mommy.make('core.AssignmentGroup', parentnode__students_can_create_groups=True)
-        group2 = mommy.make('core.AssignmentGroup', parentnode=group1.parentnode)
-        student1 = core_mommy.candidate(group=group1).relatedstudent.user
-        student2 = core_mommy.candidate(group=group2).relatedstudent.user
-        invite = mommy.make('core.GroupInvite', sent_by=student1, sent_to=student2, group=group1)
+        group1 = baker.make('core.AssignmentGroup', parentnode__students_can_create_groups=True)
+        group2 = baker.make('core.AssignmentGroup', parentnode=group1.parentnode)
+        student1 = core_baker.candidate(group=group1).relatedstudent.user
+        student2 = core_baker.candidate(group=group2).relatedstudent.user
+        invite = baker.make('core.GroupInvite', sent_by=student1, sent_to=student2, group=group1)
         with self.assertNumQueries(36):
             invite.respond(True)
 
     def test_num_queries_reject(self):
-        group1 = mommy.make('core.AssignmentGroup', parentnode__students_can_create_groups=True)
-        group2 = mommy.make('core.AssignmentGroup', parentnode=group1.parentnode)
-        student1 = core_mommy.candidate(group=group1).relatedstudent.user
-        student2 = core_mommy.candidate(group=group2).relatedstudent.user
-        invite = mommy.make('core.GroupInvite', sent_by=student1, sent_to=student2, group=group1)
+        group1 = baker.make('core.AssignmentGroup', parentnode__students_can_create_groups=True)
+        group2 = baker.make('core.AssignmentGroup', parentnode=group1.parentnode)
+        student1 = core_baker.candidate(group=group1).relatedstudent.user
+        student2 = core_baker.candidate(group=group2).relatedstudent.user
+        invite = baker.make('core.GroupInvite', sent_by=student1, sent_to=student2, group=group1)
         with self.assertNumQueries(9):
             invite.respond(False)
 
     def test_send_invite_mail(self):
-        assignment = mommy.make(
+        assignment = baker.make(
             'core.Assignment',
             long_name='Assignment 1',
             short_name='assignment1',
@@ -330,11 +330,11 @@ class GroupInviteRespond(TestCase):
             parentnode__parentnode__short_name='Duck1010',
             students_can_create_groups=True,
         )
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        sent_by = core_mommy.candidate(testgroup, shortname="april@example.com", fullname="April").relatedstudent.user
-        sent_to = core_mommy.candidate(testgroup1, shortname="dewey@example.com", fullname="Dewey").relatedstudent.user
-        mommy.make('devilry_account.UserEmail', user=sent_to, email="dewey@example.com")
+        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=assignment)
+        sent_by = core_baker.candidate(testgroup, shortname="april@example.com", fullname="April").relatedstudent.user
+        sent_to = core_baker.candidate(testgroup1, shortname="dewey@example.com", fullname="Dewey").relatedstudent.user
+        baker.make('devilry_account.UserEmail', user=sent_to, email="dewey@example.com")
         invite = GroupInvite(group=testgroup, sent_by=sent_by, sent_to=sent_to)
         invite.full_clean()
         invite.save()
@@ -347,7 +347,7 @@ class GroupInviteRespond(TestCase):
         self.assertIn(url, mail.outbox[0].body)
 
     def test_send_reject_mail(self):
-        assignment = mommy.make(
+        assignment = baker.make(
             'core.Assignment',
             long_name='Assignment 1',
             short_name='assignment1',
@@ -357,12 +357,12 @@ class GroupInviteRespond(TestCase):
             parentnode__parentnode__short_name='Duck1010',
             students_can_create_groups=True,
         )
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        sent_by = core_mommy.candidate(testgroup, shortname="april@example.com", fullname="April").relatedstudent.user
-        sent_to = core_mommy.candidate(testgroup1, shortname="dewey@example.com", fullname="Dewey").relatedstudent.user
-        mommy.make('devilry_account.UserEmail', user=sent_to, email="dewey@example.com")
-        mommy.make('devilry_account.UserEmail', user=sent_by, email="april@example.com")
+        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=assignment)
+        sent_by = core_baker.candidate(testgroup, shortname="april@example.com", fullname="April").relatedstudent.user
+        sent_to = core_baker.candidate(testgroup1, shortname="dewey@example.com", fullname="Dewey").relatedstudent.user
+        baker.make('devilry_account.UserEmail', user=sent_to, email="dewey@example.com")
+        baker.make('devilry_account.UserEmail', user=sent_by, email="april@example.com")
         invite = GroupInvite(
             group=testgroup,
             sent_by=sent_by,
@@ -376,7 +376,7 @@ class GroupInviteRespond(TestCase):
         self.assertEqual(mail.outbox[1].subject, '[Devilry] Dewey rejected your project group invite')
 
     def test_send_accept_mail(self):
-        assignment = mommy.make(
+        assignment = baker.make(
             'core.Assignment',
             long_name='Assignment 1',
             short_name='assignment1',
@@ -386,12 +386,12 @@ class GroupInviteRespond(TestCase):
             parentnode__parentnode__short_name='Duck1010',
             students_can_create_groups=True,
         )
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        sent_by = core_mommy.candidate(testgroup, shortname="april@example.com", fullname="April").relatedstudent.user
-        sent_to = core_mommy.candidate(testgroup1, shortname="dewey@example.com", fullname="Dewey").relatedstudent.user
-        mommy.make('devilry_account.UserEmail', user=sent_to, email="dewey@example.com")
-        mommy.make('devilry_account.UserEmail', user=sent_by, email="april@example.com")
+        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=assignment)
+        sent_by = core_baker.candidate(testgroup, shortname="april@example.com", fullname="April").relatedstudent.user
+        sent_to = core_baker.candidate(testgroup1, shortname="dewey@example.com", fullname="Dewey").relatedstudent.user
+        baker.make('devilry_account.UserEmail', user=sent_to, email="dewey@example.com")
+        baker.make('devilry_account.UserEmail', user=sent_by, email="april@example.com")
         invite = GroupInvite(
             group=testgroup,
             sent_by=sent_by,
@@ -405,15 +405,15 @@ class GroupInviteRespond(TestCase):
         self.assertEqual(mail.outbox[1].subject, '[Devilry] Dewey accepted your project group invite')
 
     def test_send_invite_to_choices_queryset(self):
-        group1 = mommy.make('core.AssignmentGroup', parentnode__students_can_create_groups=True)
-        group2 = mommy.make('core.AssignmentGroup', parentnode=group1.parentnode)
-        group3 = mommy.make('core.AssignmentGroup', parentnode=group1.parentnode)
-        group4 = mommy.make('core.AssignmentGroup', parentnode=group1.parentnode)
-        core_mommy.candidate(group=group1, fullname="Louie", shortname="louie")
-        core_mommy.candidate(group=group2, fullname="Huey", shortname="huey")
-        core_mommy.candidate(group=group2, fullname="Donald", shortname="donald")
-        candidate4 = core_mommy.candidate(group=group3, fullname="April", shortname="april")
-        candidate5 = core_mommy.candidate(group=group4, fullname="Dewey", shortname="dewey")
+        group1 = baker.make('core.AssignmentGroup', parentnode__students_can_create_groups=True)
+        group2 = baker.make('core.AssignmentGroup', parentnode=group1.parentnode)
+        group3 = baker.make('core.AssignmentGroup', parentnode=group1.parentnode)
+        group4 = baker.make('core.AssignmentGroup', parentnode=group1.parentnode)
+        core_baker.candidate(group=group1, fullname="Louie", shortname="louie")
+        core_baker.candidate(group=group2, fullname="Huey", shortname="huey")
+        core_baker.candidate(group=group2, fullname="Donald", shortname="donald")
+        candidate4 = core_baker.candidate(group=group3, fullname="April", shortname="april")
+        candidate5 = core_baker.candidate(group=group4, fullname="Dewey", shortname="dewey")
         candidates = GroupInvite.send_invite_to_choices_queryset(group1)
         self.assertEqual(candidates.count(), 2)
         self.assertEqual(
@@ -422,16 +422,16 @@ class GroupInviteRespond(TestCase):
         )
 
     def test_send_invite_to_choices_queryset_pending_is_excluded(self):
-        group1 = mommy.make('core.AssignmentGroup', parentnode__students_can_create_groups=True)
-        group2 = mommy.make('core.AssignmentGroup', parentnode=group1.parentnode)
-        group3 = mommy.make('core.AssignmentGroup', parentnode=group1.parentnode)
-        group4 = mommy.make('core.AssignmentGroup', parentnode=group1.parentnode)
-        candidate1 = core_mommy.candidate(group=group1, fullname="Louie", shortname="louie")
-        core_mommy.candidate(group=group2, fullname="Huey", shortname="huey")
-        core_mommy.candidate(group=group2, fullname="Donald", shortname="donald")
-        candidate4 = core_mommy.candidate(group=group3, fullname="April", shortname="april")
-        candidate5 = core_mommy.candidate(group=group4, fullname="Dewey", shortname="dewey")
-        mommy.make(
+        group1 = baker.make('core.AssignmentGroup', parentnode__students_can_create_groups=True)
+        group2 = baker.make('core.AssignmentGroup', parentnode=group1.parentnode)
+        group3 = baker.make('core.AssignmentGroup', parentnode=group1.parentnode)
+        group4 = baker.make('core.AssignmentGroup', parentnode=group1.parentnode)
+        candidate1 = core_baker.candidate(group=group1, fullname="Louie", shortname="louie")
+        core_baker.candidate(group=group2, fullname="Huey", shortname="huey")
+        core_baker.candidate(group=group2, fullname="Donald", shortname="donald")
+        candidate4 = core_baker.candidate(group=group3, fullname="April", shortname="april")
+        candidate5 = core_baker.candidate(group=group4, fullname="Dewey", shortname="dewey")
+        baker.make(
             'core.GroupInvite',
             group=group1,
             sent_to=candidate4.relatedstudent.user,
@@ -445,45 +445,45 @@ class GroupInviteRespond(TestCase):
         )
 
     def test_validate_user_id_send_to(self):
-        assignment = mommy.make('core.Assignment', students_can_create_groups=True)
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        core_mommy.candidate(testgroup)
-        sent_to = core_mommy.candidate(testgroup1)
+        assignment = baker.make('core.Assignment', students_can_create_groups=True)
+        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=assignment)
+        core_baker.candidate(testgroup)
+        sent_to = core_baker.candidate(testgroup1)
         with self.assertNumQueries(1):
             GroupInvite.validate_candidate_id_sent_to(testgroup, sent_to.id)
 
     def test_validation_user_id_send_to_error_wrong_assignment(self):
-        assignment = mommy.make('core.Assignment', students_can_create_groups=True)
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        testgroup1 = mommy.make('core.AssignmentGroup')
-        core_mommy.candidate(testgroup)
-        sent_to = core_mommy.candidate(testgroup1)
+        assignment = baker.make('core.Assignment', students_can_create_groups=True)
+        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
+        testgroup1 = baker.make('core.AssignmentGroup')
+        core_baker.candidate(testgroup)
+        sent_to = core_baker.candidate(testgroup1)
         with self.assertRaisesMessage(ValidationError, 'The selected student is not eligible to join the group.'):
             GroupInvite.validate_candidate_id_sent_to(testgroup, sent_to.id)
 
     def test_validation_user_id_send_to_error_already_in_group(self):
-        assignment = mommy.make('core.Assignment', students_can_create_groups=True)
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        core_mommy.candidate(testgroup)
-        sent_to = core_mommy.candidate(testgroup)
+        assignment = baker.make('core.Assignment', students_can_create_groups=True)
+        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
+        core_baker.candidate(testgroup)
+        sent_to = core_baker.candidate(testgroup)
         with self.assertRaisesMessage(ValidationError, 'The selected student is not eligible to join the group.'):
             GroupInvite.validate_candidate_id_sent_to(testgroup, sent_to.id)
 
     def test_invite_has_already_been_accepted(self):
-        testgroup = mommy.make('core.AssignmentGroup', parentnode__students_can_create_groups=True)
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testgroup.parentnode)
-        sent_by = core_mommy.candidate(testgroup).relatedstudent.user
-        sent_to = core_mommy.candidate(testgroup1).relatedstudent.user
-        invite = mommy.make('core.GroupInvite', group=testgroup, sent_by=sent_by, sent_to=sent_to, accepted=True)
+        testgroup = baker.make('core.AssignmentGroup', parentnode__students_can_create_groups=True)
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testgroup.parentnode)
+        sent_by = core_baker.candidate(testgroup).relatedstudent.user
+        sent_to = core_baker.candidate(testgroup1).relatedstudent.user
+        invite = baker.make('core.GroupInvite', group=testgroup, sent_by=sent_by, sent_to=sent_to, accepted=True)
         with self.assertRaisesMessage(ValidationError, 'This invite has already been accepted.'):
             invite.respond(True)
 
     def test_invite_has_already_been_declined(self):
-        testgroup = mommy.make('core.AssignmentGroup', parentnode__students_can_create_groups=True)
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testgroup.parentnode)
-        sent_by = core_mommy.candidate(testgroup).relatedstudent.user
-        sent_to = core_mommy.candidate(testgroup1).relatedstudent.user
-        invite = mommy.make('core.GroupInvite', group=testgroup, sent_by=sent_by, sent_to=sent_to, accepted=False)
+        testgroup = baker.make('core.AssignmentGroup', parentnode__students_can_create_groups=True)
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testgroup.parentnode)
+        sent_by = core_baker.candidate(testgroup).relatedstudent.user
+        sent_to = core_baker.candidate(testgroup1).relatedstudent.user
+        invite = baker.make('core.GroupInvite', group=testgroup, sent_by=sent_by, sent_to=sent_to, accepted=False)
         with self.assertRaisesMessage(ValidationError, 'This invite has already been declined.'):
             invite.respond(False)

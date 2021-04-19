@@ -3,7 +3,7 @@
 
 from django import test
 from cradmin_legacy import cradmin_testhelpers
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.apps.core.models import PeriodTag
 from devilry.apps.core.models import RelatedExaminer, RelatedStudent
@@ -18,9 +18,9 @@ class TestAddRelatedExaminersToTag(test.TestCase, cradmin_testhelpers.TestCaseMi
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_add_single_relatedexaminer_to_tag(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='a')
-        testrelatedexaminer = mommy.make('core.RelatedExaminer', period=testperiod)
+        testperiod = baker.make('core.Period')
+        testperiodtag = baker.make('core.PeriodTag', period=testperiod, tag='a')
+        testrelatedexaminer = baker.make('core.RelatedExaminer', period=testperiod)
         self.assertEqual(testrelatedexaminer.periodtag_set.count(), 0)
         self.assertEqual(testperiodtag.relatedexaminers.count(), 0)
         self.mock_http302_postrequest(
@@ -44,11 +44,11 @@ class TestAddRelatedExaminersToTag(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.assertIn(periodtag.id, relatedexaminer_tag_ids)
 
     def test_add_multiple_relatedexaminer_to_tag(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='a')
-        testrelatedexaminer1 = mommy.make('core.RelatedExaminer', period=testperiod)
-        testrelatedexaminer2 = mommy.make('core.RelatedExaminer', period=testperiod)
-        testrelatedexaminer3 = mommy.make('core.RelatedExaminer', period=testperiod)
+        testperiod = baker.make('core.Period')
+        testperiodtag = baker.make('core.PeriodTag', period=testperiod, tag='a')
+        testrelatedexaminer1 = baker.make('core.RelatedExaminer', period=testperiod)
+        testrelatedexaminer2 = baker.make('core.RelatedExaminer', period=testperiod)
+        testrelatedexaminer3 = baker.make('core.RelatedExaminer', period=testperiod)
         self.assertEqual(testrelatedexaminer1.periodtag_set.count(), 0)
         self.assertEqual(testrelatedexaminer2.periodtag_set.count(), 0)
         self.assertEqual(testrelatedexaminer3.periodtag_set.count(), 0)
@@ -72,11 +72,11 @@ class TestAddRelatedExaminersToTag(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.assertIn(testrelatedexaminer3.id, periodtag_relatedexaminers_ids)
 
     def test_add_only_selected_relatedexaminers_are_added(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='a')
-        testrelatedexaminer1 = mommy.make('core.RelatedExaminer', period=testperiod)
-        testrelatedexaminer2 = mommy.make('core.RelatedExaminer', period=testperiod)
-        testrelatedexaminer3 = mommy.make('core.RelatedExaminer', period=testperiod)
+        testperiod = baker.make('core.Period')
+        testperiodtag = baker.make('core.PeriodTag', period=testperiod, tag='a')
+        testrelatedexaminer1 = baker.make('core.RelatedExaminer', period=testperiod)
+        testrelatedexaminer2 = baker.make('core.RelatedExaminer', period=testperiod)
+        testrelatedexaminer3 = baker.make('core.RelatedExaminer', period=testperiod)
         self.assertEqual(testrelatedexaminer1.periodtag_set.count(), 0)
         self.assertEqual(testrelatedexaminer2.periodtag_set.count(), 0)
         self.assertEqual(testrelatedexaminer3.periodtag_set.count(), 0)
@@ -106,9 +106,9 @@ class TestRemoveRelatedExaminersFromTag(test.TestCase, cradmin_testhelpers.TestC
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_remove_single_relatedexaminer_from_tag(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='a')
-        testrelatedexaminer = mommy.make('core.RelatedExaminer', period=testperiod)
+        testperiod = baker.make('core.Period')
+        testperiodtag = baker.make('core.PeriodTag', period=testperiod, tag='a')
+        testrelatedexaminer = baker.make('core.RelatedExaminer', period=testperiod)
         testperiodtag.relatedexaminers.add(testrelatedexaminer)
         self.assertEqual(testrelatedexaminer.periodtag_set.count(), 1)
         self.assertEqual(testperiodtag.relatedexaminers.count(), 1)
@@ -129,11 +129,11 @@ class TestRemoveRelatedExaminersFromTag(test.TestCase, cradmin_testhelpers.TestC
         self.assertEqual(periodtag.relatedexaminers.count(), 0)
 
     def test_remove_multiple_relatedexaminers_to_tag(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='a')
-        testrelatedexaminer1 = mommy.make('core.RelatedExaminer', period=testperiod)
-        testrelatedexaminer2 = mommy.make('core.RelatedExaminer', period=testperiod)
-        testrelatedexaminer3 = mommy.make('core.RelatedExaminer', period=testperiod)
+        testperiod = baker.make('core.Period')
+        testperiodtag = baker.make('core.PeriodTag', period=testperiod, tag='a')
+        testrelatedexaminer1 = baker.make('core.RelatedExaminer', period=testperiod)
+        testrelatedexaminer2 = baker.make('core.RelatedExaminer', period=testperiod)
+        testrelatedexaminer3 = baker.make('core.RelatedExaminer', period=testperiod)
         testperiodtag.relatedexaminers.add(testrelatedexaminer1)
         testperiodtag.relatedexaminers.add(testrelatedexaminer2)
         testperiodtag.relatedexaminers.add(testrelatedexaminer3)
@@ -162,11 +162,11 @@ class TestRemoveRelatedExaminersFromTag(test.TestCase, cradmin_testhelpers.TestC
         self.assertEqual(relatedexaminer3.periodtag_set.count(), 0)
 
     def test_remove_only_selected_relatedexaminers_are_removed(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='a')
-        testrelatedexaminer1 = mommy.make('core.RelatedExaminer', period=testperiod)
-        testrelatedexaminer2 = mommy.make('core.RelatedExaminer', period=testperiod)
-        testrelatedexaminer3 = mommy.make('core.RelatedExaminer', period=testperiod)
+        testperiod = baker.make('core.Period')
+        testperiodtag = baker.make('core.PeriodTag', period=testperiod, tag='a')
+        testrelatedexaminer1 = baker.make('core.RelatedExaminer', period=testperiod)
+        testrelatedexaminer2 = baker.make('core.RelatedExaminer', period=testperiod)
+        testrelatedexaminer3 = baker.make('core.RelatedExaminer', period=testperiod)
         testperiodtag.relatedexaminers.add(testrelatedexaminer1)
         testperiodtag.relatedexaminers.add(testrelatedexaminer2)
         testperiodtag.relatedexaminers.add(testrelatedexaminer3)
@@ -199,9 +199,9 @@ class TestAddRelatedStudentsToTag(test.TestCase, cradmin_testhelpers.TestCaseMix
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_add_single_relatedstudent_to_tag(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='a')
-        testrelatedstudent = mommy.make('core.RelatedStudent', period=testperiod)
+        testperiod = baker.make('core.Period')
+        testperiodtag = baker.make('core.PeriodTag', period=testperiod, tag='a')
+        testrelatedstudent = baker.make('core.RelatedStudent', period=testperiod)
         self.assertEqual(testrelatedstudent.periodtag_set.count(), 0)
         self.assertEqual(testperiodtag.relatedstudents.count(), 0)
         self.mock_http302_postrequest(
@@ -225,11 +225,11 @@ class TestAddRelatedStudentsToTag(test.TestCase, cradmin_testhelpers.TestCaseMix
         self.assertIn(periodtag.id, relatedstudent_tag_ids)
 
     def test_add_multiple_relatedstudents_to_tag(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='a')
-        testrelatedstudent1 = mommy.make('core.RelatedStudent', period=testperiod)
-        testrelatedstudent2 = mommy.make('core.RelatedStudent', period=testperiod)
-        testrelatedstudent3 = mommy.make('core.RelatedStudent', period=testperiod)
+        testperiod = baker.make('core.Period')
+        testperiodtag = baker.make('core.PeriodTag', period=testperiod, tag='a')
+        testrelatedstudent1 = baker.make('core.RelatedStudent', period=testperiod)
+        testrelatedstudent2 = baker.make('core.RelatedStudent', period=testperiod)
+        testrelatedstudent3 = baker.make('core.RelatedStudent', period=testperiod)
         self.assertEqual(testrelatedstudent1.periodtag_set.count(), 0)
         self.assertEqual(testrelatedstudent2.periodtag_set.count(), 0)
         self.assertEqual(testrelatedstudent3.periodtag_set.count(), 0)
@@ -253,11 +253,11 @@ class TestAddRelatedStudentsToTag(test.TestCase, cradmin_testhelpers.TestCaseMix
         self.assertIn(testrelatedstudent3.id, periodtag_relatedstudents_ids)
 
     def test_add_only_selected_relatedstudents_are_added(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='a')
-        testrelatedstudent1 = mommy.make('core.RelatedStudent', period=testperiod)
-        testrelatedstudent2 = mommy.make('core.RelatedStudent', period=testperiod)
-        testrelatedstudent3 = mommy.make('core.RelatedStudent', period=testperiod)
+        testperiod = baker.make('core.Period')
+        testperiodtag = baker.make('core.PeriodTag', period=testperiod, tag='a')
+        testrelatedstudent1 = baker.make('core.RelatedStudent', period=testperiod)
+        testrelatedstudent2 = baker.make('core.RelatedStudent', period=testperiod)
+        testrelatedstudent3 = baker.make('core.RelatedStudent', period=testperiod)
         self.assertEqual(testrelatedstudent1.periodtag_set.count(), 0)
         self.assertEqual(testrelatedstudent2.periodtag_set.count(), 0)
         self.assertEqual(testrelatedstudent3.periodtag_set.count(), 0)
@@ -287,9 +287,9 @@ class TestRemoveRelatedStudentsFromTag(test.TestCase, cradmin_testhelpers.TestCa
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_remove_single_relatedstudent_from_tag(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='a')
-        testrelatedstudent = mommy.make('core.RelatedStudent', period=testperiod)
+        testperiod = baker.make('core.Period')
+        testperiodtag = baker.make('core.PeriodTag', period=testperiod, tag='a')
+        testrelatedstudent = baker.make('core.RelatedStudent', period=testperiod)
         testperiodtag.relatedstudents.add(testrelatedstudent)
         self.assertEqual(testrelatedstudent.periodtag_set.count(), 1)
         self.assertEqual(testperiodtag.relatedstudents.count(), 1)
@@ -310,11 +310,11 @@ class TestRemoveRelatedStudentsFromTag(test.TestCase, cradmin_testhelpers.TestCa
         self.assertEqual(periodtag.relatedstudents.count(), 0)
 
     def test_remove_multiple_relatedstudents_from_tag(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='a')
-        testrelatedstudent1 = mommy.make('core.RelatedStudent', period=testperiod)
-        testrelatedstudent2 = mommy.make('core.RelatedStudent', period=testperiod)
-        testrelatedstudent3 = mommy.make('core.RelatedStudent', period=testperiod)
+        testperiod = baker.make('core.Period')
+        testperiodtag = baker.make('core.PeriodTag', period=testperiod, tag='a')
+        testrelatedstudent1 = baker.make('core.RelatedStudent', period=testperiod)
+        testrelatedstudent2 = baker.make('core.RelatedStudent', period=testperiod)
+        testrelatedstudent3 = baker.make('core.RelatedStudent', period=testperiod)
         testperiodtag.relatedstudents.add(testrelatedstudent1)
         testperiodtag.relatedstudents.add(testrelatedstudent2)
         testperiodtag.relatedstudents.add(testrelatedstudent3)
@@ -343,11 +343,11 @@ class TestRemoveRelatedStudentsFromTag(test.TestCase, cradmin_testhelpers.TestCa
         self.assertEqual(relatedstudent3.periodtag_set.count(), 0)
 
     def test_remove_only_selected_relatedexaminers_are_removed(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='a')
-        testrelatedstudent1 = mommy.make('core.RelatedStudent', period=testperiod)
-        testrelatedstudent2 = mommy.make('core.RelatedStudent', period=testperiod)
-        testrelatedstudent3 = mommy.make('core.RelatedStudent', period=testperiod)
+        testperiod = baker.make('core.Period')
+        testperiodtag = baker.make('core.PeriodTag', period=testperiod, tag='a')
+        testrelatedstudent1 = baker.make('core.RelatedStudent', period=testperiod)
+        testrelatedstudent2 = baker.make('core.RelatedStudent', period=testperiod)
+        testrelatedstudent3 = baker.make('core.RelatedStudent', period=testperiod)
         testperiodtag.relatedstudents.add(testrelatedstudent1)
         testperiodtag.relatedstudents.add(testrelatedstudent2)
         testperiodtag.relatedstudents.add(testrelatedstudent3)

@@ -1,10 +1,10 @@
 from django.conf import settings
-from model_mommy import mommy
+from model_bakery import baker
 
 
 def examiner(group=None, shortname=None, fullname=None, automatic_anonymous_id=None):
     """
-    Creates an Examiner using ``mommy.make('core.Examiner', ...)``.
+    Creates an Examiner using ``baker.make('core.Examiner', ...)``.
 
     Args:
         group: The AssignmentGroup to add the examiner to (optional).
@@ -25,11 +25,11 @@ def examiner(group=None, shortname=None, fullname=None, automatic_anonymous_id=N
     if automatic_anonymous_id:
         relatedexaminer_kwargs['automatic_anonymous_id'] = automatic_anonymous_id
 
-    return mommy.make(
+    return baker.make(
         'core.Examiner',
         assignmentgroup=group,
-        relatedexaminer=mommy.make('core.RelatedExaminer',
-                                   user=mommy.make(settings.AUTH_USER_MODEL,
+        relatedexaminer=baker.make('core.RelatedExaminer',
+                                   user=baker.make(settings.AUTH_USER_MODEL,
                                                    **user_kwargs),
                                    **relatedexaminer_kwargs)
     )
@@ -39,7 +39,7 @@ def candidate(group=None, shortname=None, fullname=None,
               automatic_anonymous_id=None, relatedstudents_candidate_id=None,
               candidates_candidate_id=None):
     """
-    Creates a Candidate using ``mommy.make('core.Candidate', ...)``.
+    Creates a Candidate using ``baker.make('core.Candidate', ...)``.
 
     Args:
         group: The AssignmentGroup to add the candidate to (optional).
@@ -68,11 +68,11 @@ def candidate(group=None, shortname=None, fullname=None,
     if candidates_candidate_id:
         candidate_kwargs['candidate_id'] = candidates_candidate_id
 
-    return mommy.make(
+    return baker.make(
         'core.Candidate',
         assignment_group=group,
-        relatedstudent=mommy.make('core.RelatedStudent',
-                                  user=mommy.make(settings.AUTH_USER_MODEL,
+        relatedstudent=baker.make('core.RelatedStudent',
+                                  user=baker.make(settings.AUTH_USER_MODEL,
                                                   **user_kwargs),
                                   **relatedstudent_kwargs)
     )

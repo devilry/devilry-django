@@ -3,7 +3,7 @@
 from django import test
 from django.core import management
 from django.core.management import CommandError
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.devilry_account.models import PermissionGroup, SubjectPermissionGroup
 
@@ -18,46 +18,46 @@ class TestPermissionGroupAddSubjectCommand(test.TestCase):
             self.__run_management_command('test', 'Test')
 
     def test_permission_group_does_not_exist(self):
-        mommy.make('core.Subject', short_name='test')
+        baker.make('core.Subject', short_name='test')
         with self.assertRaisesMessage(CommandError, 'PermissionGroup "Test" does not exist.'):
             self.__run_management_command('test', 'Test')
 
     def test_permission_group_with_type_periodadmin_error_message(self):
-        mommy.make('core.Subject', short_name='test')
-        mommy.make('devilry_account.PermissionGroup',
+        baker.make('core.Subject', short_name='test')
+        baker.make('devilry_account.PermissionGroup',
                    name='Test', grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN)
         with self.assertRaisesMessage(CommandError, 'PermissionGroup "Test" does not exist.'):
             self.__run_management_command('test', 'Test')
 
     def test_subject_already_added_to_permissiongroup_error_message(self):
-        subject = mommy.make('core.Subject', short_name='test')
-        permissiongroup = mommy.make('devilry_account.PermissionGroup',
+        subject = baker.make('core.Subject', short_name='test')
+        permissiongroup = baker.make('devilry_account.PermissionGroup',
                                      name='Test', grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN)
-        mommy.make('devilry_account.SubjectPermissionGroup', permissiongroup=permissiongroup, subject=subject)
+        baker.make('devilry_account.SubjectPermissionGroup', permissiongroup=permissiongroup, subject=subject)
         with self.assertRaisesMessage(CommandError, 'Subject already added to permission group "Test".'):
             self.__run_management_command('test', 'Test')
 
     def test_add_subject_to_permissiongroup_with_type_subject(self):
-        mommy.make('core.Subject', short_name='test')
-        mommy.make('devilry_account.PermissionGroup',
+        baker.make('core.Subject', short_name='test')
+        baker.make('devilry_account.PermissionGroup',
                    name='Test', grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN)
         self.__run_management_command('test', 'Test')
         self.assertTrue(
             SubjectPermissionGroup.objects.filter(subject__short_name='test', permissiongroup__name='Test').exists())
 
     def test_add_subject_to_permissiongroup_with_type_department(self):
-        mommy.make('core.Subject', short_name='test')
-        mommy.make('devilry_account.PermissionGroup',
+        baker.make('core.Subject', short_name='test')
+        baker.make('devilry_account.PermissionGroup',
                    name='Test', grouptype=PermissionGroup.GROUPTYPE_DEPARTMENTADMIN)
         self.__run_management_command('test', 'Test')
         self.assertTrue(
             SubjectPermissionGroup.objects.filter(subject__short_name='test', permissiongroup__name='Test').exists())
 
     def test_add_subject_to_multiple_permissiongroups(self):
-        mommy.make('core.Subject', short_name='test')
-        mommy.make('devilry_account.PermissionGroup',
+        baker.make('core.Subject', short_name='test')
+        baker.make('devilry_account.PermissionGroup',
                    name='DepartmentAdmins', grouptype=PermissionGroup.GROUPTYPE_DEPARTMENTADMIN)
-        mommy.make('devilry_account.PermissionGroup',
+        baker.make('devilry_account.PermissionGroup',
                    name='SubjectAdmins', grouptype=PermissionGroup.GROUPTYPE_DEPARTMENTADMIN)
         self.__run_management_command('test', 'DepartmentAdmins')
         self.__run_management_command('test', 'SubjectAdmins')

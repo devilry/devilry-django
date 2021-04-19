@@ -4,7 +4,7 @@ from django import test
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.utils import timezone
-from model_mommy import mommy
+from model_bakery import baker
 from dateutil.parser import parse
 
 from devilry.devilry_import_v2database.scripts import user_add_missing_data_from_json
@@ -23,7 +23,7 @@ class TestScript(test.TestCase):
         }
 
     def __make_v3_user(self, id, shortname, last_login=None):
-        return mommy.make(settings.AUTH_USER_MODEL, id=id, shortname=shortname, last_login=last_login)
+        return baker.make(settings.AUTH_USER_MODEL, id=id, shortname=shortname, last_login=last_login)
 
     def test_does_not_update_user_without_v2_id(self):
         v2_user_data = [

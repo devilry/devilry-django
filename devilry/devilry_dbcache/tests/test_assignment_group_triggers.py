@@ -1,5 +1,5 @@
 from django import test
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 
@@ -9,5 +9,5 @@ class TestAssignmentGroupInsertTriggers(test.TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_create_group_creates_first_feedbackset(self):
-        group = mommy.make('core.AssignmentGroup')
+        group = baker.make('core.AssignmentGroup')
         self.assertEqual(group.feedbackset_set.count(), 1)

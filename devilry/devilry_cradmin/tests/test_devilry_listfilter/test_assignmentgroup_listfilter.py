@@ -1,6 +1,6 @@
 from django import test
 
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
@@ -20,9 +20,9 @@ class TestExaminerCountFilter(test.TestCase):
         self.testgroup7 = self.__create_group_with_examiners(num_examiners=7)
 
     def __create_group_with_examiners(self, num_examiners=0):
-        assignment_group = mommy.make('core.AssignmentGroup')
+        assignment_group = baker.make('core.AssignmentGroup')
         for num in range(num_examiners):
-            mommy.make('core.Examiner', assignmentgroup=assignment_group)
+            baker.make('core.Examiner', assignmentgroup=assignment_group)
         return assignment_group
 
     def __filter_examiners(self, filter_value):
@@ -220,9 +220,9 @@ class TestCandidateCountFilter(test.TestCase):
         self.testgroup7 = self.__create_group_with_candidates(num_candidates=7)
 
     def __create_group_with_candidates(self, num_candidates=0):
-        assignment_group = mommy.make('core.AssignmentGroup')
+        assignment_group = baker.make('core.AssignmentGroup')
         for num in range(num_candidates):
-            mommy.make('core.Candidate', assignment_group=assignment_group)
+            baker.make('core.Candidate', assignment_group=assignment_group)
         return assignment_group
 
     def __filter_candidates(self, filter_value):

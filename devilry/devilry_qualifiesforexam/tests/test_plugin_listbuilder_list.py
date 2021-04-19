@@ -2,7 +2,7 @@
 
 
 # 3rd party imports
-from model_mommy import mommy
+from model_bakery import baker
 
 # Django imports
 from django import test
@@ -23,7 +23,7 @@ class TestPluginListBuilderList(test.TestCase):
         )
         testregistry = plugintyperegistry.MockableRegistry.make_mockregistry()
         testregistry.add(plugintypeclass)
-        testperiod = mommy.make_recipe('devilry.apps.core.period_active')
+        testperiod = baker.make_recipe('devilry.apps.core.period_active')
 
         listbuilder_list = plugin_listbuilder_list.PluginListBuilderList.from_plugin_registry(
                 pluginregistry=testregistry,

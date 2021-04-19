@@ -5,7 +5,7 @@ django-debug-toolbar==3.2
 
 # django_dbdev==0.9.4
 django_dbdev==1.1.0
-model-mommy==1.6.0
+model-bakery==1.2.1
 
 # Required by the soupselect tests
 BeautifulSoup4==4.7.1

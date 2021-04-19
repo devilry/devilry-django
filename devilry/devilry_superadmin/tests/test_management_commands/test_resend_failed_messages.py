@@ -6,7 +6,7 @@ from django import test
 from django.conf import settings
 from django.core import management
 from django.core import mail
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.devilry_message.models import MessageReceiver
 
@@ -25,7 +25,7 @@ class TestResendFailedMessagesCommand(test.TestCase):
             ))
 
     def __make_email_for_user(self, user, email):
-        return mommy.make('devilry_account.UserEmail', user=user, email=email)
+        return baker.make('devilry_account.UserEmail', user=user, email=email)
 
     def test_no_messages(self):
         out = StringIO()
@@ -34,9 +34,9 @@ class TestResendFailedMessagesCommand(test.TestCase):
         out.close()
 
     def test_sanity_failed_message_sent_to_user(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
         self.__make_email_for_user(testuser, 'testuser@example.com')
-        mommy.make('devilry_message.MessageReceiver',
+        baker.make('devilry_message.MessageReceiver',
                    user=testuser,
                    status=MessageReceiver.STATUS_CHOICES.FAILED.value)
         out = StringIO()
@@ -47,15 +47,15 @@ class TestResendFailedMessagesCommand(test.TestCase):
         self.assertEqual(mail.outbox[0].recipients(), ['testuser@example.com'])
 
     def test_sanity_failed_messages_sent_to_multiple_users(self):
-        testuser1 = mommy.make(settings.AUTH_USER_MODEL)
-        testuser2 = mommy.make(settings.AUTH_USER_MODEL)
+        testuser1 = baker.make(settings.AUTH_USER_MODEL)
+        testuser2 = baker.make(settings.AUTH_USER_MODEL)
         self.__make_email_for_user(testuser1, 'testuser1@example.com')
         self.__make_email_for_user(testuser2, 'testuser2@example.com')
-        receiver1 = mommy.make('devilry_message.MessageReceiver',
+        receiver1 = baker.make('devilry_message.MessageReceiver',
                    user=testuser1,
                    subject='Test 1',
                    status=MessageReceiver.STATUS_CHOICES.FAILED.value)
-        receiver2 = mommy.make('devilry_message.MessageReceiver',
+        receiver2 = baker.make('devilry_message.MessageReceiver',
                    user=testuser2,
                    subject='Test 2',
                    status=MessageReceiver.STATUS_CHOICES.FAILED.value)
@@ -75,9 +75,9 @@ class TestResendFailedMessagesCommand(test.TestCase):
         self.assertEqual(receiver2.status, MessageReceiver.STATUS_CHOICES.SENT.value)
 
     def test_stdout_no_failed_messages(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
         self.__make_email_for_user(testuser, 'testuser@example.com')
-        mommy.make('devilry_message.MessageReceiver',
+        baker.make('devilry_message.MessageReceiver',
                    user=testuser,
                    status=MessageReceiver.STATUS_CHOICES.SENT.value)
         out = StringIO()
@@ -87,9 +87,9 @@ class TestResendFailedMessagesCommand(test.TestCase):
         self.assertEqual(len(mail.outbox), 0)
 
     def test_stdout_failed_message_sent(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
         self.__make_email_for_user(testuser, 'testuser@example.com')
-        mommy.make('devilry_message.MessageReceiver',
+        baker.make('devilry_message.MessageReceiver',
                    user=testuser,
                    status=MessageReceiver.STATUS_CHOICES.FAILED.value)
         out = StringIO()
@@ -99,12 +99,12 @@ class TestResendFailedMessagesCommand(test.TestCase):
         self.assertEqual(len(mail.outbox), 1)
 
     def test_stdout_multiple_failed_messages_sent(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
         self.__make_email_for_user(testuser, 'testuser@example.com')
-        mommy.make('devilry_message.MessageReceiver',
+        baker.make('devilry_message.MessageReceiver',
                    user=testuser,
                    status=MessageReceiver.STATUS_CHOICES.FAILED.value)
-        mommy.make('devilry_message.MessageReceiver',
+        baker.make('devilry_message.MessageReceiver',
                    user=testuser,
                    status=MessageReceiver.STATUS_CHOICES.FAILED.value)
         out = StringIO()
@@ -114,9 +114,9 @@ class TestResendFailedMessagesCommand(test.TestCase):
         self.assertEqual(len(mail.outbox), 2)
 
     def test_stdout_failed_message_exceeded_resend_limit(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
         self.__make_email_for_user(testuser, 'testuser@example.com')
-        mommy.make('devilry_message.MessageReceiver',
+        baker.make('devilry_message.MessageReceiver',
                    user=testuser,
                    status=MessageReceiver.STATUS_CHOICES.FAILED.value,
                    sending_failed_count=settings.DEVILRY_MESSAGE_RESEND_LIMIT + 1)
@@ -127,13 +127,13 @@ class TestResendFailedMessagesCommand(test.TestCase):
         self.assertEqual(len(mail.outbox), 0)
 
     def test_stdout_multiple_failed_messages_exceeded_resend_limit(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
         self.__make_email_for_user(testuser, 'testuser@example.com')
-        mommy.make('devilry_message.MessageReceiver',
+        baker.make('devilry_message.MessageReceiver',
                    user=testuser,
                    status=MessageReceiver.STATUS_CHOICES.FAILED.value,
                    sending_failed_count=settings.DEVILRY_MESSAGE_RESEND_LIMIT + 1)
-        mommy.make('devilry_message.MessageReceiver',
+        baker.make('devilry_message.MessageReceiver',
                    user=testuser,
                    status=MessageReceiver.STATUS_CHOICES.FAILED.value,
                    sending_failed_count=settings.DEVILRY_MESSAGE_RESEND_LIMIT + 1)
@@ -144,12 +144,12 @@ class TestResendFailedMessagesCommand(test.TestCase):
         self.assertEqual(len(mail.outbox), 0)
 
     def test_stdout_failed_message_and_message_that_exceeded_resend_limit(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
         self.__make_email_for_user(testuser, 'testuser@example.com')
-        mommy.make('devilry_message.MessageReceiver',
+        baker.make('devilry_message.MessageReceiver',
                    user=testuser,
                    status=MessageReceiver.STATUS_CHOICES.FAILED.value)
-        mommy.make('devilry_message.MessageReceiver',
+        baker.make('devilry_message.MessageReceiver',
                    user=testuser,
                    status=MessageReceiver.STATUS_CHOICES.FAILED.value,
                    sending_failed_count=settings.DEVILRY_MESSAGE_RESEND_LIMIT + 1)

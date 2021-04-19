@@ -3,7 +3,7 @@ import unittest
 from django import test
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.apps.core.models import Period
 from devilry.devilry_account import models as account_models
@@ -40,8 +40,8 @@ class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
         }
 
     def test_import(self):
-        test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_subject = mommy.make('core.Subject')
+        test_admin_user = baker.make(settings.AUTH_USER_MODEL)
+        test_subject = baker.make('core.Subject')
         self.create_v2dump(model_name='core.period',
                            data=self._create_period_dict(subject=test_subject, test_admin_user=test_admin_user))
         periodimporter = PeriodImporter(input_root=self.temp_root_dir)
@@ -49,8 +49,8 @@ class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(Period.objects.count(), 1)
 
     def test_importer_pk(self):
-        test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_subject = mommy.make('core.Subject')
+        test_admin_user = baker.make(settings.AUTH_USER_MODEL)
+        test_subject = baker.make('core.Subject')
         self.create_v2dump(model_name='core.period',
                            data=self._create_period_dict(subject=test_subject, test_admin_user=test_admin_user))
         periodimporter = PeriodImporter(input_root=self.temp_root_dir)
@@ -59,8 +59,8 @@ class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(period.id, 1)
 
     def test_importer_imported_model_with_admins(self):
-        test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_subject = mommy.make('core.Subject')
+        test_admin_user = baker.make(settings.AUTH_USER_MODEL)
+        test_subject = baker.make('core.Subject')
         period_data_dict = self._create_period_dict(subject=test_subject, test_admin_user=test_admin_user)
         self.create_v2dump(model_name='core.period',
                            data=period_data_dict)
@@ -69,7 +69,7 @@ class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(SubjectPermissionGroup.objects.count(), 1)
 
     def test_importer_imported_model_without_admins(self):
-        test_subject = mommy.make('core.Subject')
+        test_subject = baker.make('core.Subject')
         period_data_dict = self._create_period_dict(subject=test_subject)
         self.create_v2dump(model_name='core.period',
                            data=period_data_dict)
@@ -78,8 +78,8 @@ class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(SubjectPermissionGroup.objects.count(), 0)
 
     def test_importer_short_name(self):
-        test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_subject = mommy.make('core.Subject')
+        test_admin_user = baker.make(settings.AUTH_USER_MODEL)
+        test_subject = baker.make('core.Subject')
         self.create_v2dump(model_name='core.period',
                            data=self._create_period_dict(subject=test_subject, test_admin_user=test_admin_user))
         periodimporter = PeriodImporter(input_root=self.temp_root_dir)
@@ -88,8 +88,8 @@ class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(period.short_name, 'testsemester')
 
     def test_importer_long_name(self):
-        test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_subject = mommy.make('core.Subject')
+        test_admin_user = baker.make(settings.AUTH_USER_MODEL)
+        test_subject = baker.make('core.Subject')
         self.create_v2dump(model_name='core.period',
                            data=self._create_period_dict(subject=test_subject, test_admin_user=test_admin_user))
         periodimporter = PeriodImporter(input_root=self.temp_root_dir)
@@ -98,8 +98,8 @@ class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(period.long_name, 'Testsemester')
 
     def test_importer_start_time(self):
-        test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_subject = mommy.make('core.Subject')
+        test_admin_user = baker.make(settings.AUTH_USER_MODEL)
+        test_subject = baker.make('core.Subject')
         self.create_v2dump(model_name='core.period',
                            data=self._create_period_dict(subject=test_subject, test_admin_user=test_admin_user))
         periodimporter = PeriodImporter(input_root=self.temp_root_dir)
@@ -109,8 +109,8 @@ class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(period.start_time, start_time)
 
     def test_importer_end_time(self):
-        test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_subject = mommy.make('core.Subject')
+        test_admin_user = baker.make(settings.AUTH_USER_MODEL)
+        test_subject = baker.make('core.Subject')
         self.create_v2dump(model_name='core.period',
                            data=self._create_period_dict(subject=test_subject, test_admin_user=test_admin_user))
         periodimporter = PeriodImporter(input_root=self.temp_root_dir)
@@ -120,8 +120,8 @@ class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(period.end_time, end_time)
 
     def test_importer_subject(self):
-        test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_subject = mommy.make('core.Subject')
+        test_admin_user = baker.make(settings.AUTH_USER_MODEL)
+        test_subject = baker.make('core.Subject')
         self.create_v2dump(model_name='core.period',
                            data=self._create_period_dict(subject=test_subject, test_admin_user=test_admin_user))
         periodimporter = PeriodImporter(input_root=self.temp_root_dir)
@@ -130,8 +130,8 @@ class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(period.parentnode, test_subject)
 
     def test_importer_permissiongroup_is_created(self):
-        test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_subject = mommy.make('core.Subject')
+        test_admin_user = baker.make(settings.AUTH_USER_MODEL)
+        test_subject = baker.make('core.Subject')
         self.create_v2dump(model_name='core.period',
                            data=self._create_period_dict(subject=test_subject, test_admin_user=test_admin_user))
         periodimporter = PeriodImporter(input_root=self.temp_root_dir)
@@ -146,8 +146,8 @@ class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(periods_for_admin_list[0], period)
 
     # def test_importer_imported_model_log_created(self):
-    #     test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
-    #     test_subject = mommy.make('core.Subject')
+    #     test_admin_user = baker.make(settings.AUTH_USER_MODEL)
+    #     test_subject = baker.make('core.Subject')
     #     period_data_dict = self._create_period_dict(subject=test_subject, test_admin_user=test_admin_user)
     #     self.create_v2dump(model_name='core.period',
     #                        data=period_data_dict)
@@ -163,8 +163,8 @@ class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
     #     self.assertEquals(imported_model.data, period_data_dict)
 
     def test_auto_sequence_numbered_objects_uses_meta_max_id(self):
-        test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_subject = mommy.make('core.Subject')
+        test_admin_user = baker.make(settings.AUTH_USER_MODEL)
+        test_subject = baker.make('core.Subject')
         self.create_v2dump(model_name='core.period',
                            data=self._create_period_dict(subject=test_subject, test_admin_user=test_admin_user),
                            model_meta=self._create_model_meta())
@@ -174,6 +174,6 @@ class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
         period = Period.objects.first()
         self.assertEqual(period.pk, 1)
         self.assertEqual(period.id, 1)
-        period_with_auto_id = mommy.make('core.Period')
+        period_with_auto_id = baker.make('core.Period')
         self.assertEqual(period_with_auto_id.id, self._create_model_meta()['max_id']+1)
         self.assertEqual(period_with_auto_id.pk, self._create_model_meta()['max_id']+1)

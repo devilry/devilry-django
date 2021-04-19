@@ -3,7 +3,7 @@ from django.http import Http404
 from django.test import TestCase
 from django.utils import timezone
 from cradmin_legacy import cradmin_testhelpers
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import models as group_models
@@ -20,11 +20,11 @@ class TestExaminerCommentEditHistoryView(TestCase, cradmin_testhelpers.TestCaseM
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def __make_examiner(self, user):
-        return mommy.make('core.Examiner', relatedexaminer__user=user)
+        return baker.make('core.Examiner', relatedexaminer__user=user)
 
     def test_missing_comment_id_in_kwargs(self):
-        testuser = mommy.make('devilry_account.User')
-        testgroup = mommy.make('core.AssignmentGroup')
+        testuser = baker.make('devilry_account.User')
+        testgroup = baker.make('core.AssignmentGroup')
         self.__make_examiner(user=testuser)
         with self.assertRaises(Http404):
             self.mock_http200_getrequest_htmls(
@@ -32,8 +32,8 @@ class TestExaminerCommentEditHistoryView(TestCase, cradmin_testhelpers.TestCaseM
                 requestuser=testuser)
 
     def test_comment_does_not_exists_raises_404(self):
-        testuser = mommy.make('devilry_account.User', shortname='admin', fullname='Thor')
-        testgroup = mommy.make('core.AssignmentGroup')
+        testuser = baker.make('devilry_account.User', shortname='admin', fullname='Thor')
+        testgroup = baker.make('core.AssignmentGroup')
         self.__make_examiner(user=testuser)
         with self.assertRaises(Http404):
             self.mock_http200_getrequest_htmls(
@@ -42,10 +42,10 @@ class TestExaminerCommentEditHistoryView(TestCase, cradmin_testhelpers.TestCaseM
                 viewkwargs={'group_comment_id': 1})
 
     def test_comment_no_history_no_history_items_rendered(self):
-        testuser = mommy.make('devilry_account.User', shortname='admin', fullname='Thor')
-        testgroup = mommy.make('core.AssignmentGroup')
+        testuser = baker.make('devilry_account.User', shortname='admin', fullname='Thor')
+        testgroup = baker.make('core.AssignmentGroup')
         self.__make_examiner(user=testuser)
-        groupcomment = mommy.make('devilry_group.GroupComment',
+        groupcomment = baker.make('devilry_group.GroupComment',
                                   feedback_set__group=testgroup,
                                   visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -56,10 +56,10 @@ class TestExaminerCommentEditHistoryView(TestCase, cradmin_testhelpers.TestCaseM
         self.assertTrue(mockresponse.selector.exists('.devilry-comment-history-no-items'))
 
     def test_can_not_see_other_users_private_comments_history(self):
-        testuser = mommy.make('devilry_account.User', shortname='admin', fullname='Thor')
-        testgroup = mommy.make('core.AssignmentGroup')
+        testuser = baker.make('devilry_account.User', shortname='admin', fullname='Thor')
+        testgroup = baker.make('core.AssignmentGroup')
         self.__make_examiner(user=testuser)
-        groupcomment = mommy.make('devilry_group.GroupComment',
+        groupcomment = baker.make('devilry_group.GroupComment',
                                   feedback_set__group=testgroup,
                                   visibility=group_models.GroupComment.VISIBILITY_PRIVATE)
         with self.assertRaises(Http404):
@@ -69,20 +69,20 @@ class TestExaminerCommentEditHistoryView(TestCase, cradmin_testhelpers.TestCaseM
                 viewkwargs={'group_comment_id': groupcomment.id})
 
     def test_can_see_private_history_entries_from_their_own_comments(self):
-        testuser = mommy.make('devilry_account.User', shortname='admin', fullname='Thor')
-        testperiod = mommy.make_recipe('devilry.apps.core.period_active', admins=[testuser])
-        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=testperiod)
+        testuser = baker.make('devilry_account.User', shortname='admin', fullname='Thor')
+        testperiod = baker.make_recipe('devilry.apps.core.period_active', admins=[testuser])
+        testgroup = baker.make('core.AssignmentGroup', parentnode__parentnode=testperiod)
         self.__make_examiner(user=testuser)
-        groupcomment = mommy.make('devilry_group.GroupComment',
+        groupcomment = baker.make('devilry_group.GroupComment',
                                   user=testuser,
                                   feedback_set__group=testgroup)
-        mommy.make('devilry_group.GroupCommentEditHistory', group_comment=groupcomment,
+        baker.make('devilry_group.GroupCommentEditHistory', group_comment=groupcomment,
                    visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
                    edited_by=groupcomment.user, _quantity=2)
-        mommy.make('devilry_group.GroupCommentEditHistory', group_comment=groupcomment,
+        baker.make('devilry_group.GroupCommentEditHistory', group_comment=groupcomment,
                    visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    edited_by=groupcomment.user, _quantity=2)
-        mommy.make('devilry_group.GroupCommentEditHistory', group_comment=groupcomment,
+        baker.make('devilry_group.GroupCommentEditHistory', group_comment=groupcomment,
                    visibility=group_models.GroupComment.VISIBILITY_PRIVATE, edited_by=groupcomment.user, _quantity=3)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testgroup,
@@ -91,19 +91,19 @@ class TestExaminerCommentEditHistoryView(TestCase, cradmin_testhelpers.TestCaseM
         self.assertEqual(mockresponse.selector.count('.devilry-comment-edit-history-item'), 7)
 
     def test_can_not_see_private_history_entries_from_other_users(self):
-        testuser = mommy.make('devilry_account.User', shortname='admin', fullname='Thor')
-        testperiod = mommy.make_recipe('devilry.apps.core.period_active', admins=[testuser])
-        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=testperiod)
+        testuser = baker.make('devilry_account.User', shortname='admin', fullname='Thor')
+        testperiod = baker.make_recipe('devilry.apps.core.period_active', admins=[testuser])
+        testgroup = baker.make('core.AssignmentGroup', parentnode__parentnode=testperiod)
         self.__make_examiner(user=testuser)
-        groupcomment = mommy.make('devilry_group.GroupComment',
+        groupcomment = baker.make('devilry_group.GroupComment',
                                   feedback_set__group=testgroup)
-        mommy.make('devilry_group.GroupCommentEditHistory', group_comment=groupcomment,
+        baker.make('devilry_group.GroupCommentEditHistory', group_comment=groupcomment,
                    visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
                    edited_by=groupcomment.user, _quantity=2)
-        mommy.make('devilry_group.GroupCommentEditHistory', group_comment=groupcomment,
+        baker.make('devilry_group.GroupCommentEditHistory', group_comment=groupcomment,
                    visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    edited_by=groupcomment.user, _quantity=2)
-        mommy.make('devilry_group.GroupCommentEditHistory', group_comment=groupcomment,
+        baker.make('devilry_group.GroupCommentEditHistory', group_comment=groupcomment,
                    visibility=group_models.GroupComment.VISIBILITY_PRIVATE, edited_by=groupcomment.user, _quantity=3)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testgroup,

@@ -4,7 +4,7 @@
 from django import test
 from django.conf import settings
 from django.core.files.base import ContentFile
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_comment.models import Comment, CommentEditHistory
@@ -16,9 +16,9 @@ class TestGroupCommentTriggers(test.TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_delete(self):
-        testcomment = mommy.make('devilry_group.GroupComment')
+        testcomment = baker.make('devilry_group.GroupComment')
         testcomment_id = testcomment.id
-        testcommentfile = mommy.make('devilry_comment.CommentFile',
+        testcommentfile = baker.make('devilry_comment.CommentFile',
                                      comment=testcomment)
         testcommentfile.file.save('testfile.txt', ContentFile('test'))
         testcomment.delete()
@@ -30,19 +30,19 @@ class TestGroupCommentEditTrigger(test.TransactionTestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_group_comment_edit_history_not_created_on_create_sanity(self):
-        mommy.make('devilry_group.GroupComment')
+        baker.make('devilry_group.GroupComment')
         self.assertEqual(GroupCommentEditHistory.objects.count(), 0)
         self.assertEqual(CommentEditHistory.objects.count(), 0)
 
     def test_group_comment_edit_history_created_on_update_sanity(self):
-        group_comment = mommy.make('devilry_group.GroupComment')
+        group_comment = baker.make('devilry_group.GroupComment')
         group_comment.save()
         self.assertEqual(GroupCommentEditHistory.objects.count(), 1)
         self.assertEqual(CommentEditHistory.objects.count(), 1)
 
     def test_updated_fields(self):
-        user = mommy.make(settings.AUTH_USER_MODEL)
-        group_comment = mommy.make('devilry_group.GroupComment',
+        user = baker.make(settings.AUTH_USER_MODEL)
+        group_comment = baker.make('devilry_group.GroupComment',
                                    text='Comment text', user=user)
         group_comment.text = 'Comment text edited'
         group_comment.save()
@@ -55,8 +55,8 @@ class TestGroupCommentEditTrigger(test.TransactionTestCase):
         self.assertEqual(group_comment_edit_history.edited_by, user)
 
     def test_group_comment_history_comment_history_no_duplicates(self):
-        user = mommy.make(settings.AUTH_USER_MODEL)
-        group_comment = mommy.make('devilry_group.GroupComment',
+        user = baker.make(settings.AUTH_USER_MODEL)
+        group_comment = baker.make('devilry_group.GroupComment',
                                    text='Comment text 1', user=user)
         group_comment.text = 'Comment text 2'
         group_comment.save()
@@ -64,8 +64,8 @@ class TestGroupCommentEditTrigger(test.TransactionTestCase):
         self.assertEqual(CommentEditHistory.objects.count(), 1)
 
     def test_group_comment_history_points_to_comment_history(self):
-        user = mommy.make(settings.AUTH_USER_MODEL)
-        group_comment = mommy.make('devilry_group.GroupComment',
+        user = baker.make(settings.AUTH_USER_MODEL)
+        group_comment = baker.make('devilry_group.GroupComment',
                                    text='Comment text 1', user=user)
         group_comment.text = 'Comment text 2'
         group_comment.save()
@@ -78,8 +78,8 @@ class TestGroupCommentEditTrigger(test.TransactionTestCase):
         self.assertEqual(groupcommentedit_history.commentedithistory_ptr, commentedit_history)
 
     def test_multiple_updates(self):
-        user = mommy.make(settings.AUTH_USER_MODEL)
-        group_comment = mommy.make('devilry_group.GroupComment',
+        user = baker.make(settings.AUTH_USER_MODEL)
+        group_comment = baker.make('devilry_group.GroupComment',
                                    text='Comment text 1', user=user)
         group_comment.text = 'Comment text 2'
         group_comment.save()

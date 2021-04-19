@@ -4,9 +4,9 @@ import mock
 from django.test import TestCase
 from cradmin_legacy import cradmin_testhelpers
 from cradmin_legacy import crinstance
-from model_mommy import mommy
+from model_bakery import baker
 
-from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_START, ACTIVE_PERIOD_END
+from devilry.apps.core.baker_recipes import ACTIVE_PERIOD_START, ACTIVE_PERIOD_END
 from devilry.devilry_admin.views.subject import overview
 from devilry.utils import datetimeutils
 
@@ -15,28 +15,28 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = overview.Overview
 
     def test_title(self):
-        testsubject = mommy.make('core.Subject',
+        testsubject = baker.make('core.Subject',
                                  short_name='testsubject')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
         self.assertEqual('testsubject',
                          mockresponse.selector.one('title').alltext_normalized)
 
     def test_h1(self):
-        testsubject = mommy.make('core.Subject',
+        testsubject = baker.make('core.Subject',
                                  long_name='Test Subject')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
         self.assertEqual('Test Subject',
                          mockresponse.selector.one('h1').alltext_normalized)
 
     def test_createperiod_link_text(self):
-        testsubject = mommy.make('core.Subject')
+        testsubject = baker.make('core.Subject')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
         self.assertEqual('Create new semester',
                          mockresponse.selector.one(
                              '#devilry_admin_period_createperiod_link').alltext_normalized)
 
     def test_link_urls(self):
-        testsubject = mommy.make('core.Subject')
+        testsubject = baker.make('core.Subject')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
         self.assertEqual(3, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
         self.assertEqual(
@@ -50,13 +50,13 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
                 mockresponse.request.cradmin_instance.reverse_url.call_args_list[2])
 
     def test_periodlist_no_periods(self):
-        testsubject = mommy.make('core.Subject')
+        testsubject = baker.make('core.Subject')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
         self.assertFalse(mockresponse.selector.exists('#devilry_admin_period_overview_periodlist'))
 
     def test_periodlist_itemrendering_name(self):
-        testsubject = mommy.make('core.Subject')
-        mommy.make_recipe('devilry.apps.core.period_active',
+        testsubject = baker.make('core.Subject')
+        baker.make_recipe('devilry.apps.core.period_active',
                           parentnode=testsubject,
                           long_name='Test Period')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
@@ -65,8 +65,8 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
                              '.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_periodlist_itemrendering_url(self):
-        testsubject = mommy.make('core.Subject')
-        testperiod = mommy.make_recipe('devilry.apps.core.period_active',
+        testsubject = baker.make('core.Subject')
+        testperiod = baker.make_recipe('devilry.apps.core.period_active',
                                        parentnode=testsubject,
                                        long_name='Test Period')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
@@ -77,8 +77,8 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
                              '.devilry-admin-period-overview-perioditemframe')['href'])
 
     def test_periodlist_itemrendering_start_time(self):
-        testsubject = mommy.make('core.Subject')
-        mommy.make_recipe('devilry.apps.core.period_active', parentnode=testsubject)
+        testsubject = baker.make('core.Subject')
+        baker.make_recipe('devilry.apps.core.period_active', parentnode=testsubject)
         with self.settings(DATETIME_FORMAT=datetimeutils.ISODATETIME_DJANGOFORMAT, USE_L10N=False):
             mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
         self.assertEqual(datetimeutils.isoformat_noseconds(ACTIVE_PERIOD_START),
@@ -86,8 +86,8 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
                              '.devilry-cradmin-perioditemvalue-start-time-value').alltext_normalized)
 
     def test_periodlist_itemrendering_end_time(self):
-        testsubject = mommy.make('core.Subject')
-        mommy.make_recipe('devilry.apps.core.period_active',
+        testsubject = baker.make('core.Subject')
+        baker.make_recipe('devilry.apps.core.period_active',
                           parentnode=testsubject)
         with self.settings(DATETIME_FORMAT=datetimeutils.ISODATETIME_DJANGOFORMAT, USE_L10N=False):
             mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
@@ -96,14 +96,14 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
                              '.devilry-cradmin-perioditemvalue-end-time-value').alltext_normalized)
 
     def test_periodlist_ordering(self):
-        testsubject = mommy.make('core.Subject')
-        mommy.make_recipe('devilry.apps.core.period_active',
+        testsubject = baker.make('core.Subject')
+        baker.make_recipe('devilry.apps.core.period_active',
                           parentnode=testsubject,
                           long_name='Period 2')
-        mommy.make_recipe('devilry.apps.core.period_old',
+        baker.make_recipe('devilry.apps.core.period_old',
                           parentnode=testsubject,
                           long_name='Period 1')
-        mommy.make_recipe('devilry.apps.core.period_future',
+        baker.make_recipe('devilry.apps.core.period_future',
                           parentnode=testsubject,
                           long_name='Period 3')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
@@ -118,12 +118,12 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
         ], periodnames)
 
     def test_periodlist_only_periods_in_subject(self):
-        testsubject = mommy.make('core.Subject')
-        othersubject = mommy.make('core.Subject')
-        mommy.make_recipe('devilry.apps.core.period_active',
+        testsubject = baker.make('core.Subject')
+        othersubject = baker.make('core.Subject')
+        baker.make_recipe('devilry.apps.core.period_active',
                           parentnode=testsubject,
                           long_name='Testsubject Period 1')
-        mommy.make_recipe('devilry.apps.core.period_active',
+        baker.make_recipe('devilry.apps.core.period_active',
                           parentnode=othersubject,
                           long_name='Othersubject Period 1')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)

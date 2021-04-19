@@ -1,10 +1,10 @@
 from django.test import TestCase
 from cradmin_legacy import cradmin_testhelpers
 from cradmin_legacy import crinstance
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.apps.core.models import Period
-from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_END, ACTIVE_PERIOD_START
+from devilry.apps.core.baker_recipes import ACTIVE_PERIOD_END, ACTIVE_PERIOD_START
 from devilry.devilry_admin.views.subject import createperiod
 from devilry.utils import datetimeutils
 
@@ -13,21 +13,21 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = createperiod.CreateView
 
     def test_get_render_title(self):
-        subject = mommy.make('core.Subject', short_name='testcourse')
+        subject = baker.make('core.Subject', short_name='testcourse')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=subject)
         self.assertEqual('Create new semester - testcourse',
                          mockresponse.selector.one('title').alltext_normalized)
 
     def test_get_render_h1(self):
-        subject = mommy.make('core.Subject')
+        subject = baker.make('core.Subject')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=subject)
         self.assertEqual('Create new semester',
                          mockresponse.selector.one('h1').alltext_normalized)
 
     def test_get_render_formfields(self):
-        subject = mommy.make('core.Subject')
+        subject = baker.make('core.Subject')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=subject)
         self.assertTrue(mockresponse.selector.exists('input[name=long_name]'))
@@ -36,14 +36,14 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertTrue(mockresponse.selector.exists('input[name=end_time]'))
 
     def test_get_suggested_name_first_period(self):
-        subject = mommy.make('core.Subject')
+        subject = baker.make('core.Subject')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=subject)
         self.assertEqual(mockresponse.selector.one('input[name=long_name]').get('value', ''), '')
         self.assertEqual(mockresponse.selector.one('input[name=short_name]').get('value', ''), '')
 
     def test_get_suggested_name_previous_period_not_suffixed_with_number(self):
-        subject = mommy.make_recipe('devilry.apps.core.period_old',
+        subject = baker.make_recipe('devilry.apps.core.period_old',
                                     long_name='Test', short_name='test').subject
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=subject)
@@ -51,7 +51,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(mockresponse.selector.one('input[name=short_name]').get('value', ''), '')
 
     def test_get_suggested_name_previous_period_suffixed_with_number(self):
-        subject = mommy.make_recipe('devilry.apps.core.period_old',
+        subject = baker.make_recipe('devilry.apps.core.period_old',
                                     long_name='Test1', short_name='test1').subject
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=subject)
@@ -59,11 +59,11 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(mockresponse.selector.one('input[name=short_name]').get('value', ''), 'test2')
 
     def test_get_suggested_name_previous_period_suffixed_with_number_namecollision_strange_order(self):
-        subject = mommy.make('core.Subject')
-        mommy.make_recipe('devilry.apps.core.period_active',
+        subject = baker.make('core.Subject')
+        baker.make_recipe('devilry.apps.core.period_active',
                           parentnode=subject,
                           long_name='Test1', short_name='test1')
-        mommy.make_recipe('devilry.apps.core.period_old',
+        baker.make_recipe('devilry.apps.core.period_old',
                           parentnode=subject,
                           long_name='Test2', short_name='test2')
 
@@ -73,7 +73,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(mockresponse.selector.one('input[name=short_name]').get('value', ''), '')
 
     def test_post_missing_short_name(self):
-        subject = mommy.make('core.Subject')
+        subject = baker.make('core.Subject')
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=subject,
             requestkwargs={
@@ -90,7 +90,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('#error_1_id_short_name').alltext_normalized)
 
     def test_post_missing_long_name(self):
-        subject = mommy.make('core.Subject')
+        subject = baker.make('core.Subject')
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=subject,
             requestkwargs={
@@ -107,7 +107,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('#error_1_id_long_name').alltext_normalized)
 
     def test_post_missing_start_time(self):
-        subject = mommy.make('core.Subject')
+        subject = baker.make('core.Subject')
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=subject,
             requestkwargs={
@@ -124,7 +124,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('#error_1_id_start_time').alltext_normalized)
 
     def test_post_missing_end_time(self):
-        subject = mommy.make('core.Subject')
+        subject = baker.make('core.Subject')
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=subject,
             requestkwargs={
@@ -141,7 +141,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('#error_1_id_end_time').alltext_normalized)
 
     def test_post_start_time_before_end_time(self):
-        subject = mommy.make('core.Subject')
+        subject = baker.make('core.Subject')
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=subject,
             requestkwargs={
@@ -161,7 +161,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
                              start_time=ACTIVE_PERIOD_START,
                              end_time=ACTIVE_PERIOD_END):
         if not subject:
-            subject = mommy.make('core.Subject')
+            subject = baker.make('core.Subject')
         mockresponse = self.mock_http302_postrequest(
             cradmin_role=subject,
             requestkwargs={

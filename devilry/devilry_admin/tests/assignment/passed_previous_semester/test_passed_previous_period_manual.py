@@ -5,13 +5,13 @@ from django.test import TestCase
 from django.conf import settings
 from django.utils import timezone
 from cradmin_legacy import cradmin_testhelpers
-from model_mommy import mommy
+from model_bakery import baker
 
-from devilry.apps.core import devilry_core_mommy_factories as core_mommy
+from devilry.apps.core import devilry_core_baker_factories as core_baker
 from devilry.apps.core.models import Assignment
 from devilry.devilry_admin.views.assignment.passed_previous_period import passed_previous_semester_manual
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
-from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
+from devilry.devilry_group import devilry_group_baker_factories as group_baker
 from devilry.devilry_group.models import FeedbackSet, FeedbacksetPassedPreviousPeriod
 
 
@@ -27,9 +27,9 @@ class TestPassAssignmentGroupsView(TestCase, cradmin_testhelpers.TestCaseMixin):
         return mock_crinstance
 
     def test_get_selectable_groups(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make('core.AssignmentGroup', parentnode=testassignment)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mock_crinstance()
@@ -40,9 +40,9 @@ class TestPassAssignmentGroupsView(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
 
     def test_post_feedback_sanity(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
 
         feedbackset = FeedbackSet.objects.get(group=testgroup)
         self.assertIsNone(feedbackset.grading_published_datetime)
@@ -72,10 +72,10 @@ class TestPassAssignmentGroupsView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(feedbackset.grading_published_by, testuser)
 
     def test_post_feedback_for_one_selected_group(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup_1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup_2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup_1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup_2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
 
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
@@ -101,10 +101,10 @@ class TestPassAssignmentGroupsView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertIsNone(feedbackset_testgroup_2.grading_published_datetime)
 
     def test_post_feedback_for_multiple_selected_group(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup_1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup_2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup_1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup_2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
 
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
@@ -131,12 +131,12 @@ class TestPassAssignmentGroupsView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertIsNotNone(feedbackset_testgroup_2.grading_published_datetime)
 
     def test_post_feedback_updates_score_last_feedbackset_is_first_feedbackset(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
         grading_time = timezone.now() - timezone.timedelta(days=2)
-        group_mommy.feedbackset_first_attempt_published(group=testgroup, grading_points=0,
+        group_baker.feedbackset_first_attempt_published(group=testgroup, grading_points=0,
                                                         grading_published_datetime=grading_time)
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
 
         feedbackset = testgroup.cached_data.last_feedbackset
         self.assertEqual(feedbackset.grading_points, 0)
@@ -161,15 +161,15 @@ class TestPassAssignmentGroupsView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertTrue(feedbackset.grading_published_datetime > grading_time)
 
     def test_post_feedback_updates_score_last_feedbackset_is_not_first_feedbackset(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
         first_feedbackset_publishing_datetime = timezone.now() - timezone.timedelta(days=2)
         last_feedbackset_publishing_datetime = timezone.now() - timezone.timedelta(days=1)
-        group_mommy.feedbackset_first_attempt_published(group=testgroup, grading_points=1,
+        group_baker.feedbackset_first_attempt_published(group=testgroup, grading_points=1,
                                                         grading_published_datetime=first_feedbackset_publishing_datetime)
-        group_mommy.feedbackset_new_attempt_published(group=testgroup, grading_points=0,
+        group_baker.feedbackset_new_attempt_published(group=testgroup, grading_points=0,
                                                       grading_published_datetime=last_feedbackset_publishing_datetime)
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
 
 
         # Test that the first feedbackset is not changed for sanity!

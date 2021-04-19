@@ -47,7 +47,7 @@ Testhelpers
 Devilry has several generations of helpers that helps with
 building the devilry data structures:
 
-- :ref:`Model mommy recipes <modelmommyrecipes>`. **This should be used for all new tests**.
+- :ref:`Model bakery recipes <modelbakeryrecipes>`. **This should be used for all new tests**.
 - :doc:`devilry.project.develop.teshelpers.corebuilder <devilry.project.develop.teshelpers.corebuilder>`.
   Used in a large percentage of our tests.
   *Should not be used for new tests*.
@@ -56,15 +56,15 @@ building the devilry data structures:
   *Should not be used for new tests*.
 
 
-.. _modelmommyrecipes:
+.. _modelbakeryrecipes:
 
 *******************
-Model mommy recipes
+Model bakery recipes
 *******************
 
-.. currentmodule:: devilry.apps.core.mommy_recipes
+.. currentmodule:: devilry.apps.core.baker_recipes
 
-`Model mommy`_ is a great library for building Django data models
+`Model bakery`_ is a great library for building Django data models
 in tests. It makes it easy to write tests where you only need to
 specify data relevant for the test. This makes tests far more readable,
 since you always know that any created data models and the specified
@@ -73,12 +73,12 @@ test.
 
 Handling time
 =============
-For a lot of cases, simply using ``mommy.make()`` is enough, but Devilry has
+For a lot of cases, simply using ``baker.make()`` is enough, but Devilry has
 a recursive hierarchi where time matters. To make this easier to handle,
-we have a set of model mommy recipes that that we use to create the objects that require
+we have a set of model baker recipes that that we use to create the objects that require
 date/time. The old test helpers used relative time to solve the challenge of building
 :class:`devilry.apps.core.models.Period` and :class:`devilry.apps.core.models.Assignment`
-objects, but the model mommy recipes solves this in a more elegant manner.
+objects, but the model baker recipes solves this in a more elegant manner.
 
 We define 3 distincs periods of time: old, active and future:
 
@@ -102,25 +102,25 @@ We define 3 distincs periods of time: old, active and future:
 
 We have recipes for creating a period spanning each of these time periods:
 
-- :obj:`devilry.apps.core.mommy_recipes.period_old`
-- :obj:`devilry.apps.core.mommy_recipes.period_active`
-- :obj:`devilry.apps.core.mommy_recipes.period_future`
+- :obj:`devilry.apps.core.baker_recipes.period_old`
+- :obj:`devilry.apps.core.baker_recipes.period_active`
+- :obj:`devilry.apps.core.baker_recipes.period_future`
 
 And we have recipes for creating assignments at the beginning, middle and end of the
 these time periods:
 
 Old:
-    - :obj:`devilry.apps.core.mommy_recipes.assignment_oldperiod_start`
-    - :obj:`devilry.apps.core.mommy_recipes.assignment_oldperiod_middle`
-    - :obj:`devilry.apps.core.mommy_recipes.assignment_oldperiod_end`
+    - :obj:`devilry.apps.core.baker_recipes.assignment_oldperiod_start`
+    - :obj:`devilry.apps.core.baker_recipes.assignment_oldperiod_middle`
+    - :obj:`devilry.apps.core.baker_recipes.assignment_oldperiod_end`
 Active:
-    - :obj:`devilry.apps.core.mommy_recipes.assignment_activeperiod_start`
-    - :obj:`devilry.apps.core.mommy_recipes.assignment_activeperiod_middle`
-    - :obj:`devilry.apps.core.mommy_recipes.assignment_activeperiod_end`
+    - :obj:`devilry.apps.core.baker_recipes.assignment_activeperiod_start`
+    - :obj:`devilry.apps.core.baker_recipes.assignment_activeperiod_middle`
+    - :obj:`devilry.apps.core.baker_recipes.assignment_activeperiod_end`
 Future:
-    - :obj:`devilry.apps.core.mommy_recipes.assignment_futureperiod_start`
-    - :obj:`devilry.apps.core.mommy_recipes.assignment_futureperiod_middle`
-    - :obj:`devilry.apps.core.mommy_recipes.assignment_futureperiod_end`
+    - :obj:`devilry.apps.core.baker_recipes.assignment_futureperiod_start`
+    - :obj:`devilry.apps.core.baker_recipes.assignment_futureperiod_middle`
+    - :obj:`devilry.apps.core.baker_recipes.assignment_futureperiod_end`
 
 Furthermore, we have defined a set of variables that define the
 bounds of the old, active and future time periods. These are very useful
@@ -142,10 +142,10 @@ when we just need to use a datetime within the bounds a time period:
 
 
 ***************
-Mommy factories
+Bakery factories
 ***************
 We also provide some factory functions for very common cases. These factory functions
-are just thin wrappers around ``mommy.make``.
+are just thin wrappers around ``baker.make``.
 
 
 Factory functions for candidates and examiners
@@ -153,32 +153,32 @@ Factory functions for candidates and examiners
 
 Example::
 
-    testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-    devilry_core_mommy_factories.candidate(group=testgroup, shortname='user1',
+    testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+    devilry_core_baker_factories.candidate(group=testgroup, shortname='user1',
                                            fullname='Test User 1',
                                            automatic_anonymous_id='Loki')
-    devilry_core_mommy_factories.examiner(group=testgroup, shortname='user1')
+    devilry_core_baker_factories.examiner(group=testgroup, shortname='user1')
 
 As you can see these factories are fairly limited, but they are very nice
 when you just need an examiner or candidate.
 
 
 ***************************************
-When NOT to use the model mommy recipes
+When NOT to use the model baker recipes
 ***************************************
 Do not use the recipes when the things they setup do not matter. For example,
 if the code just needs an Assignment object, and the period, publishing time,
-and first deadline does not matter, simpy use ``mommy.make('core.Assignment')``.
+and first deadline does not matter, simpy use ``baker.make('core.Assignment')``.
 
 
 ***********************************
-Mommy recipes and factories apidocs
+Bakery recipes and factories apidocs
 ***********************************
 
-.. automodule:: devilry.apps.core.mommy_recipes
+.. automodule:: devilry.apps.core.baker_recipes
     :members:
 
-.. automodule:: devilry.apps.core.devilry_core_mommy_factories
+.. automodule:: devilry.apps.core.devilry_core_baker_factories
     :members:
 
 
@@ -209,23 +209,23 @@ Examples
 
 Create a period that is active now::
 
-    period = mommy.make_recipe('devilry.apps.core.period_active')
+    period = baker.make_recipe('devilry.apps.core.period_active')
 
 Create an assignment that is within an active period, but with
 publishing time and first deadline in the past::
 
-    assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+    assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
 
 Create 3 assignments within the same active period, one at the beginning, one in the middle and
 one at the end. Both the middle and end assignments will have publishin time and first deadline
 in the future (by over a 1000 years)::
 
-    period = mommy.make_recipe('devilry.apps.core.period_active')
-    assignment1 = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+    period = baker.make_recipe('devilry.apps.core.period_active')
+    assignment1 = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                     parentnode=period)
-    assignment2 = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_middle',
+    assignment2 = baker.make_recipe('devilry.apps.core.assignment_activeperiod_middle',
                                     parentnode=period)
-    assignment3 = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end',
+    assignment3 = baker.make_recipe('devilry.apps.core.assignment_activeperiod_end',
                                     parentnode=period)
 
 You can specify attributes with the recipes, so to create an assignment
@@ -233,7 +233,7 @@ within an active period, with subject name set to "Test course 101",
 period name set to "Some semester", and assignment name set to "Testassignment", use
 one of the ``assignment_activeperiod_*`` recipes like this::
 
-    assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+    assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                    parentnode__parentnode__long_name='Test course 101',
                                    parentnode__long_name='Some semester',
                                    long_name='Testassignment')
@@ -241,57 +241,57 @@ one of the ``assignment_activeperiod_*`` recipes like this::
 
 Creating an assignment with assignmentgroups and examiners::
 
-    assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+    assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
 
     # Adding an AssignmentGroup with a single candidate.
-    mommy.make('core.Candidate', assignment_group__parentnode=assignment)
+    baker.make('core.Candidate', assignment_group__parentnode=assignment)
 
     # Multiple candidates in one group require a bit more code
-    group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-    mommy.make('core.Candidate',
+    group = baker.make('core.AssignmentGroup', parentnode=assignment)
+    baker.make('core.Candidate',
                assignment_group=group,
                student__shortname='student1')
-    mommy.make('core.Candidate',
+    baker.make('core.Candidate',
                assignment_group=group,
                student__shortname='student2')
 
     # We just need a lot of AssignmentGroup objects
     # ... without candidates:
-    mommy.make('core.AssignmentGroup', parentnode=assignment, _quantity=100)
+    baker.make('core.AssignmentGroup', parentnode=assignment, _quantity=100)
     # ... with candidates:
-    mommy.make('core.Candidate', assignment_group__parentnode=assignment, _quantity=100)
+    baker.make('core.Candidate', assignment_group__parentnode=assignment, _quantity=100)
 
     # Adding examiners is just like adding candidates,
     # except that the assignment group foreignkey is called ``assignmentgroup``
     # instead of ``assignment_group``, and the user foreignkey is called ``user``
     # instead of ``student``.
-    mommy.make('core.Examiner', assignmentgroup__parentnode=assignment,
+    baker.make('core.Examiner', assignmentgroup__parentnode=assignment,
                user__shortname='examiner1')
 
 Creating a period with RelatedStudent and RelatedExaminer objects::
 
-    period = mommy.make_recipe('devilry.apps.core.period_active')
-    mommy.make('core.RelatedStudent', period=period, user__shortname='student1')
-    mommy.make('core.RelatedStudent', period=period, user__shortname='student2')
-    mommy.make('core.RelatedExaminer', period=period, user__shortname='examiner1')
+    period = baker.make_recipe('devilry.apps.core.period_active')
+    baker.make('core.RelatedStudent', period=period, user__shortname='student1')
+    baker.make('core.RelatedStudent', period=period, user__shortname='student2')
+    baker.make('core.RelatedExaminer', period=period, user__shortname='examiner1')
 
 
 Adding admins::
 
     # Creating a node with an admin
-    node = mommy.make('core.Node', admins=[mommy.make('devilry_account.User')])
+    node = baker.make('core.Node', admins=[baker.make('devilry_account.User')])
 
     # Adding admins to the parentnode without creating a separate parentnode
-    subject = mommy.make('core.Subject', parentnode__admins=[mommy.make('devilry_account.User')])
+    subject = baker.make('core.Subject', parentnode__admins=[baker.make('devilry_account.User')])
 
     # Combining this with the recipes for creating periods (same for other recipes).
     # - Lets create a period with an admin, and with an admin on the subject and on the
     #   parentnode of the subject.
-    period = mommy.make_recipe('devilry.apps.core.period_active',
-        admins=[mommy.make('devilry_account.User', shortname='periodadmin')],
-        parentnode__admins=[mommy.make('devilry_account.User', shortname='subjectadmin')],
-        parentnode__parentnode__admins=[mommy.make('devilry_account.User', shortname='nodeadmin')],
+    period = baker.make_recipe('devilry.apps.core.period_active',
+        admins=[baker.make('devilry_account.User', shortname='periodadmin')],
+        parentnode__admins=[baker.make('devilry_account.User', shortname='subjectadmin')],
+        parentnode__parentnode__admins=[baker.make('devilry_account.User', shortname='nodeadmin')],
     )
 
 
-.. _`Model mommy`: http://model-mommy.readthedocs.org
+.. _`Model baker`: http://model-bakery.readthedocs.org

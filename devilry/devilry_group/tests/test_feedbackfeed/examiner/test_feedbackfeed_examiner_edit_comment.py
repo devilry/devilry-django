@@ -4,9 +4,9 @@ from django.contrib import messages
 from django.http import Http404
 from django.test import TestCase
 from cradmin_legacy import cradmin_testhelpers
-from model_mommy import mommy
+from model_bakery import baker
 
-from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
+from devilry.devilry_group import devilry_group_baker_factories as group_baker
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.views.examiner import feedbackfeed_examiner
@@ -19,18 +19,18 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def __make_active_period(self):
-        return mommy.make_recipe('devilry.apps.core.period_active')
+        return baker.make_recipe('devilry.apps.core.period_active')
 
     def __make_examiner_for_user(self, user, group):
-        return mommy.make('core.Examiner',
+        return baker.make('core.Examiner',
                           assignmentgroup=group,
-                          relatedexaminer=mommy.make('core.RelatedExaminer', user=user))
+                          relatedexaminer=baker.make('core.RelatedExaminer', user=user))
 
     def test_get_no_group_comment_pk_raises_404(self):
-        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=self.__make_active_period())
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = baker.make('core.AssignmentGroup', parentnode__parentnode=self.__make_active_period())
+        testuser = baker.make(settings.AUTH_USER_MODEL)
         self.__make_examiner_for_user(user=testuser, group=testgroup)
-        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
         with self.assertRaises(Http404):
             self.mock_http200_getrequest_htmls(
                 cradmin_role=testgroup,
@@ -38,10 +38,10 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
             )
 
     def test_get_group_comment_does_not_exist_404(self):
-        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=self.__make_active_period())
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = baker.make('core.AssignmentGroup', parentnode__parentnode=self.__make_active_period())
+        testuser = baker.make(settings.AUTH_USER_MODEL)
         self.__make_examiner_for_user(user=testuser, group=testgroup)
-        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
         with self.assertRaises(Http404):
             self.mock_http200_getrequest_htmls(
                 cradmin_role=testgroup,
@@ -50,11 +50,11 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
             )
 
     def test_get_other_users_comment_raises_404(self):
-        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=self.__make_active_period())
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = baker.make('core.AssignmentGroup', parentnode__parentnode=self.__make_active_period())
+        testuser = baker.make(settings.AUTH_USER_MODEL)
         self.__make_examiner_for_user(user=testuser, group=testgroup)
-        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
-        groupcomment = mommy.make('devilry_group.GroupComment', feedback_set=testfeedbackset)
+        testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
+        groupcomment = baker.make('devilry_group.GroupComment', feedback_set=testfeedbackset)
         with self.assertRaises(Http404):
             self.mock_http200_getrequest_htmls(
                 cradmin_role=testgroup,
@@ -62,11 +62,11 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
                 viewkwargs={'pk': groupcomment.id})
 
     def test_post_other_users_comment_raises_404(self):
-        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=self.__make_active_period())
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = baker.make('core.AssignmentGroup', parentnode__parentnode=self.__make_active_period())
+        testuser = baker.make(settings.AUTH_USER_MODEL)
         self.__make_examiner_for_user(user=testuser, group=testgroup)
-        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
-        groupcomment = mommy.make('devilry_group.GroupComment',
+        testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
+        groupcomment = baker.make('devilry_group.GroupComment',
                                   text='unedited',
                                   feedback_set=testfeedbackset)
         with self.assertRaises(Http404):
@@ -81,11 +81,11 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
                 })
 
     def test_post_initial_empty_comment_can_be_edited(self):
-        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=self.__make_active_period())
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = baker.make('core.AssignmentGroup', parentnode__parentnode=self.__make_active_period())
+        testuser = baker.make(settings.AUTH_USER_MODEL)
         self.__make_examiner_for_user(user=testuser, group=testgroup)
-        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
-        groupcomment = mommy.make('devilry_group.GroupComment',
+        testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
+        groupcomment = baker.make('devilry_group.GroupComment',
                                   user=testuser,
                                   user_role='examiner',
                                   feedback_set=testfeedbackset)
@@ -109,11 +109,11 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
         messagesmock.add.assert_called_once_with(messages.SUCCESS, 'Comment updated!', '')
 
     def test_post_identical_texts_does_not_save_comment(self):
-        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=self.__make_active_period())
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = baker.make('core.AssignmentGroup', parentnode__parentnode=self.__make_active_period())
+        testuser = baker.make(settings.AUTH_USER_MODEL)
         self.__make_examiner_for_user(user=testuser, group=testgroup)
-        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
-        groupcomment = mommy.make('devilry_group.GroupComment',
+        testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
+        groupcomment = baker.make('devilry_group.GroupComment',
                                   user=testuser,
                                   user_role='examiner',
                                   text='unedited',
@@ -135,11 +135,11 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
         messagesmock.add.assert_called_once_with(messages.SUCCESS, 'No changes, comment not updated', '')
 
     def test_post_comment_save(self):
-        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=self.__make_active_period())
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = baker.make('core.AssignmentGroup', parentnode__parentnode=self.__make_active_period())
+        testuser = baker.make(settings.AUTH_USER_MODEL)
         self.__make_examiner_for_user(user=testuser, group=testgroup)
-        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
-        groupcomment = mommy.make('devilry_group.GroupComment',
+        testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
+        groupcomment = baker.make('devilry_group.GroupComment',
                                   user=testuser,
                                   user_role='examiner',
                                   text='unedited',
@@ -166,11 +166,11 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
         self.assertEqual('edited', db_comment.text)
 
     def test_post_comment_visible_to_everyone_history_visibility(self):
-        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=self.__make_active_period())
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = baker.make('core.AssignmentGroup', parentnode__parentnode=self.__make_active_period())
+        testuser = baker.make(settings.AUTH_USER_MODEL)
         self.__make_examiner_for_user(user=testuser, group=testgroup)
-        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
-        groupcomment = mommy.make('devilry_group.GroupComment',
+        testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
+        groupcomment = baker.make('devilry_group.GroupComment',
                                   user=testuser,
                                   user_role='examiner',
                                   text='unedited',
@@ -191,11 +191,11 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
         self.assertEqual(edit_history_entry.visibility, group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
     def test_post_comment_visible_to_examiners_and_admin_history_visibility(self):
-        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=self.__make_active_period())
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = baker.make('core.AssignmentGroup', parentnode__parentnode=self.__make_active_period())
+        testuser = baker.make(settings.AUTH_USER_MODEL)
         self.__make_examiner_for_user(user=testuser, group=testgroup)
-        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
-        groupcomment = mommy.make('devilry_group.GroupComment',
+        testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
+        groupcomment = baker.make('devilry_group.GroupComment',
                                   user=testuser,
                                   user_role='examiner',
                                   text='unedited',
@@ -217,11 +217,11 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
                          group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
 
     def test_post_comment_private_history_visibility(self):
-        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=self.__make_active_period())
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = baker.make('core.AssignmentGroup', parentnode__parentnode=self.__make_active_period())
+        testuser = baker.make(settings.AUTH_USER_MODEL)
         self.__make_examiner_for_user(user=testuser, group=testgroup)
-        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
-        groupcomment = mommy.make('devilry_group.GroupComment',
+        testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
+        groupcomment = baker.make('devilry_group.GroupComment',
                                   user=testuser,
                                   user_role='examiner',
                                   text='unedited',
@@ -243,11 +243,11 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
         self.assertEqual(edit_history_entry.visibility, group_models.GroupComment.VISIBILITY_PRIVATE)
 
     def test_post_comment_save_continue_edit(self):
-        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=self.__make_active_period())
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = baker.make('core.AssignmentGroup', parentnode__parentnode=self.__make_active_period())
+        testuser = baker.make(settings.AUTH_USER_MODEL)
         self.__make_examiner_for_user(user=testuser, group=testgroup)
-        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
-        groupcomment = mommy.make('devilry_group.GroupComment',
+        testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
+        groupcomment = baker.make('devilry_group.GroupComment',
                                   user=testuser,
                                   user_role='examiner',
                                   text='unedited',

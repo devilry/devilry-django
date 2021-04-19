@@ -6,7 +6,7 @@ from zipfile import ZipFile
 from django import test
 from django.core.files.base import ContentFile
 from django.utils import timezone
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.devilry_comment.models import Comment
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
@@ -33,22 +33,22 @@ class TestBulkFileDownloadBase(AbstractTestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_get_zipfile(self):
-        assignmentgroup1 = mommy.make('core.AssignmentGroup',
+        assignmentgroup1 = baker.make('core.AssignmentGroup',
                                       parentnode__parentnode__parentnode__short_name="test2100",
                                       parentnode__parentnode__short_name="spring2015",
                                       parentnode__short_name="oblig1")
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=assignmentgroup1,
                    relatedstudent__user__shortname="testuser1")
         tomorrow = timezone.now() + datetime.timedelta(days=1)
-        feedbackset1 = mommy.make('devilry_group.FeedbackSet',
+        feedbackset1 = baker.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup1,
                                   feedbackset_type=groupmodels.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
                                   deadline_datetime=tomorrow)
-        comment_fbs1_1 = mommy.make('devilry_group.GroupComment',
+        comment_fbs1_1 = baker.make('devilry_group.GroupComment',
                                     feedback_set=feedbackset1,
                                     user_role=Comment.USER_ROLE_STUDENT)
-        commentfile_fbs1_1 = mommy.make('devilry_comment.CommentFile',
+        commentfile_fbs1_1 = baker.make('devilry_comment.CommentFile',
                                         comment=comment_fbs1_1, filename='testfile1.txt')
         commentfile_fbs1_1.file.save('testfile1.txt', ContentFile('test'))
 
@@ -59,25 +59,25 @@ class TestBulkFileDownloadBase(AbstractTestCase):
         self.assertEqual(filecontents, b"test")
 
     def test_multiple_students_in_assignmentgroup(self):
-        assignmentgroup1 = mommy.make('core.AssignmentGroup',
+        assignmentgroup1 = baker.make('core.AssignmentGroup',
                                       parentnode__parentnode__parentnode__short_name="test2100",
                                       parentnode__parentnode__short_name="spring2015",
                                       parentnode__short_name="oblig1")
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=assignmentgroup1,
                    relatedstudent__user__shortname="testuser1")
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=assignmentgroup1,
                    relatedstudent__user__shortname="testuser2")
         tomorrow = timezone.now() + datetime.timedelta(days=1)
-        feedbackset1 = mommy.make('devilry_group.FeedbackSet',
+        feedbackset1 = baker.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup1,
                                   feedbackset_type=groupmodels.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
                                   deadline_datetime=tomorrow)
-        comment_fbs1_1 = mommy.make('devilry_group.GroupComment',
+        comment_fbs1_1 = baker.make('devilry_group.GroupComment',
                                     feedback_set=feedbackset1,
                                     user_role=Comment.USER_ROLE_STUDENT)
-        commentfile_fbs1_1 = mommy.make('devilry_comment.CommentFile',
+        commentfile_fbs1_1 = baker.make('devilry_comment.CommentFile',
                                         comment=comment_fbs1_1, filename='testfile1.txt')
         commentfile_fbs1_1.file.save('testfile1.txt', ContentFile('test'))
 
@@ -88,32 +88,32 @@ class TestBulkFileDownloadBase(AbstractTestCase):
         self.assertEqual(filecontents, b"test")
 
     def test_multiple_attempts(self):
-        assignmentgroup1 = mommy.make('core.AssignmentGroup',
+        assignmentgroup1 = baker.make('core.AssignmentGroup',
                                       parentnode__parentnode__parentnode__short_name="test2100",
                                       parentnode__parentnode__short_name="spring2015",
                                       parentnode__short_name="oblig1")
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=assignmentgroup1,
                    relatedstudent__user__shortname="testuser1")
         tomorrow = timezone.now() + datetime.timedelta(days=1)
-        feedbackset1 = mommy.make('devilry_group.FeedbackSet',
+        feedbackset1 = baker.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup1,
                                   feedbackset_type=groupmodels.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
                                   deadline_datetime=tomorrow)
-        comment_fbs1_1 = mommy.make('devilry_group.GroupComment',
+        comment_fbs1_1 = baker.make('devilry_group.GroupComment',
                                     feedback_set=feedbackset1,
                                     user_role=Comment.USER_ROLE_STUDENT)
-        commentfile_fbs1_1 = mommy.make('devilry_comment.CommentFile',
+        commentfile_fbs1_1 = baker.make('devilry_comment.CommentFile',
                                         comment=comment_fbs1_1, filename='testfile1.txt')
         commentfile_fbs1_1.file.save('testfile1.txt', ContentFile('test'))
-        feedbackset2 = mommy.make('devilry_group.FeedbackSet',
+        feedbackset2 = baker.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup1,
                                   feedbackset_type=groupmodels.FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT,
                                   deadline_datetime=tomorrow)
-        comment_fbs2_1 = mommy.make('devilry_group.GroupComment',
+        comment_fbs2_1 = baker.make('devilry_group.GroupComment',
                                     feedback_set=feedbackset2,
                                     user_role=Comment.USER_ROLE_STUDENT)
-        commentfile_fbs2_1 = mommy.make('devilry_comment.CommentFile',
+        commentfile_fbs2_1 = baker.make('devilry_comment.CommentFile',
                                         comment=comment_fbs2_1, filename='testfile2.txt')
         commentfile_fbs2_1.file.save('testfile2.txt', ContentFile('test2'))
 
@@ -126,29 +126,29 @@ class TestBulkFileDownloadBase(AbstractTestCase):
         self.assertEqual(filecontents, b"test2")
 
     def test_multiple_files_same_attempt_same_name(self):
-        assignmentgroup1 = mommy.make('core.AssignmentGroup',
+        assignmentgroup1 = baker.make('core.AssignmentGroup',
                                       parentnode__parentnode__parentnode__short_name="test2100",
                                       parentnode__parentnode__short_name="spring2015",
                                       parentnode__short_name="oblig1")
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=assignmentgroup1,
                    relatedstudent__user__shortname="testuser1")
         tomorrow = timezone.now() + datetime.timedelta(days=1)
-        feedbackset1 = mommy.make('devilry_group.FeedbackSet',
+        feedbackset1 = baker.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup1,
                                   feedbackset_type=groupmodels.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
                                   deadline_datetime=tomorrow)
-        comment_fbs1_1 = mommy.make('devilry_group.GroupComment',
+        comment_fbs1_1 = baker.make('devilry_group.GroupComment',
                                     feedback_set=feedbackset1,
                                     user_role=Comment.USER_ROLE_STUDENT)
-        commentfile_fbs1_1 = mommy.make('devilry_comment.CommentFile',
+        commentfile_fbs1_1 = baker.make('devilry_comment.CommentFile',
                                         comment=comment_fbs1_1, filename='testfile1.txt')
         commentfile_fbs1_1.file.save('testfile1.txt', ContentFile('test'))
 
-        comment_fbs1_2 = mommy.make('devilry_group.GroupComment',
+        comment_fbs1_2 = baker.make('devilry_group.GroupComment',
                                     feedback_set=feedbackset1,
                                     user_role=Comment.USER_ROLE_STUDENT)
-        commentfile_fbs1_2 = mommy.make('devilry_comment.CommentFile',
+        commentfile_fbs1_2 = baker.make('devilry_comment.CommentFile',
                                         comment=comment_fbs1_2, filename='testfile1.txt')
         commentfile_fbs1_2.file.save('testfile1.txt', ContentFile('test2'))
 
@@ -161,26 +161,26 @@ class TestBulkFileDownloadBase(AbstractTestCase):
         self.assertEqual(filecontents, b"test2")
 
     def test_multiple_files_same_comment_same_name(self):
-        assignmentgroup1 = mommy.make('core.AssignmentGroup',
+        assignmentgroup1 = baker.make('core.AssignmentGroup',
                                       parentnode__parentnode__parentnode__short_name="test2100",
                                       parentnode__parentnode__short_name="spring2015",
                                       parentnode__short_name="oblig1")
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=assignmentgroup1,
                    relatedstudent__user__shortname="testuser1")
         tomorrow = timezone.now() + datetime.timedelta(days=1)
-        feedbackset1 = mommy.make('devilry_group.FeedbackSet',
+        feedbackset1 = baker.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup1,
                                   feedbackset_type=groupmodels.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
                                   deadline_datetime=tomorrow)
 
-        comment_fbs1_2 = mommy.make('devilry_group.GroupComment',
+        comment_fbs1_2 = baker.make('devilry_group.GroupComment',
                                     feedback_set=feedbackset1,
                                     user_role=Comment.USER_ROLE_STUDENT)
-        commentfile_fbs1_2 = mommy.make('devilry_comment.CommentFile',
+        commentfile_fbs1_2 = baker.make('devilry_comment.CommentFile',
                                         comment=comment_fbs1_2, filename='testfile1.txt')
         commentfile_fbs1_2.file.save('testfile1.txt', ContentFile('test2'))
-        commentfile_fbs1_2_2 = mommy.make('devilry_comment.CommentFile',
+        commentfile_fbs1_2_2 = baker.make('devilry_comment.CommentFile',
                                           comment=comment_fbs1_2, filename='testfile1.txt')
         commentfile_fbs1_2_2.file.save('testfile1.txt', ContentFile('test3'))
 
@@ -193,22 +193,22 @@ class TestBulkFileDownloadBase(AbstractTestCase):
         self.assertEqual(filecontents, b"test3")
 
     def test_file_from_examiner(self):
-        assignmentgroup1 = mommy.make('core.AssignmentGroup',
+        assignmentgroup1 = baker.make('core.AssignmentGroup',
                                       parentnode__parentnode__parentnode__short_name="test2100",
                                       parentnode__parentnode__short_name="spring2015",
                                       parentnode__short_name="oblig1")
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=assignmentgroup1,
                    relatedstudent__user__shortname="testuser1")
         tomorrow = timezone.now() + datetime.timedelta(days=1)
-        feedbackset1 = mommy.make('devilry_group.FeedbackSet',
+        feedbackset1 = baker.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup1,
                                   feedbackset_type=groupmodels.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
                                   deadline_datetime=tomorrow)
-        comment_fbs1_1 = mommy.make('devilry_group.GroupComment',
+        comment_fbs1_1 = baker.make('devilry_group.GroupComment',
                                     feedback_set=feedbackset1,
                                     user_role=Comment.USER_ROLE_EXAMINER)
-        commentfile_fbs1_1 = mommy.make('devilry_comment.CommentFile',
+        commentfile_fbs1_1 = baker.make('devilry_comment.CommentFile',
                                         comment=comment_fbs1_1, filename='testfile1.txt')
         commentfile_fbs1_1.file.save('testfile1.txt', ContentFile('test'))
 
@@ -219,22 +219,22 @@ class TestBulkFileDownloadBase(AbstractTestCase):
         self.assertEqual(filecontents, b"test")
 
     def test_file_after_deadline(self):
-        assignmentgroup1 = mommy.make('core.AssignmentGroup',
+        assignmentgroup1 = baker.make('core.AssignmentGroup',
                                       parentnode__parentnode__parentnode__short_name="test2100",
                                       parentnode__parentnode__short_name="spring2015",
                                       parentnode__short_name="oblig1")
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=assignmentgroup1,
                    relatedstudent__user__shortname="testuser1")
         yesterday = timezone.now() - datetime.timedelta(days=1)
-        feedbackset1 = mommy.make('devilry_group.FeedbackSet',
+        feedbackset1 = baker.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup1,
                                   feedbackset_type=groupmodels.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
                                   deadline_datetime=yesterday)
-        comment_fbs1_1 = mommy.make('devilry_group.GroupComment',
+        comment_fbs1_1 = baker.make('devilry_group.GroupComment',
                                     feedback_set=feedbackset1,
                                     user_role=Comment.USER_ROLE_STUDENT)
-        commentfile_fbs1_1 = mommy.make('devilry_comment.CommentFile',
+        commentfile_fbs1_1 = baker.make('devilry_comment.CommentFile',
                                         comment=comment_fbs1_1, filename='testfile1.txt')
         commentfile_fbs1_1.file.save('testfile1.txt', ContentFile('test'))
 
@@ -246,38 +246,38 @@ class TestBulkFileDownloadBase(AbstractTestCase):
         self.assertEqual(filecontents, b"test")
 
     def test_multiple_assignmentgroups(self):
-        assignmentgroup1 = mommy.make('core.AssignmentGroup',
+        assignmentgroup1 = baker.make('core.AssignmentGroup',
                                       parentnode__parentnode__parentnode__short_name="test2100",
                                       parentnode__parentnode__short_name="spring2015",
                                       parentnode__short_name="oblig1")
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=assignmentgroup1,
                    relatedstudent__user__shortname="testuser1")
         tomorrow = timezone.now() + datetime.timedelta(days=1)
-        feedbackset1 = mommy.make('devilry_group.FeedbackSet',
+        feedbackset1 = baker.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup1,
                                   feedbackset_type=groupmodels.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
                                   deadline_datetime=tomorrow)
-        comment_fbs1 = mommy.make('devilry_group.GroupComment',
+        comment_fbs1 = baker.make('devilry_group.GroupComment',
                                   feedback_set=feedbackset1,
                                   user_role=Comment.USER_ROLE_STUDENT)
-        commentfile_fbs1 = mommy.make('devilry_comment.CommentFile',
+        commentfile_fbs1 = baker.make('devilry_comment.CommentFile',
                                       comment=comment_fbs1, filename='testfile1.txt')
         commentfile_fbs1.file.save('testfile1.txt', ContentFile('test'))
 
-        assignmentgroup2 = mommy.make('core.AssignmentGroup',
+        assignmentgroup2 = baker.make('core.AssignmentGroup',
                                       parentnode=assignmentgroup1.parentnode)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=assignmentgroup2,
                    relatedstudent__user__shortname="testuser2")
-        feedbackset2 = mommy.make('devilry_group.FeedbackSet',
+        feedbackset2 = baker.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup2,
                                   feedbackset_type=groupmodels.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
                                   deadline_datetime=tomorrow)
-        comment_fbs2 = mommy.make('devilry_group.GroupComment',
+        comment_fbs2 = baker.make('devilry_group.GroupComment',
                                   feedback_set=feedbackset2,
                                   user_role=Comment.USER_ROLE_STUDENT)
-        commentfile_fbs2 = mommy.make('devilry_comment.CommentFile',
+        commentfile_fbs2 = baker.make('devilry_comment.CommentFile',
                                       comment=comment_fbs2, filename='testfile2.txt')
         commentfile_fbs2.file.save('testfile1.txt', ContentFile('test2'))
 

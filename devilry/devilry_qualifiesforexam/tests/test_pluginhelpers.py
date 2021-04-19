@@ -2,7 +2,7 @@
 
 
 # 3rd party imports
-from model_mommy import mommy
+from model_bakery import baker
 
 # Python imports
 import unittest
@@ -16,7 +16,7 @@ from devilry.project.common import settings
 from devilry.devilry_qualifiesforexam.utils import groups_groupedby_relatedstudent_and_assignments
 from devilry.devilry_qualifiesforexam import pluginhelpers
 from devilry.apps.core import models as core_models
-from devilry.devilry_group import devilry_group_mommy_factories
+from devilry.devilry_group import devilry_group_baker_factories
 
 
 class TestPluginHelper:
@@ -39,29 +39,29 @@ class TestPluginHelper:
 
         """
         # Util function for creating a dataset of multiple assignments
-        testperiod = mommy.make_recipe('devilry.apps.core.period_active')
-        admin_user = mommy.make(settings.AUTH_USER_MODEL)
-        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup', period=testperiod)
-        mommy.make('devilry_account.PermissionGroupUser',
+        testperiod = baker.make_recipe('devilry.apps.core.period_active')
+        admin_user = baker.make(settings.AUTH_USER_MODEL)
+        periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup', period=testperiod)
+        baker.make('devilry_account.PermissionGroupUser',
                    user=admin_user,
                    permissiongroup=periodpermissiongroup.permissiongroup)
 
         # Create assignments
-        assign1 = mommy.make('core.Assignment',
+        assign1 = baker.make('core.Assignment',
                              short_name='assignment1',
                              long_name='Assignment 1',
                              parentnode=testperiod,
                              grading_system_plugin_id=grading_plugin,
                              max_points=max_points,
                              passing_grade_min_points=min_points)
-        assign2 = mommy.make('core.Assignment',
+        assign2 = baker.make('core.Assignment',
                              short_name='assignment2',
                              long_name='Assignment 2',
                              parentnode=testperiod,
                              grading_system_plugin_id=grading_plugin,
                              max_points=max_points,
                              passing_grade_min_points=min_points)
-        assign3 = mommy.make('core.Assignment',
+        assign3 = baker.make('core.Assignment',
                              short_name='assignment3',
                              long_name='Assignment 3',
                              parentnode=testperiod,
@@ -70,29 +70,29 @@ class TestPluginHelper:
                              passing_grade_min_points=min_points)
 
         # Create AssignmentGroups
-        assigngroup1 = mommy.make('core.AssignmentGroup', parentnode=assign1)
-        assigngroup2 = mommy.make('core.AssignmentGroup', parentnode=assign2)
-        assigngroup3 = mommy.make('core.AssignmentGroup', parentnode=assign3)
+        assigngroup1 = baker.make('core.AssignmentGroup', parentnode=assign1)
+        assigngroup2 = baker.make('core.AssignmentGroup', parentnode=assign2)
+        assigngroup3 = baker.make('core.AssignmentGroup', parentnode=assign3)
 
         # Create FeedbackSets
-        fb1 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        fb1 = devilry_group_baker_factories.feedbackset_first_attempt_published(
                 group=assigngroup1,
                 grading_points=1)
-        fb2 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        fb2 = devilry_group_baker_factories.feedbackset_first_attempt_published(
                 group=assigngroup2,
                 grading_points=1)
-        fb3 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        fb3 = devilry_group_baker_factories.feedbackset_first_attempt_published(
                 group=assigngroup3,
                 grading_points=1)
 
         # Create a student with user
-        student_user = mommy.make(settings.AUTH_USER_MODEL, shortname='apduc', fullname='April Duck')
-        relatedstudent = mommy.make('core.RelatedStudent', user=student_user, period=testperiod)
+        student_user = baker.make(settings.AUTH_USER_MODEL, shortname='apduc', fullname='April Duck')
+        relatedstudent = baker.make('core.RelatedStudent', user=student_user, period=testperiod)
 
         # Create candidates with relatedstudents and assignmentgroups
-        cand1 = mommy.make('core.Candidate', relatedstudent=relatedstudent, assignment_group=assigngroup1)
-        cand2 = mommy.make('core.Candidate', relatedstudent=relatedstudent, assignment_group=assigngroup2)
-        cand3 = mommy.make('core.Candidate', relatedstudent=relatedstudent, assignment_group=assigngroup3)
+        cand1 = baker.make('core.Candidate', relatedstudent=relatedstudent, assignment_group=assigngroup1)
+        cand2 = baker.make('core.Candidate', relatedstudent=relatedstudent, assignment_group=assigngroup2)
+        cand3 = baker.make('core.Candidate', relatedstudent=relatedstudent, assignment_group=assigngroup3)
 
         return {'testperiod': testperiod,
                 'testassignments': [assign1, assign2, assign3],
@@ -127,9 +127,9 @@ class TestGroupFeedbackSetList(test.TestCase, TestPluginHelper):
         # Test serialization of feedbackset.
 
         # Create FeedbackSet
-        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        feedbackset = devilry_group_baker_factories.feedbackset_first_attempt_published(
                 grading_points=1,
-                grading_published_by=mommy.make(settings.AUTH_USER_MODEL, shortname='donduc', fullname='Donald Duck')
+                grading_published_by=baker.make(settings.AUTH_USER_MODEL, shortname='donduc', fullname='Donald Duck')
         )
 
         groupfeedbacksetlist = groups_groupedby_relatedstudent_and_assignments.GroupFeedbackSetList()
@@ -146,12 +146,12 @@ class TestGroupFeedbackSetList(test.TestCase, TestPluginHelper):
         # Test serialization of AssignmentGroup
 
         # Create AssignmentGroup
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = baker.make('core.AssignmentGroup')
 
         # Create FeedbackSet
-        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        feedbackset = devilry_group_baker_factories.feedbackset_first_attempt_published(
                 grading_points=1,
-                grading_published_by=mommy.make(settings.AUTH_USER_MODEL, shortname='donduc', fullname='Donald Duck')
+                grading_published_by=baker.make(settings.AUTH_USER_MODEL, shortname='donduc', fullname='Donald Duck')
         )
 
         groupfeedbacksetlist = groups_groupedby_relatedstudent_and_assignments.GroupFeedbackSetList()
@@ -164,19 +164,19 @@ class TestGroupFeedbackSetList(test.TestCase, TestPluginHelper):
         # Test serialization of the entire GroupFeedbackSetList.
 
         # Create AssignmentGroup
-        testgroup1 = mommy.make('core.AssignmentGroup')
-        testgroup2 = mommy.make('core.AssignmentGroup')
+        testgroup1 = baker.make('core.AssignmentGroup')
+        testgroup2 = baker.make('core.AssignmentGroup')
 
         # Create examiner
-        testexaminer = mommy.make(settings.AUTH_USER_MODEL, shortname='donduc', fullname='Donald Duck')
+        testexaminer = baker.make(settings.AUTH_USER_MODEL, shortname='donduc', fullname='Donald Duck')
 
         # Create FeedbackSet
-        test_feedbackset1 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        test_feedbackset1 = devilry_group_baker_factories.feedbackset_first_attempt_published(
                 grading_points=1,
                 grading_published_by=testexaminer,
                 group=testgroup1
         )
-        test_feedbackset2 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        test_feedbackset2 = devilry_group_baker_factories.feedbackset_first_attempt_published(
                 grading_points=1,
                 grading_published_by=testexaminer,
                 group=testgroup2

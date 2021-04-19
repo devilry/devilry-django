@@ -1,9 +1,9 @@
 from django.test import TestCase
 from django.utils import timezone
 from django.utils.timezone import timedelta
-from model_mommy import mommy
+from model_bakery import baker
 
-from devilry.apps.core import devilry_core_mommy_factories as core_mommy
+from devilry.apps.core import devilry_core_baker_factories as core_baker
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import AssignmentGroupHistory
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
@@ -15,7 +15,7 @@ class TestAssignmentGroupHistory(TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_merge_history_meta_data(self):
-        assignment_group_history = mommy.make('core.AssignmentGroupHistory')
+        assignment_group_history = baker.make('core.AssignmentGroupHistory')
         datetime1 = (timezone.now() - timedelta(days=1)).isoformat()
         datetime2 = (timezone.now() - timedelta(days=2)).isoformat()
         assignment_group_history.merge_history = {
@@ -73,11 +73,11 @@ class TestAssignmentGroupHistory(TestCase):
         })
 
     def test_merge_history_meta_data_real_groups(self):
-        test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        group1 = mommy.make('core.AssignmentGroup', parentnode=test_assignment, name='group1')
-        group2 = mommy.make('core.AssignmentGroup', parentnode=test_assignment, name='group2')
-        group3 = mommy.make('core.AssignmentGroup', parentnode=test_assignment, name='group3')
-        group4 = mommy.make('core.AssignmentGroup', parentnode=test_assignment, name='group4')
+        test_assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group1 = baker.make('core.AssignmentGroup', parentnode=test_assignment, name='group1')
+        group2 = baker.make('core.AssignmentGroup', parentnode=test_assignment, name='group2')
+        group3 = baker.make('core.AssignmentGroup', parentnode=test_assignment, name='group3')
+        group4 = baker.make('core.AssignmentGroup', parentnode=test_assignment, name='group4')
 
         AssignmentGroup.merge_groups([group1, group2, group3])
         AssignmentGroup.merge_groups([group1, group4])
@@ -92,9 +92,9 @@ class TestAssignmentGroupHistory(TestCase):
         }, meta_data[1])
 
     def test_merge_single_assignment_groups(self):
-        test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        group1 = mommy.make('core.AssignmentGroup', parentnode=test_assignment, name='group1')
-        group2 = mommy.make('core.AssignmentGroup', parentnode=test_assignment, name='group2')
+        test_assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group1 = baker.make('core.AssignmentGroup', parentnode=test_assignment, name='group1')
+        group2 = baker.make('core.AssignmentGroup', parentnode=test_assignment, name='group2')
 
         AssignmentGroup.merge_groups([group1, group2])
         merge_history = AssignmentGroupHistory.objects.get(assignment_group__id=group1.id).merge_history
@@ -102,21 +102,21 @@ class TestAssignmentGroupHistory(TestCase):
         self.assertEqual(merge_history['groups'][1]['state']['name'], 'group2')
 
     def test_merge_assignmentgroup_multiple_times(self):
-        test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        group1 = mommy.make('core.AssignmentGroup', parentnode=test_assignment, name='group1')
-        group2 = mommy.make('core.AssignmentGroup', parentnode=test_assignment, name='group2')
-        group3 = mommy.make('core.AssignmentGroup', parentnode=test_assignment, name='group3')
-        group4 = mommy.make('core.AssignmentGroup', parentnode=test_assignment, name='group4')
+        test_assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group1 = baker.make('core.AssignmentGroup', parentnode=test_assignment, name='group1')
+        group2 = baker.make('core.AssignmentGroup', parentnode=test_assignment, name='group2')
+        group3 = baker.make('core.AssignmentGroup', parentnode=test_assignment, name='group3')
+        group4 = baker.make('core.AssignmentGroup', parentnode=test_assignment, name='group4')
 
-        core_mommy.candidate(group=group1)
-        core_mommy.candidate(group=group1)
-        core_mommy.candidate(group=group2)
-        core_mommy.candidate(group=group3)
-        core_mommy.candidate(group=group4)
-        core_mommy.examiner(group=group1)
-        core_mommy.examiner(group=group2)
-        core_mommy.examiner(group=group2)
-        core_mommy.examiner(group=group3)
+        core_baker.candidate(group=group1)
+        core_baker.candidate(group=group1)
+        core_baker.candidate(group=group2)
+        core_baker.candidate(group=group3)
+        core_baker.candidate(group=group4)
+        core_baker.examiner(group=group1)
+        core_baker.examiner(group=group2)
+        core_baker.examiner(group=group2)
+        core_baker.examiner(group=group3)
         group1_state = group1.get_current_state()
         group2_state = group2.get_current_state()
         group3_state = group3.get_current_state()
@@ -145,11 +145,11 @@ class TestAssignmentGroupHistory(TestCase):
         self.assertDictEqual(group1_merge_history_new['groups'][1]['state'], group2_state)
 
     def test_is_deleted_after_merge(self):
-        test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        group1 = mommy.make('core.AssignmentGroup', parentnode=test_assignment, name='group1')
-        group2 = mommy.make('core.AssignmentGroup', parentnode=test_assignment, name='group2')
-        group3 = mommy.make('core.AssignmentGroup', parentnode=test_assignment, name='group3')
-        group4 = mommy.make('core.AssignmentGroup', parentnode=test_assignment, name='group4')
+        test_assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group1 = baker.make('core.AssignmentGroup', parentnode=test_assignment, name='group1')
+        group2 = baker.make('core.AssignmentGroup', parentnode=test_assignment, name='group2')
+        group3 = baker.make('core.AssignmentGroup', parentnode=test_assignment, name='group3')
+        group4 = baker.make('core.AssignmentGroup', parentnode=test_assignment, name='group4')
 
         AssignmentGroup.merge_groups([group1, group2])
         historygroup1id = group1.assignmentgrouphistory.id
@@ -162,13 +162,13 @@ class TestAssignmentGroupHistory(TestCase):
         self.assertTrue(AssignmentGroupHistory.objects.filter(id=historygroup1id).exists())
 
     # def test_num_queries(self):
-    #     test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-    #     group1 = mommy.make('core.AssignmentGroup', parentnode=test_assignment, name='group1')
-    #     group2 = mommy.make('core.AssignmentGroup', parentnode=test_assignment, name='group2')
-    #     group_mommy.feedbackset_new_attempt_published(group1)
-    #     group_mommy.feedbackset_new_attempt_published(group1)
-    #     group_mommy.feedbackset_new_attempt_published(group2)
-    #     group_mommy.feedbackset_new_attempt_published(group2)
+    #     test_assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+    #     group1 = baker.make('core.AssignmentGroup', parentnode=test_assignment, name='group1')
+    #     group2 = baker.make('core.AssignmentGroup', parentnode=test_assignment, name='group2')
+    #     group_baker.feedbackset_new_attempt_published(group1)
+    #     group_baker.feedbackset_new_attempt_published(group1)
+    #     group_baker.feedbackset_new_attempt_published(group2)
+    #     group_baker.feedbackset_new_attempt_published(group2)
     #
     #     with self.assertNumQueries(3):
     #         AssignmentGroup.merge_groups([group1, group2])

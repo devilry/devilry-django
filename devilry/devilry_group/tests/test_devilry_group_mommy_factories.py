@@ -1,24 +1,24 @@
 from django.test import TestCase
 from django.utils import timezone
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.devilry_group import models as group_models
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
-from devilry.devilry_group import devilry_group_mommy_factories
+from devilry.devilry_group import devilry_group_baker_factories
 from devilry.devilry_dbcache import models as cache_models
 
 
-class TestDevilryGroupMommyFactories(TestCase):
+class TestDevilryGroupBakeryFactories(TestCase):
 
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_feedbackset_save(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        testgroup = baker.make('core.AssignmentGroup')
+        examiner = baker.make('core.Examiner', assignmentgroup=testgroup)
         grading_datetime = timezone.now()
         testfeedbackset = group_models.FeedbackSet.objects.get(group=testgroup)
-        devilry_group_mommy_factories.feedbackset_save(
+        devilry_group_baker_factories.feedbackset_save(
                 testfeedbackset,
                 grading_published_datetime=grading_datetime,
                 grading_points=10,
@@ -30,7 +30,7 @@ class TestDevilryGroupMommyFactories(TestCase):
         self.assertEqual(testfeedbackset.grading_points, 10)
 
     def test_feedbackset_first_attempt_published_without_group(self):
-        testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published()
+        testfeedbackset = devilry_group_baker_factories.feedbackset_first_attempt_published()
         self.assertEqual(1, group_models.FeedbackSet.objects.count())
         self.assertIsNotNone(testfeedbackset.grading_published_datetime)
         self.assertEqual(testfeedbackset.grading_points, 1)
@@ -43,9 +43,9 @@ class TestDevilryGroupMommyFactories(TestCase):
         self.assertEqual(cached_group.last_published_feedbackset, testfeedbackset)
 
     def test_feedbackset_first_attempt_published_without_grading_datetime(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
-        testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        testgroup = baker.make('core.AssignmentGroup')
+        examiner = baker.make('core.Examiner', assignmentgroup=testgroup)
+        testfeedbackset = devilry_group_baker_factories.feedbackset_first_attempt_published(
                 group=testgroup,
                 grading_published_by=examiner.relatedexaminer.user
         )
@@ -61,10 +61,10 @@ class TestDevilryGroupMommyFactories(TestCase):
         self.assertEqual(cached_group.last_published_feedbackset, testfeedbackset)
 
     def test_feedbackset_first_attempt_published_with_grading_datetime(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        testgroup = baker.make('core.AssignmentGroup')
+        examiner = baker.make('core.Examiner', assignmentgroup=testgroup)
         grading_datetime = timezone.now()
-        testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        testfeedbackset = devilry_group_baker_factories.feedbackset_first_attempt_published(
                 group=testgroup,
                 grading_published_datetime=grading_datetime,
                 grading_published_by=examiner.relatedexaminer.user
@@ -81,8 +81,8 @@ class TestDevilryGroupMommyFactories(TestCase):
         self.assertEqual(cached_group.last_published_feedbackset, testfeedbackset)
 
     def test_feedbackset_first_attempt_unpublished(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup)
+        testgroup = baker.make('core.AssignmentGroup')
+        testfeedbackset = devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup)
         self.assertEqual(1, group_models.FeedbackSet.objects.count())
         self.assertEqual(testgroup.id, testfeedbackset.group.id)
         self.assertIsNone(testfeedbackset.grading_published_by)
@@ -96,12 +96,12 @@ class TestDevilryGroupMommyFactories(TestCase):
         self.assertIsNone(cached_group.last_published_feedbackset)
 
     def test_feedbackset_new_attempt_published_with_grading_datetime(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        testfeedbackset_first = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        testgroup = baker.make('core.AssignmentGroup')
+        testfeedbackset_first = devilry_group_baker_factories.feedbackset_first_attempt_published(
             group=testgroup
         )
         grading_datetime = timezone.now()
-        testfeedbackset = devilry_group_mommy_factories.feedbackset_new_attempt_published(
+        testfeedbackset = devilry_group_baker_factories.feedbackset_new_attempt_published(
             group=testgroup,
             grading_published_datetime=grading_datetime,
             deadline_datetime=timezone.now() + timezone.timedelta(days=3)
@@ -119,11 +119,11 @@ class TestDevilryGroupMommyFactories(TestCase):
         self.assertEqual(group_cache.last_published_feedbackset, testfeedbackset)
 
     def test_feedbackset_new_attempt_published_without_grading_datetime(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        testfeedbackset_first = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        testgroup = baker.make('core.AssignmentGroup')
+        testfeedbackset_first = devilry_group_baker_factories.feedbackset_first_attempt_published(
             group=testgroup
         )
-        testfeedbackset = devilry_group_mommy_factories.feedbackset_new_attempt_published(
+        testfeedbackset = devilry_group_baker_factories.feedbackset_new_attempt_published(
             group=testgroup,
             deadline_datetime=timezone.now() + timezone.timedelta(days=3)
         )
@@ -140,11 +140,11 @@ class TestDevilryGroupMommyFactories(TestCase):
         self.assertEqual(group_cache.last_published_feedbackset, testfeedbackset)
 
     def test_feedbackset_new_attempt_unpublished(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        testfeedbackset_first = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        testgroup = baker.make('core.AssignmentGroup')
+        testfeedbackset_first = devilry_group_baker_factories.feedbackset_first_attempt_published(
             group=testgroup
         )
-        testfeedbackset = devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
+        testfeedbackset = devilry_group_baker_factories.feedbackset_new_attempt_unpublished(
             group=testgroup
         )
         self.assertEqual(2, group_models.FeedbackSet.objects.count())

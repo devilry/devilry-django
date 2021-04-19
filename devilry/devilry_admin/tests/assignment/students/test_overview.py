@@ -2,7 +2,7 @@ import mock
 from django import test
 from django.conf import settings
 from cradmin_legacy import cradmin_testhelpers
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.apps.core.models import Assignment
 from devilry.devilry_admin.views.assignment.students import overview
@@ -23,7 +23,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         return mockinstance
 
     def test_title(self):
-        testassignment = mommy.make('core.Assignment', long_name='Test Assignment')
+        testassignment = baker.make('core.Assignment', long_name='Test Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
@@ -32,7 +32,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('title').alltext_normalized)
 
     def test_h1(self):
-        testassignment = mommy.make('core.Assignment', long_name='Test Assignment')
+        testassignment = baker.make('core.Assignment', long_name='Test Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
@@ -41,7 +41,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('h1').alltext_normalized)
 
     def test_buttonbar_sanity(self):
-        testassignment = mommy.make('core.Assignment')
+        testassignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
@@ -51,7 +51,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 '#devilry_admin_assignment_students_overview_buttonbar .btn'))
 
     def test_buttonbar_create_groups_link(self):
-        testassignment = mommy.make('core.Assignment')
+        testassignment = baker.make('core.Assignment')
         mock_cradmin_instance = self.__mockinstance_with_devilryrole('departmentadmin')
 
         def mock_reverse_url(appname, viewname, **kwargs):
@@ -67,7 +67,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             .one('#devilry_admin_assignment_students_overview_button_create_groups')['href'])
 
     def test_buttonbar_create_groups_text(self):
-        testassignment = mommy.make('core.Assignment',
+        testassignment = baker.make('core.Assignment',
                                     parentnode__short_name='testperiod',
                                     parentnode__parentnode__short_name='testsubject')
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -80,7 +80,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             .alltext_normalized)
 
     def test_buttonbar_merge_groups_link(self):
-        testassignment = mommy.make('core.Assignment')
+        testassignment = baker.make('core.Assignment')
         mock_cradmin_instance = self.__mockinstance_with_devilryrole('departmentadmin')
 
         def mock_reverse_url(appname, viewname, **kwargs):
@@ -96,7 +96,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             .one('#devilry_admin_assignment_students_overview_button_merge_groups')['href'])
 
     def test_buttonbar_merge_groups_text(self):
-        testassignment = mommy.make('core.Assignment',
+        testassignment = baker.make('core.Assignment',
                                     parentnode__short_name='testperiod',
                                     parentnode__parentnode__short_name='testsubject')
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -109,7 +109,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             .alltext_normalized)
 
     def test_buttonbar_delete_groups_link(self):
-        testassignment = mommy.make('core.Assignment')
+        testassignment = baker.make('core.Assignment')
         mock_cradmin_instance = self.__mockinstance_with_devilryrole('departmentadmin')
 
         def mock_reverse_url(appname, viewname, **kwargs):
@@ -125,7 +125,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             .one('#devilry_admin_assignment_students_overview_button_delete_groups')['href'])
 
     def test_buttonbar_delete_groups_text(self):
-        testassignment = mommy.make('core.Assignment',
+        testassignment = baker.make('core.Assignment',
                                     parentnode__short_name='testperiod',
                                     parentnode__parentnode__short_name='testsubject')
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -138,9 +138,9 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             .alltext_normalized)
 
     def test_groups_sanity(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        mommy.make('core.AssignmentGroup', parentnode=testassignment, _quantity=3)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        baker.make('core.AssignmentGroup', parentnode=testassignment, _quantity=3)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
@@ -150,9 +150,9 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_anonymizationmode_fully_anonymous_subjectadmin_no_link(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testgroup = mommy.make('core.AssignmentGroup',
-                               parentnode=mommy.make_recipe(
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testgroup = baker.make('core.AssignmentGroup',
+                               parentnode=baker.make_recipe(
                                    'devilry.apps.core.assignment_activeperiod_start',
                                    anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS))
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -163,9 +163,9 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             '.devilry-admin-assignment-students-overview-group-linkframe'))
 
     def test_anonymizationmode_fully_anonymous_departmentadmin_has_link(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testgroup = mommy.make('core.AssignmentGroup',
-                               parentnode=mommy.make_recipe(
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testgroup = baker.make('core.AssignmentGroup',
+                               parentnode=baker.make_recipe(
                                    'devilry.apps.core.assignment_activeperiod_start',
                                    anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS))
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -176,9 +176,9 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             '.devilry-admin-assignment-students-overview-group-linkframe'))
 
     def test_anonymizationmode_semi_anonymous_subjectadmin_has_link(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testgroup = mommy.make('core.AssignmentGroup',
-                               parentnode=mommy.make_recipe(
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testgroup = baker.make('core.AssignmentGroup',
+                               parentnode=baker.make_recipe(
                                    'devilry.apps.core.assignment_activeperiod_start',
                                    anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS))
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -189,9 +189,9 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             '.devilry-admin-assignment-students-overview-group-linkframe'))
 
     def test_anonymizationmode_off_subjectadmin_has_link(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testgroup = mommy.make('core.AssignmentGroup',
-                               parentnode=mommy.make_recipe(
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testgroup = baker.make('core.AssignmentGroup',
+                               parentnode=baker.make_recipe(
                                    'devilry.apps.core.assignment_activeperiod_start',
                                    anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF))
         mockresponse = self.mock_http200_getrequest_htmls(

@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core.files.base import ContentFile
 from django.db import InternalError
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.devilry_comment.models import Comment, CommentEditHistory
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
@@ -18,9 +18,9 @@ class TestGroupCommentTriggers(test.TestCase):
         ContentType.objects.clear_cache()
 
     def test_delete(self):
-        testcomment = mommy.make('devilry_comment.Comment')
+        testcomment = baker.make('devilry_comment.Comment')
         testcomment_id = testcomment.id
-        testcommentfile = mommy.make('devilry_comment.CommentFile',
+        testcommentfile = baker.make('devilry_comment.CommentFile',
                                      comment=testcomment)
         testcommentfile.file.save('testfile.txt', ContentFile('test'))
         testcomment.delete()
@@ -32,22 +32,22 @@ class TestCommentEditTriggers(test.TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_id_update_raise_internal_error(self):
-        comment = mommy.make('devilry_comment.Comment', text='Test')
+        comment = baker.make('devilry_comment.Comment', text='Test')
         with self.assertRaises(InternalError):
             Comment.objects.filter(id=comment.id).update(id=2)
 
     def test_not_create_when_comment_is_created(self):
-        mommy.make('devilry_comment.Comment', text='Test')
+        baker.make('devilry_comment.Comment', text='Test')
         self.assertEqual(CommentEditHistory.objects.count(), 0)
 
     def test_comment_history_model_created_on_comment_update(self):
-        testcomment = mommy.make('devilry_comment.Comment', text='Test')
+        testcomment = baker.make('devilry_comment.Comment', text='Test')
         testcomment.save()
         self.assertEqual(CommentEditHistory.objects.count(), 1)
 
     def test_comment_history_model_created_fields(self):
-        user = mommy.make(settings.AUTH_USER_MODEL)
-        testcomment = mommy.make('devilry_comment.Comment', text='Test', user=user)
+        user = baker.make(settings.AUTH_USER_MODEL)
+        testcomment = baker.make('devilry_comment.Comment', text='Test', user=user)
         testcomment.text = 'Test edited'
         testcomment.save()
         comment_history = CommentEditHistory.objects.get()

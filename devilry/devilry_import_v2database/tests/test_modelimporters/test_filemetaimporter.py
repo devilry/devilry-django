@@ -3,7 +3,7 @@ import tempfile
 import unittest
 
 from django import test
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.devilry_comment.models import CommentFile
 from devilry.devilry_group.models import GroupComment
@@ -36,7 +36,7 @@ class TestFileMetaImporter(ImporterTestCaseMixin, test.TestCase):
 
     def test_importer(self):
         with self.settings(DEVILRY_V2_DELIVERY_FILE_ROOT=self.v2_delivery_root_temp_dir):
-            delivery_comment = mommy.make('devilry_group.GroupComment')
+            delivery_comment = baker.make('devilry_group.GroupComment')
             self.create_v2dump(
                 model_name='core.filemeta',
                 data=self._create_filemeta_dict(delivery_comment, 'test.py')
@@ -46,7 +46,7 @@ class TestFileMetaImporter(ImporterTestCaseMixin, test.TestCase):
 
     def test_importer_delivery_comment(self):
         with self.settings(DEVILRY_V2_DELIVERY_FILE_ROOT=self.v2_delivery_root_temp_dir):
-            delivery_comment = mommy.make('devilry_group.GroupComment')
+            delivery_comment = baker.make('devilry_group.GroupComment')
             self.create_v2dump(
                 model_name='core.filemeta',
                 data=self._create_filemeta_dict(delivery_comment, 'test.py')
@@ -58,7 +58,7 @@ class TestFileMetaImporter(ImporterTestCaseMixin, test.TestCase):
 
     def test_importer_filename(self):
         with self.settings(DEVILRY_V2_DELIVERY_FILE_ROOT=self.v2_delivery_root_temp_dir):
-            delivery_comment = mommy.make('devilry_group.GroupComment')
+            delivery_comment = baker.make('devilry_group.GroupComment')
             self.create_v2dump(
                 model_name='core.filemeta',
                 data=self._create_filemeta_dict(delivery_comment, 'test.py')
@@ -69,7 +69,7 @@ class TestFileMetaImporter(ImporterTestCaseMixin, test.TestCase):
 
     def test_importer_mimetype(self):
         with self.settings(DEVILRY_V2_DELIVERY_FILE_ROOT=self.v2_delivery_root_temp_dir):
-            delivery_comment = mommy.make('devilry_group.GroupComment')
+            delivery_comment = baker.make('devilry_group.GroupComment')
             self.create_v2dump(
                 model_name='core.filemeta',
                 data=self._create_filemeta_dict(delivery_comment, 'test.py')

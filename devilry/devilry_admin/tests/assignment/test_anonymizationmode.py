@@ -2,7 +2,7 @@ import mock
 from django.contrib import messages
 from django.test import TestCase
 from cradmin_legacy import cradmin_testhelpers
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.apps.core.models import Assignment
 from devilry.devilry_admin.views.assignment import anonymizationmode
@@ -12,14 +12,14 @@ class TestAssignmentAnonymizationmodeUpdateView(TestCase, cradmin_testhelpers.Te
     viewclass = anonymizationmode.AssignmentAnonymizationmodeUpdateView
 
     def test_get_h1(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=assignment, viewkwargs={'pk':assignment.id})
         self.assertEqual(mockresponse.selector.one('h1').alltext_normalized,
                           'Edit anonymization settings')
 
     def test_get_anonymizationmode_choices_sanity(self):
-        assignment = mommy.make('core.Assignment')
+        assignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=assignment, viewkwargs={'pk': assignment.id})
         self.assertEqual(
@@ -27,7 +27,7 @@ class TestAssignmentAnonymizationmodeUpdateView(TestCase, cradmin_testhelpers.Te
             2)
 
     def test_get_anonymizationmode_labels(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=assignment, viewkwargs={'pk': assignment.id})
         labels = [element.alltext_normalized
@@ -37,7 +37,7 @@ class TestAssignmentAnonymizationmodeUpdateView(TestCase, cradmin_testhelpers.Te
         self.assertTrue(labels[1].startswith('SEMI ANONYMOUS.'))
 
     def test_post_sanity(self):
-        assignment = mommy.make_recipe(
+        assignment = baker.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
             anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
         self.mock_http302_postrequest(
@@ -49,7 +49,7 @@ class TestAssignmentAnonymizationmodeUpdateView(TestCase, cradmin_testhelpers.Te
                          Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
 
     def test_post_success_message(self):
-        assignment = mommy.make_recipe(
+        assignment = baker.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
             anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
         messagesmock = mock.MagicMock()

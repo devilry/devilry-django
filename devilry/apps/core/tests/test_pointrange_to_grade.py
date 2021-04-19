@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.db import transaction
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.apps.core.models import PointRangeToGrade
@@ -14,28 +14,28 @@ from devilry.apps.core.models.pointrange_to_grade import GapsInMapValidationErro
 
 class TestPointToGradeMapQuerySetPrefetchPointrangeToGrade(TestCase):
     def test_no_pointtograde(self):
-        point_to_grade_map = mommy.make('core.PointToGradeMap')
+        point_to_grade_map = baker.make('core.PointToGradeMap')
         prefetched_point_to_grade_map = PointToGradeMap.objects\
             .prefetch_pointrange_to_grade().get(id=point_to_grade_map.id)
         self.assertEqual([], prefetched_point_to_grade_map.prefetched_pointrangetograde_objects)
 
     def test_has_pointtograde(self):
-        point_to_grade_map = mommy.make('core.PointToGradeMap')
-        pointrangetograde = mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map)
+        point_to_grade_map = baker.make('core.PointToGradeMap')
+        pointrangetograde = baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map)
         prefetched_point_to_grade_map = PointToGradeMap.objects\
             .prefetch_pointrange_to_grade().get(id=point_to_grade_map.id)
         self.assertEqual([pointrangetograde],
                          prefetched_point_to_grade_map.prefetched_pointrangetograde_objects)
 
     def test_ordering(self):
-        point_to_grade_map = mommy.make('core.PointToGradeMap')
-        pointrangetograde2 = mommy.make('core.PointRangeToGrade',
+        point_to_grade_map = baker.make('core.PointToGradeMap')
+        pointrangetograde2 = baker.make('core.PointRangeToGrade',
                                         point_to_grade_map=point_to_grade_map,
                                         minimum_points=10)
-        pointrangetograde1 = mommy.make('core.PointRangeToGrade',
+        pointrangetograde1 = baker.make('core.PointRangeToGrade',
                                         point_to_grade_map=point_to_grade_map,
                                         minimum_points=0)
-        pointrangetograde3 = mommy.make('core.PointRangeToGrade',
+        pointrangetograde3 = baker.make('core.PointRangeToGrade',
                                         point_to_grade_map=point_to_grade_map,
                                         minimum_points=20)
         prefetched_point_to_grade_map = PointToGradeMap.objects\
@@ -400,33 +400,33 @@ class TestPointToGradeMapOldTests(TestCase):
 
 class TestPointToGradeMap(TestCase):
     def test_prefetched_pointrangetogrades_property_not_prefetched(self):
-        point_to_grade_map = mommy.make('core.PointToGradeMap')
+        point_to_grade_map = baker.make('core.PointToGradeMap')
         with self.assertRaisesMessage(AttributeError,
                                       'The prefetched_pointrangetogrades property requires '
                                       'PointToGradeMapQuerySet.prefetch_pointrange_to_grade()'):
             str(point_to_grade_map.prefetched_pointrangetogrades)
 
     def test_prefetched_pointrangetogrades_property_is_prefetched(self):
-        point_to_grade_map = mommy.make('core.PointToGradeMap')
-        pointrangetograde = mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map)
+        point_to_grade_map = baker.make('core.PointToGradeMap')
+        pointrangetograde = baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map)
         prefetched_point_to_grade_map = PointToGradeMap.objects\
             .prefetch_pointrange_to_grade().get(id=point_to_grade_map.id)
         self.assertEqual([pointrangetograde],
                          prefetched_point_to_grade_map.prefetched_pointrangetogrades)
 
     def test_as_flat_dict(self):
-        point_to_grade_map = mommy.make('core.PointToGradeMap')
-        mommy.make('core.PointRangeToGrade',
+        point_to_grade_map = baker.make('core.PointToGradeMap')
+        baker.make('core.PointRangeToGrade',
                    point_to_grade_map=point_to_grade_map,
                    minimum_points=0,
                    maximum_points=2,
                    grade='Bad')
-        mommy.make('core.PointRangeToGrade',
+        baker.make('core.PointRangeToGrade',
                    point_to_grade_map=point_to_grade_map,
                    minimum_points=3,
                    maximum_points=6,
                    grade='Medium')
-        mommy.make('core.PointRangeToGrade',
+        baker.make('core.PointRangeToGrade',
                    point_to_grade_map=point_to_grade_map,
                    minimum_points=7,
                    maximum_points=10,
@@ -441,18 +441,18 @@ class TestPointToGradeMap(TestCase):
         )
 
     def test_as_choices(self):
-        point_to_grade_map = mommy.make('core.PointToGradeMap')
-        mommy.make('core.PointRangeToGrade',
+        point_to_grade_map = baker.make('core.PointToGradeMap')
+        baker.make('core.PointRangeToGrade',
                    point_to_grade_map=point_to_grade_map,
                    minimum_points=0,
                    maximum_points=2,
                    grade='Bad')
-        mommy.make('core.PointRangeToGrade',
+        baker.make('core.PointRangeToGrade',
                    point_to_grade_map=point_to_grade_map,
                    minimum_points=3,
                    maximum_points=6,
                    grade='Medium')
-        mommy.make('core.PointRangeToGrade',
+        baker.make('core.PointRangeToGrade',
                    point_to_grade_map=point_to_grade_map,
                    minimum_points=7,
                    maximum_points=10,

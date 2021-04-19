@@ -6,19 +6,19 @@ from django.core import mail
 from django.test import override_settings
 from django.utils import timezone
 
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.devilry_message.models import MessageReceiver
 
 
 class TestMessage(test.TestCase):
     def __make_email_for_user(self, user, email):
-        return mommy.make('devilry_account.UserEmail', user=user, email=email)
+        return baker.make('devilry_account.UserEmail', user=user, email=email)
 
     def test_html_content_cleaning(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
         self.__make_email_for_user(testuser, 'testuser@example.com')
-        message_receiver = mommy.make('devilry_message.MessageReceiver',
+        message_receiver = baker.make('devilry_message.MessageReceiver',
                                       user=testuser,
                                       subject='Test subject',
                                       message_content_html='<p>Test content</p>')
@@ -27,9 +27,9 @@ class TestMessage(test.TestCase):
         self.assertEqual(message_receiver.message_content_plain, 'Test content')
 
     def test_send_email_sanity(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
         self.__make_email_for_user(testuser, 'testuser@example.com')
-        message_receiver = mommy.make('devilry_message.MessageReceiver',
+        message_receiver = baker.make('devilry_message.MessageReceiver',
                                       user=testuser,
                                       subject='Test subject',
                                       message_content_html='Test content')
@@ -39,7 +39,7 @@ class TestMessage(test.TestCase):
         self.assertIn('Test content', mail.outbox[0].message().as_string())
 
     def __make_simple_message_receiver(self, user, **kwargs):
-        return mommy.make('devilry_message.MessageReceiver',
+        return baker.make('devilry_message.MessageReceiver',
                           message_content_html='<p>Test content</p>',
                           message_content_plain='Test content',
                           subject='Test subject',
@@ -47,7 +47,7 @@ class TestMessage(test.TestCase):
                           message_type=['email'], **kwargs)
 
     def test_status_error(self):
-        user = self.__make_email_for_user(mommy.make(settings.AUTH_USER_MODEL), 'testuser@example.com').user
+        user = self.__make_email_for_user(baker.make(settings.AUTH_USER_MODEL), 'testuser@example.com').user
         message_receiver = self.__make_simple_message_receiver(user=user)
 
         def mock_send_email(instance):
@@ -60,7 +60,7 @@ class TestMessage(test.TestCase):
             self.assertEqual(message_receiver.status_data['errors'][0]['error_message'], 'Test error')
 
     def test_multiple_status_error_appended(self):
-        user = self.__make_email_for_user(mommy.make(settings.AUTH_USER_MODEL), 'testuser@example.com').user
+        user = self.__make_email_for_user(baker.make(settings.AUTH_USER_MODEL), 'testuser@example.com').user
         message_receiver = self.__make_simple_message_receiver(user=user)
 
         def mock_send_email(instance):
@@ -78,7 +78,7 @@ class TestMessage(test.TestCase):
 
     @override_settings(DEVILRY_MESSAGE_RESEND_LIMIT=3)
     def test_single_send_call_failed_count(self):
-        user = self.__make_email_for_user(mommy.make(settings.AUTH_USER_MODEL), 'testuser@example.com').user
+        user = self.__make_email_for_user(baker.make(settings.AUTH_USER_MODEL), 'testuser@example.com').user
         message_receiver = self.__make_simple_message_receiver(user=user)
 
         def mock_send_email(instance):
@@ -90,7 +90,7 @@ class TestMessage(test.TestCase):
 
     @override_settings(DEVILRY_MESSAGE_RESEND_LIMIT=3)
     def test_single_send_call_failed_count(self):
-        user = self.__make_email_for_user(mommy.make(settings.AUTH_USER_MODEL), 'testuser@example.com').user
+        user = self.__make_email_for_user(baker.make(settings.AUTH_USER_MODEL), 'testuser@example.com').user
         message_receiver = self.__make_simple_message_receiver(user=user)
 
         def mock_send_email(instance):
@@ -105,7 +105,7 @@ class TestMessage(test.TestCase):
 
     @override_settings(DEVILRY_MESSAGE_RESEND_LIMIT=3)
     def test_send_failed_below_resend_limit(self):
-        user = self.__make_email_for_user(mommy.make(settings.AUTH_USER_MODEL), 'testuser@example.com').user
+        user = self.__make_email_for_user(baker.make(settings.AUTH_USER_MODEL), 'testuser@example.com').user
         message_receiver = self.__make_simple_message_receiver(user=user)
 
         def mock_send_email(instance):
@@ -117,7 +117,7 @@ class TestMessage(test.TestCase):
 
     @override_settings(DEVILRY_MESSAGE_RESEND_LIMIT=3)
     def test_send_failed_equal_to_resend_limit(self):
-        user = self.__make_email_for_user(mommy.make(settings.AUTH_USER_MODEL), 'testuser@example.com').user
+        user = self.__make_email_for_user(baker.make(settings.AUTH_USER_MODEL), 'testuser@example.com').user
         message_receiver = self.__make_simple_message_receiver(user=user, sending_failed_count=3)
 
         def mock_send_email(instance):
@@ -130,7 +130,7 @@ class TestMessage(test.TestCase):
 
     @override_settings(DEVILRY_MESSAGE_RESEND_LIMIT=3)
     def test_send_failed_greater_than_resend_limit(self):
-        user = self.__make_email_for_user(mommy.make(settings.AUTH_USER_MODEL), 'testuser@example.com').user
+        user = self.__make_email_for_user(baker.make(settings.AUTH_USER_MODEL), 'testuser@example.com').user
         message_receiver = self.__make_simple_message_receiver(user=user, sending_failed_count=4)
 
         def mock_send_email(instance):
@@ -143,7 +143,7 @@ class TestMessage(test.TestCase):
 
     @override_settings(DEVILRY_MESSAGE_RESEND_LIMIT=3)
     def test_single_send_call_success_count(self):
-        user = self.__make_email_for_user(mommy.make(settings.AUTH_USER_MODEL), 'testuser@example.com').user
+        user = self.__make_email_for_user(baker.make(settings.AUTH_USER_MODEL), 'testuser@example.com').user
         message_receiver = self.__make_simple_message_receiver(user=user)
         message_receiver.send()
         message_receiver.refresh_from_db()
@@ -152,7 +152,7 @@ class TestMessage(test.TestCase):
 
     @override_settings(DEVILRY_MESSAGE_RESEND_LIMIT=3)
     def test_multiple_send_call_success_count(self):
-        user = self.__make_email_for_user(mommy.make(settings.AUTH_USER_MODEL), 'testuser@example.com').user
+        user = self.__make_email_for_user(baker.make(settings.AUTH_USER_MODEL), 'testuser@example.com').user
         message_receiver = self.__make_simple_message_receiver(user=user)
         message_receiver.send()
         message_receiver.send()
@@ -164,14 +164,14 @@ class TestMessage(test.TestCase):
     def test_filter_old_receivers_single_sanity(self):
         created_datetime = timezone.now() - timezone.timedelta(days=10)
         delete_created_before_datetime = timezone.now() - timezone.timedelta(days=5)
-        receiver = mommy.make('devilry_message.MessageReceiver', created_datetime=created_datetime)
+        receiver = baker.make('devilry_message.MessageReceiver', created_datetime=created_datetime)
         queryset = MessageReceiver.objects.filter_old_receivers(datetime_obj=delete_created_before_datetime)
         self.assertIn(receiver, queryset)
 
     def test_filter_old_receivers_multiple_sanity(self):
         created_datetime = timezone.now() - timezone.timedelta(days=10)
         delete_created_before_datetime = timezone.now() - timezone.timedelta(days=5)
-        receivers = mommy.make('devilry_message.MessageReceiver', created_datetime=created_datetime, _quantity=10)
+        receivers = baker.make('devilry_message.MessageReceiver', created_datetime=created_datetime, _quantity=10)
         queryset = MessageReceiver.objects.filter_old_receivers(datetime_obj=delete_created_before_datetime)
         self.assertEqual(queryset.count(), 10)
 
@@ -180,9 +180,9 @@ class TestMessage(test.TestCase):
         after_delete_created_datetime = timezone.now()
         delete_created_before_datetime = timezone.now() - timezone.timedelta(days=5)
 
-        delete_receivers = mommy.make('devilry_message.MessageReceiver',
+        delete_receivers = baker.make('devilry_message.MessageReceiver',
                                       created_datetime=before_delete_created_datetime, _quantity=10)
-        receivers = mommy.make('devilry_message.MessageReceiver',
+        receivers = baker.make('devilry_message.MessageReceiver',
                                created_datetime=after_delete_created_datetime, _quantity=5)
 
         to_delete_ids = [receiver.id for receiver in delete_receivers]

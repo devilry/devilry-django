@@ -5,10 +5,10 @@
 from django import test
 
 # Devilry imports
-from model_mommy import mommy
+from model_bakery import baker
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.project.common import settings
-from devilry.devilry_group import devilry_group_mommy_factories
+from devilry.devilry_group import devilry_group_baker_factories
 from devilry.apps.core import models as core_models
 from devilry.devilry_qualifiesforexam.tests import test_pluginhelpers
 from devilry.devilry_qualifiesforexam_plugin_points import resultscollector
@@ -19,10 +19,10 @@ class TestPeriodResultSetCollector(test.TestCase, test_pluginhelpers.TestPluginH
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_collector_min_passing_score_without_custom_score(self):
-        testperiod = mommy.make_recipe('devilry.apps.core.period_active')
-        testassignment1 = mommy.make('core.Assignment', parentnode=testperiod, passing_grade_min_points=10)
-        testassignment2 = mommy.make('core.Assignment', parentnode=testperiod, passing_grade_min_points=10)
-        testassignment3 = mommy.make('core.Assignment', parentnode=testperiod, passing_grade_min_points=10)
+        testperiod = baker.make_recipe('devilry.apps.core.period_active')
+        testassignment1 = baker.make('core.Assignment', parentnode=testperiod, passing_grade_min_points=10)
+        testassignment2 = baker.make('core.Assignment', parentnode=testperiod, passing_grade_min_points=10)
+        testassignment3 = baker.make('core.Assignment', parentnode=testperiod, passing_grade_min_points=10)
         collector = resultscollector.PeriodResultSetCollector(period=testperiod, qualifying_assignment_ids=[
             testassignment1.id,
             testassignment2.id,
@@ -31,10 +31,10 @@ class TestPeriodResultSetCollector(test.TestCase, test_pluginhelpers.TestPluginH
         self.assertEqual(collector.min_passing_score, 30)
 
     def test_collector_min_passing_score_with_custom_score(self):
-        testperiod = mommy.make_recipe('devilry.apps.core.period_active')
-        testassignment1 = mommy.make('core.Assignment', parentnode=testperiod, passing_grade_min_points=10)
-        testassignment2 = mommy.make('core.Assignment', parentnode=testperiod, passing_grade_min_points=10)
-        testassignment3 = mommy.make('core.Assignment', parentnode=testperiod, passing_grade_min_points=10)
+        testperiod = baker.make_recipe('devilry.apps.core.period_active')
+        testassignment1 = baker.make('core.Assignment', parentnode=testperiod, passing_grade_min_points=10)
+        testassignment2 = baker.make('core.Assignment', parentnode=testperiod, passing_grade_min_points=10)
+        testassignment3 = baker.make('core.Assignment', parentnode=testperiod, passing_grade_min_points=10)
         collector = resultscollector.PeriodResultSetCollector(
                 custom_min_passing_score=20,
                 period=testperiod,
@@ -139,23 +139,23 @@ class TestPeriodResultSetCollector(test.TestCase, test_pluginhelpers.TestPluginH
         )
 
         # Create a new student and to the assignments
-        assigngroup1 = mommy.make('core.AssignmentGroup', parentnode=data_dict['testassignments'][0])
-        assigngroup2 = mommy.make('core.AssignmentGroup', parentnode=data_dict['testassignments'][1])
-        assigngroup3 = mommy.make('core.AssignmentGroup', parentnode=data_dict['testassignments'][2])
+        assigngroup1 = baker.make('core.AssignmentGroup', parentnode=data_dict['testassignments'][0])
+        assigngroup2 = baker.make('core.AssignmentGroup', parentnode=data_dict['testassignments'][1])
+        assigngroup3 = baker.make('core.AssignmentGroup', parentnode=data_dict['testassignments'][2])
 
         # Create FeedbackSets
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=assigngroup1, grading_points=5)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=assigngroup2, grading_points=5)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=assigngroup3, grading_points=5)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=assigngroup1, grading_points=5)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=assigngroup2, grading_points=5)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=assigngroup3, grading_points=5)
 
         # Create a student with user
-        student_user = mommy.make(settings.AUTH_USER_MODEL, shortname='dewduc', fullname='Dewey Duck')
-        relatedstudent = mommy.make('core.RelatedStudent', user=student_user, period=data_dict['testperiod'])
+        student_user = baker.make(settings.AUTH_USER_MODEL, shortname='dewduc', fullname='Dewey Duck')
+        relatedstudent = baker.make('core.RelatedStudent', user=student_user, period=data_dict['testperiod'])
 
         # Create candidates with relatedstudents and assignmentgroups
-        mommy.make('core.Candidate', relatedstudent=relatedstudent, assignment_group=assigngroup1)
-        mommy.make('core.Candidate', relatedstudent=relatedstudent, assignment_group=assigngroup2)
-        mommy.make('core.Candidate', relatedstudent=relatedstudent, assignment_group=assigngroup3)
+        baker.make('core.Candidate', relatedstudent=relatedstudent, assignment_group=assigngroup1)
+        baker.make('core.Candidate', relatedstudent=relatedstudent, assignment_group=assigngroup2)
+        baker.make('core.Candidate', relatedstudent=relatedstudent, assignment_group=assigngroup3)
 
         collector = resultscollector.PeriodResultSetCollector(
                 period=data_dict['testperiod'],
@@ -179,23 +179,23 @@ class TestPeriodResultSetCollector(test.TestCase, test_pluginhelpers.TestPluginH
         )
 
         # Create a new student and to the assignments
-        assigngroup1 = mommy.make('core.AssignmentGroup', parentnode=data_dict['testassignments'][0])
-        assigngroup2 = mommy.make('core.AssignmentGroup', parentnode=data_dict['testassignments'][1])
-        assigngroup3 = mommy.make('core.AssignmentGroup', parentnode=data_dict['testassignments'][2])
+        assigngroup1 = baker.make('core.AssignmentGroup', parentnode=data_dict['testassignments'][0])
+        assigngroup2 = baker.make('core.AssignmentGroup', parentnode=data_dict['testassignments'][1])
+        assigngroup3 = baker.make('core.AssignmentGroup', parentnode=data_dict['testassignments'][2])
 
         # Create FeedbackSets
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=assigngroup1, grading_points=5)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=assigngroup2, grading_points=5)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=assigngroup3, grading_points=5)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=assigngroup1, grading_points=5)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=assigngroup2, grading_points=5)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=assigngroup3, grading_points=5)
 
         # Create a student with user
-        student_user = mommy.make(settings.AUTH_USER_MODEL, shortname='dewduc', fullname='Dewey Duck')
-        relatedstudent_dewey = mommy.make('core.RelatedStudent', user=student_user, period=data_dict['testperiod'])
+        student_user = baker.make(settings.AUTH_USER_MODEL, shortname='dewduc', fullname='Dewey Duck')
+        relatedstudent_dewey = baker.make('core.RelatedStudent', user=student_user, period=data_dict['testperiod'])
 
         # Create candidates with relatedstudents and assignmentgroups
-        mommy.make('core.Candidate', relatedstudent=relatedstudent_dewey, assignment_group=assigngroup1)
-        mommy.make('core.Candidate', relatedstudent=relatedstudent_dewey, assignment_group=assigngroup2)
-        mommy.make('core.Candidate', relatedstudent=relatedstudent_dewey, assignment_group=assigngroup3)
+        baker.make('core.Candidate', relatedstudent=relatedstudent_dewey, assignment_group=assigngroup1)
+        baker.make('core.Candidate', relatedstudent=relatedstudent_dewey, assignment_group=assigngroup2)
+        baker.make('core.Candidate', relatedstudent=relatedstudent_dewey, assignment_group=assigngroup3)
 
         # Set custom score to 10, one student(dewey) has 15 points, and the other student has 3 points
         collector = resultscollector.PeriodResultSetCollector(

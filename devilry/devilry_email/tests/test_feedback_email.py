@@ -5,10 +5,10 @@ from django.utils import timezone
 from django.template import defaultfilters
 
 from datetime import datetime
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
-from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
+from devilry.devilry_group import devilry_group_baker_factories as group_baker
 from devilry.devilry_email.feedback_email import feedback_email
 from devilry.apps.core.models import Assignment
 from devilry.devilry_message.models import Message
@@ -26,15 +26,15 @@ class TestFeedbackEmail(test.TestCase):
             deadline_datetime = timezone.now()
         if not grading_published_datetime:
             grading_published_datetime = timezone.now()
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS,
                                            long_name='Assignment 1', parentnode__parentnode__long_name='Subject 1')
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        test_feedbackset = group_mommy.feedbackset_first_attempt_published(
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        test_feedbackset = group_baker.feedbackset_first_attempt_published(
             group=testgroup, deadline_datetime=deadline_datetime,
             grading_published_datetime=grading_published_datetime, grading_points=1)
-        student = mommy.make('core.Candidate', assignment_group=testgroup)
-        mommy.make('devilry_account.UserEmail', user=student.relatedstudent.user, email='student@example.com')
+        student = baker.make('core.Candidate', assignment_group=testgroup)
+        baker.make('devilry_account.UserEmail', user=student.relatedstudent.user, email='student@example.com')
         return test_feedbackset
 
     def test_send_feedback_email_subject(self):
@@ -72,30 +72,30 @@ class TestFeedbackEmail(test.TestCase):
             'Result: 1/1 ( passed )')
 
     def test_send_feedback_email_body_result_point_to_grade_mapper(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE,
                                            max_points=100,
                                            long_name='Assignment 1', parentnode__parentnode__long_name='Subject 1')
-        point_to_grade_map = mommy.make(
+        point_to_grade_map = baker.make(
             'core.PointToGradeMap',
             assignment=testassignment)
-        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map,
+        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map,
                    minimum_points=0, maximum_points=19, grade='F')
-        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map,
+        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map,
                    minimum_points=20, maximum_points=39, grade='E')
-        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map,
+        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map,
                    minimum_points=40, maximum_points=59, grade='D')
-        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map,
+        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map,
                    minimum_points=60, maximum_points=79, grade='C')
-        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map,
+        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map,
                    minimum_points=80, maximum_points=89, grade='B')
-        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map,
+        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map,
                    minimum_points=90, maximum_points=100, grade='A')
-        test_feedbackset = group_mommy.feedbackset_first_attempt_published(
+        test_feedbackset = group_baker.feedbackset_first_attempt_published(
             group__parentnode=testassignment, deadline_datetime=timezone.now(),
             grading_published_datetime=timezone.now(), grading_points=60)
-        student = mommy.make('core.Candidate', assignment_group=test_feedbackset.group)
-        mommy.make('devilry_account.UserEmail', user=student.relatedstudent.user, email='student@example.com')
+        student = baker.make('core.Candidate', assignment_group=test_feedbackset.group)
+        baker.make('devilry_account.UserEmail', user=student.relatedstudent.user, email='student@example.com')
         feedback_email.send_feedback_email(
             assignment=test_feedbackset.group.parentnode,
             feedback_sets=[test_feedbackset],

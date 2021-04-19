@@ -1,4 +1,4 @@
-from model_mommy import recipe
+from model_bakery import recipe
 
 from devilry.apps.core.models import Period, Assignment
 #: The ``start_time`` of the period created by the :obj:`.period_old` recipe.
@@ -98,7 +98,7 @@ ASSIGNMENT_FUTUREPERIOD_END_PUBLISHING_TIME = default_timezone_datetime(9998, 1,
 #:
 #: Example usage::
 #:
-#:    period = mommy.make_recipe('devilry.apps.core.period_old')
+#:    period = baker.make_recipe('devilry.apps.core.period_old')
 #:
 #: See also :obj:`.period_active` and :obj:`.period_future`.
 period_old = recipe.Recipe(
@@ -116,7 +116,7 @@ period_old = recipe.Recipe(
 #:
 #: Example usage::
 #:
-#:    period = mommy.make_recipe('devilry.apps.core.period_active')
+#:    period = baker.make_recipe('devilry.apps.core.period_active')
 #:
 #:
 #: See also :obj:`.period_old` and :obj:`.period_future`.
@@ -134,7 +134,7 @@ period_active = recipe.Recipe(
 #:
 #: Example usage::
 #:
-#:    period = mommy.make_recipe('devilry.apps.core.period_future')
+#:    period = baker.make_recipe('devilry.apps.core.period_future')
 #:
 #:
 #: See also :obj:`.period_active` and :obj:`.period_old`.
@@ -156,7 +156,7 @@ period_future = recipe.Recipe(
 #:
 #: Example usage::
 #:
-#:    assignment = mommy.make_recipe('devilry.apps.core.assignment_oldperiod_start')
+#:    assignment = baker.make_recipe('devilry.apps.core.assignment_oldperiod_start')
 #:
 #:
 #: See also :obj:`.assignment_oldperiod_middle` :obj:`.assignment_oldperiod_end`
@@ -177,7 +177,7 @@ assignment_oldperiod_start = recipe.Recipe(
 #:
 #: Example usage::
 #:
-#:    assignment = mommy.make_recipe('devilry.apps.core.assignment_oldperiod_middle')
+#:    assignment = baker.make_recipe('devilry.apps.core.assignment_oldperiod_middle')
 #:
 #:
 #: See also :obj:`.assignment_oldperiod_start` :obj:`.assignment_oldperiod_end`
@@ -200,7 +200,7 @@ assignment_oldperiod_middle = recipe.Recipe(
 #:
 #: Example usage::
 #:
-#:    assignment = mommy.make_recipe('devilry.apps.core.assignment_oldperiod_end')
+#:    assignment = baker.make_recipe('devilry.apps.core.assignment_oldperiod_end')
 #:
 #:
 #: See also :obj:`.assignment_oldperiod_start` :obj:`.assignment_oldperiod_middle`
@@ -223,7 +223,7 @@ assignment_oldperiod_end = recipe.Recipe(
 #:
 #: Example usage::
 #:
-#:    assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+#:    assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
 #:
 #:
 #: See also :obj:`.assignment_activeperiod_middle` :obj:`.assignment_activeperiod_end`
@@ -244,7 +244,7 @@ assignment_activeperiod_start = recipe.Recipe(
 #:
 #: Example usage::
 #:
-#:    assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_middle')
+#:    assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_middle')
 #:
 #:
 #: See also :obj:`.assignment_activeperiod_start` :obj:`.assignment_activeperiod_end`
@@ -268,7 +268,7 @@ assignment_activeperiod_middle = recipe.Recipe(
 #:
 #: Example usage::
 #:
-#:    assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
+#:    assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_end')
 #:
 #:
 #: See also :obj:`.assignment_activeperiod_start` :obj:`.assignment_activeperiod_middle`
@@ -291,7 +291,7 @@ assignment_activeperiod_end = recipe.Recipe(
 #:
 #: Example usage::
 #:
-#:    assignment = mommy.make_recipe('devilry.apps.core.assignment_futureperiod_start')
+#:    assignment = baker.make_recipe('devilry.apps.core.assignment_futureperiod_start')
 #:
 #:
 #: See also :obj:`.assignment_futureperiod_middle` :obj:`.assignment_futureperiod_end`
@@ -312,7 +312,7 @@ assignment_futureperiod_start = recipe.Recipe(
 #:
 #: Example usage::
 #:
-#:    assignment = mommy.make_recipe('devilry.apps.core.assignment_futureperiod_middle')
+#:    assignment = baker.make_recipe('devilry.apps.core.assignment_futureperiod_middle')
 #:
 #:
 #: See also :obj:`.assignment_futureperiod_start` :obj:`.assignment_futureperiod_end`
@@ -336,7 +336,7 @@ assignment_futureperiod_middle = recipe.Recipe(
 #:
 #: Example usage::
 #:
-#:    assignment = mommy.make_recipe('devilry.apps.core.assignment_futureperiod_end')
+#:    assignment = baker.make_recipe('devilry.apps.core.assignment_futureperiod_end')
 #:
 #:
 #: See also :obj:`.assignment_futureperiod_start` :obj:`.assignment_futureperiod_middle`

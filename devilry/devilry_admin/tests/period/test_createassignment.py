@@ -8,13 +8,13 @@ from django.test import TestCase
 from django.utils import timezone
 from cradmin_legacy import cradmin_testhelpers
 from cradmin_legacy import crinstance
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.apps.core.models import Assignment, Candidate, Examiner, AssignmentGroup
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
-from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_END, ACTIVE_PERIOD_START, OLD_PERIOD_START, FUTURE_PERIOD_END, \
+from devilry.apps.core.baker_recipes import ACTIVE_PERIOD_END, ACTIVE_PERIOD_START, OLD_PERIOD_START, FUTURE_PERIOD_END, \
     ASSIGNMENT_FUTUREPERIOD_START_FIRST_DEADLINE
-from devilry.devilry_group import devilry_group_mommy_factories
+from devilry.devilry_group import devilry_group_baker_factories
 from devilry.devilry_admin.views.period import createassignment
 from devilry.utils import datetimeutils
 from devilry.utils.datetimeutils import default_timezone_datetime
@@ -27,7 +27,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_get_render_formfields(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
+        period = baker.make_recipe('devilry.apps.core.period_active')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=period)
         self.assertTrue(mockresponse.selector.exists('input[name=long_name]'))
@@ -35,14 +35,14 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertTrue(mockresponse.selector.exists('input[name=first_deadline]'))
 
     def test_get_suggested_name_first_assignment(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
+        period = baker.make_recipe('devilry.apps.core.period_active')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=period)
         self.assertEqual(mockresponse.selector.one('input[name=long_name]').get('value', ''), '')
         self.assertEqual(mockresponse.selector.one('input[name=short_name]').get('value', ''), '')
 
     def test_get_suggested_name_previous_assignment_not_suffixed_with_number(self):
-        period = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        period = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                    long_name='Test', short_name='test').period
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=period)
@@ -50,7 +50,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(mockresponse.selector.one('input[name=short_name]').get('value', ''), '')
 
     def test_get_suggested_name_previous_assignment_suffixed_with_number(self):
-        period = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        period = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                    long_name='Test1', short_name='test1').period
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=period)
@@ -59,11 +59,11 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
 
     @unittest.skip('Must be revised. Depends on Assignment.first_deadline being None.')
     def test_get_suggested_name_previous_assignment_suffixed_with_number_namecollision_no_first_deadline(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
-        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        period = baker.make_recipe('devilry.apps.core.period_active')
+        baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                           parentnode=period,
                           long_name='Test1', short_name='test1')
-        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                           parentnode=period,
                           long_name='Test2', short_name='test2',
                           first_deadline=None)
@@ -74,12 +74,12 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(mockresponse.selector.one('input[name=short_name]').get('value', ''), '')
 
     def test_get_suggested_name_previous_assignment_suffixed_with_number_namecollision_strange_order(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
-        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        period = baker.make_recipe('devilry.apps.core.period_active')
+        baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                           parentnode=period,
                           long_name='Test1', short_name='test1',
                           first_deadline=ACTIVE_PERIOD_END)
-        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                           parentnode=period,
                           long_name='Test2', short_name='test2',
                           first_deadline=ACTIVE_PERIOD_START)
@@ -90,14 +90,14 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(mockresponse.selector.one('input[name=short_name]').get('value', ''), '')
 
     def test_get_suggested_deadlines_first_assignment(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
+        period = baker.make_recipe('devilry.apps.core.period_active')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=period)
         self.assertFalse(mockresponse.selector.exists(
             '#devilry_admin_createassignment_suggested_deadlines'))
 
     def test_get_suggested_deadlines_not_first_assignment(self):
-        period = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start').period
+        period = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start').period
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=period)
         self.assertTrue(mockresponse.selector.exists(
@@ -105,7 +105,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
 
     @unittest.skip('Must be revised. Depends on Assignment.first_deadline being None.')
     def test_get_suggested_deadlines_not_first_assignment_no_previous_with_deadline(self):
-        period = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        period = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                    first_deadline=None).period
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=period)
@@ -113,14 +113,14 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
             '#devilry_admin_createassignment_suggested_deadlines'))
 
     def test_get_suggested_deadlines_render_values_previous_deadline_in_the_past(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
+        period = baker.make_recipe('devilry.apps.core.period_active')
 
         # Ignored by the suggestion system
-        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                           parentnode=period)
 
         # This should be the one that is used for suggestions
-        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                           parentnode=period,
                           first_deadline=default_timezone_datetime(2015, 9, 2, 13, 30))  # Wed
 
@@ -141,14 +141,14 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         ])
 
     def test_get_suggested_deadlines_render_values_previous_deadline_in_the_future(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
+        period = baker.make_recipe('devilry.apps.core.period_active')
 
         # Ignored by the suggestion system
-        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                           parentnode=period)
 
         # This should be the one that is used for suggestions
-        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                           parentnode=period,
                           first_deadline=default_timezone_datetime(3500, 9, 5, 13, 30))
 
@@ -166,14 +166,14 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         ])
 
     def test_get_suggested_deadlines_render_labels(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
+        period = baker.make_recipe('devilry.apps.core.period_active')
 
         # Ignored by the suggestion system
-        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                           parentnode=period)
 
         # This should be the one that is used for suggestions
-        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                           parentnode=period,
                           first_deadline=default_timezone_datetime(3500, 9, 5, 13, 30))
 
@@ -192,14 +192,14 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         ], suggested_deadline_labels)
 
     def test_get_default_select_options_count(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
+        period = baker.make_recipe('devilry.apps.core.period_active')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=period)
         option_list = mockresponse.selector.list('option')
         self.assertEqual(len(option_list), 3)
 
     def test_get_select_options_default_selected_no_value(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
+        period = baker.make_recipe('devilry.apps.core.period_active')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=period)
         option_list = mockresponse.selector.list('option')
@@ -207,22 +207,22 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertIsNotNone(option_list[0].get('selected', None))
 
     def test_get_select_options_import_all_students_on_semester_exists(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
+        period = baker.make_recipe('devilry.apps.core.period_active')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=period)
         option_list = mockresponse.selector.list('option')
         self.assertEqual(option_list[1].get('value'), 'all')
 
     def test_get_select_options_import_no_students_exists(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
+        period = baker.make_recipe('devilry.apps.core.period_active')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=period)
         option_list = mockresponse.selector.list('option')
         self.assertEqual(option_list[2].get('value'), 'none')
 
     def test_get_select_options_period_has_one_assignment(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        period = baker.make_recipe('devilry.apps.core.period_active')
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                        parentnode=period,
                                        long_name='Test1', short_name='test1')
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -234,14 +234,14 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(optgroup_options[1].get('value'), '{}_passed'.format(assignment.id))
 
     def test_get_select_options_period_has_multiple_assignments_ordered_by_first_deadline(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
-        assignment1 = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        period = baker.make_recipe('devilry.apps.core.period_active')
+        assignment1 = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                         first_deadline=timezone.now() + timezone.timedelta(days=1),
                                         parentnode=period, long_name='Test1', short_name='test1')
-        assignment2 = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        assignment2 = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                         first_deadline=timezone.now() + timezone.timedelta(days=4),
                                         parentnode=period, long_name='Test2', short_name='test2')
-        assignment3 = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        assignment3 = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                         first_deadline=timezone.now() + timezone.timedelta(days=2),
                                         parentnode=period, long_name='Test3', short_name='test3')
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -253,11 +253,11 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(optgroup_list[2].get('label'), assignment1.long_name)
 
     def test_get_select_options_period_has_multiple_assignments_options(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
-        assignment1 = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        period = baker.make_recipe('devilry.apps.core.period_active')
+        assignment1 = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                         first_deadline=timezone.now() + timezone.timedelta(days=1),
                                         parentnode=period, long_name='Test1', short_name='test1')
-        assignment2 = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        assignment2 = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                         first_deadline=timezone.now() + timezone.timedelta(days=2),
                                         parentnode=period, long_name='Test2', short_name='test2')
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -279,7 +279,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(assignment1_optgroup_options[1].get('value'), '{}_passed'.format(assignment1.id))
 
     def test_post_missing_short_name(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
+        period = baker.make_recipe('devilry.apps.core.period_active')
         first_deadline_isoformat = datetimeutils.isoformat_noseconds(OLD_PERIOD_START)
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=period,
@@ -296,7 +296,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('#error_1_id_short_name').alltext_normalized)
 
     def test_post_missing_long_name(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
+        period = baker.make_recipe('devilry.apps.core.period_active')
         first_deadline_isoformat = datetimeutils.isoformat_noseconds(OLD_PERIOD_START)
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=period,
@@ -313,7 +313,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('#error_1_id_long_name').alltext_normalized)
 
     def test_post_missing_first_deadline(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
+        period = baker.make_recipe('devilry.apps.core.period_active')
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=period,
             requestkwargs={
@@ -329,7 +329,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('#error_1_id_first_deadline').alltext_normalized)
 
     def test_post_missing_student_import_option(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
+        period = baker.make_recipe('devilry.apps.core.period_active')
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=period,
             requestkwargs={
@@ -346,10 +346,10 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('#error_1_id_student_import_option').alltext_normalized)
 
     def test_post_import_all_students_on_semester(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
-        relatedstudent1 = mommy.make('core.RelatedStudent', period=period)
-        relatedstudent2 = mommy.make('core.RelatedStudent', period=period)
-        relatedstudent3 = mommy.make('core.RelatedStudent', period=period)
+        period = baker.make_recipe('devilry.apps.core.period_active')
+        relatedstudent1 = baker.make('core.RelatedStudent', period=period)
+        relatedstudent2 = baker.make('core.RelatedStudent', period=period)
+        relatedstudent3 = baker.make('core.RelatedStudent', period=period)
         self.mock_http302_postrequest(
             cradmin_role=period,
             requestkwargs={
@@ -376,7 +376,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
                 .count(), 1)
 
     def test_post_import_all_students_on_semester_no_students_on_semester(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
+        period = baker.make_recipe('devilry.apps.core.period_active')
         self.mock_http302_postrequest(
             cradmin_role=period,
             requestkwargs={
@@ -393,8 +393,8 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertFalse(Candidate.objects.filter(assignment_group__parentnode=created_assignment).exists())
 
     def test_post_import_no_students(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
-        mommy.make('core.RelatedStudent', period=period, _quantity=10)
+        period = baker.make_recipe('devilry.apps.core.period_active')
+        baker.make('core.RelatedStudent', period=period, _quantity=10)
         self.mock_http302_postrequest(
             cradmin_role=period,
             requestkwargs={
@@ -411,13 +411,13 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertFalse(AssignmentGroup.objects.filter(parentnode=created_assignment).exists())
 
     def test_post_copy_all_students_from_another_assignment(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
-        other_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start', parentnode=period)
-        relatedstudent_user1 = mommy.make(settings.AUTH_USER_MODEL)
-        relatedstudent_user2 = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Candidate', assignment_group__parentnode=other_assignment,
+        period = baker.make_recipe('devilry.apps.core.period_active')
+        other_assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start', parentnode=period)
+        relatedstudent_user1 = baker.make(settings.AUTH_USER_MODEL)
+        relatedstudent_user2 = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Candidate', assignment_group__parentnode=other_assignment,
                    relatedstudent__period=period, relatedstudent__user=relatedstudent_user1)
-        mommy.make('core.Candidate', assignment_group__parentnode=other_assignment,
+        baker.make('core.Candidate', assignment_group__parentnode=other_assignment,
                    relatedstudent__period=period, relatedstudent__user=relatedstudent_user2)
         self.mock_http302_postrequest(
             cradmin_role=period,
@@ -442,18 +442,18 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
             1)
 
     def test_post_copy_all_students_from_another_assignment_same_group_structure(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
-        other_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start', parentnode=period)
-        group1 = mommy.make('core.AssignmentGroup', parentnode=other_assignment, name='group1')
-        group2 = mommy.make('core.AssignmentGroup', parentnode=other_assignment, name='group2')
-        relatedstudent_user1_group1 = mommy.make(settings.AUTH_USER_MODEL)
-        relatedstudent_user2_group1 = mommy.make(settings.AUTH_USER_MODEL)
-        relatedstudent_user_group2 = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Candidate', assignment_group=group1,
+        period = baker.make_recipe('devilry.apps.core.period_active')
+        other_assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start', parentnode=period)
+        group1 = baker.make('core.AssignmentGroup', parentnode=other_assignment, name='group1')
+        group2 = baker.make('core.AssignmentGroup', parentnode=other_assignment, name='group2')
+        relatedstudent_user1_group1 = baker.make(settings.AUTH_USER_MODEL)
+        relatedstudent_user2_group1 = baker.make(settings.AUTH_USER_MODEL)
+        relatedstudent_user_group2 = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Candidate', assignment_group=group1,
                    relatedstudent__period=period, relatedstudent__user=relatedstudent_user1_group1)
-        mommy.make('core.Candidate', assignment_group=group1,
+        baker.make('core.Candidate', assignment_group=group1,
                    relatedstudent__period=period, relatedstudent__user=relatedstudent_user2_group1)
-        mommy.make('core.Candidate', assignment_group=group2,
+        baker.make('core.Candidate', assignment_group=group2,
                    relatedstudent__period=period, relatedstudent__user=relatedstudent_user_group2)
         self.mock_http302_postrequest(
             cradmin_role=period,
@@ -487,19 +487,19 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
             relatedstudent__user=relatedstudent_user_group2).exists())
 
     def test_post_copy_with_passing_grade_from_another_assignment(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
-        other_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start', parentnode=period)
-        group_passed = mommy.make('core.AssignmentGroup', parentnode=other_assignment)
-        group_failed = mommy.make('core.AssignmentGroup', parentnode=other_assignment)
-        relatedstudent_user1 = mommy.make(settings.AUTH_USER_MODEL)
-        relatedstudent_user2 = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Candidate', assignment_group=group_passed,
+        period = baker.make_recipe('devilry.apps.core.period_active')
+        other_assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start', parentnode=period)
+        group_passed = baker.make('core.AssignmentGroup', parentnode=other_assignment)
+        group_failed = baker.make('core.AssignmentGroup', parentnode=other_assignment)
+        relatedstudent_user1 = baker.make(settings.AUTH_USER_MODEL)
+        relatedstudent_user2 = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Candidate', assignment_group=group_passed,
                    relatedstudent__period=period, relatedstudent__user=relatedstudent_user1)
-        mommy.make('core.Candidate', assignment_group=group_failed,
+        baker.make('core.Candidate', assignment_group=group_failed,
                    relatedstudent__period=period, relatedstudent__user=relatedstudent_user2)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        devilry_group_baker_factories.feedbackset_first_attempt_published(
             grading_points=1, group=group_passed)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        devilry_group_baker_factories.feedbackset_first_attempt_published(
             grading_points=0, group=group_failed)
         self.mock_http302_postrequest(
             cradmin_role=period,
@@ -520,16 +520,16 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
                 assignment_group__parentnode=created_assignment, relatedstudent__user=relatedstudent_user1).exists())
 
     def test_post_copy_with_passing_grade_from_another_assignment_same_group_structure(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
-        other_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start', parentnode=period)
-        group = mommy.make('core.AssignmentGroup', parentnode=other_assignment)
-        relatedstudent_user1 = mommy.make(settings.AUTH_USER_MODEL)
-        relatedstudent_user2 = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Candidate', assignment_group=group,
+        period = baker.make_recipe('devilry.apps.core.period_active')
+        other_assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start', parentnode=period)
+        group = baker.make('core.AssignmentGroup', parentnode=other_assignment)
+        relatedstudent_user1 = baker.make(settings.AUTH_USER_MODEL)
+        relatedstudent_user2 = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Candidate', assignment_group=group,
                    relatedstudent__period=period, relatedstudent__user=relatedstudent_user1)
-        mommy.make('core.Candidate', assignment_group=group,
+        baker.make('core.Candidate', assignment_group=group,
                    relatedstudent__period=period, relatedstudent__user=relatedstudent_user2)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        devilry_group_baker_factories.feedbackset_first_attempt_published(
             grading_points=1, group=group)
         self.mock_http302_postrequest(
             cradmin_role=period,
@@ -554,10 +554,10 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
                 assignment_group=created_group, relatedstudent__user=relatedstudent_user2).exists())
 
     def test_post_copy_with_passing_grade_from_another_examiners_copied(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
-        other_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start', parentnode=period)
-        group = mommy.make('core.AssignmentGroup', parentnode=other_assignment)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        period = baker.make_recipe('devilry.apps.core.period_active')
+        other_assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start', parentnode=period)
+        group = baker.make('core.AssignmentGroup', parentnode=other_assignment)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(
             grading_points=1, group=group)
         self.mock_http302_postrequest(
             cradmin_role=period,
@@ -575,7 +575,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(Examiner.objects.filter(assignmentgroup__parentnode=created_assignment).count(), 1)
 
     def test_post_first_deadline_outside_period(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
+        period = baker.make_recipe('devilry.apps.core.period_active')
         first_deadline_isoformat = datetimeutils.isoformat_noseconds(FUTURE_PERIOD_END)
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=period,
@@ -592,7 +592,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
                       mockresponse.selector.one('#error_1_id_first_deadline').alltext_normalized)
 
     def test_post_first_deadline_before_publishing_time_hours(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
+        period = baker.make_recipe('devilry.apps.core.period_active')
         first_deadline_isoformat = datetimeutils.isoformat_noseconds(timezone.now())
         with self.settings(DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES=60 * 3):
             mockresponse = self.mock_http200_postrequest_htmls(
@@ -610,7 +610,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
                              mockresponse.selector.one('#error_1_id_first_deadline').alltext_normalized)
 
     def test_post_first_deadline_before_publishing_time_minutes(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
+        period = baker.make_recipe('devilry.apps.core.period_active')
         first_deadline_isoformat = datetimeutils.isoformat_noseconds(timezone.now())
         with self.settings(DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES=30):
             mockresponse = self.mock_http200_postrequest_htmls(
@@ -630,7 +630,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
     def __valid_post_request(self, period=None, first_deadline=ACTIVE_PERIOD_END,
                              publishing_time_delay_minutes=60, student_import_option='all'):
         if not period:
-            period = mommy.make_recipe('devilry.apps.core.period_active')
+            period = baker.make_recipe('devilry.apps.core.period_active')
         with self.settings(DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES=publishing_time_delay_minutes):
             mockresponse = self.mock_http302_postrequest(
                 cradmin_role=period,
@@ -674,12 +674,12 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def test_post_future_period_sanity(self):
         self.assertEqual(Assignment.objects.count(), 0)
-        period = mommy.make_recipe('devilry.apps.core.period_future')
+        period = baker.make_recipe('devilry.apps.core.period_future')
         self.__valid_post_request(period=period, first_deadline=ASSIGNMENT_FUTUREPERIOD_START_FIRST_DEADLINE)
         self.assertEqual(Assignment.objects.count(), 1)
 
     def test_post_future_publishing_time(self):
-        period = mommy.make_recipe('devilry.apps.core.period_future')
+        period = baker.make_recipe('devilry.apps.core.period_future')
         created_assignment, mockresponse = self.__valid_post_request(
             period=period,
             first_deadline=ASSIGNMENT_FUTUREPERIOD_START_FIRST_DEADLINE,
@@ -688,20 +688,20 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(created_assignment.publishing_time, (period.start_time + timedelta(minutes=60)))
 
     def test_post_add_no_students(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
-        mommy.make('core.RelatedStudent', period=period,
+        period = baker.make_recipe('devilry.apps.core.period_active')
+        baker.make('core.RelatedStudent', period=period,
                    user__shortname='student1')
-        mommy.make('core.RelatedStudent', period=period,
+        baker.make('core.RelatedStudent', period=period,
                    user__shortname='student2')
         created_assignment, mockresponse = self.__valid_post_request(period=period, student_import_option='none')
         self.assertEqual(created_assignment.assignmentgroups.count(), 0)
         self.assertEqual(Candidate.objects.filter(assignment_group__parentnode=created_assignment).count(), 0)
 
     def test_post_add_all_relatedstudents_on_period(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
-        mommy.make('core.RelatedStudent', period=period,
+        period = baker.make_recipe('devilry.apps.core.period_active')
+        baker.make('core.RelatedStudent', period=period,
                    user__shortname='student1')
-        mommy.make('core.RelatedStudent', period=period,
+        baker.make('core.RelatedStudent', period=period,
                    user__shortname='student2')
         created_assignment, mockresponse = self.__valid_post_request(period=period)
         self.assertEqual(2, created_assignment.assignmentgroups.count())
@@ -711,15 +711,15 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertTrue(candidatesqueryset.filter(relatedstudent__user__shortname='student2').exists())
 
     def test_post_add_all_relatedstudents_on_period_no_students_on_period(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
+        period = baker.make_recipe('devilry.apps.core.period_active')
         created_assignment, mockresponse = self.__valid_post_request(period=period)
         self.assertEqual(0, created_assignment.assignmentgroups.count())
         self.assertEqual(Candidate.objects.filter(assignment_group__parentnode=created_assignment).count(), 0)
 
     def test_post_add_students_from_assignment(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
-        other_assignment = mommy.make('core.Assignment', parentnode=period)
-        mommy.make('core.Candidate',
+        period = baker.make_recipe('devilry.apps.core.period_active')
+        other_assignment = baker.make('core.Assignment', parentnode=period)
+        baker.make('core.Candidate',
                    assignment_group__parentnode=other_assignment,
                    relatedstudent__period=period, _quantity=2)
         created_assignment, mockresponse = self.__valid_post_request(

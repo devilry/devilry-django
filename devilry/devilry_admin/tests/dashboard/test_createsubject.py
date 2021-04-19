@@ -2,7 +2,7 @@ from django.conf import settings
 from django.test import TestCase
 from cradmin_legacy import cradmin_testhelpers
 from cradmin_legacy import crinstance
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.apps.core.models import Subject
 from devilry.devilry_admin.views.dashboard import createsubject
@@ -12,28 +12,28 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = createsubject.CreateView
 
     def test_get_render_title(self):
-        user = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
+        user = baker.make(settings.AUTH_USER_MODEL, is_superuser=True)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=user)
         self.assertEqual('Create new course',
                          mockresponse.selector.one('title').alltext_normalized)
 
     def test_get_render_h1(self):
-        user = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
+        user = baker.make(settings.AUTH_USER_MODEL, is_superuser=True)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=user)
         self.assertEqual('Create new course',
                          mockresponse.selector.one('h1').alltext_normalized)
 
     def test_get_render_formfields(self):
-        user = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
+        user = baker.make(settings.AUTH_USER_MODEL, is_superuser=True)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=user)
         self.assertTrue(mockresponse.selector.exists('input[name=long_name]'))
         self.assertTrue(mockresponse.selector.exists('input[name=short_name]'))
 
     def test_post_missing_short_name(self):
-        user = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
+        user = baker.make(settings.AUTH_USER_MODEL, is_superuser=True)
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=user,
             requestkwargs={
@@ -48,7 +48,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('#error_1_id_short_name').alltext_normalized)
 
     def test_post_missing_long_name(self):
-        user = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
+        user = baker.make(settings.AUTH_USER_MODEL, is_superuser=True)
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=user,
             requestkwargs={
@@ -63,7 +63,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('#error_1_id_long_name').alltext_normalized)
 
     def test_post_duplicate_short_name(self):
-        user = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
+        user = baker.make(settings.AUTH_USER_MODEL, is_superuser=True)
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=user,
             requestkwargs={
@@ -79,7 +79,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def __valid_post_request(self, user=None):
         if not user:
-            user = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
+            user = baker.make(settings.AUTH_USER_MODEL, is_superuser=True)
         mockresponse = self.mock_http302_postrequest(
             cradmin_role=user,
             requestkwargs={

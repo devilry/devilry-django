@@ -6,10 +6,10 @@ from django.http import Http404
 from cradmin_legacy import cradmin_testhelpers
 from django.contrib.contenttypes.models import ContentType
 
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
-from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
+from devilry.devilry_group import devilry_group_baker_factories as group_baker
 from devilry.apps.core.models import AssignmentGroup, Candidate, Assignment
 from devilry.devilry_admin.views.assignment.students.create_groups_accumulated_score import \
     PreviewRelatedstudentsListView, SelectAssignmentsView
@@ -22,24 +22,24 @@ class TestAccumulatedScoreSelectAssignmentsView(test.TestCase, cradmin_testhelpe
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_no_assignments(self):
-        test_assignment = mommy.make('core.Assignment')
+        test_assignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=test_assignment
         )
         self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_no_assignments_on_same_period(self):
-        test_period = mommy.make('core.Period')
-        test_assignment1 = mommy.make('core.Assignment', parentnode=test_period)
-        mommy.make('core.Assignment')
+        test_period = baker.make('core.Period')
+        test_assignment1 = baker.make('core.Assignment', parentnode=test_period)
+        baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=test_assignment1
         )
         self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_assignment_info(self):
-        current_assignment = mommy.make('core.Assignment')
-        mommy.make('core.Assignment', long_name='Test Assignment', max_points=123,
+        current_assignment = baker.make('core.Assignment')
+        baker.make('core.Assignment', long_name='Test Assignment', max_points=123,
                    parentnode=current_assignment.parentnode)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=current_assignment
@@ -53,10 +53,10 @@ class TestAccumulatedScoreSelectAssignmentsView(test.TestCase, cradmin_testhelpe
             'Max points: 123 Grading plugin: Passed/failed')
 
     def test_assignments_multiple(self):
-        current_assignment = mommy.make('core.Assignment')
-        test_assignment1 = mommy.make('core.Assignment', long_name='Test Assignment 1', max_points=123,
+        current_assignment = baker.make('core.Assignment')
+        test_assignment1 = baker.make('core.Assignment', long_name='Test Assignment 1', max_points=123,
                                       parentnode=current_assignment.parentnode)
-        test_assignment2 = mommy.make('core.Assignment', long_name='Test Assignment 2', max_points=123,
+        test_assignment2 = baker.make('core.Assignment', long_name='Test Assignment 2', max_points=123,
                                       parentnode=current_assignment.parentnode)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=current_assignment
@@ -69,10 +69,10 @@ class TestAccumulatedScoreSelectAssignmentsView(test.TestCase, cradmin_testhelpe
         self.assertIn(test_assignment2.long_name, assignment_names)
 
     def test_session_data_cleared(self):
-        current_assignment = mommy.make('core.Assignment')
-        test_assignment1 = mommy.make('core.Assignment', long_name='Test Assignment 1', max_points=123,
+        current_assignment = baker.make('core.Assignment')
+        test_assignment1 = baker.make('core.Assignment', long_name='Test Assignment 1', max_points=123,
                                       parentnode=current_assignment.parentnode)
-        test_assignment2 = mommy.make('core.Assignment', long_name='Test Assignment 2', max_points=123,
+        test_assignment2 = baker.make('core.Assignment', long_name='Test Assignment 2', max_points=123,
                                       parentnode=current_assignment.parentnode)
         session = self.client.session
         session['selected_assignment_ids'] = [125, 312]
@@ -86,10 +86,10 @@ class TestAccumulatedScoreSelectAssignmentsView(test.TestCase, cradmin_testhelpe
         self.assertEqual(len(list(mockresponse.request.session.keys())), 0)
 
     def test_post_session_data_set(self):
-        current_assignment = mommy.make('core.Assignment')
-        test_assignment1 = mommy.make('core.Assignment', long_name='Test Assignment 1', max_points=123,
+        current_assignment = baker.make('core.Assignment')
+        test_assignment1 = baker.make('core.Assignment', long_name='Test Assignment 1', max_points=123,
                                       parentnode=current_assignment.parentnode)
-        test_assignment2 = mommy.make('core.Assignment', long_name='Test Assignment 2', max_points=123,
+        test_assignment2 = baker.make('core.Assignment', long_name='Test Assignment 2', max_points=123,
                                       parentnode=current_assignment.parentnode)
         self.assertEqual(len(list(self.client.session.keys())), 0)
         mockresponse = self.mock_http302_postrequest(
@@ -108,10 +108,10 @@ class TestAccumulatedScoreSelectAssignmentsView(test.TestCase, cradmin_testhelpe
         self.assertIn(test_assignment2.id, mockresponse.request.session['selected_assignment_ids'])
 
     def test_session_data_cleared_and_set_again(self):
-        current_assignment = mommy.make('core.Assignment')
-        test_assignment1 = mommy.make('core.Assignment', long_name='Test Assignment 1', max_points=123,
+        current_assignment = baker.make('core.Assignment')
+        test_assignment1 = baker.make('core.Assignment', long_name='Test Assignment 1', max_points=123,
                                       parentnode=current_assignment.parentnode)
-        test_assignment2 = mommy.make('core.Assignment', long_name='Test Assignment 2', max_points=123,
+        test_assignment2 = baker.make('core.Assignment', long_name='Test Assignment 2', max_points=123,
                                       parentnode=current_assignment.parentnode)
         session = self.client.session
         session['selected_assignment_ids'] = [125, 312]
@@ -142,10 +142,10 @@ class TestAccumulatedScoreSelectAssignmentsView(test.TestCase, cradmin_testhelpe
         self.assertIn(test_assignment2.id, mockresponse.request.session['selected_assignment_ids'])
 
     def test_post_without_point_threshold(self):
-        current_assignment = mommy.make('core.Assignment')
-        test_assignment1 = mommy.make('core.Assignment', long_name='Test Assignment 1', max_points=123,
+        current_assignment = baker.make('core.Assignment')
+        test_assignment1 = baker.make('core.Assignment', long_name='Test Assignment 1', max_points=123,
                                       parentnode=current_assignment.parentnode)
-        test_assignment2 = mommy.make('core.Assignment', long_name='Test Assignment 2', max_points=123,
+        test_assignment2 = baker.make('core.Assignment', long_name='Test Assignment 2', max_points=123,
                                       parentnode=current_assignment.parentnode)
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=current_assignment,
@@ -160,7 +160,7 @@ class TestAccumulatedScoreSelectAssignmentsView(test.TestCase, cradmin_testhelpe
                          'This field is required.')
 
     def test_post_without_selected_items(self):
-        current_assignment = mommy.make('core.Assignment')
+        current_assignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=current_assignment,
             sessionmock=self.client.session,
@@ -180,7 +180,7 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_from_select_assignment_view_not_in_session(self):
-        test_assignment = mommy.make('core.Assignment')
+        test_assignment = baker.make('core.Assignment')
         with self.assertRaises(Http404):
             self.mock_http200_getrequest_htmls(
                 cradmin_role=test_assignment,
@@ -190,7 +190,7 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
                 })
 
     def test_points_threshold_not_in_session(self):
-        test_assignment = mommy.make('core.Assignment')
+        test_assignment = baker.make('core.Assignment')
         with self.assertRaises(Http404):
             self.mock_http200_getrequest_htmls(
                 cradmin_role=test_assignment,
@@ -200,7 +200,7 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
                 })
 
     def test_selected_assignment_ids_not_in_session(self):
-        test_assignment = mommy.make('core.Assignment')
+        test_assignment = baker.make('core.Assignment')
         with self.assertRaises(Http404):
             self.mock_http200_getrequest_htmls(
                 cradmin_role=test_assignment,
@@ -210,8 +210,8 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
                 })
 
     def test_ok(self):
-        current_assignment = mommy.make('core.Assignment')
-        test_assignment = mommy.make('core.Assignment', parentnode=current_assignment.parentnode,
+        current_assignment = baker.make('core.Assignment')
+        test_assignment = baker.make('core.Assignment', parentnode=current_assignment.parentnode,
                                      long_name='Test Assignment 1')
         self.mock_http200_getrequest_htmls(
             cradmin_role=test_assignment,
@@ -222,10 +222,10 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
             })
 
     def test_selected_assignments_info_box(self):
-        current_assignment = mommy.make('core.Assignment')
-        test_assignment1 = mommy.make('core.Assignment', parentnode=current_assignment.parentnode,
+        current_assignment = baker.make('core.Assignment')
+        test_assignment1 = baker.make('core.Assignment', parentnode=current_assignment.parentnode,
                                       long_name='Test Assignment 1')
-        test_assignment2 = mommy.make('core.Assignment', parentnode=current_assignment.parentnode,
+        test_assignment2 = baker.make('core.Assignment', parentnode=current_assignment.parentnode,
                                       long_name='Test Assignment 2')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=current_assignment,
@@ -239,10 +239,10 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
             '- Test Assignment 1 - Test Assignment 2')
 
     def test_total_score_for_selected_assignments_info_box(self):
-        current_assignment = mommy.make('core.Assignment')
-        test_assignment1 = mommy.make('core.Assignment', parentnode=current_assignment.parentnode,
+        current_assignment = baker.make('core.Assignment')
+        test_assignment1 = baker.make('core.Assignment', parentnode=current_assignment.parentnode,
                                       long_name='Test Assignment 1', max_points=100)
-        test_assignment2 = mommy.make('core.Assignment', parentnode=current_assignment.parentnode,
+        test_assignment2 = baker.make('core.Assignment', parentnode=current_assignment.parentnode,
                                       long_name='Test Assignment 2', max_points=150)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=current_assignment,
@@ -257,10 +257,10 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
             'Total max score of selected assignments: 250')
 
     def test_threshold_percentage_of_max_score_info_box(self):
-        current_assignment = mommy.make('core.Assignment')
-        test_assignment1 = mommy.make('core.Assignment', parentnode=current_assignment.parentnode,
+        current_assignment = baker.make('core.Assignment')
+        test_assignment1 = baker.make('core.Assignment', parentnode=current_assignment.parentnode,
                                       long_name='Test Assignment 1', max_points=100)
-        test_assignment2 = mommy.make('core.Assignment', parentnode=current_assignment.parentnode,
+        test_assignment2 = baker.make('core.Assignment', parentnode=current_assignment.parentnode,
                                       long_name='Test Assignment 2', max_points=150)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=current_assignment,
@@ -275,10 +275,10 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
             'Threshold percentage of max score: {:.2f} %'.format((123.0/250.0) * 100.0))
 
     def test_single_assignment_single_student_not_passed_added_students_count_info_box(self):
-        current_assignment = mommy.make('core.Assignment')
-        test_assignment = mommy.make('core.Assignment', parentnode=current_assignment.parentnode,
+        current_assignment = baker.make('core.Assignment')
+        test_assignment = baker.make('core.Assignment', parentnode=current_assignment.parentnode,
                                      long_name='Test Assignment 1')
-        relatedstudent = mommy.make('core.RelatedStudent', period=current_assignment.parentnode)
+        relatedstudent = baker.make('core.RelatedStudent', period=current_assignment.parentnode)
         self.__make_published_feedbackset_for_relatedstudent(
             relatedstudent=relatedstudent, assignment=test_assignment, grading_points=0)
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -294,10 +294,10 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
             'Number of students that will be added to the assignment: 0 / 1')
 
     def test_single_assignment_single_student_passed_added_students_count_info_box(self):
-        current_assignment = mommy.make('core.Assignment')
-        test_assignment = mommy.make('core.Assignment', parentnode=current_assignment.parentnode,
+        current_assignment = baker.make('core.Assignment')
+        test_assignment = baker.make('core.Assignment', parentnode=current_assignment.parentnode,
                                      long_name='Test Assignment 1')
-        relatedstudent = mommy.make('core.RelatedStudent', period=current_assignment.parentnode)
+        relatedstudent = baker.make('core.RelatedStudent', period=current_assignment.parentnode)
         self.__make_published_feedbackset_for_relatedstudent(
             relatedstudent=relatedstudent, assignment=test_assignment, grading_points=1)
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -313,12 +313,12 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
             'Number of students that will be added to the assignment: 1 / 1')
 
     def test_single_assignment_multiple_students_added_students_count_info_box_sanity(self):
-        current_assignment = mommy.make('core.Assignment')
-        test_assignment = mommy.make('core.Assignment', parentnode=current_assignment.parentnode,
+        current_assignment = baker.make('core.Assignment')
+        test_assignment = baker.make('core.Assignment', parentnode=current_assignment.parentnode,
                                      long_name='Test Assignment 1')
-        relatedstudent1 = mommy.make('core.RelatedStudent', period=current_assignment.parentnode)
-        relatedstudent2 = mommy.make('core.RelatedStudent', period=current_assignment.parentnode)
-        relatedstudent3 = mommy.make('core.RelatedStudent', period=current_assignment.parentnode)
+        relatedstudent1 = baker.make('core.RelatedStudent', period=current_assignment.parentnode)
+        relatedstudent2 = baker.make('core.RelatedStudent', period=current_assignment.parentnode)
+        relatedstudent3 = baker.make('core.RelatedStudent', period=current_assignment.parentnode)
         self.__make_published_feedbackset_for_relatedstudent(
             relatedstudent=relatedstudent1, assignment=test_assignment, grading_points=1)
         self.__make_published_feedbackset_for_relatedstudent(
@@ -338,14 +338,14 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
             'Number of students that will be added to the assignment: 2 / 3')
 
     def test_multiple_assignment_multiple_students_added_students_count_info_box_sanity(self):
-        current_assignment = mommy.make('core.Assignment')
-        test_assignment1 = mommy.make('core.Assignment', parentnode=current_assignment.parentnode,
+        current_assignment = baker.make('core.Assignment')
+        test_assignment1 = baker.make('core.Assignment', parentnode=current_assignment.parentnode,
                                       long_name='Test Assignment 1')
-        test_assignment2 = mommy.make('core.Assignment', parentnode=current_assignment.parentnode,
+        test_assignment2 = baker.make('core.Assignment', parentnode=current_assignment.parentnode,
                                       long_name='Test Assignment 2')
-        relatedstudent1 = mommy.make('core.RelatedStudent', period=current_assignment.parentnode)
-        relatedstudent2 = mommy.make('core.RelatedStudent', period=current_assignment.parentnode)
-        relatedstudent3 = mommy.make('core.RelatedStudent', period=current_assignment.parentnode)
+        relatedstudent1 = baker.make('core.RelatedStudent', period=current_assignment.parentnode)
+        relatedstudent2 = baker.make('core.RelatedStudent', period=current_assignment.parentnode)
+        relatedstudent3 = baker.make('core.RelatedStudent', period=current_assignment.parentnode)
         self.__make_published_feedbackset_for_relatedstudent(
             relatedstudent=relatedstudent1, assignment=test_assignment1, grading_points=1)
         self.__make_published_feedbackset_for_relatedstudent(
@@ -371,14 +371,14 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
             'Number of students that will be added to the assignment: 2 / 3')
 
     def __make_published_feedbackset_for_relatedstudent(self, relatedstudent, assignment, grading_points=0):
-        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        group_mommy.feedbackset_first_attempt_published(group=group, grading_points=grading_points)
-        mommy.make('core.Candidate', assignment_group=group, relatedstudent=relatedstudent)
+        group = baker.make('core.AssignmentGroup', parentnode=assignment)
+        group_baker.feedbackset_first_attempt_published(group=group, grading_points=grading_points)
+        baker.make('core.Candidate', assignment_group=group, relatedstudent=relatedstudent)
 
     def test_single_assignment_student_has_enough_points_sanity(self):
-        current_assignment = mommy.make('core.Assignment')
-        test_assignment = mommy.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
-        relatedstudent = mommy.make('core.RelatedStudent', period=current_assignment.parentnode)
+        current_assignment = baker.make('core.Assignment')
+        test_assignment = baker.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
+        relatedstudent = baker.make('core.RelatedStudent', period=current_assignment.parentnode)
         self.__make_published_feedbackset_for_relatedstudent(
             relatedstudent=relatedstudent, assignment=test_assignment, grading_points=25)
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -391,9 +391,9 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
         self.assertEqual(mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'), 1)
 
     def test_single_assignment_student_does_not_have_enough_points_sanity(self):
-        current_assignment = mommy.make('core.Assignment')
-        test_assignment = mommy.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
-        relatedstudent = mommy.make('core.RelatedStudent', period=current_assignment.parentnode)
+        current_assignment = baker.make('core.Assignment')
+        test_assignment = baker.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
+        relatedstudent = baker.make('core.RelatedStudent', period=current_assignment.parentnode)
         self.__make_published_feedbackset_for_relatedstudent(
             relatedstudent=relatedstudent, assignment=test_assignment, grading_points=20)
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -406,10 +406,10 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
         self.assertEqual(mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'), 0)
 
     def test_multiple_assignments_student_has_enough_points_across_assignment_sanity(self):
-        current_assignment = mommy.make('core.Assignment')
-        test_assignment1 = mommy.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
-        test_assignment2 = mommy.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
-        relatedstudent = mommy.make('core.RelatedStudent', period=current_assignment.parentnode)
+        current_assignment = baker.make('core.Assignment')
+        test_assignment1 = baker.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
+        test_assignment2 = baker.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
+        relatedstudent = baker.make('core.RelatedStudent', period=current_assignment.parentnode)
         self.__make_published_feedbackset_for_relatedstudent(
             relatedstudent=relatedstudent, assignment=test_assignment1, grading_points=25)
         self.__make_published_feedbackset_for_relatedstudent(
@@ -424,10 +424,10 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
         self.assertEqual(mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'), 1)
 
     def test_student_details(self):
-        current_assignment = mommy.make('core.Assignment')
-        test_assignment1 = mommy.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
-        test_assignment2 = mommy.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
-        relatedstudent = mommy.make('core.RelatedStudent',
+        current_assignment = baker.make('core.Assignment')
+        test_assignment1 = baker.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
+        test_assignment2 = baker.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
+        relatedstudent = baker.make('core.RelatedStudent',
                                     period=current_assignment.parentnode,
                                     user__fullname='Test User',
                                     user__shortname='testuser@example.com')
@@ -451,10 +451,10 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
             'Grading points total: 55')
 
     def test_student_already_on_assignment_is_excluded(self):
-        current_assignment = mommy.make('core.Assignment')
-        test_assignment1 = mommy.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
-        test_assignment2 = mommy.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
-        relatedstudent = mommy.make('core.RelatedStudent',
+        current_assignment = baker.make('core.Assignment')
+        test_assignment1 = baker.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
+        test_assignment2 = baker.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
+        relatedstudent = baker.make('core.RelatedStudent',
                                     period=current_assignment.parentnode,
                                     user__fullname='Test User 2',
                                     user__shortname='testuser2@example.com')
@@ -462,10 +462,10 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
             relatedstudent=relatedstudent, assignment=test_assignment1, grading_points=50)
         self.__make_published_feedbackset_for_relatedstudent(
             relatedstudent=relatedstudent, assignment=test_assignment2, grading_points=50)
-        group = mommy.make('core.AssignmentGroup', parentnode=current_assignment)
-        mommy.make('core.Candidate', relatedstudent=relatedstudent,
+        group = baker.make('core.AssignmentGroup', parentnode=current_assignment)
+        baker.make('core.Candidate', relatedstudent=relatedstudent,
                    assignment_group=group)
-        mommy.make('devilry_group.FeedbackSet', group=group)
+        baker.make('devilry_group.FeedbackSet', group=group)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=current_assignment,
             sessionmock={
@@ -477,10 +477,10 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
         self.assertNotContains(mockresponse.response, relatedstudent.user.shortname)
 
     def test_student_already_on_assignment_is_excluded_with_qualifying_student(self):
-        current_assignment = mommy.make('core.Assignment')
-        test_assignment1 = mommy.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
-        test_assignment2 = mommy.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
-        relatedstudent = mommy.make('core.RelatedStudent',
+        current_assignment = baker.make('core.Assignment')
+        test_assignment1 = baker.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
+        test_assignment2 = baker.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
+        relatedstudent = baker.make('core.RelatedStudent',
                                     period=current_assignment.parentnode,
                                     user__fullname='Test User 1',
                                     user__shortname='testuser1@example.com')
@@ -488,7 +488,7 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
             relatedstudent=relatedstudent, assignment=test_assignment1, grading_points=25)
         self.__make_published_feedbackset_for_relatedstudent(
             relatedstudent=relatedstudent, assignment=test_assignment2, grading_points=30)
-        relatedstudent_on_current_assignment = mommy.make('core.RelatedStudent',
+        relatedstudent_on_current_assignment = baker.make('core.RelatedStudent',
                                                           period=current_assignment.parentnode,
                                                           user__fullname='Test User 2',
                                                           user__shortname='testuser2@example.com')
@@ -496,10 +496,10 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
             relatedstudent=relatedstudent_on_current_assignment, assignment=test_assignment1, grading_points=50)
         self.__make_published_feedbackset_for_relatedstudent(
             relatedstudent=relatedstudent_on_current_assignment, assignment=test_assignment2, grading_points=50)
-        group = mommy.make('core.AssignmentGroup', parentnode=current_assignment)
-        mommy.make('core.Candidate', relatedstudent=relatedstudent_on_current_assignment,
+        group = baker.make('core.AssignmentGroup', parentnode=current_assignment)
+        baker.make('core.Candidate', relatedstudent=relatedstudent_on_current_assignment,
                    assignment_group=group)
-        mommy.make('devilry_group.FeedbackSet', group=group)
+        baker.make('devilry_group.FeedbackSet', group=group)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=current_assignment,
             sessionmock={
@@ -513,9 +513,9 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
         self.assertContains(mockresponse.response, relatedstudent.user.shortname)
 
     def test_post_success_message(self):
-        current_assignment = mommy.make('core.Assignment', long_name='Current Assignment')
-        test_assignment = mommy.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
-        relatedstudent = mommy.make('core.RelatedStudent',
+        current_assignment = baker.make('core.Assignment', long_name='Current Assignment')
+        test_assignment = baker.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
+        relatedstudent = baker.make('core.RelatedStudent',
                                     period=current_assignment.parentnode,
                                     user__fullname='Test User',
                                     user__shortname='testuser@example.com')
@@ -540,10 +540,10 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
             '')
 
     def test_post_one_student_group_created(self):
-        current_assignment = mommy.make('core.Assignment', long_name='Current Assignment')
-        test_assignment1 = mommy.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
-        test_assignment2 = mommy.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
-        relatedstudent = mommy.make('core.RelatedStudent',
+        current_assignment = baker.make('core.Assignment', long_name='Current Assignment')
+        test_assignment1 = baker.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
+        test_assignment2 = baker.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
+        relatedstudent = baker.make('core.RelatedStudent',
                                     period=current_assignment.parentnode,
                                     user__fullname='Test User',
                                     user__shortname='testuser@example.com')
@@ -569,14 +569,14 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
             1)
 
     def test_post_multiple_students_multiple_groups_created(self):
-        current_assignment = mommy.make('core.Assignment', long_name='Current Assignment')
-        test_assignment1 = mommy.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
-        test_assignment2 = mommy.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
-        relatedstudent1 = mommy.make('core.RelatedStudent',
+        current_assignment = baker.make('core.Assignment', long_name='Current Assignment')
+        test_assignment1 = baker.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
+        test_assignment2 = baker.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
+        relatedstudent1 = baker.make('core.RelatedStudent',
                                      period=current_assignment.parentnode,
                                      user__fullname='Test User1',
                                      user__shortname='testuser1@example.com')
-        relatedstudent2 = mommy.make('core.RelatedStudent',
+        relatedstudent2 = baker.make('core.RelatedStudent',
                                      period=current_assignment.parentnode,
                                      user__fullname='Test User2',
                                      user__shortname='testuser2@example.com')
@@ -606,10 +606,10 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
             relatedstudent=relatedstudent2, assignment_group__parentnode=current_assignment).count(), 1)
 
     def test_post_student_already_on_assignment_is_excluded(self):
-        current_assignment = mommy.make('core.Assignment')
-        test_assignment1 = mommy.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
-        test_assignment2 = mommy.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
-        relatedstudent = mommy.make('core.RelatedStudent',
+        current_assignment = baker.make('core.Assignment')
+        test_assignment1 = baker.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
+        test_assignment2 = baker.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
+        relatedstudent = baker.make('core.RelatedStudent',
                                     period=current_assignment.parentnode,
                                     user__fullname='Test User 1',
                                     user__shortname='testuser1@example.com')
@@ -617,7 +617,7 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
             relatedstudent=relatedstudent, assignment=test_assignment1, grading_points=25)
         self.__make_published_feedbackset_for_relatedstudent(
             relatedstudent=relatedstudent, assignment=test_assignment2, grading_points=30)
-        relatedstudent_on_current_assignment = mommy.make('core.RelatedStudent',
+        relatedstudent_on_current_assignment = baker.make('core.RelatedStudent',
                                                           period=current_assignment.parentnode,
                                                           user__fullname='Test User 2',
                                                           user__shortname='testuser2@example.com')
@@ -625,10 +625,10 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
             relatedstudent=relatedstudent_on_current_assignment, assignment=test_assignment1, grading_points=50)
         self.__make_published_feedbackset_for_relatedstudent(
             relatedstudent=relatedstudent_on_current_assignment, assignment=test_assignment2, grading_points=50)
-        group = mommy.make('core.AssignmentGroup', parentnode=current_assignment)
-        mommy.make('core.Candidate', relatedstudent=relatedstudent_on_current_assignment,
+        group = baker.make('core.AssignmentGroup', parentnode=current_assignment)
+        baker.make('core.Candidate', relatedstudent=relatedstudent_on_current_assignment,
                    assignment_group=group)
-        mommy.make('devilry_group.FeedbackSet', group=group)
+        baker.make('devilry_group.FeedbackSet', group=group)
         self.mock_http302_postrequest(
             cradmin_role=current_assignment,
             sessionmock={
@@ -647,12 +647,12 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
         )
 
     def test_get_query_count_sanity(self):
-        current_assignment = mommy.make('core.Assignment')
-        test_assignment1 = mommy.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
-        test_assignment2 = mommy.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
-        test_assignment3 = mommy.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
-        test_assignment4 = mommy.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
-        relatedstudent1 = mommy.make('core.RelatedStudent', period=current_assignment.parentnode)
+        current_assignment = baker.make('core.Assignment')
+        test_assignment1 = baker.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
+        test_assignment2 = baker.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
+        test_assignment3 = baker.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
+        test_assignment4 = baker.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
+        relatedstudent1 = baker.make('core.RelatedStudent', period=current_assignment.parentnode)
         self.__make_published_feedbackset_for_relatedstudent(
             relatedstudent=relatedstudent1, assignment=test_assignment1, grading_points=25)
         self.__make_published_feedbackset_for_relatedstudent(
@@ -662,7 +662,7 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
         self.__make_published_feedbackset_for_relatedstudent(
             relatedstudent=relatedstudent1, assignment=test_assignment4, grading_points=30)
 
-        relatedstudent2 = mommy.make('core.RelatedStudent', period=current_assignment.parentnode)
+        relatedstudent2 = baker.make('core.RelatedStudent', period=current_assignment.parentnode)
         self.__make_published_feedbackset_for_relatedstudent(
             relatedstudent=relatedstudent2, assignment=test_assignment1, grading_points=25)
         self.__make_published_feedbackset_for_relatedstudent(
@@ -672,7 +672,7 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
         self.__make_published_feedbackset_for_relatedstudent(
             relatedstudent=relatedstudent2, assignment=test_assignment4, grading_points=30)
 
-        relatedstudent3 = mommy.make('core.RelatedStudent', period=current_assignment.parentnode)
+        relatedstudent3 = baker.make('core.RelatedStudent', period=current_assignment.parentnode)
         self.__make_published_feedbackset_for_relatedstudent(
             relatedstudent=relatedstudent3, assignment=test_assignment1, grading_points=25)
         self.__make_published_feedbackset_for_relatedstudent(
@@ -682,7 +682,7 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
         self.__make_published_feedbackset_for_relatedstudent(
             relatedstudent=relatedstudent3, assignment=test_assignment4, grading_points=30)
 
-        relatedstudent4 = mommy.make('core.RelatedStudent', period=current_assignment.parentnode)
+        relatedstudent4 = baker.make('core.RelatedStudent', period=current_assignment.parentnode)
         self.__make_published_feedbackset_for_relatedstudent(
             relatedstudent=relatedstudent4, assignment=test_assignment1, grading_points=25)
         self.__make_published_feedbackset_for_relatedstudent(
@@ -691,7 +691,7 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
             relatedstudent=relatedstudent4, assignment=test_assignment3, grading_points=30)
         self.__make_published_feedbackset_for_relatedstudent(
             relatedstudent=relatedstudent4, assignment=test_assignment4, grading_points=30)
-        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        requestuser = baker.make(settings.AUTH_USER_MODEL)
         with self.assertNumQueries(5):
             self.mock_getrequest(
                 requestuser=requestuser,
@@ -708,12 +708,12 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
         # assertNumQueries() statement below.
         ContentType.objects.get_for_model(Assignment)
 
-        current_assignment = mommy.make('core.Assignment')
-        test_assignment1 = mommy.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
-        test_assignment2 = mommy.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
-        test_assignment3 = mommy.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
-        test_assignment4 = mommy.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
-        relatedstudent1 = mommy.make('core.RelatedStudent', period=current_assignment.parentnode)
+        current_assignment = baker.make('core.Assignment')
+        test_assignment1 = baker.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
+        test_assignment2 = baker.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
+        test_assignment3 = baker.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
+        test_assignment4 = baker.make('core.Assignment', parentnode=current_assignment.parentnode, max_points=50)
+        relatedstudent1 = baker.make('core.RelatedStudent', period=current_assignment.parentnode)
         self.__make_published_feedbackset_for_relatedstudent(
             relatedstudent=relatedstudent1, assignment=test_assignment1, grading_points=50)
         self.__make_published_feedbackset_for_relatedstudent(
@@ -723,7 +723,7 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
         self.__make_published_feedbackset_for_relatedstudent(
             relatedstudent=relatedstudent1, assignment=test_assignment4, grading_points=50)
 
-        relatedstudent2 = mommy.make('core.RelatedStudent', period=current_assignment.parentnode)
+        relatedstudent2 = baker.make('core.RelatedStudent', period=current_assignment.parentnode)
         self.__make_published_feedbackset_for_relatedstudent(
             relatedstudent=relatedstudent2, assignment=test_assignment1, grading_points=50)
         self.__make_published_feedbackset_for_relatedstudent(
@@ -733,7 +733,7 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
         self.__make_published_feedbackset_for_relatedstudent(
             relatedstudent=relatedstudent2, assignment=test_assignment4, grading_points=50)
 
-        relatedstudent3 = mommy.make('core.RelatedStudent', period=current_assignment.parentnode)
+        relatedstudent3 = baker.make('core.RelatedStudent', period=current_assignment.parentnode)
         self.__make_published_feedbackset_for_relatedstudent(
             relatedstudent=relatedstudent3, assignment=test_assignment1, grading_points=50)
         self.__make_published_feedbackset_for_relatedstudent(
@@ -743,7 +743,7 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
         self.__make_published_feedbackset_for_relatedstudent(
             relatedstudent=relatedstudent3, assignment=test_assignment4, grading_points=50)
 
-        relatedstudent4 = mommy.make('core.RelatedStudent', period=current_assignment.parentnode)
+        relatedstudent4 = baker.make('core.RelatedStudent', period=current_assignment.parentnode)
         self.__make_published_feedbackset_for_relatedstudent(
             relatedstudent=relatedstudent4, assignment=test_assignment1, grading_points=50)
         self.__make_published_feedbackset_for_relatedstudent(
@@ -752,7 +752,7 @@ class TestPreviewRelatedstudentsListView(test.TestCase, cradmin_testhelpers.Test
             relatedstudent=relatedstudent4, assignment=test_assignment3, grading_points=50)
         self.__make_published_feedbackset_for_relatedstudent(
             relatedstudent=relatedstudent4, assignment=test_assignment4, grading_points=50)
-        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        requestuser = baker.make(settings.AUTH_USER_MODEL)
         with self.assertNumQueries(9):
             self.mock_http302_postrequest(
                 requestuser=requestuser,

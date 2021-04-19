@@ -1,10 +1,10 @@
 import mock
 from django.test import TestCase
 from cradmin_legacy import cradmin_testhelpers
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.apps.core.models import Period
-from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_END, ACTIVE_PERIOD_START
+from devilry.apps.core.baker_recipes import ACTIVE_PERIOD_END, ACTIVE_PERIOD_START
 from devilry.devilry_admin.views.period import edit
 from devilry.utils import datetimeutils
 
@@ -13,7 +13,7 @@ class TestUpdateView(TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = edit.UpdateView
 
     def test_get_render_title(self):
-        testperiod = mommy.make('core.Period',
+        testperiod = baker.make('core.Period',
                                 parentnode__short_name='testsubject',
                                 short_name='testperiod')
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -22,7 +22,7 @@ class TestUpdateView(TestCase, cradmin_testhelpers.TestCaseMixin):
                       mockresponse.selector.one('title').alltext_normalized)
 
     def test_get_render_h1(self):
-        testperiod = mommy.make('core.Period',
+        testperiod = baker.make('core.Period',
                                 parentnode__short_name='testsubject',
                                 short_name='testperiod')
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -31,7 +31,7 @@ class TestUpdateView(TestCase, cradmin_testhelpers.TestCaseMixin):
                          mockresponse.selector.one('h1').alltext_normalized)
 
     def test_get_render_formfields(self):
-        testperiod = mommy.make('core.Period',
+        testperiod = baker.make('core.Period',
                                 long_name='Test period',
                                 short_name='testperiod',
                                 start_time=ACTIVE_PERIOD_START,
@@ -52,7 +52,7 @@ class TestUpdateView(TestCase, cradmin_testhelpers.TestCaseMixin):
                 mockresponse.selector.one('input[name=end_time]')['value'])
 
     def test_post_missing_short_name(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=testperiod,
             requestkwargs={
@@ -68,7 +68,7 @@ class TestUpdateView(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('#error_1_id_short_name').alltext_normalized)
 
     def test_post_missing_long_name(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=testperiod,
             requestkwargs={
@@ -84,7 +84,7 @@ class TestUpdateView(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('#error_1_id_long_name').alltext_normalized)
 
     def test_post_missing_start_time(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=testperiod,
             requestkwargs={
@@ -100,7 +100,7 @@ class TestUpdateView(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('#error_1_id_start_time').alltext_normalized)
 
     def test_post_missing_end_time(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=testperiod,
             requestkwargs={
@@ -116,7 +116,7 @@ class TestUpdateView(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('#error_1_id_end_time').alltext_normalized)
 
     def test_post_start_time_before_end_time(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=testperiod,
             requestkwargs={
@@ -150,7 +150,7 @@ class TestUpdateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         return updated_period, mockresponse
 
     def test_post_sanity(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         updated_period, mockresponse = self.__valid_post_request(
                 testperiod=testperiod,
                 start_time=ACTIVE_PERIOD_START,
@@ -162,7 +162,7 @@ class TestUpdateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(ACTIVE_PERIOD_END, updated_period.end_time)
 
     def test_post_success_redirect(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         mock_cradmin_instance = mock.MagicMock()
         self.__valid_post_request(
                 testperiod=testperiod,

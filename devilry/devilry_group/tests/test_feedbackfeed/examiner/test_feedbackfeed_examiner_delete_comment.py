@@ -1,7 +1,7 @@
 from django.core.exceptions import PermissionDenied
 from django.test import TestCase
 from cradmin_legacy import cradmin_testhelpers
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import models as group_models
@@ -16,12 +16,12 @@ class TestFeedbackFeedDeleteComment(TestCase, cradmin_testhelpers.TestCaseMixin)
 
     def test_delete_comment_draft(self):
         # Test that the GroupComment does not exist after delete is posted
-        group = mommy.make('core.AssignmentGroup')
-        examiner = mommy.make('core.Examiner',
+        group = baker.make('core.AssignmentGroup')
+        examiner = baker.make('core.Examiner',
                               assignmentgroup=group,
-                              relatedexaminer=mommy.make('core.RelatedExaminer'))
+                              relatedexaminer=baker.make('core.RelatedExaminer'))
 
-        comment = mommy.make('devilry_group.GroupComment',
+        comment = baker.make('devilry_group.GroupComment',
                              user=examiner.relatedexaminer.user,
                              user_role='examiner',
                              part_of_grading=True,
@@ -39,9 +39,9 @@ class TestFeedbackFeedDeleteComment(TestCase, cradmin_testhelpers.TestCaseMixin)
 
     def test_delete_comment_is_not_draft(self):
         # Test that PermissionDenied(403) is raised when trying to delete a non-draft GroupComment.
-        testexaminer = mommy.make('core.Examiner',
-                                  relatedexaminer=mommy.make('core.RelatedExaminer'))
-        testcomment = mommy.make('devilry_group.GroupComment',
+        testexaminer = baker.make('core.Examiner',
+                                  relatedexaminer=baker.make('core.RelatedExaminer'))
+        testcomment = baker.make('devilry_group.GroupComment',
                                  user=testexaminer.relatedexaminer.user,
                                  user_role='examiner',
                                  feedback_set=testexaminer.assignmentgroup.feedbackset_set.first())
@@ -52,12 +52,12 @@ class TestFeedbackFeedDeleteComment(TestCase, cradmin_testhelpers.TestCaseMixin)
 
     def test_delete_comment_only_created_by_requestuser(self):
         # Test that another examiner cannot delete other examiners drafts.
-        testexaminer = mommy.make('core.Examiner',
-                                  relatedexaminer=mommy.make('core.RelatedExaminer'))
-        testexaminer_author = mommy.make('core.Examiner',
+        testexaminer = baker.make('core.Examiner',
+                                  relatedexaminer=baker.make('core.RelatedExaminer'))
+        testexaminer_author = baker.make('core.Examiner',
                                          assignmentgroup=testexaminer.assignmentgroup,
-                                         relatedexaminer=mommy.make('core.RelatedExaminer'))
-        testcommentdraft = mommy.make('devilry_group.GroupComment',
+                                         relatedexaminer=baker.make('core.RelatedExaminer'))
+        testcommentdraft = baker.make('devilry_group.GroupComment',
                                       user=testexaminer_author.relatedexaminer.user,
                                       user_role='examiner',
                                       part_of_grading=True,
@@ -70,9 +70,9 @@ class TestFeedbackFeedDeleteComment(TestCase, cradmin_testhelpers.TestCaseMixin)
 
     def test_delete_and_cancel_buttons_exists(self):
         # Test that `Delete` and `Cancel` buttons exist
-        testexaminer = mommy.make('core.Examiner',
-                                  relatedexaminer=mommy.make('core.RelatedExaminer'))
-        testcomment = mommy.make('devilry_group.GroupComment',
+        testexaminer = baker.make('core.Examiner',
+                                  relatedexaminer=baker.make('core.RelatedExaminer'))
+        testcomment = baker.make('devilry_group.GroupComment',
                                  user=testexaminer.relatedexaminer.user,
                                  user_role='examiner',
                                  part_of_grading=True,
@@ -86,9 +86,9 @@ class TestFeedbackFeedDeleteComment(TestCase, cradmin_testhelpers.TestCaseMixin)
 
     def test_delete_num_queries(self):
         # Test number of queries executed
-        testexaminer = mommy.make('core.Examiner',
-                                  relatedexaminer=mommy.make('core.RelatedExaminer'))
-        testcomment = mommy.make('devilry_group.GroupComment',
+        testexaminer = baker.make('core.Examiner',
+                                  relatedexaminer=baker.make('core.RelatedExaminer'))
+        testcomment = baker.make('devilry_group.GroupComment',
                                  user=testexaminer.relatedexaminer.user,
                                  user_role='examiner',
                                  part_of_grading=True,

@@ -3,7 +3,7 @@ from django import test
 from django.conf import settings
 from django.core import mail
 
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.devilry_message.models import MessageReceiver, Message
 from devilry.devilry_message.tests import test_utils
@@ -11,35 +11,35 @@ from devilry.devilry_message.tests import test_utils
 
 class TestMessage(test.TestCase):
     def __make_email_for_user(self, user, email):
-        return mommy.make('devilry_account.UserEmail', user=user, email=email)
+        return baker.make('devilry_account.UserEmail', user=user, email=email)
 
     def test_validate_user_ids_not_in_virtual_message_receivers(self):
-        message = mommy.make('devilry_message.Message', virtual_message_receivers={'test': 'lol'},
+        message = baker.make('devilry_message.Message', virtual_message_receivers={'test': 'lol'},
                              message_type=['email'])
         with self.assertRaisesMessage(ValueError, 'Missing \'user_ids\' in \'virtual_message_receivers\''):
             message.validate_virtual_message_receivers()
 
     def test_validate_virtual_message_receivers_not_list(self):
-        message = mommy.make('devilry_message.Message', virtual_message_receivers={'user_ids': {}},
+        message = baker.make('devilry_message.Message', virtual_message_receivers={'user_ids': {}},
                              message_type=['email'])
         with self.assertRaisesMessage(ValueError, '\'user_ids\' in \'virtual_message_receivers\' is not a list'):
             message.validate_virtual_message_receivers()
 
     def test_validate_virtual_message_receivers_empty(self):
-        message = mommy.make('devilry_message.Message', virtual_message_receivers={'user_ids': []},
+        message = baker.make('devilry_message.Message', virtual_message_receivers={'user_ids': []},
                              message_type=['email'])
         with self.assertRaisesMessage(ValueError, '\'user_ids\' in \'virtual_message_receivers\' is empty'):
             message.validate_virtual_message_receivers()
 
     def test_validate_virtual_message_receivers_contains_non_integer_values(self):
-        message = mommy.make('devilry_message.Message', virtual_message_receivers={'user_ids': [1, '23']},
+        message = baker.make('devilry_message.Message', virtual_message_receivers={'user_ids': [1, '23']},
                              message_type=['email'])
         with self.assertRaisesMessage(ValueError, '\'virtual_message_receivers["user_ids"]\' contains a non-integer value.: 23'):
             message.validate_virtual_message_receivers()
 
     def test_prepare_single_message_receiver(self):
-        user = self.__make_email_for_user(mommy.make(settings.AUTH_USER_MODEL), 'testuser@example.com').user
-        message = mommy.make('devilry_message.Message', virtual_message_receivers={'user_ids': [user.id]},
+        user = self.__make_email_for_user(baker.make(settings.AUTH_USER_MODEL), 'testuser@example.com').user
+        message = baker.make('devilry_message.Message', virtual_message_receivers={'user_ids': [user.id]},
                              message_type=['email'])
         message_receivers = message.prepare_message_receivers(
             subject_generator=test_utils.SubjectTextTestGenerator(),
@@ -49,10 +49,10 @@ class TestMessage(test.TestCase):
         self.assertEqual(message_receivers[0].user, user)
 
     def test_prepare_multiple_message_receivers(self):
-        user1 = self.__make_email_for_user(mommy.make(settings.AUTH_USER_MODEL), 'testuser1@example.com').user
-        user2 = self.__make_email_for_user(mommy.make(settings.AUTH_USER_MODEL), 'testuser2@example.com').user
-        user3 = self.__make_email_for_user(mommy.make(settings.AUTH_USER_MODEL), 'testuser3@example.com').user
-        message = mommy.make('devilry_message.Message',
+        user1 = self.__make_email_for_user(baker.make(settings.AUTH_USER_MODEL), 'testuser1@example.com').user
+        user2 = self.__make_email_for_user(baker.make(settings.AUTH_USER_MODEL), 'testuser2@example.com').user
+        user3 = self.__make_email_for_user(baker.make(settings.AUTH_USER_MODEL), 'testuser3@example.com').user
+        message = baker.make('devilry_message.Message',
                              virtual_message_receivers={'user_ids': [user1.id, user2.id, user3.id]},
                              message_type=['email'])
         message_receivers = message.prepare_message_receivers(
@@ -66,17 +66,17 @@ class TestMessage(test.TestCase):
         self.assertIn(user3, receiver_user_list)
 
     def test_prepare_and_send_message_not_draft(self):
-        user = self.__make_email_for_user(mommy.make(settings.AUTH_USER_MODEL), 'testuser@example.com').user
-        message_preparing = mommy.make('devilry_message.Message',
+        user = self.__make_email_for_user(baker.make(settings.AUTH_USER_MODEL), 'testuser@example.com').user
+        message_preparing = baker.make('devilry_message.Message',
                                        virtual_message_receivers={'user_ids': [user.id]},
                                        message_type=['email'], status='preparing')
-        message_sending = mommy.make('devilry_message.Message',
+        message_sending = baker.make('devilry_message.Message',
                                      virtual_message_receivers={'user_ids': [user.id]},
                                      message_type=['email'], status='sending')
-        message_error = mommy.make('devilry_message.Message',
+        message_error = baker.make('devilry_message.Message',
                                    virtual_message_receivers={'user_ids': [user.id]},
                                    message_type=['email'], status='error')
-        message_sent = mommy.make('devilry_message.Message',
+        message_sent = baker.make('devilry_message.Message',
                                   virtual_message_receivers={'user_ids': [user.id]},
                                   message_type=['email'], status='sent')
         with self.assertRaisesMessage(ValueError, 'Can only send drafted messages.'):
@@ -104,9 +104,9 @@ class TestMessage(test.TestCase):
                 template_context={})
 
     def test_prepare_and_send_ok(self):
-        user1 = self.__make_email_for_user(mommy.make(settings.AUTH_USER_MODEL), 'testuser1@example.com').user
-        user2 = self.__make_email_for_user(mommy.make(settings.AUTH_USER_MODEL), 'testuser2@example.com').user
-        message = mommy.make('devilry_message.Message',
+        user1 = self.__make_email_for_user(baker.make(settings.AUTH_USER_MODEL), 'testuser1@example.com').user
+        user2 = self.__make_email_for_user(baker.make(settings.AUTH_USER_MODEL), 'testuser2@example.com').user
+        message = baker.make('devilry_message.Message',
                              virtual_message_receivers={'user_ids': [user1.id, user2.id]},
                              message_type=['email'])
         message.prepare_and_send(
@@ -121,8 +121,8 @@ class TestMessage(test.TestCase):
         self.assertEqual(len(mail.outbox), 2)
 
     def test_prepare_and_send_create_message_receivers_raises_error(self):
-        user = self.__make_email_for_user(mommy.make(settings.AUTH_USER_MODEL), 'testuser@example.com').user
-        message = mommy.make('devilry_message.Message',
+        user = self.__make_email_for_user(baker.make(settings.AUTH_USER_MODEL), 'testuser@example.com').user
+        message = baker.make('devilry_message.Message',
                              virtual_message_receivers={'user_ids': [user.id]},
                              message_type=['email'])
 
@@ -140,8 +140,8 @@ class TestMessage(test.TestCase):
             self.assertEqual(message.status, 'error')
 
     def test_single_status_error(self):
-        user = self.__make_email_for_user(mommy.make(settings.AUTH_USER_MODEL), 'testuser@example.com').user
-        message = mommy.make('devilry_message.Message',
+        user = self.__make_email_for_user(baker.make(settings.AUTH_USER_MODEL), 'testuser@example.com').user
+        message = baker.make('devilry_message.Message',
                              virtual_message_receivers={'user_ids': [user.id]},
                              message_type=['email'])
 
@@ -164,11 +164,11 @@ class TestMessage(test.TestCase):
         user_ids = []
         for i in range(1, 10):
             user = self.__make_email_for_user(
-                mommy.make(settings.AUTH_USER_MODEL),
+                baker.make(settings.AUTH_USER_MODEL),
                 'testuser{}@example.com'.format(i)
             ).user
             user_ids.append(user.id)
-        message = mommy.make('devilry_message.Message',
+        message = baker.make('devilry_message.Message',
                              virtual_message_receivers={'user_ids': user_ids},
                              message_type=['email'])
         with self.assertNumQueries(44):
@@ -178,28 +178,28 @@ class TestMessage(test.TestCase):
                 template_context={})
 
     def test_queryset_filter_messages_with_no_message_receivers_sanity(self):
-        message1 = mommy.make('devilry_message.Message', message_type=['email'])
+        message1 = baker.make('devilry_message.Message', message_type=['email'])
         queryset = Message.objects.filter_message_with_no_message_receivers()
         self.assertIn(message1, queryset)
 
     def test_queryset_filter_messages_with_receiver_not_filterd_sanity(self):
-        message = mommy.make('devilry_message.Message', message_type=['email'])
-        mommy.make('devilry_message.MessageReceiver', message=message)
+        message = baker.make('devilry_message.Message', message_type=['email'])
+        baker.make('devilry_message.MessageReceiver', message=message)
         queryset = Message.objects.filter_message_with_no_message_receivers()
         self.assertEqual(queryset.count(), 0)
 
     def test_queryset_filter_messages_multiple_none_filterd_sanity(self):
-        message1 = mommy.make('devilry_message.Message', message_type=['email'])
-        message2 = mommy.make('devilry_message.Message', message_type=['email'])
-        mommy.make('devilry_message.MessageReceiver', message=message1)
-        mommy.make('devilry_message.MessageReceiver', message=message2, _quantity=10)
+        message1 = baker.make('devilry_message.Message', message_type=['email'])
+        message2 = baker.make('devilry_message.Message', message_type=['email'])
+        baker.make('devilry_message.MessageReceiver', message=message1)
+        baker.make('devilry_message.MessageReceiver', message=message2, _quantity=10)
         queryset = Message.objects.filter_message_with_no_message_receivers()
         self.assertEqual(queryset.count(), 0)
 
     def test_queryset_filter_messages_with_and_without_receivers_exist_sanity(self):
-        message_without_receivers = mommy.make('devilry_message.Message', message_type=['email'])
-        message_with_receivers = mommy.make('devilry_message.Message', message_type=['email'])
-        mommy.make('devilry_message.MessageReceiver', message=message_with_receivers, _quantity=10)
+        message_without_receivers = baker.make('devilry_message.Message', message_type=['email'])
+        message_with_receivers = baker.make('devilry_message.Message', message_type=['email'])
+        baker.make('devilry_message.MessageReceiver', message=message_with_receivers, _quantity=10)
         self.assertEqual(Message.objects.count(), 2)
         queryset = Message.objects.filter_message_with_no_message_receivers()
         self.assertEqual(queryset.count(), 1)

@@ -9,7 +9,7 @@ from django.conf import settings
 from django.http import Http404
 
 from cradmin_legacy import cradmin_testhelpers
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_report.models import DevilryReport
@@ -40,14 +40,14 @@ class TestAllResultsDownload(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def make_assignment(self, period, **assignment_kwargs):
-        return mommy.make('core.Assignment', parentnode=period, **assignment_kwargs)
+        return baker.make('core.Assignment', parentnode=period, **assignment_kwargs)
 
     def make_relatedstudent(self, period, **relatedstudent_kwargs):
-        return mommy.make('core.RelatedStudent', period=period, **relatedstudent_kwargs)
+        return baker.make('core.RelatedStudent', period=period, **relatedstudent_kwargs)
 
     def make_group_for_student(self, assignment, relatedstudent):
-        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        mommy.make('core.Candidate', assignment_group=group, relatedstudent=relatedstudent)
+        group = baker.make('core.AssignmentGroup', parentnode=assignment)
+        baker.make('core.Candidate', assignment_group=group, relatedstudent=relatedstudent)
         return group
 
     def test_post_ok_sanity(self):
@@ -76,8 +76,8 @@ class TestAllResultsDownload(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                     }})
 
     def test_get_report_not_created_by_requestuser(self):
-        reportuser = mommy.make(settings.AUTH_USER_MODEL)
-        report = mommy.make('devilry_report.DevilryReport', generated_by_user=reportuser)
+        reportuser = baker.make(settings.AUTH_USER_MODEL)
+        report = baker.make('devilry_report.DevilryReport', generated_by_user=reportuser)
         with self.assertRaises(Http404):
             self.mock_http200_getrequest_htmls(
                 requestkwargs={
@@ -86,8 +86,8 @@ class TestAllResultsDownload(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                     }})
 
     def test_get_download_generated_report_not_finished(self):
-        reportuser = mommy.make(settings.AUTH_USER_MODEL)
-        report = mommy.make('devilry_report.DevilryReport', generated_by_user=reportuser)
+        reportuser = baker.make(settings.AUTH_USER_MODEL)
+        report = baker.make('devilry_report.DevilryReport', generated_by_user=reportuser)
         mockresponse = self.mock_http200_getrequest_htmls(
             requestuser=reportuser,
             requestkwargs={
@@ -99,9 +99,9 @@ class TestAllResultsDownload(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             'The download will start automatically as soon as the report is finished.')
 
     def test_get_download_generated_report(self):
-        reportuser = mommy.make(settings.AUTH_USER_MODEL)
+        reportuser = baker.make(settings.AUTH_USER_MODEL)
         with mock.patch.object(DevilryReport, 'generator', TestGenerator):
-            report = mommy.make('devilry_report.DevilryReport',
+            report = baker.make('devilry_report.DevilryReport',
                                 generated_by_user=reportuser,
                                 generator_type='test-generator')
             report.generate()

@@ -6,7 +6,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.http import Http404
 from cradmin_legacy import cradmin_testhelpers
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.devilry_account.models import PermissionGroupUser, PermissionGroup, PeriodPermissionGroup
 from devilry.devilry_admin.views.period import admins
@@ -20,7 +20,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 for element in selector.list('.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
 
     def test_title(self):
-        testperiod = mommy.make('core.Period',
+        testperiod = baker.make('core.Period',
                                 parentnode__short_name='testsubject',
                                 short_name='testperiod')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
@@ -28,7 +28,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                       mockresponse.selector.one('title').alltext_normalized)
 
     def test_h1(self):
-        testperiod = mommy.make('core.Period',
+        testperiod = baker.make('core.Period',
                                 parentnode__short_name='testsubject',
                                 short_name='testperiod')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
@@ -36,7 +36,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                          mockresponse.selector.one('h1').alltext_normalized)
 
     def test_buttonbar_addbutton_link(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         mock_cradmin_app = mock.MagicMock()
 
         def mock_reverse_appurl(viewname, **kwargs):
@@ -50,7 +50,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 mockresponse.selector.one('#devilry_admin_period_admins_overview_button_add')['href'])
 
     def test_buttonbar_addbutton_label(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertEqual(
                 'Add semester administrators',
@@ -58,7 +58,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                         '#devilry_admin_period_admins_overview_button_add').alltext_normalized)
 
     def test_no_admins_messages(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertEqual(
                 'No manually added semester administrators for this semester. '
@@ -66,17 +66,17 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 mockresponse.selector.one('.cradmin-legacy-listing-no-items-message').alltext_normalized)
 
     def test_default_ordering(self):
-        testperiod = mommy.make('core.Period')
-        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+        testperiod = baker.make('core.Period')
+        periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                            permissiongroup__is_custom_manageable=True,
                                            period=testperiod)
-        mommy.make('devilry_account.PermissionGroupUser',
+        baker.make('devilry_account.PermissionGroupUser',
                    permissiongroup=periodpermissiongroup.permissiongroup,
                    user__shortname='userb')
-        mommy.make('devilry_account.PermissionGroupUser',
+        baker.make('devilry_account.PermissionGroupUser',
                    permissiongroup=periodpermissiongroup.permissiongroup,
                    user__shortname='usera')
-        mommy.make('devilry_account.PermissionGroupUser',
+        baker.make('devilry_account.PermissionGroupUser',
                    permissiongroup=periodpermissiongroup.permissiongroup,
                    user__shortname='userc')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
@@ -84,13 +84,13 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                          self.__get_titles(mockresponse.selector))
 
     def test_only_users_from_the_permissiongroup(self):
-        testperiod = mommy.make('core.Period')
-        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+        testperiod = baker.make('core.Period')
+        periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                            permissiongroup__is_custom_manageable=True,
                                            period=testperiod)
-        mommy.make('devilry_account.PermissionGroupUser',
+        baker.make('devilry_account.PermissionGroupUser',
                    user__shortname='userb')
-        mommy.make('devilry_account.PermissionGroupUser',
+        baker.make('devilry_account.PermissionGroupUser',
                    permissiongroup=periodpermissiongroup.permissiongroup,
                    user__shortname='usera')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
@@ -98,11 +98,11 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                          self.__get_titles(mockresponse.selector))
 
     def test_delete_link_label(self):
-        testperiod = mommy.make('core.Period')
-        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+        testperiod = baker.make('core.Period')
+        periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                            permissiongroup__is_custom_manageable=True,
                                            period=testperiod)
-        mommy.make('devilry_account.PermissionGroupUser',
+        baker.make('devilry_account.PermissionGroupUser',
                    permissiongroup=periodpermissiongroup.permissiongroup)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertEqual(
@@ -111,11 +111,11 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                         '.devilry-admin-period-admin-delete-link').alltext_normalized)
 
     def test_delete_arialabel(self):
-        testperiod = mommy.make('core.Period')
-        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+        testperiod = baker.make('core.Period')
+        periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                            permissiongroup__is_custom_manageable=True,
                                            period=testperiod)
-        mommy.make('devilry_account.PermissionGroupUser',
+        baker.make('devilry_account.PermissionGroupUser',
                    permissiongroup=periodpermissiongroup.permissiongroup,
                    user__shortname='testadmin')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
@@ -125,7 +125,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                         '.devilry-admin-period-admin-delete-link')['aria-label'])
 
     def test_other_permissiongroups_heading(self):
-        testperiod = mommy.make('core.Period',
+        testperiod = baker.make('core.Period',
                                 parentnode__short_name='testsubject',
                                 short_name='testperiod')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
@@ -135,7 +135,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                         '#devilry_admin_period_admins_other_admins_container h2').alltext_normalized)
 
     def test_other_permissiongroups_no_permissiongroups(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertEqual(
                 'No other administrators than the ones listed above have access.',
@@ -143,8 +143,8 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                         '#devilry_admin_period_admins_other_admins_nonemessage').alltext_normalized)
 
     def test_other_permissiongroups_no_permissiongroups_except_the_custom_manageable(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('devilry_account.PeriodPermissionGroup',
+        testperiod = baker.make('core.Period')
+        baker.make('devilry_account.PeriodPermissionGroup',
                    permissiongroup__is_custom_manageable=True,
                    period=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
@@ -152,18 +152,18 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 mockresponse.selector.exists('#devilry_admin_period_admins_other_admins_nonemessage'))
 
     def test_other_permissiongroups_not_permissiongroups_for_other_periods(self):
-        testperiod = mommy.make('core.Period')
-        otherperiod = mommy.make('core.Period')
-        mommy.make('devilry_account.PeriodPermissionGroup',
+        testperiod = baker.make('core.Period')
+        otherperiod = baker.make('core.Period')
+        baker.make('devilry_account.PeriodPermissionGroup',
                    period=otherperiod)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertTrue(
                 mockresponse.selector.exists('#devilry_admin_period_admins_other_admins_nonemessage'))
 
     def test_other_permissiongroups_not_permissiongroups_for_other_subjects(self):
-        testperiod = mommy.make('core.Period')
-        othersubject = mommy.make('core.Subject')
-        mommy.make('devilry_account.SubjectPermissionGroup',
+        testperiod = baker.make('core.Period')
+        othersubject = baker.make('core.Subject')
+        baker.make('devilry_account.SubjectPermissionGroup',
                    subject=othersubject)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertTrue(
@@ -176,11 +176,11 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                     '.cradmin-legacy-listbuilder-itemvalue-titledescription-title')}
 
     def test_other_permissiongroups(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('devilry_account.PeriodPermissionGroup',
+        testperiod = baker.make('core.Period')
+        baker.make('devilry_account.PeriodPermissionGroup',
                    period=testperiod,
                    permissiongroup__name='Other periodadmins')
-        mommy.make('devilry_account.SubjectPermissionGroup',
+        baker.make('devilry_account.SubjectPermissionGroup',
                    subject=testperiod.subject,
                    permissiongroup__name='Other course admins')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
@@ -189,29 +189,29 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 self.__get_otherpermissiongroups_titles(mockresponse.selector))
 
     def test_querycount(self):
-        testperiod = mommy.make('core.Period')
-        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+        testperiod = baker.make('core.Period')
+        periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                            permissiongroup__is_custom_manageable=True,
                                            period=testperiod)
-        mommy.make('devilry_account.PermissionGroupUser',
+        baker.make('devilry_account.PermissionGroupUser',
                    permissiongroup=periodpermissiongroup.permissiongroup,
                    _quantity=10)
 
-        extraperiodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+        extraperiodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                                 period=testperiod)
-        mommy.make('devilry_account.PermissionGroupUser',
+        baker.make('devilry_account.PermissionGroupUser',
                    permissiongroup=extraperiodpermissiongroup.permissiongroup,
                    _quantity=10)
 
-        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+        subjectpermissiongroup = baker.make('devilry_account.SubjectPermissionGroup',
                                             subject=testperiod.subject)
-        mommy.make('devilry_account.PermissionGroupUser',
+        baker.make('devilry_account.PermissionGroupUser',
                    permissiongroup=subjectpermissiongroup.permissiongroup,
                    _quantity=10)
 
-        mommy.make('devilry_account.PeriodPermissionGroup',
+        baker.make('devilry_account.PeriodPermissionGroup',
                    period=testperiod, _quantity=10)
-        mommy.make('devilry_account.SubjectPermissionGroup',
+        baker.make('devilry_account.SubjectPermissionGroup',
                    subject=testperiod.subject, _quantity=10)
 
         with self.assertNumQueries(9):
@@ -222,7 +222,7 @@ class TestAddView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = admins.AddView
 
     def test_get_title(self):
-        testperiod = mommy.make('core.Period',
+        testperiod = baker.make('core.Period',
                                 parentnode__short_name='testsubject',
                                 short_name='testperiod')
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -231,7 +231,7 @@ class TestAddView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                          'Select the admins you want to add to testsubject.testperiod')
 
     def test_get_h1(self):
-        testperiod = mommy.make('core.Period',
+        testperiod = baker.make('core.Period',
                                 parentnode__short_name='testsubject',
                                 short_name='testperiod')
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -240,8 +240,8 @@ class TestAddView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                          'Select the admins you want to add to testsubject.testperiod')
 
     def test_render_sanity(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make(settings.AUTH_USER_MODEL,
+        testperiod = baker.make('core.Period')
+        baker.make(settings.AUTH_USER_MODEL,
                    fullname='Test User',
                    shortname='test@example.com')
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=mock.MagicMock(),
@@ -260,12 +260,12 @@ class TestAddView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 for element in selector.list('.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
 
     def test_exclude_users_in_periodpermissiongroup(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make(settings.AUTH_USER_MODEL,
+        testperiod = baker.make('core.Period')
+        baker.make(settings.AUTH_USER_MODEL,
                    fullname='Not in any permissiongroup')
-        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+        periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                            period=testperiod)
-        mommy.make('devilry_account.PermissionGroupUser',
+        baker.make('devilry_account.PermissionGroupUser',
                    permissiongroup=periodpermissiongroup.permissiongroup,
                    user__shortname='In period permissiongroup')
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=mock.MagicMock(),
@@ -275,11 +275,11 @@ class TestAddView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 set(self.__get_titles(mockresponse.selector)))
 
     def test_include_users_in_other_periodpermissiongroup(self):
-        testperiod = mommy.make('core.Period')
-        otherperiod = mommy.make('core.Period')
-        otherperiodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+        testperiod = baker.make('core.Period')
+        otherperiod = baker.make('core.Period')
+        otherperiodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                                 period=otherperiod)
-        mommy.make('devilry_account.PermissionGroupUser',
+        baker.make('devilry_account.PermissionGroupUser',
                    permissiongroup=otherperiodpermissiongroup.permissiongroup,
                    user__shortname='In other period permissiongroup')
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=mock.MagicMock(),
@@ -289,12 +289,12 @@ class TestAddView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 set(self.__get_titles(mockresponse.selector)))
 
     def test_exclude_users_in_subjectpermissiongroup(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make(settings.AUTH_USER_MODEL,
+        testperiod = baker.make('core.Period')
+        baker.make(settings.AUTH_USER_MODEL,
                    fullname='Not in any permissiongroup')
-        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+        subjectpermissiongroup = baker.make('devilry_account.SubjectPermissionGroup',
                                             subject=testperiod.subject)
-        mommy.make('devilry_account.PermissionGroupUser',
+        baker.make('devilry_account.PermissionGroupUser',
                    permissiongroup=subjectpermissiongroup.permissiongroup,
                    user__shortname='In period permissiongroup')
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=mock.MagicMock(),
@@ -304,11 +304,11 @@ class TestAddView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 set(self.__get_titles(mockresponse.selector)))
 
     def test_include_users_in_other_subjectpermissiongroup(self):
-        testperiod = mommy.make('core.Period')
-        otherperiod = mommy.make('core.Period')
-        othersubjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+        testperiod = baker.make('core.Period')
+        otherperiod = baker.make('core.Period')
+        othersubjectpermissiongroup = baker.make('devilry_account.SubjectPermissionGroup',
                                                  subject=otherperiod.subject)
-        mommy.make('devilry_account.PermissionGroupUser',
+        baker.make('devilry_account.PermissionGroupUser',
                    permissiongroup=othersubjectpermissiongroup.permissiongroup,
                    user__shortname='In other subject permissiongroup')
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=mock.MagicMock(),
@@ -318,8 +318,8 @@ class TestAddView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 set(self.__get_titles(mockresponse.selector)))
 
     def test_post_creates_permissiongroup_if_it_does_not_exist(self):
-        testperiod = mommy.make('core.Period')
-        adminuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period')
+        adminuser = baker.make(settings.AUTH_USER_MODEL)
         self.assertEqual(0, PermissionGroup.objects.count())
         self.mock_http302_postrequest(
                 cradmin_role=testperiod,
@@ -339,11 +339,11 @@ class TestAddView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(testperiod, created_periodpermissiongroup.period)
 
     def test_post_creates_permissiongroup_if_non_custom_managable_permissiongroup_exists(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('devilry_account.PeriodPermissionGroup',
+        testperiod = baker.make('core.Period')
+        baker.make('devilry_account.PeriodPermissionGroup',
                    period=testperiod,
                    permissiongroup__is_custom_manageable=False)
-        adminuser = mommy.make(settings.AUTH_USER_MODEL)
+        adminuser = baker.make(settings.AUTH_USER_MODEL)
         self.assertEqual(1, PermissionGroup.objects.count())
         self.mock_http302_postrequest(
                 cradmin_role=testperiod,
@@ -355,11 +355,11 @@ class TestAddView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(2, PermissionGroup.objects.count())
 
     def test_post_does_not_create_permissiongroup_if_it_exist(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('devilry_account.PeriodPermissionGroup',
+        testperiod = baker.make('core.Period')
+        baker.make('devilry_account.PeriodPermissionGroup',
                    period=testperiod,
                    permissiongroup__is_custom_manageable=True)
-        adminuser = mommy.make(settings.AUTH_USER_MODEL)
+        adminuser = baker.make(settings.AUTH_USER_MODEL)
         self.assertEqual(1, PermissionGroup.objects.count())
         self.mock_http302_postrequest(
                 cradmin_role=testperiod,
@@ -371,8 +371,8 @@ class TestAddView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(1, PermissionGroup.objects.count())
 
     def test_post_creates_permissiongroupuser(self):
-        testperiod = mommy.make('core.Period')
-        adminuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period')
+        adminuser = baker.make(settings.AUTH_USER_MODEL)
         self.assertEqual(0, PermissionGroupUser.objects.count())
         self.mock_http302_postrequest(
                 cradmin_role=testperiod,
@@ -389,10 +389,10 @@ class TestAddView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 created_permissiongroupuser.permissiongroup.periodpermissiongroup_set.first().period)
 
     def test_post_multiple_users(self):
-        testperiod = mommy.make('core.Period')
-        adminuser1 = mommy.make(settings.AUTH_USER_MODEL)
-        adminuser2 = mommy.make(settings.AUTH_USER_MODEL)
-        adminuser3 = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period')
+        adminuser1 = baker.make(settings.AUTH_USER_MODEL)
+        adminuser2 = baker.make(settings.AUTH_USER_MODEL)
+        adminuser3 = baker.make(settings.AUTH_USER_MODEL)
         self.assertEqual(0, PermissionGroupUser.objects.count())
         self.mock_http302_postrequest(
                 cradmin_role=testperiod,
@@ -406,10 +406,10 @@ class TestAddView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(3, PermissionGroupUser.objects.count())
 
     def test_post_success_message(self):
-        testperiod = mommy.make('core.Period')
-        adminuser1 = mommy.make(settings.AUTH_USER_MODEL,
+        testperiod = baker.make('core.Period')
+        adminuser1 = baker.make(settings.AUTH_USER_MODEL,
                                 shortname='testuser')
-        adminuser2 = mommy.make(settings.AUTH_USER_MODEL,
+        adminuser2 = baker.make(settings.AUTH_USER_MODEL,
                                 fullname='Test User')
         self.assertEqual(0, PermissionGroupUser.objects.count())
         messagesmock = mock.MagicMock()
@@ -432,11 +432,11 @@ class TestDeleteView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = admins.DeleteView
 
     def test_get_title(self):
-        testperiod = mommy.make('core.Period')
-        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+        testperiod = baker.make('core.Period')
+        periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                            period=testperiod,
                                            permissiongroup__is_custom_manageable=True)
-        permissiongroupuser = mommy.make('devilry_account.PermissionGroupUser',
+        permissiongroupuser = baker.make('devilry_account.PermissionGroupUser',
                                          permissiongroup=periodpermissiongroup.permissiongroup,
                                          user__fullname='Awesome Doe')
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -446,11 +446,11 @@ class TestDeleteView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                          'Remove semester administrator: Awesome Doe?')
 
     def test_get_h1(self):
-        testperiod = mommy.make('core.Period')
-        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+        testperiod = baker.make('core.Period')
+        periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                            period=testperiod,
                                            permissiongroup__is_custom_manageable=True)
-        permissiongroupuser = mommy.make('devilry_account.PermissionGroupUser',
+        permissiongroupuser = baker.make('devilry_account.PermissionGroupUser',
                                          permissiongroup=periodpermissiongroup.permissiongroup,
                                          user__fullname='Awesome Doe')
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -460,13 +460,13 @@ class TestDeleteView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                          'Remove semester administrator: Awesome Doe?')
 
     def test_get_confirm_message(self):
-        testperiod = mommy.make('core.Period',
+        testperiod = baker.make('core.Period',
                                 parentnode__short_name='testsubject',
                                 short_name='testperiod')
-        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+        periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                            period=testperiod,
                                            permissiongroup__is_custom_manageable=True)
-        permissiongroupuser = mommy.make('devilry_account.PermissionGroupUser',
+        permissiongroupuser = baker.make('devilry_account.PermissionGroupUser',
                                          permissiongroup=periodpermissiongroup.permissiongroup,
                                          user__fullname='Awesome Doe')
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -477,11 +477,11 @@ class TestDeleteView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                          'for testsubject.testperiod? You can re-add a removed administrator at any time.')
 
     def test_404_if_no_custom_managable_permissiongroup_for_period(self):
-        testperiod = mommy.make('core.Period')
-        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+        testperiod = baker.make('core.Period')
+        periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                            period=testperiod,
                                            permissiongroup__is_custom_manageable=False)
-        permissiongroupuser = mommy.make('devilry_account.PermissionGroupUser',
+        permissiongroupuser = baker.make('devilry_account.PermissionGroupUser',
                                          permissiongroup=periodpermissiongroup.permissiongroup)
         with self.assertRaisesMessage(
                 Http404,
@@ -492,14 +492,14 @@ class TestDeleteView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                     viewkwargs={'pk': permissiongroupuser.pk})
 
     def test_404_if_not_in_correct_custom_managable_permissiongroup(self):
-        otherperiod = mommy.make('core.Period')
-        otherperiodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+        otherperiod = baker.make('core.Period')
+        otherperiodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                                 period=otherperiod,
                                                 permissiongroup__is_custom_manageable=True)
-        permissiongroupuser = mommy.make('devilry_account.PermissionGroupUser',
+        permissiongroupuser = baker.make('devilry_account.PermissionGroupUser',
                                          permissiongroup=otherperiodpermissiongroup.permissiongroup)
-        testperiod = mommy.make('core.Period')
-        mommy.make('devilry_account.PeriodPermissionGroup',
+        testperiod = baker.make('core.Period')
+        baker.make('devilry_account.PeriodPermissionGroup',
                    period=testperiod,
                    permissiongroup__is_custom_manageable=True)
         with self.assertRaisesMessage(
@@ -511,13 +511,13 @@ class TestDeleteView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                     viewkwargs={'pk': permissiongroupuser.pk})
 
     def test_404_if_not_in_custom_managable_permissiongroup_for_period(self):
-        testperiod = mommy.make('core.Period')
-        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+        testperiod = baker.make('core.Period')
+        periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                            period=testperiod,
                                            permissiongroup__is_custom_manageable=False)
-        permissiongroupuser = mommy.make('devilry_account.PermissionGroupUser',
+        permissiongroupuser = baker.make('devilry_account.PermissionGroupUser',
                                          permissiongroup=periodpermissiongroup.permissiongroup)
-        mommy.make('devilry_account.PeriodPermissionGroup',
+        baker.make('devilry_account.PeriodPermissionGroup',
                    period=testperiod,
                    permissiongroup__is_custom_manageable=True)
         with self.assertRaisesMessage(
@@ -529,11 +529,11 @@ class TestDeleteView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                     viewkwargs={'pk': permissiongroupuser.pk})
 
     def test_post_deletes_permissiongroupuser(self):
-        testperiod = mommy.make('core.Period')
-        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+        testperiod = baker.make('core.Period')
+        periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                            period=testperiod,
                                            permissiongroup__is_custom_manageable=True)
-        permissiongroupuser = mommy.make('devilry_account.PermissionGroupUser',
+        permissiongroupuser = baker.make('devilry_account.PermissionGroupUser',
                                          permissiongroup=periodpermissiongroup.permissiongroup)
         self.mock_http302_postrequest(
                 cradmin_role=testperiod,
@@ -541,13 +541,13 @@ class TestDeleteView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertFalse(PermissionGroupUser.objects.filter(id=permissiongroupuser.id).exists())
 
     def test_post_success_message(self):
-        testperiod = mommy.make('core.Period',
+        testperiod = baker.make('core.Period',
                                 parentnode__short_name='testsubject',
                                 short_name='testperiod')
-        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+        periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                            period=testperiod,
                                            permissiongroup__is_custom_manageable=True)
-        permissiongroupuser = mommy.make('devilry_account.PermissionGroupUser',
+        permissiongroupuser = baker.make('devilry_account.PermissionGroupUser',
                                          permissiongroup=periodpermissiongroup.permissiongroup,
                                          user__fullname='Awesome Doe')
         messagesmock = mock.MagicMock()

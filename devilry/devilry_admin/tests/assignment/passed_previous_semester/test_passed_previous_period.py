@@ -4,14 +4,14 @@ from django.http import Http404
 from django.template import defaultfilters
 from django.test import TestCase
 from cradmin_legacy import cradmin_testhelpers
-from model_mommy import mommy
+from model_bakery import baker
 
-from devilry.apps.core import devilry_core_mommy_factories as core_mommy
+from devilry.apps.core import devilry_core_baker_factories as core_baker
 from devilry.apps.core.models import Assignment
-from devilry.apps.core.mommy_recipes import OLD_PERIOD_START, OLD_PERIOD_END
+from devilry.apps.core.baker_recipes import OLD_PERIOD_START, OLD_PERIOD_END
 from devilry.devilry_admin.views.assignment.passed_previous_period import passed_previous_period
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
-from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
+from devilry.devilry_group import devilry_group_baker_factories as group_baker
 from devilry.devilry_group.models import FeedbacksetPassedPreviousPeriod
 
 
@@ -27,58 +27,58 @@ class TestSelectPeriodViewAnonymization(TestCase, cradmin_testhelpers.TestCaseMi
         return mockinstance
 
     def test_anonymizationmode_fully_departmentadmin(self):
-        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
         self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
 
     def test_404_anonymizationmode_fully_subjectadmin(self):
-        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
         with self.assertRaises(Http404):
             self.mock_http200_getrequest_htmls(
                 cradmin_role=testassignment,
                 cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'))
 
     def test_404_anonymizationmode_fully_periodadmin(self):
-        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
         with self.assertRaises(Http404):
             self.mock_http200_getrequest_htmls(
                 cradmin_role=testassignment,
                 cradmin_instance=self.__mockinstance_with_devilryrole('periodadmin'))
 
     def test_anonymizationmode_semi_departmentadmin(self):
-        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
         self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
 
     def test_anonymizationmode_semi_subjectadmin(self):
-        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
         self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'))
 
     def test_404_anonymizationmode_semi_periodadmin(self):
-        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
         with self.assertRaises(Http404):
             self.mock_http200_getrequest_htmls(
                 cradmin_role=testassignment,
                 cradmin_instance=self.__mockinstance_with_devilryrole('periodadmin'))
 
     def test_anonymizationmode_off_departmentadmin(self):
-        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
+        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
         self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
 
     def test_anonymizationmode_off_subjectadmin(self):
-        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
+        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
         self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'))
 
     def test_anonymizationmode_off_period(self):
-        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
+        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
         self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('periodadmin'))
@@ -96,7 +96,7 @@ class TestSelectPeriodView(TestCase, cradmin_testhelpers.TestCaseMixin):
         return mockinstance
 
     def test_title(self):
-        testassignment = mommy.make('core.Assignment')
+        testassignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
@@ -106,7 +106,7 @@ class TestSelectPeriodView(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('title').alltext_normalized)
 
     def test_h1(self):
-        testassignment = mommy.make('core.Assignment')
+        testassignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
@@ -116,13 +116,13 @@ class TestSelectPeriodView(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('h1').alltext_normalized)
 
     def test_submit_button_text_sanity(self):
-        period = mommy.make_recipe(
+        period = baker.make_recipe(
             'devilry.apps.core.assignment_oldperiod_start',
             short_name='cool',
             parentnode__short_name='s16',
             parentnode__long_name='spring16'
         ).parentnode
-        testassignment = mommy.make_recipe(
+        testassignment = baker.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
             short_name='cool',
             parentnode__short_name='s17',
@@ -138,7 +138,7 @@ class TestSelectPeriodView(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('#submit-id-next').alltext_normalized)
 
     def test_no_previous_period_sanity(self):
-        testassignment = mommy.make('core.Assignment')
+        testassignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
@@ -146,7 +146,7 @@ class TestSelectPeriodView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertTrue(mockresponse.selector.one('.test-no-previos-period'))
 
     def test_no_previous_period_message(self):
-        testassignment = mommy.make('core.Assignment')
+        testassignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
@@ -157,13 +157,13 @@ class TestSelectPeriodView(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
 
     def test_select_previous_period_simple(self):
-        period = mommy.make_recipe(
+        period = baker.make_recipe(
             'devilry.apps.core.assignment_oldperiod_start',
             short_name='cool',
             parentnode__short_name='s16',
             parentnode__long_name='spring16'
         ).parentnode
-        testassignment = mommy.make_recipe(
+        testassignment = baker.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
             short_name='cool',
             parentnode__short_name='s17',
@@ -186,27 +186,27 @@ class TestSelectPeriodView(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
 
     def test_select_previous_period_multiple(self):
-        period1 = mommy.make_recipe(
+        period1 = baker.make_recipe(
             'devilry.apps.core.assignment_oldperiod_start',
             short_name='cool',
             parentnode__short_name='asd',
             parentnode__long_name='Adfsad'
         ).parentnode
-        period2 = mommy.make_recipe(
+        period2 = baker.make_recipe(
             'devilry.apps.core.assignment_oldperiod_middle',
             short_name='cool',
             parentnode__short_name='ghdfg',
             parentnode__long_name='Oijjop',
             parentnode__parentnode=period1.parentnode
         ).parentnode
-        period3 = mommy.make_recipe(
+        period3 = baker.make_recipe(
             'devilry.apps.core.assignment_oldperiod_end',
             short_name='cool',
             parentnode__short_name='polmfhg',
             parentnode__long_name='KOPkop',
             parentnode__parentnode=period1.parentnode
         ).parentnode
-        testassignment = mommy.make_recipe(
+        testassignment = baker.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
             short_name='cool',
             parentnode__short_name='s17',
@@ -246,26 +246,26 @@ class TestSelectPeriodView(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
 
     def test_select_previous_period_multiple_not_in(self):
-        period1 = mommy.make_recipe(
+        period1 = baker.make_recipe(
             'devilry.apps.core.assignment_oldperiod_start',
             short_name='assignment1',
             parentnode__short_name='asd',
             parentnode__long_name='Adfsad'
         ).parentnode
-        period2 = mommy.make_recipe(
+        period2 = baker.make_recipe(
             'devilry.apps.core.assignment_oldperiod_middle',
             short_name='cool',
             parentnode__short_name='ghdfg',
             parentnode__long_name='Oijjop'
         ).parentnode
-        period3 = mommy.make_recipe(
+        period3 = baker.make_recipe(
             'devilry.apps.core.assignment_oldperiod_end',
             short_name='cool',
             parentnode__short_name='polmfhg',
             parentnode__long_name='KOPkop',
             parentnode__parentnode=period1.parentnode
         ).parentnode
-        testassignment = mommy.make_recipe(
+        testassignment = baker.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
             short_name='cool',
             parentnode__short_name='s17',
@@ -296,27 +296,27 @@ class TestSelectPeriodView(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
 
     def test_select_previous_period_multiple_future_not_in(self):
-        period1 = mommy.make_recipe(
+        period1 = baker.make_recipe(
             'devilry.apps.core.assignment_oldperiod_middle',
             short_name='cool',
             parentnode__short_name='ghdfg',
             parentnode__long_name='Oijjop'
         ).parentnode
-        testassignment = mommy.make_recipe(
+        testassignment = baker.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
             short_name='cool',
             parentnode__short_name='s17',
             parentnode__long_name='spring17',
             parentnode__parentnode=period1.parentnode
         )
-        period2 = mommy.make_recipe(
+        period2 = baker.make_recipe(
             'devilry.apps.core.assignment_futureperiod_start',
             short_name='cool',
             parentnode__short_name='sdgf',
             parentnnode__long_name='opkjmdgf',
             parentnode__parentnode=period1.parentnode
         ).parentnode
-        period3 = mommy.make_recipe(
+        period3 = baker.make_recipe(
             'devilry.apps.core.assignment_futureperiod_middle',
             short_name='cool',
             parentnode__short_name='hgdf',
@@ -348,7 +348,7 @@ class TestSelectPeriodView(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
 
     def test_links(self):
-        testassignment = mommy.make('core.Assignment')
+        testassignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
@@ -372,14 +372,14 @@ class TestAssignmentViewAnonymization(TestCase, cradmin_testhelpers.TestCaseMixi
         return mockinstance
 
     def test_anonymizationmode_fully_departmentadmin(self):
-        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
         self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'period_id': testassignment.parentnode.id},
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
 
     def test_404_anonymizationmode_fully_subjectadmin(self):
-        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
         with self.assertRaises(Http404):
             self.mock_http200_getrequest_htmls(
                 cradmin_role=testassignment,
@@ -387,7 +387,7 @@ class TestAssignmentViewAnonymization(TestCase, cradmin_testhelpers.TestCaseMixi
                 cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'))
 
     def test_404_anonymizationmode_fully_periodadmin(self):
-        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
         with self.assertRaises(Http404):
             self.mock_http200_getrequest_htmls(
                 cradmin_role=testassignment,
@@ -395,21 +395,21 @@ class TestAssignmentViewAnonymization(TestCase, cradmin_testhelpers.TestCaseMixi
                 cradmin_instance=self.__mockinstance_with_devilryrole('periodadmin'))
 
     def test_anonymizationmode_semi_departmentadmin(self):
-        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
         self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'period_id': testassignment.parentnode.id},
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
 
     def test_anonymizationmode_semi_subjectadmin(self):
-        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
         self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'period_id': testassignment.parentnode.id},
             cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'))
 
     def test_404_anonymizationmode_semi_periodadmin(self):
-        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
         with self.assertRaises(Http404):
             self.mock_http200_getrequest_htmls(
                 cradmin_role=testassignment,
@@ -417,21 +417,21 @@ class TestAssignmentViewAnonymization(TestCase, cradmin_testhelpers.TestCaseMixi
                 cradmin_instance=self.__mockinstance_with_devilryrole('periodadmin'))
 
     def test_anonymizationmode_off_departmentadmin(self):
-        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
+        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
         self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'period_id': testassignment.parentnode.id},
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
 
     def test_anonymizationmode_off_subjectadmin(self):
-        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
+        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
         self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'period_id': testassignment.parentnode.id},
             cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'))
 
     def test_anonymizationmode_off_period(self):
-        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
+        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
         self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'period_id': testassignment.parentnode.id},
@@ -450,7 +450,7 @@ class TestPassedPreviousAssignmentView(TestCase, cradmin_testhelpers.TestCaseMix
         return mockinstance
 
     def test_title(self):
-        testassignment = mommy.make('core.Assignment')
+        testassignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'period_id': testassignment.parentnode.id},
@@ -461,7 +461,7 @@ class TestPassedPreviousAssignmentView(TestCase, cradmin_testhelpers.TestCaseMix
             mockresponse.selector.one('title').alltext_normalized)
 
     def test_h1(self):
-        testassignment = mommy.make('core.Assignment')
+        testassignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'period_id': testassignment.parentnode.id},
@@ -472,7 +472,7 @@ class TestPassedPreviousAssignmentView(TestCase, cradmin_testhelpers.TestCaseMix
             mockresponse.selector.one('h1').alltext_normalized)
 
     def test_next_button(self):
-        testassignment = mommy.make('core.Assignment')
+        testassignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'period_id': testassignment.parentnode.id},
@@ -483,7 +483,7 @@ class TestPassedPreviousAssignmentView(TestCase, cradmin_testhelpers.TestCaseMix
             mockresponse.selector.one('.btn-primary').alltext_normalized)
 
     def test_links(self):
-        testassignment = mommy.make('core.Assignment')
+        testassignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'period_id': testassignment.parentnode.id},
@@ -514,7 +514,7 @@ class TestPassedPreviousAssignmentViewListbuilder(TestCase, cradmin_testhelpers.
         return mockinstance
 
     def test_simple_description(self):
-        testassignment1 = mommy.make_recipe(
+        testassignment1 = baker.make_recipe(
             'devilry.apps.core.assignment_oldperiod_start',
             short_name='cool',
             parentnode__short_name='s16',
@@ -522,7 +522,7 @@ class TestPassedPreviousAssignmentViewListbuilder(TestCase, cradmin_testhelpers.
             max_points=2,
             passing_grade_min_points=1
         )
-        testassignment2 = mommy.make_recipe(
+        testassignment2 = baker.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
             short_name='cool',
             parentnode__short_name='s17',
@@ -544,13 +544,13 @@ class TestPassedPreviousAssignmentViewListbuilder(TestCase, cradmin_testhelpers.
         )
 
     def test_simple(self):
-        testassignment1 = mommy.make_recipe(
+        testassignment1 = baker.make_recipe(
             'devilry.apps.core.assignment_oldperiod_start',
             short_name='cool',
             parentnode__short_name='s16',
             parentnode__long_name='spring16'
         )
-        testassignment2 = mommy.make_recipe(
+        testassignment2 = baker.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
             short_name='cool',
             parentnode__short_name='s17',
@@ -576,27 +576,27 @@ class TestPassedPreviousAssignmentViewListbuilder(TestCase, cradmin_testhelpers.
         )
 
     def test_multiple_assignments(self):
-        testassignment1 = mommy.make_recipe(
+        testassignment1 = baker.make_recipe(
             'devilry.apps.core.assignment_oldperiod_start',
             short_name='cool',
             parentnode__short_name='asd',
             parentnode__long_name='Adfsad'
         )
-        testassignment2 = mommy.make_recipe(
+        testassignment2 = baker.make_recipe(
             'devilry.apps.core.assignment_oldperiod_middle',
             short_name='cool',
             parentnode__short_name='ghdfg',
             parentnode__long_name='Oijjop',
             parentnode__parentnode=testassignment1.parentnode.parentnode
         )
-        testassignment3 = mommy.make_recipe(
+        testassignment3 = baker.make_recipe(
             'devilry.apps.core.assignment_oldperiod_end',
             short_name='cool',
             parentnode__short_name='polmfhg',
             parentnode__long_name='KOPkop',
             parentnode__parentnode=testassignment1.parentnode.parentnode
         )
-        testassignment = mommy.make_recipe(
+        testassignment = baker.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
             short_name='cool',
             parentnode__short_name='s17',
@@ -629,26 +629,26 @@ class TestPassedPreviousAssignmentViewListbuilder(TestCase, cradmin_testhelpers.
         )
 
     def test_multiple_assignments_not_in(self):
-        testassignment1 = mommy.make_recipe(
+        testassignment1 = baker.make_recipe(
             'devilry.apps.core.assignment_oldperiod_start',
             short_name='assignment1',
             parentnode__short_name='asd',
             parentnode__long_name='Adfsad'
         )
-        testassignment2 = mommy.make_recipe(
+        testassignment2 = baker.make_recipe(
             'devilry.apps.core.assignment_oldperiod_middle',
             short_name='cool',
             parentnode__short_name='ghdfg',
             parentnode__long_name='Oijjop'
         )
-        testassignment3 = mommy.make_recipe(
+        testassignment3 = baker.make_recipe(
             'devilry.apps.core.assignment_oldperiod_end',
             short_name='cool',
             parentnode__short_name='polmfhg',
             parentnode__long_name='KOPkop',
             parentnode__parentnode=testassignment1.parentnode.parentnode
         )
-        testassignment = mommy.make_recipe(
+        testassignment = baker.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
             short_name='cool',
             parentnode__short_name='s17',
@@ -681,27 +681,27 @@ class TestPassedPreviousAssignmentViewListbuilder(TestCase, cradmin_testhelpers.
         )
 
     def test_select_previous_period_multiple_future_not_in(self):
-        testassignment1 = mommy.make_recipe(
+        testassignment1 = baker.make_recipe(
             'devilry.apps.core.assignment_oldperiod_middle',
             short_name='cool',
             parentnode__short_name='ghdfg',
             parentnode__long_name='Oijjop'
         )
-        testassignment = mommy.make_recipe(
+        testassignment = baker.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
             short_name='cool',
             parentnode__short_name='s17',
             parentnode__long_name='spring17',
             parentnode__parentnode=testassignment1.parentnode.parentnode
         )
-        testassignment2 = mommy.make_recipe(
+        testassignment2 = baker.make_recipe(
             'devilry.apps.core.assignment_futureperiod_start',
             short_name='cool',
             parentnode__short_name='sdgf',
             parentnnode__long_name='opkjmdgf',
             parentnode__parentnode=testassignment1.parentnode.parentnode
         )
-        testassignment3 = mommy.make_recipe(
+        testassignment3 = baker.make_recipe(
             'devilry.apps.core.assignment_futureperiod_middle',
             short_name='cool',
             parentnode__short_name='hgdf',
@@ -751,7 +751,7 @@ class TestApprovePreviousView(TestCase, cradmin_testhelpers.TestCaseMixin):
         return mockinstance
 
     def test_title(self):
-        testassignment = mommy.make('core.Assignment')
+        testassignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'period_id': testassignment.parentnode.id},
@@ -762,7 +762,7 @@ class TestApprovePreviousView(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('title').alltext_normalized)
 
     def test_h1(self):
-        testassignment = mommy.make('core.Assignment')
+        testassignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'period_id': testassignment.parentnode.id},
@@ -773,7 +773,7 @@ class TestApprovePreviousView(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('h1').alltext_normalized)
 
     def test_confirm_button(self):
-        testassignment = mommy.make('core.Assignment')
+        testassignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'period_id': testassignment.parentnode.id},
@@ -784,7 +784,7 @@ class TestApprovePreviousView(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('#submit-id-confirm').alltext_normalized)
 
     def test_links(self):
-        testassignment = mommy.make('core.Assignment')
+        testassignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'period_id': testassignment.parentnode.id},
@@ -811,7 +811,7 @@ class TestCandidateListbuilder(TestCase, cradmin_testhelpers.TestCaseMixin):
         return mockinstance
 
     def test_simple_title(self):
-        testassignment1 = mommy.make_recipe(
+        testassignment1 = baker.make_recipe(
             'devilry.apps.core.assignment_oldperiod_start',
             short_name='cool',
             parentnode__short_name='s16',
@@ -819,19 +819,19 @@ class TestCandidateListbuilder(TestCase, cradmin_testhelpers.TestCaseMixin):
             passing_grade_min_points=1,
             max_points=1,
         )
-        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
-        candidate1 = core_mommy.candidate(group=group1, shortname='april', fullname='April Duck')
-        group_mommy.feedbackset_first_attempt_published(group=group1, grading_points=1)
+        group1 = baker.make('core.AssignmentGroup', parentnode=testassignment1)
+        candidate1 = core_baker.candidate(group=group1, shortname='april', fullname='April Duck')
+        group_baker.feedbackset_first_attempt_published(group=group1, grading_points=1)
 
-        testassignment2 = mommy.make_recipe(
+        testassignment2 = baker.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
             short_name='cool',
             parentnode__parentnode=testassignment1.parentnode.parentnode,
             passing_grade_min_points=2,
             max_points=3,
         )
-        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
-        mommy.make('core.Candidate', assignment_group=group2, relatedstudent__user=candidate1.relatedstudent.user)
+        group2 = baker.make('core.AssignmentGroup', parentnode=testassignment2)
+        baker.make('core.Candidate', assignment_group=group2, relatedstudent__user=candidate1.relatedstudent.user)
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment2,
@@ -848,7 +848,7 @@ class TestCandidateListbuilder(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
 
     def test_simple_description(self):
-        testassignment1 = mommy.make_recipe(
+        testassignment1 = baker.make_recipe(
             'devilry.apps.core.assignment_oldperiod_start',
             short_name='cool',
             parentnode__short_name='s16',
@@ -856,19 +856,19 @@ class TestCandidateListbuilder(TestCase, cradmin_testhelpers.TestCaseMixin):
             passing_grade_min_points=1,
             max_points=1,
         )
-        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
-        candidate1 = core_mommy.candidate(group=group1, shortname='april', fullname='April Duck')
-        group_mommy.feedbackset_first_attempt_published(group=group1, grading_points=1)
+        group1 = baker.make('core.AssignmentGroup', parentnode=testassignment1)
+        candidate1 = core_baker.candidate(group=group1, shortname='april', fullname='April Duck')
+        group_baker.feedbackset_first_attempt_published(group=group1, grading_points=1)
 
-        testassignment2 = mommy.make_recipe(
+        testassignment2 = baker.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
             short_name='cool',
             parentnode__parentnode=testassignment1.parentnode.parentnode,
             passing_grade_min_points=2,
             max_points=3,
         )
-        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
-        mommy.make('core.Candidate', assignment_group=group2, relatedstudent__user=candidate1.relatedstudent.user)
+        group2 = baker.make('core.AssignmentGroup', parentnode=testassignment2)
+        baker.make('core.Candidate', assignment_group=group2, relatedstudent__user=candidate1.relatedstudent.user)
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment2,
@@ -883,7 +883,7 @@ class TestCandidateListbuilder(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertIn('passed (1/1) passed (3/3)', valuelist)
 
     def test_multiple_title(self):
-        testassignment1 = mommy.make_recipe(
+        testassignment1 = baker.make_recipe(
             'devilry.apps.core.assignment_oldperiod_start',
             short_name='cool',
             parentnode__short_name='s16',
@@ -891,33 +891,33 @@ class TestCandidateListbuilder(TestCase, cradmin_testhelpers.TestCaseMixin):
             passing_grade_min_points=1,
             max_points=1,
         )
-        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
-        candidate1 = core_mommy.candidate(group=group1, shortname='april', fullname='April Duck')
-        group_mommy.feedbackset_first_attempt_published(group=group1, grading_points=1)
+        group1 = baker.make('core.AssignmentGroup', parentnode=testassignment1)
+        candidate1 = core_baker.candidate(group=group1, shortname='april', fullname='April Duck')
+        group_baker.feedbackset_first_attempt_published(group=group1, grading_points=1)
 
-        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
-        candidate2 = core_mommy.candidate(group=group2, shortname='donald', fullname='Donald Duck')
-        group_mommy.feedbackset_first_attempt_published(group=group2, grading_points=1)
+        group2 = baker.make('core.AssignmentGroup', parentnode=testassignment1)
+        candidate2 = core_baker.candidate(group=group2, shortname='donald', fullname='Donald Duck')
+        group_baker.feedbackset_first_attempt_published(group=group2, grading_points=1)
 
-        group3 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
-        candidate3 = core_mommy.candidate(group=group3, shortname='dewey', fullname='Dewey Duck')
-        group_mommy.feedbackset_first_attempt_published(group=group3, grading_points=1)
+        group3 = baker.make('core.AssignmentGroup', parentnode=testassignment1)
+        candidate3 = core_baker.candidate(group=group3, shortname='dewey', fullname='Dewey Duck')
+        group_baker.feedbackset_first_attempt_published(group=group3, grading_points=1)
 
-        testassignment2 = mommy.make_recipe(
+        testassignment2 = baker.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
             short_name='cool',
             parentnode__parentnode=testassignment1.parentnode.parentnode,
             passing_grade_min_points=2,
             max_points=3,
         )
-        new_group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
-        mommy.make('core.Candidate', assignment_group=new_group1, relatedstudent__user=candidate1.relatedstudent.user)
+        new_group1 = baker.make('core.AssignmentGroup', parentnode=testassignment2)
+        baker.make('core.Candidate', assignment_group=new_group1, relatedstudent__user=candidate1.relatedstudent.user)
 
-        new_group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
-        mommy.make('core.Candidate', assignment_group=new_group2, relatedstudent__user=candidate2.relatedstudent.user)
+        new_group2 = baker.make('core.AssignmentGroup', parentnode=testassignment2)
+        baker.make('core.Candidate', assignment_group=new_group2, relatedstudent__user=candidate2.relatedstudent.user)
 
-        new_group3 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
-        mommy.make('core.Candidate', assignment_group=new_group3, relatedstudent__user=candidate3.relatedstudent.user)
+        new_group3 = baker.make('core.AssignmentGroup', parentnode=testassignment2)
+        baker.make('core.Candidate', assignment_group=new_group3, relatedstudent__user=candidate3.relatedstudent.user)
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment2,
@@ -954,7 +954,7 @@ class TestApprovePreviousPostView(TestCase, cradmin_testhelpers.TestCaseMixin):
         return mockinstance
 
     def test_no_candidates_passed(self):
-        testassignment2 = mommy.make_recipe(
+        testassignment2 = baker.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
             short_name='cool',
             passing_grade_min_points=2,
@@ -980,7 +980,7 @@ class TestApprovePreviousPostView(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
 
     def test_success_simple(self):
-        testassignment1 = mommy.make_recipe(
+        testassignment1 = baker.make_recipe(
             'devilry.apps.core.assignment_oldperiod_start',
             short_name='cool',
             parentnode__short_name='s16',
@@ -988,19 +988,19 @@ class TestApprovePreviousPostView(TestCase, cradmin_testhelpers.TestCaseMixin):
             passing_grade_min_points=1,
             max_points=1,
         )
-        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
-        candidate1 = core_mommy.candidate(group=group1, shortname='april', fullname='April Duck')
-        group_mommy.feedbackset_first_attempt_published(group=group1, grading_points=1)
+        group1 = baker.make('core.AssignmentGroup', parentnode=testassignment1)
+        candidate1 = core_baker.candidate(group=group1, shortname='april', fullname='April Duck')
+        group_baker.feedbackset_first_attempt_published(group=group1, grading_points=1)
 
-        testassignment2 = mommy.make_recipe(
+        testassignment2 = baker.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
             short_name='cool',
             parentnode__parentnode=testassignment1.parentnode.parentnode,
             passing_grade_min_points=2,
             max_points=3,
         )
-        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
-        mommy.make('core.Candidate', assignment_group=group2, relatedstudent__user=candidate1.relatedstudent.user)
+        group2 = baker.make('core.AssignmentGroup', parentnode=testassignment2)
+        baker.make('core.Candidate', assignment_group=group2, relatedstudent__user=candidate1.relatedstudent.user)
         messagesmock = mock.MagicMock()
         self.mock_http302_postrequest(
             cradmin_role=testassignment2,
@@ -1023,21 +1023,21 @@ class TestApprovePreviousPostView(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
 
     def test_success_multiple(self):
-        testassignment1 = mommy.make_recipe(
+        testassignment1 = baker.make_recipe(
             'devilry.apps.core.assignment_oldperiod_start',
             short_name='cool',
             passing_grade_min_points=1,
             max_points=1,
         )
-        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
-        candidate1 = core_mommy.candidate(group=group1, shortname='april', fullname='April Duck')
-        group_mommy.feedbackset_first_attempt_published(group=group1, grading_points=1)
+        group1 = baker.make('core.AssignmentGroup', parentnode=testassignment1)
+        candidate1 = core_baker.candidate(group=group1, shortname='april', fullname='April Duck')
+        group_baker.feedbackset_first_attempt_published(group=group1, grading_points=1)
 
-        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
-        candidate2 = core_mommy.candidate(group=group2, shortname='donald', fullname='Donald Duck')
-        group_mommy.feedbackset_first_attempt_published(group=group2, grading_points=1)
+        group2 = baker.make('core.AssignmentGroup', parentnode=testassignment1)
+        candidate2 = core_baker.candidate(group=group2, shortname='donald', fullname='Donald Duck')
+        group_baker.feedbackset_first_attempt_published(group=group2, grading_points=1)
 
-        testassignment0 = mommy.make_recipe(
+        testassignment0 = baker.make_recipe(
             'devilry.apps.core.assignment_oldperiod_middle',
             short_name='cool',
             parentnode__parentnode=testassignment1.parentnode.parentnode,
@@ -1045,25 +1045,25 @@ class TestApprovePreviousPostView(TestCase, cradmin_testhelpers.TestCaseMixin):
             max_points=1,
         )
 
-        group3 = mommy.make('core.AssignmentGroup', parentnode=testassignment0)
-        candidate3 = core_mommy.candidate(group=group3, shortname='dewey', fullname='Dewey Duck')
-        group_mommy.feedbackset_first_attempt_published(group=group3, grading_points=1)
+        group3 = baker.make('core.AssignmentGroup', parentnode=testassignment0)
+        candidate3 = core_baker.candidate(group=group3, shortname='dewey', fullname='Dewey Duck')
+        group_baker.feedbackset_first_attempt_published(group=group3, grading_points=1)
 
-        testassignment2 = mommy.make_recipe(
+        testassignment2 = baker.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
             short_name='cool',
             parentnode__parentnode=testassignment1.parentnode.parentnode,
             passing_grade_min_points=2,
             max_points=3,
         )
-        new_group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
-        mommy.make('core.Candidate', assignment_group=new_group1, relatedstudent__user=candidate1.relatedstudent.user)
+        new_group1 = baker.make('core.AssignmentGroup', parentnode=testassignment2)
+        baker.make('core.Candidate', assignment_group=new_group1, relatedstudent__user=candidate1.relatedstudent.user)
 
-        new_group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
-        mommy.make('core.Candidate', assignment_group=new_group2, relatedstudent__user=candidate2.relatedstudent.user)
+        new_group2 = baker.make('core.AssignmentGroup', parentnode=testassignment2)
+        baker.make('core.Candidate', assignment_group=new_group2, relatedstudent__user=candidate2.relatedstudent.user)
 
-        new_group3 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
-        mommy.make('core.Candidate', assignment_group=new_group3, relatedstudent__user=candidate3.relatedstudent.user)
+        new_group3 = baker.make('core.AssignmentGroup', parentnode=testassignment2)
+        baker.make('core.Candidate', assignment_group=new_group3, relatedstudent__user=candidate3.relatedstudent.user)
 
         messagesmock = mock.MagicMock()
         self.mock_http302_postrequest(
@@ -1087,21 +1087,21 @@ class TestApprovePreviousPostView(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
 
     def test_warning_some_candidates_does_not_qualify(self):
-        testassignment1 = mommy.make_recipe(
+        testassignment1 = baker.make_recipe(
             'devilry.apps.core.assignment_oldperiod_start',
             short_name='cool',
             passing_grade_min_points=1,
             max_points=1,
         )
-        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
-        candidate1 = core_mommy.candidate(group=group1, shortname='april', fullname='April Duck')
-        group_mommy.feedbackset_first_attempt_published(group=group1, grading_points=1)
+        group1 = baker.make('core.AssignmentGroup', parentnode=testassignment1)
+        candidate1 = core_baker.candidate(group=group1, shortname='april', fullname='April Duck')
+        group_baker.feedbackset_first_attempt_published(group=group1, grading_points=1)
 
-        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
-        candidate2 = core_mommy.candidate(group=group2, shortname='donald', fullname='Donald Duck')
-        group_mommy.feedbackset_first_attempt_published(group=group2, grading_points=1)
+        group2 = baker.make('core.AssignmentGroup', parentnode=testassignment1)
+        candidate2 = core_baker.candidate(group=group2, shortname='donald', fullname='Donald Duck')
+        group_baker.feedbackset_first_attempt_published(group=group2, grading_points=1)
 
-        testassignment0 = mommy.make_recipe(
+        testassignment0 = baker.make_recipe(
             'devilry.apps.core.assignment_oldperiod_middle',
             short_name='imba',
             parentnode__parentnode=testassignment1.parentnode.parentnode,
@@ -1109,25 +1109,25 @@ class TestApprovePreviousPostView(TestCase, cradmin_testhelpers.TestCaseMixin):
             max_points=1,
         )
 
-        group3 = mommy.make('core.AssignmentGroup', parentnode=testassignment0)
-        candidate3 = core_mommy.candidate(group=group3, shortname='dewey', fullname='Dewey Duck')
-        group_mommy.feedbackset_first_attempt_published(group=group3, grading_points=1)
+        group3 = baker.make('core.AssignmentGroup', parentnode=testassignment0)
+        candidate3 = core_baker.candidate(group=group3, shortname='dewey', fullname='Dewey Duck')
+        group_baker.feedbackset_first_attempt_published(group=group3, grading_points=1)
 
-        testassignment2 = mommy.make_recipe(
+        testassignment2 = baker.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
             short_name='cool',
             parentnode__parentnode=testassignment1.parentnode.parentnode,
             passing_grade_min_points=2,
             max_points=3,
         )
-        new_group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
-        mommy.make('core.Candidate', assignment_group=new_group1, relatedstudent__user=candidate1.relatedstudent.user)
+        new_group1 = baker.make('core.AssignmentGroup', parentnode=testassignment2)
+        baker.make('core.Candidate', assignment_group=new_group1, relatedstudent__user=candidate1.relatedstudent.user)
 
-        new_group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
-        mommy.make('core.Candidate', assignment_group=new_group2, relatedstudent__user=candidate2.relatedstudent.user)
+        new_group2 = baker.make('core.AssignmentGroup', parentnode=testassignment2)
+        baker.make('core.Candidate', assignment_group=new_group2, relatedstudent__user=candidate2.relatedstudent.user)
 
-        new_group3 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
-        mommy.make('core.Candidate', assignment_group=new_group3, relatedstudent__user=candidate3.relatedstudent.user)
+        new_group3 = baker.make('core.AssignmentGroup', parentnode=testassignment2)
+        baker.make('core.Candidate', assignment_group=new_group3, relatedstudent__user=candidate3.relatedstudent.user)
 
         messagesmock = mock.MagicMock()
         self.mock_http302_postrequest(

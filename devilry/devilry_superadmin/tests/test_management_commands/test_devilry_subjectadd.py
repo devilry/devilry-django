@@ -3,7 +3,7 @@
 from django import test
 from django.core import management
 from django.core.management import CommandError
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.apps.core.models import Subject
 from devilry.devilry_account.models import PermissionGroup, SubjectPermissionGroup
@@ -18,7 +18,7 @@ class TestSubjectaddCommand(test.TestCase):
             *args)
 
     def test_subject_with_short_name_exists_error_message(self):
-        mommy.make('core.Subject', short_name='test')
+        baker.make('core.Subject', short_name='test')
         with self.assertRaisesMessage(CommandError,
                                       'Subject "test" already exists.'):
             self.__run_management_command('test', 'Test')
@@ -37,7 +37,7 @@ class TestSubjectaddCommand(test.TestCase):
         self.assertTrue(Subject.objects.filter(short_name='test').exists())
 
     def test_add_subject_with_permissiongroup_type_subject(self):
-        mommy.make('devilry_account.PermissionGroup',
+        baker.make('devilry_account.PermissionGroup',
                    name='Test group', grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN)
         self.__run_management_command('test', 'Test', '--permission-groups', 'Test group')
         self.assertTrue(
@@ -45,7 +45,7 @@ class TestSubjectaddCommand(test.TestCase):
                 subject__short_name='test', permissiongroup__name='Test group').exists())
 
     def test_add_subject_with_permissiongroup_type_department(self):
-        mommy.make('devilry_account.PermissionGroup',
+        baker.make('devilry_account.PermissionGroup',
                    name='Test group', grouptype=PermissionGroup.GROUPTYPE_DEPARTMENTADMIN)
         self.__run_management_command('test', 'Test', '--permission-groups', 'Test group')
         self.assertTrue(
@@ -53,9 +53,9 @@ class TestSubjectaddCommand(test.TestCase):
                 subject__short_name='test', permissiongroup__name='Test group').exists())
 
     def test_add_subject_with_multiple_permission_groups(self):
-        mommy.make('devilry_account.PermissionGroup',
+        baker.make('devilry_account.PermissionGroup',
                    name='Department admins', grouptype=PermissionGroup.GROUPTYPE_DEPARTMENTADMIN)
-        mommy.make('devilry_account.PermissionGroup',
+        baker.make('devilry_account.PermissionGroup',
                    name='Subject admins', grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN)
         self.__run_management_command('test', 'Test', '--permission-groups', 'Department admins', 'Subject admins')
         self.assertTrue(

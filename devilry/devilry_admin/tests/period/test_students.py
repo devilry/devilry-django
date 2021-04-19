@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.http import Http404
 from cradmin_legacy import cradmin_testhelpers
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.apps.core.models import RelatedStudent
 from devilry.devilry_account.models import PermissionGroup
@@ -26,7 +26,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 for element in selector.list('.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
 
     def test_title(self):
-        testperiod = mommy.make('core.Period',
+        testperiod = baker.make('core.Period',
                                 parentnode__short_name='testsubject',
                                 short_name='testperiod')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
@@ -34,7 +34,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                       mockresponse.selector.one('title').alltext_normalized)
 
     def test_h1(self):
-        testperiod = mommy.make('core.Period',
+        testperiod = baker.make('core.Period',
                                 parentnode__short_name='testsubject',
                                 short_name='testperiod')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
@@ -42,7 +42,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                          mockresponse.selector.one('h1').alltext_normalized)
 
     def test_buttonbar_addbutton_link(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         mock_cradmin_app = mock.MagicMock()
 
         def mock_reverse_appurl(viewname, **kwargs):
@@ -56,7 +56,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('#devilry_admin_period_students_overview_button_add')['href'])
 
     def test_buttonbar_addbutton_label(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertEqual(
                 'Add students',
@@ -64,7 +64,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                         '#devilry_admin_period_students_overview_button_add').alltext_normalized)
 
     def test_buttonbar_importbutton_not_rendered_for_periodadmin_sanity(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_instance=self.mock_crinstance_with_devilry_role(devilryrole=PermissionGroup.GROUPTYPE_PERIODADMIN),
             cradmin_role=testperiod
@@ -73,7 +73,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.exists('#devilry_admin_period_students_overview_button_importstudents'))
 
     def test_buttonbar_importbutton_not_rendered_for_subjectadmin_sanity(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_instance=self.mock_crinstance_with_devilry_role(devilryrole=PermissionGroup.GROUPTYPE_SUBJECTADMIN),
             cradmin_role=testperiod
@@ -82,7 +82,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.exists('#devilry_admin_period_students_overview_button_importstudents'))
 
     def test_buttonbar_importbutton_rendered_for_departmentadmin_sanity(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_instance=self.mock_crinstance_with_devilry_role(),
             cradmin_role=testperiod
@@ -91,7 +91,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.exists('#devilry_admin_period_students_overview_button_importstudents'))
 
     def test_buttonbar_importbutton_link(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         mock_cradmin_app = mock.MagicMock()
 
         def mock_reverse_appurl(viewname, **kwargs):
@@ -107,7 +107,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('#devilry_admin_period_students_overview_button_importstudents')['href'])
 
     def test_buttonbar_importbutton_label(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_instance=self.mock_crinstance_with_devilry_role(),
             cradmin_role=testperiod)
@@ -117,38 +117,38 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                         '#devilry_admin_period_students_overview_button_importstudents').alltext_normalized)
 
     def test_no_students_messages(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertEqual(
                 'You have no students. Use the buttons above to add students.',
                 mockresponse.selector.one('.cradmin-legacy-listing-no-items-message').alltext_normalized)
 
     def test_default_ordering(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.RelatedStudent', period=testperiod,
+        testperiod = baker.make('core.Period')
+        baker.make('core.RelatedStudent', period=testperiod,
                    user__shortname='b',
                    user__fullname='UserB')
-        mommy.make('core.RelatedStudent', period=testperiod,
+        baker.make('core.RelatedStudent', period=testperiod,
                    user__shortname='usera')
-        mommy.make('core.RelatedStudent', period=testperiod,
+        baker.make('core.RelatedStudent', period=testperiod,
                    user__shortname='userc')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertEqual(['usera', 'UserB(b)', 'userc'],
                          self.__get_titles(mockresponse.selector))
 
     def test_only_users_from_current_period(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.RelatedStudent', period=testperiod,
+        testperiod = baker.make('core.Period')
+        baker.make('core.RelatedStudent', period=testperiod,
                    user__shortname='usera')
-        mommy.make('core.RelatedStudent',
+        baker.make('core.RelatedStudent',
                    user__shortname='fromotherperiod')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertEqual(['usera'],
                          self.__get_titles(mockresponse.selector))
 
     def test_inactive_relatedstudent_sanity(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.RelatedStudent', period=testperiod, active=False)
+        testperiod = baker.make('core.Period')
+        baker.make('core.RelatedStudent', period=testperiod, active=False)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertFalse(
                 mockresponse.selector.exists('.devilry-admin-relatedstudent-itemvalue-active'))
@@ -160,8 +160,8 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 mockresponse.selector.exists('.devilry-admin-period-inactive-relatedstudent-block'))
 
     def test_inactive_relatedstudent_message(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.RelatedStudent', period=testperiod, active=False)
+        testperiod = baker.make('core.Period')
+        baker.make('core.RelatedStudent', period=testperiod, active=False)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertEqual(
                 'Inactive student - can not be added to new assignments, and can not be '
@@ -170,8 +170,8 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                         '.devilry-admin-period-inactive-relatedstudent-message').alltext_normalized)
 
     def test_inactive_relatedstudent_link_label(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.RelatedStudent', period=testperiod, active=False)
+        testperiod = baker.make('core.Period')
+        baker.make('core.RelatedStudent', period=testperiod, active=False)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertEqual(
                 'Re-activate',
@@ -179,8 +179,8 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                         '.devilry-admin-period-inactive-relatedstudent-link').alltext_normalized)
 
     def test_inactive_relatedstudent_link_arialabel(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.RelatedStudent', period=testperiod, active=False,
+        testperiod = baker.make('core.Period')
+        baker.make('core.RelatedStudent', period=testperiod, active=False,
                    user__shortname='testuser')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertEqual(
@@ -189,8 +189,8 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                         '.devilry-admin-period-inactive-relatedstudent-link')['aria-label'])
 
     def test_active_relatedstudent_sanity(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.RelatedStudent', period=testperiod, active=True)
+        testperiod = baker.make('core.Period')
+        baker.make('core.RelatedStudent', period=testperiod, active=True)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertTrue(
                 mockresponse.selector.exists('.devilry-admin-relatedstudent-itemvalue-active'))
@@ -202,8 +202,8 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 mockresponse.selector.exists('.devilry-admin-period-inactive-relatedstudent-block'))
 
     def test_active_relatedstudent_link_label(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.RelatedStudent', period=testperiod, active=True)
+        testperiod = baker.make('core.Period')
+        baker.make('core.RelatedStudent', period=testperiod, active=True)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertEqual(
                 'Mark as inactive',
@@ -211,8 +211,8 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                         '.devilry-admin-period-active-relatedstudent-link').alltext_normalized)
 
     def test_active_relatedstudent_link_arialabel(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.RelatedStudent', period=testperiod, active=True,
+        testperiod = baker.make('core.Period')
+        baker.make('core.RelatedStudent', period=testperiod, active=True,
                    user__shortname='testuser')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertEqual(
@@ -221,8 +221,8 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                         '.devilry-admin-period-active-relatedstudent-link')['aria-label'])
 
     def test_querycount(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.RelatedStudent', period=testperiod, _quantity=30)
+        testperiod = baker.make('core.Period')
+        baker.make('core.RelatedStudent', period=testperiod, _quantity=30)
         with self.assertNumQueries(5):
             self.mock_getrequest(cradmin_role=testperiod)
 
@@ -231,11 +231,11 @@ class TestDeactivateStudentView(test.TestCase, cradmin_testhelpers.TestCaseMixin
     viewclass = students.DeactivateView
 
     def test_get_title(self):
-        requestuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod = mommy.make('core.Period',
+        requestuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period',
                                 parentnode__short_name='testsubject',
                                 short_name='testperiod')
-        relatedstudent = mommy.make('core.RelatedStudent',
+        relatedstudent = baker.make('core.RelatedStudent',
                                     period=testperiod,
                                     user__fullname='Jane Doe')
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -246,11 +246,11 @@ class TestDeactivateStudentView(test.TestCase, cradmin_testhelpers.TestCaseMixin
                          'Deactivate student: Jane Doe?')
 
     def test_get_h1(self):
-        requestuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod = mommy.make('core.Period',
+        requestuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period',
                                 parentnode__short_name='testsubject',
                                 short_name='testperiod')
-        relatedstudent = mommy.make('core.RelatedStudent',
+        relatedstudent = baker.make('core.RelatedStudent',
                                     period=testperiod,
                                     user__fullname='Jane Doe')
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -261,11 +261,11 @@ class TestDeactivateStudentView(test.TestCase, cradmin_testhelpers.TestCaseMixin
                          'Deactivate student: Jane Doe?')
 
     def test_get_confirm_message(self):
-        requestuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod = mommy.make('core.Period',
+        requestuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period',
                                 parentnode__short_name='testsubject',
                                 short_name='testperiod')
-        relatedstudent = mommy.make('core.RelatedStudent',
+        relatedstudent = baker.make('core.RelatedStudent',
                                     period=testperiod,
                                     user__fullname='Jane Doe')
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -282,10 +282,10 @@ class TestDeactivateStudentView(test.TestCase, cradmin_testhelpers.TestCaseMixin
                          'deactivate a student. You can re-activate a deactivated student at any time.')
 
     def test_404_if_not_relatedstudent_on_period(self):
-        requestuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod = mommy.make('core.Period')
-        otherperiod = mommy.make('core.Period')
-        relatedstudent = mommy.make('core.RelatedStudent',
+        requestuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period')
+        otherperiod = baker.make('core.Period')
+        relatedstudent = baker.make('core.RelatedStudent',
                                     period=otherperiod)
         with self.assertRaises(Http404):
             self.mock_getrequest(
@@ -294,9 +294,9 @@ class TestDeactivateStudentView(test.TestCase, cradmin_testhelpers.TestCaseMixin
                     viewkwargs={'pk': relatedstudent.pk})
 
     def test_post_deactivates(self):
-        requestuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod = mommy.make('core.Period')
-        relatedstudent = mommy.make('core.RelatedStudent', period=testperiod)
+        requestuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period')
+        relatedstudent = baker.make('core.RelatedStudent', period=testperiod)
         self.assertTrue(relatedstudent.active)
         self.mock_http302_postrequest(
                 cradmin_role=testperiod,
@@ -306,9 +306,9 @@ class TestDeactivateStudentView(test.TestCase, cradmin_testhelpers.TestCaseMixin
         self.assertFalse(updated_relatedstudent.active)
 
     def test_post_success_message(self):
-        requestuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod = mommy.make('core.Period')
-        relatedstudent = mommy.make('core.RelatedStudent',
+        requestuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period')
+        relatedstudent = baker.make('core.RelatedStudent',
                                     period=testperiod,
                                     user__fullname='Jane Doe')
         self.assertTrue(relatedstudent.active)
@@ -328,11 +328,11 @@ class TestActivateStudentView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = students.ActivateView
 
     def test_get_title(self):
-        requestuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod = mommy.make('core.Period',
+        requestuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period',
                                 parentnode__short_name='testsubject',
                                 short_name='testperiod')
-        relatedstudent = mommy.make('core.RelatedStudent',
+        relatedstudent = baker.make('core.RelatedStudent',
                                     period=testperiod,
                                     user__fullname='Jane Doe')
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -343,11 +343,11 @@ class TestActivateStudentView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                          'Re-activate student: Jane Doe?')
 
     def test_get_h1(self):
-        requestuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod = mommy.make('core.Period',
+        requestuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period',
                                 parentnode__short_name='testsubject',
                                 short_name='testperiod')
-        relatedstudent = mommy.make('core.RelatedStudent',
+        relatedstudent = baker.make('core.RelatedStudent',
                                     period=testperiod,
                                     user__fullname='Jane Doe')
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -358,11 +358,11 @@ class TestActivateStudentView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                          'Re-activate student: Jane Doe?')
 
     def test_get_confirm_message(self):
-        requestuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod = mommy.make('core.Period',
+        requestuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period',
                                 parentnode__short_name='testsubject',
                                 short_name='testperiod')
-        relatedstudent = mommy.make('core.RelatedStudent',
+        relatedstudent = baker.make('core.RelatedStudent',
                                     period=testperiod,
                                     user__fullname='Jane Doe')
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -373,10 +373,10 @@ class TestActivateStudentView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                          'Please confirm that you want to re-activate Jane Doe.')
 
     def test_404_if_not_relatedstudent_on_period(self):
-        requestuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod = mommy.make('core.Period')
-        otherperiod = mommy.make('core.Period')
-        relatedstudent = mommy.make('core.RelatedStudent',
+        requestuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period')
+        otherperiod = baker.make('core.Period')
+        relatedstudent = baker.make('core.RelatedStudent',
                                     period=otherperiod)
         with self.assertRaises(Http404):
             self.mock_getrequest(
@@ -385,9 +385,9 @@ class TestActivateStudentView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                     viewkwargs={'pk': relatedstudent.pk})
 
     def test_post_activates(self):
-        requestuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod = mommy.make('core.Period')
-        relatedstudent = mommy.make('core.RelatedStudent', period=testperiod, active=False)
+        requestuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period')
+        relatedstudent = baker.make('core.RelatedStudent', period=testperiod, active=False)
         self.assertFalse(relatedstudent.active)
         self.mock_http302_postrequest(
                 cradmin_role=testperiod,
@@ -397,9 +397,9 @@ class TestActivateStudentView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertTrue(updated_relatedstudent.active)
 
     def test_post_success_message(self):
-        requestuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod = mommy.make('core.Period')
-        relatedstudent = mommy.make('core.RelatedStudent',
+        requestuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period')
+        relatedstudent = baker.make('core.RelatedStudent',
                                     period=testperiod,
                                     user__fullname='Jane Doe')
         self.assertTrue(relatedstudent.active)
@@ -419,7 +419,7 @@ class TestAddView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = students.AddView
 
     def test_get_title(self):
-        testperiod = mommy.make('core.Period',
+        testperiod = baker.make('core.Period',
                                 parentnode__short_name='testsubject',
                                 short_name='testperiod')
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -428,7 +428,7 @@ class TestAddView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                          'Select the students you want to add to testsubject.testperiod')
 
     def test_get_h1(self):
-        testperiod = mommy.make('core.Period',
+        testperiod = baker.make('core.Period',
                                 parentnode__short_name='testsubject',
                                 short_name='testperiod')
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -437,8 +437,8 @@ class TestAddView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                          'Select the students you want to add to testsubject.testperiod')
 
     def test_render_sanity(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make(settings.AUTH_USER_MODEL,
+        testperiod = baker.make('core.Period')
+        baker.make(settings.AUTH_USER_MODEL,
                    fullname='Test User',
                    shortname='test@example.com')
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=mock.MagicMock(),
@@ -457,13 +457,13 @@ class TestAddView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 for element in selector.list('.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
 
     def test_do_not_include_users_already_relatedstudent(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make(settings.AUTH_USER_MODEL,
+        testperiod = baker.make('core.Period')
+        baker.make(settings.AUTH_USER_MODEL,
                    fullname='Not in any period')
-        mommy.make('core.RelatedStudent',
+        baker.make('core.RelatedStudent',
                    period=testperiod,
                    user__fullname='Already in period')
-        mommy.make('core.RelatedStudent',
+        baker.make('core.RelatedStudent',
                    user__fullname='In other period')
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=mock.MagicMock(),
                                                           cradmin_role=testperiod)
@@ -472,8 +472,8 @@ class TestAddView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 set(self.__get_titles(mockresponse.selector)))
 
     def test_post_creates_relatedstudents(self):
-        testperiod = mommy.make('core.Period')
-        studentuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period')
+        studentuser = baker.make(settings.AUTH_USER_MODEL)
         self.assertEqual(0, RelatedStudent.objects.count())
         self.mock_http302_postrequest(
                 cradmin_role=testperiod,
@@ -489,10 +489,10 @@ class TestAddView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertTrue(created_relatedstudent.active)
 
     def test_post_multiple_users(self):
-        testperiod = mommy.make('core.Period')
-        studentuser1 = mommy.make(settings.AUTH_USER_MODEL)
-        studentuser2 = mommy.make(settings.AUTH_USER_MODEL)
-        studentuser3 = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period')
+        studentuser1 = baker.make(settings.AUTH_USER_MODEL)
+        studentuser2 = baker.make(settings.AUTH_USER_MODEL)
+        studentuser3 = baker.make(settings.AUTH_USER_MODEL)
         self.assertEqual(0, RelatedStudent.objects.count())
         self.mock_http302_postrequest(
                 cradmin_role=testperiod,
@@ -506,12 +506,12 @@ class TestAddView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(3, RelatedStudent.objects.count())
 
     def test_post_success_message(self):
-        testperiod = mommy.make('core.Period',
+        testperiod = baker.make('core.Period',
                                 parentnode__short_name='testsubject',
                                 short_name='testperiod')
-        studentuser1 = mommy.make(settings.AUTH_USER_MODEL,
+        studentuser1 = baker.make(settings.AUTH_USER_MODEL,
                                   shortname='testuser')
-        studentuser2 = mommy.make(settings.AUTH_USER_MODEL,
+        studentuser2 = baker.make(settings.AUTH_USER_MODEL,
                                   fullname='Test User')
         self.assertEqual(0, RelatedStudent.objects.count())
         messagesmock = mock.MagicMock()
@@ -553,7 +553,7 @@ class TestImportStudentsView(test.TestCase, AbstractTypeInUsersViewTestMixin):
         )
 
     def test_post_valid_with_email_backend_creates_relatedusers(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             self.mock_http302_postrequest(
                 cradmin_instance=self.mock_crinstance_with_devilry_role(),
@@ -568,7 +568,7 @@ class TestImportStudentsView(test.TestCase, AbstractTypeInUsersViewTestMixin):
                               for relatedstudent in RelatedStudent.objects.all()})
 
     def test_post_valid_with_email_backend_added_message(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
             messagesmock = mock.MagicMock()
             self.mock_http302_postrequest(
@@ -585,12 +585,12 @@ class TestImportStudentsView(test.TestCase, AbstractTypeInUsersViewTestMixin):
                 '')
 
     def test_post_valid_with_email_backend_none_added_message(self):
-        testperiod = mommy.make('core.Period')
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('devilry_account.UserEmail',
+        testperiod = baker.make('core.Period')
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('devilry_account.UserEmail',
                    user=testuser,
                    email='test@example.com')
-        mommy.make('core.RelatedStudent',
+        baker.make('core.RelatedStudent',
                    period=testperiod,
                    user=testuser)
         with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
@@ -609,12 +609,12 @@ class TestImportStudentsView(test.TestCase, AbstractTypeInUsersViewTestMixin):
                 '')
 
     def test_post_valid_with_email_backend_existing_message(self):
-        testperiod = mommy.make('core.Period')
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('devilry_account.UserEmail',
+        testperiod = baker.make('core.Period')
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('devilry_account.UserEmail',
                    user=testuser,
                    email='test@example.com')
-        mommy.make('core.RelatedStudent',
+        baker.make('core.RelatedStudent',
                    period=testperiod,
                    user=testuser)
         with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
@@ -633,7 +633,7 @@ class TestImportStudentsView(test.TestCase, AbstractTypeInUsersViewTestMixin):
                 '')
 
     def test_post_valid_with_username_backend_creates_relatedusers(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             self.mock_http302_postrequest(
                 cradmin_instance=self.mock_crinstance_with_devilry_role(),
@@ -648,7 +648,7 @@ class TestImportStudentsView(test.TestCase, AbstractTypeInUsersViewTestMixin):
                               for relatedstudent in RelatedStudent.objects.all()})
 
     def test_post_valid_with_username_backend_added_message(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
             messagesmock = mock.MagicMock()
             self.mock_http302_postrequest(
@@ -665,12 +665,12 @@ class TestImportStudentsView(test.TestCase, AbstractTypeInUsersViewTestMixin):
                 '')
 
     def test_post_valid_with_username_backend_none_added_message(self):
-        testperiod = mommy.make('core.Period')
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('devilry_account.UserName',
+        testperiod = baker.make('core.Period')
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('devilry_account.UserName',
                    user=testuser,
                    username='test')
-        mommy.make('core.RelatedStudent',
+        baker.make('core.RelatedStudent',
                    period=testperiod,
                    user=testuser)
         with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
@@ -689,12 +689,12 @@ class TestImportStudentsView(test.TestCase, AbstractTypeInUsersViewTestMixin):
                 '')
 
     def test_post_valid_with_username_backend_existing_message(self):
-        testperiod = mommy.make('core.Period')
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('devilry_account.UserName',
+        testperiod = baker.make('core.Period')
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('devilry_account.UserName',
                    user=testuser,
                    username='test')
-        mommy.make('core.RelatedStudent',
+        baker.make('core.RelatedStudent',
                    period=testperiod,
                    user=testuser)
         with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):

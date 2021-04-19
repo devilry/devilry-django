@@ -1,7 +1,7 @@
 from django import test
 from cradmin_legacy import cradmin_testhelpers
 from mock import mock
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.devilry_account.crapps.account import select_language
 
@@ -15,7 +15,7 @@ class TestSelectLanguagePostView(test.TestCase, cradmin_testhelpers.TestCaseMixi
         return mockrequest
 
     def test_language_options_sanity(self):
-        user = mommy.make('devilry_account.User', languagecode='en')
+        user = baker.make('devilry_account.User', languagecode='en')
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=user)
         self.assertEqual(mockresponse.selector.one('.test-current-language').alltext_normalized, 'English (en)')
         self.assertEqual(mockresponse.selector.one('.test-change-language').alltext_normalized, 'Norwegian Bokmal (nb)')
@@ -57,7 +57,7 @@ class TestSelectLanguagePostView(test.TestCase, cradmin_testhelpers.TestCaseMixi
         self.assertEqual(mockresponse.request.session['SELECTED_LANGUAGE_CODE'], 'nb')
 
     def test_change_languagecode_on_user(self):
-        user = mommy.make('devilry_account.User', languagecode='en')
+        user = baker.make('devilry_account.User', languagecode='en')
         mockrequest = self.__make_mock_request()
         self.mock_http302_postrequest(
             requestuser=user,
@@ -72,7 +72,7 @@ class TestSelectLanguagePostView(test.TestCase, cradmin_testhelpers.TestCaseMixi
         self.assertEqual(user.languagecode, 'nb')
 
     def test_selected_language_user_authenticated(self):
-        user = mommy.make('devilry_account.User', languagecode='en')
+        user = baker.make('devilry_account.User', languagecode='en')
         mockrequest = self.__make_mock_request()
         mockresponse = self.mock_http302_postrequest(
             requestuser=user,

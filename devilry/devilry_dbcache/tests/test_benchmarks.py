@@ -5,7 +5,7 @@ from django.conf import settings
 from django.core.files.base import ContentFile
 from django.db import connection
 from django.utils import timezone
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_comment.models import CommentFile
@@ -57,27 +57,27 @@ class TestBenchMarkAssignmentGroupFileUploadCountTrigger(test.TestCase):
         _remove_triggers()
 
     def __create_distinct_comments(self, label):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        feedbackset = mommy.make('devilry_group.FeedbackSet', group=group)
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group = baker.make('core.AssignmentGroup', parentnode=assignment)
+        feedbackset = baker.make('devilry_group.FeedbackSet', group=group)
 
-        examiner = mommy.make('core.Examiner',
+        examiner = baker.make('core.Examiner',
                               assignmentgroup=group,
-                              relatedexaminer__user=mommy.make(settings.AUTH_USER_MODEL))
+                              relatedexaminer__user=baker.make(settings.AUTH_USER_MODEL))
 
-        mommy.make(GroupComment, user=examiner.relatedexaminer.user, feedback_set=feedbackset,
+        baker.make(GroupComment, user=examiner.relatedexaminer.user, feedback_set=feedbackset,
                    user_role=GroupComment.USER_ROLE_ADMIN)
-        comment_student = mommy.make(GroupComment, user=examiner.relatedexaminer.user, feedback_set=feedbackset,
+        comment_student = baker.make(GroupComment, user=examiner.relatedexaminer.user, feedback_set=feedbackset,
                                      user_role=GroupComment.USER_ROLE_STUDENT)
-        comment_examiner = mommy.make(GroupComment, user=examiner.relatedexaminer.user, feedback_set=feedbackset,
+        comment_examiner = baker.make(GroupComment, user=examiner.relatedexaminer.user, feedback_set=feedbackset,
                                       user_role=GroupComment.USER_ROLE_EXAMINER)
 
         count = 1000
         with TimeExecution('{} ({})'.format(label, count)):
             for x in range(count):
-                student_file = mommy.make(CommentFile, comment=comment_student)
+                student_file = baker.make(CommentFile, comment=comment_student)
                 student_file.file.save('testfile.txt', ContentFile('test'))
-                examiner_file = mommy.make(CommentFile, comment=comment_examiner)
+                examiner_file = baker.make(CommentFile, comment=comment_examiner)
                 examiner_file.file.save('testfile.txt', ContentFile('test'))
                 # student_file.delete()
 
@@ -115,17 +115,17 @@ class TestBenchMarkFeedbackSetTrigger(test.TestCase):
 
     def __create_in_distinct_groups_feedbacksets(self, label):
         count = 10000
-        assignment = mommy.make('core.Assignment')
-        created_by = mommy.make(settings.AUTH_USER_MODEL)
+        assignment = baker.make('core.Assignment')
+        created_by = baker.make(settings.AUTH_USER_MODEL)
 
         groups = []
         for x in range(count):
-            groups.append(mommy.prepare('core.AssignmentGroup', parentnode=assignment))
+            groups.append(baker.prepare('core.AssignmentGroup', parentnode=assignment))
         AssignmentGroup.objects.bulk_create(groups)
 
         feedbacksets = []
         for group in AssignmentGroup.objects.filter(parentnode=assignment):
-            feedbackset = mommy.prepare(FeedbackSet, group=group, created_by=created_by, is_last_in_group=None)
+            feedbackset = baker.prepare(FeedbackSet, group=group, created_by=created_by, is_last_in_group=None)
             feedbacksets.append(feedbackset)
 
         with TimeExecution('{} ({})'.format(label, count)):
@@ -140,13 +140,13 @@ class TestBenchMarkFeedbackSetTrigger(test.TestCase):
 
     def __create_in_same_group_feedbacksets(self, label):
         count = 1000
-        assignment = mommy.make('core.Assignment')
-        created_by = mommy.make(settings.AUTH_USER_MODEL)
-        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make('core.Assignment')
+        created_by = baker.make(settings.AUTH_USER_MODEL)
+        group = baker.make('core.AssignmentGroup', parentnode=assignment)
 
         feedbacksets = []
         for x in range(count):
-            feedbackset = mommy.prepare(FeedbackSet, group=group, created_by=created_by, is_last_in_group=None)
+            feedbackset = baker.prepare(FeedbackSet, group=group, created_by=created_by, is_last_in_group=None)
             feedbacksets.append(feedbackset)
 
         with TimeExecution('{} ({})'.format(label, count)):
@@ -169,10 +169,10 @@ class TestBenchMarkAssignmentGroupTrigger(test.TestCase):
 
     def __create_distinct_groups(self, label):
         count = 10000
-        assignment = mommy.make('core.Assignment')
+        assignment = baker.make('core.Assignment')
         groups = []
         for x in range(count):
-            groups.append(mommy.prepare('core.AssignmentGroup', parentnode=assignment))
+            groups.append(baker.prepare('core.AssignmentGroup', parentnode=assignment))
 
         with TimeExecution('{} ({})'.format(label, count)):
             AssignmentGroup.objects.bulk_create(groups)
@@ -191,22 +191,22 @@ class TestBenchMarkAssignmentGroupCommentCountTrigger(test.TestCase):
         _remove_triggers()
 
     def __create_distinct_comments(self, label):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        feedbackset = mommy.make('devilry_group.FeedbackSet', group=group)
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group = baker.make('core.AssignmentGroup', parentnode=assignment)
+        feedbackset = baker.make('devilry_group.FeedbackSet', group=group)
 
-        examiner = mommy.make('core.Examiner',
+        examiner = baker.make('core.Examiner',
                               assignmentgroup=group,
-                              relatedexaminer__user=mommy.make(settings.AUTH_USER_MODEL))
+                              relatedexaminer__user=baker.make(settings.AUTH_USER_MODEL))
 
         count = 100
         comments = []
         for x in range(count):
-            comments.append(mommy.prepare(GroupComment, user=examiner.relatedexaminer.user, feedback_set=feedbackset,
+            comments.append(baker.prepare(GroupComment, user=examiner.relatedexaminer.user, feedback_set=feedbackset,
                                           user_role=GroupComment.USER_ROLE_ADMIN))
-            comments.append(mommy.prepare(GroupComment, user=examiner.relatedexaminer.user, feedback_set=feedbackset,
+            comments.append(baker.prepare(GroupComment, user=examiner.relatedexaminer.user, feedback_set=feedbackset,
                                           user_role=GroupComment.USER_ROLE_STUDENT))
-            comments.append(mommy.prepare(GroupComment, user=examiner.relatedexaminer.user, feedback_set=feedbackset,
+            comments.append(baker.prepare(GroupComment, user=examiner.relatedexaminer.user, feedback_set=feedbackset,
                                           user_role=GroupComment.USER_ROLE_EXAMINER))
 
         with TimeExecution('{} ({})'.format(label, count)):

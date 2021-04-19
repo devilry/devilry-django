@@ -7,7 +7,7 @@ from devilry.devilry_import_v2database.models import ImportedModel
 from django import test
 from django.conf import settings
 
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.apps.core.models import Subject
 from devilry.devilry_account import models as account_models
@@ -39,7 +39,7 @@ class TestSubjectImporter(ImporterTestCaseMixin, test.TestCase):
         }
 
     def test_importer(self):
-        test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
+        test_admin_user = baker.make(settings.AUTH_USER_MODEL)
         self.create_v2dump(model_name='core.subject',
                            data=self._create_subject_dict(test_admin_user=test_admin_user))
         subjectimporter = SubjectImporter(input_root=self.temp_root_dir)
@@ -47,7 +47,7 @@ class TestSubjectImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(Subject.objects.count(), 1)
 
     def test_importer_pk(self):
-        test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
+        test_admin_user = baker.make(settings.AUTH_USER_MODEL)
         self.create_v2dump(model_name='core.subject',
                            data=self._create_subject_dict(test_admin_user=test_admin_user))
         subjectimporter = SubjectImporter(input_root=self.temp_root_dir)
@@ -56,7 +56,7 @@ class TestSubjectImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(subject.pk, 1)
 
     def test_importer_imported_model_with_admins(self):
-        test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
+        test_admin_user = baker.make(settings.AUTH_USER_MODEL)
         self.create_v2dump(model_name='core.subject',
                            data=self._create_subject_dict(test_admin_user=test_admin_user))
         subjectimporter = SubjectImporter(input_root=self.temp_root_dir)
@@ -71,7 +71,7 @@ class TestSubjectImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(SubjectPermissionGroup.objects.count(), 0)
 
     def test_importer_short_name(self):
-        test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
+        test_admin_user = baker.make(settings.AUTH_USER_MODEL)
         self.create_v2dump(model_name='core.subject',
                            data=self._create_subject_dict(test_admin_user=test_admin_user))
         subjectimporter = SubjectImporter(input_root=self.temp_root_dir)
@@ -80,7 +80,7 @@ class TestSubjectImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(subject.short_name, 'duck1100')
 
     def test_importer_long_name(self):
-        test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
+        test_admin_user = baker.make(settings.AUTH_USER_MODEL)
         self.create_v2dump(model_name='core.subject',
                            data=self._create_subject_dict(test_admin_user=test_admin_user))
         subjectimporter = SubjectImporter(input_root=self.temp_root_dir)
@@ -89,7 +89,7 @@ class TestSubjectImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(subject.long_name, 'DUCK1010 - Programming for the natural sciences')
 
     def test_importer_permissiongroups_is_created(self):
-        test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
+        test_admin_user = baker.make(settings.AUTH_USER_MODEL)
         self.create_v2dump(model_name='core.subject',
                            data=self._create_subject_dict(test_admin_user=test_admin_user))
         subjectimporter = SubjectImporter(input_root=self.temp_root_dir)
@@ -103,7 +103,7 @@ class TestSubjectImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(subjects_for_admin_list[0], subject)
 
     # def test_importer_imported_model_created(self):
-    #     test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
+    #     test_admin_user = baker.make(settings.AUTH_USER_MODEL)
     #     subject_data_dict = self._create_subject_dict(test_admin_user=test_admin_user)
     #     self.create_v2dump(model_name='core.subject',
     #                        data=subject_data_dict)
@@ -119,7 +119,7 @@ class TestSubjectImporter(ImporterTestCaseMixin, test.TestCase):
     #     self.assertEquals(imported_model.data, subject_data_dict)
 
     def test_auto_sequence_numbered_objects_uses_meta_max_id(self):
-        test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
+        test_admin_user = baker.make(settings.AUTH_USER_MODEL)
         self.create_v2dump(model_name='core.subject',
                            data=self._create_subject_dict(test_admin_user=test_admin_user),
                            model_meta=self._create_model_meta())
@@ -129,6 +129,6 @@ class TestSubjectImporter(ImporterTestCaseMixin, test.TestCase):
         subject = Subject.objects.first()
         self.assertEqual(subject.pk, 1)
         self.assertEqual(subject.id, 1)
-        subject_with_auto_id = mommy.make('core.Subject')
+        subject_with_auto_id = baker.make('core.Subject')
         self.assertEqual(subject_with_auto_id.id, self._create_model_meta()['max_id']+1)
         self.assertEqual(subject_with_auto_id.pk, self._create_model_meta()['max_id']+1)

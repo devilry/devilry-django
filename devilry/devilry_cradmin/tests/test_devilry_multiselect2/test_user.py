@@ -4,14 +4,14 @@ from django import test
 from django import forms
 from django.conf import settings
 from cradmin_legacy import cradmin_testhelpers
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.devilry_cradmin import devilry_multiselect2
 
 
 class TestSelectedItem(test.TestCase):
     def test_title_without_fullname(self):
-        user = mommy.make(settings.AUTH_USER_MODEL,
+        user = baker.make(settings.AUTH_USER_MODEL,
                           shortname='test@example.com',
                           fullname='')
         selector = htmls.S(devilry_multiselect2.user.SelectedItem(value=user).render())
@@ -20,7 +20,7 @@ class TestSelectedItem(test.TestCase):
                 selector.one('.cradmin-legacy-multiselect2-target-selected-item-title').alltext_normalized)
 
     def test_title_with_fullname(self):
-        user = mommy.make(settings.AUTH_USER_MODEL,
+        user = baker.make(settings.AUTH_USER_MODEL,
                           fullname='Test User',
                           shortname='test@example.com')
         selector = htmls.S(devilry_multiselect2.user.SelectedItem(value=user).render())
@@ -29,7 +29,7 @@ class TestSelectedItem(test.TestCase):
                 selector.one('.cradmin-legacy-multiselect2-target-selected-item-title').alltext_normalized)
 
     def test_description_without_fullname(self):
-        user = mommy.make(settings.AUTH_USER_MODEL,
+        user = baker.make(settings.AUTH_USER_MODEL,
                           shortname='test@example.com',
                           fullname='')
         selector = htmls.S(devilry_multiselect2.user.SelectedItem(value=user).render())
@@ -37,7 +37,7 @@ class TestSelectedItem(test.TestCase):
                 selector.exists('.cradmin-legacy-multiselect2-target-selected-item-description'))
 
     def test_description_with_fullname(self):
-        user = mommy.make(settings.AUTH_USER_MODEL,
+        user = baker.make(settings.AUTH_USER_MODEL,
                           fullname='Test User',
                           shortname='test@example.com')
         selector = htmls.S(devilry_multiselect2.user.SelectedItem(value=user).render())
@@ -48,7 +48,7 @@ class TestSelectedItem(test.TestCase):
 
 class TestItemValue(test.TestCase):
     def test_title_without_fullname(self):
-        user = mommy.make(settings.AUTH_USER_MODEL,
+        user = baker.make(settings.AUTH_USER_MODEL,
                           shortname='test@example.com',
                           fullname='')
         selector = htmls.S(devilry_multiselect2.user.ItemValue(value=user).render())
@@ -57,7 +57,7 @@ class TestItemValue(test.TestCase):
                 selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_title_with_fullname(self):
-        user = mommy.make(settings.AUTH_USER_MODEL,
+        user = baker.make(settings.AUTH_USER_MODEL,
                           fullname='Test User',
                           shortname='test@example.com')
         selector = htmls.S(devilry_multiselect2.user.ItemValue(value=user).render())
@@ -66,7 +66,7 @@ class TestItemValue(test.TestCase):
                 selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_description_without_fullname(self):
-        user = mommy.make(settings.AUTH_USER_MODEL,
+        user = baker.make(settings.AUTH_USER_MODEL,
                           shortname='test@example.com',
                           fullname='')
         selector = htmls.S(devilry_multiselect2.user.ItemValue(value=user).render())
@@ -74,7 +74,7 @@ class TestItemValue(test.TestCase):
                 selector.exists('.cradmin-legacy-listbuilder-itemvalue-titledescription-description'))
 
     def test_description_with_fullname(self):
-        user = mommy.make(settings.AUTH_USER_MODEL,
+        user = baker.make(settings.AUTH_USER_MODEL,
                           fullname='Test User',
                           shortname='test@example.com')
         selector = htmls.S(devilry_multiselect2.user.ItemValue(value=user).render())
@@ -107,7 +107,7 @@ class TestBaseMultiselectUsersView(test.TestCase, cradmin_testhelpers.TestCaseMi
 
     def test_render_sanity(self):
         # Only a sanity test - we do not repeat all the tests from TestItemValue
-        mommy.make(settings.AUTH_USER_MODEL,
+        baker.make(settings.AUTH_USER_MODEL,
                    fullname='Test User',
                    shortname='test@example.com')
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=mock.MagicMock())
@@ -125,11 +125,11 @@ class TestBaseMultiselectUsersView(test.TestCase, cradmin_testhelpers.TestCaseMi
                 for element in selector.list('.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
 
     def test_ordering(self):
-        mommy.make(settings.AUTH_USER_MODEL,
+        baker.make(settings.AUTH_USER_MODEL,
                    shortname='userb')
-        mommy.make(settings.AUTH_USER_MODEL,
+        baker.make(settings.AUTH_USER_MODEL,
                    shortname='usera')
-        mommy.make(settings.AUTH_USER_MODEL,
+        baker.make(settings.AUTH_USER_MODEL,
                    shortname='userc')
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=mock.MagicMock())
         self.assertEqual(
@@ -137,14 +137,14 @@ class TestBaseMultiselectUsersView(test.TestCase, cradmin_testhelpers.TestCaseMi
                 self.__get_titles(mockresponse.selector))
 
     def test_selectall_not_available(self):
-        mommy.make(settings.AUTH_USER_MODEL)
+        baker.make(settings.AUTH_USER_MODEL)
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=mock.MagicMock())
         self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-multiselect2-listcolumn-buttons .btn'))
 
     def test_search_shortname(self):
-        mommy.make(settings.AUTH_USER_MODEL,
+        baker.make(settings.AUTH_USER_MODEL,
                    shortname='userb')
-        mommy.make(settings.AUTH_USER_MODEL,
+        baker.make(settings.AUTH_USER_MODEL,
                    shortname='usera')
         mockresponse = self.mock_http200_getrequest_htmls(
                 requestuser=mock.MagicMock(),
@@ -154,9 +154,9 @@ class TestBaseMultiselectUsersView(test.TestCase, cradmin_testhelpers.TestCaseMi
                 set(self.__get_titles(mockresponse.selector)))
 
     def test_search_fullname(self):
-        mommy.make(settings.AUTH_USER_MODEL,
+        baker.make(settings.AUTH_USER_MODEL,
                    fullname='Userb')
-        mommy.make(settings.AUTH_USER_MODEL,
+        baker.make(settings.AUTH_USER_MODEL,
                    fullname='Usera')
         mockresponse = self.mock_http200_getrequest_htmls(
                 requestuser=mock.MagicMock(),
@@ -166,10 +166,10 @@ class TestBaseMultiselectUsersView(test.TestCase, cradmin_testhelpers.TestCaseMi
                 set(self.__get_titles(mockresponse.selector)))
 
     def test_search_username(self):
-        mommy.make('devilry_account.UserName',
+        baker.make('devilry_account.UserName',
                    user__fullname='Test User 1',
                    username='testuser1')
-        mommy.make('devilry_account.UserName',
+        baker.make('devilry_account.UserName',
                    user__fullname='Test User 2',
                    username='testuser2')
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -180,10 +180,10 @@ class TestBaseMultiselectUsersView(test.TestCase, cradmin_testhelpers.TestCaseMi
                 set(self.__get_titles(mockresponse.selector)))
 
     def test_search_useremail(self):
-        mommy.make('devilry_account.UserEmail',
+        baker.make('devilry_account.UserEmail',
                    user__fullname='Test User 1',
                    email='testuser1@example.com')
-        mommy.make('devilry_account.UserEmail',
+        baker.make('devilry_account.UserEmail',
                    user__fullname='Test User 2',
                    email='testuser2@example.com')
         mockresponse = self.mock_http200_getrequest_htmls(

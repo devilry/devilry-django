@@ -8,7 +8,7 @@ from zipfile import ZipFile
 
 # Third party imports
 from ievv_opensource.ievv_batchframework.batchregistry import ActionGroupSynchronousExecutionError
-from model_mommy import mommy
+from model_bakery import baker
 from ievv_opensource.ievv_batchframework import batchregistry
 
 # Django imports
@@ -23,7 +23,7 @@ from devilry.apps.core.models import Assignment
 from devilry.devilry_account.models import PermissionGroup
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_admin import tasks
-from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
+from devilry.devilry_group import devilry_group_baker_factories as group_baker
 from devilry.devilry_compressionutil import models as archivemodels
 
 
@@ -60,104 +60,104 @@ class TestCompressed(TestCase):
 
 class TestAssignmentCompressActionAssignmentGroupPermissions(TestCase):
     def test_user_is_superuser(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            short_name='learn-python-basics',
                                            first_deadline=timezone.now() + timezone.timedelta(days=1))
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testuser = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testuser = baker.make(settings.AUTH_USER_MODEL, is_superuser=True)
         group_queryset = tasks.AssignmentCompressAction()\
             .get_assignment_group_queryset(assignment=testassignment, user=testuser)
         self.assertIn(testgroup, group_queryset)
 
     def test_user_is_subjectadmin(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            short_name='learn-python-basics',
                                            first_deadline=timezone.now() + timezone.timedelta(days=1))
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        subjectpermissiongroup = baker.make('devilry_account.SubjectPermissionGroup',
                                             subject=testassignment.parentnode.parentnode,
                                             permissiongroup__grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN)
-        mommy.make('devilry_account.PermissionGroupUser',
+        baker.make('devilry_account.PermissionGroupUser',
                    user=testuser, permissiongroup=subjectpermissiongroup.permissiongroup)
         group_queryset = tasks.AssignmentCompressAction()\
             .get_assignment_group_queryset(assignment=testassignment, user=testuser)
         self.assertIn(testgroup, group_queryset)
 
     def test_user_is_subjectadmin_on_different_subject(self):
-        other_subject = mommy.make('core.Subject')
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        other_subject = baker.make('core.Subject')
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            short_name='learn-python-basics',
                                            first_deadline=timezone.now() + timezone.timedelta(days=1))
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        subjectpermissiongroup = baker.make('devilry_account.SubjectPermissionGroup',
                                             subject=other_subject,
                                             permissiongroup__grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN)
-        mommy.make('devilry_account.PermissionGroupUser',
+        baker.make('devilry_account.PermissionGroupUser',
                    user=testuser, permissiongroup=subjectpermissiongroup.permissiongroup)
         group_queryset = tasks.AssignmentCompressAction()\
             .get_assignment_group_queryset(assignment=testassignment, user=testuser)
         self.assertNotIn(testgroup, group_queryset)
 
     def test_user_is_periodadmin(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            short_name='learn-python-basics',
                                            first_deadline=timezone.now() + timezone.timedelta(days=1))
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                            period=testassignment.parentnode,
                                            permissiongroup__grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN)
-        mommy.make('devilry_account.PermissionGroupUser',
+        baker.make('devilry_account.PermissionGroupUser',
                    user=testuser, permissiongroup=periodpermissiongroup.permissiongroup)
         group_queryset = tasks.AssignmentCompressAction()\
             .get_assignment_group_queryset(assignment=testassignment, user=testuser)
         self.assertIn(testgroup, group_queryset)
 
     def test_user_is_periodadmin_on_different_period(self):
-        other_period = mommy.make('core.Period')
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        other_period = baker.make('core.Period')
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            short_name='learn-python-basics',
                                            first_deadline=timezone.now() + timezone.timedelta(days=1))
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                            period=other_period,
                                            permissiongroup__grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN)
-        mommy.make('devilry_account.PermissionGroupUser',
+        baker.make('devilry_account.PermissionGroupUser',
                    user=testuser, permissiongroup=periodpermissiongroup.permissiongroup)
         group_queryset = tasks.AssignmentCompressAction()\
             .get_assignment_group_queryset(assignment=testassignment, user=testuser)
         self.assertNotIn(testgroup, group_queryset)
 
     def test_user_is_periodadmin_assignment_fully_anonymous(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS,
                                            short_name='learn-python-basics',
                                            first_deadline=timezone.now() + timezone.timedelta(days=1))
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                            period=testassignment.parentnode,
                                            permissiongroup__grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN)
-        mommy.make('devilry_account.PermissionGroupUser',
+        baker.make('devilry_account.PermissionGroupUser',
                    user=testuser, permissiongroup=periodpermissiongroup.permissiongroup)
         group_queryset = tasks.AssignmentCompressAction()\
             .get_assignment_group_queryset(assignment=testassignment, user=testuser)
         self.assertNotIn(testgroup, group_queryset)
 
     def test_user_is_periodadmin_assignment_semi_anonymous(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS,
                                            short_name='learn-python-basics',
                                            first_deadline=timezone.now() + timezone.timedelta(days=1))
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                            period=testassignment.parentnode,
                                            permissiongroup__grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN)
-        mommy.make('devilry_account.PermissionGroupUser',
+        baker.make('devilry_account.PermissionGroupUser',
                    user=testuser, permissiongroup=periodpermissiongroup.permissiongroup)
         group_queryset = tasks.AssignmentCompressAction()\
             .get_assignment_group_queryset(assignment=testassignment, user=testuser)
@@ -167,10 +167,10 @@ class TestAssignmentCompressActionAssignmentGroupPermissions(TestCase):
 class TestAssignmentBatchTask(TestCompressed):
 
     def __make_comment_file(self, feedback_set, file_name, file_content, **comment_kwargs):
-        comment = mommy.make('devilry_group.GroupComment',
+        comment = baker.make('devilry_group.GroupComment',
                                   feedback_set=feedback_set,
                                   user_role='student', **comment_kwargs)
-        comment_file = mommy.make('devilry_comment.CommentFile', comment=comment,
+        comment_file = baker.make('devilry_comment.CommentFile', comment=comment,
                                   filename=file_name)
         comment_file.file.save(file_name, ContentFile(file_content))
         return comment_file
@@ -179,21 +179,21 @@ class TestAssignmentBatchTask(TestCompressed):
         """
         Shortcut for making a simple group with a student, feedback set and a comment file.
         """
-        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group)
+        group = baker.make('core.AssignmentGroup', parentnode=assignment)
+        feedbackset = group_baker.feedbackset_first_attempt_unpublished(group=group)
         self.__make_comment_file(feedback_set=feedbackset, file_name='testfile.txt',
                                  file_content='testcontent')
-        mommy.make('core.Candidate', assignment_group=group, relatedstudent__user__shortname='april')
+        baker.make('core.Candidate', assignment_group=group, relatedstudent__user__shortname='april')
         return feedbackset
 
     def test_superuser_has_access(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+            testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                                short_name='learn-python-basics',
                                                first_deadline=timezone.now() + timezone.timedelta(days=1))
 
             # Superuser
-            testuser = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
+            testuser = baker.make(settings.AUTH_USER_MODEL, is_superuser=True)
 
             self.__make_simple_setup(assignment=testassignment)
 
@@ -210,17 +210,17 @@ class TestAssignmentBatchTask(TestCompressed):
 
     def test_subject_department_admin_has_access(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            subject = mommy.make('core.Subject')
-            testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+            subject = baker.make('core.Subject')
+            testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                                short_name='learn-python-basics',
                                                first_deadline=timezone.now() + timezone.timedelta(days=1),
                                                parentnode__parentnode=subject)
 
             # Subject admin
-            subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup', subject=subject,
+            subjectpermissiongroup = baker.make('devilry_account.SubjectPermissionGroup', subject=subject,
                                                 permissiongroup__grouptype=PermissionGroup.GROUPTYPE_DEPARTMENTADMIN)
-            testuser = mommy.make(settings.AUTH_USER_MODEL)
-            mommy.make('devilry_account.PermissionGroupUser',
+            testuser = baker.make(settings.AUTH_USER_MODEL)
+            baker.make('devilry_account.PermissionGroupUser',
                        user=testuser, permissiongroup=subjectpermissiongroup.permissiongroup)
 
             self.__make_simple_setup(assignment=testassignment)
@@ -238,18 +238,18 @@ class TestAssignmentBatchTask(TestCompressed):
 
     def test_subject_department_admin_on_different_subject_does_not_have_access(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            other_subject = mommy.make('core.Subject')
-            subject = mommy.make('core.Subject')
-            testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+            other_subject = baker.make('core.Subject')
+            subject = baker.make('core.Subject')
+            testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                                short_name='learn-python-basics',
                                                first_deadline=timezone.now() + timezone.timedelta(days=1),
                                                parentnode__parentnode=subject)
 
             # Subject admin
-            subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup', subject=other_subject,
+            subjectpermissiongroup = baker.make('devilry_account.SubjectPermissionGroup', subject=other_subject,
                                                 permissiongroup__grouptype=PermissionGroup.GROUPTYPE_DEPARTMENTADMIN)
-            testuser = mommy.make(settings.AUTH_USER_MODEL)
-            mommy.make('devilry_account.PermissionGroupUser',
+            testuser = baker.make(settings.AUTH_USER_MODEL)
+            baker.make('devilry_account.PermissionGroupUser',
                        user=testuser, permissiongroup=subjectpermissiongroup.permissiongroup)
 
             self.__make_simple_setup(assignment=testassignment)
@@ -263,16 +263,16 @@ class TestAssignmentBatchTask(TestCompressed):
 
     def test_subjectadmin_has_access(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            subject = mommy.make('core.Subject')
-            testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+            subject = baker.make('core.Subject')
+            testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                                short_name='learn-python-basics',
                                                first_deadline=timezone.now() + timezone.timedelta(days=1),
                                                parentnode__parentnode=subject)
 
             # Subject admin
-            subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup', subject=subject)
-            testuser = mommy.make(settings.AUTH_USER_MODEL)
-            mommy.make('devilry_account.PermissionGroupUser',
+            subjectpermissiongroup = baker.make('devilry_account.SubjectPermissionGroup', subject=subject)
+            testuser = baker.make(settings.AUTH_USER_MODEL)
+            baker.make('devilry_account.PermissionGroupUser',
                        user=testuser, permissiongroup=subjectpermissiongroup.permissiongroup)
 
             self.__make_simple_setup(assignment=testassignment)
@@ -290,18 +290,18 @@ class TestAssignmentBatchTask(TestCompressed):
 
     def test_subjectadmin_on_different_subject_does_not_have_access(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            other_subject = mommy.make('core.Subject')
-            subject = mommy.make('core.Subject')
-            testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+            other_subject = baker.make('core.Subject')
+            subject = baker.make('core.Subject')
+            testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                                short_name='learn-python-basics',
                                                first_deadline=timezone.now() + timezone.timedelta(days=1),
                                                parentnode__parentnode=subject)
 
             # Subject admin
-            subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+            subjectpermissiongroup = baker.make('devilry_account.SubjectPermissionGroup',
                                                 subject=other_subject)
-            testuser = mommy.make(settings.AUTH_USER_MODEL)
-            mommy.make('devilry_account.PermissionGroupUser',
+            testuser = baker.make(settings.AUTH_USER_MODEL)
+            baker.make('devilry_account.PermissionGroupUser',
                        user=testuser, permissiongroup=subjectpermissiongroup.permissiongroup)
 
             self.__make_simple_setup(assignment=testassignment)
@@ -315,15 +315,15 @@ class TestAssignmentBatchTask(TestCompressed):
 
     def test_periodadmin_has_access(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+            testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                                short_name='learn-python-basics',
                                                first_deadline=timezone.now() + timezone.timedelta(days=1))
 
             # Period admin
-            periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+            periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                                period=testassignment.period)
-            testuser = mommy.make(settings.AUTH_USER_MODEL)
-            mommy.make('devilry_account.PermissionGroupUser',
+            testuser = baker.make(settings.AUTH_USER_MODEL)
+            baker.make('devilry_account.PermissionGroupUser',
                        user=testuser, permissiongroup=periodpermissiongroup.permissiongroup)
 
             self.__make_simple_setup(assignment=testassignment)
@@ -341,15 +341,15 @@ class TestAssignmentBatchTask(TestCompressed):
 
     def test_periodadmin_on_different_period_does_not_have_access(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            period = mommy.make_recipe('devilry.apps.core.period_active')
-            testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+            period = baker.make_recipe('devilry.apps.core.period_active')
+            testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                                short_name='learn-python-basics',
                                                first_deadline=timezone.now() + timezone.timedelta(days=1))
 
             # Period admin
-            periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup', period=period)
-            testuser = mommy.make(settings.AUTH_USER_MODEL)
-            mommy.make('devilry_account.PermissionGroupUser', user=testuser,
+            periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup', period=period)
+            testuser = baker.make(settings.AUTH_USER_MODEL)
+            baker.make('devilry_account.PermissionGroupUser', user=testuser,
                        permissiongroup=periodpermissiongroup.permissiongroup)
 
             self.__make_simple_setup(assignment=testassignment)
@@ -363,15 +363,15 @@ class TestAssignmentBatchTask(TestCompressed):
 
     def test_period_admin_one_group_before_deadline(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+            testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                                short_name='learn-python-basics',
                                                first_deadline=timezone.now() + timezone.timedelta(days=1))
 
             # Period admin
-            periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+            periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                                period=testassignment.parentnode)
-            testuser = mommy.make(settings.AUTH_USER_MODEL)
-            mommy.make('devilry_account.PermissionGroupUser', user=testuser,
+            testuser = baker.make(settings.AUTH_USER_MODEL)
+            baker.make('devilry_account.PermissionGroupUser', user=testuser,
                        permissiongroup=periodpermissiongroup.permissiongroup)
 
             testfeedbackset = self.__make_simple_setup(assignment=testassignment)
@@ -392,23 +392,23 @@ class TestAssignmentBatchTask(TestCompressed):
 
     def test_period_admin_one_group_after_deadline(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+            testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                                short_name='learn-python-basics',
                                                first_deadline=timezone.now())
-            testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+            testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
             # Period admin
-            periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+            periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                                period=testassignment.parentnode)
-            testuser = mommy.make(settings.AUTH_USER_MODEL)
-            mommy.make('devilry_account.PermissionGroupUser', user=testuser,
+            testuser = baker.make(settings.AUTH_USER_MODEL)
+            baker.make('devilry_account.PermissionGroupUser', user=testuser,
                        permissiongroup=periodpermissiongroup.permissiongroup)
 
             # Add feedbackset with commentfile.
-            testfeedbackset = group_mommy.feedbackset_first_attempt_published(group=testgroup)
+            testfeedbackset = group_baker.feedbackset_first_attempt_published(group=testgroup)
             self.__make_comment_file(feedback_set=testfeedbackset, file_name='testfile.txt',
                                      file_content='testcontent')
-            mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user__shortname='april')
+            baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user__shortname='april')
 
             # run actiongroup
             self._run_actiongroup(name='batchframework_assignment',
@@ -428,37 +428,37 @@ class TestAssignmentBatchTask(TestCompressed):
 
     def test_period_admin_three_groups_before_deadline(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+            testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                                short_name='learn-python-basics',
                                                first_deadline=timezone.now() + timezone.timedelta(days=1))
-            testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-            testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-            testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+            testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+            testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+            testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
             # Period admin
-            periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+            periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                                period=testassignment.parentnode)
-            testuser = mommy.make(settings.AUTH_USER_MODEL)
-            mommy.make('devilry_account.PermissionGroupUser', user=testuser,
+            testuser = baker.make(settings.AUTH_USER_MODEL)
+            baker.make('devilry_account.PermissionGroupUser', user=testuser,
                        permissiongroup=periodpermissiongroup.permissiongroup)
 
             # Create feedbackset for testgroup1 with commentfiles
-            testfeedbackset_group1 = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup1)
+            testfeedbackset_group1 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup1)
             self.__make_comment_file(feedback_set=testfeedbackset_group1, file_name='testfile.txt',
                                      file_content='testcontent group 1')
-            mommy.make('core.Candidate', assignment_group=testgroup1, relatedstudent__user__shortname='april')
+            baker.make('core.Candidate', assignment_group=testgroup1, relatedstudent__user__shortname='april')
 
             # Create feedbackset for testgroup2 with commentfiles
-            testfeedbackset_group2 = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup2)
+            testfeedbackset_group2 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup2)
             self.__make_comment_file(feedback_set=testfeedbackset_group2, file_name='testfile.txt',
                                      file_content='testcontent group 2')
-            mommy.make('core.Candidate', assignment_group=testgroup2, relatedstudent__user__shortname='dewey')
+            baker.make('core.Candidate', assignment_group=testgroup2, relatedstudent__user__shortname='dewey')
 
             # Create feedbackset for testgroup3 with commentfiles
-            testfeedbackset_group3 = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup3)
+            testfeedbackset_group3 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup3)
             self.__make_comment_file(feedback_set=testfeedbackset_group3, file_name='testfile.txt',
                                      file_content='testcontent group 3')
-            mommy.make('core.Candidate', assignment_group=testgroup3, relatedstudent__user__shortname='huey')
+            baker.make('core.Candidate', assignment_group=testgroup3, relatedstudent__user__shortname='huey')
 
             # run actiongroup
             self._run_actiongroup(name='batchframework_assignment',
@@ -486,37 +486,37 @@ class TestAssignmentBatchTask(TestCompressed):
 
     def test_period_admin_three_groups_after_deadline(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+            testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                                short_name='learn-python-basics',
                                                first_deadline=timezone.now() - timezone.timedelta(hours=1))
-            testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-            testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-            testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+            testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+            testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+            testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
             # Period admin
-            periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+            periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                                period=testassignment.parentnode)
-            testuser = mommy.make(settings.AUTH_USER_MODEL)
-            mommy.make('devilry_account.PermissionGroupUser', user=testuser,
+            testuser = baker.make(settings.AUTH_USER_MODEL)
+            baker.make('devilry_account.PermissionGroupUser', user=testuser,
                        permissiongroup=periodpermissiongroup.permissiongroup)
 
             # Create feedbackset for testgroup1 with commentfiles
-            testfeedbackset_group1 = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup1)
+            testfeedbackset_group1 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup1)
             self.__make_comment_file(feedback_set=testfeedbackset_group1, file_name='testfile.txt',
                                      file_content='testcontent group 1')
-            mommy.make('core.Candidate', assignment_group=testgroup1, relatedstudent__user__shortname='april')
+            baker.make('core.Candidate', assignment_group=testgroup1, relatedstudent__user__shortname='april')
 
             # Create feedbackset for testgroup2 with commentfiles
-            testfeedbackset_group2 = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup2)
+            testfeedbackset_group2 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup2)
             self.__make_comment_file(feedback_set=testfeedbackset_group2, file_name='testfile.txt',
                                      file_content='testcontent group 2')
-            mommy.make('core.Candidate', assignment_group=testgroup2, relatedstudent__user__shortname='dewey')
+            baker.make('core.Candidate', assignment_group=testgroup2, relatedstudent__user__shortname='dewey')
 
             # Create feedbackset for testgroup3 with commentfiles
-            testfeedbackset_group3 = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup3)
+            testfeedbackset_group3 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup3)
             self.__make_comment_file(feedback_set=testfeedbackset_group3, file_name='testfile.txt',
                                      file_content='testcontent group 3')
-            mommy.make('core.Candidate', assignment_group=testgroup3, relatedstudent__user__shortname='huey')
+            baker.make('core.Candidate', assignment_group=testgroup3, relatedstudent__user__shortname='huey')
 
             # run actiongroup
             self._run_actiongroup(name='batchframework_assignment',
@@ -547,20 +547,20 @@ class TestAssignmentBatchTask(TestCompressed):
 
     def test_period_admin_duplicates(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+            testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                                short_name='learn-python-basics',
                                                first_deadline=timezone.now() + timezone.timedelta(hours=1))
-            testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+            testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
             # Period admin
-            periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+            periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                                period=testassignment.parentnode)
-            testuser = mommy.make(settings.AUTH_USER_MODEL)
-            mommy.make('devilry_account.PermissionGroupUser', user=testuser,
+            testuser = baker.make(settings.AUTH_USER_MODEL)
+            baker.make('devilry_account.PermissionGroupUser', user=testuser,
                        permissiongroup=periodpermissiongroup.permissiongroup)
 
             # Create feedbackset for testgroup1 with commentfiles
-            testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+            testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
             comment_file_first = self.__make_comment_file(feedback_set=testfeedbackset,
                                                           file_name='testfile.txt',
                                                           file_content='first upload')
@@ -568,8 +568,8 @@ class TestAssignmentBatchTask(TestCompressed):
                                                          file_name='testfile.txt',
                                                          file_content='last upload')
 
-            student_user = mommy.make(settings.AUTH_USER_MODEL, shortname='april')
-            mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=student_user)
+            student_user = baker.make(settings.AUTH_USER_MODEL, shortname='april')
+            baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=student_user)
 
             # run actiongroup
             self._run_actiongroup(name='batchframework_assignment',
@@ -596,26 +596,26 @@ class TestAssignmentBatchTask(TestCompressed):
 
     def test_period_admin_duplicates_from_different_students(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+            testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                                short_name='learn-python-basics',
                                                first_deadline=timezone.now() + timezone.timedelta(hours=1))
-            testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+            testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
             # Period admin
-            periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+            periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                                period=testassignment.parentnode)
-            testuser = mommy.make(settings.AUTH_USER_MODEL)
-            mommy.make('devilry_account.PermissionGroupUser', user=testuser,
+            testuser = baker.make(settings.AUTH_USER_MODEL)
+            baker.make('devilry_account.PermissionGroupUser', user=testuser,
                        permissiongroup=periodpermissiongroup.permissiongroup)
 
             # Create students
-            student_user_april = mommy.make(settings.AUTH_USER_MODEL, shortname='april')
-            mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=student_user_april)
-            student_user_dewey = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey')
-            mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=student_user_dewey)
+            student_user_april = baker.make(settings.AUTH_USER_MODEL, shortname='april')
+            baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=student_user_april)
+            student_user_dewey = baker.make(settings.AUTH_USER_MODEL, shortname='dewey')
+            baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=student_user_dewey)
 
             # Create feedbackset for testgroup1 with commentfiles
-            testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+            testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
             comment_file_april = self.__make_comment_file(feedback_set=testfeedbackset,
                                                           file_name='testfile.txt',
                                                           file_content='by april',
@@ -651,20 +651,20 @@ class TestAssignmentBatchTask(TestCompressed):
     def test_period_admin_duplicates_before_and_after_deadline(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
             first_deadline = timezone.now() + timezone.timedelta(hours=1)
-            testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+            testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                                short_name='learn-python-basics',
                                                first_deadline=first_deadline)
-            testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+            testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
             # Period admin
-            periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+            periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                                period=testassignment.parentnode)
-            testuser = mommy.make(settings.AUTH_USER_MODEL)
-            mommy.make('devilry_account.PermissionGroupUser', user=testuser,
+            testuser = baker.make(settings.AUTH_USER_MODEL)
+            baker.make('devilry_account.PermissionGroupUser', user=testuser,
                        permissiongroup=periodpermissiongroup.permissiongroup)
 
             # Create feedbackset for testgroup with commentfiles
-            testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+            testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
             comment_file_first_upload = self.__make_comment_file(feedback_set=testfeedbackset,
                                                                  file_name='testfile.txt',
                                                                  file_content='first upload')
@@ -682,8 +682,8 @@ class TestAssignmentBatchTask(TestCompressed):
                 file_content='last upload after deadline',
                 published_datetime=timezone.now() + timezone.timedelta(hours=2))
 
-            student_user = mommy.make(settings.AUTH_USER_MODEL, shortname='april')
-            mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=student_user)
+            student_user = baker.make(settings.AUTH_USER_MODEL, shortname='april')
+            baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=student_user)
 
             # run actiongroup
             self._run_actiongroup(name='batchframework_assignment',

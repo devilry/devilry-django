@@ -1,6 +1,6 @@
 # 3rd party imports
 import mock
-from model_mommy import mommy
+from model_bakery import baker
 
 # Django imports
 from django import test
@@ -59,10 +59,10 @@ class TestPluginSelectionView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             User: admin user in a periodpermissiongroup
         """
         if period is None:
-            period = mommy.make_recipe('devilry.apps.core.period_active')
-        testadmin = mommy.make(settings.AUTH_USER_MODEL)
-        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup', period=period)
-        mommy.make('devilry_account.PermissionGroupUser',
+            period = baker.make_recipe('devilry.apps.core.period_active')
+        testadmin = baker.make(settings.AUTH_USER_MODEL)
+        periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup', period=period)
+        baker.make('devilry_account.PermissionGroupUser',
                    user=testadmin,
                    permissiongroup=periodpermissiongroup.permissiongroup)
         return testadmin, period

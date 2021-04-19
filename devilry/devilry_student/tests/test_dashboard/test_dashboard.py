@@ -10,13 +10,13 @@ from django.utils import timezone
 from cradmin_legacy import cradmin_testhelpers
 from cradmin_legacy import crapp
 from cradmin_legacy.crinstance import reverse_cradmin_url
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.apps.core.models import Assignment
-from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_START, ACTIVE_PERIOD_END
+from devilry.apps.core.baker_recipes import ACTIVE_PERIOD_START, ACTIVE_PERIOD_END
 from devilry.devilry_comment.models import Comment
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
-from devilry.devilry_group import devilry_group_mommy_factories
+from devilry.devilry_group import devilry_group_baker_factories
 from devilry.devilry_group.models import GroupComment
 from devilry.devilry_student.views.dashboard import dashboard
 
@@ -28,24 +28,24 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_title(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Candidate', relatedstudent__user=testuser)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Candidate', relatedstudent__user=testuser)
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertIn(
                 'Student dashboard',
                 mockresponse.selector.one('title').alltext_normalized)
 
     def test_h1(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Candidate', relatedstudent__user=testuser)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Candidate', relatedstudent__user=testuser)
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
                 'Student dashboard',
                 mockresponse.selector.one('h1').alltext_normalized)
 
     def test_page_subheader(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Candidate', relatedstudent__user=testuser)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Candidate', relatedstudent__user=testuser)
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
                 'Welcome! Please select an assignment below to add deliveries, '
@@ -53,28 +53,28 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 mockresponse.selector.one('.devilry-page-subheader').alltext_normalized)
 
     def __make_candidate_and_group_for_assignment(self, assignment, user, deadline_datetime):
-        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        mommy.make('devilry_group.FeedbackSet', group=group, deadline_datetime=deadline_datetime)
-        mommy.make('core.Candidate', relatedstudent__user=user, assignment_group=group)
+        group = baker.make('core.AssignmentGroup', parentnode=assignment)
+        baker.make('devilry_group.FeedbackSet', group=group, deadline_datetime=deadline_datetime)
+        baker.make('core.Candidate', relatedstudent__user=user, assignment_group=group)
 
     def test_upcoming_assignments_header(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
             mockresponse.selector.one('.devilry-student-dashboard-upcoming-assignments-header').alltext_normalized,
             'Upcoming assignments')
 
     def test_upcoming_assignments_no_assignments_text(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
             mockresponse.selector.one('.devilry-student-dashboard-no-upcoming-assignments-text').alltext_normalized,
             'You have no upcoming assignments with deadlines within the next 7 days.')
 
     def test_upcoming_assignments_text(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         self.__make_candidate_and_group_for_assignment(
             assignment=testassignment, user=testuser, deadline_datetime=timezone.now() + timezone.timedelta(days=1))
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
@@ -83,8 +83,8 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             'Upcoming assignments with deadlines within the next 7 days.')
 
     def test_upcoming_assignments_past_assignment_not_rendered(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         self.__make_candidate_and_group_for_assignment(
             assignment=testassignment, user=testuser, deadline_datetime=timezone.now() - timezone.timedelta(days=1))
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
@@ -92,8 +92,8 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue'))
 
     def test_upcoming_assignments_over_seven_days_to_deadline_not_rendered(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         self.__make_candidate_and_group_for_assignment(
             assignment=testassignment, user=testuser, deadline_datetime=timezone.now() + timezone.timedelta(days=8))
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
@@ -101,13 +101,13 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue'))
 
     def test_one_upcoming_assignment(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testsubject = mommy.make('core.Subject', short_name='testsubject')
-        testperiod = mommy.make_recipe('devilry.apps.core.period_active',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testsubject = baker.make('core.Subject', short_name='testsubject')
+        testperiod = baker.make_recipe('devilry.apps.core.period_active',
                                        short_name='testperiod', parentnode=testsubject)
-        testassignment1 = mommy.make('core.Assignment', parentnode=testperiod,
+        testassignment1 = baker.make('core.Assignment', parentnode=testperiod,
                                      long_name='Test Assignment 1')
-        testassignment2 = mommy.make('core.Assignment', parentnode=testperiod,
+        testassignment2 = baker.make('core.Assignment', parentnode=testperiod,
                                      long_name='Test Assignment 2')
         self.__make_candidate_and_group_for_assignment(
             assignment=testassignment1, user=testuser, deadline_datetime=timezone.now() + timezone.timedelta(days=1))
@@ -121,15 +121,15 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             'testsubject.testperiod - Test Assignment 1')
 
     def test_one_upcoming_assignments_accross_periods(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testsubject = mommy.make('core.Subject', short_name='testsubject')
-        testperiod1 = mommy.make_recipe('devilry.apps.core.period_active',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testsubject = baker.make('core.Subject', short_name='testsubject')
+        testperiod1 = baker.make_recipe('devilry.apps.core.period_active',
                                         short_name='testperiod1', parentnode=testsubject)
-        testperiod2 = mommy.make_recipe('devilry.apps.core.period_active',
+        testperiod2 = baker.make_recipe('devilry.apps.core.period_active',
                                         short_name='testperiod2', parentnode=testsubject)
-        testassignment1 = mommy.make('core.Assignment', parentnode=testperiod1,
+        testassignment1 = baker.make('core.Assignment', parentnode=testperiod1,
                                      long_name='Test Assignment 1')
-        testassignment2 = mommy.make('core.Assignment', parentnode=testperiod2,
+        testassignment2 = baker.make('core.Assignment', parentnode=testperiod2,
                                      long_name='Test Assignment 2')
         self.__make_candidate_and_group_for_assignment(
             assignment=testassignment1, user=testuser, deadline_datetime=timezone.now() + timezone.timedelta(days=1))
@@ -144,16 +144,16 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(assignment_name_list[1], 'testsubject.testperiod2 - Test Assignment 2')
 
     def test_one_upcoming_assignments_accross_subject(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testsubject1 = mommy.make('core.Subject', short_name='testsubject1')
-        testsubject2 = mommy.make('core.Subject', short_name='testsubject2')
-        testperiod1 = mommy.make_recipe('devilry.apps.core.period_active',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testsubject1 = baker.make('core.Subject', short_name='testsubject1')
+        testsubject2 = baker.make('core.Subject', short_name='testsubject2')
+        testperiod1 = baker.make_recipe('devilry.apps.core.period_active',
                                         short_name='testperiod1', parentnode=testsubject1)
-        testperiod2 = mommy.make_recipe('devilry.apps.core.period_active',
+        testperiod2 = baker.make_recipe('devilry.apps.core.period_active',
                                         short_name='testperiod2', parentnode=testsubject2)
-        testassignment1 = mommy.make('core.Assignment', parentnode=testperiod1,
+        testassignment1 = baker.make('core.Assignment', parentnode=testperiod1,
                                      long_name='Test Assignment 1')
-        testassignment2 = mommy.make('core.Assignment', parentnode=testperiod2,
+        testassignment2 = baker.make('core.Assignment', parentnode=testperiod2,
                                      long_name='Test Assignment 2')
         self.__make_candidate_and_group_for_assignment(
             assignment=testassignment1, user=testuser, deadline_datetime=timezone.now() + timezone.timedelta(days=1))
@@ -168,15 +168,15 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(assignment_name_list[1], 'testsubject2.testperiod2 - Test Assignment 2')
 
     def test_multiple_upcoming_assignment(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testsubject = mommy.make('core.Subject', short_name='testsubject')
-        testperiod = mommy.make_recipe('devilry.apps.core.period_active',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testsubject = baker.make('core.Subject', short_name='testsubject')
+        testperiod = baker.make_recipe('devilry.apps.core.period_active',
                                        short_name='testperiod', parentnode=testsubject)
-        testassignment1 = mommy.make('core.Assignment', parentnode=testperiod,
+        testassignment1 = baker.make('core.Assignment', parentnode=testperiod,
                                      long_name='Test Assignment 1')
-        testassignment2 = mommy.make('core.Assignment', parentnode=testperiod,
+        testassignment2 = baker.make('core.Assignment', parentnode=testperiod,
                                      long_name='Test Assignment 2')
-        testassignment3 = mommy.make('core.Assignment', parentnode=testperiod,
+        testassignment3 = baker.make('core.Assignment', parentnode=testperiod,
                                      long_name='Test Assignment 3')
         self.__make_candidate_and_group_for_assignment(
             assignment=testassignment1, user=testuser, deadline_datetime=timezone.now() + timezone.timedelta(days=1))
@@ -194,12 +194,12 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(assignment_name_list[2], 'testsubject.testperiod - Test Assignment 3')
 
     def test_user_can_not_see_upcoming_assignments_for_other_students_on_same_assignment(self):
-        testuser1 = mommy.make(settings.AUTH_USER_MODEL)
-        testuser2 = mommy.make(settings.AUTH_USER_MODEL)
-        testsubject = mommy.make('core.Subject', short_name='testsubject')
-        testperiod = mommy.make_recipe('devilry.apps.core.period_active',
+        testuser1 = baker.make(settings.AUTH_USER_MODEL)
+        testuser2 = baker.make(settings.AUTH_USER_MODEL)
+        testsubject = baker.make('core.Subject', short_name='testsubject')
+        testperiod = baker.make_recipe('devilry.apps.core.period_active',
                                        short_name='testperiod', parentnode=testsubject)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+        testassignment = baker.make('core.Assignment', parentnode=testperiod,
                                      long_name='Test Assignment 1')
         self.__make_candidate_and_group_for_assignment(
             assignment=testassignment, user=testuser1, deadline_datetime=timezone.now() + timezone.timedelta(days=1))
@@ -214,14 +214,14 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             'testsubject.testperiod - Test Assignment 1')
 
     def test_user_can_not_see_upcoming_assignments_for_other_students_on_different_assignments(self):
-        testuser1 = mommy.make(settings.AUTH_USER_MODEL)
-        testuser2 = mommy.make(settings.AUTH_USER_MODEL)
-        testsubject = mommy.make('core.Subject', short_name='testsubject')
-        testperiod = mommy.make_recipe('devilry.apps.core.period_active',
+        testuser1 = baker.make(settings.AUTH_USER_MODEL)
+        testuser2 = baker.make(settings.AUTH_USER_MODEL)
+        testsubject = baker.make('core.Subject', short_name='testsubject')
+        testperiod = baker.make_recipe('devilry.apps.core.period_active',
                                        short_name='testperiod', parentnode=testsubject)
-        testassignment1 = mommy.make('core.Assignment', parentnode=testperiod,
+        testassignment1 = baker.make('core.Assignment', parentnode=testperiod,
                                      long_name='Test Assignment 1')
-        testassignment2 = mommy.make('core.Assignment', parentnode=testperiod,
+        testassignment2 = baker.make('core.Assignment', parentnode=testperiod,
                                      long_name='Test Assignment 2')
         self.__make_candidate_and_group_for_assignment(
             assignment=testassignment1, user=testuser1, deadline_datetime=timezone.now() + timezone.timedelta(days=1))
@@ -239,44 +239,44 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         return selector.count('.devilry-cradmin-groupitemvalue')
 
     def test_not_assignments_where_not_student(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
                 0,
                 self.__get_assignment_count(selector=mockresponse.selector))
 
     def test_grouplist_not_future_periods(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Candidate',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Candidate',
                    relatedstudent__user=testuser,
-                   assignment_group__parentnode=mommy.make_recipe('devilry.apps.core.assignment_futureperiod_start'))
+                   assignment_group__parentnode=baker.make_recipe('devilry.apps.core.assignment_futureperiod_start'))
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
                 0,
                 self.__get_assignment_count(selector=mockresponse.selector))
 
     def test_grouplist_not_old_periods(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Candidate',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Candidate',
                    relatedstudent__user=testuser,
-                   assignment_group__parentnode=mommy.make_recipe('devilry.apps.core.assignment_oldperiod_end'))
+                   assignment_group__parentnode=baker.make_recipe('devilry.apps.core.assignment_oldperiod_end'))
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
                 0,
                 self.__get_assignment_count(selector=mockresponse.selector))
 
     def test_grouplist_include_active_periods(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Candidate', relatedstudent__user=testuser,
-                   assignment_group__parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Candidate', relatedstudent__user=testuser,
+                   assignment_group__parentnode=baker.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
                 1,
                 self.__get_assignment_count(selector=mockresponse.selector))
 
     def test_no_active_assignments_message(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
                 'You have no active assignments. Use the button below to browse '
@@ -284,9 +284,9 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 mockresponse.selector.one('.cradmin-legacy-listing-no-items-message').alltext_normalized)
 
     def test_assignment_url(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testcandidate = mommy.make('core.Candidate', relatedstudent__user=testuser,
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testcandidate = baker.make('core.Candidate', relatedstudent__user=testuser,
                                    assignment_group__parentnode=testassignment)
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
@@ -299,10 +299,10 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 mockresponse.selector.one('a.devilry-student-listbuilder-grouplist-itemframe')['href'])
 
     def test_grouplist_search_nomatch(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Candidate',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Candidate',
                    relatedstudent__user=testuser,
-                   assignment_group__parentnode=mommy.make_recipe(
+                   assignment_group__parentnode=baker.make_recipe(
                            'devilry.apps.core.assignment_activeperiod_start'))
         mockresponse = self.mock_http200_getrequest_htmls(
                 viewkwargs={'filters_string': 'search-nomatch'},
@@ -312,10 +312,10 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 self.__get_assignment_count(selector=mockresponse.selector))
 
     def test_grouplist_search_match_subject_short_name(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Candidate',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Candidate',
                    relatedstudent__user=testuser,
-                   assignment_group__parentnode=mommy.make_recipe(
+                   assignment_group__parentnode=baker.make_recipe(
                            'devilry.apps.core.assignment_activeperiod_start',
                            parentnode__parentnode__short_name='testsubject'))
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -326,10 +326,10 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 self.__get_assignment_count(selector=mockresponse.selector))
 
     def test_grouplist_search_match_subject_long_name(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Candidate',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Candidate',
                    relatedstudent__user=testuser,
-                   assignment_group__parentnode=mommy.make_recipe(
+                   assignment_group__parentnode=baker.make_recipe(
                            'devilry.apps.core.assignment_activeperiod_start',
                            parentnode__parentnode__long_name='Testsubject'))
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -340,10 +340,10 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 self.__get_assignment_count(selector=mockresponse.selector))
 
     def test_grouplist_search_match_period_short_name(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Candidate',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Candidate',
                    relatedstudent__user=testuser,
-                   assignment_group__parentnode=mommy.make_recipe(
+                   assignment_group__parentnode=baker.make_recipe(
                            'devilry.apps.core.assignment_activeperiod_start',
                            parentnode__short_name='testperiod'))
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -354,10 +354,10 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 self.__get_assignment_count(selector=mockresponse.selector))
 
     def test_grouplist_search_match_period_long_name(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Candidate',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Candidate',
                    relatedstudent__user=testuser,
-                   assignment_group__parentnode=mommy.make_recipe(
+                   assignment_group__parentnode=baker.make_recipe(
                            'devilry.apps.core.assignment_activeperiod_start',
                            parentnode__long_name='Testperiod'))
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -368,10 +368,10 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 self.__get_assignment_count(selector=mockresponse.selector))
 
     def test_grouplist_search_match_assignment_short_name(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Candidate',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Candidate',
                    relatedstudent__user=testuser,
-                   assignment_group__parentnode=mommy.make_recipe(
+                   assignment_group__parentnode=baker.make_recipe(
                            'devilry.apps.core.assignment_activeperiod_start',
                            short_name='testassignment'))
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -382,10 +382,10 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 self.__get_assignment_count(selector=mockresponse.selector))
 
     def test_grouplist_search_match_assignment_long_name(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Candidate',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Candidate',
                    relatedstudent__user=testuser,
-                   assignment_group__parentnode=mommy.make_recipe(
+                   assignment_group__parentnode=baker.make_recipe(
                            'devilry.apps.core.assignment_activeperiod_start',
                            long_name='Testassignment'))
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -401,30 +401,30 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                                              '.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
 
     def test_grouplist_orderby(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod1 = mommy.make_recipe('devilry.apps.core.period_active',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod1 = baker.make_recipe('devilry.apps.core.period_active',
                                         parentnode__short_name='testsubject1',
                                         short_name='testperiod')
-        testperiod2 = mommy.make_recipe('devilry.apps.core.period_active',
+        testperiod2 = baker.make_recipe('devilry.apps.core.period_active',
                                         parentnode__short_name='testsubject2',
                                         short_name='testperiod')
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    relatedstudent__user=testuser,
-                   assignment_group__parentnode=mommy.make_recipe(
+                   assignment_group__parentnode=baker.make_recipe(
                            'devilry.apps.core.assignment_activeperiod_start',
                            long_name='Assignment 1',
                            first_deadline=ACTIVE_PERIOD_START + timedelta(days=1),
                            parentnode=testperiod1))
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    relatedstudent__user=testuser,
-                   assignment_group__parentnode=mommy.make_recipe(
+                   assignment_group__parentnode=baker.make_recipe(
                            'devilry.apps.core.assignment_activeperiod_start',
                            long_name='Assignment 2',
                            first_deadline=ACTIVE_PERIOD_START + timedelta(days=3),
                            parentnode=testperiod1))
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    relatedstudent__user=testuser,
-                   assignment_group__parentnode=mommy.make_recipe(
+                   assignment_group__parentnode=baker.make_recipe(
                            'devilry.apps.core.assignment_activeperiod_start',
                            long_name='Assignment 1',
                            first_deadline=ACTIVE_PERIOD_START + timedelta(days=2),
@@ -440,14 +440,14 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 self.__get_assignment_titles(mockresponse.selector))
 
     def test_grouplist_title_sanity(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testgroup = mommy.make('core.AssignmentGroup',
-                               parentnode=mommy.make_recipe(
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testgroup = baker.make('core.AssignmentGroup',
+                               parentnode=baker.make_recipe(
                                        'devilry.apps.core.assignment_activeperiod_start',
                                        parentnode__parentnode__short_name='testsubject',
                                        parentnode__short_name='testperiod',
                                        long_name='Test Assignment'))
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    relatedstudent__user=testuser,
                    assignment_group=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -460,13 +460,13 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         )
 
     def test_grouplist_no_examiners(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testgroup = mommy.make('core.AssignmentGroup',
-                               parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
-        mommy.make('core.Candidate',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testgroup = baker.make('core.AssignmentGroup',
+                               parentnode=baker.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        baker.make('core.Candidate',
                    relatedstudent__user=testuser,
                    assignment_group=testgroup)
-        mommy.make('core.Examiner',
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
                 requestuser=testuser)
@@ -476,13 +476,13 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.exists('.devilry-cradmin-groupitemvalue-examiners'))
 
     def test_grouplist_deadline_sanity(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testgroup = mommy.make(
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testgroup = baker.make(
             'core.AssignmentGroup',
-            parentnode=mommy.make_recipe(
+            parentnode=baker.make_recipe(
                 'devilry.apps.core.assignment_activeperiod_start',
                 first_deadline=datetime(2000, 1, 15, 12, 0)))
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    relatedstudent__user=testuser,
                    assignment_group=testgroup)
         with self.settings(DATETIME_FORMAT='Y-m-d H:i', USE_L10N=False):
@@ -495,15 +495,15 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         )
 
     def test_grouplist_status_waiting_for_deliveries_sanity(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testgroup = mommy.make('core.AssignmentGroup',
-                               parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
-        mommy.make('core.Candidate',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testgroup = baker.make('core.AssignmentGroup',
+                               parentnode=baker.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        baker.make('core.Candidate',
                    relatedstudent__user=testuser,
                    assignment_group=testgroup)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        devilry_group_baker_factories.feedbackset_first_attempt_published(
             group=testgroup, grading_points=3)
-        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
+        devilry_group_baker_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
             deadline_datetime=timezone.now() + timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -520,15 +520,15 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                         '.devilry-cradmin-groupitemvalue-status').alltext_normalized)
 
     def test_grouplist_status_waiting_for_feedback_sanity(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testgroup = mommy.make('core.AssignmentGroup',
-                               parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
-        mommy.make('core.Candidate',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testgroup = baker.make('core.AssignmentGroup',
+                               parentnode=baker.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        baker.make('core.Candidate',
                    relatedstudent__user=testuser,
                    assignment_group=testgroup)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        devilry_group_baker_factories.feedbackset_first_attempt_published(
             group=testgroup, grading_points=3)
-        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
+        devilry_group_baker_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
             deadline_datetime=timezone.now() - timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -544,15 +544,15 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                         '.devilry-cradmin-groupitemvalue-status').alltext_normalized)
 
     def test_grouplist_status_corrected_show_grade_sanity(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testgroup = mommy.make('core.AssignmentGroup',
-                               parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
-        mommy.make('core.Candidate',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testgroup = baker.make('core.AssignmentGroup',
+                               parentnode=baker.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        baker.make('core.Candidate',
                    relatedstudent__user=testuser,
                    assignment_group=testgroup)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        devilry_group_baker_factories.feedbackset_first_attempt_published(
             group=testgroup, grading_points=3)
-        devilry_group_mommy_factories.feedbackset_new_attempt_published(
+        devilry_group_baker_factories.feedbackset_new_attempt_published(
             group=testgroup, grading_points=2)
         mockresponse = self.mock_http200_getrequest_htmls(
                 requestuser=testuser)
@@ -567,34 +567,34 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                         '.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
 
     def test_grouplist_comments_sanity(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testgroup = mommy.make('core.AssignmentGroup',
-                               parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
-        mommy.make('core.Candidate',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testgroup = baker.make('core.AssignmentGroup',
+                               parentnode=baker.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        baker.make('core.Candidate',
                    relatedstudent__user=testuser,
                    assignment_group=testgroup)
-        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
+        feedbackset = devilry_group_baker_factories.feedbackset_first_attempt_unpublished(
             group=testgroup)
-        mommy.make('devilry_group.GroupComment',
+        baker.make('devilry_group.GroupComment',
                    feedback_set=feedbackset,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    text='asd',
                    user_role=Comment.USER_ROLE_STUDENT,
                    _quantity=2)
-        mommy.make('devilry_comment.CommentFile',
-                   comment=mommy.make('devilry_group.GroupComment',
+        baker.make('devilry_comment.CommentFile',
+                   comment=baker.make('devilry_group.GroupComment',
                                       feedback_set=feedbackset,
                                       visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                                       comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                                       user_role=Comment.USER_ROLE_STUDENT))
-        mommy.make('devilry_group.GroupComment',
+        baker.make('devilry_group.GroupComment',
                    feedback_set=feedbackset,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    user_role=Comment.USER_ROLE_EXAMINER,
                    _quantity=5)
-        mommy.make('devilry_group.GroupComment',  # Should not be part of count
+        baker.make('devilry_group.GroupComment',  # Should not be part of count
                    feedback_set=feedbackset,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
@@ -607,10 +607,10 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                         '.devilry-cradmin-groupitemvalue-comments').alltext_normalized)
 
     def test_allperiods_link_label(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testgroup = mommy.make('core.AssignmentGroup',
-                               parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
-        mommy.make('core.Candidate',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testgroup = baker.make('core.AssignmentGroup',
+                               parentnode=baker.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        baker.make('core.Candidate',
                    relatedstudent__user=testuser,
                    assignment_group=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
@@ -619,10 +619,10 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 mockresponse.selector.one('#devilry_student_dashboard_allperiods_link').alltext_normalized)
 
     def test_link_urls(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testgroup = mommy.make('core.AssignmentGroup',
-                               parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
-        mommy.make('core.Candidate',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testgroup = baker.make('core.AssignmentGroup',
+                               parentnode=baker.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        baker.make('core.Candidate',
                    relatedstudent__user=testuser,
                    assignment_group=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
@@ -632,8 +632,8 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 mockresponse.request.cradmin_instance.reverse_url.call_args_list[0])
 
     def test_no_pagination(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Candidate', relatedstudent__user=testuser,
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Candidate', relatedstudent__user=testuser,
                    assignment_group__parentnode__parentnode__start_time=ACTIVE_PERIOD_START,
                    assignment_group__parentnode__parentnode__end_time=ACTIVE_PERIOD_END,
                    _quantity=dashboard.DashboardView.paginate_by)
@@ -641,8 +641,8 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-loadmorepager'))
 
     def test_pagination(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Candidate', relatedstudent__user=testuser,
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Candidate', relatedstudent__user=testuser,
                    assignment_group__parentnode__parentnode__start_time=ACTIVE_PERIOD_START,
                    assignment_group__parentnode__parentnode__end_time=ACTIVE_PERIOD_END,
                    _quantity=dashboard.DashboardView.paginate_by + 1)
@@ -650,22 +650,22 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertTrue(mockresponse.selector.exists('.cradmin-legacy-loadmorepager'))
 
     def test_querycount(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment1 = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testassignment2 = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment1 = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment2 = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
 
         loops = dashboard.DashboardView.paginate_by / 2
         for number in range(int(round(loops))):
-            group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
-            mommy.make('core.Examiner', assignmentgroup=group1)
-            mommy.make('core.Candidate', relatedstudent__user=testuser, assignment_group=group1)
-            devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group1 = baker.make('core.AssignmentGroup', parentnode=testassignment1)
+            baker.make('core.Examiner', assignmentgroup=group1)
+            baker.make('core.Candidate', relatedstudent__user=testuser, assignment_group=group1)
+            devilry_group_baker_factories.feedbackset_first_attempt_published(
                 group=group1, grading_points=1)
 
-            group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
-            mommy.make('core.Examiner', assignmentgroup=group2)
-            mommy.make('core.Candidate', relatedstudent__user=testuser, assignment_group=group2)
-            devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group2 = baker.make('core.AssignmentGroup', parentnode=testassignment2)
+            baker.make('core.Examiner', assignmentgroup=group2)
+            baker.make('core.Candidate', relatedstudent__user=testuser, assignment_group=group2)
+            devilry_group_baker_factories.feedbackset_first_attempt_published(
                 group=group2, grading_points=1)
         with self.assertNumQueries(12):
             mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
@@ -674,35 +674,35 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 self.__get_assignment_count(selector=mockresponse.selector))
 
     def test_querycount_points_to_grade_mapper_custom_table(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL,
+        testuser = baker.make(settings.AUTH_USER_MODEL,
                               fullname='testuser')
-        testassignment1 = mommy.make_recipe(
+        testassignment1 = baker.make_recipe(
                 'devilry.apps.core.assignment_activeperiod_start',
                 points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE)
-        point_to_grade_map1 = mommy.make('core.PointToGradeMap',
+        point_to_grade_map1 = baker.make('core.PointToGradeMap',
                                          assignment=testassignment1, invalid=False)
-        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map1,
+        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map1,
                    minimum_points=0, maximum_points=1)
-        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map1,
+        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map1,
                    minimum_points=2, maximum_points=3)
-        testassignment2 = mommy.make_recipe(
+        testassignment2 = baker.make_recipe(
                 'devilry.apps.core.assignment_activeperiod_start',
                 points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE)
-        point_to_grade_map2 = mommy.make('core.PointToGradeMap',
+        point_to_grade_map2 = baker.make('core.PointToGradeMap',
                                          assignment=testassignment2, invalid=False)
-        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map2,
+        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map2,
                    minimum_points=0, maximum_points=1)
 
         loops = dashboard.DashboardView.paginate_by / 2
         for number in range(int(round(loops))):
-            group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
-            mommy.make('core.Candidate', relatedstudent__user=testuser, assignment_group=group1)
-            devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group1 = baker.make('core.AssignmentGroup', parentnode=testassignment1)
+            baker.make('core.Candidate', relatedstudent__user=testuser, assignment_group=group1)
+            devilry_group_baker_factories.feedbackset_first_attempt_published(
                 group=group1, grading_points=1)
 
-            group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
-            mommy.make('core.Candidate', relatedstudent__user=testuser, assignment_group=group2)
-            devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group2 = baker.make('core.AssignmentGroup', parentnode=testassignment2)
+            baker.make('core.Candidate', relatedstudent__user=testuser, assignment_group=group2)
+            devilry_group_baker_factories.feedbackset_first_attempt_published(
                 group=group2, grading_points=1)
         with self.assertNumQueries(14):
             mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)

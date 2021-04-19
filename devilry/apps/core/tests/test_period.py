@@ -8,7 +8,7 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.test import TestCase
 from django.utils import timezone
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.apps.core.models import Period, Subject
 from devilry.apps.core.models.model_utils import EtagMismatchException
@@ -18,9 +18,9 @@ from devilry.devilry_qualifiesforexam.models import Status
 
 class TestPeriodQuerySetFilterActive(TestCase):
     def test_filter_active(self):
-        mommy.make_recipe('devilry.apps.core.period_old')
-        active_period = mommy.make_recipe('devilry.apps.core.period_active')
-        mommy.make_recipe('devilry.apps.core.period_future')
+        baker.make_recipe('devilry.apps.core.period_old')
+        active_period = baker.make_recipe('devilry.apps.core.period_active')
+        baker.make_recipe('devilry.apps.core.period_future')
         self.assertEqual(
                 set(Period.objects.filter_active()),
                 {active_period})
@@ -28,9 +28,9 @@ class TestPeriodQuerySetFilterActive(TestCase):
 
 class TestPeriodQuerySetFilterHasStarted(TestCase):
     def test_filter_active(self):
-        old_period = mommy.make_recipe('devilry.apps.core.period_old')
-        active_period = mommy.make_recipe('devilry.apps.core.period_active')
-        mommy.make_recipe('devilry.apps.core.period_future')
+        old_period = baker.make_recipe('devilry.apps.core.period_old')
+        active_period = baker.make_recipe('devilry.apps.core.period_active')
+        baker.make_recipe('devilry.apps.core.period_future')
         self.assertEqual(
                 set(Period.objects.filter_has_started()),
                 {old_period, active_period})
@@ -38,18 +38,18 @@ class TestPeriodQuerySetFilterHasStarted(TestCase):
 
 class TestPeriodQuerySetExtraAnnotateWithAssignmentcountForStudentuser(TestCase):
     def test_no_assignments(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod = mommy.make('core.Period')
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period')
         annotated_period = Period.objects\
             .extra_annotate_with_assignmentcount_for_studentuser(user=testuser)\
             .get(id=testperiod.id)
         self.assertEqual(0, annotated_period.assignmentcount_for_studentuser)
 
     def test_no__assignments_where_candidate(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod = mommy.make('core.Period')
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
-        mommy.make('core.Candidate',  # Not testuser Candidate
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period')
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
+        baker.make('core.Candidate',  # Not testuser Candidate
                    assignment_group__parentnode=testassignment,
                    relatedstudent__period=testperiod)
         annotated_period = Period.objects\
@@ -58,10 +58,10 @@ class TestPeriodQuerySetExtraAnnotateWithAssignmentcountForStudentuser(TestCase)
         self.assertEqual(0, annotated_period.assignmentcount_for_studentuser)
 
     def test_single_assignment(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod = mommy.make('core.Period')
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
-        mommy.make('core.Candidate',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period')
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
+        baker.make('core.Candidate',
                    assignment_group__parentnode=testassignment,
                    relatedstudent__user=testuser,
                    relatedstudent__period=testperiod)
@@ -71,19 +71,19 @@ class TestPeriodQuerySetExtraAnnotateWithAssignmentcountForStudentuser(TestCase)
         self.assertEqual(1, annotated_period.assignmentcount_for_studentuser)
 
     def test_multiple_assignments(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod = mommy.make('core.Period')
-        relatedstudent = mommy.make('core.RelatedStudent', user=testuser, period=testperiod)
-        testassignment1 = mommy.make('core.Assignment', parentnode=testperiod)
-        mommy.make('core.Candidate',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period')
+        relatedstudent = baker.make('core.RelatedStudent', user=testuser, period=testperiod)
+        testassignment1 = baker.make('core.Assignment', parentnode=testperiod)
+        baker.make('core.Candidate',
                    assignment_group__parentnode=testassignment1,
                    relatedstudent=relatedstudent)
-        testassignment2 = mommy.make('core.Assignment', parentnode=testperiod)
-        mommy.make('core.Candidate',
+        testassignment2 = baker.make('core.Assignment', parentnode=testperiod)
+        baker.make('core.Candidate',
                    assignment_group__parentnode=testassignment2,
                    relatedstudent=relatedstudent)
-        testassignment3 = mommy.make('core.Assignment', parentnode=testperiod)
-        mommy.make('core.Candidate',
+        testassignment3 = baker.make('core.Assignment', parentnode=testperiod)
+        baker.make('core.Candidate',
                    assignment_group__parentnode=testassignment3,
                    relatedstudent=relatedstudent)
         annotated_period = Period.objects\
@@ -92,15 +92,15 @@ class TestPeriodQuerySetExtraAnnotateWithAssignmentcountForStudentuser(TestCase)
         self.assertEqual(3, annotated_period.assignmentcount_for_studentuser)
 
     def test_multiple_periods(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod1 = mommy.make('core.Period')
-        relatedstudent1 = mommy.make('core.RelatedStudent', user=testuser, period=testperiod1)
-        testassignment1 = mommy.make('core.Assignment', parentnode=testperiod1)
-        mommy.make('core.Candidate',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod1 = baker.make('core.Period')
+        relatedstudent1 = baker.make('core.RelatedStudent', user=testuser, period=testperiod1)
+        testassignment1 = baker.make('core.Assignment', parentnode=testperiod1)
+        baker.make('core.Candidate',
                    assignment_group__parentnode=testassignment1,
                    relatedstudent=relatedstudent1)
-        testperiod2 = mommy.make('core.Period')
-        mommy.make('core.RelatedStudent', user=testuser, period=testperiod2)
+        testperiod2 = baker.make('core.Period')
+        baker.make('core.RelatedStudent', user=testuser, period=testperiod2)
         annotated_period1 = Period.objects\
             .extra_annotate_with_assignmentcount_for_studentuser(user=testuser)\
             .get(id=testperiod1.id)
@@ -113,9 +113,9 @@ class TestPeriodQuerySetExtraAnnotateWithAssignmentcountForStudentuser(TestCase)
 
 class TestPeriodQuerySetExtraAnnotateWithUserQualifiesForFinalExam(TestCase):
     def test_not_set(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod = mommy.make('core.Period')
-        mommy.make('devilry_qualifiesforexam.Status', period=testperiod,
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period')
+        baker.make('devilry_qualifiesforexam.Status', period=testperiod,
                    status=Status.READY)
         annotated_period = Period.objects\
             .extra_annotate_with_user_qualifies_for_final_exam(user=testuser)\
@@ -123,20 +123,20 @@ class TestPeriodQuerySetExtraAnnotateWithUserQualifiesForFinalExam(TestCase):
         self.assertIsNone(annotated_period.user_qualifies_for_final_exam)
 
     def test_no_status(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod = mommy.make('core.Period')
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period')
         annotated_period = Period.objects\
             .extra_annotate_with_user_qualifies_for_final_exam(user=testuser)\
             .get(id=testperiod.id)
         self.assertIsNone(annotated_period.user_qualifies_for_final_exam)
 
     def test_not_ready_qualified(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod = mommy.make('core.Period')
-        relatedstudent = mommy.make('core.RelatedStudent', period=testperiod, user=testuser)
-        status = mommy.make('devilry_qualifiesforexam.Status', period=testperiod,
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period')
+        relatedstudent = baker.make('core.RelatedStudent', period=testperiod, user=testuser)
+        status = baker.make('devilry_qualifiesforexam.Status', period=testperiod,
                             status=Status.NOTREADY)
-        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+        baker.make('devilry_qualifiesforexam.QualifiesForFinalExam',
                    relatedstudent=relatedstudent,
                    status=status,
                    qualifies=True)
@@ -146,12 +146,12 @@ class TestPeriodQuerySetExtraAnnotateWithUserQualifiesForFinalExam(TestCase):
         self.assertIsNone(annotated_period.user_qualifies_for_final_exam)
 
     def test_not_ready_not_qualified(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod = mommy.make('core.Period')
-        relatedstudent = mommy.make('core.RelatedStudent', period=testperiod, user=testuser)
-        status = mommy.make('devilry_qualifiesforexam.Status', period=testperiod,
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period')
+        relatedstudent = baker.make('core.RelatedStudent', period=testperiod, user=testuser)
+        status = baker.make('devilry_qualifiesforexam.Status', period=testperiod,
                             status=Status.NOTREADY)
-        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+        baker.make('devilry_qualifiesforexam.QualifiesForFinalExam',
                    relatedstudent=relatedstudent,
                    status=status,
                    qualifies=False)
@@ -161,12 +161,12 @@ class TestPeriodQuerySetExtraAnnotateWithUserQualifiesForFinalExam(TestCase):
         self.assertIsNone(annotated_period.user_qualifies_for_final_exam)
 
     def test_not_ready_qualifies_none(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod = mommy.make('core.Period')
-        relatedstudent = mommy.make('core.RelatedStudent', period=testperiod, user=testuser)
-        status = mommy.make('devilry_qualifiesforexam.Status', period=testperiod,
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period')
+        relatedstudent = baker.make('core.RelatedStudent', period=testperiod, user=testuser)
+        status = baker.make('devilry_qualifiesforexam.Status', period=testperiod,
                             status=Status.NOTREADY)
-        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+        baker.make('devilry_qualifiesforexam.QualifiesForFinalExam',
                    relatedstudent=relatedstudent,
                    status=status,
                    qualifies=None)
@@ -176,12 +176,12 @@ class TestPeriodQuerySetExtraAnnotateWithUserQualifiesForFinalExam(TestCase):
         self.assertIsNone(annotated_period.user_qualifies_for_final_exam)
 
     def test_ready_qualified(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod = mommy.make('core.Period')
-        relatedstudent = mommy.make('core.RelatedStudent', period=testperiod, user=testuser)
-        status = mommy.make('devilry_qualifiesforexam.Status', period=testperiod,
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period')
+        relatedstudent = baker.make('core.RelatedStudent', period=testperiod, user=testuser)
+        status = baker.make('devilry_qualifiesforexam.Status', period=testperiod,
                             status=Status.READY)
-        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+        baker.make('devilry_qualifiesforexam.QualifiesForFinalExam',
                    relatedstudent=relatedstudent,
                    status=status,
                    qualifies=True)
@@ -191,12 +191,12 @@ class TestPeriodQuerySetExtraAnnotateWithUserQualifiesForFinalExam(TestCase):
         self.assertTrue(annotated_period.user_qualifies_for_final_exam)
 
     def test_ready_not_qualified(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod = mommy.make('core.Period')
-        relatedstudent = mommy.make('core.RelatedStudent', period=testperiod, user=testuser)
-        status = mommy.make('devilry_qualifiesforexam.Status', period=testperiod,
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period')
+        relatedstudent = baker.make('core.RelatedStudent', period=testperiod, user=testuser)
+        status = baker.make('devilry_qualifiesforexam.Status', period=testperiod,
                             status=Status.READY)
-        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+        baker.make('devilry_qualifiesforexam.QualifiesForFinalExam',
                    relatedstudent=relatedstudent,
                    status=status,
                    qualifies=False)
@@ -206,12 +206,12 @@ class TestPeriodQuerySetExtraAnnotateWithUserQualifiesForFinalExam(TestCase):
         self.assertFalse(annotated_period.user_qualifies_for_final_exam)
 
     def test_ready_qualifies_none(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod = mommy.make('core.Period')
-        relatedstudent = mommy.make('core.RelatedStudent', period=testperiod, user=testuser)
-        status = mommy.make('devilry_qualifiesforexam.Status', period=testperiod,
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period')
+        relatedstudent = baker.make('core.RelatedStudent', period=testperiod, user=testuser)
+        status = baker.make('devilry_qualifiesforexam.Status', period=testperiod,
                             status=Status.READY)
-        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+        baker.make('devilry_qualifiesforexam.QualifiesForFinalExam',
                    relatedstudent=relatedstudent,
                    status=status,
                    qualifies=None)
@@ -221,12 +221,12 @@ class TestPeriodQuerySetExtraAnnotateWithUserQualifiesForFinalExam(TestCase):
         self.assertIsNone(annotated_period.user_qualifies_for_final_exam)
 
     def test_almostready_qualified(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod = mommy.make('core.Period')
-        relatedstudent = mommy.make('core.RelatedStudent', period=testperiod, user=testuser)
-        status = mommy.make('devilry_qualifiesforexam.Status', period=testperiod,
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period')
+        relatedstudent = baker.make('core.RelatedStudent', period=testperiod, user=testuser)
+        status = baker.make('devilry_qualifiesforexam.Status', period=testperiod,
                             status=Status.ALMOSTREADY)
-        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+        baker.make('devilry_qualifiesforexam.QualifiesForFinalExam',
                    relatedstudent=relatedstudent,
                    status=status,
                    qualifies=True)
@@ -236,12 +236,12 @@ class TestPeriodQuerySetExtraAnnotateWithUserQualifiesForFinalExam(TestCase):
         self.assertTrue(annotated_period.user_qualifies_for_final_exam)
 
     def test_almostready_not_qualified(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod = mommy.make('core.Period')
-        relatedstudent = mommy.make('core.RelatedStudent', period=testperiod, user=testuser)
-        status = mommy.make('devilry_qualifiesforexam.Status', period=testperiod,
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period')
+        relatedstudent = baker.make('core.RelatedStudent', period=testperiod, user=testuser)
+        status = baker.make('devilry_qualifiesforexam.Status', period=testperiod,
                             status=Status.ALMOSTREADY)
-        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+        baker.make('devilry_qualifiesforexam.QualifiesForFinalExam',
                    relatedstudent=relatedstudent,
                    status=status,
                    qualifies=False)
@@ -251,12 +251,12 @@ class TestPeriodQuerySetExtraAnnotateWithUserQualifiesForFinalExam(TestCase):
         self.assertFalse(annotated_period.user_qualifies_for_final_exam)
 
     def test_almostready_qualifies_none(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod = mommy.make('core.Period')
-        relatedstudent = mommy.make('core.RelatedStudent', period=testperiod, user=testuser)
-        status = mommy.make('devilry_qualifiesforexam.Status', period=testperiod,
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period')
+        relatedstudent = baker.make('core.RelatedStudent', period=testperiod, user=testuser)
+        status = baker.make('devilry_qualifiesforexam.Status', period=testperiod,
                             status=Status.ALMOSTREADY)
-        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+        baker.make('devilry_qualifiesforexam.QualifiesForFinalExam',
                    relatedstudent=relatedstudent,
                    status=status,
                    qualifies=None)
@@ -266,17 +266,17 @@ class TestPeriodQuerySetExtraAnnotateWithUserQualifiesForFinalExam(TestCase):
         self.assertIsNone(annotated_period.user_qualifies_for_final_exam)
 
     def test_multiple_statuses_use_last(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod = mommy.make('core.Period')
-        relatedstudent = mommy.make('core.RelatedStudent', period=testperiod, user=testuser)
-        oldstatus = mommy.make('devilry_qualifiesforexam.Status', period=testperiod,
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period')
+        relatedstudent = baker.make('core.RelatedStudent', period=testperiod, user=testuser)
+        oldstatus = baker.make('devilry_qualifiesforexam.Status', period=testperiod,
                                status=Status.READY,
                                createtime=timezone.now() - timedelta(days=2))
-        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+        baker.make('devilry_qualifiesforexam.QualifiesForFinalExam',
                    relatedstudent=relatedstudent,
                    status=oldstatus,
                    qualifies=True)
-        mommy.make('devilry_qualifiesforexam.Status', period=testperiod,  # The last status
+        baker.make('devilry_qualifiesforexam.Status', period=testperiod,  # The last status
                    status=Status.NOTREADY,
                    createtime=timezone.now())
         annotated_period = Period.objects\
@@ -285,16 +285,16 @@ class TestPeriodQuerySetExtraAnnotateWithUserQualifiesForFinalExam(TestCase):
         self.assertIsNone(annotated_period.user_qualifies_for_final_exam)
 
     def test_use_correct_period(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        otherperiod = mommy.make('core.Period')
-        relatedstudent = mommy.make('core.RelatedStudent', period=otherperiod, user=testuser)
-        status = mommy.make('devilry_qualifiesforexam.Status', period=otherperiod,
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        otherperiod = baker.make('core.Period')
+        relatedstudent = baker.make('core.RelatedStudent', period=otherperiod, user=testuser)
+        status = baker.make('devilry_qualifiesforexam.Status', period=otherperiod,
                             status=Status.READY)
-        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+        baker.make('devilry_qualifiesforexam.QualifiesForFinalExam',
                    relatedstudent=relatedstudent,
                    status=status,
                    qualifies=True)
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         annotated_period = Period.objects\
             .extra_annotate_with_user_qualifies_for_final_exam(user=testuser)\
             .get(id=testperiod.id)
@@ -303,47 +303,47 @@ class TestPeriodQuerySetExtraAnnotateWithUserQualifiesForFinalExam(TestCase):
 
 class TestPeriodQuerySetPermission(TestCase):
     def test_filter_user_is_admin_is_not_admin_on_anything(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Period')
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Period')
         self.assertFalse(Period.objects.filter_user_is_admin(user=testuser).exists())
 
     def test_filter_user_is_admin_superuser(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
-        testperiod = mommy.make('core.Period')
+        testuser = baker.make(settings.AUTH_USER_MODEL, is_superuser=True)
+        testperiod = baker.make('core.Period')
         self.assertEqual(
             {testperiod},
             set(Period.objects.filter_user_is_admin(user=testuser)))
 
     def test_filter_user_is_admin_ignore_periods_where_not_in_group(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.Period')
-        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period')
+        baker.make('core.Period')
+        periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                            period=testperiod)
-        mommy.make('devilry_account.PermissionGroupUser',
+        baker.make('devilry_account.PermissionGroupUser',
                    user=testuser, permissiongroup=periodpermissiongroup.permissiongroup)
         self.assertEqual(
                 {testperiod},
                 set(Period.objects.filter_user_is_admin(user=testuser)))
 
     def test_filter_user_is_admin(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod = mommy.make('core.Period')
-        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period')
+        periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                            period=testperiod)
-        mommy.make('devilry_account.PermissionGroupUser',
+        baker.make('devilry_account.PermissionGroupUser',
                    user=testuser, permissiongroup=periodpermissiongroup.permissiongroup)
         self.assertEqual(
                 {testperiod},
                 set(Period.objects.filter_user_is_admin(user=testuser)))
 
     def test_filter_user_is_admin_on_subject(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testsubject = mommy.make('core.Subject')
-        testperiod = mommy.make('core.Period', parentnode=testsubject)
-        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testsubject = baker.make('core.Subject')
+        testperiod = baker.make('core.Period', parentnode=testsubject)
+        subjectpermissiongroup = baker.make('devilry_account.SubjectPermissionGroup',
                                             subject=testsubject)
-        mommy.make('devilry_account.PermissionGroupUser',
+        baker.make('devilry_account.PermissionGroupUser',
                    user=testuser,
                    permissiongroup=subjectpermissiongroup.permissiongroup)
         self.assertEqual(
@@ -351,27 +351,27 @@ class TestPeriodQuerySetPermission(TestCase):
                 set(Period.objects.filter_user_is_admin(user=testuser)))
 
     def test_filter_user_is_admin_distinct(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testsubject = mommy.make('core.Subject')
-        testperiod = mommy.make('core.Period', parentnode=testsubject)
-        subjectpermissiongroup1 = mommy.make('devilry_account.SubjectPermissionGroup',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testsubject = baker.make('core.Subject')
+        testperiod = baker.make('core.Period', parentnode=testsubject)
+        subjectpermissiongroup1 = baker.make('devilry_account.SubjectPermissionGroup',
                                              subject=testsubject)
-        subjectpermissiongroup2 = mommy.make('devilry_account.SubjectPermissionGroup',
+        subjectpermissiongroup2 = baker.make('devilry_account.SubjectPermissionGroup',
                                              subject=testsubject)
-        periodpermissiongroup1 = mommy.make('devilry_account.PeriodPermissionGroup',
+        periodpermissiongroup1 = baker.make('devilry_account.PeriodPermissionGroup',
                                             period=testperiod)
-        periodpermissiongroup2 = mommy.make('devilry_account.PeriodPermissionGroup',
+        periodpermissiongroup2 = baker.make('devilry_account.PeriodPermissionGroup',
                                             period=testperiod)
-        mommy.make('devilry_account.PermissionGroupUser',
+        baker.make('devilry_account.PermissionGroupUser',
                    user=testuser,
                    permissiongroup=subjectpermissiongroup1.permissiongroup)
-        mommy.make('devilry_account.PermissionGroupUser',
+        baker.make('devilry_account.PermissionGroupUser',
                    user=testuser,
                    permissiongroup=subjectpermissiongroup2.permissiongroup)
-        mommy.make('devilry_account.PermissionGroupUser',
+        baker.make('devilry_account.PermissionGroupUser',
                    user=testuser,
                    permissiongroup=periodpermissiongroup1.permissiongroup)
-        mommy.make('devilry_account.PermissionGroupUser',
+        baker.make('devilry_account.PermissionGroupUser',
                    user=testuser,
                    permissiongroup=periodpermissiongroup2.permissiongroup)
         self.assertEqual(

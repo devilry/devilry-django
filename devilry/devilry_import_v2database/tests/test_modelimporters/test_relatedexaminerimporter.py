@@ -7,7 +7,7 @@ from django import test
 from django.conf import settings
 from django.utils.dateparse import parse_datetime
 
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.apps.core.models import RelatedExaminer, PeriodTag, Period
 from devilry.devilry_import_v2database.modelimporters.relateduser_importer import RelatedExaminerImporter
@@ -35,8 +35,8 @@ class TestRelatedExaminerImporter(ImporterTestCaseMixin, test.TestCase):
         }
 
     def test_importer(self):
-        test_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_period = mommy.make('core.Period')
+        test_user = baker.make(settings.AUTH_USER_MODEL)
+        test_period = baker.make('core.Period')
         self.create_v2dump(model_name='core.relatedexaminer',
                            data=self._create_related_examiner_dict(period=test_period, user=test_user))
         relatedexaminer_importer = RelatedExaminerImporter(input_root=self.temp_root_dir)
@@ -45,8 +45,8 @@ class TestRelatedExaminerImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(PeriodTag.objects.count(), 1)
 
     def test_importer_related_examiner_pk(self):
-        test_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_period = mommy.make('core.Period')
+        test_user = baker.make(settings.AUTH_USER_MODEL)
+        test_period = baker.make('core.Period')
         self.create_v2dump(model_name='core.relatedexaminer',
                            data=self._create_related_examiner_dict(period=test_period, user=test_user))
         relatedexaminer_importer = RelatedExaminerImporter(input_root=self.temp_root_dir)
@@ -56,8 +56,8 @@ class TestRelatedExaminerImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(related_examiner.id, 6)
 
     # def test_importer_period_tag_period(self):
-    #     test_user = mommy.make(settings.AUTH_USER_MODEL)
-    #     test_period = mommy.make('core.Period')
+    #     test_user = baker.make(settings.AUTH_USER_MODEL)
+    #     test_period = baker.make('core.Period')
     #     self.create_v2dump(model_name='core.relatedexaminer',
     #                        data=self._create_related_examiner_dict(period=test_period, user=test_user))
     #     relatedexaminer_importer = RelatedExaminerImporter(input_root=self.temp_root_dir)
@@ -67,8 +67,8 @@ class TestRelatedExaminerImporter(ImporterTestCaseMixin, test.TestCase):
     #     self.assertEquals(ImportedModel.objects.count(), 1)
 
     def test_importer_period_tag_single_tag_created(self):
-        test_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_period = mommy.make('core.Period')
+        test_user = baker.make(settings.AUTH_USER_MODEL)
+        test_period = baker.make('core.Period')
         self.create_v2dump(model_name='core.relatedexaminer',
                            data=self._create_related_examiner_dict(period=test_period, user=test_user))
         relatedexaminer_importer = RelatedExaminerImporter(input_root=self.temp_root_dir)
@@ -77,8 +77,8 @@ class TestRelatedExaminerImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(period_tag.tag, 'group2')
 
     def test_importer_period_tag_multiple_tags_created(self):
-        test_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_period = mommy.make('core.Period')
+        test_user = baker.make(settings.AUTH_USER_MODEL)
+        test_period = baker.make('core.Period')
         relatedexaminer_data_dict = self._create_related_examiner_dict(period=test_period, user=test_user)
         relatedexaminer_data_dict['fields']['tags'] = 'group1,group2'
         self.create_v2dump(model_name='core.relatedexaminer',
@@ -91,8 +91,8 @@ class TestRelatedExaminerImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertIn('group2', period_tags_list)
 
     def test_importer_single_period_tag_examiner_is_added(self):
-        test_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_period = mommy.make('core.Period')
+        test_user = baker.make(settings.AUTH_USER_MODEL)
+        test_period = baker.make('core.Period')
         self.create_v2dump(model_name='core.relatedexaminer',
                            data=self._create_related_examiner_dict(period=test_period, user=test_user))
         relatedexaminer_importer = RelatedExaminerImporter(input_root=self.temp_root_dir)
@@ -103,8 +103,8 @@ class TestRelatedExaminerImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertIn(related_examiner, period_tag.relatedexaminers.all())
 
     def test_importer_multiple_period_tags_examiner_is_added(self):
-        test_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_period = mommy.make('core.Period')
+        test_user = baker.make(settings.AUTH_USER_MODEL)
+        test_period = baker.make('core.Period')
         relatedexaminer_data_dict = self._create_related_examiner_dict(period=test_period, user=test_user)
         relatedexaminer_data_dict['fields']['tags'] = 'group1,group2'
         self.create_v2dump(model_name='core.relatedexaminer',
@@ -118,10 +118,10 @@ class TestRelatedExaminerImporter(ImporterTestCaseMixin, test.TestCase):
             self.assertIn(related_examiner, period_tag.relatedexaminers.all())
 
     def test_importer_examiner_is_added_to_existing_tags_and_new_tags(self):
-        test_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_period = mommy.make('core.Period')
-        mommy.make('core.PeriodTag', period=test_period, tag='group1')
-        mommy.make('core.PeriodTag', period=test_period, tag='group3')
+        test_user = baker.make(settings.AUTH_USER_MODEL)
+        test_period = baker.make('core.Period')
+        baker.make('core.PeriodTag', period=test_period, tag='group1')
+        baker.make('core.PeriodTag', period=test_period, tag='group3')
         relatedexaminer_data_dict = self._create_related_examiner_dict(period=test_period, user=test_user)
         relatedexaminer_data_dict['fields']['tags'] = 'group1,group2,group3,group4'
         self.create_v2dump(model_name='core.relatedexaminer',
@@ -135,8 +135,8 @@ class TestRelatedExaminerImporter(ImporterTestCaseMixin, test.TestCase):
             self.assertIn(related_examiner, period_tag.relatedexaminers.all())
 
     # def test_importer_imported_model_created(self):
-    #     test_user = mommy.make(settings.AUTH_USER_MODEL)
-    #     test_period = mommy.make('core.Period')
+    #     test_user = baker.make(settings.AUTH_USER_MODEL)
+    #     test_period = baker.make('core.Period')
     #     related_examiner_data_dict = self._create_related_examiner_dict(period=test_period, user=test_user)
     #     self.create_v2dump(model_name='core.relatedexaminer',
     #                        data=related_examiner_data_dict)
@@ -152,8 +152,8 @@ class TestRelatedExaminerImporter(ImporterTestCaseMixin, test.TestCase):
     #     self.assertEquals(imported_model.data, related_examiner_data_dict)
 
     def test_auto_sequence_numbered_objects_uses_meta_max_id(self):
-        test_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_period = mommy.make('core.Period')
+        test_user = baker.make(settings.AUTH_USER_MODEL)
+        test_period = baker.make('core.Period')
         self.create_v2dump(model_name='core.relatedexaminer',
                            data=self._create_related_examiner_dict(period=test_period, user=test_user),
                            model_meta=self._create_model_meta())
@@ -163,6 +163,6 @@ class TestRelatedExaminerImporter(ImporterTestCaseMixin, test.TestCase):
         related_examiner = RelatedExaminer.objects.first()
         self.assertEqual(related_examiner.pk, 6)
         self.assertEqual(related_examiner.id, 6)
-        related_examiner_with_auto_id = mommy.make('core.RelatedExaminer')
+        related_examiner_with_auto_id = baker.make('core.RelatedExaminer')
         self.assertEqual(related_examiner_with_auto_id.pk, self._create_model_meta()['max_id']+1)
         self.assertEqual(related_examiner_with_auto_id.id, self._create_model_meta()['max_id']+1)

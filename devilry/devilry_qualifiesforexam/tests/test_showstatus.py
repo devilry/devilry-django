@@ -2,7 +2,7 @@
 
 
 # 3rd party imports
-from model_mommy import mommy
+from model_bakery import baker
 
 # Django imports
 from django import test
@@ -20,8 +20,8 @@ class TestQualificationStatusView(test.TestCase, cradmin_testhelpers.TestCaseMix
     viewclass = qualification_preview_view.QualificationStatusView
 
     def test_get(self):
-        testperiod = mommy.make('core.Period')
-        teststatus = mommy.make('devilry_qualifiesforexam.Status', period=testperiod)
+        testperiod = baker.make('core.Period')
+        teststatus = baker.make('devilry_qualifiesforexam.Status', period=testperiod)
         mockresponse = self.mock_getrequest(
                 cradmin_role=testperiod,
                 viewkwargs={
@@ -30,8 +30,8 @@ class TestQualificationStatusView(test.TestCase, cradmin_testhelpers.TestCaseMix
         self.assertEqual(mockresponse.response.status_code, 200)
 
     def test_get_retracted_message(self):
-        testperiod = mommy.make('core.Period')
-        teststatus = mommy.make('devilry_qualifiesforexam.Status',
+        testperiod = baker.make('core.Period')
+        teststatus = baker.make('devilry_qualifiesforexam.Status',
                                 period=testperiod,
                                 status=status_models.Status.NOTREADY,
                                 message='retracted')
@@ -45,8 +45,8 @@ class TestQualificationStatusView(test.TestCase, cradmin_testhelpers.TestCaseMix
         self.assertEqual(retracted_message_element.alltext_normalized, 'retracted')
 
     def test_get_back_button(self):
-        testperiod = mommy.make('core.Period')
-        teststatus = mommy.make('devilry_qualifiesforexam.Status', period=testperiod)
+        testperiod = baker.make('core.Period')
+        teststatus = baker.make('devilry_qualifiesforexam.Status', period=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
                 cradmin_role=testperiod,
                 viewkwargs={
@@ -55,8 +55,8 @@ class TestQualificationStatusView(test.TestCase, cradmin_testhelpers.TestCaseMix
         self.assertTrue(mockresponse.selector.one('#devilry_qualifiesforexam_back_index_button'))
 
     def test_get_retract_button_link(self):
-        testperiod = mommy.make('core.Period')
-        teststatus = mommy.make('devilry_qualifiesforexam.Status', period=testperiod, status=status_models.Status.READY)
+        testperiod = baker.make('core.Period')
+        teststatus = baker.make('devilry_qualifiesforexam.Status', period=testperiod, status=status_models.Status.READY)
         mockresponse = self.mock_http200_getrequest_htmls(
                 cradmin_role=testperiod,
                 viewkwargs={
@@ -65,8 +65,8 @@ class TestQualificationStatusView(test.TestCase, cradmin_testhelpers.TestCaseMix
         self.assertTrue(mockresponse.selector.one('#devilry_qualifiesforexam_retract_link'))
 
     def test_no_retract_button_when_status_is_not_ready(self):
-        testperiod = mommy.make('core.Period')
-        teststatus = mommy.make('devilry_qualifiesforexam.Status', period=testperiod,
+        testperiod = baker.make('core.Period')
+        teststatus = baker.make('devilry_qualifiesforexam.Status', period=testperiod,
                                 status=status_models.Status.NOTREADY)
         mockresponse = self.mock_http200_getrequest_htmls(
                 cradmin_role=testperiod,
@@ -76,8 +76,8 @@ class TestQualificationStatusView(test.TestCase, cradmin_testhelpers.TestCaseMix
         self.assertFalse(mockresponse.selector.exists('#devilry_qualifiesforexam_retract_link'))
 
     def test_get_print_button_link(self):
-        testperiod = mommy.make('core.Period')
-        teststatus = mommy.make('devilry_qualifiesforexam.Status', period=testperiod, status=status_models.Status.READY)
+        testperiod = baker.make('core.Period')
+        teststatus = baker.make('devilry_qualifiesforexam.Status', period=testperiod, status=status_models.Status.READY)
         mockresponse = self.mock_http200_getrequest_htmls(
                 cradmin_role=testperiod,
                 viewkwargs={
@@ -86,8 +86,8 @@ class TestQualificationStatusView(test.TestCase, cradmin_testhelpers.TestCaseMix
         self.assertTrue(mockresponse.selector.one('#devilry_qualifiesforexam_print_link'))
 
     def test_no_print_button_when_status_is_not_ready(self):
-        testperiod = mommy.make('core.Period')
-        teststatus = mommy.make('devilry_qualifiesforexam.Status', period=testperiod,
+        testperiod = baker.make('core.Period')
+        teststatus = baker.make('devilry_qualifiesforexam.Status', period=testperiod,
                                 status=status_models.Status.NOTREADY)
         mockresponse = self.mock_http200_getrequest_htmls(
                 cradmin_role=testperiod,
@@ -97,18 +97,18 @@ class TestQualificationStatusView(test.TestCase, cradmin_testhelpers.TestCaseMix
         self.assertFalse(mockresponse.selector.exists('#devilry_qualifiesforexam_print_link'))
 
     def test_num_queries(self):
-        testperiod = mommy.make('core.Period')
-        admin_user = mommy.make(settings.AUTH_USER_MODEL)
-        teststatus = mommy.make('devilry_qualifiesforexam.Status',
+        testperiod = baker.make('core.Period')
+        admin_user = baker.make(settings.AUTH_USER_MODEL)
+        teststatus = baker.make('devilry_qualifiesforexam.Status',
                                 period=testperiod,
                                 status=status_models.Status.READY,
                                 user=admin_user,
                                 plugin='someplugin')
-        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+        baker.make('devilry_qualifiesforexam.QualifiesForFinalExam',
                    status=teststatus,
                    qualifies=True,
                    _quantity=10)
-        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+        baker.make('devilry_qualifiesforexam.QualifiesForFinalExam',
                    status=teststatus,
                    qualifies=False,
                    _quantity=10)
@@ -126,9 +126,9 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
     viewclass = qualification_preview_view.QualificationStatusView
 
     def test_table_is_rendered(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.RelatedStudent', period=testperiod)
-        teststatus = mommy.make('devilry_qualifiesforexam.Status', period=testperiod)
+        testperiod = baker.make('core.Period')
+        baker.make('core.RelatedStudent', period=testperiod)
+        teststatus = baker.make('devilry_qualifiesforexam.Status', period=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             viewkwargs={
@@ -143,9 +143,9 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
 
     def test_table_row_is_rendered(self):
         # Tests that two rows are rendered, on for the header and one for the student
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.RelatedStudent', period=testperiod)
-        teststatus = mommy.make('devilry_qualifiesforexam.Status', period=testperiod)
+        testperiod = baker.make('core.Period')
+        baker.make('core.RelatedStudent', period=testperiod)
+        teststatus = baker.make('devilry_qualifiesforexam.Status', period=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             viewkwargs={
@@ -160,9 +160,9 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
 
     def test_table_row_is_rendered_multiple_students(self):
         # Tests that 21 rows are rendered, one for the table header and twenty(one for each student)
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.RelatedStudent', period=testperiod, _quantity=20)
-        teststatus = mommy.make('devilry_qualifiesforexam.Status', period=testperiod)
+        testperiod = baker.make('core.Period')
+        baker.make('core.RelatedStudent', period=testperiod, _quantity=20)
+        teststatus = baker.make('devilry_qualifiesforexam.Status', period=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             viewkwargs={
@@ -177,9 +177,9 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
 
     def test_table_data_studentinfo_is_rendered(self):
         # Tests that a td element of class 'devilry-qualifiesforexam-cell-studentinfo' is rendered.
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.RelatedStudent', period=testperiod)
-        teststatus = mommy.make('devilry_qualifiesforexam.Status', period=testperiod)
+        testperiod = baker.make('core.Period')
+        baker.make('core.RelatedStudent', period=testperiod)
+        teststatus = baker.make('devilry_qualifiesforexam.Status', period=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             viewkwargs={
@@ -194,9 +194,9 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
 
     def test_table_data_qualify_result_is_rendered(self):
         # Tests that a td element of class 'devilry-qualifiesforexam-cell-qualify' is rendered.
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.RelatedStudent', period=testperiod)
-        teststatus = mommy.make('devilry_qualifiesforexam.Status', period=testperiod)
+        testperiod = baker.make('core.Period')
+        baker.make('core.RelatedStudent', period=testperiod)
+        teststatus = baker.make('devilry_qualifiesforexam.Status', period=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             viewkwargs={
@@ -211,9 +211,9 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
 
     def test_table_header_cell_data(self):
         # Test a more complete example of data contained in cells for two students, one qualifying and one not.
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.RelatedStudent', period=testperiod)
-        teststatus = mommy.make('devilry_qualifiesforexam.Status', period=testperiod)
+        testperiod = baker.make('core.Period')
+        baker.make('core.RelatedStudent', period=testperiod)
+        teststatus = baker.make('devilry_qualifiesforexam.Status', period=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             viewkwargs={
@@ -230,14 +230,14 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
 
     def test_table_student_row_data_student_does_not_qualify(self):
         # Test a more complete example of data contained in cells for two students, one qualifying and one not.
-        testperiod = mommy.make('core.Period')
-        relatedstudent = mommy.make('core.RelatedStudent',
+        testperiod = baker.make('core.Period')
+        relatedstudent = baker.make('core.RelatedStudent',
                                     period=testperiod,
-                                    user=mommy.make(settings.AUTH_USER_MODEL,
+                                    user=baker.make(settings.AUTH_USER_MODEL,
                                                     fullname='Jane Doe',
                                                     shortname='janedoe'))
-        teststatus = mommy.make('devilry_qualifiesforexam.Status', period=testperiod)
-        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+        teststatus = baker.make('devilry_qualifiesforexam.Status', period=testperiod)
+        baker.make('devilry_qualifiesforexam.QualifiesForFinalExam',
                    status=teststatus,
                    relatedstudent=relatedstudent,
                    qualifies=False)
@@ -258,14 +258,14 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
 
     def test_table_student_row_data_student_qualifies(self):
         # Test a more complete example of data contained in cells for two students, one qualifying and one not.
-        testperiod = mommy.make('core.Period')
-        relatedstudent = mommy.make('core.RelatedStudent',
+        testperiod = baker.make('core.Period')
+        relatedstudent = baker.make('core.RelatedStudent',
                                     period=testperiod,
-                                    user=mommy.make(settings.AUTH_USER_MODEL,
+                                    user=baker.make(settings.AUTH_USER_MODEL,
                                                     fullname='Jane Doe',
                                                     shortname='janedoe'))
-        teststatus = mommy.make('devilry_qualifiesforexam.Status', period=testperiod)
-        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+        teststatus = baker.make('devilry_qualifiesforexam.Status', period=testperiod)
+        baker.make('devilry_qualifiesforexam.QualifiesForFinalExam',
                    status=teststatus,
                    relatedstudent=relatedstudent,
                    qualifies=True)
@@ -285,16 +285,16 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
         self.assertEqual(mockresponse.selector.one('.devilry-qualifiesforexam-cell-qualify').alltext_normalized, 'YES')
 
     def __make_related_student(self, period, fullname, lastname, shortname, candidate_id=None):
-        user = mommy.make(settings.AUTH_USER_MODEL, fullname=fullname, lastname=lastname, shortname=shortname)
-        relatedstudent = mommy.make('core.RelatedStudent', period=period, user=user, candidate_id=candidate_id)
+        user = baker.make(settings.AUTH_USER_MODEL, fullname=fullname, lastname=lastname, shortname=shortname)
+        relatedstudent = baker.make('core.RelatedStudent', period=period, user=user, candidate_id=candidate_id)
         return relatedstudent
 
     def __make_qualification_item(self, status, relatedstudent, qualifies=True):
-        return mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+        return baker.make('devilry_qualifiesforexam.QualifiesForFinalExam',
                           status=status, relatedstudent=relatedstudent, qualifies=qualifies)
 
     def test_table_default_ordering_lastname(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         relatedstudent1 = self.__make_related_student(
             period=testperiod, fullname='A C', lastname='C', shortname='ac@example.com')
         relatedstudent2 = self.__make_related_student(
@@ -302,7 +302,7 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
         relatedstudent3 = self.__make_related_student(
             period=testperiod, fullname='C A', lastname='A', shortname='ca@example.com')
 
-        teststatus = mommy.make('devilry_qualifiesforexam.Status', period=testperiod)
+        teststatus = baker.make('devilry_qualifiesforexam.Status', period=testperiod)
         self.__make_qualification_item(teststatus, relatedstudent1)
         self.__make_qualification_item(teststatus, relatedstudent2)
         self.__make_qualification_item(teststatus, relatedstudent3)
@@ -318,7 +318,7 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
         self.assertEqual(student_list[2].alltext_normalized, 'A C ac@example.com')
 
     def test_table_default_ordering_lastname_if_order_by_param_is_not_supported(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         relatedstudent1 = self.__make_related_student(
             period=testperiod, fullname='A C', lastname='C', shortname='ac@example.com')
         relatedstudent2 = self.__make_related_student(
@@ -326,7 +326,7 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
         relatedstudent3 = self.__make_related_student(
             period=testperiod, fullname='C A', lastname='A', shortname='ca@example.com')
 
-        teststatus = mommy.make('devilry_qualifiesforexam.Status', period=testperiod)
+        teststatus = baker.make('devilry_qualifiesforexam.Status', period=testperiod)
         self.__make_qualification_item(teststatus, relatedstudent1)
         self.__make_qualification_item(teststatus, relatedstudent2)
         self.__make_qualification_item(teststatus, relatedstudent3)
@@ -343,7 +343,7 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
         self.assertEqual(student_list[2].alltext_normalized, 'A C ac@example.com')
 
     def test_table_order_by_lastname_sanity(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         relatedstudent1 = self.__make_related_student(
             period=testperiod, fullname='A C', lastname='C', shortname='ac@example.com')
         relatedstudent2 = self.__make_related_student(
@@ -351,7 +351,7 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
         relatedstudent3 = self.__make_related_student(
             period=testperiod, fullname='C A', lastname='A', shortname='ca@example.com')
 
-        teststatus = mommy.make('devilry_qualifiesforexam.Status', period=testperiod)
+        teststatus = baker.make('devilry_qualifiesforexam.Status', period=testperiod)
         self.__make_qualification_item(teststatus, relatedstudent1)
         self.__make_qualification_item(teststatus, relatedstudent2)
         self.__make_qualification_item(teststatus, relatedstudent3)
@@ -368,7 +368,7 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
         self.assertEqual(student_list[2].alltext_normalized, 'A C ac@example.com')
 
     def test_table_order_by_username(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         relatedstudent1 = self.__make_related_student(
             period=testperiod, fullname='C A', lastname='A', shortname='ca@example.com')
         relatedstudent2 = self.__make_related_student(
@@ -376,7 +376,7 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
         relatedstudent3 = self.__make_related_student(
             period=testperiod, fullname='A C', lastname='C', shortname='ac@example.com')
 
-        teststatus = mommy.make('devilry_qualifiesforexam.Status', period=testperiod)
+        teststatus = baker.make('devilry_qualifiesforexam.Status', period=testperiod)
         self.__make_qualification_item(teststatus, relatedstudent1)
         self.__make_qualification_item(teststatus, relatedstudent2)
         self.__make_qualification_item(teststatus, relatedstudent3)
@@ -393,7 +393,7 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
         self.assertEqual(student_list[2].alltext_normalized, 'C A ca@example.com')
 
     def test_table_order_by_fullname(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         relatedstudent1 = self.__make_related_student(
             period=testperiod, fullname='C A', lastname='A', shortname='a@example.com')
         relatedstudent2 = self.__make_related_student(
@@ -401,7 +401,7 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
         relatedstudent3 = self.__make_related_student(
             period=testperiod, fullname='A C', lastname='C', shortname='c@example.com')
 
-        teststatus = mommy.make('devilry_qualifiesforexam.Status', period=testperiod)
+        teststatus = baker.make('devilry_qualifiesforexam.Status', period=testperiod)
         self.__make_qualification_item(teststatus, relatedstudent1)
         self.__make_qualification_item(teststatus, relatedstudent2)
         self.__make_qualification_item(teststatus, relatedstudent3)
@@ -418,7 +418,7 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
         self.assertEqual(student_list[2].alltext_normalized, 'C A a@example.com')
 
     def test_table_order_by_candidate_id(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         relatedstudent1 = self.__make_related_student(
             period=testperiod, fullname='C C', lastname='C', shortname='c@example.com', candidate_id='1')
         relatedstudent2 = self.__make_related_student(
@@ -426,7 +426,7 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
         relatedstudent3 = self.__make_related_student(
             period=testperiod, fullname='A A', lastname='A', shortname='a@example.com', candidate_id='2')
 
-        teststatus = mommy.make('devilry_qualifiesforexam.Status', period=testperiod)
+        teststatus = baker.make('devilry_qualifiesforexam.Status', period=testperiod)
         self.__make_qualification_item(teststatus, relatedstudent1)
         self.__make_qualification_item(teststatus, relatedstudent2)
         self.__make_qualification_item(teststatus, relatedstudent3)

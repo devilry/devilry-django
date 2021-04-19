@@ -1,7 +1,7 @@
 import mock
 from django import test
 from cradmin_legacy import cradmin_testhelpers
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.devilry_admin.views.assignment.examiners import examinerdetails
 
@@ -21,8 +21,8 @@ class TestExaminerDetailsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         return mockinstance
 
     def test_title(self):
-        testassignment = mommy.make('core.Assignment')
-        relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period,
+        testassignment = baker.make('core.Assignment')
+        relatedexaminer = baker.make('core.RelatedExaminer', period=testassignment.period,
                                      user__fullname='Test User')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
@@ -33,8 +33,8 @@ class TestExaminerDetailsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('title').alltext_normalized)
 
     def test_h1(self):
-        testassignment = mommy.make('core.Assignment')
-        relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period,
+        testassignment = baker.make('core.Assignment')
+        relatedexaminer = baker.make('core.RelatedExaminer', period=testassignment.period,
                                      user__fullname='Test User')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
@@ -45,8 +45,8 @@ class TestExaminerDetailsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('h1').alltext_normalized)
 
     def test_buttonbar_add_students_link(self):
-        testassignment = mommy.make('core.Assignment')
-        relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period,
+        testassignment = baker.make('core.Assignment')
+        relatedexaminer = baker.make('core.RelatedExaminer', period=testassignment.period,
                                      user__fullname='Test User')
         mock_cradmin_instance = self.__mockinstance_with_devilryrole('departmentadmin')
 
@@ -64,8 +64,8 @@ class TestExaminerDetailsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             .one('#devilry_admin_assignment_examinerdetails_button_add_students')['href'])
 
     def test_buttonbar_add_students_text(self):
-        testassignment = mommy.make('core.Assignment')
-        relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        testassignment = baker.make('core.Assignment')
+        relatedexaminer = baker.make('core.RelatedExaminer', period=testassignment.period)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'relatedexaminer_id': relatedexaminer.id},
@@ -76,8 +76,8 @@ class TestExaminerDetailsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             .one('#devilry_admin_assignment_examinerdetails_button_add_students').alltext_normalized)
 
     def test_buttonbar_remove_students_link(self):
-        testassignment = mommy.make('core.Assignment')
-        relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        testassignment = baker.make('core.Assignment')
+        relatedexaminer = baker.make('core.RelatedExaminer', period=testassignment.period)
         mock_cradmin_instance = self.__mockinstance_with_devilryrole('departmentadmin')
 
         def mock_reverse_url(appname, viewname, args, kwargs):
@@ -94,8 +94,8 @@ class TestExaminerDetailsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             .one('#devilry_admin_assignment_examinerdetails_button_remove_students')['href'])
 
     def test_buttonbar_remove_students_text(self):
-        testassignment = mommy.make('core.Assignment')
-        relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        testassignment = baker.make('core.Assignment')
+        relatedexaminer = baker.make('core.RelatedExaminer', period=testassignment.period)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'relatedexaminer_id': relatedexaminer.id},
@@ -106,12 +106,12 @@ class TestExaminerDetailsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             .one('#devilry_admin_assignment_examinerdetails_button_remove_students').alltext_normalized)
 
     def test_groups_sanity(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period)
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.Examiner', relatedexaminer=relatedexaminer, assignmentgroup=testgroup1)
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.Examiner', relatedexaminer=relatedexaminer, assignmentgroup=testgroup2)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        relatedexaminer = baker.make('core.RelatedExaminer', period=testassignment.period)
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make('core.Examiner', relatedexaminer=relatedexaminer, assignmentgroup=testgroup1)
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make('core.Examiner', relatedexaminer=relatedexaminer, assignmentgroup=testgroup2)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'relatedexaminer_id': relatedexaminer.id},
@@ -121,11 +121,11 @@ class TestExaminerDetailsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_groups_only_where_is_examiner(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period)
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.Examiner', relatedexaminer=relatedexaminer, assignmentgroup=testgroup)
-        mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        relatedexaminer = baker.make('core.RelatedExaminer', period=testassignment.period)
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make('core.Examiner', relatedexaminer=relatedexaminer, assignmentgroup=testgroup)
+        baker.make('core.AssignmentGroup', parentnode=testassignment)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'relatedexaminer_id': relatedexaminer.id},

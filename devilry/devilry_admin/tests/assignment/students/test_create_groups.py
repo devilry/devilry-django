@@ -8,13 +8,13 @@ from django.http import Http404
 from django.test import TestCase
 from django.utils import timezone
 from cradmin_legacy import cradmin_testhelpers
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.apps.core.models import AssignmentGroup, Candidate
-from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_START
+from devilry.apps.core.baker_recipes import ACTIVE_PERIOD_START
 from devilry.devilry_admin.views.assignment.students import create_groups
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
-from devilry.devilry_group import devilry_group_mommy_factories
+from devilry.devilry_group import devilry_group_baker_factories
 from devilry.devilry_group.models import FeedbackSet
 
 
@@ -25,7 +25,7 @@ class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_title(self):
-        testassignment = mommy.make('core.Assignment',
+        testassignment = baker.make('core.Assignment',
                                     short_name='testassignment',
                                     parentnode__short_name='testperiod',
                                     parentnode__parentnode__short_name='testsubject')
@@ -35,14 +35,14 @@ class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('title').alltext_normalized)
 
     def test_h1(self):
-        testassignment = mommy.make('core.Assignment')
+        testassignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
             'Add students',
             mockresponse.selector.one('h1').alltext_normalized)
 
     def test_choices_sanity(self):
-        testassignment = mommy.make('core.Assignment')
+        testassignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
             3,
@@ -54,7 +54,7 @@ class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
         return reverse_appurl
 
     def test_choice_relatedstudents_url(self):
-        testassignment = mommy.make('core.Assignment')
+        testassignment = baker.make('core.Assignment')
         mockapp = mock.MagicMock()
         mockapp.reverse_appurl = self.__mock_reverse_appurl()
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -67,7 +67,7 @@ class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
                 '#devilry_admin_create_groups_choosemethod_relatedstudents_link')['href'])
 
     def test_choice_relatedstudents_label(self):
-        testassignment = mommy.make('core.Assignment',
+        testassignment = baker.make('core.Assignment',
                                     parentnode__parentnode__short_name='testsubject')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
@@ -76,7 +76,7 @@ class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
                 '#devilry_admin_create_groups_choosemethod_relatedstudents_link').alltext_normalized)
 
     def test_choice_manual_select_value(self):
-        testassignment = mommy.make('core.Assignment')
+        testassignment = baker.make('core.Assignment')
         mockapp = mock.MagicMock()
         mockapp.reverse_appurl = self.__mock_reverse_appurl()
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -89,7 +89,7 @@ class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
                 '#devilry_admin_create_groups_choosemethod_manualselect_link')['href'])
 
     def test_choice_manual_select_label(self):
-        testassignment = mommy.make('core.Assignment')
+        testassignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
             'Select manually',
@@ -97,9 +97,9 @@ class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
                 '#devilry_admin_create_groups_choosemethod_manualselect_link').alltext_normalized)
 
     def test_choices_does_not_include_current_assignment(self):
-        testperiod = mommy.make('core.Period')
-        otherassignment = mommy.make('core.Assignment', parentnode=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testperiod = baker.make('core.Period')
+        otherassignment = baker.make('core.Assignment', parentnode=testperiod)
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
             5,
@@ -112,10 +112,10 @@ class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
                 otherassignment.pk)))
 
     def test_other_assignment_rending(self):
-        testperiod = mommy.make('core.Period')
-        otherassignment = mommy.make('core.Assignment', parentnode=testperiod,
+        testperiod = baker.make('core.Period')
+        otherassignment = baker.make('core.Assignment', parentnode=testperiod,
                                      short_name='otherassignment')
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
             'All students',
@@ -127,14 +127,14 @@ class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
                 otherassignment.pk)).alltext_normalized)
 
     def test_other_assignments_ordering(self):
-        testperiod = mommy.make_recipe('devilry.apps.core.period_active')
-        assignment1 = mommy.make('core.Assignment', parentnode=testperiod,
+        testperiod = baker.make_recipe('devilry.apps.core.period_active')
+        assignment1 = baker.make('core.Assignment', parentnode=testperiod,
                                  publishing_time=ACTIVE_PERIOD_START + datetime.timedelta(days=1))
-        assignment2 = mommy.make('core.Assignment', parentnode=testperiod,
+        assignment2 = baker.make('core.Assignment', parentnode=testperiod,
                                  publishing_time=ACTIVE_PERIOD_START + datetime.timedelta(days=2))
-        assignment3 = mommy.make('core.Assignment', parentnode=testperiod,
+        assignment3 = baker.make('core.Assignment', parentnode=testperiod,
                                  publishing_time=ACTIVE_PERIOD_START + datetime.timedelta(days=3))
-        assignment4 = mommy.make('core.Assignment', parentnode=testperiod)
+        assignment4 = baker.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment4)
         assignmentboxes_dom_ids = [
             element['id']
@@ -156,7 +156,7 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_title(self):
-        testassignment = mommy.make('core.Assignment',
+        testassignment = baker.make('core.Assignment',
                                     short_name='testassignment',
                                     parentnode__short_name='testperiod',
                                     parentnode__parentnode__short_name='testsubject')
@@ -169,7 +169,7 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('title').alltext_normalized)
 
     def test_h1(self):
-        testassignment = mommy.make('core.Assignment', long_name='Assignment One')
+        testassignment = baker.make('core.Assignment', long_name='Assignment One')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'selected_students': create_groups.ConfirmView.SELECTED_STUDENTS_RELATEDSTUDENTS})
@@ -178,7 +178,7 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('h1').alltext_normalized)
 
     def test_get_subheader_selected_students_relateadstudents(self):
-        testassignment = mommy.make('core.Assignment',
+        testassignment = baker.make('core.Assignment',
                                     parentnode__parentnode__short_name='testsubject',
                                     parentnode__short_name='testperiod')
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -190,11 +190,11 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
                 '#devilry_admin_create_groups_confirm_selected_student_label').alltext_normalized)
 
     def test_get_subheader_selected_students_all_on_assignment(self):
-        testperiod = mommy.make('core.Period')
-        otherassignment = mommy.make('core.Assignment',
+        testperiod = baker.make('core.Period')
+        otherassignment = baker.make('core.Assignment',
                                      long_name='Assignment One',
                                      parentnode=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             requestkwargs={'data': {'assignment': otherassignment.id}},
@@ -205,11 +205,11 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
                 '#devilry_admin_create_groups_confirm_selected_student_label').alltext_normalized)
 
     def test_get_subheader_selected_students_passing_grade_on_assignment(self):
-        testperiod = mommy.make('core.Period')
-        otherassignment = mommy.make('core.Assignment',
+        testperiod = baker.make('core.Period')
+        otherassignment = baker.make('core.Assignment',
                                      long_name='Assignment One',
                                      parentnode=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             requestkwargs={'data': {'assignment': otherassignment.id}},
@@ -220,9 +220,9 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
                 '#devilry_admin_create_groups_confirm_selected_student_label').alltext_normalized)
 
     def test_get_render_submitbutton(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.RelatedStudent', period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testperiod = baker.make('core.Period')
+        baker.make('core.RelatedStudent', period=testperiod)
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'selected_students': create_groups.ConfirmView.SELECTED_STUDENTS_RELATEDSTUDENTS})
@@ -233,10 +233,10 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
 
     def test_get_render_form_selected_items_selected_students_relatedstudents(self):
-        testperiod = mommy.make('core.Period')
-        relatedstudent1 = mommy.make('core.RelatedStudent', period=testperiod)
-        relatedstudent2 = mommy.make('core.RelatedStudent', period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testperiod = baker.make('core.Period')
+        relatedstudent1 = baker.make('core.RelatedStudent', period=testperiod)
+        relatedstudent2 = baker.make('core.RelatedStudent', period=testperiod)
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'selected_students': create_groups.ConfirmView.SELECTED_STUDENTS_RELATEDSTUDENTS})
@@ -249,19 +249,19 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
             set(selected_relatedstudent_ids))
 
     def test_get_render_form_selected_items_selected_students_all_on_assignment(self):
-        testperiod = mommy.make('core.Period')
-        relatedstudent1 = mommy.make('core.RelatedStudent', period=testperiod)
-        relatedstudent2 = mommy.make('core.RelatedStudent', period=testperiod)
-        mommy.make('core.RelatedStudent', period=testperiod)
-        otherassignment = mommy.make('core.Assignment', parentnode=testperiod)
-        mommy.make('core.Candidate',
+        testperiod = baker.make('core.Period')
+        relatedstudent1 = baker.make('core.RelatedStudent', period=testperiod)
+        relatedstudent2 = baker.make('core.RelatedStudent', period=testperiod)
+        baker.make('core.RelatedStudent', period=testperiod)
+        otherassignment = baker.make('core.Assignment', parentnode=testperiod)
+        baker.make('core.Candidate',
                    relatedstudent=relatedstudent1,
                    assignment_group__parentnode=otherassignment)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    relatedstudent=relatedstudent2,
                    assignment_group__parentnode=otherassignment)
 
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             requestkwargs={
@@ -277,23 +277,23 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
             set(selected_relatedstudent_ids))
 
     def test_get_render_form_selected_items_selected_students_passing_grade_on_assignment(self):
-        testperiod = mommy.make('core.Period')
-        relatedstudent1 = mommy.make('core.RelatedStudent', period=testperiod)
-        relatedstudent2 = mommy.make('core.RelatedStudent', period=testperiod)
-        mommy.make('core.RelatedStudent', period=testperiod)
-        otherassignment = mommy.make('core.Assignment', parentnode=testperiod,
+        testperiod = baker.make('core.Period')
+        relatedstudent1 = baker.make('core.RelatedStudent', period=testperiod)
+        relatedstudent2 = baker.make('core.RelatedStudent', period=testperiod)
+        baker.make('core.RelatedStudent', period=testperiod)
+        otherassignment = baker.make('core.Assignment', parentnode=testperiod,
                                      passing_grade_min_points=1)
-        candidate1 = mommy.make('core.Candidate',
+        candidate1 = baker.make('core.Candidate',
                                 relatedstudent=relatedstudent1,
                                 assignment_group__parentnode=otherassignment)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        devilry_group_baker_factories.feedbackset_first_attempt_published(
             group=candidate1.assignment_group,
             grading_points=1)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    relatedstudent=relatedstudent2,
                    assignment_group__parentnode=otherassignment)
 
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             requestkwargs={
@@ -309,8 +309,8 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
             set(selected_relatedstudent_ids))
 
     def test_get_no_relatedstudents_matching_query(self):
-        testperiod = mommy.make('core.Period')
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testperiod = baker.make('core.Period')
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'selected_students': create_groups.ConfirmView.SELECTED_STUDENTS_RELATEDSTUDENTS})
@@ -320,14 +320,14 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
                 '.devilry-admin-create-groups-confirm-no-students').alltext_normalized)
 
     def test_get_selected_students_relateadstudents(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.RelatedStudent',
+        testperiod = baker.make('core.Period')
+        baker.make('core.RelatedStudent',
                    user__fullname='Match User',
                    period=testperiod)
-        mommy.make('core.RelatedStudent',
+        baker.make('core.RelatedStudent',
                    user__fullname='Other User',
                    period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'selected_students': create_groups.ConfirmView.SELECTED_STUDENTS_RELATEDSTUDENTS})
@@ -336,10 +336,10 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.count('.devilry-admin-listbuilder-relatedstudent-readonlyitemvalue'))
 
     def test_get_selected_students_all_on_assignment_invalid_assignment_id(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.RelatedStudent', period=testperiod)
-        otherassignment = mommy.make('core.Assignment')  # Not in testperiod!
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testperiod = baker.make('core.Period')
+        baker.make('core.RelatedStudent', period=testperiod)
+        otherassignment = baker.make('core.Assignment')  # Not in testperiod!
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
         with self.assertRaisesMessage(Http404, 'Invalid assignment_id'):
             self.mock_getrequest(
                 cradmin_role=testassignment,
@@ -349,23 +349,23 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
                 })
 
     def test_get_selected_students_all_on_assignment(self):
-        testperiod = mommy.make('core.Period')
-        relatedstudent1 = mommy.make('core.RelatedStudent',
+        testperiod = baker.make('core.Period')
+        relatedstudent1 = baker.make('core.RelatedStudent',
                                      period=testperiod)
-        relatedstudent2 = mommy.make('core.RelatedStudent',
+        relatedstudent2 = baker.make('core.RelatedStudent',
                                      period=testperiod)
-        relatedstudent3 = mommy.make('core.RelatedStudent',
+        relatedstudent3 = baker.make('core.RelatedStudent',
                                      user__fullname='User that is not on the other assignment',
                                      period=testperiod)
-        otherassignment = mommy.make('core.Assignment', parentnode=testperiod)
-        mommy.make('core.Candidate',
+        otherassignment = baker.make('core.Assignment', parentnode=testperiod)
+        baker.make('core.Candidate',
                    relatedstudent=relatedstudent1,
                    assignment_group__parentnode=otherassignment)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    relatedstudent=relatedstudent2,
                    assignment_group__parentnode=otherassignment)
 
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'selected_students': create_groups.ConfirmView.SELECTED_STUDENTS_ALL_ON_ASSIGNMENT},
@@ -378,10 +378,10 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertNotContains(mockresponse.response, relatedstudent3.user.fullname)
 
     def test_get_selected_students_passing_grade_on_assignment_invalid_assignment_id(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.RelatedStudent', period=testperiod)
-        otherassignment = mommy.make('core.Assignment')  # Not in testperiod!
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testperiod = baker.make('core.Period')
+        baker.make('core.RelatedStudent', period=testperiod)
+        otherassignment = baker.make('core.Assignment')  # Not in testperiod!
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
         with self.assertRaisesMessage(Http404, 'Invalid assignment_id'):
             self.mock_getrequest(
                 cradmin_role=testassignment,
@@ -392,39 +392,39 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
                 })
 
     def test_get_selected_students_passing_grade_on_assignment(self):
-        testperiod = mommy.make('core.Period')
-        otherassignment = mommy.make('core.Assignment',
+        testperiod = baker.make('core.Period')
+        otherassignment = baker.make('core.Assignment',
                                      parentnode=testperiod,
                                      passing_grade_min_points=1)
 
-        relatedstudent1 = mommy.make('core.RelatedStudent',
+        relatedstudent1 = baker.make('core.RelatedStudent',
                                      period=testperiod)
-        candidate1 = mommy.make('core.Candidate',
+        candidate1 = baker.make('core.Candidate',
                                 relatedstudent=relatedstudent1,
                                 assignment_group__parentnode=otherassignment)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        devilry_group_baker_factories.feedbackset_first_attempt_published(
             group=candidate1.assignment_group,
             grading_points=1)
 
-        relatedstudent2 = mommy.make('core.RelatedStudent',
+        relatedstudent2 = baker.make('core.RelatedStudent',
                                      user__fullname='User that is not candidate',
                                      period=testperiod)
 
-        relatedstudent3 = mommy.make('core.RelatedStudent',
+        relatedstudent3 = baker.make('core.RelatedStudent',
                                      user__fullname='User that did not pass',
                                      period=testperiod)
-        candidate3 = mommy.make('core.Candidate',
+        candidate3 = baker.make('core.Candidate',
                                 relatedstudent=relatedstudent3,
                                 assignment_group__parentnode=otherassignment)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        devilry_group_baker_factories.feedbackset_first_attempt_published(
             group=candidate3.assignment_group,
             grading_points=0)
 
-        relatedstudent4 = mommy.make('core.RelatedStudent',
+        relatedstudent4 = baker.make('core.RelatedStudent',
                                      user__fullname='User that is not on the other assignment',
                                      period=testperiod)
 
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'selected_students': create_groups.ConfirmView.SELECTED_STUDENTS_PASSING_GRADE_ON_ASSIGNMENT},
@@ -442,14 +442,14 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
                          mockresponse.response.content.decode())
 
     def test_post_ok_creates_groups(self):
-        testperiod = mommy.make('core.Period')
-        relatedstudent1 = mommy.make('core.RelatedStudent',
+        testperiod = baker.make('core.Period')
+        relatedstudent1 = baker.make('core.RelatedStudent',
                                      period=testperiod)
-        relatedstudent2 = mommy.make('core.RelatedStudent',
+        relatedstudent2 = baker.make('core.RelatedStudent',
                                      period=testperiod)
-        relatedstudent3 = mommy.make('core.RelatedStudent',
+        relatedstudent3 = baker.make('core.RelatedStudent',
                                      period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
         self.assertEqual(0, AssignmentGroup.objects.count())
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
@@ -473,10 +473,10 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(1, first_group.feedbackset_set.count())
 
     def test_post_ok_redirect(self):
-        testperiod = mommy.make('core.Period')
-        relatedstudent = mommy.make('core.RelatedStudent',
+        testperiod = baker.make('core.Period')
+        relatedstudent = baker.make('core.RelatedStudent',
                                     period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
         self.assertEqual(0, AssignmentGroup.objects.count())
         mock_cradmin_instance = mock.MagicMock()
         self.mock_http302_postrequest(
@@ -493,12 +493,12 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
         mock_cradmin_instance.appindex_url.assert_called_once_with('studentoverview')
 
     def test_post_relatedstudent_already_on_assignment(self):
-        testperiod = mommy.make('core.Period')
-        relatedstudent = mommy.make('core.RelatedStudent',
+        testperiod = baker.make('core.Period')
+        relatedstudent = baker.make('core.RelatedStudent',
                                     user__shortname='userb@example.com',
                                     period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
-        mommy.make('core.Candidate',
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
+        baker.make('core.Candidate',
                    relatedstudent=relatedstudent,
                    assignment_group__parentnode=testassignment)
         self.assertEqual(1, AssignmentGroup.objects.count())
@@ -526,10 +526,10 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
             '')
 
     def test_post_relatedstudent_not_relatedstudent_on_period(self):
-        testperiod = mommy.make('core.Period')
-        relatedstudent = mommy.make('core.RelatedStudent',
+        testperiod = baker.make('core.Period')
+        relatedstudent = baker.make('core.RelatedStudent',
                                     user__shortname='userb@example.com')
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
         self.assertEqual(0, AssignmentGroup.objects.count())
         messagesmock = mock.MagicMock()
         mockapp = mock.MagicMock()
@@ -571,7 +571,7 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_title(self):
-        testassignment = mommy.make('core.Assignment',
+        testassignment = baker.make('core.Assignment',
                                     short_name='testassignment',
                                     parentnode__short_name='testperiod',
                                     parentnode__parentnode__short_name='testsubject')
@@ -581,15 +581,15 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('title').alltext_normalized)
 
     def test_h1(self):
-        testassignment = mommy.make('core.Assignment', long_name='Assignment One')
+        testassignment = baker.make('core.Assignment', long_name='Assignment One')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
             'Select the students you want to add to Assignment One',
             mockresponse.selector.one('h1').alltext_normalized)
 
     def test_no_relatedstudents(self):
-        testperiod = mommy.make('core.Period')
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testperiod = baker.make('core.Period')
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
             'No students found.',
@@ -597,30 +597,30 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
                 '.devilry-admin-create-groups-manual-select-no-relatedstudents-message').alltext_normalized)
 
     def test_relatedstudent_not_in_assignment_period_excluded(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.RelatedStudent')
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testperiod = baker.make('core.Period')
+        baker.make('core.RelatedStudent')
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
             0,
             mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_relatedstudent_in_assignment_period_included(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.RelatedStudent',
+        testperiod = baker.make('core.Period')
+        baker.make('core.RelatedStudent',
                    period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
             1,
             mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_relatedstudent_with_candidate_on_assignment_not_included(self):
-        testperiod = mommy.make('core.Period')
-        relatedstudent = mommy.make('core.RelatedStudent',
+        testperiod = baker.make('core.Period')
+        relatedstudent = baker.make('core.RelatedStudent',
                                     period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
-        mommy.make('core.Candidate',
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
+        baker.make('core.Candidate',
                    relatedstudent=relatedstudent,
                    assignment_group__parentnode=testassignment)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
@@ -631,12 +631,12 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_render_relatedstudent_sanity(self):
         # This is tested in detail in the tests for
         # devilry.devilry_admin.cradminextensions.multiselect2.multiselect2_relatedstudent.ItemValue
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.RelatedStudent',
+        testperiod = baker.make('core.Period')
+        baker.make('core.RelatedStudent',
                    user__shortname='testuser',
                    user__fullname='Test User',
                    period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
             'Test User(testuser)',
@@ -644,15 +644,15 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
                 '.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_render_search(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.RelatedStudent',
+        testperiod = baker.make('core.Period')
+        baker.make('core.RelatedStudent',
                    user__shortname='testuser',
                    user__fullname='Match User',
                    period=testperiod)
-        mommy.make('core.RelatedStudent',
+        baker.make('core.RelatedStudent',
                    user__fullname='Other User',
                    period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'filters_string': 'search-match'}
@@ -666,18 +666,18 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
                 '.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_render_orderby_default(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.RelatedStudent',
+        testperiod = baker.make('core.Period')
+        baker.make('core.RelatedStudent',
                    user__shortname='userb@example.com',
                    period=testperiod)
-        mommy.make('core.RelatedStudent',
+        baker.make('core.RelatedStudent',
                    user__shortname='x',
                    user__fullname='UserA',
                    period=testperiod)
-        mommy.make('core.RelatedStudent',
+        baker.make('core.RelatedStudent',
                    user__shortname='userc',
                    period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment)
         titles = [element.alltext_normalized
@@ -688,18 +688,18 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
             titles)
 
     def test_render_orderby_name_descending(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.RelatedStudent',
+        testperiod = baker.make('core.Period')
+        baker.make('core.RelatedStudent',
                    user__shortname='userb@example.com',
                    period=testperiod)
-        mommy.make('core.RelatedStudent',
+        baker.make('core.RelatedStudent',
                    user__shortname='x',
                    user__fullname='UserA',
                    period=testperiod)
-        mommy.make('core.RelatedStudent',
+        baker.make('core.RelatedStudent',
                    user__shortname='userc',
                    period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'filters_string': 'orderby-name_descending'})
@@ -711,21 +711,21 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
             titles)
 
     def test_render_orderby_lastname_ascending(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.RelatedStudent',
+        testperiod = baker.make('core.Period')
+        baker.make('core.RelatedStudent',
                    user__shortname='userb@example.com',
                    period=testperiod)
-        mommy.make('core.RelatedStudent',
+        baker.make('core.RelatedStudent',
                    user__shortname='x',
                    user__fullname='User Aaa',
                    user__lastname='Aaa',
                    period=testperiod)
-        mommy.make('core.RelatedStudent',
+        baker.make('core.RelatedStudent',
                    user__shortname='y',
                    user__fullname='User ccc',
                    user__lastname='ccc',
                    period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'filters_string': 'orderby-lastname_ascending'})
@@ -737,21 +737,21 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
             titles)
 
     def test_render_orderby_lastname_descending(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.RelatedStudent',
+        testperiod = baker.make('core.Period')
+        baker.make('core.RelatedStudent',
                    user__shortname='userb@example.com',
                    period=testperiod)
-        mommy.make('core.RelatedStudent',
+        baker.make('core.RelatedStudent',
                    user__shortname='x',
                    user__fullname='User Aaa',
                    user__lastname='Aaa',
                    period=testperiod)
-        mommy.make('core.RelatedStudent',
+        baker.make('core.RelatedStudent',
                    user__shortname='y',
                    user__fullname='User ccc',
                    user__lastname='ccc',
                    period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'filters_string': 'orderby-lastname_descending'})
@@ -763,17 +763,17 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
             titles)
 
     def test_render_orderby_shortname_ascending(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.RelatedStudent',
+        testperiod = baker.make('core.Period')
+        baker.make('core.RelatedStudent',
                    user__shortname='userb@example.com',
                    period=testperiod)
-        mommy.make('core.RelatedStudent',
+        baker.make('core.RelatedStudent',
                    user__shortname='usera@example.com',
                    period=testperiod)
-        mommy.make('core.RelatedStudent',
+        baker.make('core.RelatedStudent',
                    user__shortname='userc@example.com',
                    period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'filters_string': 'orderby-shortname_ascending'})
@@ -785,17 +785,17 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
             titles)
 
     def test_render_orderby_shortname_descending(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.RelatedStudent',
+        testperiod = baker.make('core.Period')
+        baker.make('core.RelatedStudent',
                    user__shortname='userb@example.com',
                    period=testperiod)
-        mommy.make('core.RelatedStudent',
+        baker.make('core.RelatedStudent',
                    user__shortname='usera@example.com',
                    period=testperiod)
-        mommy.make('core.RelatedStudent',
+        baker.make('core.RelatedStudent',
                    user__shortname='userc@example.com',
                    period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'filters_string': 'orderby-shortname_descending'})
@@ -807,14 +807,14 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
             titles)
 
     def test_post_ok_creates_groups(self):
-        testperiod = mommy.make('core.Period')
-        relatedstudent1 = mommy.make('core.RelatedStudent',
+        testperiod = baker.make('core.Period')
+        relatedstudent1 = baker.make('core.RelatedStudent',
                                      period=testperiod)
-        relatedstudent2 = mommy.make('core.RelatedStudent',
+        relatedstudent2 = baker.make('core.RelatedStudent',
                                      period=testperiod)
-        relatedstudent3 = mommy.make('core.RelatedStudent',
+        relatedstudent3 = baker.make('core.RelatedStudent',
                                      period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
         self.assertEqual(0, AssignmentGroup.objects.count())
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
@@ -838,10 +838,10 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(1, first_group.feedbackset_set.count())
 
     def test_post_ok_redirect(self):
-        testperiod = mommy.make('core.Period')
-        relatedstudent = mommy.make('core.RelatedStudent',
+        testperiod = baker.make('core.Period')
+        relatedstudent = baker.make('core.RelatedStudent',
                                     period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
         self.assertEqual(0, AssignmentGroup.objects.count())
         mock_cradmin_instance = mock.MagicMock()
         self.mock_http302_postrequest(
@@ -858,12 +858,12 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
         mock_cradmin_instance.appindex_url.assert_called_once_with('studentoverview')
 
     def test_post_relatedstudent_already_on_assignment(self):
-        testperiod = mommy.make('core.Period')
-        relatedstudent = mommy.make('core.RelatedStudent',
+        testperiod = baker.make('core.Period')
+        relatedstudent = baker.make('core.RelatedStudent',
                                     user__shortname='userb@example.com',
                                     period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
-        mommy.make('core.Candidate',
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
+        baker.make('core.Candidate',
                    relatedstudent=relatedstudent,
                    assignment_group__parentnode=testassignment)
         self.assertEqual(1, AssignmentGroup.objects.count())
@@ -891,10 +891,10 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
             '')
 
     def test_post_relatedstudent_not_relatedstudent_on_period(self):
-        testperiod = mommy.make('core.Period')
-        relatedstudent = mommy.make('core.RelatedStudent',
+        testperiod = baker.make('core.Period')
+        relatedstudent = baker.make('core.RelatedStudent',
                                     user__shortname='userb@example.com')
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
         self.assertEqual(0, AssignmentGroup.objects.count())
         messagesmock = mock.MagicMock()
         mockapp = mock.MagicMock()

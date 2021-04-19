@@ -7,9 +7,9 @@ from django.test import TestCase
 from django.utils import timezone
 from cradmin_legacy import cradmin_testhelpers
 from cradmin_legacy.crinstance import reverse_cradmin_url
-from model_mommy import mommy
+from model_bakery import baker
 
-from devilry.apps.core import devilry_core_mommy_factories as core_mommy
+from devilry.apps.core import devilry_core_baker_factories as core_baker
 from devilry.apps.core.models import Assignment
 from devilry.devilry_account.models import PermissionGroup
 from devilry.devilry_admin.views.assignment import overview
@@ -20,7 +20,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = overview.Overview
 
     def test_title(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end',
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_end',
                                        short_name="testassignment",
                                        parentnode__short_name="testperiod",  # Period
                                        parentnode__parentnode__short_name="testsubject"  # Subject
@@ -30,24 +30,24 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
                          'testsubject.testperiod.testassignment')
 
     def test_devilry_admin_assignment_edit_long_name(self):
-        assignment = mommy.make('core.Assignment')
+        assignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(mockresponse.selector.one('#devilry_admin_assignment_edit_long_name').alltext_normalized,
                          'Edit name')
 
     def test_h1(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end', long_name="TESTASSIGNMENT")
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_end', long_name="TESTASSIGNMENT")
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(mockresponse.selector.one('h1').alltext_normalized, 'TESTASSIGNMENT')
 
     # Todo: Remove
     # def test_publish_now_info_box(self):
-    #     assignment = mommy.make('core.Assignment', publishing_time=timezone.now() + timedelta(days=1))
-    #     group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-    #     core_mommy.candidate(group=group)
-    #     core_mommy.examiner(group=group)
-    #     mommy.make('core.RelatedStudent', period=assignment.period)
-    #     mommy.make('core.RelatedExaminer', period=assignment.period)
+    #     assignment = baker.make('core.Assignment', publishing_time=timezone.now() + timedelta(days=1))
+    #     group = baker.make('core.AssignmentGroup', parentnode=assignment)
+    #     core_baker.candidate(group=group)
+    #     core_baker.examiner(group=group)
+    #     baker.make('core.RelatedStudent', period=assignment.period)
+    #     baker.make('core.RelatedExaminer', period=assignment.period)
     #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
     #     self.assertIn(
     #         'Ready to publish the assignment',
@@ -60,21 +60,21 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
     #     self.assertTrue(mockresponse.selector.exists('#devilry_admin_assignment_published_publishnow_form_info_box'))
 
     def test_published_row(self):
-        assignment = mommy.make('core.Assignment', publishing_time=default_timezone_datetime(2000, 1, 1))
+        assignment = baker.make('core.Assignment', publishing_time=default_timezone_datetime(2000, 1, 1))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one('#devilry_admin_assignment_overview_published h3').alltext_normalized,
             "Was published: Jan 1 2000, 00:00")
 
     def test_published_row_published_time_in_future(self):
-        assignment = mommy.make('core.Assignment', publishing_time=default_timezone_datetime(3000, 1, 1))
+        assignment = baker.make('core.Assignment', publishing_time=default_timezone_datetime(3000, 1, 1))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one('#devilry_admin_assignment_overview_published h3').alltext_normalized,
             "Will be published: Jan 1 3000, 00:00")
 
     def test_published_row_buttons(self):
-        assignment = mommy.make('core.Assignment', publishing_time=default_timezone_datetime(3000, 1, 1))
+        assignment = baker.make('core.Assignment', publishing_time=default_timezone_datetime(3000, 1, 1))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one(
@@ -88,7 +88,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
 
     def test_published_row_buttons_when_already_published(self):
-        assignment = mommy.make('core.Assignment', publishing_time=default_timezone_datetime(2000, 1, 1))
+        assignment = baker.make('core.Assignment', publishing_time=default_timezone_datetime(2000, 1, 1))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertFalse(
             mockresponse.selector.exists(
@@ -96,7 +96,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
 
     def test_settings_row_first_deadline(self):
-        assignment = mommy.make('core.Assignment')
+        assignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one(
@@ -104,7 +104,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
             "Edit first deadline")
 
     def test_settings_row_first_deadline_description(self):
-        assignment = mommy.make('core.Assignment', first_deadline=default_timezone_datetime(2000, 1, 1))
+        assignment = baker.make('core.Assignment', first_deadline=default_timezone_datetime(2000, 1, 1))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one(
@@ -113,7 +113,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
             "students unless a new deadline have been provided to a group.")
 
     def test_settings_row_anonymization(self):
-        assignment = mommy.make('core.Assignment')
+        assignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one(
@@ -121,7 +121,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
             "Edit anonymization mode")
 
     def test_settings_row_anonymization_description_when_anonymizationmode_off(self):
-        assignment = mommy.make('core.Assignment')
+        assignment = baker.make('core.Assignment')
         # default = ANONYMIZATIONMODE_OFF
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
@@ -130,7 +130,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
             Assignment.ANONYMIZATIONMODE_CHOICES_DICT.get(Assignment.ANONYMIZATIONMODE_OFF))
 
     def test_settings_row_anonymization_description_when_anonymizationmode_semi_anonymous(self):
-        assignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        assignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one(
@@ -139,7 +139,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
 
     def test_settings_row_anonymization_description_when_anonymizationmode_fully_anonymous(self):
-        assignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        assignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one(
@@ -148,7 +148,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
 
     def test_gradingconfiguration_row_heading(self):
-        assignment = mommy.make('core.Assignment')
+        assignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one(
@@ -156,7 +156,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
             "Grading configuration")
 
     # def test_gradingconfiguration_row_information_table_caption(self):
-    #     assignment = mommy.make('core.Assignment')
+    #     assignment = baker.make('core.Assignment')
     #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
     #     self.assertEqual(
     #             mockresponse.selector.one(
@@ -164,7 +164,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
     #             "Current setup")
 
     # def test_gradingconfiguration_row_information_table_head(self):
-    #     assignment = mommy.make('core.Assignment')
+    #     assignment = baker.make('core.Assignment')
     #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
     #     self.assertEqual(
     #             mockresponse.selector.one(
@@ -172,7 +172,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
     #             "Description Grading")
 
     def test_gradingconfiguration_examiner_chooses(self):
-        assignment = mommy.make('core.Assignment')
+        assignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one(
@@ -181,7 +181,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
             'Examiner chooses')
 
     def test_gradingconfiguration_examiner_chooses_passed_failed(self):
-        assignment = mommy.make('core.Assignment')
+        assignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one(
@@ -191,7 +191,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
                 Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)))
 
     def test_gradingconfiguration_examiner_chooses_points(self):
-        assignment = mommy.make('core.Assignment', grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS)
+        assignment = baker.make('core.Assignment', grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one(
@@ -201,7 +201,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
                 Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS)))
 
     # def test_gradingconfiguration_examiner_chooses_schema(self):
-    #     assignment = mommy.make('core.Assignment', grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_SCHEMA)
+    #     assignment = baker.make('core.Assignment', grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_SCHEMA)
     #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
     #     self.assertEqual(
     #             mockresponse.selector.one(
@@ -211,7 +211,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
     #                     Assignment.GRADING_SYSTEM_PLUGIN_ID_SCHEMA)))
 
     def test_gradingconfiguration_students_see(self):
-        assignment = mommy.make('core.Assignment')
+        assignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one(
@@ -220,7 +220,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
             "Students see")
 
     def test_gradingconfiguration_students_see_passed_failed(self):
-        assignment = mommy.make('core.Assignment')
+        assignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one(
@@ -230,7 +230,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
                 Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED)))
 
     def test_gradingconfiguration_students_see_points(self):
-        assignment = mommy.make('core.Assignment', points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS)
+        assignment = baker.make('core.Assignment', points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one(
@@ -240,20 +240,20 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
                 Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS)))
 
     def test_gradingconfiguration_students_see_schema(self):
-        assignment = mommy.make('core.Assignment',
+        assignment = baker.make('core.Assignment',
                                 points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE)
-        point_to_grade_map = mommy.make('core.PointToGradeMap', assignment=assignment)
-        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=5,
+        point_to_grade_map = baker.make('core.PointToGradeMap', assignment=assignment)
+        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=5,
                    maximum_points=9, grade='F')
-        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=10,
+        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=10,
                    maximum_points=14,grade='E')
-        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=15,
+        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=15,
                    maximum_points=19, grade='D')
-        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=20,
+        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=20,
                    maximum_points=24, grade='C')
-        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=25,
+        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=25,
                    maximum_points=29, grade='B')
-        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=30,
+        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=30,
                    maximum_points=35, grade='A')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
@@ -263,7 +263,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
             'F, E, D, C, B or A')
 
     def test_gradingconfiguration_max_points(self):
-        assignment = mommy.make('core.Assignment', grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS)
+        assignment = baker.make('core.Assignment', grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one(
@@ -272,7 +272,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
             "Maximum number of points achievable")
 
     def test_gradingconfiguration_max_points_100(self):
-        assignment = mommy.make('core.Assignment', max_points=100,
+        assignment = baker.make('core.Assignment', max_points=100,
                                 grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
@@ -282,7 +282,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
             "100")
 
     def test_gradingconfiguration_min_points(self):
-        assignment = mommy.make('core.Assignment', grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS)
+        assignment = baker.make('core.Assignment', grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one(
@@ -291,7 +291,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
             "Minimum number of points required to pass")
 
     def test_gradingconfiguration_min_points_0(self):
-        assignment = mommy.make('core.Assignment', passing_grade_min_points=0,
+        assignment = baker.make('core.Assignment', passing_grade_min_points=0,
                                 grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
@@ -301,7 +301,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
             "0")
 
     def test_utilities_row_passed_previous(self):
-        assignment = mommy.make('core.Assignment')
+        assignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one(
@@ -309,7 +309,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
             "Passed previous semester")
 
     def test_utilities_row_passed_previous_description(self):
-        assignment = mommy.make('core.Assignment')
+        assignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one(
@@ -317,7 +317,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
             "Mark students that have passed this assignment previously.")
 
     def test_utilities_button_passed_previous_period_text(self):
-        assignment = mommy.make('core.Assignment')
+        assignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one(
@@ -331,7 +331,7 @@ class TestOverviewExaminerSection(TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = overview.Overview
 
     def test_sanity_no_relatedexaminer_no_other_warnings_shown(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_end')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
 
         # Warnings rendered
@@ -347,9 +347,9 @@ class TestOverviewExaminerSection(TestCase, cradmin_testhelpers.TestCaseMixin):
             '#id_devilry_admin_assignment_examiner_on_semester_not_on_assignment'))
 
     def test_sanity_students_without_examiners_and_no_examiners(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
-        mommy.make('core.RelatedExaminer', period=assignment.parentnode)
-        mommy.make('core.Candidate', assignment_group__parentnode=assignment)
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_end')
+        baker.make('core.RelatedExaminer', period=assignment.parentnode)
+        baker.make('core.Candidate', assignment_group__parentnode=assignment)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
 
         # Warnings rendered
@@ -365,11 +365,11 @@ class TestOverviewExaminerSection(TestCase, cradmin_testhelpers.TestCaseMixin):
             '#id_devilry_admin_assignment_examiner_on_semester_not_on_assignment'))
 
     def test_sanity_students_without_examiners_and_more_relatedexaminer_than_examiners(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
-        mommy.make('core.RelatedExaminer', period=assignment.parentnode)
-        related_examiner = mommy.make('core.RelatedExaminer', period=assignment.parentnode)
-        mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup__parentnode=assignment)
-        mommy.make('core.Candidate', assignment_group__parentnode=assignment)
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_end')
+        baker.make('core.RelatedExaminer', period=assignment.parentnode)
+        related_examiner = baker.make('core.RelatedExaminer', period=assignment.parentnode)
+        baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup__parentnode=assignment)
+        baker.make('core.Candidate', assignment_group__parentnode=assignment)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
 
         # Warnings rendered
@@ -385,33 +385,33 @@ class TestOverviewExaminerSection(TestCase, cradmin_testhelpers.TestCaseMixin):
             '#id_devilry_admin_assignment_examiner_no_examiners_on_assignment'))
 
     def test_assignment_meta_one_distinct_examiner_configured(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
-        relatedexaminer = mommy.make('core.RelatedExaminer', period=assignment.period)
-        mommy.make('core.Examiner', relatedexaminer=relatedexaminer, assignmentgroup__parentnode=assignment)
-        mommy.make('core.Examiner', relatedexaminer=relatedexaminer, assignmentgroup__parentnode=assignment)
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_end')
+        relatedexaminer = baker.make('core.RelatedExaminer', period=assignment.period)
+        baker.make('core.Examiner', relatedexaminer=relatedexaminer, assignmentgroup__parentnode=assignment)
+        baker.make('core.Examiner', relatedexaminer=relatedexaminer, assignmentgroup__parentnode=assignment)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one('.devilry-admin-assignment-examiners-exists').alltext_normalized,
             '1 examiner(s) configured')
 
     def test_assignment_meta_multiple_examiners_configured(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
-        mommy.make('core.Examiner', assignmentgroup__parentnode=assignment)
-        mommy.make('core.Examiner', assignmentgroup__parentnode=assignment)
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_end')
+        baker.make('core.Examiner', assignmentgroup__parentnode=assignment)
+        baker.make('core.Examiner', assignmentgroup__parentnode=assignment)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one('#id_devilry_admin_assignment_examiners_meta_count_text').alltext_normalized,
             '2 examiner(s) configured')
 
     def test_assignment_meta_no_examiner_configured(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_end')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one('.devilry-admin-assignment-examiners-does-not-exist').alltext_normalized,
             'No examiners configured')
 
     def test_no_examiners_on_semester_warning(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_end')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
 
         # Check warning exists
@@ -436,9 +436,9 @@ class TestOverviewExaminerSection(TestCase, cradmin_testhelpers.TestCaseMixin):
                 '#id_devilry_admin_assignment_examiner_empty_semester_warning > strong > a').get('href'))
 
     def test_students_without_examiners_exists_warning(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
-        mommy.make('core.RelatedExaminer', period=assignment.period)
-        mommy.make('core.Candidate', assignment_group__parentnode=assignment)
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_end')
+        baker.make('core.RelatedExaminer', period=assignment.period)
+        baker.make('core.Candidate', assignment_group__parentnode=assignment)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
 
         # Check warning exists
@@ -464,9 +464,9 @@ class TestOverviewExaminerSection(TestCase, cradmin_testhelpers.TestCaseMixin):
                 '#id_devilry_admin_assignment_examiner_students_without_examiner_warning > strong > a').get('href'))
 
     def test_no_examiners_configured_for_assignment_groups_warning(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
-        mommy.make('core.RelatedExaminer', period=assignment.period)
-        mommy.make('core.Candidate', assignment_group__parentnode=assignment)
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_end')
+        baker.make('core.RelatedExaminer', period=assignment.period)
+        baker.make('core.Candidate', assignment_group__parentnode=assignment)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
 
         # Check warning exists
@@ -495,10 +495,10 @@ class TestOverviewExaminerSection(TestCase, cradmin_testhelpers.TestCaseMixin):
                 '#id_devilry_admin_assignment_examiner_no_examiners_on_assignment > strong > a').get('href'))
 
     def test_fewer_examiners_than_relatedexaminers_on_semester_note(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
-        mommy.make('core.RelatedExaminer', period=assignment.period)
-        related_examiner = mommy.make('core.RelatedExaminer', period=assignment.period)
-        mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup__parentnode=assignment)
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_end')
+        baker.make('core.RelatedExaminer', period=assignment.period)
+        related_examiner = baker.make('core.RelatedExaminer', period=assignment.period)
+        baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup__parentnode=assignment)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
 
         # Check warning exists
@@ -527,7 +527,7 @@ class TestOverviewStudentSection(TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = overview.Overview
 
     def test_sanity_no_relatedstudents_no_other_warnings_shown(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_end')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
 
         # Warnings rendered
@@ -541,8 +541,8 @@ class TestOverviewStudentSection(TestCase, cradmin_testhelpers.TestCaseMixin):
             '#id_devilry_admin_assignment_student_on_semester_not_on_assignment'))
 
     def test_sanity_no_candidates_on_assignment(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
-        mommy.make('core.RelatedStudent', period=assignment.parentnode)
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_end')
+        baker.make('core.RelatedStudent', period=assignment.parentnode)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
 
         # Warnings rendered
@@ -556,37 +556,37 @@ class TestOverviewStudentSection(TestCase, cradmin_testhelpers.TestCaseMixin):
             '#id_devilry_admin_assignment_student_on_semester_not_on_assignment'))
 
     def test_meta_text_has_two_candidates_and_two_assignment_groups(self):
-        assignment = mommy.make('core.Assignment')
-        group1 = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        group2 = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        mommy.make('core.Candidate', assignment_group=group1)
-        mommy.make('core.Candidate', assignment_group=group2)
+        assignment = baker.make('core.Assignment')
+        group1 = baker.make('core.AssignmentGroup', parentnode=assignment)
+        group2 = baker.make('core.AssignmentGroup', parentnode=assignment)
+        baker.make('core.Candidate', assignment_group=group1)
+        baker.make('core.Candidate', assignment_group=group2)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one('#id_devilry_admin_assignment_students_meta_count_text').alltext_normalized,
             '2 students organized in 2 project groups')
 
     def test_meta_text_has_no_students(self):
-        assignment = mommy.make('core.Assignment')
+        assignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one('#id_devilry_admin_assignment_students_meta_count_text').alltext_normalized,
             'No students on the assignment')
 
     def test_meta_text_has_multiple_students_in_group(self):
-        assignment = mommy.make('core.Assignment')
-        group1 = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        group2 = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        mommy.make('core.Candidate', assignment_group=group1)
-        mommy.make('core.Candidate', assignment_group=group2)
-        mommy.make('core.Candidate', assignment_group=group2)
+        assignment = baker.make('core.Assignment')
+        group1 = baker.make('core.AssignmentGroup', parentnode=assignment)
+        group2 = baker.make('core.AssignmentGroup', parentnode=assignment)
+        baker.make('core.Candidate', assignment_group=group1)
+        baker.make('core.Candidate', assignment_group=group2)
+        baker.make('core.Candidate', assignment_group=group2)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertTrue(
             mockresponse.selector.one('#id_devilry_admin_assignment_students_meta_count_text').alltext_normalized,
             '3 students organized in 2 project groups')
 
     def test_no_related_students_on_semester(self):
-        assignment = mommy.make('core.Assignment')
+        assignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
 
         # Check warning exists
@@ -611,8 +611,8 @@ class TestOverviewStudentSection(TestCase, cradmin_testhelpers.TestCaseMixin):
                 '#id_devilry_admin_assignment_student_no_active_students_on_semester > strong > a').get('href'))
 
     def test_no_candidates_warning(self):
-        assignment = mommy.make('core.Assignment')
-        mommy.make('core.RelatedStudent', period=assignment.parentnode)
+        assignment = baker.make('core.Assignment')
+        baker.make('core.RelatedStudent', period=assignment.parentnode)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
 
         # Check warning exists
@@ -640,10 +640,10 @@ class TestOverviewStudentSection(TestCase, cradmin_testhelpers.TestCaseMixin):
                 '#id_devilry_admin_assignment_student_no_students_on_assignment > strong > a').get('href'))
 
     def test_students_on_the_semester_that_are_not_on_the_assignment_warning(self):
-        assignment = mommy.make('core.Assignment')
-        mommy.make('core.RelatedStudent', period=assignment.parentnode)
-        related_student = mommy.make('core.RelatedStudent', period=assignment.parentnode)
-        mommy.make('core.Candidate', relatedstudent=related_student, assignment_group__parentnode=assignment)
+        assignment = baker.make('core.Assignment')
+        baker.make('core.RelatedStudent', period=assignment.parentnode)
+        related_student = baker.make('core.RelatedStudent', period=assignment.parentnode)
+        baker.make('core.Candidate', relatedstudent=related_student, assignment_group__parentnode=assignment)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
 
         # Check warning exists

@@ -4,7 +4,7 @@
 # 3rd party imports
 import mock
 from django.utils import timezone
-from model_mommy import mommy
+from model_bakery import baker
 
 # Django imports
 from django import test
@@ -21,7 +21,7 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
     viewclass = list_statuses_view.ListStatusesView
 
     def test_title(self):
-        testperiod = mommy.make(
+        testperiod = baker.make(
                 'core.Period',
                 parentnode__short_name='testsubject',
                 short_name='testperiod')
@@ -30,21 +30,21 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
                          'testsubject.testperiod')
 
     def test_heading(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertEqual(
                 mockresponse.selector.one('.devilry-qualifiesforexam-list-statuses-heading').alltext_normalized,
                 'Status overview for {}'.format(testperiod))
 
     def test_create_new_status_button_text(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertEqual(
                 mockresponse.selector.one('#devilry_admin_period_createassignment_link').alltext_normalized,
                 'Create new status')
 
     def test_links_urls(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertEqual(1, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
         self.assertEqual(
@@ -52,15 +52,15 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
                 mockresponse.request.cradmin_instance.reverse_url.call_args_list[0])
 
     def test_no_statuses_for_period_message(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         no_items_message = mockresponse.selector.one('.cradmin-legacy-listbuilderview-no-items-message')\
             .alltext_normalized
         self.assertEqual(no_items_message, 'No status has been created for this period yet.')
 
     def test_status_description_in_list(self):
-        testperiod = mommy.make('core.Period')
-        teststatus = mommy.make('devilry_qualifiesforexam.Status', period=testperiod, status=status_models.Status.READY)
+        testperiod = baker.make('core.Period')
+        teststatus = baker.make('devilry_qualifiesforexam.Status', period=testperiod, status=status_models.Status.READY)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertEqual(
                 mockresponse.selector.one('.devilry-qualifiesforexam-status-description-name').alltext_normalized,
@@ -70,22 +70,22 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
                 timezone.localtime(teststatus.createtime).strftime('%A %B %-d, %Y, %H:%M'))
 
     def test_status_ready_in_list(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('devilry_qualifiesforexam.Status', period=testperiod, status=status_models.Status.READY)
+        testperiod = baker.make('core.Period')
+        baker.make('devilry_qualifiesforexam.Status', period=testperiod, status=status_models.Status.READY)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertTrue(mockresponse.selector.one('.devilry-qualifiesforexam-list-statuses-statusitemframe'))
         self.assertEqual(mockresponse.selector.one('.label-success').alltext_normalized, 'Ready')
 
     def test_status_notready_in_list(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('devilry_qualifiesforexam.Status', period=testperiod, status=status_models.Status.NOTREADY)
+        testperiod = baker.make('core.Period')
+        baker.make('devilry_qualifiesforexam.Status', period=testperiod, status=status_models.Status.NOTREADY)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertTrue(mockresponse.selector.one('.devilry-qualifiesforexam-list-statuses-statusitemframe'))
         self.assertEqual(mockresponse.selector.one('.label-warning').alltext_normalized, 'Not ready')
 
     def test_status_multiple_in_list(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('devilry_qualifiesforexam.Status',
+        testperiod = baker.make('core.Period')
+        baker.make('devilry_qualifiesforexam.Status',
                    period=testperiod, status=status_models.Status.READY,
                    _quantity=5)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
@@ -93,8 +93,8 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
         self.assertEqual(len(statuses), 5)
 
     def test_status_for_other_periods_not_listed(self):
-        testperiod1 = mommy.make('core.Period')
-        testperiod2 = mommy.make('core.Period')
-        mommy.make('devilry_qualifiesforexam.Status', period=testperiod2, status=status_models.Status.READY)
+        testperiod1 = baker.make('core.Period')
+        testperiod2 = baker.make('core.Period')
+        baker.make('devilry_qualifiesforexam.Status', period=testperiod2, status=status_models.Status.READY)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod1)
         self.assertEqual(len(mockresponse.selector.list('.devilry-qualifiesforexam-list-statuses-statusitemframe')), 0)

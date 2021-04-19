@@ -7,7 +7,7 @@ from django import test
 from django.conf import settings
 from devilry.utils import datetimeutils
 
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.devilry_comment.models import CommentFile
 from devilry.devilry_group.models import FeedbackSet, GroupComment
@@ -57,13 +57,13 @@ class TestStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
         }
 
     def test_importer(self):
-        test_examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_group = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Examiner',
+        test_examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        test_group = baker.make('core.AssignmentGroup')
+        baker.make('core.Examiner',
                    assignmentgroup=test_group,
                    relatedexaminer__user=test_examiner_user,
                    relatedexaminer__period=test_group.parentnode.parentnode)
-        test_feedbackset = mommy.make('devilry_group.FeedbackSet', group=test_group)
+        test_feedbackset = baker.make('devilry_group.FeedbackSet', group=test_group)
         self.create_v2dump(
             model_name='core.staticfeedback',
             data=self._create_staticfeedback_dict(
@@ -75,13 +75,13 @@ class TestStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(GroupComment.objects.count(), 1)
 
     def test_importer_feedback_set(self):
-        test_examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_group = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Examiner',
+        test_examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        test_group = baker.make('core.AssignmentGroup')
+        baker.make('core.Examiner',
                    assignmentgroup=test_group,
                    relatedexaminer__user=test_examiner_user,
                    relatedexaminer__period=test_group.parentnode.parentnode)
-        test_feedbackset = mommy.make('devilry_group.FeedbackSet', group=test_group)
+        test_feedbackset = baker.make('devilry_group.FeedbackSet', group=test_group)
         self.create_v2dump(
             model_name='core.staticfeedback',
             data=self._create_staticfeedback_dict(
@@ -93,13 +93,13 @@ class TestStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(comment.feedback_set, test_feedbackset)
 
     def test_importer_user(self):
-        test_examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_group = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Examiner',
+        test_examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        test_group = baker.make('core.AssignmentGroup')
+        baker.make('core.Examiner',
                    assignmentgroup=test_group,
                    relatedexaminer__user=test_examiner_user,
                    relatedexaminer__period=test_group.parentnode.parentnode)
-        test_feedbackset = mommy.make('devilry_group.FeedbackSet', group=test_group)
+        test_feedbackset = baker.make('devilry_group.FeedbackSet', group=test_group)
         self.create_v2dump(
             model_name='core.staticfeedback',
             data=self._create_staticfeedback_dict(
@@ -111,13 +111,13 @@ class TestStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(comment.user, test_examiner_user)
 
     def test_importer_user_role(self):
-        test_examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_group = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Examiner',
+        test_examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        test_group = baker.make('core.AssignmentGroup')
+        baker.make('core.Examiner',
                    assignmentgroup=test_group,
                    relatedexaminer__user=test_examiner_user,
                    relatedexaminer__period=test_group.parentnode.parentnode)
-        test_feedbackset = mommy.make('devilry_group.FeedbackSet', group=test_group)
+        test_feedbackset = baker.make('devilry_group.FeedbackSet', group=test_group)
         self.create_v2dump(
             model_name='core.staticfeedback',
             data=self._create_staticfeedback_dict(
@@ -129,13 +129,13 @@ class TestStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(comment.user_role, GroupComment.USER_ROLE_EXAMINER)
 
     def test_importer_text(self):
-        test_examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_group = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Examiner',
+        test_examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        test_group = baker.make('core.AssignmentGroup')
+        baker.make('core.Examiner',
                    assignmentgroup=test_group,
                    relatedexaminer__user=test_examiner_user,
                    relatedexaminer__period=test_group.parentnode.parentnode)
-        test_feedbackset = mommy.make('devilry_group.FeedbackSet', group=test_group)
+        test_feedbackset = baker.make('devilry_group.FeedbackSet', group=test_group)
         staticfeedback_data_dict = self._create_staticfeedback_dict(
             feedback_set=test_feedbackset,
             examiner_user_id=test_examiner_user.id)
@@ -148,13 +148,13 @@ class TestStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(comment.text, staticfeedback_data_dict['fields']['rendered_view'])
 
     def test_importer_comment_type(self):
-        test_examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_group = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Examiner',
+        test_examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        test_group = baker.make('core.AssignmentGroup')
+        baker.make('core.Examiner',
                    assignmentgroup=test_group,
                    relatedexaminer__user=test_examiner_user,
                    relatedexaminer__period=test_group.parentnode.parentnode)
-        test_feedbackset = mommy.make('devilry_group.FeedbackSet', group=test_group)
+        test_feedbackset = baker.make('devilry_group.FeedbackSet', group=test_group)
         self.create_v2dump(
             model_name='core.staticfeedback',
             data=self._create_staticfeedback_dict(
@@ -166,13 +166,13 @@ class TestStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(comment.comment_type, GroupComment.COMMENT_TYPE_GROUPCOMMENT)
 
     def test_importer_comment_is_part_of_grading(self):
-        test_examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_group = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Examiner',
+        test_examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        test_group = baker.make('core.AssignmentGroup')
+        baker.make('core.Examiner',
                    assignmentgroup=test_group,
                    relatedexaminer__user=test_examiner_user,
                    relatedexaminer__period=test_group.parentnode.parentnode)
-        test_feedbackset = mommy.make('devilry_group.FeedbackSet', group=test_group)
+        test_feedbackset = baker.make('devilry_group.FeedbackSet', group=test_group)
         self.create_v2dump(
             model_name='core.staticfeedback',
             data=self._create_staticfeedback_dict(
@@ -184,13 +184,13 @@ class TestStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertTrue(comment.part_of_grading)
 
     def test_importer_published_datetime(self):
-        test_examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_group = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Examiner',
+        test_examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        test_group = baker.make('core.AssignmentGroup')
+        baker.make('core.Examiner',
                    assignmentgroup=test_group,
                    relatedexaminer__user=test_examiner_user,
                    relatedexaminer__period=test_group.parentnode.parentnode)
-        test_feedbackset = mommy.make('devilry_group.FeedbackSet', group=test_group)
+        test_feedbackset = baker.make('devilry_group.FeedbackSet', group=test_group)
         staticfeedback_data_dict = self._create_staticfeedback_dict(
             feedback_set=test_feedbackset,
             examiner_user_id=test_examiner_user.id
@@ -207,13 +207,13 @@ class TestStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
         )
 
     def test_importer_feedback_set_grading_published_datetime(self):
-        test_examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_group = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Examiner',
+        test_examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        test_group = baker.make('core.AssignmentGroup')
+        baker.make('core.Examiner',
                    assignmentgroup=test_group,
                    relatedexaminer__user=test_examiner_user,
                    relatedexaminer__period=test_group.parentnode.parentnode)
-        test_feedbackset = mommy.make('devilry_group.FeedbackSet', group=test_group)
+        test_feedbackset = baker.make('devilry_group.FeedbackSet', group=test_group)
         staticfeedback_data_dict = self._create_staticfeedback_dict(
             feedback_set=test_feedbackset,
             examiner_user_id=test_examiner_user.id
@@ -229,13 +229,13 @@ class TestStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
             datetimeutils.from_isoformat(staticfeedback_data_dict['fields']['save_timestamp']))
 
     def test_importer_feedback_set_grading_points(self):
-        test_examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_group = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Examiner',
+        test_examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        test_group = baker.make('core.AssignmentGroup')
+        baker.make('core.Examiner',
                    assignmentgroup=test_group,
                    relatedexaminer__user=test_examiner_user,
                    relatedexaminer__period=test_group.parentnode.parentnode)
-        test_feedbackset = mommy.make('devilry_group.FeedbackSet', group=test_group)
+        test_feedbackset = baker.make('devilry_group.FeedbackSet', group=test_group)
         staticfeedback_data_dict = self._create_staticfeedback_dict(
             feedback_set=test_feedbackset,
             examiner_user_id=test_examiner_user.id
@@ -249,13 +249,13 @@ class TestStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(feedback_set.grading_points, staticfeedback_data_dict['fields']['points'])
 
     def test_importer_feedback_set_grading_published_by(self):
-        test_examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_group = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Examiner',
+        test_examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        test_group = baker.make('core.AssignmentGroup')
+        baker.make('core.Examiner',
                    assignmentgroup=test_group,
                    relatedexaminer__user=test_examiner_user,
                    relatedexaminer__period=test_group.parentnode.parentnode)
-        test_feedbackset = mommy.make('devilry_group.FeedbackSet', group=test_group)
+        test_feedbackset = baker.make('devilry_group.FeedbackSet', group=test_group)
         staticfeedback_data_dict = self._create_staticfeedback_dict(
             feedback_set=test_feedbackset,
             examiner_user_id=test_examiner_user.id
@@ -270,13 +270,13 @@ class TestStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
 
     def test_importer_comment_file_attributes(self):
         with self.settings(DEVILRY_V2_MEDIA_ROOT=self.v2_media_root_temp_dir):
-            test_examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-            test_group = mommy.make('core.AssignmentGroup')
-            mommy.make('core.Examiner',
+            test_examiner_user = baker.make(settings.AUTH_USER_MODEL)
+            test_group = baker.make('core.AssignmentGroup')
+            baker.make('core.Examiner',
                        assignmentgroup=test_group,
                        relatedexaminer__user=test_examiner_user,
                        relatedexaminer__period=test_group.parentnode.parentnode)
-            test_feedbackset = mommy.make('devilry_group.FeedbackSet', group=test_group)
+            test_feedbackset = baker.make('devilry_group.FeedbackSet', group=test_group)
             self.create_v2dump(
                 model_name='core.staticfeedback',
                 data=self._create_staticfeedback_dict(
@@ -369,18 +369,18 @@ class TestDeliveryAndStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.
         }
 
     def test_importer(self):
-        test_student_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_group = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Examiner',
+        test_student_user = baker.make(settings.AUTH_USER_MODEL)
+        test_examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        test_group = baker.make('core.AssignmentGroup')
+        baker.make('core.Examiner',
                    assignmentgroup=test_group,
                    relatedexaminer__user=test_examiner_user,
                    relatedexaminer__period=test_group.parentnode.parentnode)
-        candidate = mommy.make('core.Candidate',
+        candidate = baker.make('core.Candidate',
                                assignment_group=test_group,
                                relatedstudent__user=test_student_user,
                                relatedstudent__period=test_group.parentnode.parentnode)
-        test_feedbackset = mommy.make('devilry_group.FeedbackSet', group=test_group)
+        test_feedbackset = baker.make('devilry_group.FeedbackSet', group=test_group)
         self.create_v2dump(
             model_name='core.delivery',
             data=self._create_delivery_dict(
@@ -400,18 +400,18 @@ class TestDeliveryAndStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.
         self.assertEqual(GroupComment.objects.count(), 2)
 
     def test_importer_feedback_comments_id_starts_at_max_id(self):
-        test_student_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_group = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Examiner',
+        test_student_user = baker.make(settings.AUTH_USER_MODEL)
+        test_examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        test_group = baker.make('core.AssignmentGroup')
+        baker.make('core.Examiner',
                    assignmentgroup=test_group,
                    relatedexaminer__user=test_examiner_user,
                    relatedexaminer__period=test_group.parentnode.parentnode)
-        candidate = mommy.make('core.Candidate',
+        candidate = baker.make('core.Candidate',
                                assignment_group=test_group,
                                relatedstudent__user=test_student_user,
                                relatedstudent__period=test_group.parentnode.parentnode)
-        test_feedbackset = mommy.make('devilry_group.FeedbackSet', group=test_group)
+        test_feedbackset = baker.make('devilry_group.FeedbackSet', group=test_group)
         self.create_v2dump(
             model_name='core.delivery',
             data=self._create_delivery_dict(

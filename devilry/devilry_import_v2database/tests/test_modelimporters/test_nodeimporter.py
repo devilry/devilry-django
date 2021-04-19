@@ -5,7 +5,7 @@ from devilry.devilry_import_v2database.models import ImportedModel
 from django import test
 from django.conf import settings
 
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.apps.core.models import Subject
 from devilry.devilry_account import models as account_models
@@ -30,8 +30,8 @@ class TestNodeImporter(ImporterTestCaseMixin, test.TestCase):
         }
 
     def test_import(self):
-        test_subject = mommy.make('core.Subject')
-        test_admin = mommy.make(settings.AUTH_USER_MODEL)
+        test_subject = baker.make('core.Subject')
+        test_admin = baker.make(settings.AUTH_USER_MODEL)
         data_dict = self._create_node_dict(test_subject_ids=[test_subject.id], test_admin_user_ids=[test_admin.id])
         self.create_v2dump(model_name='core.node', data=data_dict)
         nodeimporter = NodeImporter(input_root=self.temp_root_dir)
@@ -43,11 +43,11 @@ class TestNodeImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(account_models.PermissionGroupUser.objects.count(), 1)
 
     def test_import_multiple_subjects_single_admin(self):
-        test_subject1 = mommy.make('core.Subject')
-        test_subject2 = mommy.make('core.Subject')
-        test_subject3 = mommy.make('core.Subject')
+        test_subject1 = baker.make('core.Subject')
+        test_subject2 = baker.make('core.Subject')
+        test_subject3 = baker.make('core.Subject')
         subject_id_list = [test_subject1.id, test_subject2.id, test_subject3.id]
-        test_admin = mommy.make(settings.AUTH_USER_MODEL)
+        test_admin = baker.make(settings.AUTH_USER_MODEL)
         data_dict = self._create_node_dict(test_subject_ids=subject_id_list, test_admin_user_ids=[test_admin.id])
         self.create_v2dump(model_name='core.node', data=data_dict)
         nodeimporter = NodeImporter(input_root=self.temp_root_dir)
@@ -56,8 +56,8 @@ class TestNodeImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(account_models.SubjectPermissionGroup.objects.count(), 3)
 
     def test_import_subject_permission_group_for_permission_group(self):
-        test_subject = mommy.make('core.Subject')
-        test_admin = mommy.make(settings.AUTH_USER_MODEL)
+        test_subject = baker.make('core.Subject')
+        test_admin = baker.make(settings.AUTH_USER_MODEL)
         data_dict = self._create_node_dict(test_subject_ids=[test_subject.id], test_admin_user_ids=[test_admin.id])
         self.create_v2dump(model_name='core.node', data=data_dict)
         nodeimporter = NodeImporter(input_root=self.temp_root_dir)
@@ -69,11 +69,11 @@ class TestNodeImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(subject_permission_group.subject, test_subject)
 
     def test_import_multiple_subject_permission_groups_for_permission_group(self):
-        test_subject1 = mommy.make('core.Subject')
-        test_subject2 = mommy.make('core.Subject')
-        test_subject3 = mommy.make('core.Subject')
+        test_subject1 = baker.make('core.Subject')
+        test_subject2 = baker.make('core.Subject')
+        test_subject3 = baker.make('core.Subject')
         subject_id_list = [test_subject1.id, test_subject2.id, test_subject3.id]
-        test_admin = mommy.make(settings.AUTH_USER_MODEL)
+        test_admin = baker.make(settings.AUTH_USER_MODEL)
         data_dict = self._create_node_dict(test_subject_ids=subject_id_list, test_admin_user_ids=[test_admin.id])
         self.create_v2dump(model_name='core.node', data=data_dict)
         nodeimporter = NodeImporter(input_root=self.temp_root_dir)
@@ -85,8 +85,8 @@ class TestNodeImporter(ImporterTestCaseMixin, test.TestCase):
             self.assertEqual(subject_permission_group.permissiongroup, permission_group)
 
     def test_import_permission_group_user_on_permission_group(self):
-        test_subject = mommy.make('core.Subject')
-        test_admin = mommy.make(settings.AUTH_USER_MODEL)
+        test_subject = baker.make('core.Subject')
+        test_admin = baker.make(settings.AUTH_USER_MODEL)
         data_dict = self._create_node_dict(test_subject_ids=[test_subject.id], test_admin_user_ids=[test_admin.id])
         self.create_v2dump(model_name='core.node', data=data_dict)
         nodeimporter = NodeImporter(input_root=self.temp_root_dir)
@@ -98,9 +98,9 @@ class TestNodeImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(permission_group_user.permissiongroup, permission_group)
 
     def test_import_user_is_admin_for_subject(self):
-        test_subject = mommy.make('core.Subject')
-        test_subject_no_admins = mommy.make('core.Subject')
-        test_admin = mommy.make(settings.AUTH_USER_MODEL)
+        test_subject = baker.make('core.Subject')
+        test_subject_no_admins = baker.make('core.Subject')
+        test_admin = baker.make(settings.AUTH_USER_MODEL)
         data_dict = self._create_node_dict(test_subject_ids=[test_subject.id], test_admin_user_ids=[test_admin.id])
         self.create_v2dump(model_name='core.node', data=data_dict)
         nodeimporter = NodeImporter(input_root=self.temp_root_dir)
@@ -111,11 +111,11 @@ class TestNodeImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertNotIn(test_subject_no_admins, subject_queryset)
 
     def test_import_user_is_admin_for_multiple_subjects(self):
-        test_subject1 = mommy.make('core.Subject')
-        test_subject2 = mommy.make('core.Subject')
-        test_subject3 = mommy.make('core.Subject')
-        test_subject_no_admins = mommy.make('core.Subject')
-        test_admin = mommy.make(settings.AUTH_USER_MODEL)
+        test_subject1 = baker.make('core.Subject')
+        test_subject2 = baker.make('core.Subject')
+        test_subject3 = baker.make('core.Subject')
+        test_subject_no_admins = baker.make('core.Subject')
+        test_admin = baker.make(settings.AUTH_USER_MODEL)
         test_subject_ids = [test_subject1.id, test_subject2.id, test_subject3.id]
         data_dict = self._create_node_dict(test_subject_ids=test_subject_ids, test_admin_user_ids=[test_admin.id])
         self.create_v2dump(model_name='core.node', data=data_dict)

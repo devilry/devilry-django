@@ -1,6 +1,6 @@
 import htmls
 from django import test
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.apps.core.models import RelatedExaminer
 from devilry.devilry_admin.cradminextensions.listbuilder import listbuilder_relatedexaminer
@@ -9,7 +9,7 @@ from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 
 class TestOnPeriodItemValue(test.TestCase):
     def test_title_without_fullname(self):
-        relatedstudent = mommy.make('core.RelatedExaminer',
+        relatedstudent = baker.make('core.RelatedExaminer',
                                     user__shortname='test@example.com',
                                     user__fullname='')
         selector = htmls.S(listbuilder_relatedexaminer.OnPeriodItemValue(value=relatedstudent).render())
@@ -18,7 +18,7 @@ class TestOnPeriodItemValue(test.TestCase):
             selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_title_with_fullname(self):
-        relatedstudent = mommy.make('core.RelatedExaminer',
+        relatedstudent = baker.make('core.RelatedExaminer',
                                     user__fullname='Test User',
                                     user__shortname='test@example.com')
         selector = htmls.S(listbuilder_relatedexaminer.OnPeriodItemValue(value=relatedstudent).render())
@@ -27,7 +27,7 @@ class TestOnPeriodItemValue(test.TestCase):
             selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_description_without_fullname(self):
-        relatedstudent = mommy.make('core.RelatedExaminer',
+        relatedstudent = baker.make('core.RelatedExaminer',
                                     user__shortname='test@example.com',
                                     user__fullname='')
         selector = htmls.S(listbuilder_relatedexaminer.OnPeriodItemValue(value=relatedstudent).render())
@@ -35,7 +35,7 @@ class TestOnPeriodItemValue(test.TestCase):
             selector.exists('.cradmin-legacy-listbuilder-itemvalue-titledescription-description'))
 
     def test_description_with_fullname(self):
-        relatedstudent = mommy.make('core.RelatedExaminer',
+        relatedstudent = baker.make('core.RelatedExaminer',
                                     user__fullname='Test User',
                                     user__shortname='test@example.com')
         selector = htmls.S(listbuilder_relatedexaminer.OnPeriodItemValue(value=relatedstudent).render())
@@ -55,10 +55,10 @@ class TestOnassignmentItemValue(test.TestCase):
             .get(id=relatedexaminer.id)
 
     def test_title_without_fullname(self):
-        relatedexaminer = mommy.make('core.RelatedExaminer',
+        relatedexaminer = baker.make('core.RelatedExaminer',
                                      user__shortname='test@example.com',
                                      user__fullname='')
-        testassignment = mommy.make('core.Assignment')
+        testassignment = baker.make('core.Assignment')
         relatedexaminer = self.__annotate_relatedexaminer(relatedexaminer, assignment=testassignment)
         selector = htmls.S(listbuilder_relatedexaminer.OnassignmentItemValue(value=relatedexaminer).render())
         self.assertEqual(
@@ -66,10 +66,10 @@ class TestOnassignmentItemValue(test.TestCase):
             selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_title_with_fullname(self):
-        relatedexaminer = mommy.make('core.RelatedExaminer',
+        relatedexaminer = baker.make('core.RelatedExaminer',
                                      user__fullname='Test User',
                                      user__shortname='test@example.com')
-        testassignment = mommy.make('core.Assignment')
+        testassignment = baker.make('core.Assignment')
         relatedexaminer = self.__annotate_relatedexaminer(relatedexaminer, assignment=testassignment)
         selector = htmls.S(listbuilder_relatedexaminer.OnassignmentItemValue(value=relatedexaminer).render())
         self.assertEqual(
@@ -77,8 +77,8 @@ class TestOnassignmentItemValue(test.TestCase):
             selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_summary_no_groups(self):
-        relatedexaminer = mommy.make('core.RelatedExaminer')
-        testassignment = mommy.make('core.Assignment')
+        relatedexaminer = baker.make('core.RelatedExaminer')
+        testassignment = baker.make('core.Assignment')
         relatedexaminer = self.__annotate_relatedexaminer(relatedexaminer, assignment=testassignment)
         selector = htmls.S(listbuilder_relatedexaminer.OnassignmentItemValue(value=relatedexaminer).render())
         self.assertEqual(
@@ -86,13 +86,13 @@ class TestOnassignmentItemValue(test.TestCase):
             selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-description').alltext_normalized)
 
     def test_summary_single_groups_no_projectgroups(self):
-        relatedexaminer = mommy.make('core.RelatedExaminer')
-        testassignment = mommy.make('core.Assignment')
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.Examiner',
+        relatedexaminer = baker.make('core.RelatedExaminer')
+        testassignment = baker.make('core.Assignment')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup,
                    relatedexaminer=relatedexaminer)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup)
         relatedexaminer = self.__annotate_relatedexaminer(relatedexaminer, assignment=testassignment)
         selector = htmls.S(listbuilder_relatedexaminer.OnassignmentItemValue(value=relatedexaminer).render())
@@ -101,19 +101,19 @@ class TestOnassignmentItemValue(test.TestCase):
             selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-description').alltext_normalized)
 
     def test_summary_multiple_groups_no_projectgroups(self):
-        relatedexaminer = mommy.make('core.RelatedExaminer')
-        testassignment = mommy.make('core.Assignment')
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.Examiner',
+        relatedexaminer = baker.make('core.RelatedExaminer')
+        testassignment = baker.make('core.Assignment')
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup1,
                    relatedexaminer=relatedexaminer)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup1)
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.Examiner',
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup2,
                    relatedexaminer=relatedexaminer)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup2)
         relatedexaminer = self.__annotate_relatedexaminer(relatedexaminer, assignment=testassignment)
         selector = htmls.S(listbuilder_relatedexaminer.OnassignmentItemValue(value=relatedexaminer).render())
@@ -122,21 +122,21 @@ class TestOnassignmentItemValue(test.TestCase):
             selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-description').alltext_normalized)
 
     def test_summary_multiple_groups_with_multiple_candidates(self):
-        relatedexaminer = mommy.make('core.RelatedExaminer')
-        testassignment = mommy.make('core.Assignment')
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.Examiner',
+        relatedexaminer = baker.make('core.RelatedExaminer')
+        testassignment = baker.make('core.Assignment')
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup1,
                    relatedexaminer=relatedexaminer)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup1)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup1)
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.Examiner',
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup2,
                    relatedexaminer=relatedexaminer)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup2)
         relatedexaminer = self.__annotate_relatedexaminer(relatedexaminer, assignment=testassignment)
         selector = htmls.S(listbuilder_relatedexaminer.OnassignmentItemValue(value=relatedexaminer).render())
@@ -145,15 +145,15 @@ class TestOnassignmentItemValue(test.TestCase):
             selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-description').alltext_normalized)
 
     def test_summary_single_group_with_multiple_candidates(self):
-        relatedexaminer = mommy.make('core.RelatedExaminer')
-        testassignment = mommy.make('core.Assignment')
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.Examiner',
+        relatedexaminer = baker.make('core.RelatedExaminer')
+        testassignment = baker.make('core.Assignment')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup,
                    relatedexaminer=relatedexaminer)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup)
         relatedexaminer = self.__annotate_relatedexaminer(relatedexaminer, assignment=testassignment)
         selector = htmls.S(listbuilder_relatedexaminer.OnassignmentItemValue(value=relatedexaminer).render())

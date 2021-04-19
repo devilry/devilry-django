@@ -1,7 +1,7 @@
 import unittest
 
 from django import test
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.apps.core.models import PointToGradeMap, PointRangeToGrade, Assignment
 from devilry.devilry_import_v2database.modelimporters.pointrange_to_grade_importer import PointRangeToGradeImporter
@@ -52,10 +52,10 @@ class TestPointRangeToGradeMapImporter(ImporterTestCaseMixin, test.TestCase):
         ]
 
     def __make_point_to_grade_map(self, **point_to_grade_map_kwargs):
-        assignment = mommy.make('core.Assignment',
+        assignment = baker.make('core.Assignment',
                                 points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE,
                                 grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS)
-        return mommy.make('core.PointToGradeMap',
+        return baker.make('core.PointToGradeMap',
                           assignment=assignment,
                           **point_to_grade_map_kwargs)
 
@@ -191,6 +191,6 @@ class TestPointRangeToGradeMapImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(PointRangeToGrade.objects.count(), 1)
         self.assertEqual(PointRangeToGrade.objects.get().pk, 3)
         self.assertEqual(PointRangeToGrade.objects.get().id, 3)
-        point_range_to_grade = mommy.make('core.PointRangeToGrade')
+        point_range_to_grade = baker.make('core.PointRangeToGrade')
         self.assertEqual(point_range_to_grade.pk, self._create_model_meta()['max_id']+1)
         self.assertEqual(point_range_to_grade.id, self._create_model_meta()['max_id']+1)

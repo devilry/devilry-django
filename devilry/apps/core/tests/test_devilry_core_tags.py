@@ -9,13 +9,13 @@ from devilry.devilry_group.models import GroupComment
 from django import test
 from django.conf import settings
 from django.template.loader import render_to_string
-from model_mommy import mommy
+from model_bakery import baker
 
 
 class TestDevilrySingleCandidateLongDisplayname(test.TestCase):
     def test_nonanonymous_cssclass(self):
-        assignment = mommy.make('core.Assignment')
-        candidate = mommy.make('core.Candidate',
+        assignment = baker.make('core.Assignment')
+        candidate = baker.make('core.Candidate',
                                assignment_group__parentnode=assignment,
                                relatedstudent__user__shortname='testuser')
         selector = htmls.S(
@@ -26,8 +26,8 @@ class TestDevilrySingleCandidateLongDisplayname(test.TestCase):
         self.assertFalse(selector.exists('.devilry-core-candidate-anonymous-name'))
 
     def test_nonanonymous_without_fullname(self):
-        assignment = mommy.make('core.Assignment')
-        candidate = mommy.make('core.Candidate',
+        assignment = baker.make('core.Assignment')
+        candidate = baker.make('core.Candidate',
                                assignment_group__parentnode=assignment,
                                relatedstudent__user__shortname='testuser')
         selector = htmls.S(
@@ -38,8 +38,8 @@ class TestDevilrySingleCandidateLongDisplayname(test.TestCase):
                          selector.one('.devilry-user-verbose-inline').alltext_normalized)
 
     def test_nonanonymous_with_fullname(self):
-        assignment = mommy.make('core.Assignment')
-        candidate = mommy.make('core.Candidate',
+        assignment = baker.make('core.Assignment')
+        candidate = baker.make('core.Candidate',
                                assignment_group__parentnode=assignment,
                                relatedstudent__user__shortname='testuser',
                                relatedstudent__user__fullname='Test User')
@@ -51,9 +51,9 @@ class TestDevilrySingleCandidateLongDisplayname(test.TestCase):
                          selector.one('.devilry-user-verbose-inline').alltext_normalized)
 
     def test_anonymous_cssclass(self):
-        assignment = mommy.make('core.Assignment',
+        assignment = baker.make('core.Assignment',
                                 anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        candidate = mommy.make('core.Candidate',
+        candidate = baker.make('core.Candidate',
                                assignment_group__parentnode=assignment,
                                relatedstudent__user__shortname='testuser')
         selector = htmls.S(
@@ -64,9 +64,9 @@ class TestDevilrySingleCandidateLongDisplayname(test.TestCase):
         self.assertTrue(selector.exists('.devilry-core-candidate-anonymous-name'))
 
     def test_anonymous(self):
-        assignment = mommy.make('core.Assignment',
+        assignment = baker.make('core.Assignment',
                                 anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        candidate = mommy.make('core.Candidate',
+        candidate = baker.make('core.Candidate',
                                assignment_group__parentnode=assignment,
                                relatedstudent__automatic_anonymous_id='MyAnonymousId',
                                relatedstudent__user__shortname='testuser')
@@ -81,8 +81,8 @@ class TestDevilrySingleCandidateLongDisplayname(test.TestCase):
 class TestDevilrySingleCandidateShortDisplayname(test.TestCase):
 
     def test_nonanonymous_cssclass(self):
-        assignment = mommy.make('core.Assignment')
-        candidate = mommy.make('core.Candidate',
+        assignment = baker.make('core.Assignment')
+        candidate = baker.make('core.Candidate',
                                assignment_group__parentnode=assignment,
                                relatedstudent__user__shortname='testuser')
         selector = htmls.S(
@@ -93,8 +93,8 @@ class TestDevilrySingleCandidateShortDisplayname(test.TestCase):
         self.assertFalse(selector.exists('.devilry-core-candidate-anonymous-name'))
 
     def test_nonanonymous_without_fullname(self):
-        assignment = mommy.make('core.Assignment')
-        candidate = mommy.make('core.Candidate',
+        assignment = baker.make('core.Assignment')
+        candidate = baker.make('core.Candidate',
                                assignment_group__parentnode=assignment,
                                relatedstudent__user__shortname='testuser')
         selector = htmls.S(
@@ -105,8 +105,8 @@ class TestDevilrySingleCandidateShortDisplayname(test.TestCase):
                          selector.one('.devilry-core-candidate-shortname').alltext_normalized)
 
     def test_nonanonymous_with_fullname(self):
-        assignment = mommy.make('core.Assignment')
-        candidate = mommy.make('core.Candidate',
+        assignment = baker.make('core.Assignment')
+        candidate = baker.make('core.Candidate',
                                assignment_group__parentnode=assignment,
                                relatedstudent__user__shortname='testuser',
                                relatedstudent__user__fullname='Test User')
@@ -118,9 +118,9 @@ class TestDevilrySingleCandidateShortDisplayname(test.TestCase):
                          selector.one('.devilry-core-candidate-shortname').alltext_normalized)
 
     def test_anonymous_cssclass(self):
-        assignment = mommy.make('core.Assignment',
+        assignment = baker.make('core.Assignment',
                                 anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        candidate = mommy.make('core.Candidate',
+        candidate = baker.make('core.Candidate',
                                assignment_group__parentnode=assignment,
                                relatedstudent__user__shortname='testuser')
         selector = htmls.S(
@@ -131,9 +131,9 @@ class TestDevilrySingleCandidateShortDisplayname(test.TestCase):
         self.assertTrue(selector.exists('.devilry-core-candidate-anonymous-name'))
 
     def test_anonymous(self):
-        assignment = mommy.make('core.Assignment',
+        assignment = baker.make('core.Assignment',
                                 anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        candidate = mommy.make('core.Candidate',
+        candidate = baker.make('core.Candidate',
                                assignment_group__parentnode=assignment,
                                relatedstudent__automatic_anonymous_id='MyAnonymousId',
                                relatedstudent__user__shortname='testuser')
@@ -147,8 +147,8 @@ class TestDevilrySingleCandidateShortDisplayname(test.TestCase):
 
 class TestDevilrySingleExaminerLongDisplayname(test.TestCase):
     def test_nonanonymous_cssclass(self):
-        assignment = mommy.make('core.Assignment')
-        examiner = mommy.make('core.Examiner',
+        assignment = baker.make('core.Assignment')
+        examiner = baker.make('core.Examiner',
                               assignmentgroup__parentnode=assignment,
                               relatedexaminer__user__shortname='testuser')
         selector = htmls.S(
@@ -159,8 +159,8 @@ class TestDevilrySingleExaminerLongDisplayname(test.TestCase):
         self.assertFalse(selector.exists('.devilry-core-examiner-anonymous-name'))
 
     def test_nonanonymous_without_fullname(self):
-        assignment = mommy.make('core.Assignment')
-        examiner = mommy.make('core.Examiner',
+        assignment = baker.make('core.Assignment')
+        examiner = baker.make('core.Examiner',
                               assignmentgroup__parentnode=assignment,
                               relatedexaminer__user__shortname='testuser')
         selector = htmls.S(
@@ -171,8 +171,8 @@ class TestDevilrySingleExaminerLongDisplayname(test.TestCase):
                          selector.one('.devilry-user-verbose-inline').alltext_normalized)
 
     def test_nonanonymous_with_fullname(self):
-        assignment = mommy.make('core.Assignment')
-        examiner = mommy.make('core.Examiner',
+        assignment = baker.make('core.Assignment')
+        examiner = baker.make('core.Examiner',
                               assignmentgroup__parentnode=assignment,
                               relatedexaminer__user__shortname='testuser',
                               relatedexaminer__user__fullname='Test User')
@@ -184,9 +184,9 @@ class TestDevilrySingleExaminerLongDisplayname(test.TestCase):
                          selector.one('.devilry-user-verbose-inline').alltext_normalized)
 
     def test_anonymous_cssclass(self):
-        assignment = mommy.make('core.Assignment',
+        assignment = baker.make('core.Assignment',
                                 anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        examiner = mommy.make('core.Examiner',
+        examiner = baker.make('core.Examiner',
                               assignmentgroup__parentnode=assignment,
                               relatedexaminer__user__shortname='testuser')
         selector = htmls.S(
@@ -197,9 +197,9 @@ class TestDevilrySingleExaminerLongDisplayname(test.TestCase):
         self.assertTrue(selector.exists('.devilry-core-examiner-anonymous-name'))
 
     def test_anonymous(self):
-        assignment = mommy.make('core.Assignment',
+        assignment = baker.make('core.Assignment',
                                 anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        examiner = mommy.make('core.Examiner',
+        examiner = baker.make('core.Examiner',
                               assignmentgroup__parentnode=assignment,
                               relatedexaminer__automatic_anonymous_id='MyAnonymousId',
                               relatedexaminer__user__shortname='testuser')
@@ -213,8 +213,8 @@ class TestDevilrySingleExaminerLongDisplayname(test.TestCase):
 
 class TestDevilrySingleExaminerShortDisplayname(test.TestCase):
     def test_nonanonymous_cssclass(self):
-        assignment = mommy.make('core.Assignment')
-        examiner = mommy.make('core.Examiner',
+        assignment = baker.make('core.Assignment')
+        examiner = baker.make('core.Examiner',
                               assignmentgroup__parentnode=assignment,
                               relatedexaminer__user__shortname='testuser')
         selector = htmls.S(
@@ -225,8 +225,8 @@ class TestDevilrySingleExaminerShortDisplayname(test.TestCase):
         self.assertFalse(selector.exists('.devilry-core-examiner-anonymous-name'))
 
     def test_nonanonymous_without_fullname(self):
-        assignment = mommy.make('core.Assignment')
-        examiner = mommy.make('core.Examiner',
+        assignment = baker.make('core.Assignment')
+        examiner = baker.make('core.Examiner',
                               assignmentgroup__parentnode=assignment,
                               relatedexaminer__user__shortname='testuser')
         selector = htmls.S(
@@ -237,8 +237,8 @@ class TestDevilrySingleExaminerShortDisplayname(test.TestCase):
                          selector.one('.devilry-core-examiner-shortname').alltext_normalized)
 
     def test_nonanonymous_with_fullname(self):
-        assignment = mommy.make('core.Assignment')
-        examiner = mommy.make('core.Examiner',
+        assignment = baker.make('core.Assignment')
+        examiner = baker.make('core.Examiner',
                               assignmentgroup__parentnode=assignment,
                               relatedexaminer__user__shortname='testuser',
                               relatedexaminer__user__fullname='Test User')
@@ -250,9 +250,9 @@ class TestDevilrySingleExaminerShortDisplayname(test.TestCase):
                          selector.one('.devilry-core-examiner-shortname').alltext_normalized)
 
     def test_anonymous_cssclass(self):
-        assignment = mommy.make('core.Assignment',
+        assignment = baker.make('core.Assignment',
                                 anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        examiner = mommy.make('core.Examiner',
+        examiner = baker.make('core.Examiner',
                               assignmentgroup__parentnode=assignment,
                               relatedexaminer__user__shortname='testuser')
         selector = htmls.S(
@@ -263,9 +263,9 @@ class TestDevilrySingleExaminerShortDisplayname(test.TestCase):
         self.assertTrue(selector.exists('.devilry-core-examiner-anonymous-name'))
 
     def test_anonymous(self):
-        assignment = mommy.make('core.Assignment',
+        assignment = baker.make('core.Assignment',
                                 anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        examiner = mommy.make('core.Examiner',
+        examiner = baker.make('core.Examiner',
                               assignmentgroup__parentnode=assignment,
                               relatedexaminer__automatic_anonymous_id='MyAnonymousId',
                               relatedexaminer__user__shortname='testuser')
@@ -279,8 +279,8 @@ class TestDevilrySingleExaminerShortDisplayname(test.TestCase):
 
 class TestDevilryMultipleCandidatesLongDisplayname(test.TestCase):
     def test_nonanonymous_cssclass(self):
-        assignment = mommy.make('core.Assignment')
-        candidate = mommy.make('core.Candidate',
+        assignment = baker.make('core.Assignment')
+        candidate = baker.make('core.Candidate',
                                assignment_group__parentnode=assignment,
                                relatedstudent__user__shortname='testuser')
         selector = htmls.S(
@@ -291,7 +291,7 @@ class TestDevilryMultipleCandidatesLongDisplayname(test.TestCase):
         self.assertFalse(selector.exists('.devilry-core-candidate-anonymous-name'))
 
     def test_empty(self):
-        assignment = mommy.make('core.Assignment')
+        assignment = baker.make('core.Assignment')
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/multiple-candidates-long-displayname.django.html',
@@ -303,8 +303,8 @@ class TestDevilryMultipleCandidatesLongDisplayname(test.TestCase):
         self.assertFalse(selector.exists('.devilry-core-candidate-anonymous-name'))
 
     def test_nonanonymous_without_fullname(self):
-        assignment = mommy.make('core.Assignment')
-        candidate = mommy.make('core.Candidate',
+        assignment = baker.make('core.Assignment')
+        candidate = baker.make('core.Candidate',
                                assignment_group__parentnode=assignment,
                                relatedstudent__user__shortname='testuser')
         selector = htmls.S(
@@ -315,8 +315,8 @@ class TestDevilryMultipleCandidatesLongDisplayname(test.TestCase):
                          selector.one('.devilry-user-verbose-inline').alltext_normalized)
 
     def test_nonanonymous_with_fullname(self):
-        assignment = mommy.make('core.Assignment')
-        candidate = mommy.make('core.Candidate',
+        assignment = baker.make('core.Assignment')
+        candidate = baker.make('core.Candidate',
                                assignment_group__parentnode=assignment,
                                relatedstudent__user__shortname='testuser',
                                relatedstudent__user__fullname='Test User')
@@ -328,11 +328,11 @@ class TestDevilryMultipleCandidatesLongDisplayname(test.TestCase):
                          selector.one('.devilry-user-verbose-inline').alltext_normalized)
 
     def test_nonanonymous_multiple_candidates(self):
-        assignment = mommy.make('core.Assignment')
-        candidate1 = mommy.make('core.Candidate',
+        assignment = baker.make('core.Assignment')
+        candidate1 = baker.make('core.Candidate',
                                 assignment_group__parentnode=assignment,
                                 relatedstudent__user__shortname='testuser1')
-        candidate2 = mommy.make('core.Candidate',
+        candidate2 = baker.make('core.Candidate',
                                 assignment_group__parentnode=assignment,
                                 relatedstudent__user__shortname='testuser2',
                                 relatedstudent__user__fullname='Test User 2')
@@ -346,9 +346,9 @@ class TestDevilryMultipleCandidatesLongDisplayname(test.TestCase):
         self.assertEqual(['testuser1', 'Test User 2(testuser2)'], names)
 
     def test_anonymous_cssclass(self):
-        assignment = mommy.make('core.Assignment',
+        assignment = baker.make('core.Assignment',
                                 anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        candidate = mommy.make('core.Candidate',
+        candidate = baker.make('core.Candidate',
                                assignment_group__parentnode=assignment,
                                relatedstudent__user__shortname='testuser')
         selector = htmls.S(
@@ -359,9 +359,9 @@ class TestDevilryMultipleCandidatesLongDisplayname(test.TestCase):
         self.assertTrue(selector.exists('.devilry-core-candidate-anonymous-name'))
 
     def test_anonymous(self):
-        assignment = mommy.make('core.Assignment',
+        assignment = baker.make('core.Assignment',
                                 anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        candidate = mommy.make('core.Candidate',
+        candidate = baker.make('core.Candidate',
                                assignment_group__parentnode=assignment,
                                relatedstudent__automatic_anonymous_id='MyAnonymousId',
                                relatedstudent__user__shortname='testuser')
@@ -373,13 +373,13 @@ class TestDevilryMultipleCandidatesLongDisplayname(test.TestCase):
                          selector.one('.devilry-core-candidate-anonymous-name').alltext_normalized)
 
     def test_anonymous_multiple_candidates(self):
-        assignment = mommy.make('core.Assignment',
+        assignment = baker.make('core.Assignment',
                                 anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        candidate1 = mommy.make('core.Candidate',
+        candidate1 = baker.make('core.Candidate',
                                 assignment_group__parentnode=assignment,
                                 relatedstudent__automatic_anonymous_id='MyAnonymousId1',
                                 relatedstudent__user__shortname='testuser1')
-        candidate2 = mommy.make('core.Candidate',
+        candidate2 = baker.make('core.Candidate',
                                 assignment_group__parentnode=assignment,
                                 relatedstudent__automatic_anonymous_id='MyAnonymousId2',
                                 relatedstudent__user__shortname='testuser2')
@@ -395,8 +395,8 @@ class TestDevilryMultipleCandidatesLongDisplayname(test.TestCase):
 
 class TestDevilryMultipleCandidatesShortDisplayname(test.TestCase):
     def test_nonanonymous_cssclass(self):
-        assignment = mommy.make('core.Assignment')
-        candidate = mommy.make('core.Candidate',
+        assignment = baker.make('core.Assignment')
+        candidate = baker.make('core.Candidate',
                                assignment_group__parentnode=assignment,
                                relatedstudent__user__shortname='testuser')
         selector = htmls.S(
@@ -407,7 +407,7 @@ class TestDevilryMultipleCandidatesShortDisplayname(test.TestCase):
         self.assertFalse(selector.exists('.devilry-core-candidate-anonymous-name'))
 
     def test_empty(self):
-        assignment = mommy.make('core.Assignment')
+        assignment = baker.make('core.Assignment')
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/multiple-candidates-short-displayname.django.html',
@@ -419,8 +419,8 @@ class TestDevilryMultipleCandidatesShortDisplayname(test.TestCase):
         self.assertFalse(selector.exists('.devilry-core-candidate-anonymous-name'))
 
     def test_nonanonymous_without_fullname(self):
-        assignment = mommy.make('core.Assignment')
-        candidate = mommy.make('core.Candidate',
+        assignment = baker.make('core.Assignment')
+        candidate = baker.make('core.Candidate',
                                assignment_group__parentnode=assignment,
                                relatedstudent__user__shortname='testuser')
         selector = htmls.S(
@@ -431,8 +431,8 @@ class TestDevilryMultipleCandidatesShortDisplayname(test.TestCase):
                          selector.one('.devilry-core-candidate-shortname').alltext_normalized)
 
     def test_nonanonymous_with_fullname(self):
-        assignment = mommy.make('core.Assignment')
-        candidate = mommy.make('core.Candidate',
+        assignment = baker.make('core.Assignment')
+        candidate = baker.make('core.Candidate',
                                assignment_group__parentnode=assignment,
                                relatedstudent__user__shortname='testuser',
                                relatedstudent__user__fullname='Test User')
@@ -444,11 +444,11 @@ class TestDevilryMultipleCandidatesShortDisplayname(test.TestCase):
                          selector.one('.devilry-core-candidate-shortname').alltext_normalized)
 
     def test_nonanonymous_multiple_candidates(self):
-        assignment = mommy.make('core.Assignment')
-        candidate1 = mommy.make('core.Candidate',
+        assignment = baker.make('core.Assignment')
+        candidate1 = baker.make('core.Candidate',
                                 assignment_group__parentnode=assignment,
                                 relatedstudent__user__shortname='testuser1')
-        candidate2 = mommy.make('core.Candidate',
+        candidate2 = baker.make('core.Candidate',
                                 assignment_group__parentnode=assignment,
                                 relatedstudent__user__shortname='testuser2',
                                 relatedstudent__user__fullname='Test User 2')
@@ -462,9 +462,9 @@ class TestDevilryMultipleCandidatesShortDisplayname(test.TestCase):
         self.assertEqual(['testuser1', 'testuser2'], names)
 
     def test_anonymous_cssclass(self):
-        assignment = mommy.make('core.Assignment',
+        assignment = baker.make('core.Assignment',
                                 anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        candidate = mommy.make('core.Candidate',
+        candidate = baker.make('core.Candidate',
                                assignment_group__parentnode=assignment,
                                relatedstudent__user__shortname='testuser')
         selector = htmls.S(
@@ -475,9 +475,9 @@ class TestDevilryMultipleCandidatesShortDisplayname(test.TestCase):
         self.assertTrue(selector.exists('.devilry-core-candidate-anonymous-name'))
 
     def test_anonymous(self):
-        assignment = mommy.make('core.Assignment',
+        assignment = baker.make('core.Assignment',
                                 anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        candidate = mommy.make('core.Candidate',
+        candidate = baker.make('core.Candidate',
                                assignment_group__parentnode=assignment,
                                relatedstudent__automatic_anonymous_id='MyAnonymousId',
                                relatedstudent__user__shortname='testuser')
@@ -489,13 +489,13 @@ class TestDevilryMultipleCandidatesShortDisplayname(test.TestCase):
                          selector.one('.devilry-core-candidate-anonymous-name').alltext_normalized)
 
     def test_anonymous_multiple_candidates(self):
-        assignment = mommy.make('core.Assignment',
+        assignment = baker.make('core.Assignment',
                                 anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        candidate1 = mommy.make('core.Candidate',
+        candidate1 = baker.make('core.Candidate',
                                 assignment_group__parentnode=assignment,
                                 relatedstudent__automatic_anonymous_id='MyAnonymousId1',
                                 relatedstudent__user__shortname='testuser1')
-        candidate2 = mommy.make('core.Candidate',
+        candidate2 = baker.make('core.Candidate',
                                 assignment_group__parentnode=assignment,
                                 relatedstudent__automatic_anonymous_id='MyAnonymousId2',
                                 relatedstudent__user__shortname='testuser2')
@@ -511,8 +511,8 @@ class TestDevilryMultipleCandidatesShortDisplayname(test.TestCase):
 
 class TestDevilryMultipleExaminersLongDisplayname(test.TestCase):
     def test_nonanonymous_cssclass(self):
-        assignment = mommy.make('core.Assignment')
-        examiner = mommy.make('core.Examiner',
+        assignment = baker.make('core.Assignment')
+        examiner = baker.make('core.Examiner',
                               assignmentgroup__parentnode=assignment,
                               relatedexaminer__user__shortname='testuser')
         selector = htmls.S(
@@ -523,7 +523,7 @@ class TestDevilryMultipleExaminersLongDisplayname(test.TestCase):
         self.assertFalse(selector.exists('.devilry-core-examiner-anonymous-name'))
 
     def test_empty(self):
-        assignment = mommy.make('core.Assignment')
+        assignment = baker.make('core.Assignment')
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/multiple-examiners-long-displayname.django.html',
@@ -535,8 +535,8 @@ class TestDevilryMultipleExaminersLongDisplayname(test.TestCase):
         self.assertFalse(selector.exists('.devilry-core-examiner-anonymous-name'))
 
     def test_nonanonymous_without_fullname(self):
-        assignment = mommy.make('core.Assignment')
-        examiner = mommy.make('core.Examiner',
+        assignment = baker.make('core.Assignment')
+        examiner = baker.make('core.Examiner',
                               assignmentgroup__parentnode=assignment,
                               relatedexaminer__user__shortname='testuser')
         selector = htmls.S(
@@ -547,11 +547,11 @@ class TestDevilryMultipleExaminersLongDisplayname(test.TestCase):
                          selector.one('.devilry-user-verbose-inline').alltext_normalized)
 
     def test_nonanonymous_multiple_examiners(self):
-        assignment = mommy.make('core.Assignment')
-        examiner1 = mommy.make('core.Examiner',
+        assignment = baker.make('core.Assignment')
+        examiner1 = baker.make('core.Examiner',
                                assignment_group__parentnode=assignment,
                                relatedexaminer__user__shortname='testuser1')
-        examiner2 = mommy.make('core.Examiner',
+        examiner2 = baker.make('core.Examiner',
                                assignment_group__parentnode=assignment,
                                relatedexaminer__user__fullname='Test User 2',
                                relatedexaminer__user__shortname='testuser2')
@@ -565,8 +565,8 @@ class TestDevilryMultipleExaminersLongDisplayname(test.TestCase):
         self.assertEqual(['testuser1', 'Test User 2(testuser2)'], names)
 
     def test_nonanonymous_with_fullname(self):
-        assignment = mommy.make('core.Assignment')
-        examiner = mommy.make('core.Examiner',
+        assignment = baker.make('core.Assignment')
+        examiner = baker.make('core.Examiner',
                               assignmentgroup__parentnode=assignment,
                               relatedexaminer__user__shortname='testuser',
                               relatedexaminer__user__fullname='Test User')
@@ -578,9 +578,9 @@ class TestDevilryMultipleExaminersLongDisplayname(test.TestCase):
                          selector.one('.devilry-user-verbose-inline').alltext_normalized)
 
     def test_anonymous_cssclass(self):
-        assignment = mommy.make('core.Assignment',
+        assignment = baker.make('core.Assignment',
                                 anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        examiner = mommy.make('core.Examiner',
+        examiner = baker.make('core.Examiner',
                               assignmentgroup__parentnode=assignment,
                               relatedexaminer__user__shortname='testuser')
         selector = htmls.S(
@@ -591,9 +591,9 @@ class TestDevilryMultipleExaminersLongDisplayname(test.TestCase):
         self.assertTrue(selector.exists('.devilry-core-examiner-anonymous-name'))
 
     def test_anonymous(self):
-        assignment = mommy.make('core.Assignment',
+        assignment = baker.make('core.Assignment',
                                 anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        examiner = mommy.make('core.Examiner',
+        examiner = baker.make('core.Examiner',
                               assignmentgroup__parentnode=assignment,
                               relatedexaminer__automatic_anonymous_id='MyAnonymousId',
                               relatedexaminer__user__shortname='testuser')
@@ -605,13 +605,13 @@ class TestDevilryMultipleExaminersLongDisplayname(test.TestCase):
                          selector.one('.devilry-core-examiner-anonymous-name').alltext_normalized)
 
     def test_anonymous_multiple_examiners(self):
-        assignment = mommy.make('core.Assignment',
+        assignment = baker.make('core.Assignment',
                                 anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        examiner1 = mommy.make('core.Examiner',
+        examiner1 = baker.make('core.Examiner',
                                assignment_group__parentnode=assignment,
                                relatedexaminer__automatic_anonymous_id='MyAnonymousId1',
                                relatedexaminer__user__shortname='testuser1')
-        examiner2 = mommy.make('core.Examiner',
+        examiner2 = baker.make('core.Examiner',
                                assignment_group__parentnode=assignment,
                                relatedexaminer__automatic_anonymous_id='MyAnonymousId2',
                                relatedexaminer__user__shortname='testuser2')
@@ -627,8 +627,8 @@ class TestDevilryMultipleExaminersLongDisplayname(test.TestCase):
 
 class TestDevilryMultipleExaminersShortDisplayname(test.TestCase):
     def test_nonanonymous_cssclass(self):
-        assignment = mommy.make('core.Assignment')
-        examiner = mommy.make('core.Examiner',
+        assignment = baker.make('core.Assignment')
+        examiner = baker.make('core.Examiner',
                               assignmentgroup__parentnode=assignment,
                               relatedexaminer__user__shortname='testuser')
         selector = htmls.S(
@@ -639,7 +639,7 @@ class TestDevilryMultipleExaminersShortDisplayname(test.TestCase):
         self.assertFalse(selector.exists('.devilry-core-examiner-anonymous-name'))
 
     def test_empty(self):
-        assignment = mommy.make('core.Assignment')
+        assignment = baker.make('core.Assignment')
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/multiple-examiners-short-displayname.django.html',
@@ -651,8 +651,8 @@ class TestDevilryMultipleExaminersShortDisplayname(test.TestCase):
         self.assertFalse(selector.exists('.devilry-core-examiner-anonymous-name'))
 
     def test_nonanonymous_without_fullname(self):
-        assignment = mommy.make('core.Assignment')
-        examiner = mommy.make('core.Examiner',
+        assignment = baker.make('core.Assignment')
+        examiner = baker.make('core.Examiner',
                               assignmentgroup__parentnode=assignment,
                               relatedexaminer__user__shortname='testuser')
         selector = htmls.S(
@@ -663,8 +663,8 @@ class TestDevilryMultipleExaminersShortDisplayname(test.TestCase):
                          selector.one('.devilry-core-examiner-shortname').alltext_normalized)
 
     def test_nonanonymous_with_fullname(self):
-        assignment = mommy.make('core.Assignment')
-        examiner = mommy.make('core.Examiner',
+        assignment = baker.make('core.Assignment')
+        examiner = baker.make('core.Examiner',
                               assignmentgroup__parentnode=assignment,
                               relatedexaminer__user__shortname='testuser',
                               relatedexaminer__user__fullname='Test User')
@@ -676,11 +676,11 @@ class TestDevilryMultipleExaminersShortDisplayname(test.TestCase):
                          selector.one('.devilry-core-examiner-shortname').alltext_normalized)
 
     def test_nonanonymous_multiple_examiners(self):
-        assignment = mommy.make('core.Assignment')
-        examiner1 = mommy.make('core.Examiner',
+        assignment = baker.make('core.Assignment')
+        examiner1 = baker.make('core.Examiner',
                                assignment_group__parentnode=assignment,
                                relatedexaminer__user__shortname='testuser1')
-        examiner2 = mommy.make('core.Examiner',
+        examiner2 = baker.make('core.Examiner',
                                assignment_group__parentnode=assignment,
                                relatedexaminer__user__fullname='Test User 2',
                                relatedexaminer__user__shortname='testuser2')
@@ -694,9 +694,9 @@ class TestDevilryMultipleExaminersShortDisplayname(test.TestCase):
         self.assertEqual(['testuser1', 'testuser2'], names)
 
     def test_anonymous_cssclass(self):
-        assignment = mommy.make('core.Assignment',
+        assignment = baker.make('core.Assignment',
                                 anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        examiner = mommy.make('core.Examiner',
+        examiner = baker.make('core.Examiner',
                               assignmentgroup__parentnode=assignment,
                               relatedexaminer__user__shortname='testuser')
         selector = htmls.S(
@@ -707,9 +707,9 @@ class TestDevilryMultipleExaminersShortDisplayname(test.TestCase):
         self.assertTrue(selector.exists('.devilry-core-examiner-anonymous-name'))
 
     def test_anonymous(self):
-        assignment = mommy.make('core.Assignment',
+        assignment = baker.make('core.Assignment',
                                 anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        examiner = mommy.make('core.Examiner',
+        examiner = baker.make('core.Examiner',
                               assignmentgroup__parentnode=assignment,
                               relatedexaminer__automatic_anonymous_id='MyAnonymousId',
                               relatedexaminer__user__shortname='testuser')
@@ -721,13 +721,13 @@ class TestDevilryMultipleExaminersShortDisplayname(test.TestCase):
                          selector.one('.devilry-core-examiner-anonymous-name').alltext_normalized)
 
     def test_anonymous_multiple_examiners(self):
-        assignment = mommy.make('core.Assignment',
+        assignment = baker.make('core.Assignment',
                                 anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        examiner1 = mommy.make('core.Examiner',
+        examiner1 = baker.make('core.Examiner',
                                assignment_group__parentnode=assignment,
                                relatedexaminer__automatic_anonymous_id='MyAnonymousId1',
                                relatedexaminer__user__shortname='testuser1')
-        examiner2 = mommy.make('core.Examiner',
+        examiner2 = baker.make('core.Examiner',
                                assignment_group__parentnode=assignment,
                                relatedexaminer__automatic_anonymous_id='MyAnonymousId2',
                                relatedexaminer__user__shortname='testuser2')
@@ -789,7 +789,7 @@ class TestDevilryGroupstatus(test.TestCase):
 
 class TestDevilryGradeShort(test.TestCase):
     def test_failed(self):
-        testassignment = mommy.make(
+        testassignment = baker.make(
             'core.Assignment',
             passing_grade_min_points=1,
             points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED)
@@ -801,7 +801,7 @@ class TestDevilryGradeShort(test.TestCase):
             '.devilry-core-grade-short.devilry-core-grade-failed'))
 
     def test_passed(self):
-        testassignment = mommy.make(
+        testassignment = baker.make(
             'core.Assignment',
             passing_grade_min_points=1,
             points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED)
@@ -813,7 +813,7 @@ class TestDevilryGradeShort(test.TestCase):
             '.devilry-core-grade-short.devilry-core-grade-passed'))
 
     def test_passed_failed_failed(self):
-        testassignment = mommy.make(
+        testassignment = baker.make(
             'core.Assignment',
             points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED)
         selector = htmls.S(
@@ -827,7 +827,7 @@ class TestDevilryGradeShort(test.TestCase):
             selector.one('.devilry-core-grade').alltext_normalized)
 
     def test_passed_failed_passed(self):
-        testassignment = mommy.make(
+        testassignment = baker.make(
             'core.Assignment',
             points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED)
         selector = htmls.S(
@@ -841,7 +841,7 @@ class TestDevilryGradeShort(test.TestCase):
             selector.one('.devilry-core-grade').alltext_normalized)
 
     def test_raw_points(self):
-        testassignment = mommy.make(
+        testassignment = baker.make(
             'core.Assignment',
             points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS,
             max_points=100)
@@ -856,17 +856,17 @@ class TestDevilryGradeShort(test.TestCase):
             selector.one('.devilry-core-grade').alltext_normalized)
 
     def test_custom_table(self):
-        testassignment = mommy.make(
+        testassignment = baker.make(
             'core.Assignment',
             points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE)
-        point_to_grade_map = mommy.make('core.PointToGradeMap',
+        point_to_grade_map = baker.make('core.PointToGradeMap',
                                         assignment=testassignment, invalid=False)
-        mommy.make('core.PointRangeToGrade',
+        baker.make('core.PointRangeToGrade',
                    point_to_grade_map=point_to_grade_map,
                    minimum_points=0,
                    maximum_points=10,
                    grade='Bad')
-        mommy.make('core.PointRangeToGrade',
+        baker.make('core.PointRangeToGrade',
                    point_to_grade_map=point_to_grade_map,
                    minimum_points=11,
                    maximum_points=100,
@@ -885,7 +885,7 @@ class TestDevilryGradeShort(test.TestCase):
 
 class TestDevilryGradeFull(test.TestCase):
     def test_failed(self):
-        testassignment = mommy.make(
+        testassignment = baker.make(
             'core.Assignment',
             passing_grade_min_points=1,
             points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED)
@@ -897,7 +897,7 @@ class TestDevilryGradeFull(test.TestCase):
             '.devilry-core-grade-full.devilry-core-grade-failed'))
 
     def test_passed(self):
-        testassignment = mommy.make(
+        testassignment = baker.make(
             'core.Assignment',
             passing_grade_min_points=1,
             points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED)
@@ -909,7 +909,7 @@ class TestDevilryGradeFull(test.TestCase):
             '.devilry-core-grade-full.devilry-core-grade-passed'))
 
     def test_passed_failed_failed(self):
-        testassignment = mommy.make(
+        testassignment = baker.make(
             'core.Assignment',
             points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED)
         selector = htmls.S(
@@ -923,7 +923,7 @@ class TestDevilryGradeFull(test.TestCase):
             selector.one('.devilry-core-grade .devilry-core-grade-main').alltext_normalized)
 
     def test_passed_failed_passed(self):
-        testassignment = mommy.make(
+        testassignment = baker.make(
             'core.Assignment',
             points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED)
         selector = htmls.S(
@@ -937,7 +937,7 @@ class TestDevilryGradeFull(test.TestCase):
             selector.one('.devilry-core-grade .devilry-core-grade-main').alltext_normalized)
 
     def test_raw_points(self):
-        testassignment = mommy.make(
+        testassignment = baker.make(
             'core.Assignment',
             points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS,
             max_points=100)
@@ -952,17 +952,17 @@ class TestDevilryGradeFull(test.TestCase):
             selector.one('.devilry-core-grade .devilry-core-grade-main').alltext_normalized)
 
     def test_custom_table(self):
-        testassignment = mommy.make(
+        testassignment = baker.make(
             'core.Assignment',
             points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE)
-        point_to_grade_map = mommy.make('core.PointToGradeMap',
+        point_to_grade_map = baker.make('core.PointToGradeMap',
                                         assignment=testassignment, invalid=False)
-        mommy.make('core.PointRangeToGrade',
+        baker.make('core.PointRangeToGrade',
                    point_to_grade_map=point_to_grade_map,
                    minimum_points=0,
                    maximum_points=10,
                    grade='Bad')
-        mommy.make('core.PointRangeToGrade',
+        baker.make('core.PointRangeToGrade',
                    point_to_grade_map=point_to_grade_map,
                    minimum_points=11,
                    maximum_points=100,
@@ -979,7 +979,7 @@ class TestDevilryGradeFull(test.TestCase):
             selector.one('.devilry-core-grade .devilry-core-grade-main').alltext_normalized)
 
     def test_details_students_can_see_points_false(self):
-        testassignment = mommy.make(
+        testassignment = baker.make(
             'core.Assignment',
             points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED,
             students_can_see_points=False,
@@ -991,7 +991,7 @@ class TestDevilryGradeFull(test.TestCase):
         self.assertFalse(selector.exists('.devilry-core-grade-details-points'))
 
     def test_details_students_can_see_points_false_not_student(self):
-        testassignment = mommy.make(
+        testassignment = baker.make(
             'core.Assignment',
             points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED,
             students_can_see_points=False,
@@ -1005,7 +1005,7 @@ class TestDevilryGradeFull(test.TestCase):
             selector.one('.devilry-core-grade-details-points').alltext_normalized)
 
     def test_details_students_can_see_points_true(self):
-        testassignment = mommy.make(
+        testassignment = baker.make(
             'core.Assignment',
             points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED,
             students_can_see_points=True,
@@ -1019,7 +1019,7 @@ class TestDevilryGradeFull(test.TestCase):
             selector.one('.devilry-core-grade-details-points').alltext_normalized)
 
     def test_details_students_can_see_points_true_mapper_raw_points(self):
-        testassignment = mommy.make(
+        testassignment = baker.make(
             'core.Assignment',
             points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS,
             students_can_see_points=True,
@@ -1031,7 +1031,7 @@ class TestDevilryGradeFull(test.TestCase):
         self.assertFalse(selector.exists('.devilry-core-grade-details-points'))
 
     def test_details_is_passing_grade_mapper_passedfailed(self):
-        testassignment = mommy.make(
+        testassignment = baker.make(
             'core.Assignment',
             points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED)
         selector = htmls.S(
@@ -1041,7 +1041,7 @@ class TestDevilryGradeFull(test.TestCase):
         self.assertFalse(selector.exists('.devilry-core-grade-details-is-passing-grade'))
 
     def test_details_is_passing_grade_true(self):
-        testassignment = mommy.make(
+        testassignment = baker.make(
             'core.Assignment',
             points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS,
             passing_grade_min_points=1)
@@ -1054,7 +1054,7 @@ class TestDevilryGradeFull(test.TestCase):
             selector.one('.devilry-core-grade-details-is-passing-grade').alltext_normalized)
 
     def test_details_is_passing_grade_false(self):
-        testassignment = mommy.make(
+        testassignment = baker.make(
             'core.Assignment',
             points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS,
             passing_grade_min_points=1)
@@ -1067,7 +1067,7 @@ class TestDevilryGradeFull(test.TestCase):
             selector.one('.devilry-core-grade-details-is-passing-grade').alltext_normalized)
 
     def test_passedfailed_grade_sanitycheck_students_can_see_points_true(self):
-        testassignment = mommy.make(
+        testassignment = baker.make(
             'core.Assignment',
             points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED,
             students_can_see_points=True,
@@ -1082,7 +1082,7 @@ class TestDevilryGradeFull(test.TestCase):
             selector.one('.devilry-core-grade').alltext_normalized)
 
     def test_rawpoints_grade_sanitycheck_students_can_see_points_true(self):
-        testassignment = mommy.make(
+        testassignment = baker.make(
             'core.Assignment',
             points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS,
             students_can_see_points=True,
@@ -1097,15 +1097,15 @@ class TestDevilryGradeFull(test.TestCase):
             selector.one('.devilry-core-grade').alltext_normalized)
 
     def test_custom_table_full_grade_sanitycheck_students_can_see_points_true(self):
-        testassignment = mommy.make(
+        testassignment = baker.make(
             'core.Assignment',
             points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE,
             passing_grade_min_points=1,
             students_can_see_points=True,
             max_points=10)
-        point_to_grade_map = mommy.make('core.PointToGradeMap',
+        point_to_grade_map = baker.make('core.PointToGradeMap',
                                         assignment=testassignment, invalid=False)
-        mommy.make('core.PointRangeToGrade',
+        baker.make('core.PointRangeToGrade',
                    point_to_grade_map=point_to_grade_map,
                    minimum_points=0,
                    maximum_points=10,
@@ -1122,7 +1122,7 @@ class TestDevilryGradeFull(test.TestCase):
             selector.one('.devilry-core-grade').alltext_normalized)
 
     def test_passedfailed_grade_sanitycheck_students_can_see_points_false_student(self):
-        testassignment = mommy.make(
+        testassignment = baker.make(
             'core.Assignment',
             points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED,
             students_can_see_points=False,
@@ -1137,7 +1137,7 @@ class TestDevilryGradeFull(test.TestCase):
             selector.one('.devilry-core-grade').alltext_normalized)
 
     def test_rawpoints_grade_sanitycheck_students_can_see_points_false_student(self):
-        testassignment = mommy.make(
+        testassignment = baker.make(
             'core.Assignment',
             points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS,
             students_can_see_points=False,
@@ -1152,15 +1152,15 @@ class TestDevilryGradeFull(test.TestCase):
             selector.one('.devilry-core-grade').alltext_normalized)
 
     def test_custom_table_full_grade_sanitycheck_students_can_see_points_false_student(self):
-        testassignment = mommy.make(
+        testassignment = baker.make(
             'core.Assignment',
             points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE,
             passing_grade_min_points=1,
             students_can_see_points=False,
             max_points=10)
-        point_to_grade_map = mommy.make('core.PointToGradeMap',
+        point_to_grade_map = baker.make('core.PointToGradeMap',
                                         assignment=testassignment, invalid=False)
-        mommy.make('core.PointRangeToGrade',
+        baker.make('core.PointRangeToGrade',
                    point_to_grade_map=point_to_grade_map,
                    minimum_points=0,
                    maximum_points=10,
@@ -1177,7 +1177,7 @@ class TestDevilryGradeFull(test.TestCase):
             selector.one('.devilry-core-grade').alltext_normalized)
 
     def test_passedfailed_grade_sanitycheck_students_can_see_points_false_not_student(self):
-        testassignment = mommy.make(
+        testassignment = baker.make(
             'core.Assignment',
             points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED,
             students_can_see_points=False,
@@ -1192,7 +1192,7 @@ class TestDevilryGradeFull(test.TestCase):
             selector.one('.devilry-core-grade').alltext_normalized)
 
     def test_rawpoints_grade_sanitycheck_students_can_see_points_false_not_student(self):
-        testassignment = mommy.make(
+        testassignment = baker.make(
             'core.Assignment',
             points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS,
             students_can_see_points=False,
@@ -1207,15 +1207,15 @@ class TestDevilryGradeFull(test.TestCase):
             selector.one('.devilry-core-grade').alltext_normalized)
 
     def test_custom_table_full_grade_sanitycheck_students_can_see_points_false_not_student(self):
-        testassignment = mommy.make(
+        testassignment = baker.make(
             'core.Assignment',
             points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE,
             passing_grade_min_points=1,
             students_can_see_points=False,
             max_points=10)
-        point_to_grade_map = mommy.make('core.PointToGradeMap',
+        point_to_grade_map = baker.make('core.PointToGradeMap',
                                         assignment=testassignment, invalid=False)
-        mommy.make('core.PointRangeToGrade',
+        baker.make('core.PointRangeToGrade',
                    point_to_grade_map=point_to_grade_map,
                    minimum_points=0,
                    maximum_points=10,
@@ -1238,7 +1238,7 @@ class TestDevilryCommentSummary(test.TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_zero_comments_from_students(self):
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = baker.make('core.AssignmentGroup')
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/comment-summary.django.html',
@@ -1248,8 +1248,8 @@ class TestDevilryCommentSummary(test.TestCase):
             selector.one('.devilry-core-comment-summary-studentcomments').alltext_normalized)
 
     def test_one_comment_from_students(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('devilry_group.GroupComment',
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
                    feedback_set__deadline_datetime=timezone.now(),
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
@@ -1265,15 +1265,15 @@ class TestDevilryCommentSummary(test.TestCase):
             selector.one('.devilry-core-comment-summary-studentcomments').alltext_normalized)
 
     def test_multiple_comments_from_students(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('devilry_group.GroupComment',
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
                    feedback_set__deadline_datetime=timezone.now(),
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    text='asd',
                    user_role=Comment.USER_ROLE_STUDENT)
-        mommy.make('devilry_group.GroupComment',
+        baker.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
                    feedback_set__deadline_datetime=timezone.now(),
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
@@ -1289,7 +1289,7 @@ class TestDevilryCommentSummary(test.TestCase):
             selector.one('.devilry-core-comment-summary-studentcomments').alltext_normalized)
 
     def test_zero_commentfiles_from_students(self):
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = baker.make('core.AssignmentGroup')
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/comment-summary.django.html',
@@ -1300,14 +1300,14 @@ class TestDevilryCommentSummary(test.TestCase):
 
     def test_one_commentfile_from_students(self):
         AssignmentGroupDbCacheCustomSql().initialize()
-        testgroup = mommy.make('core.AssignmentGroup')
-        testcomment = mommy.make('devilry_group.GroupComment',
+        testgroup = baker.make('core.AssignmentGroup')
+        testcomment = baker.make('devilry_group.GroupComment',
                                  feedback_set__group=testgroup,
                                  feedback_set__deadline_datetime=timezone.now(),
                                  comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                                  visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                                  user_role=Comment.USER_ROLE_STUDENT)
-        mommy.make('devilry_comment.CommentFile', comment=testcomment)
+        baker.make('devilry_comment.CommentFile', comment=testcomment)
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/comment-summary.django.html',
@@ -1317,21 +1317,21 @@ class TestDevilryCommentSummary(test.TestCase):
             selector.one('.devilry-core-comment-summary-studentfiles').alltext_normalized)
 
     def test_multiple_commentfiles_from_students(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        testcomment1 = mommy.make('devilry_group.GroupComment',
+        testgroup = baker.make('core.AssignmentGroup')
+        testcomment1 = baker.make('devilry_group.GroupComment',
                                   feedback_set__group=testgroup,
                                   feedback_set__deadline_datetime=timezone.now(),
                                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                                   user_role=Comment.USER_ROLE_STUDENT)
-        mommy.make('devilry_comment.CommentFile', comment=testcomment1)
-        testcomment2 = mommy.make('devilry_group.GroupComment',
+        baker.make('devilry_comment.CommentFile', comment=testcomment1)
+        testcomment2 = baker.make('devilry_group.GroupComment',
                                   feedback_set__group=testgroup,
                                   feedback_set__deadline_datetime=timezone.now(),
                                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                                   user_role=Comment.USER_ROLE_STUDENT)
-        mommy.make('devilry_comment.CommentFile', comment=testcomment2)
+        baker.make('devilry_comment.CommentFile', comment=testcomment2)
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/comment-summary.django.html',
@@ -1341,7 +1341,7 @@ class TestDevilryCommentSummary(test.TestCase):
             selector.one('.devilry-core-comment-summary-studentfiles').alltext_normalized)
 
     def test_zero_comments_from_examiners(self):
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = baker.make('core.AssignmentGroup')
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/comment-summary.django.html',
@@ -1351,8 +1351,8 @@ class TestDevilryCommentSummary(test.TestCase):
             selector.one('.devilry-core-comment-summary-examinercomments').alltext_normalized)
 
     def test_one_comment_from_examiners(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('devilry_group.GroupComment',
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
                    feedback_set__deadline_datetime=timezone.now(),
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
@@ -1367,14 +1367,14 @@ class TestDevilryCommentSummary(test.TestCase):
             selector.one('.devilry-core-comment-summary-examinercomments').alltext_normalized)
 
     def test_multiple_comments_from_examiners(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('devilry_group.GroupComment',
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
                    feedback_set__deadline_datetime=timezone.now(),
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_EXAMINER)
-        mommy.make('devilry_group.GroupComment',
+        baker.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
                    feedback_set__deadline_datetime=timezone.now(),
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
@@ -1389,8 +1389,8 @@ class TestDevilryCommentSummary(test.TestCase):
             selector.one('.devilry-core-comment-summary-examinercomments').alltext_normalized)
 
     def test_zero_private_groupcomments_from_user(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.AssignmentGroup')
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.AssignmentGroup')
         testgroup = AssignmentGroup.objects\
             .annotate_with_number_of_private_groupcomments_from_user(user=testuser).first()
         selector = htmls.S(
@@ -1400,9 +1400,9 @@ class TestDevilryCommentSummary(test.TestCase):
         self.assertFalse(selector.exists('.devilry-core-comment-summary-unpublishedcomments'))
 
     def test_one_private_groupcomments_from_user(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('devilry_group.GroupComment',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
                    feedback_set__deadline_datetime=timezone.now(),
                    visibility=GroupComment.VISIBILITY_PRIVATE,
@@ -1419,15 +1419,15 @@ class TestDevilryCommentSummary(test.TestCase):
             selector.one('.devilry-core-comment-summary-unpublishedcomments').alltext_normalized)
 
     def test_multiple_private_groupcomments_from_user(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('devilry_group.GroupComment',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
                    feedback_set__deadline_datetime=timezone.now(),
                    user=testuser,
                    visibility=GroupComment.VISIBILITY_PRIVATE,
                    user_role=Comment.USER_ROLE_EXAMINER)
-        mommy.make('devilry_group.GroupComment',
+        baker.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
                    feedback_set__deadline_datetime=timezone.now(),
                    user=testuser,

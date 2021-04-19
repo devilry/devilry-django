@@ -14,11 +14,11 @@ from django.utils import timezone
 from cradmin_legacy.cradmin_testhelpers import TestCaseMixin
 from ievv_opensource.ievv_batchframework import batchregistry
 from ievv_opensource.ievv_batchframework.models import BatchOperation
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.devilry_compressionutil.models import CompressedArchiveMeta
 from devilry.devilry_dbcache import customsql
-from devilry.devilry_group import devilry_group_mommy_factories
+from devilry.devilry_group import devilry_group_baker_factories
 from devilry.devilry_group import tasks
 from devilry.devilry_group.views.download_files.batch_download_api import BatchCompressionAPIFeedbackSetView
 
@@ -95,8 +95,8 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
             self.mock_postrequest()
 
     def test_get_status_no_files(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup)
+        testgroup = baker.make('core.AssignmentGroup')
+        testfeedbackset = devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup)
         mockresponse = self.mock_getrequest(
             viewkwargs={
                 'content_object_id': testfeedbackset.id
@@ -104,13 +104,13 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
         self.assertEqual(b'{"status": "no-files"}', mockresponse.response.content)
 
     def test_get_status_not_started_unprocessed(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup)
-        testcomment = mommy.make('devilry_group.GroupComment',
+        testgroup = baker.make('core.AssignmentGroup')
+        testfeedbackset = devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup)
+        testcomment = baker.make('devilry_group.GroupComment',
                                  feedback_set=testfeedbackset,
                                  user_role='student',
                                  user__shortname='testuser@example.com')
-        commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        commentfile = baker.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
         commentfile.file.save('testfile.txt', ContentFile('testcontent'))
         self._mock_batchoperation(context_object=testfeedbackset, status=BatchOperation.STATUS_UNPROCESSED)
 
@@ -124,13 +124,13 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
     @override_settings(IEVV_BATCHFRAMEWORK_ALWAYS_SYNCRONOUS=False)
     def test_get_status_not_created_when_archive_meta_has_deleted_datetime(self):
         # Tests that status "not-created" is returned when CompressedArchiveMeta has a deleted_datetime
-        testgroup = mommy.make('core.AssignmentGroup')
-        testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup)
-        testcomment = mommy.make('devilry_group.GroupComment',
+        testgroup = baker.make('core.AssignmentGroup')
+        testfeedbackset = devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup)
+        testcomment = baker.make('devilry_group.GroupComment',
                                  feedback_set=testfeedbackset,
                                  user_role='student',
                                  user__shortname='testuser@example.com')
-        commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        commentfile = baker.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
         commentfile.file.save('testfile.txt', ContentFile('testcontent'))
 
         # Run the batch task which creates a CompressedArchiveMeta entry.
@@ -156,12 +156,12 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
     @override_settings(IEVV_BATCHFRAMEWORK_ALWAYS_SYNCRONOUS=False)
     def test_get_status_not_created_when_new_file_is_added(self):
         # Tests that status not-created is returned when another file is added to the feedbackset.
-        testgroup = mommy.make('core.AssignmentGroup')
-        testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup)
-        commentuser = mommy.make(settings.AUTH_USER_MODEL)
-        testcomment = mommy.make('devilry_group.GroupComment',
+        testgroup = baker.make('core.AssignmentGroup')
+        testfeedbackset = devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup)
+        commentuser = baker.make(settings.AUTH_USER_MODEL)
+        testcomment = baker.make('devilry_group.GroupComment',
                                  feedback_set=testfeedbackset, user_role='student', user=commentuser)
-        commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        commentfile = baker.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
         commentfile.file.save('testfile.txt', ContentFile('testcontent'))
         self._register_and_run_actiongroup(
             actiongroup_name='batchframework_compress_feedbackset',
@@ -171,9 +171,9 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
         self._mock_batchoperation_status(context_object_id=testfeedbackset.id, status=BatchOperation.STATUS_FINISHED)
 
         # Add a new file after a CompressedArchiveEntry is added.
-        testcomment_added_after = mommy.make('devilry_group.GroupComment',
+        testcomment_added_after = baker.make('devilry_group.GroupComment',
                                  feedback_set=testfeedbackset, user_role='student', user=commentuser)
-        commentfile_added_after = mommy.make('devilry_comment.CommentFile',
+        commentfile_added_after = baker.make('devilry_comment.CommentFile',
                                              comment=testcomment_added_after,
                                              filename='testfile.txt')
         commentfile_added_after.file.save('testfile.txt', ContentFile('testcontent'))
@@ -185,21 +185,21 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
         self.assertEqual(mockresponse.response.content, b'{"status": "not-created"}')
 
     def test_get_status_not_created_when_examiner_history_with_datetime_greater_than_last_compressed_archive(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup)
-        mommy.make('devilry_compressionutil.CompressedArchiveMeta',
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testfeedbackset = devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup)
+        baker.make('devilry_compressionutil.CompressedArchiveMeta',
                    content_object=testfeedbackset,
                    created_datetime=timezone.now() - timezone.timedelta(hours=1))
-        testcomment = mommy.make('devilry_group.GroupComment',
+        testcomment = baker.make('devilry_group.GroupComment',
                                  feedback_set=testfeedbackset,
                                  user_role='student',
                                  user__shortname='testuser@example.com')
-        commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        commentfile = baker.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
         commentfile.file.save('testfile.txt', ContentFile('testcontent'))
-        mommy.make('core.ExaminerAssignmentGroupHistory',
+        baker.make('core.ExaminerAssignmentGroupHistory',
                    assignment_group=testgroup,
-                   user=mommy.make(settings.AUTH_USER_MODEL),
+                   user=baker.make(settings.AUTH_USER_MODEL),
                    created_datetime=timezone.now())
         mockresponse = self.mock_getrequest(
             cradmin_app=self.__mock_cradmin_app(),
@@ -209,20 +209,20 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
         self.assertEqual(mockresponse.response.content, b'{"status": "not-created"}')
 
     def test_get_status_not_created_when_candidate_history_with_datetime_greater_than_last_compressed_archive(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup)
-        mommy.make('devilry_compressionutil.CompressedArchiveMeta', content_object=testassignment,
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testfeedbackset = devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup)
+        baker.make('devilry_compressionutil.CompressedArchiveMeta', content_object=testassignment,
                    created_datetime=timezone.now() - timezone.timedelta(hours=1))
-        testcomment = mommy.make('devilry_group.GroupComment',
+        testcomment = baker.make('devilry_group.GroupComment',
                                  feedback_set=testfeedbackset,
                                  user_role='student',
                                  user__shortname='testuser@example.com')
-        commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        commentfile = baker.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
         commentfile.file.save('testfile.txt', ContentFile('testcontent'))
-        mommy.make('core.CandidateAssignmentGroupHistory',
+        baker.make('core.CandidateAssignmentGroupHistory',
                    assignment_group=testgroup,
-                   user=mommy.make(settings.AUTH_USER_MODEL),
+                   user=baker.make(settings.AUTH_USER_MODEL),
                    created_datetime=timezone.now())
         mockresponse = self.mock_getrequest(
             cradmin_app=self.__mock_cradmin_app(),
@@ -232,22 +232,22 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
         self.assertEqual(mockresponse.response.content, b'{"status": "not-created"}')
 
     def test_get_status_not_created_when_new_feedbackset_is_created_after_last_compressed_archive(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        # testexaminer = mommy.make('core.Examiner', assignmentgroup=testgroup)
-        testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        # testexaminer = baker.make('core.Examiner', assignmentgroup=testgroup)
+        testfeedbackset = devilry_group_baker_factories.feedbackset_first_attempt_published(
             group=testgroup, grading_points=1)
-        mommy.make('devilry_compressionutil.CompressedArchiveMeta', content_object=testfeedbackset,
+        baker.make('devilry_compressionutil.CompressedArchiveMeta', content_object=testfeedbackset,
                    created_datetime=timezone.now())
-        testcomment = mommy.make('devilry_group.GroupComment',
+        testcomment = baker.make('devilry_group.GroupComment',
                                  feedback_set=testfeedbackset,
                                  user_role='student',
                                  user__shortname='testuser@example.com')
-        commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        commentfile = baker.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
         commentfile.file.save('testfile.txt', ContentFile('testcontent'))
 
         # Create new feedbackset.
-        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(group=testgroup)
+        devilry_group_baker_factories.feedbackset_new_attempt_unpublished(group=testgroup)
 
         mockresponse = self.mock_getrequest(
             cradmin_app=self.__mock_cradmin_app(),
@@ -257,20 +257,20 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
         self.assertEqual(mockresponse.response.content, b'{"status": "not-created"}')
 
     def test_get_status_not_created_when_feedbackset_deadline_is_moved(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testfeedbackset = devilry_group_baker_factories.feedbackset_first_attempt_published(
             group=testgroup, grading_points=1)
-        testcomment = mommy.make('devilry_group.GroupComment',
+        testcomment = baker.make('devilry_group.GroupComment',
                                  feedback_set=testfeedbackset,
                                  user_role='student',
                                  user__shortname='testuser@example.com')
-        commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        commentfile = baker.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
         commentfile.file.save('testfile.txt', ContentFile('testcontent'))
-        mommy.make('devilry_compressionutil.CompressedArchiveMeta',
+        baker.make('devilry_compressionutil.CompressedArchiveMeta',
                    content_object=testfeedbackset,
                    created_datetime=timezone.now())
-        mommy.make('devilry_group.FeedbackSetDeadlineHistory', feedback_set=testfeedbackset)
+        baker.make('devilry_group.FeedbackSetDeadlineHistory', feedback_set=testfeedbackset)
         mockresponse = self.mock_getrequest(
             cradmin_app=self.__mock_cradmin_app(),
             viewkwargs={
@@ -279,13 +279,13 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
         self.assertEqual(mockresponse.response.content, b'{"status": "not-created"}')
 
     def test_get_status_running(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup)
-        testcomment = mommy.make('devilry_group.GroupComment',
+        testgroup = baker.make('core.AssignmentGroup')
+        testfeedbackset = devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup)
+        testcomment = baker.make('devilry_group.GroupComment',
                                  feedback_set=testfeedbackset,
                                  user_role='student',
                                  user__shortname='testuser@example.com')
-        commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        commentfile = baker.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
         commentfile.file.save('testfile.txt', ContentFile('testcontent'))
         self._mock_batchoperation(context_object=testfeedbackset, status=BatchOperation.STATUS_RUNNING)
         mockresponse = self.mock_getrequest(
@@ -299,15 +299,15 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
         # When the task is complete, it creates a CompressedArchiveMeta entry in
         # the database. This is simulated by NOT creating a BatchOperation, but just creating a CompressedArchive
         # instead. This is the first thing that gets checked in API.
-        testgroup = mommy.make('core.AssignmentGroup')
-        testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup)
-        testcomment = mommy.make('devilry_group.GroupComment',
+        testgroup = baker.make('core.AssignmentGroup')
+        testfeedbackset = devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup)
+        testcomment = baker.make('devilry_group.GroupComment',
                                  feedback_set=testfeedbackset,
                                  user_role='student',
                                  user__shortname='testuser@example.com')
-        commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        commentfile = baker.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
         commentfile.file.save('testfile.txt', ContentFile('testcontent'))
-        mommy.make('devilry_compressionutil.CompressedArchiveMeta', content_object=testfeedbackset)
+        baker.make('devilry_compressionutil.CompressedArchiveMeta', content_object=testfeedbackset)
         mock_cradmin_app = mock.MagicMock()
         mock_cradmin_app.reverse_appurl.return_value = 'url-to-downloadview'
         mockresponse = self.mock_getrequest(
@@ -321,15 +321,15 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
     def test_post_marks_archive_as_deleted_if_new_files_are_added(self):
         # Tests that post marks archive as deleted if new files are added
         # and there exists a CompressedArchiveMeta for the FeedbackSet.
-        testgroup = mommy.make('core.AssignmentGroup')
-        testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup)
-        compressed_archive_meta = mommy.make('devilry_compressionutil.CompressedArchiveMeta',
+        testgroup = baker.make('core.AssignmentGroup')
+        testfeedbackset = devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup)
+        compressed_archive_meta = baker.make('devilry_compressionutil.CompressedArchiveMeta',
                                              content_object=testfeedbackset)
-        testcomment = mommy.make('devilry_group.GroupComment',
+        testcomment = baker.make('devilry_group.GroupComment',
                                  feedback_set=testfeedbackset,
                                  user_role='student',
                                  user__shortname='testuser@example.com')
-        commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        commentfile = baker.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
         commentfile.file.save('testfile.txt', ContentFile('testcontent'))
         self.mock_postrequest(
             cradmin_app=self.__mock_cradmin_app(),
@@ -339,13 +339,13 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
         self.assertIsNotNone(CompressedArchiveMeta.objects.get(id=compressed_archive_meta.id).deleted_datetime)
 
     def test_post_batchoperation_not_started(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup)
-        testcomment = mommy.make('devilry_group.GroupComment',
+        testgroup = baker.make('core.AssignmentGroup')
+        testfeedbackset = devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup)
+        testcomment = baker.make('devilry_group.GroupComment',
                                  feedback_set=testfeedbackset,
                                  user_role='student',
                                  user__shortname='testuser@example.com')
-        commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        commentfile = baker.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
         commentfile.file.save('testfile.txt', ContentFile('testcontent'))
         self._mock_batchoperation(context_object=testfeedbackset, status=BatchOperation.STATUS_UNPROCESSED)
         mockresponse = self.mock_postrequest(
@@ -358,15 +358,15 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
     def test_post_status_finished_when_compressed_archive_exists(self):
         # Tests that post returns status finished with download-link if
         # CompressedArchiveMeta exists with deleted_datetime as None.
-        testgroup = mommy.make('core.AssignmentGroup')
-        testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup)
-        testcomment = mommy.make('devilry_group.GroupComment',
+        testgroup = baker.make('core.AssignmentGroup')
+        testfeedbackset = devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup)
+        testcomment = baker.make('devilry_group.GroupComment',
                                  feedback_set=testfeedbackset,
                                  user_role='student',
                                  user__shortname='testuser@example.com')
-        commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        commentfile = baker.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
         commentfile.file.save('testfile.txt', ContentFile('testcontent'))
-        mommy.make('devilry_compressionutil.CompressedArchiveMeta', content_object=testfeedbackset)
+        baker.make('devilry_compressionutil.CompressedArchiveMeta', content_object=testfeedbackset)
 
         # mock return value for reverse_appurl
         mock_cradmin_app = mock.MagicMock()

@@ -4,7 +4,7 @@ from django import test
 from django.conf import settings
 from django.core import management
 from django.core.management import CommandError
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.devilry_account.models import PermissionGroup, PermissionGroupUser, SubjectPermissionGroup
 
@@ -16,22 +16,22 @@ class TestSubjectadminaddCommand(test.TestCase):
             subject_short_name, user_shortname)
 
     def test_invalid_subject_short_name(self):
-        mommy.make(settings.AUTH_USER_MODEL, shortname='testuser')
+        baker.make(settings.AUTH_USER_MODEL, shortname='testuser')
         with self.assertRaisesMessage(CommandError,
                                       'Invalid subject_short_name.'):
             self.__run_management_command(subject_short_name='invalid',
                                           user_shortname='testuser')
 
     def test_invalid_user_shortname(self):
-        mommy.make('core.Subject', short_name='testsubject')
+        baker.make('core.Subject', short_name='testsubject')
         with self.assertRaisesMessage(CommandError,
                                       'Invalid user_shortname.'):
             self.__run_management_command(subject_short_name='testsubject',
                                           user_shortname='invalid')
 
     def test_ok_new_permission_group(self):
-        user = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser')
-        subject = mommy.make('core.Subject', short_name='testsubject')
+        user = baker.make(settings.AUTH_USER_MODEL, shortname='testuser')
+        subject = baker.make('core.Subject', short_name='testsubject')
         self.__run_management_command(subject_short_name='testsubject',
                                       user_shortname='testuser')
         expected_groupname = PermissionGroup.objects.get_name_from_syncsystem(
@@ -52,11 +52,11 @@ class TestSubjectadminaddCommand(test.TestCase):
         self.assertEqual(created_permissiongroupuser.user, user)
 
     def test_ok_existing_permission_group(self):
-        user = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser')
-        subject = mommy.make('core.Subject', short_name='testsubject')
+        user = baker.make(settings.AUTH_USER_MODEL, shortname='testuser')
+        subject = baker.make('core.Subject', short_name='testsubject')
         groupname = PermissionGroup.objects.get_name_from_syncsystem(
             basenode=subject, grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN)
-        mommy.make('devilry_account.PermissionGroup',
+        baker.make('devilry_account.PermissionGroup',
                    name=groupname, is_custom_manageable=False,
                    grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN)
         self.__run_management_command(subject_short_name='testsubject',
@@ -71,14 +71,14 @@ class TestSubjectadminaddCommand(test.TestCase):
         self.assertEqual(created_permissiongroupuser.user, user)
 
     def test_ok_existing_permission_group_and_permission_group_user(self):
-        user = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser')
-        subject = mommy.make('core.Subject', short_name='testsubject')
+        user = baker.make(settings.AUTH_USER_MODEL, shortname='testuser')
+        subject = baker.make('core.Subject', short_name='testsubject')
         groupname = PermissionGroup.objects.get_name_from_syncsystem(
             basenode=subject, grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN)
-        permissiongroup = mommy.make('devilry_account.PermissionGroup',
+        permissiongroup = baker.make('devilry_account.PermissionGroup',
                                      name=groupname, is_custom_manageable=False,
                                      grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN)
-        mommy.make('devilry_account.PermissionGroupUser',
+        baker.make('devilry_account.PermissionGroupUser',
                    permissiongroup=permissiongroup, user=user)
         self.__run_management_command(subject_short_name='testsubject',
                                       user_shortname='testuser')

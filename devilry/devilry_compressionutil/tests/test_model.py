@@ -9,7 +9,7 @@ from django.core.files.base import ContentFile
 from django.db import IntegrityError
 from django.test import TestCase
 from django.utils import timezone
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.devilry_compressionutil import backend_registry
 from devilry.devilry_compressionutil.backends import backend_mock
@@ -60,46 +60,46 @@ class TestCompressedFileMeta(TestCase):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
             with mock.patch('devilry.devilry_compressionutil.models.backend_registry.Registry._instance',
                             self.mock_registry):
-                testcomment = mommy.make('devilry_group.GroupComment', user__shortname='user@example.com')
+                testcomment = baker.make('devilry_group.GroupComment', user__shortname='user@example.com')
                 archivepath = 'test.zip'
                 mock_backend = self.mock_registry.get_instance().get(backend_mock.MockDevilryZipBackend.backend_id)(archive_path=archivepath)
                 mock_backend.archive_size = mock.MagicMock(return_value=1)
                 CompressedArchiveMeta.objects.create_meta(
                     instance=testcomment,
                     zipfile_backend=mock_backend,
-                    user=mommy.make(settings.AUTH_USER_MODEL))
+                    user=baker.make(settings.AUTH_USER_MODEL))
                 archive_meta = CompressedArchiveMeta.objects.get(content_object_id=testcomment.id)
                 self.assertEqual(archive_meta.archive_path, os.path.join(self.backend_path, archivepath))
 
     def test_generic_foreignkey_comment(self):
-        testcomment = mommy.make('devilry_comment.Comment')
-        archivemeta = mommy.make('devilry_compressionutil.CompressedArchiveMeta', content_object=testcomment)
+        testcomment = baker.make('devilry_comment.Comment')
+        archivemeta = baker.make('devilry_compressionutil.CompressedArchiveMeta', content_object=testcomment)
         self.assertEqual(archivemeta.content_object_id, testcomment.id)
         self.assertEqual(type(archivemeta.content_object), type(testcomment))
 
     def test_archive_path_cannot_be_blank(self):
         with self.assertRaises(IntegrityError):
-            mommy.make('devilry_compressionutil.CompressedArchiveMeta', archive_path=None)
+            baker.make('devilry_compressionutil.CompressedArchiveMeta', archive_path=None)
 
     def test_archive_name_cannot_be_blank(self):
         with self.assertRaises(IntegrityError):
-            mommy.make('devilry_compressionutil.CompressedArchiveMeta', archive_path=None)
+            baker.make('devilry_compressionutil.CompressedArchiveMeta', archive_path=None)
 
     def test_is_marked_for_delete_default_none(self):
-        testcomment = mommy.make('devilry_comment.Comment')
-        archive_meta = mommy.make('devilry_compressionutil.CompressedArchiveMeta', content_object=testcomment)
+        testcomment = baker.make('devilry_comment.Comment')
+        archive_meta = baker.make('devilry_compressionutil.CompressedArchiveMeta', content_object=testcomment)
         self.assertIsNone(archive_meta.deleted_datetime)
 
     def test_is_marked_for_delete_true(self):
-        testcomment = mommy.make('devilry_comment.Comment')
-        archive_meta = mommy.make('devilry_compressionutil.CompressedArchiveMeta',
+        testcomment = baker.make('devilry_comment.Comment')
+        archive_meta = baker.make('devilry_compressionutil.CompressedArchiveMeta',
                                   content_object=testcomment,
                                   deleted_datetime=timezone.now())
         self.assertTrue(archive_meta.deleted_datetime)
 
     def test_clean_invalid_backend_id(self):
-        testcomment = mommy.make('devilry_comment.Comment')
-        archive_meta = mommy.make('devilry_compressionutil.CompressedArchiveMeta', content_object=testcomment)
+        testcomment = baker.make('devilry_comment.Comment')
+        archive_meta = baker.make('devilry_compressionutil.CompressedArchiveMeta', content_object=testcomment)
         with self.assertRaisesMessage(ValidationError, 'backend_id must refer to a valid backend'):
             archive_meta.full_clean()
 
@@ -120,13 +120,13 @@ class TestCompressedFileMeta(TestCase):
 
                 # Create archive meta
                 compressed_archive_meta1 = CompressedArchiveMeta.objects.create_meta(
-                    instance=mommy.make('devilry_group.GroupComment'),
+                    instance=baker.make('devilry_group.GroupComment'),
                     zipfile_backend=mock_backend1,
-                    user=mommy.make(settings.AUTH_USER_MODEL))
+                    user=baker.make(settings.AUTH_USER_MODEL))
                 compressed_archive_meta2 = CompressedArchiveMeta.objects.create_meta(
-                    instance=mommy.make('devilry_group.GroupComment'),
+                    instance=baker.make('devilry_group.GroupComment'),
                     zipfile_backend=mock_backend2,
-                    user=mommy.make(settings.AUTH_USER_MODEL))
+                    user=baker.make(settings.AUTH_USER_MODEL))
 
                 compressed_archive_meta1.created_datetime = timezone.now()
                 compressed_archive_meta2.created_datetime = timezone.now() - timezone.timedelta(days=10)
@@ -164,13 +164,13 @@ class TestCompressedFileMeta(TestCase):
 
                 # Create archive meta
                 compressed_archive_meta1 = CompressedArchiveMeta.objects.create_meta(
-                    instance=mommy.make('devilry_group.GroupComment'),
+                    instance=baker.make('devilry_group.GroupComment'),
                     zipfile_backend=mock_backend1,
-                    user=mommy.make(settings.AUTH_USER_MODEL))
+                    user=baker.make(settings.AUTH_USER_MODEL))
                 compressed_archive_meta2 = CompressedArchiveMeta.objects.create_meta(
-                    instance=mommy.make('devilry_group.GroupComment'),
+                    instance=baker.make('devilry_group.GroupComment'),
                     zipfile_backend=mock_backend2,
-                    user=mommy.make(settings.AUTH_USER_MODEL))
+                    user=baker.make(settings.AUTH_USER_MODEL))
 
                 compressed_archive_meta1.created_datetime = timezone.now()
                 compressed_archive_meta2.created_datetime = timezone.now() - timezone.timedelta(seconds=10)
@@ -208,13 +208,13 @@ class TestCompressedFileMeta(TestCase):
 
                 # Create archive meta
                 compressed_archive_meta1 = CompressedArchiveMeta.objects.create_meta(
-                    instance=mommy.make('devilry_group.GroupComment'),
+                    instance=baker.make('devilry_group.GroupComment'),
                     zipfile_backend=mock_backend1,
-                    user=mommy.make(settings.AUTH_USER_MODEL))
+                    user=baker.make(settings.AUTH_USER_MODEL))
                 compressed_archive_meta2 = CompressedArchiveMeta.objects.create_meta(
-                    instance=mommy.make('devilry_group.GroupComment'),
+                    instance=baker.make('devilry_group.GroupComment'),
                     zipfile_backend=mock_backend2,
-                    user=mommy.make(settings.AUTH_USER_MODEL))
+                    user=baker.make(settings.AUTH_USER_MODEL))
 
                 compressed_archive_meta1.created_datetime = timezone.now()
                 compressed_archive_meta2.created_datetime = timezone.now()

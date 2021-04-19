@@ -1,6 +1,6 @@
 from django import test
 from django.conf import settings
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.apps.core.models import Candidate, CandidateAssignmentGroupHistory
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
@@ -11,13 +11,13 @@ class TestCandidateTriggers(test.TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_insert_history_model_is_created_when_candidate_is_created(self):
-        mommy.make('core.Candidate')
+        baker.make('core.Candidate')
         self.assertEqual(CandidateAssignmentGroupHistory.objects.count(), 1)
 
     def test_insert_history_models_created_fields(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Candidate',
+        testgroup = baker.make('core.AssignmentGroup')
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user=testuser)
         self.assertEqual(CandidateAssignmentGroupHistory.objects.count(), 1)
@@ -27,15 +27,15 @@ class TestCandidateTriggers(test.TestCase):
         self.assertTrue(history.is_add)
 
     def test_insert_history_models_fields_multiple(self):
-        testgroup1 = mommy.make('core.AssignmentGroup')
-        testuser1 = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Candidate',
+        testgroup1 = baker.make('core.AssignmentGroup')
+        testuser1 = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Candidate',
                    assignment_group=testgroup1,
                    relatedstudent__user=testuser1)
 
-        testgroup2 = mommy.make('core.AssignmentGroup')
-        testuser2 = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Candidate',
+        testgroup2 = baker.make('core.AssignmentGroup')
+        testuser2 = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Candidate',
                    assignment_group=testgroup2,
                    relatedstudent__user=testuser2)
 
@@ -53,14 +53,14 @@ class TestCandidateTriggers(test.TestCase):
         self.assertTrue(history2.is_add)
 
     def test_delete_history_model_is_created_when_candidate_is_created(self):
-        mommy.make('core.Candidate')
+        baker.make('core.Candidate')
         Candidate.objects.get().delete()
         self.assertEqual(CandidateAssignmentGroupHistory.objects.count(), 2)
 
     def test_delete_history_models_created_fields(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Candidate',
+        testgroup = baker.make('core.AssignmentGroup')
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user=testuser)
         Candidate.objects.get().delete()
@@ -77,15 +77,15 @@ class TestCandidateTriggers(test.TestCase):
         self.assertFalse(history_deleted.is_add)
 
     def test_delete_history_models_fields_multiple(self):
-        testgroup1 = mommy.make('core.AssignmentGroup')
-        testuser1 = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Candidate',
+        testgroup1 = baker.make('core.AssignmentGroup')
+        testuser1 = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Candidate',
                    assignment_group=testgroup1,
                    relatedstudent__user=testuser1)
 
-        testgroup2 = mommy.make('core.AssignmentGroup')
-        testuser2 = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Candidate',
+        testgroup2 = baker.make('core.AssignmentGroup')
+        testuser2 = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Candidate',
                    assignment_group=testgroup2,
                    relatedstudent__user=testuser2)
         Candidate.objects.all().delete()
@@ -115,10 +115,10 @@ class TestCandidateTriggers(test.TestCase):
         self.assertFalse(history2_deleted.is_add)
 
     def test_update_candidate_assignment_group_is_changed(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        testgroup_updated_to = mommy.make('core.AssignmentGroup')
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        candidate = mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=testuser)
+        testgroup = baker.make('core.AssignmentGroup')
+        testgroup_updated_to = baker.make('core.AssignmentGroup')
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        candidate = baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=testuser)
         candidate.assignment_group = testgroup_updated_to
         candidate.save()
         self.assertEqual(CandidateAssignmentGroupHistory.objects.count(), 3)
@@ -132,12 +132,12 @@ class TestCandidateTriggers(test.TestCase):
         self.assertEqual(history_entry_to_group.user, testuser)
 
     def test_update_candidate_assignment_group_multiple_changes(self):
-        testgroup1 = mommy.make('core.AssignmentGroup')
-        testgroup2 = mommy.make('core.AssignmentGroup')
-        testgroup3 = mommy.make('core.AssignmentGroup')
-        testgroup4 = mommy.make('core.AssignmentGroup')
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        candidate = mommy.make('core.Candidate', assignment_group=testgroup1, relatedcandidate__user=testuser)
+        testgroup1 = baker.make('core.AssignmentGroup')
+        testgroup2 = baker.make('core.AssignmentGroup')
+        testgroup3 = baker.make('core.AssignmentGroup')
+        testgroup4 = baker.make('core.AssignmentGroup')
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        candidate = baker.make('core.Candidate', assignment_group=testgroup1, relatedcandidate__user=testuser)
         candidate.assignment_group = testgroup2
         candidate.save()
         candidate.assignment_group = testgroup3
@@ -147,14 +147,14 @@ class TestCandidateTriggers(test.TestCase):
         self.assertEqual(CandidateAssignmentGroupHistory.objects.count(), 7)
 
     def test_assignment_group_is_deleted_ok(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Candidate', assignment_group=testgroup)
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('core.Candidate', assignment_group=testgroup)
         testgroup.delete()
         self.assertEqual(CandidateAssignmentGroupHistory.objects.count(), 0)
 
     def test_relatedstudent_is_deleted_ok(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        relatedstudent = mommy.make('core.RelatedStudent')
-        mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent=relatedstudent)
+        testgroup = baker.make('core.AssignmentGroup')
+        relatedstudent = baker.make('core.RelatedStudent')
+        baker.make('core.Candidate', assignment_group=testgroup, relatedstudent=relatedstudent)
         relatedstudent.delete()
         self.assertEqual(CandidateAssignmentGroupHistory.objects.count(), 2)

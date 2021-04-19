@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.test import override_settings
 from django.utils import translation
 from mock import mock
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.devilry_account import middleware
 
@@ -36,7 +36,7 @@ class TestAccountMiddleware(test.TestCase):
 
     def test_process_request_authenticated_user(self):
         local_middleware = middleware.LocalMiddleware()
-        user = mommy.make('devilry_account.User', languagecode='nb')
+        user = baker.make('devilry_account.User', languagecode='nb')
         mockrequest = self.__make_mock_request(user=user)
         local_middleware.process_request(request=mockrequest)
         self.assertEqual('nb', translation.get_language())

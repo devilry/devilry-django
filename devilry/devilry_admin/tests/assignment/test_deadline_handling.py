@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.http import Http404
 from django.test import TestCase
 from cradmin_legacy import cradmin_testhelpers
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.apps.core.models import Assignment
 from devilry.devilry_account.models import PermissionGroup
@@ -18,8 +18,8 @@ class TestAssignmentDeadlineHandlingUpdateView(TestCase, cradmin_testhelpers.Tes
     viewclass = deadline_handling.AssignmentDeadlineHandlingUpdateView
 
     def test_title(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testuser = baker.make(settings.AUTH_USER_MODEL, is_superuser=True)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             requestuser=testuser,
@@ -28,10 +28,10 @@ class TestAssignmentDeadlineHandlingUpdateView(TestCase, cradmin_testhelpers.Tes
                           'Edit deadline handling')
 
     def test_user_is_periodadmin_raises_404(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        mommy.make('devilry_account.PermissionGroupUser', user=testuser,
-                   permissiongroup=mommy.make('devilry_account.PeriodPermissionGroup',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        baker.make('devilry_account.PermissionGroupUser', user=testuser,
+                   permissiongroup=baker.make('devilry_account.PeriodPermissionGroup',
                                               period=testassignment.parentnode).permissiongroup)
         with self.assertRaises(Http404):
             self.mock_http200_getrequest_htmls(
@@ -40,10 +40,10 @@ class TestAssignmentDeadlineHandlingUpdateView(TestCase, cradmin_testhelpers.Tes
                 viewkwargs={'pk': testassignment.id})
 
     def test_user_is_subjectadmin_does_not_raise_404(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        mommy.make('devilry_account.PermissionGroupUser', user=testuser,
-                   permissiongroup=mommy.make('devilry_account.SubjectPermissionGroup',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        baker.make('devilry_account.PermissionGroupUser', user=testuser,
+                   permissiongroup=baker.make('devilry_account.SubjectPermissionGroup',
                                               permissiongroup__grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN,
                                               subject=testassignment.parentnode.parentnode).permissiongroup)
         self.mock_http200_getrequest_htmls(
@@ -52,10 +52,10 @@ class TestAssignmentDeadlineHandlingUpdateView(TestCase, cradmin_testhelpers.Tes
             viewkwargs={'pk': testassignment.id})
 
     def test_user_is_departmentadmin_does_not_raise_404(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        mommy.make('devilry_account.PermissionGroupUser', user=testuser,
-                   permissiongroup=mommy.make('devilry_account.SubjectPermissionGroup',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        baker.make('devilry_account.PermissionGroupUser', user=testuser,
+                   permissiongroup=baker.make('devilry_account.SubjectPermissionGroup',
                                               permissiongroup__grouptype=PermissionGroup.GROUPTYPE_DEPARTMENTADMIN,
                                               subject=testassignment.parentnode.parentnode).permissiongroup)
         self.mock_http200_getrequest_htmls(
@@ -64,18 +64,18 @@ class TestAssignmentDeadlineHandlingUpdateView(TestCase, cradmin_testhelpers.Tes
             viewkwargs={'pk': testassignment.id})
 
     def test_user_is_superuser_does_not_raise_404(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testuser = baker.make(settings.AUTH_USER_MODEL, is_superuser=True)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             requestuser=testuser,
             viewkwargs={'pk': testassignment.id})
 
     def test_post_deadline_handling_soft_to_hard(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        mommy.make('devilry_account.PermissionGroupUser', user=testuser,
-                   permissiongroup=mommy.make('devilry_account.SubjectPermissionGroup',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        baker.make('devilry_account.PermissionGroupUser', user=testuser,
+                   permissiongroup=baker.make('devilry_account.SubjectPermissionGroup',
                                               permissiongroup__grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN,
                                               subject=testassignment.parentnode.parentnode).permissiongroup)
         messagesmock = mock.MagicMock()
@@ -100,11 +100,11 @@ class TestAssignmentDeadlineHandlingUpdateView(TestCase, cradmin_testhelpers.Tes
         )
 
     def test_post_deadline_handling_hard_to_soft(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            deadline_handling=Assignment.DEADLINEHANDLING_HARD)
-        mommy.make('devilry_account.PermissionGroupUser', user=testuser,
-                   permissiongroup=mommy.make('devilry_account.SubjectPermissionGroup',
+        baker.make('devilry_account.PermissionGroupUser', user=testuser,
+                   permissiongroup=baker.make('devilry_account.SubjectPermissionGroup',
                                               permissiongroup__grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN,
                                               subject=testassignment.parentnode.parentnode).permissiongroup)
         messagesmock = mock.MagicMock()

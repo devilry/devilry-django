@@ -4,9 +4,9 @@ from django.conf import settings
 from django.contrib import messages
 from django.http import Http404
 from cradmin_legacy import cradmin_testhelpers
-from model_mommy import mommy
+from model_bakery import baker
 
-from devilry.apps.core import devilry_core_mommy_factories as core_mommy
+from devilry.apps.core import devilry_core_baker_factories as core_baker
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_admin.views.assignment.students import merge_groups
@@ -30,7 +30,7 @@ class TestMergeGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         return mockinstance
 
     def test_title(self):
-        testassignment = mommy.make('core.Assignment', long_name='Test Assignment')
+        testassignment = baker.make('core.Assignment', long_name='Test Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
@@ -39,7 +39,7 @@ class TestMergeGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('title').alltext_normalized)
 
     def test_h1(self):
-        testassignment = mommy.make('core.Assignment', long_name='Test Assignment')
+        testassignment = baker.make('core.Assignment', long_name='Test Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
@@ -48,9 +48,9 @@ class TestMergeGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('h1').alltext_normalized)
 
     def test_groups_sanity(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        mommy.make('core.AssignmentGroup', parentnode=testassignment, _quantity=3)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        baker.make('core.AssignmentGroup', parentnode=testassignment, _quantity=3)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
@@ -60,8 +60,8 @@ class TestMergeGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_submit_button_text(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
@@ -71,10 +71,10 @@ class TestMergeGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('.cradmin-legacy-multiselect2-target-formfields .btn').alltext_normalized)
 
     def test_error_merge_less_than_2_groups(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        group = mommy.make('core.AssignmentGroup', parentnode=testassignment, id=10)
-        core_mommy.candidate(group=group)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group = baker.make('core.AssignmentGroup', parentnode=testassignment, id=10)
+        core_baker.candidate(group=group)
         messagesmock = mock.MagicMock()
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
@@ -93,12 +93,12 @@ class TestMergeGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         )
 
     def test_success_merge_2_groups_message(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment, id=10)
-        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment, id=11)
-        core_mommy.candidate(group=group1, shortname='April@example.com', fullname='April')
-        core_mommy.candidate(group=group2, shortname='Dewey@example.com', fullname='Dewey')
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group1 = baker.make('core.AssignmentGroup', parentnode=testassignment, id=10)
+        group2 = baker.make('core.AssignmentGroup', parentnode=testassignment, id=11)
+        core_baker.candidate(group=group1, shortname='April@example.com', fullname='April')
+        core_baker.candidate(group=group2, shortname='Dewey@example.com', fullname='Dewey')
         messagesmock = mock.MagicMock()
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
@@ -117,12 +117,12 @@ class TestMergeGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         )
 
     def test_success_merge_2_groups_db(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment, id=10)
-        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment, id=11)
-        core_mommy.candidate(group=group1)
-        core_mommy.candidate(group=group2)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group1 = baker.make('core.AssignmentGroup', parentnode=testassignment, id=10)
+        group2 = baker.make('core.AssignmentGroup', parentnode=testassignment, id=11)
+        core_baker.candidate(group=group1)
+        core_baker.candidate(group=group2)
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
@@ -138,20 +138,20 @@ class TestMergeGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(AssignmentGroup.objects.get(id=group1.id).feedbackset_set.count(), 3)
 
     def test_success_merge_multiple_groups_db(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        group3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        group4 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        core_mommy.candidate(group=group1)
-        core_mommy.candidate(group=group2)
-        core_mommy.candidate(group=group3)
-        core_mommy.candidate(group=group4)
-        core_mommy.examiner(group=group1)
-        core_mommy.examiner(group=group2)
-        core_mommy.examiner(group=group3)
-        core_mommy.examiner(group=group4)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        group2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        group3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        group4 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        core_baker.candidate(group=group1)
+        core_baker.candidate(group=group2)
+        core_baker.candidate(group=group3)
+        core_baker.candidate(group=group4)
+        core_baker.examiner(group=group1)
+        core_baker.examiner(group=group2)
+        core_baker.examiner(group=group3)
+        core_baker.examiner(group=group4)
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
@@ -167,15 +167,15 @@ class TestMergeGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertTrue(AssignmentGroup.objects.filter(id=group1.id).exists())
 
     def test_candidate_count_filter(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        core_mommy.candidate(group=group1)
-        core_mommy.candidate(group=group1)
-        core_mommy.candidate(group=group2)
-        core_mommy.examiner(group=group2)
-        core_mommy.examiner(group=group2)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        group2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        core_baker.candidate(group=group1)
+        core_baker.candidate(group=group1)
+        core_baker.candidate(group=group2)
+        core_baker.examiner(group=group2)
+        core_baker.examiner(group=group2)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
@@ -188,15 +188,15 @@ class TestMergeGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_examiner_count_filter(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        core_mommy.candidate(group=group1)
-        core_mommy.candidate(group=group1)
-        core_mommy.candidate(group=group2)
-        core_mommy.examiner(group=group2)
-        core_mommy.examiner(group=group2)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        group2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        core_baker.candidate(group=group1)
+        core_baker.candidate(group=group1)
+        core_baker.candidate(group=group2)
+        core_baker.examiner(group=group2)
+        core_baker.examiner(group=group2)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
@@ -209,17 +209,17 @@ class TestMergeGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_candidate_count_filter_after_merge(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        core_mommy.candidate(group=group1)
-        core_mommy.candidate(group=group1)
-        core_mommy.candidate(group=group2)
-        core_mommy.examiner(group=group2)
-        core_mommy.examiner(group=group1)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        group2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make('core.AssignmentGroup', parentnode=testassignment)
+        core_baker.candidate(group=group1)
+        core_baker.candidate(group=group1)
+        core_baker.candidate(group=group2)
+        core_baker.examiner(group=group2)
+        core_baker.examiner(group=group1)
         AssignmentGroup.merge_groups([group1, group2])
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
@@ -233,17 +233,17 @@ class TestMergeGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
 
     def test_examiner_count_filter_after_merge(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        core_mommy.candidate(group=group1)
-        core_mommy.candidate(group=group1)
-        core_mommy.candidate(group=group2)
-        core_mommy.examiner(group=group2)
-        core_mommy.examiner(group=group1)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        group2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make('core.AssignmentGroup', parentnode=testassignment)
+        core_baker.candidate(group=group1)
+        core_baker.candidate(group=group1)
+        core_baker.candidate(group=group2)
+        core_baker.examiner(group=group2)
+        core_baker.examiner(group=group1)
         AssignmentGroup.merge_groups([group1, group2])
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
@@ -269,58 +269,58 @@ class TestMergeGroupsAnonymization(test.TestCase, cradmin_testhelpers.TestCaseMi
         return mockinstance
 
     def test_404_anonymizationmode_fully_subjectadmin(self):
-        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
         with self.assertRaises(Http404):
             self.mock_http200_getrequest_htmls(
                 cradmin_role=testassignment,
                 cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'))
 
     def test_404_anonymizationmode_semi_periodadmin(self):
-        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
         with self.assertRaises(Http404):
             self.mock_http200_getrequest_htmls(
                 cradmin_role=testassignment,
                 cradmin_instance=self.__mockinstance_with_devilryrole('periodadmin'))
 
     def test_404_anonymizationmode_fully_periodadmin(self):
-        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
         with self.assertRaises(Http404):
             self.mock_http200_getrequest_htmls(
                 cradmin_role=testassignment,
                 cradmin_instance=self.__mockinstance_with_devilryrole('periodadmin'))
 
     def test_anonymizationmode_fully_departmentadmin(self):
-        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
         self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
 
     def test_anonymizationmode_semi_departmentadmin(self):
-        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
         self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
 
     def test_anonymizationmode_off_departmentadmin(self):
-        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
+        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
         self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
 
     def test_anonymizationmode_semi_subjectadmin(self):
-        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
         self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'))
 
     def test_anonymizationmode_off_subjectadmin(self):
-        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
+        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
         self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'))
 
     def test_anonymizationmode_off_period(self):
-        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
+        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
         self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('periodadmin'))

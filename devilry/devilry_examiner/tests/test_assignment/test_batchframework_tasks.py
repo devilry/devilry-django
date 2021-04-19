@@ -7,7 +7,7 @@ import shutil
 from zipfile import ZipFile
 
 # Third party imports
-from model_mommy import mommy
+from model_bakery import baker
 from ievv_opensource.ievv_batchframework import batchregistry
 
 # Django imports
@@ -20,7 +20,7 @@ from django.template import defaultfilters
 # Devilry imports
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_examiner import tasks
-from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
+from devilry.devilry_group import devilry_group_baker_factories as group_baker
 from devilry.devilry_compressionutil import models as archivemodels
 
 
@@ -57,19 +57,19 @@ class TestCompressed(TestCase):
 
 class TestAssignmentCompressActionAssignmentGroupPermissions(TestCase):
     def test_examiner_has_access_to_all_groups(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            short_name='learn-python-basics',
                                            first_deadline=timezone.now() + timezone.timedelta(days=1))
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup4 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        related_examiner = mommy.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
-        mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup1)
-        mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup2)
-        mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup3)
-        mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup4)
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup4 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        related_examiner = baker.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
+        baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup1)
+        baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup2)
+        baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup3)
+        baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup4)
         group_queryset = tasks.AssignmentCompressAction()\
             .get_assignment_group_queryset(assignment=testassignment, user=testuser)
         self.assertIn(testgroup1, group_queryset)
@@ -78,17 +78,17 @@ class TestAssignmentCompressActionAssignmentGroupPermissions(TestCase):
         self.assertIn(testgroup4, group_queryset)
 
     def test_examiner_has_access_to_some_groups(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            short_name='learn-python-basics',
                                            first_deadline=timezone.now() + timezone.timedelta(days=1))
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup4 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        related_examiner = mommy.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
-        mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup1)
-        mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup2)
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup4 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        related_examiner = baker.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
+        baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup1)
+        baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup2)
         group_queryset = tasks.AssignmentCompressAction()\
             .get_assignment_group_queryset(assignment=testassignment, user=testuser)
         self.assertIn(testgroup1, group_queryset)
@@ -97,19 +97,19 @@ class TestAssignmentCompressActionAssignmentGroupPermissions(TestCase):
         self.assertNotIn(testgroup4, group_queryset)
 
     def test_examiner_does_not_have_access_to_groups_in_other_assignment(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
-        testassignment1 = mommy.make('core.Assignment', parentnode=period,
+        period = baker.make_recipe('devilry.apps.core.period_active')
+        testassignment1 = baker.make('core.Assignment', parentnode=period,
                                      first_deadline=timezone.now() + timezone.timedelta(days=1))
-        testassignment2 = mommy.make('core.Assignment', parentnode=period,
+        testassignment2 = baker.make('core.Assignment', parentnode=period,
                                      first_deadline=timezone.now() + timezone.timedelta(days=1))
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
-        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
-        testgroup4 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        related_examiner = mommy.make('core.RelatedExaminer', user=testuser, period=testassignment1.parentnode)
-        mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup1)
-        mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup2)
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment1)
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment1)
+        testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment2)
+        testgroup4 = baker.make('core.AssignmentGroup', parentnode=testassignment2)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        related_examiner = baker.make('core.RelatedExaminer', user=testuser, period=testassignment1.parentnode)
+        baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup1)
+        baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup2)
         group_queryset = tasks.AssignmentCompressAction()\
             .get_assignment_group_queryset(assignment=testassignment1, user=testuser)
         self.assertIn(testgroup1, group_queryset)
@@ -121,40 +121,40 @@ class TestAssignmentCompressActionAssignmentGroupPermissions(TestCase):
 class TestAssignmentBatchTask(TestCompressed):
 
     def __make_comment_file(self, feedback_set, file_name, file_content, **comment_kwargs):
-        comment = mommy.make('devilry_group.GroupComment',
+        comment = baker.make('devilry_group.GroupComment',
                                   feedback_set=feedback_set,
                                   user_role='student', **comment_kwargs)
-        comment_file = mommy.make('devilry_comment.CommentFile', comment=comment,
+        comment_file = baker.make('devilry_comment.CommentFile', comment=comment,
                                   filename=file_name)
         comment_file.file.save(file_name, ContentFile(file_content))
         return comment_file
 
     def test_no_comment_files(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+            testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                                short_name='learn-python-basics',
                                                first_deadline=timezone.now() + timezone.timedelta(days=1))
-            testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-            testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+            testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+            testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
             # Create examiner.
-            testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
-            related_examiner = mommy.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
-            mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup1)
+            testuser = baker.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
+            related_examiner = baker.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
+            baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup1)
 
             # Add feedbackset with commentfile to the group the examiner has access to.
-            testfeedbackset1 = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup1)
-            mommy.make('devilry_group.GroupComment',
+            testfeedbackset1 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup1)
+            baker.make('devilry_group.GroupComment',
                        feedback_set=testfeedbackset1,
                        user_role='student')
-            mommy.make('core.Candidate', assignment_group=testgroup1, relatedstudent__user__shortname='april')
+            baker.make('core.Candidate', assignment_group=testgroup1, relatedstudent__user__shortname='april')
 
             # Add feedbackset with commentfile to the group the examiner does not have access to.
-            testfeedbackset2 = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup2)
-            mommy.make('devilry_group.GroupComment',
+            testfeedbackset2 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup2)
+            baker.make('devilry_group.GroupComment',
                        feedback_set=testfeedbackset2,
                        user_role='student')
-            mommy.make('core.Candidate', assignment_group=testgroup2, relatedstudent__user__shortname='dewey')
+            baker.make('core.Candidate', assignment_group=testgroup2, relatedstudent__user__shortname='dewey')
 
             # run actiongroup
             self._run_actiongroup(name='batchframework_assignment',
@@ -166,28 +166,28 @@ class TestAssignmentBatchTask(TestCompressed):
 
     def test_only_groups_examiner_has_access_to(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+            testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                                short_name='learn-python-basics',
                                                first_deadline=timezone.now() + timezone.timedelta(days=1))
-            testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-            testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+            testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+            testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
             # Create examiner.
-            testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
-            related_examiner = mommy.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
-            mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup1)
+            testuser = baker.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
+            related_examiner = baker.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
+            baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup1)
 
             # Add feedbackset with commentfile to the group the examiner has access to.
-            testfeedbackset1 = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup1)
+            testfeedbackset1 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup1)
             self.__make_comment_file(feedback_set=testfeedbackset1, file_name='testfile.txt',
                                      file_content='testcontent')
-            mommy.make('core.Candidate', assignment_group=testgroup1, relatedstudent__user__shortname='april')
+            baker.make('core.Candidate', assignment_group=testgroup1, relatedstudent__user__shortname='april')
 
             # Add feedbackset with commentfile to the group the examiner does not have access to.
-            testfeedbackset2 = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup2)
+            testfeedbackset2 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup2)
             self.__make_comment_file(feedback_set=testfeedbackset2, file_name='testfile.txt',
                                      file_content='testcontent')
-            mommy.make('core.Candidate', assignment_group=testgroup2, relatedstudent__user__shortname='dewey')
+            baker.make('core.Candidate', assignment_group=testgroup2, relatedstudent__user__shortname='dewey')
 
             # run actiongroup
             self._run_actiongroup(name='batchframework_assignment',
@@ -203,21 +203,21 @@ class TestAssignmentBatchTask(TestCompressed):
 
     def test_one_group_before_deadline(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+            testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                                short_name='learn-python-basics',
                                                first_deadline=timezone.now() + timezone.timedelta(days=1))
-            testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+            testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
             # Create examiner.
-            testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
-            related_examiner = mommy.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
-            mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup)
+            testuser = baker.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
+            related_examiner = baker.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
+            baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup)
 
             # Add feedbackset with commentfile.
-            testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+            testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
             self.__make_comment_file(feedback_set=testfeedbackset, file_name='testfile.txt',
                                      file_content='testcontent')
-            mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user__shortname='april')
+            baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user__shortname='april')
 
             # run actiongroup
             self._run_actiongroup(name='batchframework_assignment',
@@ -235,21 +235,21 @@ class TestAssignmentBatchTask(TestCompressed):
 
     def test_one_group_after_deadline(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+            testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                                short_name='learn-python-basics',
                                                first_deadline=timezone.now())
-            testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+            testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
             # Create examiner.
-            testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
-            related_examiner = mommy.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
-            mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup)
+            testuser = baker.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
+            related_examiner = baker.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
+            baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup)
 
             # Add feedbackset with commentfile.
-            testfeedbackset = group_mommy.feedbackset_first_attempt_published(group=testgroup)
+            testfeedbackset = group_baker.feedbackset_first_attempt_published(group=testgroup)
             self.__make_comment_file(feedback_set=testfeedbackset, file_name='testfile.txt',
                                      file_content='testcontent')
-            mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user__shortname='april')
+            baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user__shortname='april')
 
             # run actiongroup
             self._run_actiongroup(name='batchframework_assignment',
@@ -269,37 +269,37 @@ class TestAssignmentBatchTask(TestCompressed):
 
     def test_three_groups_before_deadline(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+            testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                                short_name='learn-python-basics',
                                                first_deadline=timezone.now() + timezone.timedelta(days=1))
-            testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-            testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-            testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+            testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+            testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+            testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
             # Create user as examiner on all groups.
-            testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
-            related_examiner = mommy.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
-            mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup1)
-            mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup2)
-            mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup3)
+            testuser = baker.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
+            related_examiner = baker.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
+            baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup1)
+            baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup2)
+            baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup3)
 
             # Create feedbackset for testgroup1 with commentfiles
-            testfeedbackset_group1 = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup1)
+            testfeedbackset_group1 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup1)
             self.__make_comment_file(feedback_set=testfeedbackset_group1, file_name='testfile.txt',
                                      file_content='testcontent group 1')
-            mommy.make('core.Candidate', assignment_group=testgroup1, relatedstudent__user__shortname='april')
+            baker.make('core.Candidate', assignment_group=testgroup1, relatedstudent__user__shortname='april')
 
             # Create feedbackset for testgroup2 with commentfiles
-            testfeedbackset_group2 = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup2)
+            testfeedbackset_group2 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup2)
             self.__make_comment_file(feedback_set=testfeedbackset_group2, file_name='testfile.txt',
                                      file_content='testcontent group 2')
-            mommy.make('core.Candidate', assignment_group=testgroup2, relatedstudent__user__shortname='dewey')
+            baker.make('core.Candidate', assignment_group=testgroup2, relatedstudent__user__shortname='dewey')
 
             # Create feedbackset for testgroup3 with commentfiles
-            testfeedbackset_group3 = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup3)
+            testfeedbackset_group3 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup3)
             self.__make_comment_file(feedback_set=testfeedbackset_group3, file_name='testfile.txt',
                                      file_content='testcontent group 3')
-            mommy.make('core.Candidate', assignment_group=testgroup3, relatedstudent__user__shortname='huey')
+            baker.make('core.Candidate', assignment_group=testgroup3, relatedstudent__user__shortname='huey')
 
             # run actiongroup
             self._run_actiongroup(name='batchframework_assignment',
@@ -327,37 +327,37 @@ class TestAssignmentBatchTask(TestCompressed):
 
     def test_three_groups_after_deadline(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+            testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                                short_name='learn-python-basics',
                                                first_deadline=timezone.now() - timezone.timedelta(hours=1))
-            testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-            testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-            testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+            testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+            testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+            testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
             # Create user as examiner on all groups.
-            testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
-            related_examiner = mommy.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
-            mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup1)
-            mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup2)
-            mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup3)
+            testuser = baker.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
+            related_examiner = baker.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
+            baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup1)
+            baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup2)
+            baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup3)
 
             # Create feedbackset for testgroup1 with commentfiles
-            testfeedbackset_group1 = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup1)
+            testfeedbackset_group1 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup1)
             self.__make_comment_file(feedback_set=testfeedbackset_group1, file_name='testfile.txt',
                                      file_content='testcontent group 1')
-            mommy.make('core.Candidate', assignment_group=testgroup1, relatedstudent__user__shortname='april')
+            baker.make('core.Candidate', assignment_group=testgroup1, relatedstudent__user__shortname='april')
 
             # Create feedbackset for testgroup2 with commentfiles
-            testfeedbackset_group2 = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup2)
+            testfeedbackset_group2 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup2)
             self.__make_comment_file(feedback_set=testfeedbackset_group2, file_name='testfile.txt',
                                      file_content='testcontent group 2')
-            mommy.make('core.Candidate', assignment_group=testgroup2, relatedstudent__user__shortname='dewey')
+            baker.make('core.Candidate', assignment_group=testgroup2, relatedstudent__user__shortname='dewey')
 
             # Create feedbackset for testgroup3 with commentfiles
-            testfeedbackset_group3 = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup3)
+            testfeedbackset_group3 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup3)
             self.__make_comment_file(feedback_set=testfeedbackset_group3, file_name='testfile.txt',
                                      file_content='testcontent group 3')
-            mommy.make('core.Candidate', assignment_group=testgroup3, relatedstudent__user__shortname='huey')
+            baker.make('core.Candidate', assignment_group=testgroup3, relatedstudent__user__shortname='huey')
 
             # run actiongroup
             self._run_actiongroup(name='batchframework_assignment',
@@ -388,17 +388,17 @@ class TestAssignmentBatchTask(TestCompressed):
 
     def test_duplicates(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+            testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                                short_name='learn-python-basics',
                                                first_deadline=timezone.now() + timezone.timedelta(hours=1))
-            testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+            testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
-            testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
-            related_examiner = mommy.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
-            mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup)
+            testuser = baker.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
+            related_examiner = baker.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
+            baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup)
 
             # Create feedbackset for testgroup1 with commentfiles
-            testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+            testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
             comment_file_first = self.__make_comment_file(feedback_set=testfeedbackset,
                                                           file_name='testfile.txt',
                                                           file_content='first upload')
@@ -406,8 +406,8 @@ class TestAssignmentBatchTask(TestCompressed):
                                                          file_name='testfile.txt',
                                                          file_content='last upload')
 
-            student_user = mommy.make(settings.AUTH_USER_MODEL, shortname='april')
-            mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=student_user)
+            student_user = baker.make(settings.AUTH_USER_MODEL, shortname='april')
+            baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=student_user)
 
             # run actiongroup
             self._run_actiongroup(name='batchframework_assignment',
@@ -434,21 +434,21 @@ class TestAssignmentBatchTask(TestCompressed):
 
     def test_duplicates_from_different_students(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+            testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                                short_name='learn-python-basics',
                                                first_deadline=timezone.now() + timezone.timedelta(hours=1))
-            testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+            testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
-            testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
-            related_examiner = mommy.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
-            mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup)
-            student_user_april = mommy.make(settings.AUTH_USER_MODEL, shortname='april')
-            mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=student_user_april)
-            student_user_dewey = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey')
-            mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=student_user_dewey)
+            testuser = baker.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
+            related_examiner = baker.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
+            baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup)
+            student_user_april = baker.make(settings.AUTH_USER_MODEL, shortname='april')
+            baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=student_user_april)
+            student_user_dewey = baker.make(settings.AUTH_USER_MODEL, shortname='dewey')
+            baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=student_user_dewey)
 
             # Create feedbackset for testgroup1 with commentfiles
-            testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+            testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
             comment_file_april = self.__make_comment_file(feedback_set=testfeedbackset,
                                                           file_name='testfile.txt',
                                                           file_content='by april',
@@ -484,17 +484,17 @@ class TestAssignmentBatchTask(TestCompressed):
     def test_duplicates_before_and_after_deadline(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
             first_deadline = timezone.now() + timezone.timedelta(hours=1)
-            testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+            testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                                short_name='learn-python-basics',
                                                first_deadline=first_deadline)
-            testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+            testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
-            testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
-            related_examiner = mommy.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
-            mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup)
+            testuser = baker.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
+            related_examiner = baker.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
+            baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup)
 
             # Create feedbackset for testgroup with commentfiles
-            testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+            testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
             comment_file_first_upload = self.__make_comment_file(feedback_set=testfeedbackset,
                                                                  file_name='testfile.txt',
                                                                  file_content='first upload')
@@ -512,8 +512,8 @@ class TestAssignmentBatchTask(TestCompressed):
                 file_content='last upload after deadline',
                 published_datetime=timezone.now() + timezone.timedelta(hours=2))
 
-            student_user = mommy.make(settings.AUTH_USER_MODEL, shortname='april')
-            mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=student_user)
+            student_user = baker.make(settings.AUTH_USER_MODEL, shortname='april')
+            baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=student_user)
 
             # run actiongroup
             self._run_actiongroup(name='batchframework_assignment',

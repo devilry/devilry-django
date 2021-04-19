@@ -1,7 +1,7 @@
 import mock
 from django import test
 from django.conf import settings
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_account import models as account_models
@@ -13,36 +13,36 @@ class TestCrinstanceAdmin(test.TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_get_rolequeryset_not_admin(self):
-        mommy.make('core.AssignmentGroup', parentnode=mommy.make('core.Assignment'))
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        baker.make('core.AssignmentGroup', parentnode=baker.make('core.Assignment'))
+        testuser = baker.make(settings.AUTH_USER_MODEL)
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser
         instance = crinstance_admin.AdminCrInstance(request=mockrequest)
         self.assertEqual([], list(instance.get_rolequeryset()))
 
     def test_get_rolequeryset_superuser(self):
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=mommy.make('core.Assignment'))
-        testuser = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
+        testgroup = baker.make('core.AssignmentGroup', parentnode=baker.make('core.Assignment'))
+        testuser = baker.make(settings.AUTH_USER_MODEL, is_superuser=True)
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser
         instance = crinstance_admin.AdminCrInstance(request=mockrequest)
         self.assertEqual([testgroup], list(instance.get_rolequeryset()))
 
     def test_get_rolequeryset_not_superuser(self):
-        mommy.make('core.AssignmentGroup', parentnode=mommy.make('core.Assignment'))
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        baker.make('core.AssignmentGroup', parentnode=baker.make('core.Assignment'))
+        testuser = baker.make(settings.AUTH_USER_MODEL)
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser
         instance = crinstance_admin.AdminCrInstance(request=mockrequest)
         self.assertEqual([], list(instance.get_rolequeryset()))
 
     def test_getrolequeryset_admin_on_period(self):
-        testassignment = mommy.make('core.Assignment')
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+        testassignment = baker.make('core.Assignment')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                            period=testassignment.period)
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('devilry_account.PermissionGroupUser',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('devilry_account.PermissionGroupUser',
                    user=testuser,
                    permissiongroup=periodpermissiongroup.permissiongroup)
         mockrequest = mock.MagicMock()
@@ -51,21 +51,21 @@ class TestCrinstanceAdmin(test.TestCase):
         self.assertEqual([testgroup], list(instance.get_rolequeryset()))
 
     def test_getrolequeryset_not_admin_on_period(self):
-        testassignment_another = mommy.make('core.Assignment')
-        testgroup_another = mommy.make('core.AssignmentGroup', parentnode=testassignment_another)
-        periodpermissiongroup_another = mommy.make('devilry_account.PeriodPermissionGroup',
+        testassignment_another = baker.make('core.Assignment')
+        testgroup_another = baker.make('core.AssignmentGroup', parentnode=testassignment_another)
+        periodpermissiongroup_another = baker.make('devilry_account.PeriodPermissionGroup',
                                                    period=testassignment_another.period)
-        testuser_another = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('devilry_account.PermissionGroupUser',
+        testuser_another = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('devilry_account.PermissionGroupUser',
                    user=testuser_another,
                    permissiongroup=periodpermissiongroup_another.permissiongroup)
 
-        testassignment = mommy.make('core.Assignment')
-        mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+        testassignment = baker.make('core.Assignment')
+        baker.make('core.AssignmentGroup', parentnode=testassignment)
+        periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                            period=testassignment.period)
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('devilry_account.PermissionGroupUser',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('devilry_account.PermissionGroupUser',
                    user=testuser,
                    permissiongroup=periodpermissiongroup.permissiongroup)
         mockrequest = mock.MagicMock()
@@ -74,12 +74,12 @@ class TestCrinstanceAdmin(test.TestCase):
         self.assertNotEqual([testgroup_another], list(instance.get_rolequeryset()))
 
     def test_getrolequeryset_admin_on_subject(self):
-        testassignment = mommy.make('core.Assignment')
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+        testassignment = baker.make('core.Assignment')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        subjectpermissiongroup = baker.make('devilry_account.SubjectPermissionGroup',
                                             subject=testassignment.subject)
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('devilry_account.PermissionGroupUser',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('devilry_account.PermissionGroupUser',
                    user=testuser,
                    permissiongroup=subjectpermissiongroup.permissiongroup)
         mockrequest = mock.MagicMock()
@@ -88,21 +88,21 @@ class TestCrinstanceAdmin(test.TestCase):
         self.assertEqual([testgroup], list(instance.get_rolequeryset()))
 
     def test_getrolequeryset_not_admin_on_subject(self):
-        testassignment_another = mommy.make('core.Assignment')
-        testgroup_another = mommy.make('core.AssignmentGroup', parentnode=testassignment_another)
-        subjectpermissiongroup_another = mommy.make('devilry_account.SubjectPermissionGroup',
+        testassignment_another = baker.make('core.Assignment')
+        testgroup_another = baker.make('core.AssignmentGroup', parentnode=testassignment_another)
+        subjectpermissiongroup_another = baker.make('devilry_account.SubjectPermissionGroup',
                                                     subject=testassignment_another.subject)
-        testuser_another = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('devilry_account.PermissionGroupUser',
+        testuser_another = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('devilry_account.PermissionGroupUser',
                    user=testuser_another,
                    permissiongroup=subjectpermissiongroup_another.permissiongroup)
 
-        testassignment = mommy.make('core.Assignment')
-        mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+        testassignment = baker.make('core.Assignment')
+        baker.make('core.AssignmentGroup', parentnode=testassignment)
+        subjectpermissiongroup = baker.make('devilry_account.SubjectPermissionGroup',
                                             subject=testassignment.subject)
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('devilry_account.PermissionGroupUser',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('devilry_account.PermissionGroupUser',
                    user=testuser,
                    permissiongroup=subjectpermissiongroup.permissiongroup)
         mockrequest = mock.MagicMock()
@@ -111,12 +111,12 @@ class TestCrinstanceAdmin(test.TestCase):
         self.assertNotEqual([testgroup_another], list(instance.get_rolequeryset()))
 
     def test_admin_devilryrole_periodadmin(self):
-        testperiod = mommy.make('core.Period')
-        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=testperiod)
-        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
-        mommy.make('devilry_account.PermissionGroupUser',
+        testperiod = baker.make('core.Period')
+        testgroup = baker.make('core.AssignmentGroup', parentnode__parentnode=testperiod)
+        testuser = baker.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
+        baker.make('devilry_account.PermissionGroupUser',
                    user=testuser,
-                   permissiongroup=mommy.make(
+                   permissiongroup=baker.make(
                            'devilry_account.PeriodPermissionGroup',
                            permissiongroup__grouptype=account_models.PermissionGroup.GROUPTYPE_PERIODADMIN,
                            period=testperiod).permissiongroup)
@@ -127,12 +127,12 @@ class TestCrinstanceAdmin(test.TestCase):
         self.assertEqual('periodadmin', testinstance.get_devilryrole_for_requestuser())
 
     def test_admin_devilryrole_subjectadmin(self):
-        testsubject = mommy.make('core.Subject')
-        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode__parentnode=testsubject)
-        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
-        mommy.make('devilry_account.PermissionGroupUser',
+        testsubject = baker.make('core.Subject')
+        testgroup = baker.make('core.AssignmentGroup', parentnode__parentnode__parentnode=testsubject)
+        testuser = baker.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
+        baker.make('devilry_account.PermissionGroupUser',
                    user=testuser,
-                   permissiongroup=mommy.make(
+                   permissiongroup=baker.make(
                            'devilry_account.SubjectPermissionGroup',
                            permissiongroup__grouptype=account_models.PermissionGroup.GROUPTYPE_SUBJECTADMIN,
                            subject=testsubject).permissiongroup)

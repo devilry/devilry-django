@@ -4,14 +4,14 @@ from django import test
 from django.conf import settings
 from django.db import IntegrityError
 from django.utils import timezone
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.apps.core.models import AssignmentGroup, Assignment
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group.models import FeedbackSet
 from devilry.devilry_group.models import FeedbackSetDeadlineHistory
 from devilry.devilry_group.models import FeedbackSetGradingUpdateHistory
-from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
+from devilry.devilry_group import devilry_group_baker_factories as group_baker
 
 
 class TestFeedbackSetTriggers(test.TestCase):
@@ -21,10 +21,10 @@ class TestFeedbackSetTriggers(test.TestCase):
     def test_autocreated_feedbackset_passes_validation(self):
         # Should do nothing because validation is not called
         # when the FeedbackSet is created via a trigger
-        mommy.make('core.AssignmentGroup')  # No IntegrityError
+        baker.make('core.AssignmentGroup')  # No IntegrityError
 
     def test_can_delete_group(self):
-        group = mommy.make('core.AssignmentGroup')
+        group = baker.make('core.AssignmentGroup')
         self.assertEqual(AssignmentGroup.objects.count(), 1)
         self.assertEqual(FeedbackSet.objects.count(), 1)
         group.delete()
@@ -32,8 +32,8 @@ class TestFeedbackSetTriggers(test.TestCase):
         self.assertEqual(FeedbackSet.objects.count(), 0)
 
     def test_group_delete_deletes_feedbackset_history(self):
-        assignment = mommy.make('core.Assignment')
-        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make('core.Assignment')
+        group = baker.make('core.AssignmentGroup', parentnode=assignment)
         feedback_set = group.feedbackset_set.first()
         feedback_set.deadline_datetime = timezone.now() + timezone.timedelta(days=1)
         feedback_set.save()
@@ -46,16 +46,16 @@ class TestFeedbackSetTriggers(test.TestCase):
         self.assertEqual(0, FeedbackSetDeadlineHistory.objects.count())
 
     def test_first_feedbackset_deadline_datetime_is_assignment_first_deadline(self):
-        assignment = mommy.make('core.Assignment')
-        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make('core.Assignment')
+        group = baker.make('core.AssignmentGroup', parentnode=assignment)
         first_feedbackset = group.feedbackset_set.first()
         self.assertEqual(first_feedbackset.deadline_datetime,
                           assignment.first_deadline)
 
     def test_first_feedbackset_is_updated_on_assignment_first_deadline_change(self):
         old_first_deadline = timezone.now()
-        assignment = mommy.make('core.Assignment', first_deadline=old_first_deadline)
-        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make('core.Assignment', first_deadline=old_first_deadline)
+        group = baker.make('core.AssignmentGroup', parentnode=assignment)
 
         # Change assignment first_deadline
         new_first_deadline = timezone.now() + timezone.timedelta(days=10)
@@ -66,12 +66,12 @@ class TestFeedbackSetTriggers(test.TestCase):
 
     def test_all_first_feedbacksets_updated_on_assignment_first_deadline_change(self):
         old_first_deadline = timezone.now()
-        assignment = mommy.make('core.Assignment', first_deadline=old_first_deadline)
-        group1 = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        group2 = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        group3 = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        group4 = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        group5 = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make('core.Assignment', first_deadline=old_first_deadline)
+        group1 = baker.make('core.AssignmentGroup', parentnode=assignment)
+        group2 = baker.make('core.AssignmentGroup', parentnode=assignment)
+        group3 = baker.make('core.AssignmentGroup', parentnode=assignment)
+        group4 = baker.make('core.AssignmentGroup', parentnode=assignment)
+        group5 = baker.make('core.AssignmentGroup', parentnode=assignment)
 
         # Change assignment first_deadline
         new_first_deadline = timezone.now() + timezone.timedelta(days=10)
@@ -86,9 +86,9 @@ class TestFeedbackSetTriggers(test.TestCase):
 
     def test_first_feedbackset_deadline_datetime_not_same_as_assignment_first_deadline_is_not_updated(self):
         # The usecase where the deadline_datetime of a FeedbackSet is changed individually.
-        assignment = mommy.make('core.Assignment')
-        group1 = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        group2 = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make('core.Assignment')
+        group1 = baker.make('core.AssignmentGroup', parentnode=assignment)
+        group2 = baker.make('core.AssignmentGroup', parentnode=assignment)
 
         # Individual deadline change on FeedbackSet for group2
         feedbackset2 = group2.feedbackset_set.first()
@@ -103,23 +103,23 @@ class TestFeedbackSetTriggers(test.TestCase):
         self.assertNotEqual(feedbackset2.deadline_datetime, assignment.first_deadline)
 
     def test_on_create_feedbackset_no_deadline_history_created(self):
-        assignment = mommy.make('core.Assignment')
-        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make('core.Assignment')
+        group = baker.make('core.AssignmentGroup', parentnode=assignment)
         self.assertEqual(0, FeedbackSetDeadlineHistory.objects.filter(feedback_set__group_id=group.id).count())
 
     def test_on_feedbackset_new_attempt_no_deadline_history_created(self):
-        assignment = mommy.make('core.Assignment')
-        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        group_mommy.feedbackset_first_attempt_published(group=group)
-        group_mommy.feedbackset_new_attempt_unpublished(
+        assignment = baker.make('core.Assignment')
+        group = baker.make('core.AssignmentGroup', parentnode=assignment)
+        group_baker.feedbackset_first_attempt_published(group=group)
+        group_baker.feedbackset_new_attempt_unpublished(
             group=group,
             deadline_datetime=timezone.now() + timezone.timedelta(days=1))
         self.assertEqual(0, FeedbackSetDeadlineHistory.objects.count())
 
     def test_history_assignment_first_deadline_update(self):
         old_first_deadline = timezone.now()
-        assignment = mommy.make('core.Assignment', first_deadline=old_first_deadline)
-        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make('core.Assignment', first_deadline=old_first_deadline)
+        group = baker.make('core.AssignmentGroup', parentnode=assignment)
 
         new_first_deadline = timezone.now() + timezone.timedelta(days=1)
         assignment.first_deadline = new_first_deadline
@@ -132,9 +132,9 @@ class TestFeedbackSetTriggers(test.TestCase):
         self.assertEqual(deadline_history.deadline_new, new_first_deadline)
 
     def test_history_feedbackset_first_attempt_deadline_change_changed_by_user_is_set(self):
-        assignment = mommy.make('core.Assignment')
-        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        user = mommy.make(settings.AUTH_USER_MODEL)
+        assignment = baker.make('core.Assignment')
+        group = baker.make('core.AssignmentGroup', parentnode=assignment)
+        user = baker.make(settings.AUTH_USER_MODEL)
         feedback_set = group.feedbackset_set.first()
         new_feedbackset_deadline = timezone.now() + timezone.timedelta(days=1)
         feedback_set.deadline_datetime = new_feedbackset_deadline
@@ -146,8 +146,8 @@ class TestFeedbackSetTriggers(test.TestCase):
         self.assertEqual(deadline_history.changed_by, user)
 
     def test_history_feedbackset_first_attempt_deadline_change(self):
-        assignment = mommy.make('core.Assignment')
-        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make('core.Assignment')
+        group = baker.make('core.AssignmentGroup', parentnode=assignment)
         feedback_set = group.feedbackset_set.first()
         new_feedbackset_deadline = timezone.now() + timezone.timedelta(days=1)
         feedback_set.deadline_datetime = new_feedbackset_deadline
@@ -161,13 +161,13 @@ class TestFeedbackSetTriggers(test.TestCase):
         self.assertEqual(deadline_history.deadline_new, updated_feedback_set.deadline_datetime)
 
     def test_history_feedbackset_new_attempt_deadline_change_changed_by_user_is_set(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        group_mommy.feedbackset_first_attempt_published(group=group)
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group = baker.make('core.AssignmentGroup', parentnode=assignment)
+        group_baker.feedbackset_first_attempt_published(group=group)
         new_attempt_deadline = timezone.localtime(timezone.now() + timezone.timedelta(days=1))
         new_attempt_deadline = new_attempt_deadline.replace(microsecond=0)
-        user = mommy.make(settings.AUTH_USER_MODEL)
-        feedback_set_new_attempt = group_mommy.feedbackset_new_attempt_unpublished(
+        user = baker.make(settings.AUTH_USER_MODEL)
+        feedback_set_new_attempt = group_baker.feedbackset_new_attempt_unpublished(
             group=group,
             deadline_datetime=new_attempt_deadline,
             last_updated_by=user)
@@ -182,12 +182,12 @@ class TestFeedbackSetTriggers(test.TestCase):
         self.assertEqual(deadline_history.changed_by, user)
 
     def test_history_feedbackset_new_attempt_deadline_change(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        group_mommy.feedbackset_first_attempt_published(group=group)
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group = baker.make('core.AssignmentGroup', parentnode=assignment)
+        group_baker.feedbackset_first_attempt_published(group=group)
         new_attempt_deadline = timezone.localtime(timezone.now() + timezone.timedelta(days=1))
         new_attempt_deadline = new_attempt_deadline.replace(microsecond=0)
-        feedback_set_new_attempt = group_mommy.feedbackset_new_attempt_unpublished(
+        feedback_set_new_attempt = group_baker.feedbackset_new_attempt_unpublished(
             group=group,
             deadline_datetime=new_attempt_deadline)
         self.assertEqual(0, FeedbackSetDeadlineHistory.objects.filter(feedback_set__group_id=group.id).count())
@@ -203,8 +203,8 @@ class TestFeedbackSetTriggers(test.TestCase):
         self.assertEqual(new_attempt_updated_deadline, deadline_history.deadline_new)
 
     def test_history_feedbackset_deadline_datetime_multiple_changes(self):
-        assignment = mommy.make('core.Assignment')
-        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make('core.Assignment')
+        group = baker.make('core.AssignmentGroup', parentnode=assignment)
         feedback_set = group.feedbackset_set.first()
 
         deadline_first_change = timezone.now()
@@ -242,18 +242,18 @@ class TestFeedbackSetGradingUpdateTrigger(test.TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_feedbackset_grading_points_updated_sanity(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        test_feedbackset = group_mommy.feedbackset_first_attempt_published(group=testgroup, grading_points=0)
+        testgroup = baker.make('core.AssignmentGroup')
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        test_feedbackset = group_baker.feedbackset_first_attempt_published(group=testgroup, grading_points=0)
         self.assertEqual(FeedbackSetGradingUpdateHistory.objects.count(), 0)
         test_feedbackset.publish(published_by=testuser, grading_points=1)
         self.assertEqual(FeedbackSetGradingUpdateHistory.objects.count(), 1)
 
     def test_feedbackset_grading_points_results_simple(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = baker.make('core.AssignmentGroup')
+        testuser = baker.make(settings.AUTH_USER_MODEL)
         first_publish_datetime = timezone.now() - timezone.timedelta(days=10)
-        test_feedbackset = group_mommy.feedbackset_first_attempt_published(
+        test_feedbackset = group_baker.feedbackset_first_attempt_published(
             group=testgroup, grading_points=0, grading_published_datetime=first_publish_datetime)
         old_published_by = test_feedbackset.grading_published_by
 
@@ -270,18 +270,18 @@ class TestFeedbackSetGradingUpdateTrigger(test.TestCase):
         self.assertEqual(update_history.old_grading_published_datetime, first_publish_datetime)
 
     def test_feedbackset_grading_points_results_multiple(self):
-        testassignment = mommy.make('core.Assignment', max_points=10,
+        testassignment = baker.make('core.Assignment', max_points=10,
                                     grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS)
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
         first_publish_datetime = timezone.now() - timezone.timedelta(days=10)
-        test_feedbackset = group_mommy.feedbackset_first_attempt_published(
+        test_feedbackset = group_baker.feedbackset_first_attempt_published(
             group=testgroup, grading_points=0, grading_published_datetime=first_publish_datetime)
         first_update_published_by = test_feedbackset.grading_published_by
         self.assertEqual(FeedbackSetGradingUpdateHistory.objects.count(), 0)
 
-        testuser1 = mommy.make(settings.AUTH_USER_MODEL)
-        testuser2 = mommy.make(settings.AUTH_USER_MODEL)
-        testuser3 = mommy.make(settings.AUTH_USER_MODEL)
+        testuser1 = baker.make(settings.AUTH_USER_MODEL)
+        testuser2 = baker.make(settings.AUTH_USER_MODEL)
+        testuser3 = baker.make(settings.AUTH_USER_MODEL)
 
         test_feedbackset.publish(published_by=testuser1, grading_points=3)
         test_feedbackset.publish(published_by=testuser2, grading_points=6)

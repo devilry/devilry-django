@@ -6,13 +6,13 @@ from django import test
 from django.contrib import messages
 from django.core import mail
 from cradmin_legacy import cradmin_testhelpers
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.apps.core import models as core_models
 from devilry.devilry_dbcache import customsql
 from devilry.devilry_dbcache import models as cache_models
 from devilry.devilry_examiner.views.assignment.bulkoperations import bulk_feedback
-from devilry.devilry_group import devilry_group_mommy_factories
+from devilry.devilry_group import devilry_group_baker_factories
 from devilry.devilry_group import models as group_models
 from devilry.devilry_message.models import Message
 from devilry.project.common import settings
@@ -25,10 +25,10 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
         customsql.AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_title(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            long_name='Assignment 0')
-        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Examiner', assignmentgroup__parentnode=testassignment,
+        examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Examiner', assignmentgroup__parentnode=testassignment,
                    relatedexaminer__user=examiner_user)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
@@ -38,12 +38,12 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             mockresponse.selector.one('title').alltext_normalized)
 
     def test_no_groups_where_not_examiner(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Examiner', assignmentgroup__parentnode=testassignment,
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Examiner', assignmentgroup__parentnode=testassignment,
                    relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner', assignmentgroup__parentnode=testassignment,
+        baker.make('core.Examiner', assignmentgroup__parentnode=testassignment,
                    relatedexaminer__user=examiner_user)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
@@ -55,11 +55,11 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
         )
 
     def test_groups_sanity_unpublished(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Examiner', assignmentgroup__parentnode=testassignment,
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Examiner', assignmentgroup__parentnode=testassignment,
                    relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner', assignmentgroup__parentnode=testassignment,
+        baker.make('core.Examiner', assignmentgroup__parentnode=testassignment,
                    relatedexaminer__user=examiner_user)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
@@ -71,15 +71,15 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
         )
 
     def test_groups_sanity_published(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup1)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup2)
-        mommy.make('core.Examiner', assignmentgroup=testgroup1,
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup1)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup2)
+        baker.make('core.Examiner', assignmentgroup=testgroup1,
                    relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner', assignmentgroup=testgroup2,
+        baker.make('core.Examiner', assignmentgroup=testgroup2,
                    relatedexaminer__user=examiner_user)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
@@ -91,14 +91,14 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
         )
 
     def test_anonymizationmode_off_canidates(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_OFF)
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        examineruser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Examiner',
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        examineruser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Examiner',
                    relatedexaminer__user=examineruser,
                    assignmentgroup=testgroup)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__shortname='unanonymizedfullname',
                    relatedstudent__user__fullname='A un-anonymized fullname',
@@ -112,14 +112,14 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
         self.assertNotContains(mockresponse.response, 'MyAnonymousID')
 
     def test_anonymizationmode_semi_anonymous_canidates(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        examineruser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Examiner',
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        examineruser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Examiner',
                    relatedexaminer__user=examineruser,
                    assignmentgroup=testgroup)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__shortname='unanonymizedfullname',
                    relatedstudent__user__fullname='A un-anonymized fullname',
@@ -133,14 +133,14 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
         self.assertContains(mockresponse.response, 'MyAnonymousID')
 
     def test_anonymizationmode_fully_anonymous_canidates(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        examineruser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Examiner',
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        examineruser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Examiner',
                    relatedexaminer__user=examineruser,
                    assignmentgroup=testgroup)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__shortname='unanonymizedfullname',
                    relatedstudent__user__fullname='A un-anonymized fullname',
@@ -154,15 +154,15 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
         self.assertContains(mockresponse.response, 'MyAnonymousID')
 
     def test_group_render_title_name_order(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.Examiner', relatedexaminer__user=testuser,
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make('core.Examiner', relatedexaminer__user=testuser,
                    assignmentgroup=testgroup)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__shortname='userb')
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__shortname='usera')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
@@ -173,19 +173,19 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
                 '.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_group_render_title_name_order_fullname(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.Examiner', relatedexaminer__user=testuser,
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make('core.Examiner', relatedexaminer__user=testuser,
                    assignmentgroup=testgroup)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__shortname='userb')
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__shortname='userc',
                    relatedstudent__user__fullname='A user')
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__shortname='usera')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
@@ -196,13 +196,13 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
                 '.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_search_nomatch(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.Candidate',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__shortname='testuser')
-        mommy.make('core.Examiner',
+        baker.make('core.Examiner',
                    relatedexaminer__user=testuser,
                    assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -214,13 +214,13 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_match_fullname(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.Candidate',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='TestUser')
-        mommy.make('core.Examiner',
+        baker.make('core.Examiner',
                    relatedexaminer__user=testuser,
                    assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -232,13 +232,13 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_match_shortname(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.Candidate',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__shortname='testuser')
-        mommy.make('core.Examiner',
+        baker.make('core.Examiner',
                    relatedexaminer__user=testuser,
                    assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -250,14 +250,14 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_nomatch_fullname(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.Candidate',
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='TestUser')
-        mommy.make('core.Examiner',
+        baker.make('core.Examiner',
                    relatedexaminer__user=testuser,
                    assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -269,14 +269,14 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_nomatch_shortname(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.Candidate',
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__shortname='testuser')
-        mommy.make('core.Examiner',
+        baker.make('core.Examiner',
                    relatedexaminer__user=testuser,
                    assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -288,14 +288,14 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_nomatch_candidate_id_from_candidate(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.Candidate',
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    candidate_id='MyCandidateID')
-        mommy.make('core.Examiner',
+        baker.make('core.Examiner',
                    relatedexaminer__user=testuser,
                    assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -307,15 +307,15 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_match_automatic_candidate_id_from_relatedstudent(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.Candidate',
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='TestUser',
                    relatedstudent__candidate_id='MyCandidateID')
-        mommy.make('core.Examiner',
+        baker.make('core.Examiner',
                    relatedexaminer__user=testuser,
                    assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -327,15 +327,15 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_match_automatic_anonymous_id(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.Candidate',
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='TestUser',
                    relatedstudent__automatic_anonymous_id='MyAnonymousID')
-        mommy.make('core.Examiner',
+        baker.make('core.Examiner',
                    relatedexaminer__user=testuser,
                    assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -347,15 +347,15 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_uses_custom_candidate_ids_nomatch_fullname(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            uses_custom_candidate_ids=True,
                                            anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.Candidate',
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='TestUser')
-        mommy.make('core.Examiner',
+        baker.make('core.Examiner',
                    relatedexaminer__user=testuser,
                    assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -367,15 +367,15 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_uses_custom_candidate_ids_nomatch_shortname(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            uses_custom_candidate_ids=True,
                                            anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.Candidate',
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__shortname='testuser')
-        mommy.make('core.Examiner',
+        baker.make('core.Examiner',
                    relatedexaminer__user=testuser,
                    assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -387,16 +387,16 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_uses_custom_candidate_ids_nomatch_automatic_candidate_id_from_relatedstudent(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            uses_custom_candidate_ids=True,
                                            anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.Candidate',
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='TestUser',
                    relatedstudent__candidate_id='MyCandidateID')
-        mommy.make('core.Examiner',
+        baker.make('core.Examiner',
                    relatedexaminer__user=testuser,
                    assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -408,16 +408,16 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_uses_custom_candidate_ids_nomatch_automatic_anonymous_id(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            uses_custom_candidate_ids=True,
                                            anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.Candidate',
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='TestUser',
                    relatedstudent__automatic_anonymous_id='MyAnonymousID')
-        mommy.make('core.Examiner',
+        baker.make('core.Examiner',
                    relatedexaminer__user=testuser,
                    assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -429,15 +429,15 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_search_anonymous_uses_custom_candidate_ids_match_candidate_id_from_candidate(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            uses_custom_candidate_ids=True,
                                            anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.Candidate',
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    candidate_id='MyCandidateID')
-        mommy.make('core.Examiner',
+        baker.make('core.Examiner',
                    relatedexaminer__user=testuser,
                    assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -449,12 +449,12 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_groups_not_selected_by_default(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            long_name='Assignment 0')
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup)
-        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Examiner', assignmentgroup=testgroup,
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup)
+        examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Examiner', assignmentgroup=testgroup,
                    relatedexaminer__user=examiner_user)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
@@ -468,12 +468,12 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             mockresponse.selector.count('.cradmin-legacy-multiselect2-target-selected-item'))
 
     def test_one_group_on_assignment(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            long_name='Assignment 0')
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup)
-        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Examiner', assignmentgroup=testgroup,
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup)
+        examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Examiner', assignmentgroup=testgroup,
                    relatedexaminer__user=examiner_user)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
@@ -483,20 +483,20 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_three_groups_on_assignment(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            long_name='Assignment 0')
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1)
-        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup2)
-        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup3)
-        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Examiner', assignmentgroup=testgroup1,
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1)
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup2)
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup3)
+        examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Examiner', assignmentgroup=testgroup1,
                    relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner', assignmentgroup=testgroup2,
+        baker.make('core.Examiner', assignmentgroup=testgroup2,
                    relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner', assignmentgroup=testgroup3,
+        baker.make('core.Examiner', assignmentgroup=testgroup3,
                    relatedexaminer__user=examiner_user)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
@@ -506,14 +506,14 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_examiner_only_examiner_on_one_group(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            long_name='Assignment 0')
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1)
-        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup2)
-        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Examiner', assignmentgroup=testgroup1,
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1)
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup2)
+        examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Examiner', assignmentgroup=testgroup1,
                    relatedexaminer__user=examiner_user)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
@@ -523,21 +523,21 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_examiner_group_access_info(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            long_name='Assignment 0')
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1)
-        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup2)
-        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Examiner',
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1)
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup2)
+        examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup1,
                    relatedexaminer__user=examiner_user)
-        candidate1 = mommy.make('core.Candidate',
+        candidate1 = baker.make('core.Candidate',
                                 relatedstudent__user__fullname='Donald Duck',
                                 relatedstudent__user__shortname='donaldduck',
                                 assignment_group=testgroup1)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    relatedstudent__user__fullname='April Duck',
                    relatedstudent__user__shortname='aprilduck',
                    assignment_group=testgroup2)
@@ -554,12 +554,12 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
                 '.devilry-user-verbose-inline-both').alltext_normalized)
 
     def test_groups_with_last_published_feedbackset_do_not_show(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            long_name='Assignment 0')
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup)
-        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Examiner', assignmentgroup=testgroup,
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup)
+        examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Examiner', assignmentgroup=testgroup,
                    relatedexaminer__user=examiner_user)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
@@ -568,23 +568,23 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
         self.assertEqual(0, mockresponse.selector.count('.cradmin-legacy-multiselect2-itemvalue'))
 
     def test_filter_search_two_students_one_result(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            long_name='Assignment 0')
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1)
-        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Examiner',
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1)
+        examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup1,
                    relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner',
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup2,
                    relatedexaminer__user=examiner_user)
-        candidate = mommy.make('core.Candidate',
+        candidate = baker.make('core.Candidate',
                                relatedstudent__user__fullname='Donald Duck',
                                relatedstudent__user__shortname='donaldduck',
                                assignment_group=testgroup1)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    relatedstudent__user__fullname='April Duck',
                    relatedstudent__user__shortname='aprilduck',
                    assignment_group=testgroup2)
@@ -602,31 +602,31 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
                 '.devilry-user-verbose-inline-both').alltext_normalized)
 
     def test_filter_search_three_students_two_results(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            long_name='Assignment 0')
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1)
-        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Examiner',
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1)
+        examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup1,
                    relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner',
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup2,
                    relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner',
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup3,
                    relatedexaminer__user=examiner_user)
-        donald_candidate = mommy.make('core.Candidate',
+        donald_candidate = baker.make('core.Candidate',
                                 relatedstudent__user__fullname='Donald Duck',
                                 relatedstudent__user__shortname='donaldduck',
                                 assignment_group=testgroup1)
-        don_candidate = mommy.make('core.Candidate',
+        don_candidate = baker.make('core.Candidate',
                                 relatedstudent__user__fullname='Don Something',
                                 relatedstudent__user__shortname='donsomething',
                                 assignment_group=testgroup2)
-        april_candidate = mommy.make('core.Candidate',
+        april_candidate = baker.make('core.Candidate',
                                      relatedstudent__user__fullname='April Duck',
                                      relatedstudent__user__shortname='aprilduck',
                                      assignment_group=testgroup3)
@@ -664,21 +664,21 @@ class TestPassedFailedBulkCreateFeedback(test.TestCase, cradmin_testhelpers.Test
         customsql.AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_success_message(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
 
         # create assignment group
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
         # create examiner for group
-        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=examiner_user)
+        examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=examiner_user)
 
-        mommy.make('core.Candidate', assignment_group=testgroup1,
+        baker.make('core.Candidate', assignment_group=testgroup1,
                    relatedstudent__user__fullname='Candidate',
                    relatedstudent__user__shortname='candidate')
 
         # create FeedbackSets for the AssignmentGroups
-        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1)
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1)
 
         messagemock = mock.MagicMock()
         self.mock_postrequest(
@@ -700,23 +700,23 @@ class TestPassedFailedBulkCreateFeedback(test.TestCase, cradmin_testhelpers.Test
             '')
 
     def test_success_message_assignment_is_anonymous(self):
-        testassignment = mommy.make_recipe(
+        testassignment = baker.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
             anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
 
         # create assignment group
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
         # create examiner for group
-        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=examiner_user)
+        examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=examiner_user)
 
-        mommy.make('core.Candidate', assignment_group=testgroup1,
+        baker.make('core.Candidate', assignment_group=testgroup1,
                    relatedstudent__user__fullname='Candidate',
                    relatedstudent__user__shortname='candidate')
 
         # create FeedbackSets for the AssignmentGroups
-        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1)
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1)
 
         messagemock = mock.MagicMock()
         self.mock_postrequest(
@@ -738,22 +738,22 @@ class TestPassedFailedBulkCreateFeedback(test.TestCase, cradmin_testhelpers.Test
             '')
 
     def test_only_bulk_create_passed_group_ids(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
 
         # create assignment group
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
         # create examiner for group
-        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=examiner_user)
+        examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=examiner_user)
 
         # create FeedbackSets for the AssignmentGroups
-        testfeedbackset_first_attempt = devilry_group_mommy_factories\
+        testfeedbackset_first_attempt = devilry_group_baker_factories\
             .feedbackset_first_attempt_published(group=testgroup1)
-        testfeedbackset_new_attempt = devilry_group_mommy_factories\
+        testfeedbackset_new_attempt = devilry_group_baker_factories\
             .feedbackset_new_attempt_unpublished(group=testgroup1)
-        devilry_group_mommy_factories \
+        devilry_group_baker_factories \
             .feedbackset_new_attempt_unpublished(group=testgroup2)
 
         self.mock_postrequest(
@@ -777,19 +777,19 @@ class TestPassedFailedBulkCreateFeedback(test.TestCase, cradmin_testhelpers.Test
         self.assertIsNone(cached_data_group2.last_published_feedbackset)
 
     def test_group_receives_bulk_feedback(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
 
         # create assignment group
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
         # create examiner for group
-        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=examiner_user)
+        examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=examiner_user)
 
         # create feedbacksets for the groups
-        testfeedbackset_first_attempt = devilry_group_mommy_factories\
+        testfeedbackset_first_attempt = devilry_group_baker_factories\
             .feedbackset_first_attempt_published(group=testgroup)
-        testfeedbackset_new_attempt = devilry_group_mommy_factories\
+        testfeedbackset_new_attempt = devilry_group_baker_factories\
             .feedbackset_new_attempt_unpublished(group=testgroup)
 
         self.mock_postrequest(
@@ -814,33 +814,33 @@ class TestPassedFailedBulkCreateFeedback(test.TestCase, cradmin_testhelpers.Test
                           cached_data.last_published_feedbackset.grading_points)
 
     def test_multiple_groups_receive_bulk_feedback(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
 
         # create AssignmentGroups
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
         # create students for the groups
-        student1 = mommy.make('core.Candidate', assignment_group=testgroup1)
-        student2 = mommy.make('core.Candidate', assignment_group=testgroup2)
-        student3 = mommy.make('core.Candidate', assignment_group=testgroup3)
-        mommy.make('devilry_account.UserEmail', user=student1.relatedstudent.user, email='student1@example.com')
-        mommy.make('devilry_account.UserEmail', user=student2.relatedstudent.user, email='student2@example.com')
-        mommy.make('devilry_account.UserEmail', user=student3.relatedstudent.user, email='student3@example.com')
+        student1 = baker.make('core.Candidate', assignment_group=testgroup1)
+        student2 = baker.make('core.Candidate', assignment_group=testgroup2)
+        student3 = baker.make('core.Candidate', assignment_group=testgroup3)
+        baker.make('devilry_account.UserEmail', user=student1.relatedstudent.user, email='student1@example.com')
+        baker.make('devilry_account.UserEmail', user=student2.relatedstudent.user, email='student2@example.com')
+        baker.make('devilry_account.UserEmail', user=student3.relatedstudent.user, email='student3@example.com')
 
         # create user as examiner for AssignmentGroups
-        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=examiner_user)
+        examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=examiner_user)
+        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=examiner_user)
+        baker.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=examiner_user)
 
         # create feedbacksets for the groups
-        testfeedbackset_group1 = devilry_group_mommy_factories\
+        testfeedbackset_group1 = devilry_group_baker_factories\
             .feedbackset_first_attempt_unpublished(group=testgroup1)
-        testfeedbackset_group2 = devilry_group_mommy_factories \
+        testfeedbackset_group2 = devilry_group_baker_factories \
             .feedbackset_first_attempt_unpublished(group=testgroup2)
-        testfeedbackset_group3 = devilry_group_mommy_factories \
+        testfeedbackset_group3 = devilry_group_baker_factories \
             .feedbackset_first_attempt_unpublished(group=testgroup3)
 
         self.mock_postrequest(
@@ -879,33 +879,33 @@ class TestPassedFailedBulkCreateFeedback(test.TestCase, cradmin_testhelpers.Test
         self.assertEqual(len(mail.outbox), 3)
 
     def test_get_num_queries(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
 
         # create AssignmentGroups
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup4 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup5 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup4 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup5 = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
         # create user as examiner for AssignmentGroups
-        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner', assignmentgroup=testgroup4, relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner', assignmentgroup=testgroup5, relatedexaminer__user=examiner_user)
+        examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=examiner_user)
+        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=examiner_user)
+        baker.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=examiner_user)
+        baker.make('core.Examiner', assignmentgroup=testgroup4, relatedexaminer__user=examiner_user)
+        baker.make('core.Examiner', assignmentgroup=testgroup5, relatedexaminer__user=examiner_user)
 
         # create feedbacksets for the groups
-        devilry_group_mommy_factories\
+        devilry_group_baker_factories\
             .feedbackset_first_attempt_unpublished(group=testgroup1)
-        devilry_group_mommy_factories\
+        devilry_group_baker_factories\
             .feedbackset_first_attempt_unpublished(group=testgroup2)
-        devilry_group_mommy_factories\
+        devilry_group_baker_factories\
             .feedbackset_first_attempt_unpublished(group=testgroup3)
-        devilry_group_mommy_factories\
+        devilry_group_baker_factories\
             .feedbackset_first_attempt_unpublished(group=testgroup4)
-        devilry_group_mommy_factories\
+        devilry_group_baker_factories\
             .feedbackset_first_attempt_unpublished(group=testgroup5)
 
         with self.assertNumQueries(5):
@@ -915,33 +915,33 @@ class TestPassedFailedBulkCreateFeedback(test.TestCase, cradmin_testhelpers.Test
             )
 
     def test_post_num_queries(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
 
         # create AssignmentGroups
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup4 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup5 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup4 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup5 = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
         # create user as examiner for AssignmentGroups
-        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner', assignmentgroup=testgroup4, relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner', assignmentgroup=testgroup5, relatedexaminer__user=examiner_user)
+        examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=examiner_user)
+        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=examiner_user)
+        baker.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=examiner_user)
+        baker.make('core.Examiner', assignmentgroup=testgroup4, relatedexaminer__user=examiner_user)
+        baker.make('core.Examiner', assignmentgroup=testgroup5, relatedexaminer__user=examiner_user)
 
         # create feedbacksets for the groups
-        devilry_group_mommy_factories\
+        devilry_group_baker_factories\
             .feedbackset_first_attempt_unpublished(group=testgroup1)
-        devilry_group_mommy_factories\
+        devilry_group_baker_factories\
             .feedbackset_first_attempt_unpublished(group=testgroup2)
-        devilry_group_mommy_factories\
+        devilry_group_baker_factories\
             .feedbackset_first_attempt_unpublished(group=testgroup3)
-        devilry_group_mommy_factories\
+        devilry_group_baker_factories\
             .feedbackset_first_attempt_unpublished(group=testgroup4)
-        devilry_group_mommy_factories\
+        devilry_group_baker_factories\
             .feedbackset_first_attempt_unpublished(group=testgroup5)
 
         with self.assertNumQueries(22):
@@ -965,26 +965,26 @@ class TestPointsBulkCreateFeedback(test.TestCase, cradmin_testhelpers.TestCaseMi
         customsql.AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_only_bulk_create_passed_group_ids(self):
-        testassignment = mommy.make_recipe(
+        testassignment = baker.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
             grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS,
             passing_grade_min_points=6,
             max_points=10)
 
         # create assignment group
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
         # create examiner for group
-        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=examiner_user)
+        examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=examiner_user)
 
         # create FeedbackSets for the AssignmentGroups
-        testfeedbackset_first_attempt = devilry_group_mommy_factories\
+        testfeedbackset_first_attempt = devilry_group_baker_factories\
             .feedbackset_first_attempt_published(group=testgroup1)
-        testfeedbackset_new_attempt = devilry_group_mommy_factories\
+        testfeedbackset_new_attempt = devilry_group_baker_factories\
             .feedbackset_new_attempt_unpublished(group=testgroup1)
-        devilry_group_mommy_factories \
+        devilry_group_baker_factories \
             .feedbackset_new_attempt_unpublished(group=testgroup2)
 
         self.mock_postrequest(
@@ -1008,23 +1008,23 @@ class TestPointsBulkCreateFeedback(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.assertIsNone(cached_data_group2.last_published_feedbackset)
 
     def test_group_receives_bulk_feedback(self):
-        testassignment = mommy.make_recipe(
+        testassignment = baker.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
             grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS,
             passing_grade_min_points=6,
             max_points=10)
 
         # create assignment group
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
         # create examiner for group
-        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=examiner_user)
+        examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=examiner_user)
 
         # create feedbacksets for the groups
-        testfeedbackset_first_attempt = devilry_group_mommy_factories\
+        testfeedbackset_first_attempt = devilry_group_baker_factories\
             .feedbackset_first_attempt_published(group=testgroup)
-        testfeedbackset_new_attempt = devilry_group_mommy_factories\
+        testfeedbackset_new_attempt = devilry_group_baker_factories\
             .feedbackset_new_attempt_unpublished(group=testgroup)
 
         self.mock_postrequest(
@@ -1048,37 +1048,37 @@ class TestPointsBulkCreateFeedback(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.assertEqual(10, cached_data.last_published_feedbackset.grading_points)
 
     def test_multiple_groups_receive_bulk_feedback(self):
-        testassignment = mommy.make_recipe(
+        testassignment = baker.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
             grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS,
             passing_grade_min_points=6,
             max_points=10)
 
         # create AssignmentGroups
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
         # create students for the groups
-        student1 = mommy.make('core.Candidate', assignment_group=testgroup1)
-        student2 = mommy.make('core.Candidate', assignment_group=testgroup2)
-        student3 = mommy.make('core.Candidate', assignment_group=testgroup3)
-        mommy.make('devilry_account.UserEmail', user=student1.relatedstudent.user, email='student1@example.com')
-        mommy.make('devilry_account.UserEmail', user=student2.relatedstudent.user, email='student2@example.com')
-        mommy.make('devilry_account.UserEmail', user=student3.relatedstudent.user, email='student3@example.com')
+        student1 = baker.make('core.Candidate', assignment_group=testgroup1)
+        student2 = baker.make('core.Candidate', assignment_group=testgroup2)
+        student3 = baker.make('core.Candidate', assignment_group=testgroup3)
+        baker.make('devilry_account.UserEmail', user=student1.relatedstudent.user, email='student1@example.com')
+        baker.make('devilry_account.UserEmail', user=student2.relatedstudent.user, email='student2@example.com')
+        baker.make('devilry_account.UserEmail', user=student3.relatedstudent.user, email='student3@example.com')
 
         # create user as examiner for AssignmentGroups
-        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=examiner_user)
+        examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=examiner_user)
+        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=examiner_user)
+        baker.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=examiner_user)
 
         # create feedbacksets for the groups
-        testfeedbackset_group1 = devilry_group_mommy_factories\
+        testfeedbackset_group1 = devilry_group_baker_factories\
             .feedbackset_first_attempt_unpublished(group=testgroup1)
-        testfeedbackset_group2 = devilry_group_mommy_factories \
+        testfeedbackset_group2 = devilry_group_baker_factories \
             .feedbackset_first_attempt_unpublished(group=testgroup2)
-        testfeedbackset_group3 = devilry_group_mommy_factories \
+        testfeedbackset_group3 = devilry_group_baker_factories \
             .feedbackset_first_attempt_unpublished(group=testgroup3)
 
         self.mock_postrequest(
@@ -1116,55 +1116,55 @@ class TestPointsBulkCreateFeedback(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.assertEqual(len(mail.outbox), 3)
 
     def test_get_num_queries(self):
-        testassignment = mommy.make_recipe(
+        testassignment = baker.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
             grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS,
             passing_grade_min_points=6,
             max_points=10)
 
         # create AssignmentGroups
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup4 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup5 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup6 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup4 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup5 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup6 = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
         # create students for the groups
-        student1 = mommy.make('core.Candidate', assignment_group=testgroup1)
-        student2 = mommy.make('core.Candidate', assignment_group=testgroup2)
-        student3 = mommy.make('core.Candidate', assignment_group=testgroup3)
-        student4 = mommy.make('core.Candidate', assignment_group=testgroup4)
-        student5 = mommy.make('core.Candidate', assignment_group=testgroup5)
-        student6 = mommy.make('core.Candidate', assignment_group=testgroup6)
-        mommy.make('devilry_account.UserEmail', user=student1.relatedstudent.user, email='student1@example.com')
-        mommy.make('devilry_account.UserEmail', user=student2.relatedstudent.user, email='student2@example.com')
-        mommy.make('devilry_account.UserEmail', user=student3.relatedstudent.user, email='student3@example.com')
-        mommy.make('devilry_account.UserEmail', user=student4.relatedstudent.user, email='student4@example.com')
-        mommy.make('devilry_account.UserEmail', user=student5.relatedstudent.user, email='student5@example.com')
-        mommy.make('devilry_account.UserEmail', user=student6.relatedstudent.user, email='student6@example.com')
+        student1 = baker.make('core.Candidate', assignment_group=testgroup1)
+        student2 = baker.make('core.Candidate', assignment_group=testgroup2)
+        student3 = baker.make('core.Candidate', assignment_group=testgroup3)
+        student4 = baker.make('core.Candidate', assignment_group=testgroup4)
+        student5 = baker.make('core.Candidate', assignment_group=testgroup5)
+        student6 = baker.make('core.Candidate', assignment_group=testgroup6)
+        baker.make('devilry_account.UserEmail', user=student1.relatedstudent.user, email='student1@example.com')
+        baker.make('devilry_account.UserEmail', user=student2.relatedstudent.user, email='student2@example.com')
+        baker.make('devilry_account.UserEmail', user=student3.relatedstudent.user, email='student3@example.com')
+        baker.make('devilry_account.UserEmail', user=student4.relatedstudent.user, email='student4@example.com')
+        baker.make('devilry_account.UserEmail', user=student5.relatedstudent.user, email='student5@example.com')
+        baker.make('devilry_account.UserEmail', user=student6.relatedstudent.user, email='student6@example.com')
 
         # create user as examiner for AssignmentGroups
-        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner', assignmentgroup=testgroup4, relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner', assignmentgroup=testgroup5, relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner', assignmentgroup=testgroup6, relatedexaminer__user=examiner_user)
+        examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=examiner_user)
+        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=examiner_user)
+        baker.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=examiner_user)
+        baker.make('core.Examiner', assignmentgroup=testgroup4, relatedexaminer__user=examiner_user)
+        baker.make('core.Examiner', assignmentgroup=testgroup5, relatedexaminer__user=examiner_user)
+        baker.make('core.Examiner', assignmentgroup=testgroup6, relatedexaminer__user=examiner_user)
 
         # create feedbacksets for the groups
-        devilry_group_mommy_factories\
+        devilry_group_baker_factories\
             .feedbackset_first_attempt_unpublished(group=testgroup1)
-        devilry_group_mommy_factories\
+        devilry_group_baker_factories\
             .feedbackset_first_attempt_unpublished(group=testgroup2)
-        devilry_group_mommy_factories\
+        devilry_group_baker_factories\
             .feedbackset_first_attempt_unpublished(group=testgroup3)
-        devilry_group_mommy_factories\
+        devilry_group_baker_factories\
             .feedbackset_first_attempt_unpublished(group=testgroup4)
-        devilry_group_mommy_factories\
+        devilry_group_baker_factories\
             .feedbackset_first_attempt_unpublished(group=testgroup5)
-        devilry_group_mommy_factories \
+        devilry_group_baker_factories \
             .feedbackset_first_attempt_unpublished(group=testgroup6)
 
         with self.assertNumQueries(10):
@@ -1174,49 +1174,49 @@ class TestPointsBulkCreateFeedback(test.TestCase, cradmin_testhelpers.TestCaseMi
             )
 
     def test_post_num_queries(self):
-        testassignment = mommy.make_recipe(
+        testassignment = baker.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
             grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS,
             passing_grade_min_points=6,
             max_points=10)
 
         # create AssignmentGroups
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup4 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup5 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup4 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup5 = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
         # create students for the groups
-        student1 = mommy.make('core.Candidate', assignment_group=testgroup1)
-        student2 = mommy.make('core.Candidate', assignment_group=testgroup2)
-        student3 = mommy.make('core.Candidate', assignment_group=testgroup3)
-        student4 = mommy.make('core.Candidate', assignment_group=testgroup4)
-        student5 = mommy.make('core.Candidate', assignment_group=testgroup5)
-        mommy.make('devilry_account.UserEmail', user=student1.relatedstudent.user, email='student1@example.com')
-        mommy.make('devilry_account.UserEmail', user=student2.relatedstudent.user, email='student2@example.com')
-        mommy.make('devilry_account.UserEmail', user=student3.relatedstudent.user, email='student3@example.com')
-        mommy.make('devilry_account.UserEmail', user=student4.relatedstudent.user, email='student4@example.com')
-        mommy.make('devilry_account.UserEmail', user=student5.relatedstudent.user, email='student5@example.com')
+        student1 = baker.make('core.Candidate', assignment_group=testgroup1)
+        student2 = baker.make('core.Candidate', assignment_group=testgroup2)
+        student3 = baker.make('core.Candidate', assignment_group=testgroup3)
+        student4 = baker.make('core.Candidate', assignment_group=testgroup4)
+        student5 = baker.make('core.Candidate', assignment_group=testgroup5)
+        baker.make('devilry_account.UserEmail', user=student1.relatedstudent.user, email='student1@example.com')
+        baker.make('devilry_account.UserEmail', user=student2.relatedstudent.user, email='student2@example.com')
+        baker.make('devilry_account.UserEmail', user=student3.relatedstudent.user, email='student3@example.com')
+        baker.make('devilry_account.UserEmail', user=student4.relatedstudent.user, email='student4@example.com')
+        baker.make('devilry_account.UserEmail', user=student5.relatedstudent.user, email='student5@example.com')
 
         # create user as examiner for AssignmentGroups
-        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner', assignmentgroup=testgroup4, relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner', assignmentgroup=testgroup5, relatedexaminer__user=examiner_user)
+        examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=examiner_user)
+        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=examiner_user)
+        baker.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=examiner_user)
+        baker.make('core.Examiner', assignmentgroup=testgroup4, relatedexaminer__user=examiner_user)
+        baker.make('core.Examiner', assignmentgroup=testgroup5, relatedexaminer__user=examiner_user)
 
         # create feedbacksets for the groups
-        devilry_group_mommy_factories\
+        devilry_group_baker_factories\
             .feedbackset_first_attempt_unpublished(group=testgroup1)
-        devilry_group_mommy_factories\
+        devilry_group_baker_factories\
             .feedbackset_first_attempt_unpublished(group=testgroup2)
-        devilry_group_mommy_factories\
+        devilry_group_baker_factories\
             .feedbackset_first_attempt_unpublished(group=testgroup3)
-        devilry_group_mommy_factories\
+        devilry_group_baker_factories\
             .feedbackset_first_attempt_unpublished(group=testgroup4)
-        devilry_group_mommy_factories\
+        devilry_group_baker_factories\
             .feedbackset_first_attempt_unpublished(group=testgroup5)
 
         with self.assertNumQueries(93):

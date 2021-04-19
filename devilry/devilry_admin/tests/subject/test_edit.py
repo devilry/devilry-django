@@ -1,7 +1,7 @@
 import mock
 from django.test import TestCase
 from cradmin_legacy import cradmin_testhelpers
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.apps.core.models import Subject
 from devilry.devilry_admin.views.subject import edit
@@ -11,7 +11,7 @@ class TestUpdateView(TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = edit.UpdateView
 
     def test_get_render_title(self):
-        testsubject = mommy.make('core.Subject',
+        testsubject = baker.make('core.Subject',
                                  short_name='testsubject')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testsubject)
@@ -19,7 +19,7 @@ class TestUpdateView(TestCase, cradmin_testhelpers.TestCaseMixin):
                       mockresponse.selector.one('title').alltext_normalized)
 
     def test_get_render_h1(self):
-        testsubject = mommy.make('core.Subject',
+        testsubject = baker.make('core.Subject',
                                  short_name='testsubject')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testsubject)
@@ -27,7 +27,7 @@ class TestUpdateView(TestCase, cradmin_testhelpers.TestCaseMixin):
                          mockresponse.selector.one('h1').alltext_normalized)
 
     def test_get_render_formfields(self):
-        testsubject = mommy.make('core.Subject',
+        testsubject = baker.make('core.Subject',
                                  long_name='Test subject',
                                  short_name='testsubject')
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -40,7 +40,7 @@ class TestUpdateView(TestCase, cradmin_testhelpers.TestCaseMixin):
                 mockresponse.selector.one('input[name=short_name]')['value'])
 
     def test_post_missing_short_name(self):
-        testsubject = mommy.make('core.Subject')
+        testsubject = baker.make('core.Subject')
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=testsubject,
             requestkwargs={
@@ -54,7 +54,7 @@ class TestUpdateView(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('#error_1_id_short_name').alltext_normalized)
 
     def test_post_missing_long_name(self):
-        testsubject = mommy.make('core.Subject')
+        testsubject = baker.make('core.Subject')
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=testsubject,
             requestkwargs={
@@ -82,7 +82,7 @@ class TestUpdateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         return updated_period, mockresponse
 
     def test_post_sanity(self):
-        testsubject = mommy.make('core.Subject')
+        testsubject = baker.make('core.Subject')
         updated_period, mockresponse = self.__valid_post_request(
                 testsubject=testsubject)
         self.assertEqual(Subject.objects.count(), 1)
@@ -90,7 +90,7 @@ class TestUpdateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual('testsubject', updated_period.short_name)
 
     def test_post_success_redirect(self):
-        testsubject = mommy.make('core.Subject')
+        testsubject = baker.make('core.Subject')
         mock_cradmin_instance = mock.MagicMock()
         self.__valid_post_request(
                 testsubject=testsubject,

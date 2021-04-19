@@ -3,13 +3,13 @@ from django.conf import settings
 from django.template import defaultfilters
 from django.utils import timezone
 
-from model_mommy import mommy
+from model_bakery import baker
 from cradmin_legacy import cradmin_testhelpers
 
 from devilry.devilry_account.models import PermissionGroup
 from devilry.devilry_admin.views.dashboard.student_feedbackfeed_wizard import assignment_list
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
-from devilry.devilry_group.devilry_group_mommy_factories import make_first_feedbackset_in_group
+from devilry.devilry_group.devilry_group_baker_factories import make_first_feedbackset_in_group
 
 
 class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -19,27 +19,27 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_title(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
+        testuser = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
         mockresponse = self.mock_http200_getrequest_htmls(
             viewkwargs={'user_id': testuser.id}
         )
         self.assertEqual(mockresponse.selector.one('title').alltext_normalized, 'Assignments for testuser@example.com')
 
     def test_user_can_only_see_assignments_where_user_is_admin_on_subject(self):
-        adminuser = mommy.make(settings.AUTH_USER_MODEL)
-        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
-        testsubject1 = mommy.make('core.Subject')
-        testsubject2 = mommy.make('core.Subject')
-        mommy.make('devilry_account.PermissionGroupUser', user=adminuser,
-                   permissiongroup=mommy.make('devilry_account.SubjectPermissionGroup',
+        adminuser = baker.make(settings.AUTH_USER_MODEL)
+        testuser = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
+        testsubject1 = baker.make('core.Subject')
+        testsubject2 = baker.make('core.Subject')
+        baker.make('devilry_account.PermissionGroupUser', user=adminuser,
+                   permissiongroup=baker.make('devilry_account.SubjectPermissionGroup',
                                               permissiongroup__grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN,
                                               subject=testsubject1).permissiongroup)
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode__long_name='Accessible Assignment',
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode__long_name='Accessible Assignment',
                                 parentnode__parentnode__parentnode=testsubject1)
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode__long_name='Inaccessible Assignment',
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode__long_name='Inaccessible Assignment',
                                 parentnode__parentnode__parentnode=testsubject2)
-        mommy.make('core.Candidate', assignment_group=testgroup1, relatedstudent__user=testuser)
-        mommy.make('core.Candidate', assignment_group=testgroup2, relatedstudent__user=testuser)
+        baker.make('core.Candidate', assignment_group=testgroup1, relatedstudent__user=testuser)
+        baker.make('core.Candidate', assignment_group=testgroup2, relatedstudent__user=testuser)
         selector = self.mock_http200_getrequest_htmls(
             requestuser=adminuser,
             viewkwargs={'user_id': testuser.id}
@@ -50,21 +50,21 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
             'Accessible Assignment')
 
     def test_user_can_only_see_assignments_where_user_is_admin_on_period(self):
-        adminuser = mommy.make(settings.AUTH_USER_MODEL)
-        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
-        testsubject = mommy.make('core.Subject')
-        testperiod1 = mommy.make('core.Period', parentnode=testsubject)
-        testperiod2 = mommy.make('core.Period', parentnode=testsubject)
-        mommy.make('devilry_account.PermissionGroupUser', user=adminuser,
-                   permissiongroup=mommy.make('devilry_account.PeriodPermissionGroup',
+        adminuser = baker.make(settings.AUTH_USER_MODEL)
+        testuser = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
+        testsubject = baker.make('core.Subject')
+        testperiod1 = baker.make('core.Period', parentnode=testsubject)
+        testperiod2 = baker.make('core.Period', parentnode=testsubject)
+        baker.make('devilry_account.PermissionGroupUser', user=adminuser,
+                   permissiongroup=baker.make('devilry_account.PeriodPermissionGroup',
                                               permissiongroup__grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN,
                                               period=testperiod1).permissiongroup)
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode__long_name='Accessible Assignment',
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode__long_name='Accessible Assignment',
                                 parentnode__parentnode=testperiod1)
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode__long_name='Inaccessible Assignment',
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode__long_name='Inaccessible Assignment',
                                 parentnode__parentnode=testperiod2)
-        mommy.make('core.Candidate', assignment_group=testgroup1, relatedstudent__user=testuser)
-        mommy.make('core.Candidate', assignment_group=testgroup2, relatedstudent__user=testuser)
+        baker.make('core.Candidate', assignment_group=testgroup1, relatedstudent__user=testuser)
+        baker.make('core.Candidate', assignment_group=testgroup2, relatedstudent__user=testuser)
         selector = self.mock_http200_getrequest_htmls(
             requestuser=adminuser,
             viewkwargs={'user_id': testuser.id}
@@ -75,7 +75,7 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
             'Accessible Assignment')
 
     def __make_simple_assignment_group(self, assignment_long_name='Assignment AAA'):
-        group = mommy.make('core.AssignmentGroup',
+        group = baker.make('core.AssignmentGroup',
                            parentnode__short_name='assingmentaaa',
                            parentnode__long_name=assignment_long_name,
                            parentnode__parentnode__short_name='periodaaa',
@@ -88,17 +88,17 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
 
     def test_default_ordering_by_deadline_datetime_ascending(self):
         now = timezone.now()
-        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode__long_name='Assignment A')
+        testuser = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode__long_name='Assignment A')
         make_first_feedbackset_in_group(group=testgroup1, deadline_datetime=now + timezone.timedelta(days=40))
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode__long_name='Assignment B')
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode__long_name='Assignment B')
         make_first_feedbackset_in_group(group=testgroup2, deadline_datetime=now + timezone.timedelta(days=30))
-        testgroup3 = mommy.make('core.AssignmentGroup', parentnode__long_name='Assignment C')
-        mommy.make('core.Candidate', assignment_group=testgroup1, relatedstudent__user=testuser)
-        mommy.make('core.Candidate', assignment_group=testgroup2, relatedstudent__user=testuser)
-        mommy.make('core.Candidate', assignment_group=testgroup3, relatedstudent__user=testuser)
+        testgroup3 = baker.make('core.AssignmentGroup', parentnode__long_name='Assignment C')
+        baker.make('core.Candidate', assignment_group=testgroup1, relatedstudent__user=testuser)
+        baker.make('core.Candidate', assignment_group=testgroup2, relatedstudent__user=testuser)
+        baker.make('core.Candidate', assignment_group=testgroup3, relatedstudent__user=testuser)
         selector = self.mock_http200_getrequest_htmls(
-            requestuser=mommy.make(settings.AUTH_USER_MODEL, is_superuser=True),
+            requestuser=baker.make(settings.AUTH_USER_MODEL, is_superuser=True),
             viewkwargs={'user_id': testuser.id}
         ).selector
         assignment_longname_list = [element.alltext_normalized for element in
@@ -113,11 +113,11 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
         )
 
     def test_assignment_info_assignment_name(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
+        testuser = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
         testgroup = self.__make_simple_assignment_group()
-        mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=testuser)
+        baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=testuser)
         selector = self.mock_http200_getrequest_htmls(
-            requestuser=mommy.make(settings.AUTH_USER_MODEL, is_superuser=True),
+            requestuser=baker.make(settings.AUTH_USER_MODEL, is_superuser=True),
             viewkwargs={'user_id': testuser.id}
         ).selector
         self.assertEqual(
@@ -126,13 +126,13 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
         )
 
     def test_assignment_info_deadline_datetime(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
+        testuser = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
         testgroup = self.__make_simple_assignment_group()
         testgroup.cached_data.last_feedbackset.deadline_datetime = timezone.now()
         testgroup.cached_data.last_feedbackset.save()
-        mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=testuser)
+        baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=testuser)
         selector = self.mock_http200_getrequest_htmls(
-            requestuser=mommy.make(settings.AUTH_USER_MODEL, is_superuser=True),
+            requestuser=baker.make(settings.AUTH_USER_MODEL, is_superuser=True),
             viewkwargs={'user_id': testuser.id}
         ).selector
         self.assertEqual(
@@ -143,11 +143,11 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
         )
 
     def test_assignment_info_period_name(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
+        testuser = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
         testgroup = self.__make_simple_assignment_group()
-        mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=testuser)
+        baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=testuser)
         selector = self.mock_http200_getrequest_htmls(
-            requestuser=mommy.make(settings.AUTH_USER_MODEL, is_superuser=True),
+            requestuser=baker.make(settings.AUTH_USER_MODEL, is_superuser=True),
             viewkwargs={'user_id': testuser.id}
         ).selector
         self.assertEqual(
@@ -156,11 +156,11 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
         )
 
     def test_assignment_info_subject_name(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
+        testuser = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
         testgroup = self.__make_simple_assignment_group()
-        mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=testuser)
+        baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=testuser)
         selector = self.mock_http200_getrequest_htmls(
-            requestuser=mommy.make(settings.AUTH_USER_MODEL, is_superuser=True),
+            requestuser=baker.make(settings.AUTH_USER_MODEL, is_superuser=True),
             viewkwargs={'user_id': testuser.id}
         ).selector
         self.assertEqual(
@@ -169,11 +169,11 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
         )
 
     def test_assignment_info_delivery_status(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
+        testuser = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
         testgroup = self.__make_simple_assignment_group()
-        mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=testuser)
+        baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=testuser)
         selector = self.mock_http200_getrequest_htmls(
-            requestuser=mommy.make(settings.AUTH_USER_MODEL, is_superuser=True),
+            requestuser=baker.make(settings.AUTH_USER_MODEL, is_superuser=True),
             viewkwargs={'user_id': testuser.id}
         ).selector
         self.assertEqual(
@@ -182,101 +182,101 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
         )
 
     def test_search_candidate_in_group_nomatch(self):
-        teststudent = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
+        teststudent = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
         testgroup = self.__make_simple_assignment_group()
-        mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=teststudent)
+        baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=teststudent)
         selector = self.mock_http200_getrequest_htmls(
-            requestuser=mommy.make(settings.AUTH_USER_MODEL, is_superuser=True),
+            requestuser=baker.make(settings.AUTH_USER_MODEL, is_superuser=True),
             viewkwargs={'user_id': teststudent.id, 'filters_string': 'search-NotInGroups'}
         ).selector
         self.assertEqual(selector.count('.cradmin-legacy-listbuilder-itemvalue'), 0)
 
     def test_search_other_candidate_in_group_fullname(self):
-        teststudent = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
-        other_student = mommy.make(settings.AUTH_USER_MODEL, shortname='other@example.com', fullname='Other User')
+        teststudent = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
+        other_student = baker.make(settings.AUTH_USER_MODEL, shortname='other@example.com', fullname='Other User')
         testgroup = self.__make_simple_assignment_group()
-        mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=teststudent)
-        mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=other_student)
+        baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=teststudent)
+        baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=other_student)
         selector = self.mock_http200_getrequest_htmls(
-            requestuser=mommy.make(settings.AUTH_USER_MODEL, is_superuser=True),
+            requestuser=baker.make(settings.AUTH_USER_MODEL, is_superuser=True),
             viewkwargs={'user_id': teststudent.id, 'filters_string': 'search-Other User'}
         ).selector
         self.assertEqual(selector.count('.cradmin-legacy-listbuilder-itemvalue'), 1)
 
     def test_search_other_candidate_in_group_shortname(self):
-        teststudent = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
-        other_student = mommy.make(settings.AUTH_USER_MODEL, shortname='other@example.com', fullname='Other User')
+        teststudent = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
+        other_student = baker.make(settings.AUTH_USER_MODEL, shortname='other@example.com', fullname='Other User')
         testgroup = self.__make_simple_assignment_group()
-        mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=teststudent)
-        mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=other_student)
+        baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=teststudent)
+        baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=other_student)
         selector = self.mock_http200_getrequest_htmls(
-            requestuser=mommy.make(settings.AUTH_USER_MODEL, is_superuser=True),
+            requestuser=baker.make(settings.AUTH_USER_MODEL, is_superuser=True),
             viewkwargs={'user_id': teststudent.id, 'filters_string': 'search-other@example.com'}
         ).selector
         self.assertEqual(selector.count('.cradmin-legacy-listbuilder-itemvalue'), 1)
 
     def test_search_examiner_nomatch(self):
-        teststudent = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
-        examiner_user = mommy.make(settings.AUTH_USER_MODEL, shortname='examiner@example.com', fullname='Examiner')
+        teststudent = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
+        examiner_user = baker.make(settings.AUTH_USER_MODEL, shortname='examiner@example.com', fullname='Examiner')
         testgroup = self.__make_simple_assignment_group()
-        mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=teststudent)
-        mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=examiner_user)
+        baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=teststudent)
+        baker.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=examiner_user)
         selector = self.mock_http200_getrequest_htmls(
-            requestuser=mommy.make(settings.AUTH_USER_MODEL, is_superuser=True),
+            requestuser=baker.make(settings.AUTH_USER_MODEL, is_superuser=True),
             viewkwargs={'user_id': teststudent.id, 'filters_string': 'search-NoExaminerMatch'}
         ).selector
         self.assertEqual(selector.count('.cradmin-legacy-listbuilder-itemvalue'), 0)
 
     def test_search_examiner_fullname(self):
-        teststudent = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
-        examiner_user = mommy.make(settings.AUTH_USER_MODEL, shortname='examiner@example.com', fullname='Examiner')
+        teststudent = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
+        examiner_user = baker.make(settings.AUTH_USER_MODEL, shortname='examiner@example.com', fullname='Examiner')
         testgroup = self.__make_simple_assignment_group()
-        mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=teststudent)
-        mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=examiner_user)
+        baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=teststudent)
+        baker.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=examiner_user)
         selector = self.mock_http200_getrequest_htmls(
-            requestuser=mommy.make(settings.AUTH_USER_MODEL, is_superuser=True),
+            requestuser=baker.make(settings.AUTH_USER_MODEL, is_superuser=True),
             viewkwargs={'user_id': teststudent.id, 'filters_string': 'search-Examiner'}
         ).selector
         self.assertEqual(selector.count('.cradmin-legacy-listbuilder-itemvalue'), 1)
 
     def test_search_examiner_shortname(self):
-        teststudent = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
-        examiner_user = mommy.make(settings.AUTH_USER_MODEL, shortname='examiner@example.com', fullname='Examiner')
+        teststudent = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
+        examiner_user = baker.make(settings.AUTH_USER_MODEL, shortname='examiner@example.com', fullname='Examiner')
         testgroup = self.__make_simple_assignment_group()
-        mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=teststudent)
-        mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=examiner_user)
+        baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=teststudent)
+        baker.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=examiner_user)
         selector = self.mock_http200_getrequest_htmls(
-            requestuser=mommy.make(settings.AUTH_USER_MODEL, is_superuser=True),
+            requestuser=baker.make(settings.AUTH_USER_MODEL, is_superuser=True),
             viewkwargs={'user_id': teststudent.id, 'filters_string': 'search-examiner@example.com'}
         ).selector
         self.assertEqual(selector.count('.cradmin-legacy-listbuilder-itemvalue'), 1)
 
     def test_search_assignment_long_name(self):
-        teststudent = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
+        teststudent = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
         testgroup = self.__make_simple_assignment_group()
-        mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=teststudent)
+        baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=teststudent)
         selector = self.mock_http200_getrequest_htmls(
-            requestuser=mommy.make(settings.AUTH_USER_MODEL, is_superuser=True),
+            requestuser=baker.make(settings.AUTH_USER_MODEL, is_superuser=True),
             viewkwargs={'user_id': teststudent.id, 'filters_string': 'search-{}'.format(testgroup.parentnode.long_name)}
         ).selector
         self.assertEqual(selector.count('.cradmin-legacy-listbuilder-itemvalue'), 1)
 
     def test_search_assignment_short_name(self):
-        teststudent = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
+        teststudent = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
         testgroup = self.__make_simple_assignment_group()
-        mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=teststudent)
+        baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=teststudent)
         selector = self.mock_http200_getrequest_htmls(
-            requestuser=mommy.make(settings.AUTH_USER_MODEL, is_superuser=True),
+            requestuser=baker.make(settings.AUTH_USER_MODEL, is_superuser=True),
             viewkwargs={'user_id': teststudent.id, 'filters_string': 'search-{}'.format(testgroup.parentnode.short_name)}
         ).selector
         self.assertEqual(selector.count('.cradmin-legacy-listbuilder-itemvalue'), 1)
 
     def test_search_period_long_name(self):
-        teststudent = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
+        teststudent = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
         testgroup = self.__make_simple_assignment_group()
-        mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=teststudent)
+        baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=teststudent)
         selector = self.mock_http200_getrequest_htmls(
-            requestuser=mommy.make(settings.AUTH_USER_MODEL, is_superuser=True),
+            requestuser=baker.make(settings.AUTH_USER_MODEL, is_superuser=True),
             viewkwargs={
                 'user_id': teststudent.id,
                 'filters_string': 'search-{}'.format(testgroup.parentnode.parentnode.long_name)
@@ -285,11 +285,11 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
         self.assertEqual(selector.count('.cradmin-legacy-listbuilder-itemvalue'), 1)
 
     def test_search_period_short_name(self):
-        teststudent = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
+        teststudent = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
         testgroup = self.__make_simple_assignment_group()
-        mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=teststudent)
+        baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=teststudent)
         selector = self.mock_http200_getrequest_htmls(
-            requestuser=mommy.make(settings.AUTH_USER_MODEL, is_superuser=True),
+            requestuser=baker.make(settings.AUTH_USER_MODEL, is_superuser=True),
             viewkwargs={
                 'user_id': teststudent.id,
                 'filters_string': 'search-{}'.format(testgroup.parentnode.parentnode.short_name)
@@ -298,11 +298,11 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
         self.assertEqual(selector.count('.cradmin-legacy-listbuilder-itemvalue'), 1)
 
     def test_search_subject_long_name(self):
-        teststudent = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
+        teststudent = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
         testgroup = self.__make_simple_assignment_group()
-        mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=teststudent)
+        baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=teststudent)
         selector = self.mock_http200_getrequest_htmls(
-            requestuser=mommy.make(settings.AUTH_USER_MODEL, is_superuser=True),
+            requestuser=baker.make(settings.AUTH_USER_MODEL, is_superuser=True),
             viewkwargs={
                 'user_id': teststudent.id,
                 'filters_string': 'search-{}'.format(testgroup.parentnode.parentnode.parentnode.long_name)
@@ -311,11 +311,11 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
         self.assertEqual(selector.count('.cradmin-legacy-listbuilder-itemvalue'), 1)
 
     def test_search_subject_short_name(self):
-        teststudent = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
+        teststudent = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
         testgroup = self.__make_simple_assignment_group()
-        mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=teststudent)
+        baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=teststudent)
         selector = self.mock_http200_getrequest_htmls(
-            requestuser=mommy.make(settings.AUTH_USER_MODEL, is_superuser=True),
+            requestuser=baker.make(settings.AUTH_USER_MODEL, is_superuser=True),
             viewkwargs={
                 'user_id': teststudent.id,
                 'filters_string': 'search-{}'.format(testgroup.parentnode.parentnode.parentnode.short_name)
@@ -325,17 +325,17 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
 
     def test_order_deadline_ascending(self):
         now = timezone.now()
-        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode__long_name='Assignment A')
+        testuser = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode__long_name='Assignment A')
         make_first_feedbackset_in_group(group=testgroup1, deadline_datetime=now + timezone.timedelta(days=40))
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode__long_name='Assignment B')
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode__long_name='Assignment B')
         make_first_feedbackset_in_group(group=testgroup2, deadline_datetime=now + timezone.timedelta(days=30))
-        testgroup3 = mommy.make('core.AssignmentGroup', parentnode__long_name='Assignment C')
-        mommy.make('core.Candidate', assignment_group=testgroup1, relatedstudent__user=testuser)
-        mommy.make('core.Candidate', assignment_group=testgroup2, relatedstudent__user=testuser)
-        mommy.make('core.Candidate', assignment_group=testgroup3, relatedstudent__user=testuser)
+        testgroup3 = baker.make('core.AssignmentGroup', parentnode__long_name='Assignment C')
+        baker.make('core.Candidate', assignment_group=testgroup1, relatedstudent__user=testuser)
+        baker.make('core.Candidate', assignment_group=testgroup2, relatedstudent__user=testuser)
+        baker.make('core.Candidate', assignment_group=testgroup3, relatedstudent__user=testuser)
         selector = self.mock_http200_getrequest_htmls(
-            requestuser=mommy.make(settings.AUTH_USER_MODEL, is_superuser=True),
+            requestuser=baker.make(settings.AUTH_USER_MODEL, is_superuser=True),
             viewkwargs={'user_id': testuser.id, 'filters_string': 'orderby_deadline-'}
         ).selector
         assignment_longname_list = [element.alltext_normalized for element in
@@ -351,17 +351,17 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
 
     def test_order_deadline_descending(self):
         now = timezone.now()
-        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode__long_name='Assignment A')
+        testuser = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode__long_name='Assignment A')
         make_first_feedbackset_in_group(group=testgroup1, deadline_datetime=now + timezone.timedelta(days=40))
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode__long_name='Assignment B')
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode__long_name='Assignment B')
         make_first_feedbackset_in_group(group=testgroup2, deadline_datetime=now + timezone.timedelta(days=30))
-        testgroup3 = mommy.make('core.AssignmentGroup', parentnode__long_name='Assignment C')
-        mommy.make('core.Candidate', assignment_group=testgroup1, relatedstudent__user=testuser)
-        mommy.make('core.Candidate', assignment_group=testgroup2, relatedstudent__user=testuser)
-        mommy.make('core.Candidate', assignment_group=testgroup3, relatedstudent__user=testuser)
+        testgroup3 = baker.make('core.AssignmentGroup', parentnode__long_name='Assignment C')
+        baker.make('core.Candidate', assignment_group=testgroup1, relatedstudent__user=testuser)
+        baker.make('core.Candidate', assignment_group=testgroup2, relatedstudent__user=testuser)
+        baker.make('core.Candidate', assignment_group=testgroup3, relatedstudent__user=testuser)
         selector = self.mock_http200_getrequest_htmls(
-            requestuser=mommy.make(settings.AUTH_USER_MODEL, is_superuser=True),
+            requestuser=baker.make(settings.AUTH_USER_MODEL, is_superuser=True),
             viewkwargs={'user_id': testuser.id, 'filters_string': 'orderby_deadline-deadline_descending'}
         ).selector
         assignment_longname_list = [element.alltext_normalized for element in
@@ -376,37 +376,37 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
         )
 
     def test_filter_semesters_blank_shows_all_periods(self):
-        testperiod_old = mommy.make_recipe('devilry.apps.core.period_old')
-        testperiod_active = mommy.make_recipe('devilry.apps.core.period_active')
-        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
-        testgroup_old_period = mommy.make('core.AssignmentGroup',
+        testperiod_old = baker.make_recipe('devilry.apps.core.period_old')
+        testperiod_active = baker.make_recipe('devilry.apps.core.period_active')
+        testuser = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
+        testgroup_old_period = baker.make('core.AssignmentGroup',
                                           parentnode__long_name='Assignment Old',
                                           parentnode__parentnode=testperiod_old)
-        testgroup_active_period = mommy.make('core.AssignmentGroup',
+        testgroup_active_period = baker.make('core.AssignmentGroup',
                                              parentnode__long_name='Assignment Active',
                                              parentnode__parentnode=testperiod_active)
-        mommy.make('core.Candidate', assignment_group=testgroup_old_period, relatedstudent__user=testuser)
-        mommy.make('core.Candidate', assignment_group=testgroup_active_period, relatedstudent__user=testuser)
+        baker.make('core.Candidate', assignment_group=testgroup_old_period, relatedstudent__user=testuser)
+        baker.make('core.Candidate', assignment_group=testgroup_active_period, relatedstudent__user=testuser)
         selector = self.mock_http200_getrequest_htmls(
-            requestuser=mommy.make(settings.AUTH_USER_MODEL, is_superuser=True),
+            requestuser=baker.make(settings.AUTH_USER_MODEL, is_superuser=True),
             viewkwargs={'user_id': testuser.id, 'filters_string': 'semester_is_active-'}
         ).selector
         self.assertEqual(selector.count('.cradmin-legacy-listbuilder-itemvalue'), 2)
 
     def test_filter_active_periods(self):
-        testperiod_old = mommy.make_recipe('devilry.apps.core.period_old')
-        testperiod_active = mommy.make_recipe('devilry.apps.core.period_active')
-        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
-        testgroup_old_period = mommy.make('core.AssignmentGroup',
+        testperiod_old = baker.make_recipe('devilry.apps.core.period_old')
+        testperiod_active = baker.make_recipe('devilry.apps.core.period_active')
+        testuser = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
+        testgroup_old_period = baker.make('core.AssignmentGroup',
                                           parentnode__long_name='Assignment Old',
                                           parentnode__parentnode=testperiod_old)
-        testgroup_active_period = mommy.make('core.AssignmentGroup',
+        testgroup_active_period = baker.make('core.AssignmentGroup',
                                              parentnode__long_name='Assignment Active',
                                              parentnode__parentnode=testperiod_active)
-        mommy.make('core.Candidate', assignment_group=testgroup_old_period, relatedstudent__user=testuser)
-        mommy.make('core.Candidate', assignment_group=testgroup_active_period, relatedstudent__user=testuser)
+        baker.make('core.Candidate', assignment_group=testgroup_old_period, relatedstudent__user=testuser)
+        baker.make('core.Candidate', assignment_group=testgroup_active_period, relatedstudent__user=testuser)
         selector = self.mock_http200_getrequest_htmls(
-            requestuser=mommy.make(settings.AUTH_USER_MODEL, is_superuser=True),
+            requestuser=baker.make(settings.AUTH_USER_MODEL, is_superuser=True),
             viewkwargs={'user_id': testuser.id, 'filters_string': 'semester_is_active-true'}
         ).selector
         self.assertEqual(selector.count('.cradmin-legacy-listbuilder-itemvalue'), 1)
@@ -416,19 +416,19 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
         )
 
     def test_filter_inactive_periods(self):
-        testperiod_old = mommy.make_recipe('devilry.apps.core.period_old')
-        testperiod_active = mommy.make_recipe('devilry.apps.core.period_active')
-        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
-        testgroup_old_period = mommy.make('core.AssignmentGroup',
+        testperiod_old = baker.make_recipe('devilry.apps.core.period_old')
+        testperiod_active = baker.make_recipe('devilry.apps.core.period_active')
+        testuser = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
+        testgroup_old_period = baker.make('core.AssignmentGroup',
                                           parentnode__long_name='Assignment Old',
                                           parentnode__parentnode=testperiod_old)
-        testgroup_active_period = mommy.make('core.AssignmentGroup',
+        testgroup_active_period = baker.make('core.AssignmentGroup',
                                              parentnode__long_name='Assignment Active',
                                              parentnode__parentnode=testperiod_active)
-        mommy.make('core.Candidate', assignment_group=testgroup_old_period, relatedstudent__user=testuser)
-        mommy.make('core.Candidate', assignment_group=testgroup_active_period, relatedstudent__user=testuser)
+        baker.make('core.Candidate', assignment_group=testgroup_old_period, relatedstudent__user=testuser)
+        baker.make('core.Candidate', assignment_group=testgroup_active_period, relatedstudent__user=testuser)
         selector = self.mock_http200_getrequest_htmls(
-            requestuser=mommy.make(settings.AUTH_USER_MODEL, is_superuser=True),
+            requestuser=baker.make(settings.AUTH_USER_MODEL, is_superuser=True),
             viewkwargs={'user_id': testuser.id, 'filters_string': 'semester_is_active-false'}
         ).selector
         self.assertEqual(selector.count('.cradmin-legacy-listbuilder-itemvalue'), 1)
@@ -438,20 +438,20 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
         )
 
     def test_query_count(self):
-        adminuser = mommy.make(settings.AUTH_USER_MODEL)
-        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
-        testsubjects = mommy.make('core.Subject', _quantity=10)
+        adminuser = baker.make(settings.AUTH_USER_MODEL)
+        testuser = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
+        testsubjects = baker.make('core.Subject', _quantity=10)
         for testsubject in testsubjects:
-            mommy.make('devilry_account.PermissionGroupUser', user=adminuser,
-                       permissiongroup=mommy.make('devilry_account.SubjectPermissionGroup',
+            baker.make('devilry_account.PermissionGroupUser', user=adminuser,
+                       permissiongroup=baker.make('devilry_account.SubjectPermissionGroup',
                                                   permissiongroup__grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN,
                                                   subject=testsubject).permissiongroup)
 
             # Create ten assignments for each subject
             for num in range(10):
-                testgroup = mommy.make('core.AssignmentGroup', parentnode__long_name='Accessible Assignment',
+                testgroup = baker.make('core.AssignmentGroup', parentnode__long_name='Accessible Assignment',
                                        parentnode__parentnode__parentnode=testsubject)
-                mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=testuser)
+                baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=testuser)
         with self.assertNumQueries(8):
             selector = self.mock_http200_getrequest_htmls(
                 requestuser=adminuser,

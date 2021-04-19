@@ -6,7 +6,7 @@ import io
 import mock
 from django import test
 
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.devilry_report import abstract_generator
 from devilry.devilry_report.models import DevilryReport
@@ -45,7 +45,7 @@ class FailingGenerator(abstract_generator.AbstractReportGenerator):
 class TestDevilryReport(test.TestCase):
     def test_generate_status_error(self):
         with mock.patch.object(DevilryReport, 'generator', FailingGenerator):
-            devilry_report = mommy.make('devilry_report.DevilryReport',
+            devilry_report = baker.make('devilry_report.DevilryReport',
                                         generator_type=FailingGenerator.get_generator_type())
             devilry_report.generate()
             devilry_report.refresh_from_db()
@@ -53,7 +53,7 @@ class TestDevilryReport(test.TestCase):
 
     def test_generate_status_data_error(self):
         with mock.patch.object(DevilryReport, 'generator', FailingGenerator):
-            devilry_report = mommy.make('devilry_report.DevilryReport',
+            devilry_report = baker.make('devilry_report.DevilryReport',
                                         generator_type=FailingGenerator.get_generator_type())
             devilry_report.generate()
             devilry_report.refresh_from_db()
@@ -61,7 +61,7 @@ class TestDevilryReport(test.TestCase):
 
     def test_generate_error_fields_not_set(self):
         with mock.patch.object(DevilryReport, 'generator', FailingGenerator):
-            devilry_report = mommy.make('devilry_report.DevilryReport',
+            devilry_report = baker.make('devilry_report.DevilryReport',
                                         generator_type=FailingGenerator.get_generator_type())
             devilry_report.generate()
             devilry_report.refresh_from_db()
@@ -72,7 +72,7 @@ class TestDevilryReport(test.TestCase):
 
     def test_generator_success(self):
         with mock.patch.object(DevilryReport, 'generator', Generator):
-            devilry_report = mommy.make('devilry_report.DevilryReport',
+            devilry_report = baker.make('devilry_report.DevilryReport',
                                         generator_type=Generator.get_generator_type())
             devilry_report.generate()
             devilry_report.refresh_from_db()
@@ -85,7 +85,7 @@ class TestDevilryReport(test.TestCase):
 
     def test_generator_success_content(self):
         with mock.patch.object(DevilryReport, 'generator', Generator):
-            devilry_report = mommy.make('devilry_report.DevilryReport',
+            devilry_report = baker.make('devilry_report.DevilryReport',
                                         generator_type=Generator.get_generator_type())
             devilry_report.generate()
             devilry_report.refresh_from_db()

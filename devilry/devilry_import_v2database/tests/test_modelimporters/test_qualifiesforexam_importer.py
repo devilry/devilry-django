@@ -5,7 +5,7 @@ from django.conf import settings
 from django.utils import timezone
 from django.utils.dateparse import parse_date
 
-from model_mommy import mommy
+from model_bakery import baker
 
 from .importer_testcase_mixin import ImporterTestCaseMixin
 
@@ -42,8 +42,8 @@ class TestStatusImporter(ImporterTestCaseMixin, test.TestCase):
         }
 
     def test_importer(self):
-        test_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_period = mommy.make_recipe('devilry.apps.core.period_active')
+        test_user = baker.make(settings.AUTH_USER_MODEL)
+        test_period = baker.make_recipe('devilry.apps.core.period_active')
         self.create_v2dump(
             model_name='devilry_qualifiesforexam.status',
             data=self._create_status_dict(period=test_period, user=test_user)
@@ -53,8 +53,8 @@ class TestStatusImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(Status.objects.count(), 1)
 
     def test_importer_pk(self):
-        test_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_period = mommy.make_recipe('devilry.apps.core.period_active')
+        test_user = baker.make(settings.AUTH_USER_MODEL)
+        test_period = baker.make_recipe('devilry.apps.core.period_active')
         self.create_v2dump(
             model_name='devilry_qualifiesforexam.status',
             data=self._create_status_dict(period=test_period, user=test_user)
@@ -66,8 +66,8 @@ class TestStatusImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(status.id, 3)
 
     def test_importer_status_ready(self):
-        test_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_period = mommy.make_recipe('devilry.apps.core.period_active')
+        test_user = baker.make(settings.AUTH_USER_MODEL)
+        test_period = baker.make_recipe('devilry.apps.core.period_active')
         self.create_v2dump(
             model_name='devilry_qualifiesforexam.status',
             data=self._create_status_dict(period=test_period, user=test_user)
@@ -78,8 +78,8 @@ class TestStatusImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(status.status, Status.READY)
 
     def test_importer_status_othen_than_ready_is_set_to_notready(self):
-        test_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_period = mommy.make_recipe('devilry.apps.core.period_active')
+        test_user = baker.make(settings.AUTH_USER_MODEL)
+        test_period = baker.make_recipe('devilry.apps.core.period_active')
         self.create_v2dump(
             model_name='devilry_qualifiesforexam.status',
             data=self._create_status_dict(period=test_period, user=test_user, status='somestatus')
@@ -90,8 +90,8 @@ class TestStatusImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(status.status, Status.NOTREADY)
 
     def test_importer_message(self):
-        test_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_period = mommy.make_recipe('devilry.apps.core.period_active')
+        test_user = baker.make(settings.AUTH_USER_MODEL)
+        test_period = baker.make_recipe('devilry.apps.core.period_active')
         self.create_v2dump(
             model_name='devilry_qualifiesforexam.status',
             data=self._create_status_dict(period=test_period, user=test_user)
@@ -102,8 +102,8 @@ class TestStatusImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(status.message, "Message")
 
     def test_importer_status_points_plugin(self):
-        test_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_period = mommy.make_recipe('devilry.apps.core.period_active')
+        test_user = baker.make(settings.AUTH_USER_MODEL)
+        test_period = baker.make_recipe('devilry.apps.core.period_active')
         self.create_v2dump(
             model_name='devilry_qualifiesforexam.status',
             data=self._create_status_dict(period=test_period, user=test_user, plugin="devilry_qualifiesforexam_points")
@@ -114,8 +114,8 @@ class TestStatusImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(status.plugin, PointsPlugin.plugintypeid)
 
     def test_importer_status_approved_all_plugin(self):
-        test_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_period = mommy.make_recipe('devilry.apps.core.period_active')
+        test_user = baker.make(settings.AUTH_USER_MODEL)
+        test_period = baker.make_recipe('devilry.apps.core.period_active')
         self.create_v2dump(
             model_name='devilry_qualifiesforexam.status',
             data=self._create_status_dict(period=test_period, user=test_user,
@@ -127,8 +127,8 @@ class TestStatusImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(status.plugin, SelectAssignmentsPlugin.plugintypeid)
 
     def test_importer_status_approved_subset_plugin(self):
-        test_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_period = mommy.make_recipe('devilry.apps.core.period_active')
+        test_user = baker.make(settings.AUTH_USER_MODEL)
+        test_period = baker.make_recipe('devilry.apps.core.period_active')
         self.create_v2dump(
             model_name='devilry_qualifiesforexam.status',
             data=self._create_status_dict(period=test_period, user=test_user,
@@ -140,8 +140,8 @@ class TestStatusImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(status.plugin, SelectAssignmentsPlugin.plugintypeid)
 
     def test_import_status_select_students_plugin(self):
-        test_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_period = mommy.make_recipe('devilry.apps.core.period_active')
+        test_user = baker.make(settings.AUTH_USER_MODEL)
+        test_period = baker.make_recipe('devilry.apps.core.period_active')
         self.create_v2dump(
             model_name='devilry_qualifiesforexam.status',
             data=self._create_status_dict(period=test_period, user=test_user,
@@ -153,8 +153,8 @@ class TestStatusImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(status.plugin, StudentSelectPlugin.plugintypeid)
 
     def test_import_status_select_unknown_plugin(self):
-        test_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_period = mommy.make_recipe('devilry.apps.core.period_active')
+        test_user = baker.make(settings.AUTH_USER_MODEL)
+        test_period = baker.make_recipe('devilry.apps.core.period_active')
         self.create_v2dump(
             model_name='devilry_qualifiesforexam.status',
             data=self._create_status_dict(period=test_period, user=test_user,
@@ -167,8 +167,8 @@ class TestStatusImporter(ImporterTestCaseMixin, test.TestCase):
 
     def test_auto_sequence_numbered_objects_uses_meta_max_id(self):
         max_id = 10
-        test_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_period = mommy.make_recipe('devilry.apps.core.period_active')
+        test_user = baker.make(settings.AUTH_USER_MODEL)
+        test_period = baker.make_recipe('devilry.apps.core.period_active')
         self.create_v2dump(
             model_name='devilry_qualifiesforexam.status',
             data=self._create_status_dict(period=test_period, user=test_user),
@@ -179,7 +179,7 @@ class TestStatusImporter(ImporterTestCaseMixin, test.TestCase):
         status = Status.objects.first()
         self.assertEqual(status.pk, 3)
         self.assertEqual(status.id, 3)
-        status_with_auto_id = mommy.make('devilry_qualifiesforexam.Status', period=test_period, user=test_user)
+        status_with_auto_id = baker.make('devilry_qualifiesforexam.Status', period=test_period, user=test_user)
         self.assertEqual(status_with_auto_id.pk, max_id+1)
         self.assertEqual(status_with_auto_id.id, max_id+1)
 
@@ -205,8 +205,8 @@ class TestQualifiesForFinalExamImporter(ImporterTestCaseMixin, test.TestCase):
         }
 
     def test_importer(self):
-        test_relatedstudent = mommy.make('core.RelatedStudent')
-        test_status = mommy.make('devilry_qualifiesforexam.Status')
+        test_relatedstudent = baker.make('core.RelatedStudent')
+        test_status = baker.make('devilry_qualifiesforexam.Status')
         self.create_v2dump(
             model_name='devilry_qualifiesforexam.qualifiesforfinalexam',
             data=self._create_status_dict(status=test_status, related_student=test_relatedstudent)
@@ -215,8 +215,8 @@ class TestQualifiesForFinalExamImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(QualifiesForFinalExam.objects.count(), 1)
 
     def test_importer_pk(self):
-        test_relatedstudent = mommy.make('core.RelatedStudent')
-        test_status = mommy.make('devilry_qualifiesforexam.Status')
+        test_relatedstudent = baker.make('core.RelatedStudent')
+        test_status = baker.make('devilry_qualifiesforexam.Status')
         self.create_v2dump(
             model_name='devilry_qualifiesforexam.qualifiesforfinalexam',
             data=self._create_status_dict(status=test_status, related_student=test_relatedstudent)
@@ -227,8 +227,8 @@ class TestQualifiesForFinalExamImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(qualifies.id, 3)
 
     def test_importer_status(self):
-        test_relatedstudent = mommy.make('core.RelatedStudent')
-        test_status = mommy.make('devilry_qualifiesforexam.Status')
+        test_relatedstudent = baker.make('core.RelatedStudent')
+        test_status = baker.make('devilry_qualifiesforexam.Status')
         self.create_v2dump(
             model_name='devilry_qualifiesforexam.qualifiesforfinalexam',
             data=self._create_status_dict(status=test_status, related_student=test_relatedstudent)
@@ -238,8 +238,8 @@ class TestQualifiesForFinalExamImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(qualifies.status, test_status)
 
     def test_importer_relatedstudent(self):
-        test_relatedstudent = mommy.make('core.RelatedStudent')
-        test_status = mommy.make('devilry_qualifiesforexam.Status')
+        test_relatedstudent = baker.make('core.RelatedStudent')
+        test_status = baker.make('devilry_qualifiesforexam.Status')
         self.create_v2dump(
             model_name='devilry_qualifiesforexam.qualifiesforfinalexam',
             data=self._create_status_dict(status=test_status, related_student=test_relatedstudent)
@@ -249,8 +249,8 @@ class TestQualifiesForFinalExamImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(qualifies.relatedstudent, test_relatedstudent)
 
     def test_importer_qualifies_true(self):
-        test_relatedstudent = mommy.make('core.RelatedStudent')
-        test_status = mommy.make('devilry_qualifiesforexam.Status')
+        test_relatedstudent = baker.make('core.RelatedStudent')
+        test_status = baker.make('devilry_qualifiesforexam.Status')
         self.create_v2dump(
             model_name='devilry_qualifiesforexam.qualifiesforfinalexam',
             data=self._create_status_dict(status=test_status, related_student=test_relatedstudent, qualifies=True)
@@ -260,8 +260,8 @@ class TestQualifiesForFinalExamImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertTrue(qualifies.qualifies)
 
     def test_importer_qualifies_false(self):
-        test_relatedstudent = mommy.make('core.RelatedStudent')
-        test_status = mommy.make('devilry_qualifiesforexam.Status')
+        test_relatedstudent = baker.make('core.RelatedStudent')
+        test_status = baker.make('devilry_qualifiesforexam.Status')
         self.create_v2dump(
             model_name='devilry_qualifiesforexam.qualifiesforfinalexam',
             data=self._create_status_dict(status=test_status, related_student=test_relatedstudent, qualifies=False)
@@ -271,8 +271,8 @@ class TestQualifiesForFinalExamImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertFalse(qualifies.qualifies)
 
     def test_importer_qualifies_none(self):
-        test_relatedstudent = mommy.make('core.RelatedStudent')
-        test_status = mommy.make('devilry_qualifiesforexam.Status')
+        test_relatedstudent = baker.make('core.RelatedStudent')
+        test_status = baker.make('devilry_qualifiesforexam.Status')
         self.create_v2dump(
             model_name='devilry_qualifiesforexam.qualifiesforfinalexam',
             data=self._create_status_dict(status=test_status, related_student=test_relatedstudent, qualifies=None)
@@ -283,8 +283,8 @@ class TestQualifiesForFinalExamImporter(ImporterTestCaseMixin, test.TestCase):
 
     def test_auto_sequence_numbered_objects_uses_meta_max_id(self):
         max_id = 10
-        test_relatedstudent = mommy.make('core.RelatedStudent')
-        test_status = mommy.make('devilry_qualifiesforexam.Status')
+        test_relatedstudent = baker.make('core.RelatedStudent')
+        test_status = baker.make('devilry_qualifiesforexam.Status')
         self.create_v2dump(
             model_name='devilry_qualifiesforexam.qualifiesforfinalexam',
             data=self._create_status_dict(status=test_status, related_student=test_relatedstudent, qualifies=None),
@@ -294,6 +294,6 @@ class TestQualifiesForFinalExamImporter(ImporterTestCaseMixin, test.TestCase):
         qualifies = QualifiesForFinalExam.objects.first()
         self.assertEqual(qualifies.pk, 3)
         self.assertEqual(qualifies.id, 3)
-        qualifies_with_auto_id = mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam')
+        qualifies_with_auto_id = baker.make('devilry_qualifiesforexam.QualifiesForFinalExam')
         self.assertEqual(qualifies_with_auto_id.pk, max_id+1)
         self.assertEqual(qualifies_with_auto_id.id, max_id+1)

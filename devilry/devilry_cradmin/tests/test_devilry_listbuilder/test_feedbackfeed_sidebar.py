@@ -5,10 +5,10 @@ from django.conf import settings
 from django.core.files.base import ContentFile
 from django.utils import timezone
 from cradmin_legacy.cradmin_testhelpers import TestCaseMixin
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
-from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
+from devilry.devilry_group import devilry_group_baker_factories as group_baker
 from devilry.devilry_group.feedbackfeed_builder import builder_base
 from devilry.devilry_group.feedbackfeed_builder import feedbackfeed_sidebarbuilder
 from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_sidebar
@@ -21,18 +21,18 @@ class TestFeedbackfeedSidebarListBuilderList(TestCaseMixin, test.TestCase):
     # def test_listbuilder_sidebar_complete_example(self):
     #     # Just a sanity check with a full example comprising of two FeedbackSets
     #     # with one GroupComment each and one CommentFile for each GroupComment.
-    #     testuser = mommy.make(settings.AUTH_USER_MODEL)
-    #     testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-    #     testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-    #     candidate = mommy.make('core.Candidate',
+    #     testuser = baker.make(settings.AUTH_USER_MODEL)
+    #     testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+    #     testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+    #     candidate = baker.make('core.Candidate',
     #                            assignment_group=testgroup,
     #                            relatedstudent__user__fullname='Test User1',
     #                            relatedstudent__user__shortname='testuser1@example.com')
-    #     examiner = mommy.make('core.Examiner',
+    #     examiner = baker.make('core.Examiner',
     #                           assignmentgroup=testgroup,
     #                           relatedexaminer_user__fullname='Test User2',
     #                           relatedexaminer__user__shortname='testuser2@example.com')
-    #     testfeedbackset1 = group_mommy.feedbackset_first_attempt_published(
+    #     testfeedbackset1 = group_baker.feedbackset_first_attempt_published(
     #             grading_published_datetime=(testassignment.first_deadline + timezone.timedelta(days=1)),
     #             grading_points=10,
     #             created_by=examiner.relatedexaminer.user,
@@ -40,15 +40,15 @@ class TestFeedbackfeedSidebarListBuilderList(TestCaseMixin, test.TestCase):
     #             is_last_in_group=None,
     #             group=testgroup,
     #             grading_published_by=examiner.relatedexaminer.user)
-    #     testcomment1 = mommy.make('devilry_group.GroupComment',
+    #     testcomment1 = baker.make('devilry_group.GroupComment',
     #                               created_datetime=testfeedbackset1.current_deadline() - timezone.timedelta(hours=1),
     #                               published_datetime=testfeedbackset1.current_deadline() - timezone.timedelta(hours=1),
     #                               user=candidate.relatedstudent.user,
     #                               user_role='student',
     #                               feedback_set=testfeedbackset1)
-    #     commentfile1 = mommy.make('devilry_comment.CommentFile', comment=testcomment1, filename='testfile1.txt')
+    #     commentfile1 = baker.make('devilry_comment.CommentFile', comment=testcomment1, filename='testfile1.txt')
     #     commentfile1.file.save('testfile1.txt', ContentFile(''))
-    #     mommy.make('devilry_group.GroupComment',
+    #     baker.make('devilry_group.GroupComment',
     #                created_datetime=testfeedbackset1.current_deadline() + timezone.timedelta(hours=1),
     #                published_datetime=testfeedbackset1.current_deadline() + timezone.timedelta(hours=1),
     #                user=examiner.relatedexaminer.user,
@@ -56,7 +56,7 @@ class TestFeedbackfeedSidebarListBuilderList(TestCaseMixin, test.TestCase):
     #                part_of_grading=True,
     #                feedback_set=testfeedbackset1)
     #
-    #     testfeedbackset2 = group_mommy.feedbackset_new_attempt_published(
+    #     testfeedbackset2 = group_baker.feedbackset_new_attempt_published(
     #             grading_published_datetime=testfeedbackset1.grading_published_datetime + timezone.timedelta(days=4),
     #             grading_points=10,
     #             created_by=examiner.relatedexaminer.user,
@@ -64,15 +64,15 @@ class TestFeedbackfeedSidebarListBuilderList(TestCaseMixin, test.TestCase):
     #             deadline_datetime=testfeedbackset1.grading_published_datetime + timezone.timedelta(days=3),
     #             group=testgroup,
     #             grading_published_by=examiner.relatedexaminer.user)
-    #     testcomment2 = mommy.make('devilry_group.GroupComment',
+    #     testcomment2 = baker.make('devilry_group.GroupComment',
     #                               created_datetime=testfeedbackset2.current_deadline() - timezone.timedelta(hours=1),
     #                               published_datetime=testfeedbackset2.current_deadline() - timezone.timedelta(hours=1),
     #                               user=candidate.relatedstudent.user,
     #                               user_role='student',
     #                               feedback_set=testfeedbackset2)
-    #     commentfile1 = mommy.make('devilry_comment.CommentFile', comment=testcomment2, filename='testfile2.txt')
+    #     commentfile1 = baker.make('devilry_comment.CommentFile', comment=testcomment2, filename='testfile2.txt')
     #     commentfile1.file.save('testfile2.txt', ContentFile(''))
-    #     mommy.make('devilry_group.GroupComment',
+    #     baker.make('devilry_group.GroupComment',
     #                created_datetime=testfeedbackset2.current_deadline() + timezone.timedelta(hours=1),
     #                published_datetime=testfeedbackset2.current_deadline() + timezone.timedelta(hours=1),
     #                user=examiner.relatedexaminer.user,

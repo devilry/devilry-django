@@ -1,5 +1,5 @@
 from django.conf import settings
-from model_mommy import mommy
+from model_bakery import baker
 from rest_framework.test import APIRequestFactory, force_authenticate
 
 
@@ -16,7 +16,7 @@ class ApiTestMixin:
         return None
 
     def make_user(self, shortname='user@example.com', **kwargs):
-        return mommy.make(settings.AUTH_USER_MODEL, shortname=shortname, **kwargs)
+        return baker.make(settings.AUTH_USER_MODEL, shortname=shortname, **kwargs)
 
     def make_superuser(self, shortname='super@example.com', **kwargs):
         return self.make_user(shortname=shortname, is_superuser=True, **kwargs)

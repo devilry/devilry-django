@@ -6,7 +6,7 @@ from django.core.management import call_command
 from django.db import transaction
 from django.utils import timezone
 from django.core.management.base import BaseCommand
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.apps.core.models import Subject, Period, RelatedStudent, RelatedExaminer, AssignmentGroup, Candidate, \
     Examiner, Assignment
@@ -91,7 +91,7 @@ class DatabaseBuilder(object):
         """
         Generate CommentFiles for GroupComment.
         """
-        commentfile = mommy.make('devilry_comment.CommentFile', comment=groupcomment)
+        commentfile = baker.make('devilry_comment.CommentFile', comment=groupcomment)
         commentfile.file.save('testfile.txt', ContentFile('test'))
 
     def __create_groupcomments_for_feedbackset(self, feedbackset):
@@ -101,7 +101,7 @@ class DatabaseBuilder(object):
         publish_aggregate_minutes = 1
         for candidate in feedbackset.group.candidates.all():
             for num in range(self.num_comments):
-                mommy.make(
+                baker.make(
                     'devilry_group.GroupComment',
                     user=candidate.relatedstudent.user,
                     user_role=GroupComment.USER_ROLE_STUDENT,
@@ -114,7 +114,7 @@ class DatabaseBuilder(object):
         publish_aggregate_minutes = 2
         for examiner in feedbackset.group.examiners.all():
             for num in range(self.num_comments):
-                mommy.make(
+                baker.make(
                     'devilry_group.GroupComment',
                     user=examiner.relatedexaminer.user,
                     user_role=GroupComment.USER_ROLE_EXAMINER,
@@ -131,7 +131,7 @@ class DatabaseBuilder(object):
         """
         sys.stdout.write('Creating examiners:')
         for relatedexaminer in RelatedExaminer.objects.filter(period_id=assignmentgroup.parentnode.parentnode.id):
-            mommy.make('core.Examiner', relatedexaminer=relatedexaminer, assignmentgroup=assignmentgroup)
+            baker.make('core.Examiner', relatedexaminer=relatedexaminer, assignmentgroup=assignmentgroup)
             self.progressdots.increment_progress()
         self.progressdots.reset()
         sys.stdout.write('\n')
@@ -143,7 +143,7 @@ class DatabaseBuilder(object):
         """
         sys.stdout.write('Creating candidates:')
         for relatedstudent in RelatedStudent.objects.filter(period_id=assignmentgroup.parentnode.parentnode.id):
-            mommy.make('core.Candidate', relatedstudent=relatedstudent, assignment_group=assignmentgroup)
+            baker.make('core.Candidate', relatedstudent=relatedstudent, assignment_group=assignmentgroup)
             self.progressdots.increment_progress()
         self.progressdots.reset()
         sys.stdout.write('\n')
@@ -155,7 +155,7 @@ class DatabaseBuilder(object):
         """
         groups = []
         for num in range(RelatedStudent.objects.filter(period=assignment.parentnode).count()):
-            assignmentgroup = mommy.prepare('core.AssignmentGroup', parentnode=assignment)
+            assignmentgroup = baker.prepare('core.AssignmentGroup', parentnode=assignment)
             groups.append(assignmentgroup)
         AssignmentGroup.objects.bulk_create(groups)
 
@@ -169,7 +169,7 @@ class DatabaseBuilder(object):
         candidates = []
         list_index = 0
         for relatedstudent in relatedstudents:
-            candidate = mommy.prepare(
+            candidate = baker.prepare(
                 'core.Candidate',
                 relatedstudent=relatedstudent,
                 assignment_group=assignmentgroups[list_index])
@@ -180,7 +180,7 @@ class DatabaseBuilder(object):
         examiners = []
         list_index = 0
         for relatedexaminer in relatedexaminers:
-            examiner = mommy.prepare(
+            examiner = baker.prepare(
                 'core.Examiner',
                 relatedexaminer=relatedexaminer,
                 assignmentgroup=assignmentgroups[list_index])
@@ -204,7 +204,7 @@ class DatabaseBuilder(object):
         created_assignments = []
         sys.stdout.write('Creating assignments:')
         for num in range(self.num_assignments):
-            assignment = mommy.prepare(
+            assignment = baker.prepare(
                 'core.Assignment',
                 parentnode=period,
                 long_name='Assignment#{}'.format(num),
@@ -227,7 +227,7 @@ class DatabaseBuilder(object):
         """
         sys.stdout.write('Adding students to {}:'.format(period))
         for user in get_user_model().objects.filter(shortname__istartswith='student'):
-            mommy.make('core.RelatedStudent', user=user, period=period)
+            baker.make('core.RelatedStudent', user=user, period=period)
             self.progressdots.increment_progress()
         self.progressdots.reset()
         sys.stdout.write('\n')
@@ -238,7 +238,7 @@ class DatabaseBuilder(object):
         """
         sys.stdout.write('Adding examiners to {}:'.format(period))
         for user in get_user_model().objects.filter(shortname__istartswith='examiner'):
-            mommy.make('core.RelatedExaminer', user=user, period=period)
+            baker.make('core.RelatedExaminer', user=user, period=period)
             self.progressdots.increment_progress()
         self.progressdots.reset()
         sys.stdout.write('\n')
@@ -249,7 +249,7 @@ class DatabaseBuilder(object):
         """
         for num in range(self.num_periods):
             sys.stdout.write('Create period Period#{}:\n'.format(num))
-            period = mommy.make('core.Period',
+            period = baker.make('core.Period',
                                 parentnode=subject,
                                 long_name='Period#{}'.format(num),
                                 short_name='period#{}'.format(num),
@@ -264,7 +264,7 @@ class DatabaseBuilder(object):
         Generate Subjects.
         """
         for num in range(self.num_subjects):
-            subject = mommy.make('core.Subject',
+            subject = baker.make('core.Subject',
                                  long_name='Subject#{}'.format(num),
                                  short_name='subject#{}'.format(num))
             self.__create_periods(subject=subject)

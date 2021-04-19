@@ -6,12 +6,12 @@ from django import test
 from django.http import Http404
 from django.utils import timezone
 from cradmin_legacy import cradmin_testhelpers
-from model_mommy import mommy
+from model_bakery import baker
 
-from devilry.apps.core import devilry_core_mommy_factories
+from devilry.apps.core import devilry_core_baker_factories
 from devilry.apps.core.models import Assignment, AssignmentGroup
 from devilry.devilry_admin.views.assignment.students import groupdetails
-from devilry.devilry_group import devilry_group_mommy_factories
+from devilry.devilry_group import devilry_group_baker_factories
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 
 
@@ -20,8 +20,8 @@ class TestGroupDetailsRenderable(test.TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_name(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Candidate',
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
@@ -32,9 +32,9 @@ class TestGroupDetailsRenderable(test.TestCase):
             selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_name_semi_anonymous_is_not_anonymized(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
@@ -45,9 +45,9 @@ class TestGroupDetailsRenderable(test.TestCase):
             selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_name_fully_anonymous_is_not_anonymized(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
@@ -58,8 +58,8 @@ class TestGroupDetailsRenderable(test.TestCase):
             selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_examiners(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Examiner',
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup,
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
@@ -70,9 +70,9 @@ class TestGroupDetailsRenderable(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
 
     def test_examiners_semi_anonymous(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        mommy.make('core.Examiner',
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup,
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
@@ -83,9 +83,9 @@ class TestGroupDetailsRenderable(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
 
     def test_examiners_fully_anonymous(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        mommy.make('core.Examiner',
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup,
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
@@ -96,7 +96,7 @@ class TestGroupDetailsRenderable(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
 
     def test_grade_students_can_see_points_false(self):
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        devilry_group_baker_factories.feedbackset_first_attempt_published(
             group__parentnode__students_can_see_points=False,
             grading_points=1)
         testgroup = AssignmentGroup.objects.first()
@@ -107,7 +107,7 @@ class TestGroupDetailsRenderable(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
 
     def test_grade_students_can_see_points_true(self):
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        devilry_group_baker_factories.feedbackset_first_attempt_published(
             group__parentnode__students_can_see_points=True,
             grading_points=1)
         testgroup = AssignmentGroup.objects.first()
@@ -118,7 +118,7 @@ class TestGroupDetailsRenderable(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
 
     def test_status_is_corrected(self):
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        devilry_group_baker_factories.feedbackset_first_attempt_published(
             grading_points=1)
         testgroup = AssignmentGroup.objects.annotate_with_is_corrected_count().first()
         selector = htmls.S(groupdetails.GroupDetailsRenderable(value=testgroup,
@@ -126,8 +126,8 @@ class TestGroupDetailsRenderable(test.TestCase):
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-status'))
 
     def test_status_is_waiting_for_feedback(self):
-        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
-            group__parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(
+            group__parentnode=baker.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
         testgroup = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback_count().first()
         selector = htmls.S(groupdetails.GroupDetailsRenderable(value=testgroup,
                                                                assignment=testgroup.assignment).render())
@@ -137,8 +137,8 @@ class TestGroupDetailsRenderable(test.TestCase):
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-grade'))
 
     def test_status_is_waiting_for_deliveries(self):
-        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
-            group__parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(
+            group__parentnode=baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                                 first_deadline=timezone.now() + timedelta(days=2)))
         testgroup = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries_count().first()
         selector = htmls.S(groupdetails.GroupDetailsRenderable(value=testgroup,
@@ -149,7 +149,7 @@ class TestGroupDetailsRenderable(test.TestCase):
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-grade'))
 
     def test_grade_not_available_unless_corrected(self):
-        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished()
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished()
         testgroup = AssignmentGroup.objects.annotate_with_is_corrected_count().first()
         selector = htmls.S(groupdetails.GroupDetailsRenderable(value=testgroup,
                                                                assignment=testgroup.assignment).render())
@@ -157,7 +157,7 @@ class TestGroupDetailsRenderable(test.TestCase):
 
     def test_grade_comment_summary_is_available(self):
         AssignmentGroupDbCacheCustomSql().initialize()
-        mommy.make('core.AssignmentGroup')
+        baker.make('core.AssignmentGroup')
         testgroup = AssignmentGroup.objects.first()
 
         selector = htmls.S(groupdetails.GroupDetailsRenderable(value=testgroup,
@@ -180,8 +180,8 @@ class TestGroupDetailsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         return mockinstance
 
     def test_title(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        devilry_core_mommy_factories.candidate(group=testgroup,
+        testgroup = baker.make('core.AssignmentGroup')
+        devilry_core_baker_factories.candidate(group=testgroup,
                                                fullname='Test User')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testgroup.assignment,
@@ -192,8 +192,8 @@ class TestGroupDetailsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('title').alltext_normalized)
 
     def test_h1(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        devilry_core_mommy_factories.candidate(group=testgroup,
+        testgroup = baker.make('core.AssignmentGroup')
+        devilry_core_baker_factories.candidate(group=testgroup,
                                                fullname='Test User')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testgroup.assignment,
@@ -204,7 +204,7 @@ class TestGroupDetailsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('h1').alltext_normalized)
 
     def test_links(self):
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = baker.make('core.AssignmentGroup')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testgroup.assignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'),
@@ -220,12 +220,12 @@ class TestGroupDetailsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         )
 
     def test_title_multiple_candidates(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        devilry_core_mommy_factories.candidate(group=testgroup,
+        testgroup = baker.make('core.AssignmentGroup')
+        devilry_core_baker_factories.candidate(group=testgroup,
                                                fullname='UserB')
-        devilry_core_mommy_factories.candidate(group=testgroup,
+        devilry_core_baker_factories.candidate(group=testgroup,
                                                shortname='usera')
-        devilry_core_mommy_factories.candidate(group=testgroup,
+        devilry_core_baker_factories.candidate(group=testgroup,
                                                fullname='UserC')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testgroup.assignment,
@@ -236,12 +236,12 @@ class TestGroupDetailsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('title').alltext_normalized)
 
     def test_h1_multiple_candidates(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        devilry_core_mommy_factories.candidate(group=testgroup,
+        testgroup = baker.make('core.AssignmentGroup')
+        devilry_core_baker_factories.candidate(group=testgroup,
                                                fullname='UserB')
-        devilry_core_mommy_factories.candidate(group=testgroup,
+        devilry_core_baker_factories.candidate(group=testgroup,
                                                shortname='usera')
-        devilry_core_mommy_factories.candidate(group=testgroup,
+        devilry_core_baker_factories.candidate(group=testgroup,
                                                fullname='UserC')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testgroup.assignment,
@@ -252,7 +252,7 @@ class TestGroupDetailsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('h1').alltext_normalized)
 
     def test_404_fully_anonymous_subjectadmin(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
         with self.assertRaises(Http404):
             self.mock_getrequest(
@@ -261,7 +261,7 @@ class TestGroupDetailsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 viewkwargs={'pk': testgroup.id})
 
     def test_not_404_fully_anonymous_departmentadmin(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
         self.mock_getrequest(
             cradmin_role=testgroup.assignment,

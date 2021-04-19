@@ -7,10 +7,10 @@ from django.core import mail
 from django.utils import timezone
 from django.template import defaultfilters
 
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
-from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
+from devilry.devilry_group import devilry_group_baker_factories as group_baker
 from devilry.devilry_email.deadline_email import deadline_email
 from devilry.devilry_message.models import Message, MessageReceiver
 
@@ -23,13 +23,13 @@ class TestNewAttemptEmail(test.TestCase):
         """
         Simple setup used for testing mail content.
         """
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            long_name='Assignment 1')
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        test_feedbackset = group_mommy.feedbackset_first_attempt_published(group=testgroup, grading_points=1,
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        test_feedbackset = group_baker.feedbackset_first_attempt_published(group=testgroup, grading_points=1,
                                                                            deadline_datetime=new_deadline)
-        student = mommy.make('core.Candidate', assignment_group=testgroup)
-        mommy.make('devilry_account.UserEmail', user=student.relatedstudent.user, email='student@example.com')
+        student = baker.make('core.Candidate', assignment_group=testgroup)
+        baker.make('devilry_account.UserEmail', user=student.relatedstudent.user, email='student@example.com')
         return test_feedbackset
 
     def test_send_new_attempt_email_subject(self):
@@ -100,23 +100,23 @@ class TestNewAttemptBulkEmail(test.TestCase):
 
     def test_bulk_send_emails(self):
         new_deadline = datetime.utcnow()
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            long_name='Assignment 1')
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        test_fb1 = group_mommy.feedbackset_first_attempt_published(
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        test_fb1 = group_baker.feedbackset_first_attempt_published(
             group=testgroup1, grading_points=1, deadline_datetime=new_deadline)
-        test_fb2 = group_mommy.feedbackset_first_attempt_published(
+        test_fb2 = group_baker.feedbackset_first_attempt_published(
             group=testgroup2, grading_points=1, deadline_datetime=new_deadline)
-        test_fb3 = group_mommy.feedbackset_first_attempt_published(
+        test_fb3 = group_baker.feedbackset_first_attempt_published(
             group=testgroup3, grading_points=1, deadline_datetime=new_deadline)
-        student1 = mommy.make('core.Candidate', assignment_group=testgroup1)
-        mommy.make('devilry_account.UserEmail', user=student1.relatedstudent.user, email='student1@example.com')
-        student2 = mommy.make('core.Candidate', assignment_group=testgroup2)
-        mommy.make('devilry_account.UserEmail', user=student2.relatedstudent.user, email='student2@example.com')
-        student3 = mommy.make('core.Candidate', assignment_group=testgroup3)
-        mommy.make('devilry_account.UserEmail', user=student3.relatedstudent.user, email='student3@example.com')
+        student1 = baker.make('core.Candidate', assignment_group=testgroup1)
+        baker.make('devilry_account.UserEmail', user=student1.relatedstudent.user, email='student1@example.com')
+        student2 = baker.make('core.Candidate', assignment_group=testgroup2)
+        baker.make('devilry_account.UserEmail', user=student2.relatedstudent.user, email='student2@example.com')
+        student3 = baker.make('core.Candidate', assignment_group=testgroup3)
+        baker.make('devilry_account.UserEmail', user=student3.relatedstudent.user, email='student3@example.com')
         deadline_email.bulk_send_new_attempt_email(
             assignment_id=testassignment.id,
             feedbackset_id_list=[test_fb1.id, test_fb2.id, test_fb3.id],
@@ -133,23 +133,23 @@ class TestNewAttemptBulkEmail(test.TestCase):
 
     def test_bulk_send_emails_message_and_messagereceivers_created(self):
         new_deadline = datetime.utcnow()
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            long_name='Assignment 1')
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        test_fb1 = group_mommy.feedbackset_first_attempt_published(
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        test_fb1 = group_baker.feedbackset_first_attempt_published(
             group=testgroup1, grading_points=1, deadline_datetime=new_deadline)
-        test_fb2 = group_mommy.feedbackset_first_attempt_published(
+        test_fb2 = group_baker.feedbackset_first_attempt_published(
             group=testgroup2, grading_points=1, deadline_datetime=new_deadline)
-        test_fb3 = group_mommy.feedbackset_first_attempt_published(
+        test_fb3 = group_baker.feedbackset_first_attempt_published(
             group=testgroup3, grading_points=1, deadline_datetime=new_deadline)
-        student1 = mommy.make('core.Candidate', assignment_group=testgroup1)
-        mommy.make('devilry_account.UserEmail', user=student1.relatedstudent.user, email='student1@example.com')
-        student2 = mommy.make('core.Candidate', assignment_group=testgroup2)
-        mommy.make('devilry_account.UserEmail', user=student2.relatedstudent.user, email='student2@example.com')
-        student3 = mommy.make('core.Candidate', assignment_group=testgroup3)
-        mommy.make('devilry_account.UserEmail', user=student3.relatedstudent.user, email='student3@example.com')
+        student1 = baker.make('core.Candidate', assignment_group=testgroup1)
+        baker.make('devilry_account.UserEmail', user=student1.relatedstudent.user, email='student1@example.com')
+        student2 = baker.make('core.Candidate', assignment_group=testgroup2)
+        baker.make('devilry_account.UserEmail', user=student2.relatedstudent.user, email='student2@example.com')
+        student3 = baker.make('core.Candidate', assignment_group=testgroup3)
+        baker.make('devilry_account.UserEmail', user=student3.relatedstudent.user, email='student3@example.com')
         deadline_email.bulk_send_new_attempt_email(
             assignment_id=testassignment.id,
             feedbackset_id_list=[test_fb1.id, test_fb2.id, test_fb3.id],
@@ -167,13 +167,13 @@ class TestDeadlineMovedEmail(test.TestCase):
         """
         Simple setup used for testing mail content.
         """
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            long_name='Assignment 1')
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        test_feedbackset = group_mommy.feedbackset_first_attempt_published(group=testgroup, grading_points=1,
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        test_feedbackset = group_baker.feedbackset_first_attempt_published(group=testgroup, grading_points=1,
                                                                            deadline_datetime=new_deadline)
-        student = mommy.make('core.Candidate', assignment_group=testgroup)
-        mommy.make('devilry_account.UserEmail', user=student.relatedstudent.user, email='student@example.com')
+        student = baker.make('core.Candidate', assignment_group=testgroup)
+        baker.make('devilry_account.UserEmail', user=student.relatedstudent.user, email='student@example.com')
         return test_feedbackset
 
     def test_send_deadline_moved_email_subject(self):
@@ -246,23 +246,23 @@ class TestDeadlineMovedBulkEmail(test.TestCase):
 
     def test_bulk_send_emails(self):
         new_deadline = datetime.utcnow()
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            long_name='Assignment 1')
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        test_fb1 = group_mommy.feedbackset_first_attempt_published(
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        test_fb1 = group_baker.feedbackset_first_attempt_published(
             group=testgroup1, grading_points=1, deadline_datetime=new_deadline)
-        test_fb2 = group_mommy.feedbackset_first_attempt_published(
+        test_fb2 = group_baker.feedbackset_first_attempt_published(
             group=testgroup2, grading_points=1, deadline_datetime=new_deadline)
-        test_fb3 = group_mommy.feedbackset_first_attempt_published(
+        test_fb3 = group_baker.feedbackset_first_attempt_published(
             group=testgroup3, grading_points=1, deadline_datetime=new_deadline)
-        student1 = mommy.make('core.Candidate', assignment_group=testgroup1)
-        mommy.make('devilry_account.UserEmail', user=student1.relatedstudent.user, email='student1@example.com')
-        student2 = mommy.make('core.Candidate', assignment_group=testgroup2)
-        mommy.make('devilry_account.UserEmail', user=student2.relatedstudent.user, email='student2@example.com')
-        student3 = mommy.make('core.Candidate', assignment_group=testgroup3)
-        mommy.make('devilry_account.UserEmail', user=student3.relatedstudent.user, email='student3@example.com')
+        student1 = baker.make('core.Candidate', assignment_group=testgroup1)
+        baker.make('devilry_account.UserEmail', user=student1.relatedstudent.user, email='student1@example.com')
+        student2 = baker.make('core.Candidate', assignment_group=testgroup2)
+        baker.make('devilry_account.UserEmail', user=student2.relatedstudent.user, email='student2@example.com')
+        student3 = baker.make('core.Candidate', assignment_group=testgroup3)
+        baker.make('devilry_account.UserEmail', user=student3.relatedstudent.user, email='student3@example.com')
         deadline_email.bulk_send_deadline_moved_email(
             assignment_id=testassignment.id,
             feedbackset_id_list=[test_fb1.id, test_fb2.id, test_fb3.id],
@@ -279,23 +279,23 @@ class TestDeadlineMovedBulkEmail(test.TestCase):
 
     def test_bulk_send_emails_message_and_messagereceivers_created(self):
         new_deadline = datetime.utcnow()
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            long_name='Assignment 1')
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        test_fb1 = group_mommy.feedbackset_first_attempt_published(
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        test_fb1 = group_baker.feedbackset_first_attempt_published(
             group=testgroup1, grading_points=1, deadline_datetime=new_deadline)
-        test_fb2 = group_mommy.feedbackset_first_attempt_published(
+        test_fb2 = group_baker.feedbackset_first_attempt_published(
             group=testgroup2, grading_points=1, deadline_datetime=new_deadline)
-        test_fb3 = group_mommy.feedbackset_first_attempt_published(
+        test_fb3 = group_baker.feedbackset_first_attempt_published(
             group=testgroup3, grading_points=1, deadline_datetime=new_deadline)
-        student1 = mommy.make('core.Candidate', assignment_group=testgroup1)
-        mommy.make('devilry_account.UserEmail', user=student1.relatedstudent.user, email='student1@example.com')
-        student2 = mommy.make('core.Candidate', assignment_group=testgroup2)
-        mommy.make('devilry_account.UserEmail', user=student2.relatedstudent.user, email='student2@example.com')
-        student3 = mommy.make('core.Candidate', assignment_group=testgroup3)
-        mommy.make('devilry_account.UserEmail', user=student3.relatedstudent.user, email='student3@example.com')
+        student1 = baker.make('core.Candidate', assignment_group=testgroup1)
+        baker.make('devilry_account.UserEmail', user=student1.relatedstudent.user, email='student1@example.com')
+        student2 = baker.make('core.Candidate', assignment_group=testgroup2)
+        baker.make('devilry_account.UserEmail', user=student2.relatedstudent.user, email='student2@example.com')
+        student3 = baker.make('core.Candidate', assignment_group=testgroup3)
+        baker.make('devilry_account.UserEmail', user=student3.relatedstudent.user, email='student3@example.com')
         deadline_email.bulk_send_deadline_moved_email(
             assignment_id=testassignment.id,
             feedbackset_id_list=[test_fb1.id, test_fb2.id, test_fb3.id],

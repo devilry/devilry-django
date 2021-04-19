@@ -5,7 +5,7 @@ import unittest
 
 from django import test
 from django.conf import settings
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.devilry_comment.models import CommentFile
 from devilry.devilry_import_v2database.modelimporters.delivery_feedback_importers import CommentFileContentImporter, \
@@ -40,7 +40,7 @@ class TestCommentFileContentImporter(ImporterTestCaseMixin, test.TestCase):
 
     def test_filemeta_missing_file_root_setting(self):
         with self.settings(DEVILRY_V2_DELIVERY_FILE_ROOT=None):
-            delivery_comment = mommy.make('devilry_group.GroupComment')
+            delivery_comment = baker.make('devilry_group.GroupComment')
             v2_file = open(os.path.join(self.v2_delivery_root_temp_dir, 'test.py'), 'wb')
             v2_file.write(b'import os')
             v2_file.close()
@@ -55,7 +55,7 @@ class TestCommentFileContentImporter(ImporterTestCaseMixin, test.TestCase):
 
     def test_filemeta_filecontent(self):
         with self.settings(DEVILRY_V2_DELIVERY_FILE_ROOT=self.v2_delivery_root_temp_dir):
-            delivery_comment = mommy.make('devilry_group.GroupComment')
+            delivery_comment = baker.make('devilry_group.GroupComment')
             v2_file = open(os.path.join(self.v2_delivery_root_temp_dir, 'test.py'), 'wb')
             v2_file.write(b'import os')
             v2_file.close()
@@ -76,11 +76,11 @@ class TestCommentFileContentImporter(ImporterTestCaseMixin, test.TestCase):
             'fields': {
                 'is_passing_grade': True,
                 'grade': '2/4',
-                'saved_by': mommy.make(settings.AUTH_USER_MODEL).id,
+                'saved_by': baker.make(settings.AUTH_USER_MODEL).id,
                 'delivery': 1,
                 'points': 2,
                 'files': files,
-                'deadline_id': mommy.make('devilry_group.FeedbackSet').id,
+                'deadline_id': baker.make('devilry_group.FeedbackSet').id,
                 'save_timestamp': '2017-05-15T11:04:46.817',
                 'rendered_view': 'test'
             }

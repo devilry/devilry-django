@@ -1,6 +1,6 @@
 from django.test import TestCase
 from cradmin_legacy import cradmin_testhelpers
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.apps.core.models import Assignment
 from devilry.devilry_admin.views.assignment.passed_previous_period import overview
@@ -10,7 +10,7 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = overview.Overview
 
     def test_title(self):
-        testassignment = mommy.make('core.Assignment')
+        testassignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment
         )
@@ -19,7 +19,7 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
             'Passed previous semester')
 
     def test_heading(self):
-        testassignment = mommy.make('core.Assignment')
+        testassignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment
         )
@@ -28,7 +28,7 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
             'Passed previous semester')
 
     def test_assignment_grading_plugin_not_passed_failed(self):
-        testassignment = mommy.make(
+        testassignment = baker.make(
             'core.Assignment',
             grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS)
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -40,7 +40,7 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
             'Unsupported grading plugin')
 
     def test_assignment_modes_list(self):
-        testassignment = mommy.make('core.Assignment')
+        testassignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment
         )

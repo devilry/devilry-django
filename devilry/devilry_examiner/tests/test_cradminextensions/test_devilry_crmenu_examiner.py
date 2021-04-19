@@ -1,6 +1,6 @@
 import mock
 from django import test
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.apps.core.models import Assignment
 from devilry.devilry_examiner.cradminextensions import devilry_crmenu_examiner
@@ -8,8 +8,8 @@ from devilry.devilry_examiner.cradminextensions import devilry_crmenu_examiner
 
 class TestMenu(test.TestCase):
     def test_get_group_label_nonanonymous(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Candidate',
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__shortname='testuser',
                    relatedstudent__user__fullname='')
@@ -20,9 +20,9 @@ class TestMenu(test.TestCase):
             menu.get_group_label(group=testgroup))
 
     def test_get_group_label_anonymous(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__shortname='testuser',
                    relatedstudent__automatic_anonymous_id='secret')

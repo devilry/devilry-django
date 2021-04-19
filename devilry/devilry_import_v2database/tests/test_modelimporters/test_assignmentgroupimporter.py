@@ -8,7 +8,7 @@ from django import test
 from django.conf import settings
 from django.utils.dateparse import parse_datetime
 
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_group.models import FeedbackSet
@@ -42,7 +42,7 @@ class TestAssignmentGroupImporter(ImporterTestCaseMixin, test.TestCase):
         }
 
     def test_importer(self):
-        test_assignment = mommy.make('core.Assignment')
+        test_assignment = baker.make('core.Assignment')
         self.create_v2dump(model_name='core.assignmentgroup',
                            data=self._create_assignmentgroup_dict(assignment=test_assignment))
         group_importer = AssignmentGroupImporter(input_root=self.temp_root_dir)
@@ -51,7 +51,7 @@ class TestAssignmentGroupImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(FeedbackSet.objects.count(), 0)
 
     def test_importer_pk(self):
-        test_assignment = mommy.make('core.Assignment')
+        test_assignment = baker.make('core.Assignment')
         self.create_v2dump(model_name='core.assignmentgroup',
                            data=self._create_assignmentgroup_dict(assignment=test_assignment))
         group_importer = AssignmentGroupImporter(input_root=self.temp_root_dir)
@@ -61,7 +61,7 @@ class TestAssignmentGroupImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(group.id, 1)
 
     def test_importer_name(self):
-        test_assignment = mommy.make('core.Assignment')
+        test_assignment = baker.make('core.Assignment')
         self.create_v2dump(model_name='core.assignmentgroup',
                            data=self._create_assignmentgroup_dict(assignment=test_assignment))
         group_importer = AssignmentGroupImporter(input_root=self.temp_root_dir)
@@ -70,7 +70,7 @@ class TestAssignmentGroupImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(group.name, 'Test AssignmentGroup')
 
     def test_importer_is_open(self):
-        test_assignment = mommy.make('core.Assignment')
+        test_assignment = baker.make('core.Assignment')
         self.create_v2dump(model_name='core.assignmentgroup',
                            data=self._create_assignmentgroup_dict(assignment=test_assignment))
         group_importer = AssignmentGroupImporter(input_root=self.temp_root_dir)
@@ -79,7 +79,7 @@ class TestAssignmentGroupImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertFalse(group.is_open)
 
     def test_importer_parentnode(self):
-        test_assignment = mommy.make('core.Assignment')
+        test_assignment = baker.make('core.Assignment')
         self.create_v2dump(model_name='core.assignmentgroup',
                            data=self._create_assignmentgroup_dict(assignment=test_assignment))
         group_importer = AssignmentGroupImporter(input_root=self.temp_root_dir)
@@ -88,7 +88,7 @@ class TestAssignmentGroupImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(group.parentnode, test_assignment)
 
     # def test_importer_imported_model_created(self):
-    #     test_assignment = mommy.make('core.Assignment')
+    #     test_assignment = baker.make('core.Assignment')
     #     assignment_data_dict = self._create_assignmentgroup_dict(assignment=test_assignment)
     #     self.create_v2dump(model_name='core.assignmentgroup',
     #                        data=assignment_data_dict)
@@ -104,7 +104,7 @@ class TestAssignmentGroupImporter(ImporterTestCaseMixin, test.TestCase):
     #     self.assertEquals(imported_model.data, assignment_data_dict)
 
     def test_auto_sequence_numbered_objects_uses_meta_max_id(self):
-        test_assignment = mommy.make('core.Assignment')
+        test_assignment = baker.make('core.Assignment')
         self.create_v2dump(model_name='core.assignmentgroup',
                            data=self._create_assignmentgroup_dict(assignment=test_assignment),
                            model_meta=self._create_model_meta())
@@ -114,6 +114,6 @@ class TestAssignmentGroupImporter(ImporterTestCaseMixin, test.TestCase):
         group = AssignmentGroup.objects.first()
         self.assertEqual(group.pk, 1)
         self.assertEqual(group.id, 1)
-        group_with_auto_id = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        group_with_auto_id = baker.make('core.AssignmentGroup', parentnode=test_assignment)
         self.assertEqual(group_with_auto_id.pk, self._create_model_meta()['max_id']+1)
         self.assertEqual(group_with_auto_id.id, self._create_model_meta()['max_id']+1)

@@ -2,7 +2,7 @@ import unittest
 
 from django import test
 from django.utils import timezone
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.devilry_group.models import FeedbackSet
 from devilry.devilry_import_v2database.modelimporters.feedbackset_importer import FeedbackSetImporter
@@ -33,7 +33,7 @@ class TestFeedbackSetImporter(ImporterTestCaseMixin, test.TestCase):
         }
 
     def test_importer(self):
-        test_group = mommy.make('core.AssignmentGroup')
+        test_group = baker.make('core.AssignmentGroup')
         self.create_v2dump(
             model_name='core.deadline',
             data=self._create_deadline_dict(assignment_group=test_group)
@@ -43,7 +43,7 @@ class TestFeedbackSetImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(FeedbackSet.objects.count(), 1)
 
     def test_importer_feedback_sets_multiple(self):
-        test_group = mommy.make('core.AssignmentGroup',
+        test_group = baker.make('core.AssignmentGroup',
                                 parentnode__publishing_time=timezone.now() - timezone.timedelta(days=10))
         feedback_set_data_dict = self._create_deadline_dict(assignment_group=test_group)
 
@@ -82,7 +82,7 @@ class TestFeedbackSetImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(feedbackset3.created_datetime, feedbackset3.deadline_datetime)
 
     def test_auto_sequence_numbered_objects_uses_meta_max_id(self):
-        test_group = mommy.make('core.AssignmentGroup')
+        test_group = baker.make('core.AssignmentGroup')
         self.create_v2dump(
             model_name='core.deadline',
             data=self._create_deadline_dict(assignment_group=test_group),
@@ -94,6 +94,6 @@ class TestFeedbackSetImporter(ImporterTestCaseMixin, test.TestCase):
         feedback_set = FeedbackSet.objects.first()
         self.assertEqual(feedback_set.pk, 13)
         self.assertEqual(feedback_set.id, 13)
-        feedback_set_with_auto_id = mommy.make('devilry_group.FeedbackSet')
+        feedback_set_with_auto_id = baker.make('devilry_group.FeedbackSet')
         self.assertEqual(feedback_set_with_auto_id.pk, self._create_model_meta()['max_id']+1)
         self.assertEqual(feedback_set_with_auto_id.id, self._create_model_meta()['max_id']+1)

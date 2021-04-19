@@ -2,7 +2,7 @@ import json
 
 from django.test import TestCase
 from cradmin_legacy import cradmin_testhelpers
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import PointToGradeMap
@@ -13,14 +13,14 @@ class TestAssignmentGradingConfigurationUpdateView(TestCase, cradmin_testhelpers
     viewclass = gradingconfiguration.AssignmentGradingConfigurationUpdateView
 
     def test_get_title(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=assignment, viewkwargs={'pk': assignment.id})
         self.assertEqual(mockresponse.selector.one('title').alltext_normalized,
                           'Edit grading configuration')
 
     def test_get_h1(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=assignment, viewkwargs={'pk': assignment.id})
         self.assertEqual(mockresponse.selector.one('h1').alltext_normalized,
@@ -37,7 +37,7 @@ class TestAssignmentGradingConfigurationUpdateView(TestCase, cradmin_testhelpers
             for element in selector.list('#{} input[type="radio"]'.format(wrapper_element_id))]
 
     def test_get_grading_system_plugin_id_choices_sanity(self):
-        assignment = mommy.make('core.Assignment')
+        assignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=assignment, viewkwargs={'pk': assignment.id})
         self.assertEqual(
@@ -45,7 +45,7 @@ class TestAssignmentGradingConfigurationUpdateView(TestCase, cradmin_testhelpers
             2)
 
     def test_get_grading_system_plugin_id_labels(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=assignment, viewkwargs={'pk': assignment.id})
         labels = self.__get_radio_labels(mockresponse.selector, 'div_id_grading_system_plugin_id')
@@ -55,7 +55,7 @@ class TestAssignmentGradingConfigurationUpdateView(TestCase, cradmin_testhelpers
                                     'student(s) for this assignment.')
 
     def test_get_grading_system_plugin_id_values(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=assignment, viewkwargs={'pk': assignment.id})
         values = self.__get_radio_values(mockresponse.selector, 'div_id_grading_system_plugin_id')
@@ -64,7 +64,7 @@ class TestAssignmentGradingConfigurationUpdateView(TestCase, cradmin_testhelpers
         self.assertEqual(values[1], 'devilry_gradingsystemplugin_points')
 
     def test_get_points_to_grade_mapper_choices_sanity(self):
-        assignment = mommy.make('core.Assignment')
+        assignment = baker.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=assignment, viewkwargs={'pk': assignment.id})
         self.assertEqual(
@@ -72,7 +72,7 @@ class TestAssignmentGradingConfigurationUpdateView(TestCase, cradmin_testhelpers
             3)
 
     def test_get_points_to_grade_mapper_labels(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=assignment, viewkwargs={'pk': assignment.id})
         labels = self.__get_radio_labels(mockresponse.selector, 'div_id_points_to_grade_mapper')
@@ -82,7 +82,7 @@ class TestAssignmentGradingConfigurationUpdateView(TestCase, cradmin_testhelpers
         self.assertEqual(labels[2], 'Lookup in a table defined by you (A-F, and other grading systems)')
 
     def test_get_points_to_grade_mapper_values(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=assignment, viewkwargs={'pk': assignment.id})
         values = self.__get_radio_values(mockresponse.selector, 'div_id_points_to_grade_mapper')
@@ -92,7 +92,7 @@ class TestAssignmentGradingConfigurationUpdateView(TestCase, cradmin_testhelpers
         self.assertEqual(values[2], 'custom-table')
 
     def test_get_point_to_grade_map_json_none(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=assignment, viewkwargs={'pk': assignment.id})
         self.assertEqual(
@@ -100,9 +100,9 @@ class TestAssignmentGradingConfigurationUpdateView(TestCase, cradmin_testhelpers
             '')
 
     def test_get_point_to_grade_map_json_has_value(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                        max_points=100)
-        point_to_grade_map = mommy.make('core.PointToGradeMap', assignment=assignment)
+        point_to_grade_map = baker.make('core.PointToGradeMap', assignment=assignment)
         point_to_grade_map.create_map((0, 'F'), (80, 'A'))
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=assignment, viewkwargs={'pk': assignment.id})
@@ -119,7 +119,7 @@ class TestAssignmentGradingConfigurationUpdateView(TestCase, cradmin_testhelpers
         return data
 
     def test_post_max_points_smaller_than_passing_grade_min_points(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=assignment,
             viewkwargs={'pk': assignment.id},
@@ -135,7 +135,7 @@ class TestAssignmentGradingConfigurationUpdateView(TestCase, cradmin_testhelpers
             mockresponse.selector.one('#div_id_max_points.has-error').alltext_normalized)
 
     def test_post_ok_sanity(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         self.mock_http302_postrequest(
             cradmin_role=assignment,
             viewkwargs={'pk': assignment.id},
@@ -154,7 +154,7 @@ class TestAssignmentGradingConfigurationUpdateView(TestCase, cradmin_testhelpers
         self.assertEqual(assignment.max_points, 100)
 
     def test_post_point_to_grade_map_json_over_max_points(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=assignment,
             viewkwargs={'pk': assignment.id},
@@ -173,7 +173,7 @@ class TestAssignmentGradingConfigurationUpdateView(TestCase, cradmin_testhelpers
             mockresponse.selector.one('#div_id_max_points.has-error').alltext_normalized)
 
     def test_post_point_to_grade_map_json_empty(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=assignment,
             viewkwargs={'pk': assignment.id},
@@ -189,7 +189,7 @@ class TestAssignmentGradingConfigurationUpdateView(TestCase, cradmin_testhelpers
             mockresponse.selector.one('form .alert-danger').alltext_normalized)
 
     def test_post_point_to_grade_map_json_too_few_rows(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=assignment,
             viewkwargs={'pk': assignment.id},
@@ -207,7 +207,7 @@ class TestAssignmentGradingConfigurationUpdateView(TestCase, cradmin_testhelpers
             mockresponse.selector.one('form .alert-danger').alltext_normalized)
 
     def test_post_point_to_grade_map_json_sanity(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         self.mock_http302_postrequest(
             cradmin_role=assignment,
             viewkwargs={'pk': assignment.id},

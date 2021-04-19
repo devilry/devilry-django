@@ -6,7 +6,7 @@ from django.conf import settings
 from django.utils import timezone
 from dateutil.parser import parse
 
-from model_mommy import mommy
+from model_bakery import baker
 
 from .importer_testcase_mixin import ImporterTestCaseMixin
 from devilry.devilry_import_v2database.modelimporters.user_importer import UserImporter
@@ -139,8 +139,8 @@ class TestUserImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(user_email.user, user)
 
     def test_importer_user_with_blank_email_already_exists(self):
-        existing_user = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('devilry_account.UserEmail', email='', user=existing_user).save()
+        existing_user = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('devilry_account.UserEmail', email='', user=existing_user).save()
         user_data_dict = self._create_user_dict()
         user_data_dict['fields']['email'] = ''
         user_data_dict['pk'] = 2
@@ -165,8 +165,8 @@ class TestUserImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEqual(username.user, user)
 
     def test_importer_user_with_blank_username_already_exists(self):
-        existing_user = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('devilry_account.UserName', username='', user=existing_user).save()
+        existing_user = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('devilry_account.UserName', username='', user=existing_user).save()
         user_data_dict = self._create_user_dict()
         user_data_dict['fields']['username'] = ''
         user_data_dict['pk'] = 2
@@ -189,6 +189,6 @@ class TestUserImporter(ImporterTestCaseMixin, test.TestCase):
         user = get_user_model().objects.first()
         self.assertEqual(user.pk, 1)
         self.assertEqual(user.id, 1)
-        user_with_auto_id = mommy.make(settings.AUTH_USER_MODEL)
+        user_with_auto_id = baker.make(settings.AUTH_USER_MODEL)
         self.assertEqual(user_with_auto_id.id, self._create_model_meta()['max_id']+1)
         self.assertEqual(user_with_auto_id.pk, self._create_model_meta()['max_id']+1)

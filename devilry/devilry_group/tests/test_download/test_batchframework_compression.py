@@ -4,7 +4,7 @@ import shutil
 from zipfile import ZipFile
 
 # Third party imports
-from model_mommy import mommy
+from model_bakery import baker
 from ievv_opensource.ievv_batchframework import batchregistry
 
 # Django imports
@@ -16,7 +16,7 @@ from django.utils import timezone
 # Devilry imports
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import tasks
-from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
+from devilry.devilry_group import devilry_group_baker_factories as group_baker
 from devilry.devilry_compressionutil import models as archivemodels
 
 
@@ -53,18 +53,18 @@ class TestCompressed(TestCase):
 
 class TestFeedbackSetBatchTask(TestCompressed):
     def __make_comment_file(self, feedback_set, file_name, file_content, user_role='student', **comment_kwargs):
-        comment = mommy.make('devilry_group.GroupComment',
+        comment = baker.make('devilry_group.GroupComment',
                                   feedback_set=feedback_set,
                                   user_role=user_role, **comment_kwargs)
-        comment_file = mommy.make('devilry_comment.CommentFile', comment=comment,
+        comment_file = baker.make('devilry_comment.CommentFile', comment=comment,
                                   filename=file_name)
         comment_file.file.save(file_name, ContentFile(file_content))
         return comment_file
 
     def test_batchframework_no_files(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished()
-            mommy.make('devilry_group.GroupComment',
+            testfeedbackset = group_baker.feedbackset_first_attempt_unpublished()
+            baker.make('devilry_group.GroupComment',
                        feedback_set=testfeedbackset,
                        user_role='student',
                        user__shortname='testuser@example.com')
@@ -79,12 +79,12 @@ class TestFeedbackSetBatchTask(TestCompressed):
     def test_batchframework(self):
         # Tests that the archive has been created.
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished()
-            testcomment = mommy.make('devilry_group.GroupComment',
+            testfeedbackset = group_baker.feedbackset_first_attempt_unpublished()
+            testcomment = baker.make('devilry_group.GroupComment',
                                      feedback_set=testfeedbackset,
                                      user_role='student',
                                      user__shortname='testuser@example.com')
-            commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+            commentfile = baker.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
             commentfile.file.save('testfile.txt', ContentFile('testcontent'))
 
             # Run batch operation
@@ -100,12 +100,12 @@ class TestFeedbackSetBatchTask(TestCompressed):
     def test_batchframework_delete_meta(self):
         # Tests that the metaclass deletes the actual archive.
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished()
-            testcomment = mommy.make('devilry_group.GroupComment',
+            testfeedbackset = group_baker.feedbackset_first_attempt_unpublished()
+            testcomment = baker.make('devilry_group.GroupComment',
                                      feedback_set=testfeedbackset,
                                      user_role='student',
                                      user__shortname='testuser@example.com')
-            commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+            commentfile = baker.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
             commentfile.file.save('testfile.txt', ContentFile('testcontent'))
 
             # Run batch operation
@@ -130,11 +130,11 @@ class TestFeedbackSetBatchTask(TestCompressed):
         # Tests that files added after the deadline returned from FeedbackSet.get_current_deadline() is added under
         # 'uploaded_after_deadline'.
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(
                 group__parentnode__first_deadline=timezone.now() - timezone.timedelta(days=1)
             )
-            studentuser = mommy.make(settings.AUTH_USER_MODEL, shortname='april')
-            mommy.make('core.Candidate', assignment_group=testfeedbackset.group,
+            studentuser = baker.make(settings.AUTH_USER_MODEL, shortname='april')
+            baker.make('core.Candidate', assignment_group=testfeedbackset.group,
                        relatedstudent__user=studentuser)
             self.__make_comment_file(feedback_set=testfeedbackset, file_name='testfile.txt',
                                      file_content='testcontent', user=studentuser)
@@ -153,7 +153,7 @@ class TestFeedbackSetBatchTask(TestCompressed):
     def test_batchframework_examiner_files_not_uploaded(self):
         # Tests that the file is added under 'uploaded_by_examiner'.
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+            testfeedbackset = group_baker.feedbackset_first_attempt_unpublished()
             self.__make_comment_file(feedback_set=testfeedbackset, file_name='testfile.txt',
                                      file_content='testcontent', user_role='examiner')
 
@@ -168,9 +168,9 @@ class TestFeedbackSetBatchTask(TestCompressed):
         # Tests that the file uploaded by examiner is added to 'uploaded_by_examiner' subfolder,
         # and that file from student is added under 'delivery'.
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+            testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                                first_deadline=timezone.now() + timezone.timedelta(days=1))
-            testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__parentnode=testassignment)
+            testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group__parentnode=testassignment)
             self.__make_comment_file(feedback_set=testfeedbackset, file_name='testfile_examiner.txt',
                                      file_content='examiner testcontent', user_role='examiner')
             self.__make_comment_file(feedback_set=testfeedbackset, file_name='testfile_student.txt',

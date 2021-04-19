@@ -2,14 +2,14 @@ import htmls
 from django import test
 from django.conf import settings
 from django.template.loader import render_to_string
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.devilry_account.templatetags import devilry_account_tags
 
 
 class TestDevilryUserVerboseInline(test.TestCase):
     def test_no_fullname_cssclass(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL,
+        testuser = baker.make(settings.AUTH_USER_MODEL,
                               fullname='')
         selector = htmls.S(
             render_to_string('devilry_account/templatetags/user-verbose-inline.django.html',
@@ -18,7 +18,7 @@ class TestDevilryUserVerboseInline(test.TestCase):
         self.assertFalse(selector.exists('.devilry-user-verbose-inline-both'))
 
     def test_no_fullname_text(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL,
+        testuser = baker.make(settings.AUTH_USER_MODEL,
                               fullname='',
                               shortname='testuser')
         selector = htmls.S(
@@ -28,7 +28,7 @@ class TestDevilryUserVerboseInline(test.TestCase):
                          selector.one('.devilry-user-verbose-inline').alltext_normalized)
 
     def test_with_fullname_cssclass(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL,
+        testuser = baker.make(settings.AUTH_USER_MODEL,
                               fullname='Test User')
         selector = htmls.S(
             render_to_string('devilry_account/templatetags/user-verbose-inline.django.html',
@@ -37,7 +37,7 @@ class TestDevilryUserVerboseInline(test.TestCase):
         self.assertTrue(selector.exists('.devilry-user-verbose-inline-both'))
 
     def test_with_fullname_text(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL,
+        testuser = baker.make(settings.AUTH_USER_MODEL,
                               fullname='Test User',
                               shortname='testuser')
         selector = htmls.S(
@@ -53,7 +53,7 @@ class TestDevilryUserVerboseInline(test.TestCase):
 
 class TestDevilryMultipleUsersVerboseInline(test.TestCase):
     def test_no_fullname_cssclass(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL,
+        testuser = baker.make(settings.AUTH_USER_MODEL,
                               fullname='')
         selector = htmls.S(
             render_to_string('devilry_account/templatetags/multiple-users-verbose-inline.django.html',
@@ -62,7 +62,7 @@ class TestDevilryMultipleUsersVerboseInline(test.TestCase):
         self.assertFalse(selector.exists('.devilry-user-verbose-inline-both'))
 
     def test_no_fullname_text(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL,
+        testuser = baker.make(settings.AUTH_USER_MODEL,
                               fullname='',
                               shortname='testuser')
         selector = htmls.S(
@@ -72,7 +72,7 @@ class TestDevilryMultipleUsersVerboseInline(test.TestCase):
                          selector.one('.devilry-user-verbose-inline').alltext_normalized)
 
     def test_with_fullname_cssclass(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL,
+        testuser = baker.make(settings.AUTH_USER_MODEL,
                               fullname='Test User')
         selector = htmls.S(
             render_to_string('devilry_account/templatetags/multiple-users-verbose-inline.django.html',
@@ -81,7 +81,7 @@ class TestDevilryMultipleUsersVerboseInline(test.TestCase):
         self.assertTrue(selector.exists('.devilry-user-verbose-inline-both'))
 
     def test_with_fullname_text(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL,
+        testuser = baker.make(settings.AUTH_USER_MODEL,
                               fullname='Test User',
                               shortname='testuser')
         selector = htmls.S(
@@ -95,9 +95,9 @@ class TestDevilryMultipleUsersVerboseInline(test.TestCase):
                          selector.one('.devilry-user-verbose-inline').alltext_normalized)
 
     def test_multiple(self):
-        testuser1 = mommy.make(settings.AUTH_USER_MODEL,
+        testuser1 = baker.make(settings.AUTH_USER_MODEL,
                                shortname='testuser1')
-        testuser2 = mommy.make(settings.AUTH_USER_MODEL,
+        testuser2 = baker.make(settings.AUTH_USER_MODEL,
                                shortname='testuser2')
         selector = htmls.S(
             render_to_string('devilry_account/templatetags/multiple-users-verbose-inline.django.html',

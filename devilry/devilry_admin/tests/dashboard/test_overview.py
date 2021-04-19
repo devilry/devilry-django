@@ -3,7 +3,7 @@ import unittest
 from django.conf import settings
 from django.test import TestCase, RequestFactory
 from cradmin_legacy import cradmin_testhelpers
-from model_mommy import mommy
+from model_bakery import baker
 from devilry.devilry_account.models import PermissionGroup
 from devilry.devilry_admin.views.dashboard import overview
 
@@ -12,13 +12,13 @@ class TestOverviewSubjectListViewApp(TestCase, cradmin_testhelpers.TestCaseMixin
     viewclass = overview.OverviewSubjectListView
 
     def test_title(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testuser)
         self.assertEqual('Administrator dashboard',
                          mockresponse.selector.one('title').alltext_normalized)
 
     def test_h1(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testuser)
         self.assertEqual('Administrator dashboard',
                          mockresponse.selector.one('h1').alltext_normalized)
@@ -57,17 +57,17 @@ class TestOverviewSubjectListViewApp(TestCase, cradmin_testhelpers.TestCaseMixin
         return view
 
     def test__get_all_subjects_where_user_is_subjectadmin_none(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
         view = self.__minimal_mockrequest_with_user(user=testuser)
         self.assertEqual(
             [],
             list(view._OverviewSubjectListView__get_all_subjects_where_user_is_subjectadmin()))
 
     def test__get_all_subjects_where_user_is_subjectadmin_not_subjectadmin(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        permissiongroup = mommy.make('devilry_account.PermissionGroup',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        permissiongroup = baker.make('devilry_account.PermissionGroup',
                                      grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN)
-        mommy.make('devilry_account.SubjectPermissionGroup',
+        baker.make('devilry_account.SubjectPermissionGroup',
                    permissiongroup=permissiongroup)
         view = self.__minimal_mockrequest_with_user(user=testuser)
         self.assertEqual(
@@ -75,12 +75,12 @@ class TestOverviewSubjectListViewApp(TestCase, cradmin_testhelpers.TestCaseMixin
             list(view._OverviewSubjectListView__get_all_subjects_where_user_is_subjectadmin()))
 
     def test__get_all_subjects_where_user_is_subjectadmin_one_subjectadmin(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testsubject = mommy.make('core.Subject')
-        permissiongroup = mommy.make('devilry_account.PermissionGroup',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testsubject = baker.make('core.Subject')
+        permissiongroup = baker.make('devilry_account.PermissionGroup',
                                      grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN,
                                      users=[testuser])
-        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+        subjectpermissiongroup = baker.make('devilry_account.SubjectPermissionGroup',
                                             permissiongroup=permissiongroup,
                                             subject=testsubject)
         view = self.__minimal_mockrequest_with_user_and_subjectpermissiongroup(
@@ -90,15 +90,15 @@ class TestOverviewSubjectListViewApp(TestCase, cradmin_testhelpers.TestCaseMixin
             list(view._OverviewSubjectListView__get_all_subjects_where_user_is_subjectadmin()))
 
     def test__get_all_subjects_where_user_is_subjectadmin_several_subjectadmin(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testsubject1 = mommy.make('core.Subject')
-        testsubject2 = mommy.make('core.Subject')
-        permissiongroup = mommy.make('devilry_account.PermissionGroup',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testsubject1 = baker.make('core.Subject')
+        testsubject2 = baker.make('core.Subject')
+        permissiongroup = baker.make('devilry_account.PermissionGroup',
                                      grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN,
                                      users=[testuser])
-        subjectpermissiongroup1 = mommy.make('devilry_account.SubjectPermissionGroup',
+        subjectpermissiongroup1 = baker.make('devilry_account.SubjectPermissionGroup',
                                              subject=testsubject1)
-        subjectpermissiongroup2 = mommy.make('devilry_account.SubjectPermissionGroup',
+        subjectpermissiongroup2 = baker.make('devilry_account.SubjectPermissionGroup',
                                              permissiongroup=permissiongroup,
                                              subject=testsubject2)
         view = self.__minimal_mockrequest_with_user_and_subjectpermissiongroup(
@@ -110,20 +110,20 @@ class TestOverviewSubjectListViewApp(TestCase, cradmin_testhelpers.TestCaseMixin
             list(view._OverviewSubjectListView__get_all_subjects_where_user_is_subjectadmin()))
 
     def test__get_all_subjects_where_user_is_subjectadmin_ordered_subjectadmin(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testsubject1 = mommy.make('core.Subject', long_name="Course A")
-        testsubject2 = mommy.make('core.Subject', long_name="Course B")
-        testsubject3 = mommy.make('core.Subject', long_name="Course C")
-        permissiongroup = mommy.make('devilry_account.PermissionGroup',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testsubject1 = baker.make('core.Subject', long_name="Course A")
+        testsubject2 = baker.make('core.Subject', long_name="Course B")
+        testsubject3 = baker.make('core.Subject', long_name="Course C")
+        permissiongroup = baker.make('devilry_account.PermissionGroup',
                                      grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN,
                                      users=[testuser])
-        subjectpermissiongroup1 = mommy.make('devilry_account.SubjectPermissionGroup',
+        subjectpermissiongroup1 = baker.make('devilry_account.SubjectPermissionGroup',
                                              permissiongroup=permissiongroup,
                                              subject=testsubject1)
-        subjectpermissiongroup2 = mommy.make('devilry_account.SubjectPermissionGroup',
+        subjectpermissiongroup2 = baker.make('devilry_account.SubjectPermissionGroup',
                                              permissiongroup=permissiongroup,
                                              subject=testsubject2)
-        subjectpermissiongroup3 = mommy.make('devilry_account.SubjectPermissionGroup',
+        subjectpermissiongroup3 = baker.make('devilry_account.SubjectPermissionGroup',
                                              permissiongroup=permissiongroup,
                                              subject=testsubject3)
         view = self.__minimal_mockrequest_with_user_and_subjectpermissiongroup(
@@ -136,7 +136,7 @@ class TestOverviewSubjectListViewApp(TestCase, cradmin_testhelpers.TestCaseMixin
             list(view._OverviewSubjectListView__get_all_subjects_where_user_is_subjectadmin()))
 
     def test__get_all_periods_where_user_is_subjectadmin_or_periodadmin_none(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
         view = self.__minimal_mockrequest_with_user(user=testuser)
         self.assertEqual(
             [],
@@ -144,10 +144,10 @@ class TestOverviewSubjectListViewApp(TestCase, cradmin_testhelpers.TestCaseMixin
         )
 
     def test__get_all_periods_where_user_is_subjectadmin_or_periodadmin_not_periodadmin(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        permissiongroup = mommy.make('devilry_account.PermissionGroup',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        permissiongroup = baker.make('devilry_account.PermissionGroup',
                                      grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN)
-        mommy.make('devilry_account.PeriodPermissionGroup',
+        baker.make('devilry_account.PeriodPermissionGroup',
                    permissiongroup=permissiongroup)
         view = self.__minimal_mockrequest_with_user(user=testuser)
         self.assertEqual(
@@ -156,12 +156,12 @@ class TestOverviewSubjectListViewApp(TestCase, cradmin_testhelpers.TestCaseMixin
         )
 
     def test_get_all_periods_where_user_is_subjectadmin_or_periodadmin__one_periodadmin(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod = mommy.make('core.Period')
-        permissiongroup = mommy.make('devilry_account.PermissionGroup',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period')
+        permissiongroup = baker.make('devilry_account.PermissionGroup',
                                      grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN,
                                      users=[testuser])
-        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+        periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                            permissiongroup=permissiongroup,
                                            period=testperiod)
         view = self.__minimal_mockrequest_with_user_and_periodpermissiongroup(
@@ -173,16 +173,16 @@ class TestOverviewSubjectListViewApp(TestCase, cradmin_testhelpers.TestCaseMixin
         )
 
     def test_get_all_periods_where_user_is_subjectadmin_or_periodadmin__several_periodadmin(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod1 = mommy.make('core.Period')
-        testperiod2 = mommy.make('core.Period')
-        permissiongroup = mommy.make('devilry_account.PermissionGroup',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod1 = baker.make('core.Period')
+        testperiod2 = baker.make('core.Period')
+        permissiongroup = baker.make('devilry_account.PermissionGroup',
                                      grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN,
                                      users=[testuser])
-        periodpermissiongroup1 = mommy.make('devilry_account.PeriodPermissionGroup',
+        periodpermissiongroup1 = baker.make('devilry_account.PeriodPermissionGroup',
                                             permissiongroup=permissiongroup,
                                             period=testperiod1)
-        periodpermissiongroup2 = mommy.make('devilry_account.PeriodPermissionGroup',
+        periodpermissiongroup2 = baker.make('devilry_account.PeriodPermissionGroup',
                                             period=testperiod2)
         view = self.__minimal_mockrequest_with_user_and_periodpermissiongroup(
             user=testuser,
@@ -194,20 +194,20 @@ class TestOverviewSubjectListViewApp(TestCase, cradmin_testhelpers.TestCaseMixin
         )
 
     def test_get_all_periods_where_user_is_subjectadmin_or_periodadmin__ordered_periodadmin(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod1 = mommy.make('core.Period', short_name="Period A")
-        testperiod2 = mommy.make('core.Period', short_name="Period C")
-        testperiod3 = mommy.make('core.Period', short_name="Period B")
-        permissiongroup = mommy.make('devilry_account.PermissionGroup',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod1 = baker.make('core.Period', short_name="Period A")
+        testperiod2 = baker.make('core.Period', short_name="Period C")
+        testperiod3 = baker.make('core.Period', short_name="Period B")
+        permissiongroup = baker.make('devilry_account.PermissionGroup',
                                      grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN,
                                      users=[testuser])
-        periodpermissiongroup1 = mommy.make('devilry_account.PeriodPermissionGroup',
+        periodpermissiongroup1 = baker.make('devilry_account.PeriodPermissionGroup',
                                             permissiongroup=permissiongroup,
                                             period=testperiod1)
-        periodpermissiongroup2 = mommy.make('devilry_account.PeriodPermissionGroup',
+        periodpermissiongroup2 = baker.make('devilry_account.PeriodPermissionGroup',
                                             permissiongroup=permissiongroup,
                                             period=testperiod2)
-        periodpermissiongroup3 = mommy.make('devilry_account.PeriodPermissionGroup',
+        periodpermissiongroup3 = baker.make('devilry_account.PeriodPermissionGroup',
                                             permissiongroup=permissiongroup,
                                             period=testperiod3)
         view = self.__minimal_mockrequest_with_user_and_periodpermissiongroup(
@@ -220,26 +220,26 @@ class TestOverviewSubjectListViewApp(TestCase, cradmin_testhelpers.TestCaseMixin
         )
 
     def test_get_all_periods_where_user_is_subjectadmin_or_periodadmin__both(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiod1 = mommy.make('core.Period')
-        testperiod2 = mommy.make('core.Period')
-        testsubject = mommy.make('core.Subject')
-        testperiod3 = mommy.make('core.Period', parentnode=testsubject)
-        permissiongroup1 = mommy.make('devilry_account.PermissionGroup',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod1 = baker.make('core.Period')
+        testperiod2 = baker.make('core.Period')
+        testsubject = baker.make('core.Subject')
+        testperiod3 = baker.make('core.Period', parentnode=testsubject)
+        permissiongroup1 = baker.make('devilry_account.PermissionGroup',
                                       grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN,
                                       users=[testuser])
-        permissiongroup2 = mommy.make('devilry_account.PermissionGroup',
+        permissiongroup2 = baker.make('devilry_account.PermissionGroup',
                                       grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN,
                                       users=[testuser])
-        periodpermissiongroup1 = mommy.make('devilry_account.PeriodPermissionGroup',
+        periodpermissiongroup1 = baker.make('devilry_account.PeriodPermissionGroup',
                                             permissiongroup=permissiongroup1,
                                             period=testperiod1)
-        periodpermissiongroup2 = mommy.make('devilry_account.PeriodPermissionGroup',
+        periodpermissiongroup2 = baker.make('devilry_account.PeriodPermissionGroup',
                                             permissiongroup=permissiongroup1,
                                             period=testperiod2)
-        periodpermissiongroup3 = mommy.make('devilry_account.PeriodPermissionGroup',
+        periodpermissiongroup3 = baker.make('devilry_account.PeriodPermissionGroup',
                                             period=testperiod3)
-        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+        subjectpermissiongroup = baker.make('devilry_account.SubjectPermissionGroup',
                                             permissiongroup=permissiongroup2,
                                             subject=testsubject)
         view = self.__minimal_mockrequest_with_user_subjectpermissiongroup_and_periodpermissiongroup(
@@ -253,27 +253,27 @@ class TestOverviewSubjectListViewApp(TestCase, cradmin_testhelpers.TestCaseMixin
         )
 
     def test_get_all_periods_where_user_is_subjectadmin_or_periodadmin__both_ordered(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testsubject1 = mommy.make('core.Subject', long_name="Course A")
-        testsubject2 = mommy.make('core.Subject', long_name="Course B")
-        testperiod1 = mommy.make('core.Period', short_name="Semester 2", parentnode=testsubject1)
-        testperiod2 = mommy.make('core.Period', short_name="Semester 1", parentnode=testsubject2)
-        testperiod3 = mommy.make('core.Period', short_name="Semester 1", parentnode=testsubject1)
-        permissiongroup1 = mommy.make('devilry_account.PermissionGroup',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testsubject1 = baker.make('core.Subject', long_name="Course A")
+        testsubject2 = baker.make('core.Subject', long_name="Course B")
+        testperiod1 = baker.make('core.Period', short_name="Semester 2", parentnode=testsubject1)
+        testperiod2 = baker.make('core.Period', short_name="Semester 1", parentnode=testsubject2)
+        testperiod3 = baker.make('core.Period', short_name="Semester 1", parentnode=testsubject1)
+        permissiongroup1 = baker.make('devilry_account.PermissionGroup',
                                       grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN,
                                       users=[testuser])
-        permissiongroup2 = mommy.make('devilry_account.PermissionGroup',
+        permissiongroup2 = baker.make('devilry_account.PermissionGroup',
                                       grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN,
                                       users=[testuser])
-        periodpermissiongroup1 = mommy.make('devilry_account.PeriodPermissionGroup',
+        periodpermissiongroup1 = baker.make('devilry_account.PeriodPermissionGroup',
                                             permissiongroup=permissiongroup1,
                                             period=testperiod1)
-        periodpermissiongroup2 = mommy.make('devilry_account.PeriodPermissionGroup',
+        periodpermissiongroup2 = baker.make('devilry_account.PeriodPermissionGroup',
                                             permissiongroup=permissiongroup1,
                                             period=testperiod2)
-        periodpermissiongroup3 = mommy.make('devilry_account.PeriodPermissionGroup',
+        periodpermissiongroup3 = baker.make('devilry_account.PeriodPermissionGroup',
                                             period=testperiod3)
-        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+        subjectpermissiongroup = baker.make('devilry_account.SubjectPermissionGroup',
                                             permissiongroup=permissiongroup2,
                                             subject=testsubject1)
         view = self.__minimal_mockrequest_with_user_subjectpermissiongroup_and_periodpermissiongroup(
@@ -292,17 +292,17 @@ class TestOverviewSubjectListViewApp(TestCase, cradmin_testhelpers.TestCaseMixin
     #     self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-listbuilder-list'))
 
     def test_nonempty_list(self):
-        mommy.make('core.Subject')
-        requestuser = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
+        baker.make('core.Subject')
+        requestuser = baker.make(settings.AUTH_USER_MODEL, is_superuser=True)
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=requestuser)
         self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-listing-no-items-message'))
         self.assertTrue(mockresponse.selector.exists('.cradmin-legacy-listbuilder-list'))
 
     @unittest.skip('Must be fixed before it is commited to master')
     def test_default_ordering(self):
-        mommy.make('core.Subject', short_name='A')
-        mommy.make('core.Subject', short_name='B')
-        mommy.make('core.Subject', short_name='C')
+        baker.make('core.Subject', short_name='A')
+        baker.make('core.Subject', short_name='B')
+        baker.make('core.Subject', short_name='C')
         mockresponse = self.mock_http200_getrequest_htmls()
         self.assertEqual(
             'A',
@@ -318,13 +318,13 @@ class TestOverviewSubjectListViewApp(TestCase, cradmin_testhelpers.TestCaseMixin
                 '.cradmin-legacy-listbuilder-list li:nth-child(3)').alltext_normalized)
 
     def test_createsubject_button_not_superuser_not_rendered(self):
-        mommy.make('core.Subject')
-        requestuser = mommy.make(settings.AUTH_USER_MODEL, is_superuser=False)
+        baker.make('core.Subject')
+        requestuser = baker.make(settings.AUTH_USER_MODEL, is_superuser=False)
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=requestuser)
         self.assertFalse(mockresponse.selector.exists('#id_createsubject_button'))
 
     def test_createsubject_button_is_superuser_rendered(self):
-        mommy.make('core.Subject')
-        requestuser = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
+        baker.make('core.Subject')
+        requestuser = baker.make(settings.AUTH_USER_MODEL, is_superuser=True)
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=requestuser)
         self.assertTrue(mockresponse.selector.exists('#id_createsubject_button'))

@@ -9,7 +9,7 @@ from django.http import Http404
 from cradmin_legacy import cradmin_testhelpers
 
 import mock
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.apps.core.models import RelatedExaminer
 from devilry.devilry_admin.views.period.manage_tags import manage_tags
@@ -21,7 +21,7 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
     viewclass = manage_tags.TagListBuilderListView
 
     def test_title(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod
         )
@@ -29,7 +29,7 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
                           'Tags on {}'.format(testperiod.parentnode))
 
     def test_static_link_urls(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertEqual(2, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
         self.assertEqual(
@@ -42,10 +42,10 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         )
 
     # def test_link_urls_with_period_tags_rendered(self):
-    #     testperiod = mommy.make('core.Period')
-    #     testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='a')
-    #     testperiodtag.relatedexaminers.add(mommy.make('core.RelatedExaminer', period=testperiod))
-    #     testperiodtag.relatedstudents.add(mommy.make('core.RelatedStudent', period=testperiod))
+    #     testperiod = baker.make('core.Period')
+    #     testperiodtag = baker.make('core.PeriodTag', period=testperiod, tag='a')
+    #     testperiodtag.relatedexaminers.add(baker.make('core.RelatedExaminer', period=testperiod))
+    #     testperiodtag.relatedstudents.add(baker.make('core.RelatedStudent', period=testperiod))
     #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
     #     self.assertEquals(6, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
     #     self.assertEquals(
@@ -82,20 +82,20 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
     #     )
 
     def test_num_item_values_rendered(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.PeriodTag', period=testperiod)
-        mommy.make('core.PeriodTag', period=testperiod)
-        mommy.make('core.PeriodTag', period=testperiod)
+        testperiod = baker.make('core.Period')
+        baker.make('core.PeriodTag', period=testperiod)
+        baker.make('core.PeriodTag', period=testperiod)
+        baker.make('core.PeriodTag', period=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod
         )
         self.assertEqual(mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'), 3)
 
     def test_item_value_all_buttons_text(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='a')
-        testperiodtag.relatedexaminers.add(mommy.make('core.RelatedExaminer', period=testperiod))
-        testperiodtag.relatedstudents.add(mommy.make('core.RelatedStudent', period=testperiod))
+        testperiod = baker.make('core.Period')
+        testperiodtag = baker.make('core.PeriodTag', period=testperiod, tag='a')
+        testperiodtag.relatedexaminers.add(baker.make('core.RelatedExaminer', period=testperiod))
+        testperiodtag.relatedstudents.add(baker.make('core.RelatedStudent', period=testperiod))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertEqual(
             mockresponse.selector.one('#devilry_admin_period_manage_tags_add_students_a').alltext_normalized,
@@ -115,12 +115,12 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         )
 
     def test_related_students_rendered(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod)
-        relatedstudent1 = mommy.make('core.RelatedStudent',
+        testperiod = baker.make('core.Period')
+        testperiodtag = baker.make('core.PeriodTag', period=testperiod)
+        relatedstudent1 = baker.make('core.RelatedStudent',
                                     period=testperiod,
                                     user__shortname='relatedstudent1')
-        relatedstudent2 = mommy.make('core.RelatedStudent',
+        relatedstudent2 = baker.make('core.RelatedStudent',
                                     period=testperiod,
                                     user__shortname='relatedstudent2')
         testperiodtag.relatedstudents.add(relatedstudent1, relatedstudent2)
@@ -133,8 +133,8 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
                           'Students: relatedstudent1 , relatedstudent2')
 
     def test_no_related_students_rendered(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.PeriodTag', period=testperiod)
+        testperiod = baker.make('core.Period')
+        baker.make('core.PeriodTag', period=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod
         )
@@ -143,12 +143,12 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
                           'NO STUDENTS')
 
     def test_related_examiners_rendered(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod)
-        relatedexaminer1 = mommy.make('core.RelatedExaminer',
+        testperiod = baker.make('core.Period')
+        testperiodtag = baker.make('core.PeriodTag', period=testperiod)
+        relatedexaminer1 = baker.make('core.RelatedExaminer',
                                     period=testperiod,
                                     user__shortname='relatedexaminer1')
-        relatedexaminer2 = mommy.make('core.RelatedExaminer',
+        relatedexaminer2 = baker.make('core.RelatedExaminer',
                                     period=testperiod,
                                     user__shortname='relatedexaminer2')
         testperiodtag.relatedexaminers.add(relatedexaminer1, relatedexaminer2)
@@ -161,8 +161,8 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
                       mockresponse.selector.one('.devilry-core-periodtag-relatedexaminers').alltext_normalized)
 
     def test_no_related_examiners_rendered(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.PeriodTag', period=testperiod)
+        testperiod = baker.make('core.Period')
+        baker.make('core.PeriodTag', period=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod
         )
@@ -171,8 +171,8 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
                           'NO EXAMINERS')
 
     def test_edit_button_rendered_when_prefix_is_blank(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.PeriodTag', period=testperiod)
+        testperiod = baker.make('core.Period')
+        baker.make('core.PeriodTag', period=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod
         )
@@ -180,8 +180,8 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.assertContains(mockresponse.response, 'Edit')
 
     def test_edit_delete_button_not_rendered_on_imported_tag(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.PeriodTag', period=testperiod, prefix='a')
+        testperiod = baker.make('core.Period')
+        baker.make('core.PeriodTag', period=testperiod, prefix='a')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod
         )
@@ -189,8 +189,8 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-listbuilder-itemvalue-editdelete-deletebutton'))
 
     def test_hide_button_rendered_when_custom_tag_is_not_hidden(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.PeriodTag', period=testperiod, prefix='a', is_hidden=False)
+        testperiod = baker.make('core.Period')
+        baker.make('core.PeriodTag', period=testperiod, prefix='a', is_hidden=False)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod
         )
@@ -198,8 +198,8 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.assertFalse(mockresponse.selector.exists('.devilry-admin-manage-tags-imported-tag-show-button'))
 
     def test_show_button_rendered_when_custom_tag_is_hidden(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.PeriodTag', period=testperiod, prefix='a', is_hidden=True)
+        testperiod = baker.make('core.Period')
+        baker.make('core.PeriodTag', period=testperiod, prefix='a', is_hidden=True)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod
         )
@@ -207,8 +207,8 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.assertFalse(mockresponse.selector.exists('.devilry-admin-manage-tags-imported-tag-hide-button'))
 
     def test_edit_button_not_rendered_when_prefix_is_not_blank(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.PeriodTag', period=testperiod, prefix='a')
+        testperiod = baker.make('core.Period')
+        baker.make('core.PeriodTag', period=testperiod, prefix='a')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod
         )
@@ -216,8 +216,8 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.assertNotContains(mockresponse.response, 'Edit')
 
     def test_delete_button_rendered_when_prefix_is_blank(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.PeriodTag', period=testperiod)
+        testperiod = baker.make('core.Period')
+        baker.make('core.PeriodTag', period=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod
         )
@@ -225,8 +225,8 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.assertContains(mockresponse.response, 'Delete')
 
     def test_delete_button_not_rendered_when_prefix_is_not_blank(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.PeriodTag', period=testperiod, prefix='a')
+        testperiod = baker.make('core.Period')
+        baker.make('core.PeriodTag', period=testperiod, prefix='a')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod
         )
@@ -234,8 +234,8 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.assertNotContains(mockresponse.response, 'Delete')
 
     def test_remove_examiners_not_rendered(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.PeriodTag', period=testperiod, tag='a')
+        testperiod = baker.make('core.Period')
+        baker.make('core.PeriodTag', period=testperiod, tag='a')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod
         )
@@ -243,10 +243,10 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.assertNotContains(mockresponse.response, 'Remove examiners')
 
     def test_remove_examiners_rendered(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='a')
+        testperiod = baker.make('core.Period')
+        testperiodtag = baker.make('core.PeriodTag', period=testperiod, tag='a')
         testperiodtag.relatedexaminers.add(
-            mommy.make('core.RelatedExaminer', period=testperiod)
+            baker.make('core.RelatedExaminer', period=testperiod)
         )
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod
@@ -256,8 +256,8 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
             'Remove examiners')
 
     def test_remove_students_not_rendered(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.PeriodTag', period=testperiod, tag='a')
+        testperiod = baker.make('core.Period')
+        baker.make('core.PeriodTag', period=testperiod, tag='a')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod
         )
@@ -265,10 +265,10 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.assertNotContains(mockresponse.response, 'Remove students')
 
     def test_remove_students_rendered(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='a')
+        testperiod = baker.make('core.Period')
+        testperiodtag = baker.make('core.PeriodTag', period=testperiod, tag='a')
         testperiodtag.relatedstudents.add(
-            mommy.make('core.RelatedStudent', period=testperiod)
+            baker.make('core.RelatedStudent', period=testperiod)
         )
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod
@@ -278,9 +278,9 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
             'Remove students')
 
     def test_filter_search_on_tag(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.PeriodTag', period=testperiod, prefix='tag1')
-        mommy.make('core.PeriodTag', period=testperiod, prefix='tag2')
+        testperiod = baker.make('core.Period')
+        baker.make('core.PeriodTag', period=testperiod, prefix='tag1')
+        baker.make('core.PeriodTag', period=testperiod, prefix='tag2')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             viewkwargs={
@@ -292,9 +292,9 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.assertNotContains(mockresponse.response, 'tag2')
 
     def test_filter_search_on_tag_no_results(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.PeriodTag', period=testperiod, prefix='tag1')
-        mommy.make('core.PeriodTag', period=testperiod, prefix='tag2')
+        testperiod = baker.make('core.Period')
+        baker.make('core.PeriodTag', period=testperiod, prefix='tag1')
+        baker.make('core.PeriodTag', period=testperiod, prefix='tag2')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             viewkwargs={
@@ -306,13 +306,13 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.assertNotContains(mockresponse.response, 'tag2')
 
     def test_filter_search_on_student_user_shortname(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag1 = mommy.make('core.PeriodTag', period=testperiod, prefix='tag1')
-        testperiodtag2 = mommy.make('core.PeriodTag', period=testperiod, prefix='tag2')
+        testperiod = baker.make('core.Period')
+        testperiodtag1 = baker.make('core.PeriodTag', period=testperiod, prefix='tag1')
+        testperiodtag2 = baker.make('core.PeriodTag', period=testperiod, prefix='tag2')
         testperiodtag1.relatedstudents.add(
-            mommy.make('core.RelatedStudent', period=testperiod, user__shortname='relatedstudent1'))
+            baker.make('core.RelatedStudent', period=testperiod, user__shortname='relatedstudent1'))
         testperiodtag2.relatedstudents.add(
-            mommy.make('core.RelatedStudent', period=testperiod, user__shortname='relatedstudent2'))
+            baker.make('core.RelatedStudent', period=testperiod, user__shortname='relatedstudent2'))
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             viewkwargs={
@@ -326,13 +326,13 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.assertNotContains(mockresponse.response, 'relatedstudent2')
 
     def test_filter_search_on_student_user_shortname_matches_both(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag1 = mommy.make('core.PeriodTag', period=testperiod, prefix='tag1')
-        testperiodtag2 = mommy.make('core.PeriodTag', period=testperiod, prefix='tag2')
+        testperiod = baker.make('core.Period')
+        testperiodtag1 = baker.make('core.PeriodTag', period=testperiod, prefix='tag1')
+        testperiodtag2 = baker.make('core.PeriodTag', period=testperiod, prefix='tag2')
         testperiodtag1.relatedstudents.add(
-            mommy.make('core.RelatedStudent', period=testperiod, user__shortname='relatedstudent_a'))
+            baker.make('core.RelatedStudent', period=testperiod, user__shortname='relatedstudent_a'))
         testperiodtag2.relatedstudents.add(
-            mommy.make('core.RelatedStudent', period=testperiod, user__shortname='relatedstudent_b'))
+            baker.make('core.RelatedStudent', period=testperiod, user__shortname='relatedstudent_b'))
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             viewkwargs={
@@ -346,13 +346,13 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.assertContains(mockresponse.response, 'relatedstudent_b')
 
     def test_filter_search_on_student_user_shortname_no_result(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag1 = mommy.make('core.PeriodTag', period=testperiod, prefix='tag1')
-        testperiodtag2 = mommy.make('core.PeriodTag', period=testperiod, prefix='tag2')
+        testperiod = baker.make('core.Period')
+        testperiodtag1 = baker.make('core.PeriodTag', period=testperiod, prefix='tag1')
+        testperiodtag2 = baker.make('core.PeriodTag', period=testperiod, prefix='tag2')
         testperiodtag1.relatedstudents.add(
-            mommy.make('core.RelatedStudent', period=testperiod, user__shortname='relatedstudent_a'))
+            baker.make('core.RelatedStudent', period=testperiod, user__shortname='relatedstudent_a'))
         testperiodtag2.relatedstudents.add(
-            mommy.make('core.RelatedStudent', period=testperiod, user__shortname='relatedstudent_b'))
+            baker.make('core.RelatedStudent', period=testperiod, user__shortname='relatedstudent_b'))
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             viewkwargs={
@@ -366,13 +366,13 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.assertNotContains(mockresponse.response, 'relatedstudent_b')
 
     def test_filter_search_on_examiner_user_shortname(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag1 = mommy.make('core.PeriodTag', period=testperiod, prefix='tag1')
-        testperiodtag2 = mommy.make('core.PeriodTag', period=testperiod, prefix='tag2')
+        testperiod = baker.make('core.Period')
+        testperiodtag1 = baker.make('core.PeriodTag', period=testperiod, prefix='tag1')
+        testperiodtag2 = baker.make('core.PeriodTag', period=testperiod, prefix='tag2')
         testperiodtag1.relatedexaminers.add(
-            mommy.make('core.RelatedExaminer', period=testperiod, user__shortname='relatedexaminer1'))
+            baker.make('core.RelatedExaminer', period=testperiod, user__shortname='relatedexaminer1'))
         testperiodtag2.relatedexaminers.add(
-            mommy.make('core.RelatedExaminer', period=testperiod, user__shortname='relatedexaminer2'))
+            baker.make('core.RelatedExaminer', period=testperiod, user__shortname='relatedexaminer2'))
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             viewkwargs={
@@ -386,13 +386,13 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.assertNotContains(mockresponse.response, 'relatedexaminer2')
 
     def test_filter_search_on_examiner_user_shortname_matches_both(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag1 = mommy.make('core.PeriodTag', period=testperiod, prefix='tag1')
-        testperiodtag2 = mommy.make('core.PeriodTag', period=testperiod, prefix='tag2')
+        testperiod = baker.make('core.Period')
+        testperiodtag1 = baker.make('core.PeriodTag', period=testperiod, prefix='tag1')
+        testperiodtag2 = baker.make('core.PeriodTag', period=testperiod, prefix='tag2')
         testperiodtag1.relatedexaminers.add(
-            mommy.make('core.RelatedExaminer', period=testperiod, user__shortname='relatedexaminer_a'))
+            baker.make('core.RelatedExaminer', period=testperiod, user__shortname='relatedexaminer_a'))
         testperiodtag2.relatedexaminers.add(
-            mommy.make('core.RelatedExaminer', period=testperiod, user__shortname='relatedexaminer_b'))
+            baker.make('core.RelatedExaminer', period=testperiod, user__shortname='relatedexaminer_b'))
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             viewkwargs={
@@ -406,13 +406,13 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.assertContains(mockresponse.response, 'relatedexaminer_b')
 
     def test_filter_search_on_examiner_user_shortname_no_result(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag1 = mommy.make('core.PeriodTag', period=testperiod, prefix='tag1')
-        testperiodtag2 = mommy.make('core.PeriodTag', period=testperiod, prefix='tag2')
+        testperiod = baker.make('core.Period')
+        testperiodtag1 = baker.make('core.PeriodTag', period=testperiod, prefix='tag1')
+        testperiodtag2 = baker.make('core.PeriodTag', period=testperiod, prefix='tag2')
         testperiodtag1.relatedexaminers.add(
-            mommy.make('core.RelatedExaminer', period=testperiod, user__shortname='relatedexaminer_a'))
+            baker.make('core.RelatedExaminer', period=testperiod, user__shortname='relatedexaminer_a'))
         testperiodtag2.relatedexaminers.add(
-            mommy.make('core.RelatedExaminer', period=testperiod, user__shortname='relatedexaminer_b'))
+            baker.make('core.RelatedExaminer', period=testperiod, user__shortname='relatedexaminer_b'))
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             viewkwargs={
@@ -426,11 +426,11 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.assertNotContains(mockresponse.response, 'relatedexaminer_b')
 
     def test_filter_radio_show_all_tags(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.PeriodTag', period=testperiod, tag='tag1')
-        mommy.make('core.PeriodTag', period=testperiod, tag='tag2')
-        mommy.make('core.PeriodTag', period=testperiod, prefix='a', tag='tag3')
-        mommy.make('core.PeriodTag', period=testperiod, prefix='b', tag='tag4')
+        testperiod = baker.make('core.Period')
+        baker.make('core.PeriodTag', period=testperiod, tag='tag1')
+        baker.make('core.PeriodTag', period=testperiod, tag='tag2')
+        baker.make('core.PeriodTag', period=testperiod, prefix='a', tag='tag3')
+        baker.make('core.PeriodTag', period=testperiod, prefix='b', tag='tag4')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
         )
@@ -441,10 +441,10 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.assertContains(mockresponse.response, 'tag4 (imported)')
 
     def test_filter_radio_show_hidden_tags_only(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.PeriodTag', period=testperiod, tag='tag1')
-        mommy.make('core.PeriodTag', period=testperiod, tag='tag2')
-        mommy.make('core.PeriodTag', period=testperiod, prefix='a', tag='tag3', is_hidden=True)
+        testperiod = baker.make('core.Period')
+        baker.make('core.PeriodTag', period=testperiod, tag='tag1')
+        baker.make('core.PeriodTag', period=testperiod, tag='tag2')
+        baker.make('core.PeriodTag', period=testperiod, prefix='a', tag='tag3', is_hidden=True)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             viewkwargs={
@@ -457,11 +457,11 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.assertContains(mockresponse.response, 'tag3 (imported)')
 
     def test_filter_radio_show_visible_tags_only(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.PeriodTag', period=testperiod, tag='tag1')
-        mommy.make('core.PeriodTag', period=testperiod, tag='tag2')
-        mommy.make('core.PeriodTag', period=testperiod, prefix='a', tag='tag3', is_hidden=True)
-        mommy.make('core.PeriodTag', period=testperiod, prefix='b', tag='tag4', is_hidden=False)
+        testperiod = baker.make('core.Period')
+        baker.make('core.PeriodTag', period=testperiod, tag='tag1')
+        baker.make('core.PeriodTag', period=testperiod, tag='tag2')
+        baker.make('core.PeriodTag', period=testperiod, prefix='a', tag='tag3', is_hidden=True)
+        baker.make('core.PeriodTag', period=testperiod, prefix='b', tag='tag4', is_hidden=False)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             viewkwargs={
@@ -476,10 +476,10 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.assertContains(mockresponse.response, 'tag4 (imported)')
 
     def test_filter_radio_show_custom_tags_only(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.PeriodTag', period=testperiod, tag='tag1')
-        mommy.make('core.PeriodTag', period=testperiod, tag='tag2')
-        mommy.make('core.PeriodTag', period=testperiod, prefix='a', tag='tag3', is_hidden=True)
+        testperiod = baker.make('core.Period')
+        baker.make('core.PeriodTag', period=testperiod, tag='tag1')
+        baker.make('core.PeriodTag', period=testperiod, tag='tag2')
+        baker.make('core.PeriodTag', period=testperiod, prefix='a', tag='tag3', is_hidden=True)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             viewkwargs={
@@ -493,10 +493,10 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.assertNotContains(mockresponse.response, 'tag3 (imported)')
 
     def test_filter_radio_show_imported_tags_only(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.PeriodTag', period=testperiod, tag='tag1')
-        mommy.make('core.PeriodTag', period=testperiod, tag='tag2')
-        mommy.make('core.PeriodTag', period=testperiod, prefix='a', tag='tag3', is_hidden=True)
+        testperiod = baker.make('core.Period')
+        baker.make('core.PeriodTag', period=testperiod, tag='tag1')
+        baker.make('core.PeriodTag', period=testperiod, tag='tag2')
+        baker.make('core.PeriodTag', period=testperiod, prefix='a', tag='tag3', is_hidden=True)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             viewkwargs={
@@ -509,17 +509,17 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.assertContains(mockresponse.response, 'tag3 (imported)')
 
     def test_query_count(self):
-        testperiod = mommy.make('core.Period')
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testperiodtag1 = mommy.make('core.PeriodTag', period=testperiod)
-        testperiodtag2 = mommy.make('core.PeriodTag', period=testperiod)
-        testperiodtag3 = mommy.make('core.PeriodTag', period=testperiod)
-        testperiodtag1.relatedstudents.add(mommy.make('core.RelatedStudent', period=testperiod))
-        testperiodtag2.relatedstudents.add(mommy.make('core.RelatedStudent', period=testperiod))
-        testperiodtag3.relatedstudents.add(mommy.make('core.RelatedStudent', period=testperiod))
-        testperiodtag1.relatedexaminers.add(mommy.make('core.RelatedExaminer', period=testperiod))
-        testperiodtag2.relatedexaminers.add(mommy.make('core.RelatedExaminer', period=testperiod))
-        testperiodtag3.relatedexaminers.add(mommy.make('core.RelatedExaminer', period=testperiod))
+        testperiod = baker.make('core.Period')
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiodtag1 = baker.make('core.PeriodTag', period=testperiod)
+        testperiodtag2 = baker.make('core.PeriodTag', period=testperiod)
+        testperiodtag3 = baker.make('core.PeriodTag', period=testperiod)
+        testperiodtag1.relatedstudents.add(baker.make('core.RelatedStudent', period=testperiod))
+        testperiodtag2.relatedstudents.add(baker.make('core.RelatedStudent', period=testperiod))
+        testperiodtag3.relatedstudents.add(baker.make('core.RelatedStudent', period=testperiod))
+        testperiodtag1.relatedexaminers.add(baker.make('core.RelatedExaminer', period=testperiod))
+        testperiodtag2.relatedexaminers.add(baker.make('core.RelatedExaminer', period=testperiod))
+        testperiodtag3.relatedexaminers.add(baker.make('core.RelatedExaminer', period=testperiod))
         with self.assertNumQueries(4):
             self.mock_http200_getrequest_htmls(
                 cradmin_role=testperiod,
@@ -534,7 +534,7 @@ class TestHideShowPeriodTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_period_missing_tag_id_parameter_raises_404(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         with self.assertRaisesMessage(Http404, 'Missing parameters.'):
             self.mock_getrequest(
                 cradmin_role=testperiod,
@@ -542,7 +542,7 @@ class TestHideShowPeriodTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                     'data': {}})
 
     def test_period_tag_does_not_exist(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         with self.assertRaisesMessage(Http404, 'Tag does not exist.'):
             self.mock_getrequest(
                 cradmin_role=testperiod,
@@ -552,8 +552,8 @@ class TestHideShowPeriodTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                     }})
 
     def test_period_tag_is_hidden_toggled_true(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod)
+        testperiod = baker.make('core.Period')
+        testperiodtag = baker.make('core.PeriodTag', period=testperiod)
         self.mock_getrequest(
             cradmin_role=testperiod,
             requestkwargs={
@@ -563,8 +563,8 @@ class TestHideShowPeriodTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertTrue(PeriodTag.objects.get(id=testperiodtag.id).is_hidden)
 
     def test_period_tag_is_hidden_toggled_false(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', is_hidden=True)
+        testperiod = baker.make('core.Period')
+        testperiodtag = baker.make('core.PeriodTag', is_hidden=True)
         self.mock_getrequest(
             cradmin_role=testperiod,
             requestkwargs={
@@ -581,7 +581,7 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_empty_tag_raises_validation_error(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=testperiod,
             requestkwargs={
@@ -597,7 +597,7 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(PeriodTag.objects.count(), 0)
 
     def test_only_spaces_raises_validation_error(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=testperiod,
             requestkwargs={
@@ -613,7 +613,7 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(PeriodTag.objects.count(), 0)
 
     def test_empty_tags_ignored(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
             requestkwargs={
@@ -628,7 +628,7 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertIn('tag4', period_tags)
 
     def test_add_correct_format_with_whitespace(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
             requestkwargs={
@@ -643,7 +643,7 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertIn('tag2', period_tags)
 
     def test_add_correct_format_with_newline_and_whitespace(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         messagesmock = mock.MagicMock()
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
@@ -662,7 +662,7 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertIn('tag4', tagslist)
 
     def test_add_single_tag(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
             requestkwargs={
@@ -674,8 +674,8 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(1, PeriodTag.objects.count())
 
     def test_add_single_tag_another_tag_exists(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.PeriodTag', period=testperiod, tag='tag1')
+        testperiod = baker.make('core.Period')
+        baker.make('core.PeriodTag', period=testperiod, tag='tag1')
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
             requestkwargs={
@@ -687,7 +687,7 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(2, PeriodTag.objects.count())
 
     def test_add_single_tag_message(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         messagesmock = mock.MagicMock()
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
@@ -703,7 +703,7 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             messages.SUCCESS, '1 tag(s) added', '')
 
     def test_add_multiple_tags_message(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         messagesmock = mock.MagicMock()
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
@@ -719,10 +719,10 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             messages.SUCCESS, '2 tag(s) added', '')
 
     def test_add_multiple_tags_other_tags_exist(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.PeriodTag', period=testperiod, tag='tag1')
-        mommy.make('core.PeriodTag', period=testperiod, tag='tag2')
-        mommy.make('core.PeriodTag', period=testperiod, tag='tag3')
+        testperiod = baker.make('core.Period')
+        baker.make('core.PeriodTag', period=testperiod, tag='tag1')
+        baker.make('core.PeriodTag', period=testperiod, tag='tag2')
+        baker.make('core.PeriodTag', period=testperiod, tag='tag3')
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
             requestkwargs={
@@ -734,8 +734,8 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(6, PeriodTag.objects.count())
 
     def test_add_multiple_tags_one_tag_exists_message(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.PeriodTag', period=testperiod, tag='tag2')
+        testperiod = baker.make('core.Period')
+        baker.make('core.PeriodTag', period=testperiod, tag='tag2')
         messagesmock = mock.MagicMock()
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
@@ -751,7 +751,7 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             messages.SUCCESS, '1 tag(s) added, 1 tag(s) already existed and were ignored.', '')
 
     def test_add_multiple_tags(self):
-        testperiod = mommy.make('core.Period')
+        testperiod = baker.make('core.Period')
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
             requestkwargs={
@@ -763,8 +763,8 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(3, PeriodTag.objects.count())
 
     def test_add_single_tag_already_exists(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.PeriodTag', period=testperiod, tag='tag1')
+        testperiod = baker.make('core.Period')
+        baker.make('core.PeriodTag', period=testperiod, tag='tag1')
         messagesmock = mock.MagicMock()
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
@@ -780,10 +780,10 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             messages.ERROR, 'The tag(s) you wanted to add already exists.', '')
 
     def test_add_all_tags_already_exists(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.PeriodTag', period=testperiod, tag='tag1')
-        mommy.make('core.PeriodTag', period=testperiod, tag='tag2')
-        mommy.make('core.PeriodTag', period=testperiod, tag='tag3')
+        testperiod = baker.make('core.Period')
+        baker.make('core.PeriodTag', period=testperiod, tag='tag1')
+        baker.make('core.PeriodTag', period=testperiod, tag='tag2')
+        baker.make('core.PeriodTag', period=testperiod, tag='tag3')
         messagesmock = mock.MagicMock()
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
@@ -799,12 +799,12 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             messages.ERROR, 'The tag(s) you wanted to add already exists.', '')
 
     def test_get_query_count(self):
-        testperiod = mommy.make('core.Period')
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.PeriodTag', period=testperiod)
-        mommy.make('core.PeriodTag', period=testperiod)
-        mommy.make('core.PeriodTag', period=testperiod)
-        mommy.make('core.PeriodTag', period=testperiod)
+        testperiod = baker.make('core.Period')
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.PeriodTag', period=testperiod)
+        baker.make('core.PeriodTag', period=testperiod)
+        baker.make('core.PeriodTag', period=testperiod)
+        baker.make('core.PeriodTag', period=testperiod)
         with self.assertNumQueries(1):
             self.mock_http200_getrequest_htmls(
                 cradmin_role=testperiod,
@@ -817,8 +817,8 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             )
 
     def test_post_query_count(self):
-        testperiod = mommy.make('core.Period')
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make('core.Period')
+        testuser = baker.make(settings.AUTH_USER_MODEL)
         with self.assertNumQueries(5):
             self.mock_http302_postrequest(
                 cradmin_role=testperiod,
@@ -836,8 +836,8 @@ class TestEditTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = manage_tags.EditTagView
 
     def test_title(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod)
+        testperiod = baker.make('core.Period')
+        testperiodtag = baker.make('core.PeriodTag', period=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             viewkwargs={
@@ -848,8 +848,8 @@ class TestEditTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                           'Edit {}'.format(testperiodtag.displayname))
 
     def test_tag_with_prefix_raises_404(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, prefix='a', tag='ab')
+        testperiod = baker.make('core.Period')
+        testperiodtag = baker.make('core.PeriodTag', period=testperiod, prefix='a', tag='ab')
         with self.assertRaises(Http404):
             self.mock_http200_getrequest_htmls(
                 cradmin_role=testperiod,
@@ -858,8 +858,8 @@ class TestEditTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 })
 
     def test_rename_tag(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='tag1')
+        testperiod = baker.make('core.Period')
+        testperiodtag = baker.make('core.PeriodTag', period=testperiod, tag='tag1')
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
             viewkwargs={
@@ -877,9 +877,9 @@ class TestEditTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertIsNotNone(PeriodTag.objects.get(tag='tag2'))
 
     def test_rename_tag_to_existing_tag(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='tag1')
-        mommy.make('core.PeriodTag', period=testperiod, tag='tag2')
+        testperiod = baker.make('core.Period')
+        testperiodtag = baker.make('core.PeriodTag', period=testperiod, tag='tag1')
+        baker.make('core.PeriodTag', period=testperiod, tag='tag2')
         messagesmock = mock.MagicMock()
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=testperiod,
@@ -899,8 +899,8 @@ class TestEditTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertIsNotNone(PeriodTag.objects.get(tag='tag2'))
 
     def test_error_tag_contains_comma(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='tag1')
+        testperiod = baker.make('core.Period')
+        testperiodtag = baker.make('core.PeriodTag', period=testperiod, tag='tag1')
         messagesmock = mock.MagicMock()
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=testperiod,
@@ -919,8 +919,8 @@ class TestEditTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(PeriodTag.objects.all()[0].tag, 'tag1')
 
     def test_error_empty_tag(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='tag1')
+        testperiod = baker.make('core.Period')
+        testperiodtag = baker.make('core.PeriodTag', period=testperiod, tag='tag1')
         messagesmock = mock.MagicMock()
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=testperiod,
@@ -943,8 +943,8 @@ class TestDeleteTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = manage_tags.DeleteTagView
 
     def test_title(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod)
+        testperiod = baker.make('core.Period')
+        testperiodtag = baker.make('core.PeriodTag', period=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             viewkwargs={
@@ -955,8 +955,8 @@ class TestDeleteTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                           'Delete {}'.format(testperiodtag.displayname))
 
     def test_tag_with_prefix_raises_404(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, prefix='a', tag='ab')
+        testperiod = baker.make('core.Period')
+        testperiodtag = baker.make('core.PeriodTag', period=testperiod, prefix='a', tag='ab')
         with self.assertRaises(Http404):
             self.mock_http200_getrequest_htmls(
                 cradmin_role=testperiod,
@@ -965,9 +965,9 @@ class TestDeleteTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 })
 
     def test_delete_tag(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod)
-        mommy.make('core.PeriodTag', period=testperiod)
+        testperiod = baker.make('core.Period')
+        testperiodtag = baker.make('core.PeriodTag', period=testperiod)
+        baker.make('core.PeriodTag', period=testperiod)
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
             viewkwargs={
@@ -1002,8 +1002,8 @@ class TestMultiSelectAddRelatedUserView(test.TestCase, cradmin_testhelpers.TestC
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_get_title(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='a')
+        testperiod = baker.make('core.Period')
+        testperiodtag = baker.make('core.PeriodTag', period=testperiod, tag='a')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             viewkwargs={
@@ -1014,10 +1014,10 @@ class TestMultiSelectAddRelatedUserView(test.TestCase, cradmin_testhelpers.TestC
                           mockresponse.selector.one('title').alltext_normalized)
 
     def test_get_relatedusers(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='a')
-        mommy.make('core.RelatedExaminer', period=testperiod, user__shortname='shortname_user1')
-        mommy.make('core.RelatedExaminer', period=testperiod, user__shortname='shortname_user2')
+        testperiod = baker.make('core.Period')
+        testperiodtag = baker.make('core.PeriodTag', period=testperiod, tag='a')
+        baker.make('core.RelatedExaminer', period=testperiod, user__shortname='shortname_user1')
+        baker.make('core.RelatedExaminer', period=testperiod, user__shortname='shortname_user2')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             viewkwargs={
@@ -1029,12 +1029,12 @@ class TestMultiSelectAddRelatedUserView(test.TestCase, cradmin_testhelpers.TestC
         self.assertContains(mockresponse.response, 'shortname_user2')
 
     def test_only_users_on_period_are_listed(self):
-        testperiod1 = mommy.make('core.Period')
-        testperiod2 = mommy.make('core.Period')
-        period1_tag = mommy.make('core.PeriodTag', period=testperiod1, tag='a')
-        period2_tag = mommy.make('core.PeriodTag', period=testperiod2, tag='a')
-        mommy.make('core.RelatedExaminer', period=testperiod1, user__shortname='shortname_user_testperiod1')
-        mommy.make('core.RelatedExaminer', period=testperiod2, user__shortname='shortname_user_testperiod2')
+        testperiod1 = baker.make('core.Period')
+        testperiod2 = baker.make('core.Period')
+        period1_tag = baker.make('core.PeriodTag', period=testperiod1, tag='a')
+        period2_tag = baker.make('core.PeriodTag', period=testperiod2, tag='a')
+        baker.make('core.RelatedExaminer', period=testperiod1, user__shortname='shortname_user_testperiod1')
+        baker.make('core.RelatedExaminer', period=testperiod2, user__shortname='shortname_user_testperiod2')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod1,
             viewkwargs={
@@ -1046,12 +1046,12 @@ class TestMultiSelectAddRelatedUserView(test.TestCase, cradmin_testhelpers.TestC
         self.assertNotContains(mockresponse.response, 'shortname_user_testperiod2')
 
     def test_get_only_users_not_registered_on_periodtag_are_selectable(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='a')
-        mommy.make('core.RelatedExaminer', period=testperiod, user__shortname='shortname_user1')
-        mommy.make('core.RelatedExaminer', period=testperiod, user__shortname='shortname_user2')
+        testperiod = baker.make('core.Period')
+        testperiodtag = baker.make('core.PeriodTag', period=testperiod, tag='a')
+        baker.make('core.RelatedExaminer', period=testperiod, user__shortname='shortname_user1')
+        baker.make('core.RelatedExaminer', period=testperiod, user__shortname='shortname_user2')
         testperiodtag.relatedexaminers.add(
-            mommy.make('core.RelatedExaminer', period=testperiod, user__shortname='shortname_user3')
+            baker.make('core.RelatedExaminer', period=testperiod, user__shortname='shortname_user3')
         )
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
@@ -1080,8 +1080,8 @@ class TestMultiSelectRemoveRelatedUserView(test.TestCase, cradmin_testhelpers.Te
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_get_title(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='a')
+        testperiod = baker.make('core.Period')
+        testperiodtag = baker.make('core.PeriodTag', period=testperiod, tag='a')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             viewkwargs={
@@ -1092,12 +1092,12 @@ class TestMultiSelectRemoveRelatedUserView(test.TestCase, cradmin_testhelpers.Te
                           mockresponse.selector.one('title').alltext_normalized)
 
     def test_get_relatedusers(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='a')
+        testperiod = baker.make('core.Period')
+        testperiodtag = baker.make('core.PeriodTag', period=testperiod, tag='a')
         testperiodtag.relatedexaminers.add(
-            mommy.make('core.RelatedExaminer', period=testperiod, user__shortname='shortname_user1'))
+            baker.make('core.RelatedExaminer', period=testperiod, user__shortname='shortname_user1'))
         testperiodtag.relatedexaminers.add(
-            mommy.make('core.RelatedExaminer', period=testperiod, user__shortname='shortname_user2'))
+            baker.make('core.RelatedExaminer', period=testperiod, user__shortname='shortname_user2'))
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             viewkwargs={
@@ -1109,14 +1109,14 @@ class TestMultiSelectRemoveRelatedUserView(test.TestCase, cradmin_testhelpers.Te
         self.assertContains(mockresponse.response, 'shortname_user2')
 
     def test_only_users_on_period_are_listed(self):
-        testperiod1 = mommy.make('core.Period')
-        testperiod2 = mommy.make('core.Period')
-        testperiodtag1 = mommy.make('core.PeriodTag', period=testperiod1, tag='a')
-        testperiodtag2 = mommy.make('core.PeriodTag', period=testperiod2, tag='a')
-        testrelatedexaminer1 = mommy.make('core.RelatedExaminer',
+        testperiod1 = baker.make('core.Period')
+        testperiod2 = baker.make('core.Period')
+        testperiodtag1 = baker.make('core.PeriodTag', period=testperiod1, tag='a')
+        testperiodtag2 = baker.make('core.PeriodTag', period=testperiod2, tag='a')
+        testrelatedexaminer1 = baker.make('core.RelatedExaminer',
                                           period=testperiod1,
                                           user__shortname='shortname_user_testperiod1')
-        testrelatedexaminer2 = mommy.make('core.RelatedExaminer',
+        testrelatedexaminer2 = baker.make('core.RelatedExaminer',
                                           period=testperiod2,
                                           user__shortname='shortname_user_testperiod2')
         testperiodtag1.relatedexaminers.add(testrelatedexaminer1)
@@ -1132,13 +1132,13 @@ class TestMultiSelectRemoveRelatedUserView(test.TestCase, cradmin_testhelpers.Te
         self.assertNotContains(mockresponse.response, 'shortname_user_testperiod2')
 
     def test_get_only_users_registered_on_periodtag_are_selectable(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='a')
+        testperiod = baker.make('core.Period')
+        testperiodtag = baker.make('core.PeriodTag', period=testperiod, tag='a')
         testperiodtag.relatedexaminers.add(
-            mommy.make('core.RelatedExaminer', period=testperiod, user__shortname='shortname_user1'))
+            baker.make('core.RelatedExaminer', period=testperiod, user__shortname='shortname_user1'))
         testperiodtag.relatedexaminers.add(
-            mommy.make('core.RelatedExaminer', period=testperiod, user__shortname='shortname_user2'))
-        mommy.make('core.RelatedExaminer', period=testperiod, user__shortname='shortname_user3')
+            baker.make('core.RelatedExaminer', period=testperiod, user__shortname='shortname_user2'))
+        baker.make('core.RelatedExaminer', period=testperiod, user__shortname='shortname_user3')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             viewkwargs={

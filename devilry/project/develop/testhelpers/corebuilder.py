@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.utils import timezone
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.apps.core.deliverystore import MemoryDeliveryStore
 from devilry.apps.core.models import Assignment
@@ -67,7 +67,7 @@ class UserBuilder2(ReloadableDbBuilderInterface):
     """
 
     def __init__(self, **kwargs):
-        self.user = mommy.make_recipe('devilry.devilry_account.user', **kwargs)
+        self.user = baker.make_recipe('devilry.devilry_account.user', **kwargs)
         self.user.save()
 
     def update(self, **attributes):
@@ -314,7 +314,7 @@ class GroupCommentBuilder(CoreBuilderBase):
 
     def __init__(self, **kwargs):
         kwargs['comment_type'] = 'groupcomment'
-        self.groupcomment = mommy.make('devilry_group.GroupComment', **kwargs)
+        self.groupcomment = baker.make('devilry_group.GroupComment', **kwargs)
 
     def add_file(self, **kwargs):
         kwargs['comment'] = self.groupcomment
@@ -351,7 +351,7 @@ class FeedbackSetBuilder(CoreBuilderBase):
                               deadline_datetime=arrow.get(timezone.now()).replace(weeks=-4).datetime)
 
     def __init__(self, **kwargs):
-        self.feedback_set = mommy.make('devilry_group.FeedbackSet', **kwargs)
+        self.feedback_set = baker.make('devilry_group.FeedbackSet', **kwargs)
 
     def add_groupcomment(self, files=[], **kwargs):
         kwargs['feedback_set'] = self.feedback_set

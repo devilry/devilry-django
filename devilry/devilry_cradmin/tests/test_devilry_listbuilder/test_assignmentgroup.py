@@ -3,17 +3,17 @@ from datetime import timedelta, datetime
 import htmls
 from django import test
 from django.utils import timezone
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.apps.core.models import Assignment, AssignmentGroup
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
-from devilry.devilry_group import devilry_group_mommy_factories
+from devilry.devilry_group import devilry_group_baker_factories
 
 
 class TestFullyAnonymousSubjectAdminItemValue(test.TestCase):
     def test_non_anonymous_not_allowed(self):
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = baker.make('core.AssignmentGroup')
         with self.assertRaisesMessage(ValueError,
                                       'Can only use FullyAnonymousSubjectAdminItemValue for fully '
                                       'anonymous assignments.'):
@@ -22,7 +22,7 @@ class TestFullyAnonymousSubjectAdminItemValue(test.TestCase):
                 assignment=testgroup.assignment)
 
     def test_semi_anonymous_is_not_allowed(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
         with self.assertRaisesMessage(ValueError,
                                       'Can only use FullyAnonymousSubjectAdminItemValue for fully '
@@ -32,9 +32,9 @@ class TestFullyAnonymousSubjectAdminItemValue(test.TestCase):
                 assignment=testgroup.assignment)
 
     def test_name_fully_anonymous_is_not_anonymized(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
@@ -59,11 +59,11 @@ class TestStudentItemValue(test.TestCase):
             **kwargs).render())
 
     def test_title_default(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__parentnode__parentnode__short_name='testsubject',
                                parentnode__parentnode__short_name='testperiod',
                                parentnode__long_name='Test Assignment')
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup)
         selector = self.__render_studentitemvalue(group=testgroup)
         self.assertEqual(
@@ -71,9 +71,9 @@ class TestStudentItemValue(test.TestCase):
             selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_title_include_periodpath_false(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__long_name='Test Assignment')
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup)
         selector = self.__render_studentitemvalue(group=testgroup, include_periodpath=False)
         self.assertEqual(
@@ -81,8 +81,8 @@ class TestStudentItemValue(test.TestCase):
             selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_examiners_not_included(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Examiner',
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup,
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
@@ -91,7 +91,7 @@ class TestStudentItemValue(test.TestCase):
             selector.exists('.devilry-cradmin-groupitemvalue-examiners-names'))
 
     def test_grade_students_can_see_points_false(self):
-        testgroup = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        testgroup = devilry_group_baker_factories.feedbackset_first_attempt_published(
             group__parentnode__students_can_see_points=False,
             grading_points=1).group
         selector = self.__render_studentitemvalue(group=testgroup)
@@ -100,7 +100,7 @@ class TestStudentItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
 
     def test_grade_students_can_see_points_true(self):
-        testgroup = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        testgroup = devilry_group_baker_factories.feedbackset_first_attempt_published(
             group__parentnode__students_can_see_points=True,
             grading_points=1).group
         selector = self.__render_studentitemvalue(group=testgroup)
@@ -109,9 +109,9 @@ class TestStudentItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
 
     def test_deadline_first_attempt(self):
-        testgroup = mommy.make(
+        testgroup = baker.make(
             'core.AssignmentGroup',
-            parentnode=mommy.make_recipe(
+            parentnode=baker.make_recipe(
                 'devilry.apps.core.assignment_activeperiod_start',
                 first_deadline=datetime(2000, 1, 15, 12, 0)))
         with self.settings(DATETIME_FORMAT='Y-m-d H:i', USE_L10N=False):
@@ -122,12 +122,12 @@ class TestStudentItemValue(test.TestCase):
                     '.devilry-cradmin-groupitemvalue-deadline__datetime').alltext_normalized)
 
     def test_deadline_new_attempt(self):
-        testgroup = mommy.make(
+        testgroup = baker.make(
             'core.AssignmentGroup',
-            parentnode=mommy.make_recipe(
+            parentnode=baker.make_recipe(
                 'devilry.apps.core.assignment_activeperiod_start',
                 first_deadline=datetime(2000, 1, 15, 12, 0)))
-        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
+        devilry_group_baker_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
             deadline_datetime=datetime(2200, 1, 2, 12, 30))
         with self.settings(DATETIME_FORMAT='Y-m-d H:i', USE_L10N=False):
@@ -138,9 +138,9 @@ class TestStudentItemValue(test.TestCase):
                     '.devilry-cradmin-groupitemvalue-deadline__datetime').alltext_normalized)
 
     def test_attempt_number_first_attempt(self):
-        testgroup = mommy.make(
+        testgroup = baker.make(
             'core.AssignmentGroup',
-            parentnode=mommy.make_recipe(
+            parentnode=baker.make_recipe(
                 'devilry.apps.core.assignment_activeperiod_start'))
         selector = self.__render_studentitemvalue(group=testgroup)
         self.assertFalse(
@@ -148,11 +148,11 @@ class TestStudentItemValue(test.TestCase):
                     '.devilry-cradmin-groupitemvalue-deadline__attemptnumber'))
 
     def test_attempt_number_new_attempt1(self):
-        testgroup = mommy.make(
+        testgroup = baker.make(
             'core.AssignmentGroup',
-            parentnode=mommy.make_recipe(
+            parentnode=baker.make_recipe(
                 'devilry.apps.core.assignment_activeperiod_start'))
-        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
+        devilry_group_baker_factories.feedbackset_new_attempt_unpublished(
             group=testgroup)
         selector = self.__render_studentitemvalue(group=testgroup)
         self.assertEqual(
@@ -161,13 +161,13 @@ class TestStudentItemValue(test.TestCase):
                     '.devilry-cradmin-groupitemvalue-deadline__attemptnumber').alltext_normalized)
 
     def test_attempt_number_new_attempt2(self):
-        testgroup = mommy.make(
+        testgroup = baker.make(
             'core.AssignmentGroup',
-            parentnode=mommy.make_recipe(
+            parentnode=baker.make_recipe(
                 'devilry.apps.core.assignment_activeperiod_start'))
-        devilry_group_mommy_factories.feedbackset_new_attempt_published(
+        devilry_group_baker_factories.feedbackset_new_attempt_published(
             group=testgroup)
-        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
+        devilry_group_baker_factories.feedbackset_new_attempt_unpublished(
             group=testgroup)
         selector = self.__render_studentitemvalue(group=testgroup)
         self.assertEqual(
@@ -181,8 +181,8 @@ class TestExaminerItemValue(test.TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_name(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Candidate',
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
@@ -193,9 +193,9 @@ class TestExaminerItemValue(test.TestCase):
             selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_name_semi_anonymous_is_anonymized(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__automatic_anonymous_id='MyAnonymousID')
         selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerItemValue(
@@ -205,9 +205,9 @@ class TestExaminerItemValue(test.TestCase):
             selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_name_fully_anonymous_is_anonymized(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__automatic_anonymous_id='MyAnonymousID')
         selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerItemValue(
@@ -217,8 +217,8 @@ class TestExaminerItemValue(test.TestCase):
             selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_examiners_include_examiners_false(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Examiner',
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup,
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
@@ -228,8 +228,8 @@ class TestExaminerItemValue(test.TestCase):
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-examiners'))
 
     def test_examiners_include_examiners_true(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Examiner',
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup,
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
@@ -240,9 +240,9 @@ class TestExaminerItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
 
     def test_examiners_semi_anonymous_include_examiners_true(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        mommy.make('core.Examiner',
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup,
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
@@ -253,9 +253,9 @@ class TestExaminerItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
 
     def test_examiners_fully_anonymous_include_examiners_true(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        mommy.make('core.Examiner',
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup,
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
@@ -266,7 +266,7 @@ class TestExaminerItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
 
     def test_has_unpublished_feedbackdraft_draft_false(self):
-        testgroup = devilry_group_mommy_factories\
+        testgroup = devilry_group_baker_factories\
             .feedbackset_first_attempt_published(grading_points=1)\
             .group
         selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerItemValue(
@@ -274,7 +274,7 @@ class TestExaminerItemValue(test.TestCase):
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-unpublished-feedbackdraft'))
 
     def test_has_unpublished_feedbackdraft_draft_true(self):
-        testgroup = devilry_group_mommy_factories\
+        testgroup = devilry_group_baker_factories\
             .feedbackset_first_attempt_unpublished(grading_points=1)\
             .group
         selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerItemValue(
@@ -284,7 +284,7 @@ class TestExaminerItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-unpublished-feedbackdraft').alltext_normalized)
 
     def test_grade_students_can_see_points_false(self):
-        testgroup = devilry_group_mommy_factories\
+        testgroup = devilry_group_baker_factories\
             .feedbackset_first_attempt_published(group__parentnode__students_can_see_points=False,
                                                  grading_points=1)\
             .group
@@ -295,7 +295,7 @@ class TestExaminerItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
 
     def test_grade_students_can_see_points_true(self):
-        testgroup = devilry_group_mommy_factories\
+        testgroup = devilry_group_baker_factories\
             .feedbackset_first_attempt_published(group__parentnode__students_can_see_points=True,
                                                  grading_points=1)\
             .group
@@ -311,8 +311,8 @@ class TestPeriodAdminItemValue(test.TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_name(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Candidate',
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
@@ -323,14 +323,14 @@ class TestPeriodAdminItemValue(test.TestCase):
             selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_anonymous_not_allowed(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
         with self.assertRaisesRegex(ValueError, '^.*for anonymous assignments.*$'):
             devilry_listbuilder.assignmentgroup.PeriodAdminItemValue(value=testgroup, assignment=testgroup.assignment)
 
     def test_examiners(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Examiner',
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup,
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
@@ -341,7 +341,7 @@ class TestPeriodAdminItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
 
     def test_grade_students_can_see_points_false(self):
-        testgroup = devilry_group_mommy_factories\
+        testgroup = devilry_group_baker_factories\
             .feedbackset_first_attempt_published(group__parentnode__students_can_see_points=False,
                                                  grading_points=1)\
             .group
@@ -352,7 +352,7 @@ class TestPeriodAdminItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
 
     def test_grade_students_can_see_points_true(self):
-        testgroup = devilry_group_mommy_factories\
+        testgroup = devilry_group_baker_factories\
             .feedbackset_first_attempt_published(group__parentnode__students_can_see_points=True,
                                                  grading_points=1)\
             .group
@@ -368,8 +368,8 @@ class TestSubjectAdminItemValue(test.TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_name(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Candidate',
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
@@ -380,9 +380,9 @@ class TestSubjectAdminItemValue(test.TestCase):
             selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_name_semi_anonymous_is_not_anonymized(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
@@ -393,14 +393,14 @@ class TestSubjectAdminItemValue(test.TestCase):
             selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_fully_anonymous_is_not_allowed(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
         with self.assertRaisesRegex(ValueError, '^.*for fully anonymous assignments.*$'):
             devilry_listbuilder.assignmentgroup.SubjectAdminItemValue(value=testgroup, assignment=testgroup.assignment)
 
     def test_examiners(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Examiner',
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup,
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
@@ -411,9 +411,9 @@ class TestSubjectAdminItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
 
     def test_examiners_semi_anonymous(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        mommy.make('core.Examiner',
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup,
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
@@ -424,7 +424,7 @@ class TestSubjectAdminItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
 
     def test_grade_students_can_see_points_false(self):
-        testgroup = devilry_group_mommy_factories\
+        testgroup = devilry_group_baker_factories\
             .feedbackset_first_attempt_published(group__parentnode__students_can_see_points=False,
                                                  grading_points=1)\
             .group
@@ -435,7 +435,7 @@ class TestSubjectAdminItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
 
     def test_grade_students_can_see_points_true(self):
-        testgroup = devilry_group_mommy_factories\
+        testgroup = devilry_group_baker_factories\
             .feedbackset_first_attempt_published(group__parentnode__students_can_see_points=True,
                                                  grading_points=1)\
             .group
@@ -451,8 +451,8 @@ class TestDepartmentAdminItemValue(test.TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_name(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Candidate',
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
@@ -463,9 +463,9 @@ class TestDepartmentAdminItemValue(test.TestCase):
             selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_name_semi_anonymous_is_not_anonymized(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
@@ -476,9 +476,9 @@ class TestDepartmentAdminItemValue(test.TestCase):
             selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_name_fully_anonymous_is_not_anonymized(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
@@ -489,8 +489,8 @@ class TestDepartmentAdminItemValue(test.TestCase):
             selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_examiners(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Examiner',
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup,
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
@@ -501,9 +501,9 @@ class TestDepartmentAdminItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
 
     def test_examiners_semi_anonymous(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        mommy.make('core.Examiner',
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup,
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
@@ -514,9 +514,9 @@ class TestDepartmentAdminItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
 
     def test_examiners_fully_anonymous(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        mommy.make('core.Examiner',
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup,
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
@@ -527,7 +527,7 @@ class TestDepartmentAdminItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
 
     def test_grade_students_can_see_points_false(self):
-        testgroup = devilry_group_mommy_factories\
+        testgroup = devilry_group_baker_factories\
             .feedbackset_first_attempt_published(group__parentnode__students_can_see_points=False,
                                                  grading_points=1)\
             .group
@@ -538,7 +538,7 @@ class TestDepartmentAdminItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
 
     def test_grade_students_can_see_points_true(self):
-        testgroup = devilry_group_mommy_factories\
+        testgroup = devilry_group_baker_factories\
             .feedbackset_first_attempt_published(group__parentnode__students_can_see_points=True,
                                                  grading_points=1)\
             .group
@@ -560,18 +560,18 @@ class TestItemValue(test.TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_status_is_corrected(self):
-        testgroup = devilry_group_mommy_factories\
+        testgroup = devilry_group_baker_factories\
             .feedbackset_first_attempt_published(grading_points=1)\
             .group
         selector = htmls.S(MockNoMultiselectItemValue(value=testgroup, assignment=testgroup.assignment).render())
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-status'))
 
     def test_status_is_waiting_for_feedback(self):
-        testgroup = mommy.make(
+        testgroup = baker.make(
             'core.AssignmentGroup',
-            parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+            parentnode=baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                          first_deadline=timezone.now() - timedelta(days=2)))
-        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(
             group=testgroup)
         testgroup.refresh_from_db()
         selector = htmls.S(MockNoMultiselectItemValue(value=testgroup, assignment=testgroup.assignment).render())
@@ -581,11 +581,11 @@ class TestItemValue(test.TestCase):
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-grade'))
 
     def test_status_is_waiting_for_deliveries(self):
-        testgroup = mommy.make(
+        testgroup = baker.make(
             'core.AssignmentGroup',
-            parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+            parentnode=baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                          first_deadline=timezone.now() + timedelta(days=2)))
-        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(
             group=testgroup)
         testgroup.refresh_from_db()
         selector = htmls.S(MockNoMultiselectItemValue(
@@ -596,12 +596,12 @@ class TestItemValue(test.TestCase):
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-grade'))
 
     def test_grade_not_available_unless_corrected(self):
-        testgroup = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished().group
+        testgroup = devilry_group_baker_factories.feedbackset_first_attempt_unpublished().group
         selector = htmls.S(MockNoMultiselectItemValue(value=testgroup, assignment=testgroup.assignment).render())
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-grade'))
 
     def test_grade_comment_summary_is_available(self):
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = baker.make('core.AssignmentGroup')
         testgroup.refresh_from_db()
         selector = htmls.S(MockNoMultiselectItemValue(value=testgroup, assignment=testgroup.assignment).render())
         self.assertTrue(selector.exists('.devilry-cradmin-groupitemvalue-comments'))
@@ -615,7 +615,7 @@ class TestFullyAnonymousSubjectAdminMultiselectItemValue(test.TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_non_anonymous_not_allowed(self):
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = baker.make('core.AssignmentGroup')
         with self.assertRaisesMessage(ValueError,
                                       'Can only use FullyAnonymousSubjectAdminMultiselectItemValue for fully '
                                       'anonymous assignments.'):
@@ -624,7 +624,7 @@ class TestFullyAnonymousSubjectAdminMultiselectItemValue(test.TestCase):
                 assignment=testgroup.assignment)
 
     def test_semi_anonymous_is_not_allowed(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
         with self.assertRaisesMessage(ValueError,
                                       'Can only use FullyAnonymousSubjectAdminMultiselectItemValue for fully '
@@ -634,9 +634,9 @@ class TestFullyAnonymousSubjectAdminMultiselectItemValue(test.TestCase):
                 assignment=testgroup.assignment)
 
     def test_name_fully_anonymous_is_not_anonymized(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
@@ -648,9 +648,9 @@ class TestFullyAnonymousSubjectAdminMultiselectItemValue(test.TestCase):
             selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_arialabels_fully_anonymous_is_not_anonymized(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
@@ -665,9 +665,9 @@ class TestFullyAnonymousSubjectAdminMultiselectItemValue(test.TestCase):
             selector.one('.cradmin-legacy-multiselect2-target-selected-item-deselectbutton')['aria-label'])
 
     def test_selected_item_title(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
@@ -684,8 +684,8 @@ class TestExaminerMultiselectItemValue(test.TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_name(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Candidate',
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
@@ -696,9 +696,9 @@ class TestExaminerMultiselectItemValue(test.TestCase):
             selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_name_semi_anonymous_is_anonymized(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__automatic_anonymous_id='MyAnonymousID')
         selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue(
@@ -708,9 +708,9 @@ class TestExaminerMultiselectItemValue(test.TestCase):
             selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_name_fully_anonymous_is_anonymized(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__automatic_anonymous_id='MyAnonymousID')
         selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue(
@@ -720,8 +720,8 @@ class TestExaminerMultiselectItemValue(test.TestCase):
             selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_selected_item_title_not_anonymous(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Candidate',
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
@@ -733,9 +733,9 @@ class TestExaminerMultiselectItemValue(test.TestCase):
             selector.one('.cradmin-legacy-multiselect2-target-selected-item-title').alltext_normalized)
 
     def test_selected_item_title_semi_anonymous(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__automatic_anonymous_id='MyAnonymousID')
         selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue(
@@ -746,9 +746,9 @@ class TestExaminerMultiselectItemValue(test.TestCase):
             selector.one('.cradmin-legacy-multiselect2-target-selected-item-title').alltext_normalized)
 
     def test_selected_item_title_fully_anonymous(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__automatic_anonymous_id='MyAnonymousID')
         selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue(
@@ -759,8 +759,8 @@ class TestExaminerMultiselectItemValue(test.TestCase):
             selector.one('.cradmin-legacy-multiselect2-target-selected-item-title').alltext_normalized)
 
     def test_arialabels_not_anonymous(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Candidate',
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
@@ -775,9 +775,9 @@ class TestExaminerMultiselectItemValue(test.TestCase):
             selector.one('.cradmin-legacy-multiselect2-target-selected-item-deselectbutton')['aria-label'])
 
     def test_arialabels_semi_anonymous(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__automatic_anonymous_id='MyAnonymousID')
         selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue(
@@ -791,9 +791,9 @@ class TestExaminerMultiselectItemValue(test.TestCase):
             selector.one('.cradmin-legacy-multiselect2-target-selected-item-deselectbutton')['aria-label'])
 
     def test_arialabels_fully_anonymous(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__automatic_anonymous_id='MyAnonymousID')
         selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue(
@@ -807,8 +807,8 @@ class TestExaminerMultiselectItemValue(test.TestCase):
             selector.one('.cradmin-legacy-multiselect2-target-selected-item-deselectbutton')['aria-label'])
 
     def test_examiners_include_examiners_false(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Examiner',
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup,
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
@@ -818,8 +818,8 @@ class TestExaminerMultiselectItemValue(test.TestCase):
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-examiners'))
 
     def test_examiners_include_examiners_true(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Examiner',
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup,
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
@@ -830,9 +830,9 @@ class TestExaminerMultiselectItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
 
     def test_examiners_semi_anonymous_include_examiners_true(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        mommy.make('core.Examiner',
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup,
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
@@ -843,9 +843,9 @@ class TestExaminerMultiselectItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
 
     def test_examiners_fully_anonymous_include_examiners_true(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        mommy.make('core.Examiner',
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup,
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
@@ -856,7 +856,7 @@ class TestExaminerMultiselectItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
 
     def test_has_unpublished_feedbackdraft_draft_false(self):
-        testgroup = devilry_group_mommy_factories\
+        testgroup = devilry_group_baker_factories\
             .feedbackset_first_attempt_published(grading_points=1)\
             .group
         testgroup.refresh_from_db()
@@ -865,7 +865,7 @@ class TestExaminerMultiselectItemValue(test.TestCase):
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-unpublished-feedbackdraft'))
 
     def test_has_unpublished_feedbackdraft_draft_true(self):
-        testgroup = devilry_group_mommy_factories\
+        testgroup = devilry_group_baker_factories\
                         .feedbackset_first_attempt_unpublished(grading_points=1)\
                         .group
         testgroup.refresh_from_db()
@@ -880,9 +880,9 @@ class TestExaminerMultiselectItemValue(test.TestCase):
                 for element in selector.list('.devilry-cradmin-groupitemvalue-grade')]
 
     def test_grade_students_can_see_points_false(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__students_can_see_points=False)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        devilry_group_baker_factories.feedbackset_first_attempt_published(
             group=testgroup,
             grading_points=1)
         testgroup.refresh_from_db()
@@ -893,9 +893,9 @@ class TestExaminerMultiselectItemValue(test.TestCase):
             self.__get_both_grades(selector))
 
     def test_grade_students_can_see_points_true(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__students_can_see_points=False)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        devilry_group_baker_factories.feedbackset_first_attempt_published(
             group=testgroup,
             grading_points=1)
         testgroup.refresh_from_db()
@@ -911,15 +911,15 @@ class TestPeriodAdminMultiselectItemValue(test.TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_anonymous_not_allowed(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
         with self.assertRaisesRegex(ValueError, '^.*for anonymous assignments.*$'):
             devilry_listbuilder.assignmentgroup.PeriodAdminMultiselectItemValue(
                     value=testgroup, assignment=testgroup.assignment)
 
     def test_name(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Candidate',
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
@@ -930,8 +930,8 @@ class TestPeriodAdminMultiselectItemValue(test.TestCase):
             selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_selected_item_title(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Candidate',
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
@@ -943,8 +943,8 @@ class TestPeriodAdminMultiselectItemValue(test.TestCase):
             selector.one('.cradmin-legacy-multiselect2-target-selected-item-title').alltext_normalized)
 
     def test_arialabels(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Candidate',
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
@@ -959,8 +959,8 @@ class TestPeriodAdminMultiselectItemValue(test.TestCase):
             selector.one('.cradmin-legacy-multiselect2-target-selected-item-deselectbutton')['aria-label'])
 
     def test_examiners(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Examiner',
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup,
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
@@ -975,9 +975,9 @@ class TestPeriodAdminMultiselectItemValue(test.TestCase):
                 for element in selector.list('.devilry-cradmin-groupitemvalue-grade')]
 
     def test_grade_students_can_see_points_false(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__students_can_see_points=False)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        devilry_group_baker_factories.feedbackset_first_attempt_published(
             group=testgroup,
             grading_points=1)
         testgroup.refresh_from_db()
@@ -988,9 +988,9 @@ class TestPeriodAdminMultiselectItemValue(test.TestCase):
             self.__get_both_grades(selector))
 
     def test_grade_students_can_see_points_true(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__students_can_see_points=True)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        devilry_group_baker_factories.feedbackset_first_attempt_published(
             group=testgroup,
             grading_points=1)
         testgroup.refresh_from_db()
@@ -1006,14 +1006,14 @@ class TestSubjectAdminMultiselectItemValue(test.TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_fully_anonymous_is_not_allowed(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
         with self.assertRaisesRegex(ValueError, '^.*for fully anonymous assignments.*$'):
             devilry_listbuilder.assignmentgroup.SubjectAdminMultiselectItemValue(value=testgroup, assignment=testgroup.assignment)
 
     def test_name(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Candidate',
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
@@ -1024,9 +1024,9 @@ class TestSubjectAdminMultiselectItemValue(test.TestCase):
             selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_name_semi_anonymous_is_not_anonymized(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
@@ -1037,8 +1037,8 @@ class TestSubjectAdminMultiselectItemValue(test.TestCase):
             selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_selected_item_title(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Candidate',
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
@@ -1050,9 +1050,9 @@ class TestSubjectAdminMultiselectItemValue(test.TestCase):
             selector.one('.cradmin-legacy-multiselect2-target-selected-item-title').alltext_normalized)
 
     def test_selected_item_title_semi_anonymous(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
@@ -1064,8 +1064,8 @@ class TestSubjectAdminMultiselectItemValue(test.TestCase):
             selector.one('.cradmin-legacy-multiselect2-target-selected-item-title').alltext_normalized)
 
     def test_arialabels(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Candidate',
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
@@ -1080,9 +1080,9 @@ class TestSubjectAdminMultiselectItemValue(test.TestCase):
             selector.one('.cradmin-legacy-multiselect2-target-selected-item-deselectbutton')['aria-label'])
 
     def test_arialabels_semi_anonymous(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
@@ -1097,8 +1097,8 @@ class TestSubjectAdminMultiselectItemValue(test.TestCase):
             selector.one('.cradmin-legacy-multiselect2-target-selected-item-deselectbutton')['aria-label'])
 
     def test_examiners(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Examiner',
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup,
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
@@ -1109,9 +1109,9 @@ class TestSubjectAdminMultiselectItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
 
     def test_examiners_semi_anonymous(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        mommy.make('core.Examiner',
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup,
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
@@ -1126,9 +1126,9 @@ class TestSubjectAdminMultiselectItemValue(test.TestCase):
                 for element in selector.list('.devilry-cradmin-groupitemvalue-grade')]
 
     def test_grade_students_can_see_points_false(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__students_can_see_points=False)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        devilry_group_baker_factories.feedbackset_first_attempt_published(
             group=testgroup,
             grading_points=1)
         testgroup.refresh_from_db()
@@ -1139,9 +1139,9 @@ class TestSubjectAdminMultiselectItemValue(test.TestCase):
             self.__get_both_grades(selector))
 
     def test_grade_students_can_see_points_true(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__students_can_see_points=True)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        devilry_group_baker_factories.feedbackset_first_attempt_published(
             group=testgroup,
             grading_points=1)
         testgroup.refresh_from_db()
@@ -1157,8 +1157,8 @@ class TestDepartmentAdminMultiselectItemValue(test.TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_name(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Candidate',
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
@@ -1169,9 +1169,9 @@ class TestDepartmentAdminMultiselectItemValue(test.TestCase):
             selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_name_semi_anonymous_is_not_anonymized(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
@@ -1182,9 +1182,9 @@ class TestDepartmentAdminMultiselectItemValue(test.TestCase):
             selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_name_fully_anonymous_is_not_anonymized(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
@@ -1195,8 +1195,8 @@ class TestDepartmentAdminMultiselectItemValue(test.TestCase):
             selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_selected_item_title(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Candidate',
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
@@ -1208,9 +1208,9 @@ class TestDepartmentAdminMultiselectItemValue(test.TestCase):
             selector.one('.cradmin-legacy-multiselect2-target-selected-item-title').alltext_normalized)
 
     def test_selected_item_title_semi_anonymous(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
@@ -1222,9 +1222,9 @@ class TestDepartmentAdminMultiselectItemValue(test.TestCase):
             selector.one('.cradmin-legacy-multiselect2-target-selected-item-title').alltext_normalized)
 
     def test_selected_item_title_fully_anonymous(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        mommy.make('core.Candidate',
+        baker.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
@@ -1236,8 +1236,8 @@ class TestDepartmentAdminMultiselectItemValue(test.TestCase):
             selector.one('.cradmin-legacy-multiselect2-target-selected-item-title').alltext_normalized)
 
     def test_examiners(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Examiner',
+        testgroup = baker.make('core.AssignmentGroup')
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup,
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
@@ -1248,9 +1248,9 @@ class TestDepartmentAdminMultiselectItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
 
     def test_examiners_semi_anonymous(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        mommy.make('core.Examiner',
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup,
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
@@ -1261,9 +1261,9 @@ class TestDepartmentAdminMultiselectItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
 
     def test_examiners_fully_anonymous(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        mommy.make('core.Examiner',
+        baker.make('core.Examiner',
                    assignmentgroup=testgroup,
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
@@ -1278,9 +1278,9 @@ class TestDepartmentAdminMultiselectItemValue(test.TestCase):
                 for element in selector.list('.devilry-cradmin-groupitemvalue-grade')]
 
     def test_grade_students_can_see_points_false(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__students_can_see_points=False)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        devilry_group_baker_factories.feedbackset_first_attempt_published(
             group=testgroup,
             grading_points=1)
         testgroup.refresh_from_db()
@@ -1291,9 +1291,9 @@ class TestDepartmentAdminMultiselectItemValue(test.TestCase):
             self.__get_both_grades(selector))
 
     def test_grade_students_can_see_points_true(self):
-        testgroup = mommy.make('core.AssignmentGroup',
+        testgroup = baker.make('core.AssignmentGroup',
                                parentnode__students_can_see_points=True)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        devilry_group_baker_factories.feedbackset_first_attempt_published(
             group=testgroup,
             grading_points=1)
         testgroup.refresh_from_db()
@@ -1315,7 +1315,7 @@ class TestMultiselectItemValue(test.TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_status_is_corrected(self):
-        testgroup = devilry_group_mommy_factories\
+        testgroup = devilry_group_baker_factories\
             .feedbackset_first_attempt_published(grading_points=1)\
             .group
         testgroup.refresh_from_db()
@@ -1323,10 +1323,10 @@ class TestMultiselectItemValue(test.TestCase):
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-status'))
 
     def test_status_is_waiting_for_feedback(self):
-        testgroup = mommy.make(
+        testgroup = baker.make(
             'core.AssignmentGroup',
-            parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
-        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
+            parentnode=baker.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(
             group=testgroup)
         testgroup.refresh_from_db()
         selector = htmls.S(MockMultiselectItemValue(value=testgroup, assignment=testgroup.assignment).render())
@@ -1336,11 +1336,11 @@ class TestMultiselectItemValue(test.TestCase):
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-grade'))
 
     def test_status_is_waiting_for_deliveries(self):
-        testgroup = mommy.make(
+        testgroup = baker.make(
             'core.AssignmentGroup',
-            parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+            parentnode=baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                          first_deadline=timezone.now() + timedelta(days=2)))
-        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(
             group=testgroup)
         testgroup.refresh_from_db()
         selector = htmls.S(MockMultiselectItemValue(value=testgroup, assignment=testgroup.assignment).render())
@@ -1350,7 +1350,7 @@ class TestMultiselectItemValue(test.TestCase):
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-grade'))
 
     def test_grade_not_available_unless_corrected(self):
-        testgroup = devilry_group_mommy_factories\
+        testgroup = devilry_group_baker_factories\
             .feedbackset_first_attempt_unpublished()\
             .group
         testgroup.refresh_from_db()
@@ -1359,7 +1359,7 @@ class TestMultiselectItemValue(test.TestCase):
 
     def test_grade_comment_summary_is_available(self):
         AssignmentGroupDbCacheCustomSql().initialize()
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = baker.make('core.AssignmentGroup')
         testgroup.refresh_from_db()
         selector = htmls.S(MockMultiselectItemValue(value=testgroup, assignment=testgroup.assignment).render())
         self.assertTrue(selector.exists('.devilry-cradmin-groupitemvalue-comments'))

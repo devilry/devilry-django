@@ -4,7 +4,7 @@ from django.conf import settings
 from django.http import Http404
 from cradmin_legacy import cradmin_testhelpers
 from cradmin_legacy.crinstance import reverse_cradmin_url
-from model_mommy import mommy
+from model_bakery import baker
 
 from devilry.apps.core.models import Assignment
 from devilry.devilry_admin.views.assignment.examiners import overview
@@ -19,7 +19,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         return mockinstance
 
     def test_title(self):
-        testassignment = mommy.make('core.Assignment', long_name='Test Assignment')
+        testassignment = baker.make('core.Assignment', long_name='Test Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
@@ -28,7 +28,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('title').alltext_normalized)
 
     def test_h1(self):
-        testassignment = mommy.make('core.Assignment', long_name='Test Assignment')
+        testassignment = baker.make('core.Assignment', long_name='Test Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
@@ -37,8 +37,8 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('h1').alltext_normalized)
 
     def test_buttonbar_sanity(self):
-        testassignment = mommy.make('core.Assignment')
-        mommy.make('core.RelatedExaminer', period=testassignment.period)
+        testassignment = baker.make('core.Assignment')
+        baker.make('core.RelatedExaminer', period=testassignment.period)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
@@ -48,8 +48,8 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 '#devilry_admin_assignment_examiners_overview_buttonbar .btn'))
 
     def test_buttonbar_organize_examiners_link(self):
-        testassignment = mommy.make('core.Assignment')
-        mommy.make('core.RelatedExaminer', period=testassignment.period)
+        testassignment = baker.make('core.Assignment')
+        baker.make('core.RelatedExaminer', period=testassignment.period)
         mock_cradmin_instance = self.__mockinstance_with_devilryrole('departmentadmin')
 
         def mock_reverse_url(appname, viewname, **kwargs):
@@ -65,8 +65,8 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             .one('#devilry_admin_assignment_examiners_overview_button_bulk_organize_examiners')['href'])
 
     def test_buttonbar_organize_examiners_text(self):
-        testassignment = mommy.make('core.Assignment')
-        mommy.make('core.RelatedExaminer', period=testassignment.period)
+        testassignment = baker.make('core.Assignment')
+        baker.make('core.RelatedExaminer', period=testassignment.period)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
@@ -77,8 +77,8 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             .alltext_normalized)
 
     def test_examinerlist_no_relatedexaminers_sanity(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
@@ -88,8 +88,8 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertFalse(mockresponse.selector.exists('#cradmin_legacy_listbuilderview_listwrapper'))
 
     def test_examinerlist_no_relatedexaminers_text(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            parentnode__parentnode__short_name='testsubject',
                                            parentnode__short_name='testperiod')
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -108,8 +108,8 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 '#devilry_admin_assignment_examiners_overview_no_relatedexaminers a').alltext_normalized)
 
     def test_examinerlist_no_relatedexaminers_url(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
@@ -123,9 +123,9 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 '#devilry_admin_assignment_examiners_overview_no_relatedexaminers a')['href'])
 
     def test_exclude_inactive_relatedexaminers(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        mommy.make('core.RelatedExaminer', period=testassignment.period, active=False)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        baker.make('core.RelatedExaminer', period=testassignment.period, active=False)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
@@ -133,9 +133,9 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertFalse(mockresponse.selector.exists('#cradmin_legacy_listbuilderview_listwrapper'))
 
     def test_has_relatedexaminers_sanity(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        mommy.make('core.RelatedExaminer', period=testassignment.period, _quantity=5)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        baker.make('core.RelatedExaminer', period=testassignment.period, _quantity=5)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
@@ -146,11 +146,11 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             '#devilry_admin_assignment_examiners_overview_no_relatedexaminers'))
 
     def test_listbuilderlist_footer_text(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            parentnode__parentnode__short_name='testsubject',
                                            parentnode__short_name='testperiod')
-        mommy.make('core.RelatedExaminer', period=testassignment.period)
+        baker.make('core.RelatedExaminer', period=testassignment.period)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
@@ -162,9 +162,9 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 '.devilry-listbuilderlist-footer').alltext_normalized)
 
     def test_listbuilderlist_footer_url(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        mommy.make('core.RelatedExaminer', period=testassignment.period)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        baker.make('core.RelatedExaminer', period=testassignment.period)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
@@ -178,9 +178,9 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 '.devilry-listbuilderlist-footer a')['href'])
 
     def test_students_without_examiners_warning(self):
-        testassignment = mommy.make('core.Assignment')
-        mommy.make('core.Candidate', assignment_group__parentnode=testassignment)
-        mommy.make('core.RelatedExaminer', period=testassignment.period)
+        testassignment = baker.make('core.Assignment')
+        baker.make('core.Candidate', assignment_group__parentnode=testassignment)
+        baker.make('core.RelatedExaminer', period=testassignment.period)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertTrue(mockresponse.selector.exists('#id_devilry_admin_assignment_examineroverview'))
         self.assertEqual(
@@ -188,10 +188,10 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             'warning: There are still students on the assignment with no examiners assigned to them')
 
     def test_students_all_students_are_assigned_examiners_warning_not_rendered(self):
-        testassignment = mommy.make('core.Assignment')
-        assignment_group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.Candidate', assignment_group=assignment_group)
-        mommy.make('core.Examiner', related_examiner__period=testassignment.parentnode,
+        testassignment = baker.make('core.Assignment')
+        assignment_group = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make('core.Candidate', assignment_group=assignment_group)
+        baker.make('core.Examiner', related_examiner__period=testassignment.parentnode,
                    assignmentgroup=assignment_group)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertFalse(mockresponse.selector.exists('#id_devilry_admin_assignment_examineroverview'))
@@ -203,9 +203,9 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     #
 
     def test_anonymizationmode_fully_anonymous_subjectadmin_404(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testgroup = mommy.make('core.AssignmentGroup',
-                               parentnode=mommy.make_recipe(
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testgroup = baker.make('core.AssignmentGroup',
+                               parentnode=baker.make_recipe(
                                    'devilry.apps.core.assignment_activeperiod_start',
                                    anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS))
         with self.assertRaisesMessage(Http404, 'Only department admins have permission to edit examiners '
@@ -216,9 +216,9 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser)
 
     def test_anonymizationmode_fully_anonymous_departmentadmin_no_404(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testgroup = mommy.make('core.AssignmentGroup',
-                               parentnode=mommy.make_recipe(
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testgroup = baker.make('core.AssignmentGroup',
+                               parentnode=baker.make_recipe(
                                    'devilry.apps.core.assignment_activeperiod_start',
                                    anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS))
         self.mock_http200_getrequest_htmls(
@@ -227,9 +227,9 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser)  # No Http404 exception raised!
 
     def test_anonymizationmode_semi_anonymous_subjectadmin_no_404(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testgroup = mommy.make('core.AssignmentGroup',
-                               parentnode=mommy.make_recipe(
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testgroup = baker.make('core.AssignmentGroup',
+                               parentnode=baker.make_recipe(
                                    'devilry.apps.core.assignment_activeperiod_start',
                                    anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS))
         self.mock_http200_getrequest_htmls(
