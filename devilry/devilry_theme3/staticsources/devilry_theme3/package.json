@@ -18,6 +18,11 @@
     "jsbuild-watch": "webpack --config webpack.config.js --watch"
   },
   "dependencies": {
-    "ievv_jsbase": "^1.0.4"
+    "extend": "^3.0.2",
+    "ievv_jsbase": "^1.0.4",
+    "ini": "^1.3.8",
+    "lodash": "^4.17.19",
+    "qs": "^6.3.2",
+    "tough-cookie": "^2.3.4"
   }
 }
