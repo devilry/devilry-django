@@ -13,6 +13,8 @@ from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin import devilry_listfilter
 from devilry.devilry_examiner.views.assignment.bulkoperations import bulk_feedback
 from devilry.devilry_examiner.views.assignment.bulkoperations import bulk_feedback_simple
+from devilry.apps.core.models import period_tag
+from devilry.devilry_admin.cradminextensions.listfilter import listfilter_assignmentgroup
 
 
 class GroupItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
@@ -66,6 +68,9 @@ class GroupListView(listbuilderview.FilterListMixin,
         filterlist.append(devilry_listfilter.assignmentgroup.SearchNotAnonymous())
         filterlist.append(devilry_listfilter.assignmentgroup.OrderByNotAnonymous())
 
+    def get_period(self):
+        return self.assignment.parentnode
+
     def add_filterlist_items(self, filterlist):
         if self.assignment.is_anonymous:
             if self.assignment.uses_custom_candidate_ids:
@@ -80,6 +85,10 @@ class GroupListView(listbuilderview.FilterListMixin,
         if self.__has_multiple_examiners():
             filterlist.append(devilry_listfilter.assignmentgroup.ExaminerFilter(view=self))
         filterlist.append(devilry_listfilter.assignmentgroup.ActivityFilter())
+        
+        period = self.get_period()
+        if period_tag.PeriodTag.objects.filter(period=period).exists():
+            filterlist.append(listfilter_assignmentgroup.AssignmentGroupRelatedStudentTagSelectFilter(period=period))
 
     def get_unfiltered_queryset_for_role(self, role):
         assignment = role

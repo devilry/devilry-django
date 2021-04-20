@@ -147,7 +147,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             baker.make('core.Candidate',
                        relatedstudent__user__fullname='candidate{}'.format(number),
                        assignment_group=group)
-        with self.assertNumQueries(14):
+        with self.assertNumQueries(15):
             self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
                                                requestuser=testuser)
 
@@ -168,7 +168,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             baker.make('core.Candidate',
                        relatedstudent__user__fullname='candidate{}'.format(number),
                        assignment_group=group)
-        with self.assertNumQueries(14):
+        with self.assertNumQueries(15):
             self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
                                                requestuser=testuser)
 
@@ -205,7 +205,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             devilry_group_baker_factories.feedbackset_first_attempt_published(
                 group=group, grading_points=3)
         prefetched_assignment = Assignment.objects.prefetch_point_to_grade_map().get(id=testassignment.id)
-        with self.assertNumQueries(14):
+        with self.assertNumQueries(16):
             self.mock_http200_getrequest_htmls(cradmin_role=prefetched_assignment,
                                                requestuser=testuser)
 
@@ -1380,6 +1380,84 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             {'user1', 'user2'},
             set(self.__get_titles(mockresponse.selector)))
+
+
+
+
+
+    def test_filter_student_tag_match_sanity(self):
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start')
+
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=testuser)
+        candidate = devilry_core_baker_factories.candidate(group=testgroup, shortname='user1')
+        testperiodtag = baker.make('core.PeriodTag', period=testassignment.parentnode, tag='aaa')
+        testperiodtag.relatedstudents.add(candidate.relatedstudent)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': f'stag-{testperiodtag.id}'},
+            requestuser=testuser)
+        self.assertEqual(
+            {'user1'},
+            set(self.__get_titles(mockresponse.selector)))
+
+    def test_filter_student_tag_one_match_one_excluded_sanity(self):
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start')
+
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        candidate1 = devilry_core_baker_factories.candidate(group=testgroup1, shortname='user1')
+        candidate2 = devilry_core_baker_factories.candidate(group=testgroup2, shortname='user2')
+        testperiodtag1 = baker.make('core.PeriodTag', period=testassignment.parentnode, tag='aaa')
+        testperiodtag2 = baker.make('core.PeriodTag', period=testassignment.parentnode, tag='bbb')
+        testperiodtag1.relatedstudents.add(candidate1.relatedstudent)
+        testperiodtag2.relatedstudents.add(candidate2.relatedstudent)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': f'stag-{testperiodtag1.id}'},
+            requestuser=testuser)
+        self.assertNotEqual(
+            {'user2'},
+            set(self.__get_titles(mockresponse.selector)))
+        self.assertEqual(
+            {'user1'},
+            set(self.__get_titles(mockresponse.selector)))
+    
+    def test_filter_student_tag_multiple_matches_sanity(self):
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start')
+
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        candidate1 = devilry_core_baker_factories.candidate(group=testgroup1, shortname='user1')
+        candidate2 = devilry_core_baker_factories.candidate(group=testgroup2, shortname='user2')
+        testperiodtag = baker.make('core.PeriodTag', period=testassignment.parentnode, tag='aaa')
+        testperiodtag.relatedstudents.add(candidate1.relatedstudent)
+        testperiodtag.relatedstudents.add(candidate2.relatedstudent)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': f'stag-{testperiodtag.id}'},
+            requestuser=testuser)
+        self.assertEqual(
+            {'user1', 'user2'},
+            set(self.__get_titles(mockresponse.selector)))
+
+
+
+
+
+
+
+
 
     def test_render_status_all_label(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
