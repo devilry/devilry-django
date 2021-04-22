@@ -1283,6 +1283,399 @@ class TestAssignmentGroupManager(TestCase):
         self.assertEqual(qry[0], currentgroupbuilder.group)
 
 
+class TestAssignmentGroupQuerySetPeriodTagFiltering(TestCase):
+
+    #
+    # filter_no_periodtag_for_students
+    #
+    def test_filter_no_periodtag_for_students_no_tag_sanity(self):
+        testperiod = baker.make('core.Period')
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        teststudent = baker.make(
+            'core.Candidate',
+            assignment_group=testgroup,
+            relatedstudent=baker.make('core.RelatedStudent', period=testperiod)
+        )
+        self.assertIn(testgroup, AssignmentGroup.objects.filter_no_periodtag_for_students())
+
+    def test_filter_no_periodtag_for_students_has_tag_sanity(self):
+        testperiod = baker.make('core.Period')
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        teststudent = baker.make(
+            'core.Candidate',
+            assignment_group=testgroup,
+            relatedstudent=baker.make('core.RelatedStudent', period=testperiod)
+        )
+        testtag = baker.make('core.PeriodTag', period=testperiod)
+        testtag.relatedstudents.add(teststudent.relatedstudent)
+        self.assertNotIn(testgroup, AssignmentGroup.objects.filter_no_periodtag_for_students())
+    
+    def test_filter_no_periodtag_for_students_multistudent_group_no_tags(self):
+        testperiod = baker.make('core.Period')
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make(
+            'core.Candidate',
+            assignment_group=testgroup,
+            relatedstudent=baker.make('core.RelatedStudent', period=testperiod)
+        )
+        baker.make(
+            'core.Candidate',
+            assignment_group=testgroup,
+            relatedstudent=baker.make('core.RelatedStudent', period=testperiod)
+        )
+        self.assertIn(testgroup, AssignmentGroup.objects.filter_no_periodtag_for_students())
+    
+    def test_filter_no_periodtag_for_students_multistudent_group_one_student_missing_tags(self):
+        testperiod = baker.make('core.Period')
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        teststudent = baker.make(
+            'core.Candidate',
+            assignment_group=testgroup,
+            relatedstudent=baker.make('core.RelatedStudent', period=testperiod)
+        )
+        baker.make(
+            'core.Candidate',
+            assignment_group=testgroup,
+            relatedstudent=baker.make('core.RelatedStudent', period=testperiod)
+        )
+        testtag = baker.make('core.PeriodTag', period=testperiod)
+        testtag.relatedstudents.add(teststudent.relatedstudent)
+        self.assertIn(testgroup, AssignmentGroup.objects.filter_no_periodtag_for_students())
+    
+    def test_filter_no_periodtag_for_students_multistudent_group_all_students_has_tag(self):
+        testperiod = baker.make('core.Period')
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        teststudent1 = baker.make(
+            'core.Candidate',
+            assignment_group=testgroup,
+            relatedstudent=baker.make('core.RelatedStudent', period=testperiod)
+        )
+        teststudent2 = baker.make(
+            'core.Candidate',
+            assignment_group=testgroup,
+            relatedstudent=baker.make('core.RelatedStudent', period=testperiod)
+        )
+        testtag = baker.make('core.PeriodTag', period=testperiod)
+        testtag.relatedstudents.add(teststudent1.relatedstudent)
+        testtag.relatedstudents.add(teststudent2.relatedstudent)
+        self.assertNotIn(testgroup, AssignmentGroup.objects.filter_no_periodtag_for_students())
+    
+    #
+    # filter_periodtag_for_students
+    #
+    def test_filter_periodtag_for_students_no_tag_sanity(self):
+        testperiod = baker.make('core.Period')
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        teststudent = baker.make(
+            'core.Candidate',
+            assignment_group=testgroup,
+            relatedstudent=baker.make('core.RelatedStudent', period=testperiod)
+        )
+        testtag = baker.make('core.PeriodTag')
+        self.assertNotIn(
+            testgroup,
+            AssignmentGroup.objects.filter_periodtag_for_students(periodtag_id=testtag.id)
+        )
+    
+    def test_filter_periodtag_for_students_has_tag_sanity(self):
+        testperiod = baker.make('core.Period')
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        teststudent = baker.make(
+            'core.Candidate',
+            assignment_group=testgroup,
+            relatedstudent=baker.make('core.RelatedStudent', period=testperiod)
+        )
+        testtag = baker.make('core.PeriodTag')
+        testtag.relatedstudents.add(teststudent.relatedstudent)
+        self.assertIn(
+            testgroup,
+            AssignmentGroup.objects.filter_periodtag_for_students(periodtag_id=testtag.id)
+        )
+
+    def test_filter_periodtag_for_students_has_other_tag_sanity(self):
+        testperiod = baker.make('core.Period')
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        teststudent = baker.make(
+            'core.Candidate',
+            assignment_group=testgroup,
+            relatedstudent=baker.make('core.RelatedStudent', period=testperiod)
+        )
+        testtag1 = baker.make('core.PeriodTag')
+        testtag2 = baker.make('core.PeriodTag')
+        testtag2.relatedstudents.add(teststudent.relatedstudent)
+        self.assertNotIn(
+            testgroup,
+            AssignmentGroup.objects.filter_periodtag_for_students(periodtag_id=testtag1.id)
+        )
+    
+    def test_filter_periodtag_for_students_multistudent_group_all_students_missing_tag(self):
+        testperiod = baker.make('core.Period')
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make(
+            'core.Candidate',
+            assignment_group=testgroup,
+            relatedstudent=baker.make('core.RelatedStudent', period=testperiod)
+        )
+        baker.make(
+            'core.Candidate',
+            assignment_group=testgroup,
+            relatedstudent=baker.make('core.RelatedStudent', period=testperiod)
+        )
+        testtag = baker.make('core.PeriodTag')
+        self.assertNotIn(
+            testgroup,
+            AssignmentGroup.objects.filter_periodtag_for_students(periodtag_id=testtag.id)
+        )
+
+    def test_filter_periodtag_for_students_multistudent_group_one_student_missing_tag(self):
+        testperiod = baker.make('core.Period')
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        teststudent = baker.make(
+            'core.Candidate',
+            assignment_group=testgroup,
+            relatedstudent=baker.make('core.RelatedStudent', period=testperiod)
+        )
+        baker.make(
+            'core.Candidate',
+            assignment_group=testgroup,
+            relatedstudent=baker.make('core.RelatedStudent', period=testperiod)
+        )
+        testtag = baker.make('core.PeriodTag')
+        testtag.relatedstudents.add(teststudent.relatedstudent)
+        self.assertIn(
+            testgroup,
+            AssignmentGroup.objects.filter_periodtag_for_students(periodtag_id=testtag.id)
+        )
+    
+    def test_filter_periodtag_for_students_multistudent_group_all_students_has_tag(self):
+        testperiod = baker.make('core.Period')
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        teststudent1 = baker.make(
+            'core.Candidate',
+            assignment_group=testgroup,
+            relatedstudent=baker.make('core.RelatedStudent', period=testperiod)
+        )
+        teststudent2 = baker.make(
+            'core.Candidate',
+            assignment_group=testgroup,
+            relatedstudent=baker.make('core.RelatedStudent', period=testperiod)
+        )
+        testtag = baker.make('core.PeriodTag')
+        testtag.relatedstudents.add(teststudent1.relatedstudent)
+        testtag.relatedstudents.add(teststudent2.relatedstudent)
+        self.assertIn(
+            testgroup,
+            AssignmentGroup.objects.filter_periodtag_for_students(periodtag_id=testtag.id)
+        )
+    
+
+    #
+    # filter_no_periodtag_for_examiners
+    #
+    def test_filter_no_periodtag_for_examiners_no_tag_sanity(self):
+        testperiod = baker.make('core.Period')
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testexaminer = baker.make(
+            'core.Examiner',
+            assignmentgroup=testgroup,
+            relatedexaminer=baker.make('core.RelatedExaminer', period=testperiod)
+        )
+        self.assertIn(testgroup, AssignmentGroup.objects.filter_no_periodtag_for_examiners())
+
+    def test_filter_no_periodtag_for_examiners_has_tag_sanity(self):
+        testperiod = baker.make('core.Period')
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testexaminer = baker.make(
+            'core.Examiner',
+            assignmentgroup=testgroup,
+            relatedexaminer=baker.make('core.RelatedExaminer', period=testperiod)
+        )
+        testtag = baker.make('core.PeriodTag', period=testperiod)
+        testtag.relatedexaminers.add(testexaminer.relatedexaminer)
+        self.assertNotIn(testgroup, AssignmentGroup.objects.filter_no_periodtag_for_examiners())
+    
+    def test_filter_no_periodtag_for_examiners_multiexaminer_group_no_tags(self):
+        testperiod = baker.make('core.Period')
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make(
+            'core.Examiner',
+            assignmentgroup=testgroup,
+            relatedexaminer=baker.make('core.RelatedExaminer', period=testperiod)
+        )
+        baker.make(
+            'core.Examiner',
+            assignmentgroup=testgroup,
+            relatedexaminer=baker.make('core.RelatedExaminer', period=testperiod)
+        )
+        self.assertIn(testgroup, AssignmentGroup.objects.filter_no_periodtag_for_examiners())
+    
+    def test_filter_no_periodtag_for_examiners_multiexaminer_group_one_examiner_missing_tags(self):
+        testperiod = baker.make('core.Period')
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testexaminer = baker.make(
+            'core.Examiner',
+            assignmentgroup=testgroup,
+            relatedexaminer=baker.make('core.RelatedExaminer', period=testperiod)
+        )
+        baker.make(
+            'core.Examiner',
+            assignmentgroup=testgroup,
+            relatedexaminer=baker.make('core.RelatedExaminer', period=testperiod)
+        )
+        testtag = baker.make('core.PeriodTag', period=testperiod)
+        testtag.relatedexaminers.add(testexaminer.relatedexaminer)
+        self.assertIn(testgroup, AssignmentGroup.objects.filter_no_periodtag_for_examiners())
+    
+    def test_filter_no_periodtag_for_examiners_multiexaminer_group_all_examiners_has_tag(self):
+        testperiod = baker.make('core.Period')
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testexaminer1 = baker.make(
+            'core.Examiner',
+            assignmentgroup=testgroup,
+            relatedexaminer=baker.make('core.RelatedExaminer', period=testperiod)
+        )
+        testexaminer2 = baker.make(
+            'core.Examiner',
+            assignmentgroup=testgroup,
+            relatedexaminer=baker.make('core.RelatedExaminer', period=testperiod)
+        )
+        testtag = baker.make('core.PeriodTag', period=testperiod)
+        testtag.relatedexaminers.add(testexaminer1.relatedexaminer)
+        testtag.relatedexaminers.add(testexaminer2.relatedexaminer)
+        self.assertNotIn(testgroup, AssignmentGroup.objects.filter_no_periodtag_for_examiners())
+
+    #
+    # filter_periodtag_for_examiners
+    #
+    def test_filter_periodtag_for_examiners_no_tag_sanity(self):
+        testperiod = baker.make('core.Period')
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testexaminer = baker.make(
+            'core.Examiner',
+            assignmentgroup=testgroup,
+            relatedexaminer=baker.make('core.RelatedExaminer', period=testperiod)
+        )
+        testtag = baker.make('core.PeriodTag')
+        self.assertNotIn(
+            testgroup,
+            AssignmentGroup.objects.filter_periodtag_for_examiners(periodtag_id=testtag.id)
+        )
+    
+    def test_filter_periodtag_for_examiners_has_tag_sanity(self):
+        testperiod = baker.make('core.Period')
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testexaminer = baker.make(
+            'core.Examiner',
+            assignmentgroup=testgroup,
+            relatedexaminer=baker.make('core.RelatedExaminer', period=testperiod)
+        )
+        testtag = baker.make('core.PeriodTag')
+        testtag.relatedexaminers.add(testexaminer.relatedexaminer)
+        self.assertIn(
+            testgroup,
+            AssignmentGroup.objects.filter_periodtag_for_examiners(periodtag_id=testtag.id)
+        )
+
+    def test_filter_periodtag_for_examiners_has_other_tag_sanity(self):
+        testperiod = baker.make('core.Period')
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testexaminer = baker.make(
+            'core.Examiner',
+            assignmentgroup=testgroup,
+            relatedexaminer=baker.make('core.RelatedExaminer', period=testperiod)
+        )
+        testtag1 = baker.make('core.PeriodTag')
+        testtag2 = baker.make('core.PeriodTag')
+        testtag2.relatedexaminers.add(testexaminer.relatedexaminer)
+        self.assertNotIn(
+            testgroup,
+            AssignmentGroup.objects.filter_periodtag_for_examiners(periodtag_id=testtag1.id)
+        )
+    
+    def test_filter_periodtag_for_examiners_multiexaminer_group_all_examiners_missing_tag(self):
+        testperiod = baker.make('core.Period')
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make(
+            'core.Examiner',
+            assignmentgroup=testgroup,
+            relatedexaminer=baker.make('core.RelatedExaminer', period=testperiod)
+        )
+        baker.make(
+            'core.Examiner',
+            assignmentgroup=testgroup,
+            relatedexaminer=baker.make('core.RelatedExaminer', period=testperiod)
+        )
+        testtag = baker.make('core.PeriodTag')
+        self.assertNotIn(
+            testgroup,
+            AssignmentGroup.objects.filter_periodtag_for_examiners(periodtag_id=testtag.id)
+        )
+
+    def test_filter_periodtag_for_examiners_multiexaminer_group_one_examiner_missing_tag(self):
+        testperiod = baker.make('core.Period')
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testexaminer = baker.make(
+            'core.Examiner',
+            assignmentgroup=testgroup,
+            relatedexaminer=baker.make('core.RelatedExaminer', period=testperiod)
+        )
+        baker.make(
+            'core.Examiner',
+            assignmentgroup=testgroup,
+            relatedexaminer=baker.make('core.RelatedExaminer', period=testperiod)
+        )
+        testtag = baker.make('core.PeriodTag')
+        testtag.relatedexaminers.add(testexaminer.relatedexaminer)
+        self.assertIn(
+            testgroup,
+            AssignmentGroup.objects.filter_periodtag_for_examiners(periodtag_id=testtag.id)
+        )
+    
+    def test_filter_periodtag_for_examiners_multiexaminer_group_all_examiners_has_tag(self):
+        testperiod = baker.make('core.Period')
+        testassignment = baker.make('core.Assignment', parentnode=testperiod)
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testexaminer1 = baker.make(
+            'core.Examiner',
+            assignmentgroup=testgroup,
+            relatedexaminer=baker.make('core.RelatedExaminer', period=testperiod)
+        )
+        testexaminer2 = baker.make(
+            'core.Examiner',
+            assignmentgroup=testgroup,
+            relatedexaminer=baker.make('core.RelatedExaminer', period=testperiod)
+        )
+        testtag = baker.make('core.PeriodTag')
+        testtag.relatedexaminers.add(testexaminer1.relatedexaminer)
+        testtag.relatedexaminers.add(testexaminer2.relatedexaminer)
+        self.assertIn(
+            testgroup,
+            AssignmentGroup.objects.filter_periodtag_for_examiners(periodtag_id=testtag.id)
+        )
+
+
+
 class TestAssignmentGroupQuerySetFilterExaminerHasAccess(TestCase):
     def test_not_examiner_for_any_groups(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)

@@ -310,6 +310,13 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
                 ]
             )
 
+    def filter_no_periodtag_for_students(self):
+        """
+        Filter :class:`.AssignmentGroup` where student has NO 
+        :class:`~.devilry.apps.core.models.period_tag.PeriodTag`s.
+        """
+        return self.filter(candidates__relatedstudent__periodtag__isnull=True)
+
     def filter_periodtag_for_students(self, periodtag_id):
         """
         Filter :class:`.AssignmentGroup` by :class:`~.devilry.apps.core.models.period_tag.PeriodTag` for
@@ -319,6 +326,13 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
             periodtag_id: ID of a :class:`~.devilry.apps.core.models.period_tag.PeriodTag`.
         """
         return self.filter(candidates__relatedstudent__periodtag__id=periodtag_id)
+
+    def filter_no_periodtag_for_examiners(self):
+        """
+        Filter :class:`.AssignmentGroup` where examiner has NO 
+        :class:`~.devilry.apps.core.models.period_tag.PeriodTag`s.
+        """
+        return self.filter(examiners__relatedexaminer__periodtag__isnull=True)
 
     def filter_periodtag_for_examiners(self, periodtag_id):
         """

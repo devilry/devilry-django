@@ -93,6 +93,9 @@ class AbstractTagSelectFilter(abstractselect.AbstractSelectFilter):
         self.period = kwargs.pop('period', None)
         super(AbstractTagSelectFilter, self).__init__(**kwargs)
 
+    def get_notag_value(self):
+        return 'notag'
+
     def get_slug(self):
         return 'tag'
 
@@ -107,6 +110,7 @@ class AbstractTagSelectFilter(abstractselect.AbstractSelectFilter):
     def __get_choices(self):
         choices = [
             ('', ''),
+            (self.get_notag_value(), pgettext_lazy('tag', 'NO TAG'))
         ]
         choices.extend(PeriodTag.objects.tags_and_ids_tuple_list(period=self.period))
         return choices

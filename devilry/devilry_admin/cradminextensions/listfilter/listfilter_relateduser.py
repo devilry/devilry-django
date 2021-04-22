@@ -87,6 +87,8 @@ class Search(listfilter.django.single.textinput.Search):
 class TagSelectFilter(listfilter_tags.AbstractTagSelectFilter):
     def filter(self, queryobject):
         cleaned_value = self.get_cleaned_value() or ''
-        if cleaned_value != '':
+        if cleaned_value == self.get_notag_value():
+            queryobject = queryobject.filter(periodtag__isnull=True)
+        elif cleaned_value != '':
             queryobject = queryobject.filter(periodtag__id=cleaned_value)
         return queryobject
