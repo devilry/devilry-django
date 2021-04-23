@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-24 15:23+0200\n"
-"PO-Revision-Date: 2019-07-24 15:24+0200\n"
+"POT-Creation-Date: 2021-04-23 14:19+0200\n"
+"PO-Revision-Date: 2021-04-23 14:25+0200\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -322,44 +322,44 @@ msgstr ""
 "Oppgaven har studenter. Du kan ikke kopiere og bruke dette på oppgaver med "
 "studenter."
 
-#: devilry/apps/core/models/assignment_group.py:992
+#: devilry/apps/core/models/assignment_group.py:1006
 #: devilry/devilry_examiner/templatetags/devilry_examiner_tags.py:17
 #: devilry/devilry_examiner/templatetags/devilry_examiner_tags.py:55
 #: devilry/devilry_student/templatetags/devilry_student_tags.py:34
 msgid "No deadlines"
 msgstr "Ingen innleveringsfrister"
 
-#: devilry/apps/core/models/assignment_group.py:993
+#: devilry/apps/core/models/assignment_group.py:1007
 #: devilry/devilry_examiner/templatetags/devilry_examiner_tags.py:19
 #: devilry/devilry_student/templatetags/devilry_student_tags.py:36
 msgid "Corrected"
 msgstr "Rettet"
 
-#: devilry/apps/core/models/assignment_group.py:994
+#: devilry/apps/core/models/assignment_group.py:1008
 #: devilry/devilry_examiner/templatetags/devilry_examiner_tags.py:21
 #: devilry/devilry_examiner/templatetags/devilry_examiner_tags.py:59
 #: devilry/devilry_student/templatetags/devilry_student_tags.py:38
 msgid "Closed without feedback"
 msgstr "Lukket uten tilbakemelding"
 
-#: devilry/apps/core/models/assignment_group.py:995
+#: devilry/apps/core/models/assignment_group.py:1009
 msgid "Waiting for something"
 msgstr "Venter på noe"
 
-#: devilry/apps/core/models/assignment_group.py:1201
+#: devilry/apps/core/models/assignment_group.py:1215
 #: devilry/apps/core/templates/devilry_core/templatetags/multiple-candidates-long-displayname.django.html:8
 #: devilry/apps/core/templates/devilry_core/templatetags/multiple-candidates-short-displayname.django.html:8
 msgctxt "core assignmentgroup"
 msgid "no students in group"
 msgstr "ingen studenter i gruppen"
 
-#: devilry/apps/core/models/assignment_group.py:1205
+#: devilry/apps/core/models/assignment_group.py:1219
 #, python-format
 msgctxt "core assignmentgroup"
 msgid "group#%(groupid)s - no students in group"
 msgstr "gruppe#%(groupid)s - ingen studenter i gruppen"
 
-#: devilry/apps/core/models/assignment_group.py:1566
+#: devilry/apps/core/models/assignment_group.py:1580
 msgid ""
 "Cannot merge self into target, self and target is not part of same "
 "AssignmentGroup"
@@ -367,7 +367,7 @@ msgstr ""
 "Kan ikke flette seg selv med målet, seg selv og målet er ikke en del av "
 "samme oppgave gruppe (AssignmentGroup)"
 
-#: devilry/apps/core/models/assignment_group.py:1619
+#: devilry/apps/core/models/assignment_group.py:1633
 msgid "Cannot merge less than 2 groups"
 msgstr "Kan ikke flette mindre enn 2 grupper"
 
@@ -400,9 +400,9 @@ msgstr "Kan kun bestå av nummer, små bokstaver, '_' og '-'. "
 #: devilry/apps/core/models/custom_db_fields.py:40
 #: devilry/devilry_account/models.py:881
 #: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:17
-#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:23
-#: devilry/devilry_cradmin/devilry_listfilter/assignment.py:16
-#: devilry/devilry_cradmin/devilry_listfilter/assignment.py:54
+#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:24
+#: devilry/devilry_cradmin/devilry_listfilter/assignment.py:17
+#: devilry/devilry_cradmin/devilry_listfilter/assignment.py:63
 #: devilry/devilry_header/templates/devilry_header/about_me.django.html:20
 #: devilry/devilry_student/templates/devilry_student/cradmin_group/projectgroupapp/projectgroup_overview.django.html:70
 msgid "Name"
@@ -653,14 +653,14 @@ msgstr "%(commentcount)s upublisert kommentarer fra deg."
 
 #: devilry/apps/core/templates/devilry_core/templatetags/grade-full-plain.django.html:10
 #: devilry/apps/core/templates/devilry_core/templatetags/grade-full.django.html:12
-#: devilry/apps/core/templatetags/devilry_core_tags.py:39
+#: devilry/apps/core/templatetags/devilry_core_tags.py:38
 #: devilry/devilry_examiner/templatetags/devilry_examiner_tags.py:28
 msgid "passed"
 msgstr "bestått"
 
 #: devilry/apps/core/templates/devilry_core/templatetags/grade-full-plain.django.html:12
 #: devilry/apps/core/templates/devilry_core/templatetags/grade-full.django.html:12
-#: devilry/apps/core/templatetags/devilry_core_tags.py:41
+#: devilry/apps/core/templatetags/devilry_core_tags.py:40
 #: devilry/devilry_changelog/models.py:40
 #: devilry/devilry_examiner/templatetags/devilry_examiner_tags.py:30
 msgid "failed"
@@ -768,7 +768,7 @@ msgid "Full name"
 msgstr "Fullt navn"
 
 #: devilry/devilry_account/models.py:434
-#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:31
+#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:34
 msgid "Last name"
 msgstr "Etternavn"
 
@@ -817,7 +817,7 @@ msgid "Email addresses"
 msgstr "E-postadresser"
 
 #: devilry/devilry_account/models.py:649
-#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:13
+#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:14
 msgid "Email"
 msgstr "Epost"
 
@@ -854,7 +854,7 @@ msgstr "%(email)s - Bruker%(userid)s#%(userhortname)s"
 
 #: devilry/devilry_account/models.py:704 devilry/devilry_account/models.py:713
 #: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:43
-#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:16
+#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:17
 #: devilry/devilry_header/templates/devilry_header/about_me.django.html:29
 msgid "Username"
 msgstr "Brukernavn"
@@ -1085,41 +1085,41 @@ msgctxt "tag"
 msgid "Student(s) has tag"
 msgstr "Student(er) har tag"
 
-#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_assignmentgroup.py:31
+#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_assignmentgroup.py:34
 msgctxt "tag"
 msgid "Examiner(s) has tag"
 msgstr "Retter(e) har tag"
 
-#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:14
+#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:15
 msgid "Email descending"
 msgstr "E-post synkende"
 
-#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:17
+#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:18
 msgid "Username descending"
 msgstr "Brukernavn synkende"
 
-#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:27
+#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:29
 msgid "Name descending"
 msgstr "Navn synkende"
 
-#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:35
+#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:38
 msgid "Last name descending"
 msgstr "Etternavn synkende"
 
-#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:52
-#: devilry/devilry_cradmin/devilry_listfilter/assignment.py:11
+#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:55
+#: devilry/devilry_cradmin/devilry_listfilter/assignment.py:12
 #: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:55
 msgctxt "orderby"
 msgid "Sort"
 msgstr "Sorter"
 
-#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:60
+#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:63
 msgctxt "listfilter relateduser"
 msgid "Is active?"
 msgstr "Er aktiv?"
 
-#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:78
-#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_tags.py:30
+#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:81
+#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_tags.py:29
 #: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:16
 #: devilry/devilry_cradmin/devilry_listfilter/user.py:9
 #: devilry/devilry_examiner/views/dashboard/assignmentlist.py:71
@@ -1130,47 +1130,52 @@ msgstr "Er aktiv?"
 msgid "Search"
 msgstr "Søk"
 
-#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:81
-#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_tags.py:33
+#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:84
+#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_tags.py:32
 #: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:24
 #: devilry/devilry_cradmin/devilry_listfilter/user.py:14
 msgid "Search listed objects ..."
 msgstr "Søk i utlistede objekter ..."
 
-#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_tags.py:42
+#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_tags.py:41
 msgctxt "period tag show hidden filter"
 msgid "Show hidden tags?"
 msgstr "Vis skjulte tags?"
 
-#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_tags.py:60
+#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_tags.py:59
 msgctxt "period tag show hidden radio filter"
 msgid "Show tags"
 msgstr "Vis tags"
 
-#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_tags.py:64
+#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_tags.py:63
 msgid "show all tags"
 msgstr "vis alle tags"
 
-#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_tags.py:65
+#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_tags.py:64
 msgid "hidden tags only"
 msgstr "kun skjulte tags"
 
-#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_tags.py:66
+#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_tags.py:65
 msgid "visible tags only"
 msgstr "kun synlige tags"
 
-#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_tags.py:67
+#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_tags.py:66
 msgid "custom tags only"
 msgstr "kun tilpassede tags"
 
-#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_tags.py:68
+#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_tags.py:67
 msgid "imported tags only"
 msgstr "kun importerte tags"
 
-#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_tags.py:106
+#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_tags.py:108
 msgctxt "tag"
 msgid "Has tag"
 msgstr "Har tag"
+
+#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_tags.py:113
+msgctxt "tag"
+msgid "NO TAG"
+msgstr "INGEN TAG"
 
 #: devilry/devilry_admin/cradminextensions/multiselect2/multiselect2_relatedstudent.py:23
 msgctxt "admin multiselect2_relatedstudent"
@@ -3352,7 +3357,7 @@ msgstr ""
 "rettere ble erstattet for disse studentene."
 
 #: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:444
-#: devilry/devilry_deadlinemanagement/views/multiselect_groups_view.py:21
+#: devilry/devilry_deadlinemanagement/views/multiselect_groups_view.py:20
 msgid ""
 "Something went wrong. This may happen if someone else performed a similar "
 "operation while you where selecting. Refresh the page and try again"
@@ -3895,7 +3900,7 @@ msgid ""
 "Successfully deleted %(delete_group_count)s students from the assignment"
 msgstr "Slettet %(delete_group_count)s studenter fra denne oppgaven"
 
-#: devilry/devilry_admin/views/assignment/students/groupview_base.py:184
+#: devilry/devilry_admin/views/assignment/students/groupview_base.py:197
 msgctxt "admin group multiselect submit"
 msgid ""
 "Something went wrong. This may happen if changes was made to the selected "
@@ -4666,24 +4671,24 @@ msgstr "Valgte studenter:"
 msgid "No students selected"
 msgstr "Ingen studenter valgt"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignment.py:22
-#: devilry/devilry_cradmin/devilry_listfilter/assignment.py:60
+#: devilry/devilry_cradmin/devilry_listfilter/assignment.py:27
+#: devilry/devilry_cradmin/devilry_listfilter/assignment.py:73
 msgid "Name (descending)"
 msgstr "Navn (synkende)"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignment.py:32
+#: devilry/devilry_cradmin/devilry_listfilter/assignment.py:41
 msgid "First deadline (newest first)"
 msgstr "Første innleveringsfrist (nyeste først)"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignment.py:36
+#: devilry/devilry_cradmin/devilry_listfilter/assignment.py:45
 msgid "First deadline (oldest first)"
 msgstr "Første innleveringsfrist (eldste først)"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignment.py:40
+#: devilry/devilry_cradmin/devilry_listfilter/assignment.py:49
 msgid "Publishing time (newest first)"
 msgstr "Publiseringstidspunkt (nyeste først)"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignment.py:44
+#: devilry/devilry_cradmin/devilry_listfilter/assignment.py:53
 msgid "Publishing time (oldest first)"
 msgstr "Publiseringstidspunkt (eldste først)"
 
@@ -4979,18 +4984,14 @@ msgid "Grade"
 msgstr "Karakter"
 
 #: devilry/devilry_cradmin/templates/devilry_cradmin/devilry_listbuilder/period/student-itemvalue.django.html:11
-#, fuzzy, python-format
-#| msgid "%(assignmentcount)s assignment"
-#| msgid_plural "%(assignmentcount)s assignments"
+#, python-format
 msgid "%(assignmentcount)s assignment"
 msgstr "%(assignmentcount)s oppgave"
 
 #: devilry/devilry_cradmin/templates/devilry_cradmin/devilry_listbuilder/period/student-itemvalue.django.html:15
-#, fuzzy, python-format
-#| msgid "%(assignmentcount)s assignment"
-#| msgid_plural "%(assignmentcount)s assignments"
+#, python-format
 msgid "%(assignmentcount)s assignments"
-msgstr "%(assignmentcount)s oppgave"
+msgstr "%(assignmentcount)s oppgaver"
 
 #: devilry/devilry_cradmin/templates/devilry_cradmin/devilry_listbuilder/period/student-itemvalue.django.html:33
 msgid "Qualified for final exam"
@@ -5132,47 +5133,47 @@ msgstr "Gi et nytt forsøk"
 msgid "Deadline managed for %(group_names)s"
 msgstr "Innleveringsfrist endret for %(group_names)s"
 
-#: devilry/devilry_deadlinemanagement/views/multiselect_groups_view.py:52
+#: devilry/devilry_deadlinemanagement/views/multiselect_groups_view.py:51
 msgid "groups"
 msgstr "grupper"
 
-#: devilry/devilry_deadlinemanagement/views/multiselect_groups_view.py:57
+#: devilry/devilry_deadlinemanagement/views/multiselect_groups_view.py:56
 #, python-format
 msgctxt "assignment_group_target_renderer move_dealine_text"
 msgid "Move deadline for selected %(what)s"
 msgstr "Flytt innleveringsfrist for valgt %(what)s"
 
-#: devilry/devilry_deadlinemanagement/views/multiselect_groups_view.py:63
+#: devilry/devilry_deadlinemanagement/views/multiselect_groups_view.py:62
 #, python-format
 msgctxt "assignment_group_target_renderer submit_button_text"
 msgid "Continue with selected %(what)s"
 msgstr "Fortsett med valgte %(what)s"
 
-#: devilry/devilry_deadlinemanagement/views/multiselect_groups_view.py:69
+#: devilry/devilry_deadlinemanagement/views/multiselect_groups_view.py:68
 #: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:71
 #, python-format
 msgctxt "assignment_group_target_renderer with_items_title"
 msgid "Selected %(what)s"
 msgstr "Valgte %(what)s"
 
-#: devilry/devilry_deadlinemanagement/views/multiselect_groups_view.py:75
+#: devilry/devilry_deadlinemanagement/views/multiselect_groups_view.py:74
 #: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:77
 #, python-format
 msgctxt "assignment_group_target_renderer without_items_text"
 msgid "No %(what)s selected"
 msgstr "Ingen %(what)s valgt"
 
-#: devilry/devilry_deadlinemanagement/views/multiselect_groups_view.py:99
+#: devilry/devilry_deadlinemanagement/views/multiselect_groups_view.py:98
 msgctxt "assignment_group_multiselect_list_filter_view pagetitle"
 msgid "Select groups"
 msgstr "Velg grupper"
 
-#: devilry/devilry_deadlinemanagement/views/multiselect_groups_view.py:103
+#: devilry/devilry_deadlinemanagement/views/multiselect_groups_view.py:102
 msgctxt "assignment_group_multiselect_list_filter_view pageheading"
 msgid "Select groups"
 msgstr "Velg grupper"
 
-#: devilry/devilry_deadlinemanagement/views/multiselect_groups_view.py:107
+#: devilry/devilry_deadlinemanagement/views/multiselect_groups_view.py:106
 msgctxt "assignment_group_multiselect_list_filter_view page_subheading"
 msgid "Select the groups you want to manage the deadline for."
 msgstr "Velg grupper hvor du vil redigere innleveringsfristen."
@@ -5315,7 +5316,7 @@ msgid "Bulk feedback"
 msgstr "Bulk tilbakemelding"
 
 #: devilry/devilry_examiner/templates/devilry_examiner/assignment/grouplist.django.html:22
-#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:258
+#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:262
 msgid "Simple bulk feedback"
 msgstr "Enkel bulk-håndtering av tilbakemelding"
 
@@ -5430,15 +5431,15 @@ msgstr "Karaktersetting"
 msgid "Comment text"
 msgstr "Kommentar tekst"
 
-#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:242
+#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:246
 msgid "Feedback published for {} groups"
 msgstr "Tilbakemelding publisert for {} grupper"
 
-#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:245
+#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:249
 msgid "You must set a grade for at least one group."
 msgstr "Du m sette en karakter for minst en gruppe."
 
-#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:261
+#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:265
 msgid "No groups to receive feedback"
 msgstr "Ingen grupper som kan motta tilbakemelding"
 
@@ -6116,7 +6117,7 @@ msgstr ""
 "Denne oppgaven bruker harde frister. Filopplasting og kommentering er ikke "
 "tilgjengelig."
 
-#: devilry/devilry_group/templates/devilry_group/feedbackfeed.django.html:34
+#: devilry/devilry_group/templates/devilry_group/feedbackfeed.django.html:40
 msgid "Project group details"
 msgstr "Detaljer om prosjektgruppe"
 
