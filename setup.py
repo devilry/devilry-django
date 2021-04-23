@@ -51,7 +51,7 @@ setup(
         'html2text==2018.1.*',
         'djangorestframework==3.12.*',
         # For django-allauth
-        'django-allauth>=0.43.*',
+        'django-allauth>=0.44.*',
         'certifi==2017.11.*',
         'chardet==3.0.*',
         'idna==2.6.*',
