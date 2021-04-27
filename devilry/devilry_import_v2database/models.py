@@ -1,6 +1,5 @@
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.postgres.fields import JSONField
 from django.db import models
 
 
@@ -15,4 +14,4 @@ class ImportedModel(models.Model):
     content_object = GenericForeignKey('content_type', 'content_object_id')
 
     #: JSON data from imported v2 models.
-    data = JSONField(default=dict)
+    data = models.JSONField(default=dict)

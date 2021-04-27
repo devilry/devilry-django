@@ -8,7 +8,6 @@ from io import BytesIO
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.contrib.postgres.fields import JSONField
 from django.utils import timezone
 
 from ievv_opensource.utils import choices_with_meta
@@ -65,7 +64,7 @@ class DevilryReport(models.Model):
     #: JSON-field for generator options that are specific to the ``generator_type``.
     #:
     #: If the generator
-    generator_options = JSONField(null=False, blank=True, default=dict)
+    generator_options = models.JSONField(null=False, blank=True, default=dict)
 
     #: Supported status types.
     STATUS_CHOICES = choices_with_meta.ChoicesWithMeta(
@@ -90,7 +89,7 @@ class DevilryReport(models.Model):
 
     #: The status data of the report generation. Usually only contains data when the some error occurred
     #: during report generation.
-    status_data = JSONField(
+    status_data = models.JSONField(
         null=False, blank=True,
         default=dict
     )

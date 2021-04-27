@@ -90,7 +90,7 @@ class GroupInvite(models.Model):
     sent_by = models.ForeignKey(User, related_name='groupinvite_sent_by_set', on_delete=models.CASCADE)
     sent_to = models.ForeignKey(User, related_name='groupinvite_sent_to_set', on_delete=models.CASCADE)
 
-    accepted = models.NullBooleanField(default=None)
+    accepted = models.BooleanField(null=True, blank=True)
     responded_datetime = models.DateTimeField(
         default=None, blank=True, null=True)
 

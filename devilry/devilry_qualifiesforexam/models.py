@@ -158,7 +158,7 @@ class QualifiesForFinalExam(models.Model):
     status = models.ForeignKey(Status, related_name='students', on_delete=models.CASCADE)
 
     #: ``True`` if the student qualifies for the exam, else ``False``.
-    qualifies = models.NullBooleanField()
+    qualifies = models.BooleanField(null=True)
 
     class Meta:
         unique_together = ('relatedstudent', 'status')

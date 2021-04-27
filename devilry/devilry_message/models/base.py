@@ -9,7 +9,7 @@ from django.db import models, transaction
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.translation import gettext_lazy
-from django.contrib.postgres.fields import ArrayField, JSONField
+from django.contrib.postgres.fields import ArrayField
 from django.utils import translation
 
 from cradmin_legacy.apps.cradmin_email import emailutils
@@ -93,10 +93,10 @@ class Message(models.Model):
     )
 
     #: Extra data for the :obj:`~.Message.status` as JSON.
-    status_data = JSONField(null=False, blank=True, default=dict)
+    status_data = models.JSONField(null=False, blank=True, default=dict)
 
     #: Extra metadata for the message receiver as JSON. This can be anything.
-    metadata = JSONField(null=False, blank=True, default=dict)
+    metadata = models.JSONField(null=False, blank=True, default=dict)
 
     #: The available context types of the message.
     #:
@@ -146,7 +146,7 @@ class Message(models.Model):
     #: Each subclass defines how the dataformat of this field should be.
     #: Override :obj:`.Message.prepare_message_receivers` to create message receivers
     #: from this field.
-    virtual_message_receivers = JSONField(
+    virtual_message_receivers = models.JSONField(
         null=False, blank=True, default=dict)
 
     def prepare_message_receivers(self, subject_generator, template_name, template_context):
@@ -368,10 +368,10 @@ class MessageReceiver(models.Model):
     #: Extra data for the :obj:`~.MessageReceiver.status` as JSON. Typically used to
     #: save responses from the APIs used to send the message, especially
     #: error responses.
-    status_data = JSONField(null=False, blank=True, default=dict)
+    status_data = models.JSONField(null=False, blank=True, default=dict)
 
     #: Extra metadata for the message receiver as JSON. This can be anything.
-    metadata = JSONField(null=False, blank=True, default=dict)
+    metadata = models.JSONField(null=False, blank=True, default=dict)
 
     #: The subject of the message.
     #:

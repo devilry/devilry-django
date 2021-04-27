@@ -659,7 +659,8 @@ class UserEmail(AbstractUserIdentity):
     #: Is this the primary email for the user?
     #: Valid values are: ``None`` and ``True``, and only
     #: one UserEmail per user can have ``is_primary=True``.
-    is_primary = models.NullBooleanField(
+    is_primary = models.BooleanField(
+            null=True, blank=True,
             verbose_name=gettext_lazy('Is this your primary email?'),
             choices=[
                 (None, gettext_lazy('No')),
@@ -717,7 +718,8 @@ class UserName(AbstractUserIdentity):
     #: Is this the primary username for the user?
     #: Valid values are: ``None`` and ``True``, and only
     #: one UserName per user can have ``is_primary=True``.
-    is_primary = models.NullBooleanField(
+    is_primary = models.BooleanField(
+            null=True, blank=True,
             verbose_name=gettext_lazy('Is this your primary username?'),
             choices=[
                 (None, gettext_lazy('No')),
