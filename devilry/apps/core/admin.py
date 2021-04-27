@@ -5,7 +5,7 @@ from django.utils.html import format_html
 
 from devilry.apps.core.models import AssignmentGroup, Subject, Period, Assignment, PeriodTag, \
     CandidateAssignmentGroupHistory, ExaminerAssignmentGroupHistory, Examiner, RelatedStudent, RelatedExaminer, \
-    AssignmentGroupHistory
+    AssignmentGroupHistory, GroupInvite
 from django.utils.translation import gettext_lazy
 
 
@@ -232,6 +232,33 @@ class PeriodTagAdmin(admin.ModelAdmin):
 admin.site.register(PeriodTag, PeriodTagAdmin)
 
 
+class GroupInviteAdmin(admin.ModelAdmin):
+    raw_id_fields = [
+        'group',
+        'sent_by',
+        'sent_to'
+    ]
+
+    list_display = [
+        'group',
+        'sent_by',
+        'sent_to',
+        'accepted',
+        'responded_datetime'
+    ]
+
+    readonly_fields = [
+        'group',
+        'sent_by',
+        'sent_to',
+        'accepted',
+        'responded_datetime'
+    ]
+
+
+admin.site.register(GroupInvite, GroupInviteAdmin)
+
+
 class CandidateAssignmentGroupHistoryAdmin(admin.ModelAdmin):
     raw_id_fields = [
         'assignment_group',
@@ -278,4 +305,3 @@ class ExaminerAssignmentGroupHistoryAdmin(admin.ModelAdmin):
 
 
 admin.site.register(ExaminerAssignmentGroupHistory, ExaminerAssignmentGroupHistoryAdmin)
-
