@@ -26,7 +26,8 @@ class TestGroupInviteErrors(TestCase):
         with self.assertRaisesMessage(
                 ValidationError,
                 'The user sending an invite must be a Candiate on the group.'):
-            invite = GroupInvite(
+            invite = baker.make(
+                'core.GroupInvite',
                 group=testgroup,
                 sent_by=sent_by,
                 sent_to=sent_to
@@ -41,7 +42,8 @@ class TestGroupInviteErrors(TestCase):
         with self.assertRaisesMessage(
                 ValidationError,
                 'The student is already a member of the group.'):
-            invite = GroupInvite(
+            invite = baker.make(
+                'core.GroupInvite',
                 group=testgroup,
                 sent_by=sent_by,
                 sent_to=sent_to
@@ -58,7 +60,8 @@ class TestGroupInviteErrors(TestCase):
         with self.assertRaisesMessage(
                 ValidationError,
                 'The student is already invited to join the group, but they have not responded yet.'):
-            invite = GroupInvite(
+            invite = baker.make(
+                'core.GroupInvite',
                 group=testgroup,
                 sent_by=sent_by,
                 sent_to=sent_to
@@ -78,7 +81,8 @@ class TestGroupInviteErrors(TestCase):
                 'Creating project groups without administrator approval is not '
                 'allowed on this assignment anymore. Please contact you course '
                 'administrator if you think this is wrong.'):
-            invite = GroupInvite(
+            invite = baker.make(
+                'core.GroupInvite',
                 group=testgroup,
                 sent_by=sent_by,
                 sent_to=sent_to
@@ -95,7 +99,8 @@ class TestGroupInviteErrors(TestCase):
         with self.assertRaisesMessage(
                 ValidationError,
                 'This assignment does not allow students to form project groups on their own.'):
-            invite = GroupInvite(
+            invite = baker.make(
+                'core.GroupInvite',
                 group=testgroup,
                 sent_by=sent_by,
                 sent_to=sent_to
@@ -111,7 +116,8 @@ class TestGroupInviteErrors(TestCase):
         with self.assertRaisesMessage(
                 ValidationError,
                 'The invited student is not registered on this assignment.'):
-            invite = GroupInvite(
+            invite = baker.make(
+                'core.GroupInvite',
                 group=testgroup,
                 sent_by=sent_by,
                 sent_to=sent_to
@@ -128,7 +134,8 @@ class TestGroupInviteErrors(TestCase):
         with self.assertRaisesMessage(
                 ValidationError,
                 'The invited student is already in a project group with more than 1 students.'):
-            invite = GroupInvite(
+            invite = baker.make(
+                'core.GroupInvite',
                 group=testgroup,
                 sent_by=sent_by,
                 sent_to=sent_to,
@@ -141,7 +148,8 @@ class TestGroupInviteErrors(TestCase):
         testgroup1 = baker.make('core.AssignmentGroup', parentnode=testgroup.parentnode)
         sent_by = core_baker.candidate(testgroup).relatedstudent.user
         sent_to = core_baker.candidate(testgroup1).relatedstudent.user
-        invite = GroupInvite(
+        invite = baker.make(
+            'core.GroupInvite',
             group=testgroup,
             sent_by=sent_by,
             sent_to=sent_to
@@ -157,7 +165,8 @@ class TestGroupInviteErrors(TestCase):
         testgroup1 = baker.make('core.AssignmentGroup', parentnode=testgroup.parentnode)
         sent_by = core_baker.candidate(testgroup).relatedstudent.user
         sent_to = core_baker.candidate(testgroup1).relatedstudent.user
-        invite = GroupInvite(
+        invite = baker.make(
+            'core.GroupInvite',
             group=testgroup,
             sent_by=sent_by,
             sent_to=sent_to,
