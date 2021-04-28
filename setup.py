@@ -29,7 +29,6 @@ setup(
         'django==3.1.*',
         'URLObject==2.4.*',
         'mimeparse==0.1.*',
-        'django_errortemplates==1.0.*',
         'numpy==1.19.*',
         'anyjson==0.3.*',
         'rq==1.8.*',
