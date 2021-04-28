@@ -1,16 +1,18 @@
-.. _5.1.0rc2changelog:
+.. _5.1.0rc3changelog:
 
 ###############################
-What is new in Devilry 5.1.0rc2
+What is new in Devilry 5.1.0rc3
 ###############################
 
-New
-###
+
+What's new
+##########
 
 - Updated to Django 3.1.*
 - Replaced model_mommy model-fixture package with model_bakery
 - Add tag-filter option for students/examiners with no PeriodTags
 - Examiners can filter students/groups by PeriodTags
+- devilry_errortemplates: New app for handling custom error templates
 
 
 Fixes
@@ -20,3 +22,4 @@ Fixes
 - Added missing admin-model for GroupInvite
 - NullBooleanField: Migrated to BooleanField(null=True, ...). NullBooleanField is deprecated in Django 3, and will be removed in Django 4.
 - JSONField: Migration. JSONField is now built-in, and should be imported from django.db.models. django.contrib.postgres.fields.JSONField is deprecated in Django 3, and will be removed in Django 4.
+- Removed django_errortemplates as requirement, replaced with django_errortemplates instead.
