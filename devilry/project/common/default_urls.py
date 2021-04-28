@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.http import HttpResponseBadRequest, HttpResponsePermanentRedirect
 
+from devilry.project.common.http_error_handlers import *  # noqa
 from devilry.devilry_frontpage import crinstance_frontpage
 
 admin.site.login = login_required(admin.site.login)

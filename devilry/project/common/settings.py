@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'django.forms',
     'django.contrib.sites',  # Required by django-allauth
-    'errortemplates',
     'crispy_forms',
     'gunicorn',
     'ievv_opensource.ievvtasks_common',
@@ -69,7 +68,8 @@ INSTALLED_APPS = [
     'devilry.devilry_markup',
     'devilry.devilry_superadmin',
     'devilry.devilry_authenticate',
-
+    
+    'devilry.devilry_errortemplates',
     'devilry.devilry_help',
     'devilry.devilry_theme3',
     'devilry.devilry_header',
