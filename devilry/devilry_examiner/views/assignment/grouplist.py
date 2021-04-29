@@ -216,6 +216,9 @@ class GroupListView(listbuilderview.FilterListMixin,
                         output_field=models.CharField()
                     )))
 
+    def use_pagination_load_all(self):
+        return True
+
     def get_context_data(self, **kwargs):
         context = super(GroupListView, self).get_context_data(**kwargs)
         context['assignment'] = self.assignment

@@ -26,7 +26,7 @@ from devilry.devilry_cradmin.devilry_listfilter.utils import WithResultValueRend
 class GroupViewMixin(object):
     model = coremodels.AssignmentGroup
     filterview_name = None
-    paginate_by = 10
+    paginate_by = 20
 
     def dispatch(self, request, *args, **kwargs):
         self.assignment = self.request.cradmin_role
@@ -161,6 +161,10 @@ class GroupViewMixin(object):
 
 class BaseInfoView(GroupViewMixin, listbuilderview.FilterListMixin, listbuilderview.View):
     template_name = 'devilry_admin/assignment/students/groupview_base/base-info-view.django.html'
+    paginate_by = 20
+
+    def use_pagination_load_all(self):
+        return True
 
     def get_value_renderer_class(self):
         devilryrole = self.request.cradmin_instance.get_devilryrole_for_requestuser()
