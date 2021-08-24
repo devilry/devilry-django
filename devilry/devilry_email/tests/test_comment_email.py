@@ -1,5 +1,5 @@
 import htmls
-from django.template import defaultfilters
+
 from django import test
 from django.conf import settings
 from django.core import mail
@@ -11,8 +11,8 @@ from model_bakery import baker
 from devilry.devilry_comment.models import Comment
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_baker_factories as group_baker
-from devilry.devilry_email.comment_email.comment_email import send_comment_email, send_student_comment_email, \
-    send_examiner_comment_email, bulk_send_comment_email_to_students_and_examiners
+from devilry.devilry_email.comment_email.comment_email import send_student_comment_email, \
+    send_examiner_comment_email
 from devilry.devilry_message.models import Message, MessageReceiver
 
 
@@ -125,9 +125,13 @@ class TestStudentCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
             self.assertTrue(htmls.S(outbox.message().as_string()).exists('.devilry-email-comment-uploaded-files'))
             self.assertEqual(
                 htmls.S(outbox.message().as_string()).one('.devilry-email-comment-uploaded-files > p')
-                    .alltext_normalized,
+                     .alltext_normalized,
                 'Uploaded files:')
-            file_meta_list = [elem.alltext_normalized for elem in htmls.S(outbox.message().as_string()).list('.devilry-email-comment-uploaded-file-meta')]
+            file_meta_list = [
+                elem.alltext_normalized for elem in htmls.S(outbox.message().as_string()).list(
+                    '.devilry-email-comment-uploaded-file-meta'
+                )
+            ]
             self.assertIn('{} (5.5 KB)'.format(commentfile1.filename, commentfile1.filesize), file_meta_list)
             self.assertIn('{} (3.5 KB)'.format(commentfile2.filename, commentfile2.filesize), file_meta_list)
 
@@ -344,6 +348,39 @@ class TestExaminerCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
+    def test_send_examiner_comment_no_examiner_asigned(self):
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           long_name='Assignment 1')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        test_feedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
+
+        permission_group = baker.make(
+            'devilry_account.PermissionGroup'
+        )
+        period_permission_group = baker.make(
+            'devilry_account.PeriodPermissionGroup',
+            period=testassignment.period,
+            permissiongroup=permission_group
+        )
+
+        # Another user on the group
+        self._make_studentuser_with_email(group=testgroup, email='student@example.com')
+
+        # The user that posted the comment
+        comment_user = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com')
+        baker.make('core.Candidate', assignment_group=test_feedbackset.group, relatedstudent__user=comment_user)
+        test_groupcomment = baker.make('devilry_group.GroupComment',
+                                       feedback_set=test_feedbackset,
+                                       text='This is a test',
+                                       user_role=Comment.USER_ROLE_STUDENT,
+                                       user=comment_user)
+        baker.make('devilry_account.UserEmail', user=comment_user, email='testuser@example.com')
+        send_examiner_comment_email(
+            comment_id=test_groupcomment.id,
+            domain_url_start='http://www.example.com/',)
+
+        self.assertEqual(len(mail.outbox), 1)
+
     def test_send_examiner_comment_body(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            long_name='Assignment 1')
@@ -419,9 +456,13 @@ class TestExaminerCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
         self.assertTrue(htmls.S(mail.outbox[0].message().as_string()).exists('.devilry-email-comment-uploaded-files'))
         self.assertEqual(
             htmls.S(mail.outbox[0].message().as_string()).one('.devilry-email-comment-uploaded-files > p')
-                .alltext_normalized,
+                 .alltext_normalized,
             'Uploaded files:')
-        file_meta_list = [elem.alltext_normalized for elem in htmls.S(mail.outbox[0].message().as_string()).list('.devilry-email-comment-uploaded-file-meta')]
+        file_meta_list = [
+            elem.alltext_normalized for elem in htmls.S(mail.outbox[0].message().as_string()).list(
+                '.devilry-email-comment-uploaded-file-meta'
+            )
+        ]
         self.assertIn('{} (5.5 KB)'.format(commentfile1.filename, commentfile1.filesize), file_meta_list)
         self.assertIn('{} (3.5 KB)'.format(commentfile2.filename, commentfile2.filesize), file_meta_list)
 
