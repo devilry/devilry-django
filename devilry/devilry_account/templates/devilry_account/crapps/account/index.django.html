@@ -7,12 +7,13 @@
 {% endblock title %}
 
 {% block pageheader-inner %}
-    <h1 class="test-primary-h1">{% trans "Account overview" %}</h1>
+    <h1 class="test-primary-h1">{{ request.user.get_displayname }} - {% trans "Account" %}</h1>
 {% endblock pageheader-inner %}
 
 {% block content %}
     <div class="container">
         <div class="devilry-dashboard-container">
+        <h2>{% trans "Account overview" %}</h2>
 
             <h3>{% trans "Name" %}</h3>
             <p class="test-fullname">
