@@ -6,6 +6,13 @@
 <span class="devilry_email_comment_added_datetime">{% trans "Added datetime" context "devilry comment email" %}: {{ comment.published_datetime|date:"DATETIME_FORMAT" }}</span>
 <br><br>
 
+{% if not has_examiner %}
+    <span class="devilry_email_comment_no_examiner">
+        {% trans "You are receiving this email since the assignment is missing examiners." context "devilry comment email" %}
+    </span>
+    <br><br>
+{% endif %}
+
 {% if comment.text %}
     <hr>
     <span class="devilry_email_comment_text">

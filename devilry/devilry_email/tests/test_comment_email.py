@@ -348,7 +348,7 @@ class TestExaminerCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
-    def test_send_examiner_comment_no_examiner_asigned(self):
+    def test_send_examiner_comment_no_examiner_assigned_body(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            long_name='Assignment 1')
         testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
@@ -357,14 +357,18 @@ class TestExaminerCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
         permission_group = baker.make(
             'devilry_account.PermissionGroup'
         )
-        period_permission_group = baker.make(
+        baker.make(
             'devilry_account.PeriodPermissionGroup',
             period=testassignment.period,
             permissiongroup=permission_group
         )
-
-        # Another user on the group
-        self._make_studentuser_with_email(group=testgroup, email='student@example.com')
+        admin_user = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('devilry_account.UserEmail', user=admin_user, email='admin@example.com')
+        baker.make(
+            'devilry_account.PermissionGroupUser',
+            permissiongroup=permission_group,
+            user=admin_user
+        )
 
         # The user that posted the comment
         comment_user = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com')
@@ -380,6 +384,31 @@ class TestExaminerCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
             domain_url_start='http://www.example.com/',)
 
         self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].recipients(), ['admin@example.com'])
+        for outbox in mail.outbox:
+            self.assertEqual(
+                htmls.S(outbox.message().as_string()).one('.devilry_email_comment_assignment').alltext_normalized,
+                'Assignment: {}'.format(testassignment.long_name)
+            )
+            self.assertEqual(
+                htmls.S(outbox.message().as_string()).one('.devilry_email_comment_no_examiner').alltext_normalized,
+                'You are receiving this email since the assignment is missing examiners.'
+            )
+            self.assertEqual(
+                htmls.S(outbox.message().as_string()).one('.devilry_email_comment_text').alltext_normalized,
+                'This is a test'
+            )
+            self.assertEqual(
+                htmls.S(outbox.message().as_string()).one('.devilry_email_comment_detail_text').alltext_normalized,
+                'See the delivery feed for more details:'
+            )
+            url = reverse_cradmin_url(instanceid='devilry_group_examiner', appname='feedbackfeed',
+                                      roleid=testgroup.id)
+            link_url = 'http://www.example.com' + url
+            self.assertEqual(
+                link_url,
+                htmls.S(outbox.message().as_string()).one('.devilry_email_comment_detail_url').alltext_normalized
+            )
 
     def test_send_examiner_comment_body(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',

@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-
-
 import logging
-from django.db import models
-
 import django_rq
+
+from django.contrib.auth import get_user_model
+from django.db import models
 from django.utils.translation import gettext, gettext_lazy
 
 from devilry.devilry_account.models import (
@@ -14,10 +13,11 @@ from devilry.devilry_account.models import (
     SubjectPermissionGroup
 )
 from devilry.devilry_comment.models import Comment
-from devilry.devilry_email.utils import (activate_translation_for_user,
-                                         build_feedbackfeed_absolute_url,
-                                         get_examiner_users_in_group,
-                                         get_student_users_in_group)
+from devilry.devilry_email.utils import (
+    build_feedbackfeed_absolute_url,
+    get_examiner_users_in_group,
+    get_student_users_in_group
+)
 from devilry.devilry_message.utils.subject_generator import \
     SubjectTextGenerator
 
@@ -94,9 +94,10 @@ def get_examiner_users_not_comment_poster(group, exclude_user=None):
     return queryset.exclude(id=exclude_user.id)
 
 
-def get_subject_and_period_admins(group):
+def get_subject_and_period_admins_users(group):
     """
-    Get all subject and period admins for a group
+    Get all User objects where the user is :class:`~.devilry.devilry_core.models.Subject`
+    or :class:`~.devilry.devilry_core.models.Period` admins for the assignment group.
     """
     period_permissiongroups = PeriodPermissionGroup.objects \
         .filter(period=group.parentnode.period) \
@@ -113,10 +114,12 @@ def get_subject_and_period_admins(group):
         .filter(permissiongroup__in=permissiongroups) \
         .values_list('user', flat=True)
 
-    return admin_users
+    users = get_user_model().objects.filter(id__in=admin_users).exclude(is_superuser=True)
+
+    return users
 
 
-def send_comment_email(comment, user_list, feedbackfeed_url, crinstance_id, domain_scheme, subject_generator=None):
+def send_comment_email(comment, user_list, feedbackfeed_url, crinstance_id, domain_scheme, subject_generator=None, has_examiner=True):
     """
     Do not use this directly. Use ``send_examiner_comment_email`` or ``send_student_comment_email``.
 
@@ -135,6 +138,8 @@ def send_comment_email(comment, user_list, feedbackfeed_url, crinstance_id, doma
 
         subject: Can be given a customized subject, if ``None``, a standard subject is created based on who
             created the comment.
+
+        has_examiner: Boolean which defaults to True. Sets extra info in email if False
     """
     from devilry.devilry_message.models import Message
     template_name = 'devilry_email/comment_email/comment.txt'
@@ -147,7 +152,8 @@ def send_comment_email(comment, user_list, feedbackfeed_url, crinstance_id, doma
         'comment': comment,
         'domain_scheme': domain_scheme,
         'crinstance_id': crinstance_id,
-        'url': feedbackfeed_url
+        'url': feedbackfeed_url,
+        'has_examiner': has_examiner
     }
     if not subject_generator:
         subject_generator = CommentSubjectTextGenerator(comment=comment)
@@ -181,9 +187,9 @@ def send_examiner_comment_email(comment_id, domain_url_start):
 
     The email content will be the same for all examiners.
 
-    If no examiner users exists for the assignment, Subject and Period
-    admins connected to the assignemnt are sat as recipients of the email.
-    This email also has information about why admins are recipients.
+    If no examiner users exists for the assignment, :class:`~.devilry.devilry_core.models.Subject`
+    and :class:`~.devilry.devilry_core.models.Period` admins connected to the assignemnt are sat
+    as recipients of the email and extra info is added in the template.
 
     How do the mails differ?
 
@@ -207,14 +213,17 @@ def send_examiner_comment_email(comment_id, domain_url_start):
     absolute_url = build_feedbackfeed_absolute_url(
         domain_scheme=domain_url_start, group_id=comment.feedback_set.group.id, instance_id='devilry_group_examiner')
     recipients = list(get_examiner_users_not_comment_poster(group=comment.feedback_set.group, exclude_user=comment.user))
+    has_examiner = True
     if not recipients:
-        recipients = list(get_subject_and_period_admins(group=comment.feedback_set.group))
+        recipients = list(get_subject_and_period_admins_users(group=comment.feedback_set.group))
+        has_examiner = False
     send_comment_email(
         comment=comment,
         user_list=recipients,
         feedbackfeed_url=absolute_url,
         crinstance_id='devilry_group_examiner',
-        domain_scheme=domain_url_start
+        domain_scheme=domain_url_start,
+        has_examiner=has_examiner
     )
 
 
