@@ -344,31 +344,208 @@ class TestStudentCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
                 test_feedbackset.group.parentnode.long_name))
 
 
-class TestExaminerCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
+class TestExaminerNotAssignedCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
-    def test_send_examiner_comment_no_examiner_assigned_body(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           long_name='Assignment 1')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        test_feedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-
+    def _setup_period_admin(self, assignment, admin_user=None):
         permission_group = baker.make(
             'devilry_account.PermissionGroup'
         )
         baker.make(
             'devilry_account.PeriodPermissionGroup',
-            period=testassignment.period,
+            period=assignment.period,
             permissiongroup=permission_group
         )
-        admin_user = baker.make(settings.AUTH_USER_MODEL)
-        baker.make('devilry_account.UserEmail', user=admin_user, email='admin@example.com')
+        if not admin_user:
+            admin_user = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('devilry_account.UserEmail', user=admin_user, email='period_admin@example.com')
         baker.make(
             'devilry_account.PermissionGroupUser',
             permissiongroup=permission_group,
             user=admin_user
         )
+
+    def _setup_subject_admin(self, assignment):
+        permission_group = baker.make(
+            'devilry_account.PermissionGroup'
+        )
+        baker.make(
+            'devilry_account.SubjectPermissionGroup',
+            subject=assignment.subject,
+            permissiongroup=permission_group
+        )
+        admin_user = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('devilry_account.UserEmail', user=admin_user, email='subject_admin@example.com')
+        baker.make(
+            'devilry_account.PermissionGroupUser',
+            permissiongroup=permission_group,
+            user=admin_user
+        )
+
+    def _setup_period_and_subject_admins(self, assignment):
+        self._setup_period_admin(assignment=assignment)
+        self._setup_subject_admin(assignment=assignment)
+
+    def test_send_examiner_comment_no_examiner_subject_from_student_after_deadline(self):
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           long_name='Assignment 1')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        test_feedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
+
+        # Another user on the group
+        self._setup_period_and_subject_admins(assignment=testassignment)
+
+        # The user that posted the comment
+        comment_user = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com')
+        baker.make('core.Candidate', assignment_group=test_feedbackset.group, relatedstudent__user=comment_user)
+        test_groupcomment = baker.make('devilry_group.GroupComment',
+                                       feedback_set=test_feedbackset,
+                                       text='This is a test',
+                                       user_role=Comment.USER_ROLE_STUDENT,
+                                       user=comment_user)
+        baker.make('devilry_account.UserEmail', user=comment_user, email='testuser@example.com')
+        send_examiner_comment_email(
+            comment_id=test_groupcomment.id,
+            domain_url_start='http://www.example.com/', )
+
+        self.assertEqual(len(mail.outbox), 2)
+        self.assertIn(mail.outbox[0].recipients()[0], ['period_admin@example.com', 'subject_admin@example.com'])
+        self.assertIn(mail.outbox[1].recipients()[0], ['period_admin@example.com', 'subject_admin@example.com'])
+        self.assertEqual(
+            mail.outbox[0].subject,
+            '[Devilry] A student added a new comment AFTER THE DEADLINE for {}'.format(
+                test_feedbackset.group.parentnode.long_name))
+
+    def test_send_examiner_comment_no_examiner_subject_from_student_before_deadline(self):
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           long_name='Assignment 1')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        test_feedbackset = group_baker.feedbackset_first_attempt_unpublished(
+            group=testgroup, deadline_datetime=timezone.now() + timezone.timedelta(days=1))
+
+        self._setup_period_and_subject_admins(assignment=testassignment)
+
+        # The user that posted the comment
+        comment_user = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com')
+        baker.make('core.Candidate', assignment_group=test_feedbackset.group, relatedstudent__user=comment_user)
+        test_groupcomment = baker.make('devilry_group.GroupComment',
+                                       feedback_set=test_feedbackset,
+                                       text='This is a test',
+                                       user_role=Comment.USER_ROLE_STUDENT,
+                                       user=comment_user)
+        baker.make('devilry_account.UserEmail', user=comment_user, email='testuser@example.com')
+        send_examiner_comment_email(
+            comment_id=test_groupcomment.id,
+            domain_url_start='http://www.example.com/', )
+
+        self.assertEqual(len(mail.outbox), 2)
+        self.assertIn(mail.outbox[0].recipients()[0], ['period_admin@example.com', 'subject_admin@example.com'])
+        self.assertIn(mail.outbox[1].recipients()[0], ['period_admin@example.com', 'subject_admin@example.com'])
+        self.assertEqual(
+            mail.outbox[0].subject,
+            '[Devilry] A student added a new delivery/comment for {}'.format(
+                test_feedbackset.group.parentnode.long_name))
+
+    def test_send_examiner_comment_no_examiner_message_and_message_receivers_created(self):
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           long_name='Assignment 1')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        test_feedbackset = group_baker.feedbackset_first_attempt_unpublished(
+            group=testgroup, deadline_datetime=timezone.now() + timezone.timedelta(days=1))
+
+        admin_user = baker.make(settings.AUTH_USER_MODEL)
+        self._setup_period_admin(assignment=testassignment, admin_user=admin_user)
+
+        # The user that posted the comment
+        comment_user = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com')
+        baker.make('core.Candidate', assignment_group=test_feedbackset.group, relatedstudent__user=comment_user)
+        test_groupcomment = baker.make('devilry_group.GroupComment',
+                                       feedback_set=test_feedbackset,
+                                       text='This is a test',
+                                       user_role=Comment.USER_ROLE_STUDENT,
+                                       user=comment_user)
+        baker.make('devilry_account.UserEmail', user=comment_user, email='testuser@example.com')
+        send_examiner_comment_email(
+            comment_id=test_groupcomment.id,
+            domain_url_start='http://www.example.com/', )
+
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(Message.objects.count(), 1)
+        self.assertEqual(MessageReceiver.objects.count(), 1)
+        self.assertTrue(MessageReceiver.objects.filter(user=admin_user).exists())
+        self.assertEqual(Message.objects.filter(status='sent').count(), 1)
+        self.assertEqual(MessageReceiver.objects.filter(status='sent').count(), 1)
+
+    def test_send_examiner_comment_no_examiner_subject_from_student_another_examiner(self):
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           long_name='Assignment 1')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        test_feedbackset = group_baker.feedbackset_first_attempt_unpublished(
+            group=testgroup, deadline_datetime=timezone.now() + timezone.timedelta(days=1))
+
+        self._setup_period_and_subject_admins(assignment=testassignment)
+
+        # The user that posted the comment
+        comment_user = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com')
+        baker.make('core.Examiner', assignmentgroup=test_feedbackset.group, relatedexaminer__user=comment_user)
+        test_groupcomment = baker.make('devilry_group.GroupComment',
+                                       feedback_set=test_feedbackset,
+                                       text='This is a test',
+                                       user_role=Comment.USER_ROLE_EXAMINER,
+                                       user=comment_user)
+        baker.make('devilry_account.UserEmail', user=comment_user, email='testuser@example.com')
+        send_examiner_comment_email(
+            comment_id=test_groupcomment.id,
+            domain_url_start='http://www.example.com/', )
+
+        self.assertEqual(len(mail.outbox), 2)
+        self.assertIn(mail.outbox[0].recipients()[0], ['period_admin@example.com', 'subject_admin@example.com'])
+        self.assertIn(mail.outbox[1].recipients()[0], ['period_admin@example.com', 'subject_admin@example.com'])
+        self.assertEqual(
+            mail.outbox[0].subject,
+            '[Devilry] An examiner added a new comment for {}'.format(
+                test_feedbackset.group.parentnode.long_name))
+
+    def test_send_examiner_no_examiner_admin_comment(self):
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           long_name='Assignment 1')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        test_feedbackset = group_baker.feedbackset_first_attempt_unpublished(
+            group=testgroup, deadline_datetime=timezone.now() + timezone.timedelta(days=1))
+
+        # Another user on the group
+        self._setup_period_and_subject_admins(assignment=testassignment)
+
+        # The user that posted the comment
+        comment_user = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com')
+        test_groupcomment = baker.make('devilry_group.GroupComment',
+                                       feedback_set=test_feedbackset,
+                                       text='This is a test',
+                                       user_role=Comment.USER_ROLE_ADMIN,
+                                       user=comment_user)
+        baker.make('devilry_account.UserEmail', user=comment_user, email='testuser@example.com')
+        send_examiner_comment_email(
+            comment_id=test_groupcomment.id,
+            domain_url_start='http://www.example.com/', )
+
+        self.assertEqual(len(mail.outbox), 2)
+        self.assertIn(mail.outbox[0].recipients()[0], ['period_admin@example.com', 'subject_admin@example.com'])
+        self.assertIn(mail.outbox[1].recipients()[0], ['period_admin@example.com', 'subject_admin@example.com'])
+        self.assertEqual(
+            mail.outbox[0].subject,
+            '[Devilry] An admin added a new comment for {}'.format(
+                test_feedbackset.group.parentnode.long_name)
+        )
+
+    def test_send_examiner_comment_examiner_assigned_and_subject_admin(self):
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           long_name='Assignment 1')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        test_feedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
+
+        self._setup_subject_admin(assignment=testassignment)
+        self._make_examineruser_with_email(group=testgroup, email='examiner@example.com')
 
         # The user that posted the comment
         comment_user = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com')
@@ -384,7 +561,140 @@ class TestExaminerCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
             domain_url_start='http://www.example.com/',)
 
         self.assertEqual(len(mail.outbox), 1)
-        self.assertEqual(mail.outbox[0].recipients(), ['admin@example.com'])
+        self.assertEqual(mail.outbox[0].recipients(), ['examiner@example.com'])
+        for outbox in mail.outbox:
+            self.assertFalse(htmls.S(outbox.message().as_string()).exists('.devilry_email_comment_no_examiner'))
+
+    def test_send_examiner_comment_examiner_assigned_and_period_admin(self):
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           long_name='Assignment 1')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        test_feedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
+
+        self._setup_period_admin(assignment=testassignment)
+        self._make_examineruser_with_email(group=testgroup, email='examiner@example.com')
+
+        # The user that posted the comment
+        comment_user = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com')
+        baker.make('core.Candidate', assignment_group=test_feedbackset.group, relatedstudent__user=comment_user)
+        test_groupcomment = baker.make('devilry_group.GroupComment',
+                                       feedback_set=test_feedbackset,
+                                       text='This is a test',
+                                       user_role=Comment.USER_ROLE_STUDENT,
+                                       user=comment_user)
+        baker.make('devilry_account.UserEmail', user=comment_user, email='testuser@example.com')
+        send_examiner_comment_email(
+            comment_id=test_groupcomment.id,
+            domain_url_start='http://www.example.com/',)
+
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].recipients(), ['examiner@example.com'])
+        for outbox in mail.outbox:
+            self.assertFalse(htmls.S(outbox.message().as_string()).exists('.devilry_email_comment_no_examiner'))
+
+    def test_send_examiner_comment_examiner_assigned_and_admins(self):
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           long_name='Assignment 1')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        test_feedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
+
+        self._setup_period_and_subject_admins(assignment=testassignment)
+        self._make_examineruser_with_email(group=testgroup, email='examiner@example.com')
+
+        # The user that posted the comment
+        comment_user = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com')
+        baker.make('core.Candidate', assignment_group=test_feedbackset.group, relatedstudent__user=comment_user)
+        test_groupcomment = baker.make('devilry_group.GroupComment',
+                                       feedback_set=test_feedbackset,
+                                       text='This is a test',
+                                       user_role=Comment.USER_ROLE_STUDENT,
+                                       user=comment_user)
+        baker.make('devilry_account.UserEmail', user=comment_user, email='testuser@example.com')
+        send_examiner_comment_email(
+            comment_id=test_groupcomment.id,
+            domain_url_start='http://www.example.com/',)
+
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].recipients(), ['examiner@example.com'])
+        for outbox in mail.outbox:
+            self.assertFalse(htmls.S(outbox.message().as_string()).exists('.devilry_email_comment_no_examiner'))
+
+    def test_send_examiner_no_examiner_period_admin(self):
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           long_name='Assignment 1')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        test_feedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
+
+        self._setup_period_admin(assignment=testassignment)
+
+        # The user that posted the comment
+        comment_user = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com')
+        baker.make('core.Candidate', assignment_group=test_feedbackset.group, relatedstudent__user=comment_user)
+        test_groupcomment = baker.make('devilry_group.GroupComment',
+                                       feedback_set=test_feedbackset,
+                                       text='This is a test',
+                                       user_role=Comment.USER_ROLE_STUDENT,
+                                       user=comment_user)
+        baker.make('devilry_account.UserEmail', user=comment_user, email='testuser@example.com')
+        send_examiner_comment_email(
+            comment_id=test_groupcomment.id,
+            domain_url_start='http://www.example.com/',)
+
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].recipients(), ['period_admin@example.com'])
+        for outbox in mail.outbox:
+            self.assertTrue(htmls.S(outbox.message().as_string()).exists('.devilry_email_comment_no_examiner'))
+
+    def test_send_examiner_no_examiner_subject_admin(self):
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           long_name='Assignment 1')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        test_feedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
+
+        self._setup_subject_admin(assignment=testassignment)
+
+        # The user that posted the comment
+        comment_user = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com')
+        baker.make('core.Candidate', assignment_group=test_feedbackset.group, relatedstudent__user=comment_user)
+        test_groupcomment = baker.make('devilry_group.GroupComment',
+                                       feedback_set=test_feedbackset,
+                                       text='This is a test',
+                                       user_role=Comment.USER_ROLE_STUDENT,
+                                       user=comment_user)
+        baker.make('devilry_account.UserEmail', user=comment_user, email='testuser@example.com')
+        send_examiner_comment_email(
+            comment_id=test_groupcomment.id,
+            domain_url_start='http://www.example.com/',)
+
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].recipients(), ['subject_admin@example.com'])
+        for outbox in mail.outbox:
+            self.assertTrue(htmls.S(outbox.message().as_string()).exists('.devilry_email_comment_no_examiner'))
+
+    def test_send_examiner_comment_no_examiner_body(self):
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           long_name='Assignment 1')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        test_feedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
+
+        self._setup_period_and_subject_admins(assignment=testassignment)
+
+        # The user that posted the comment
+        comment_user = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com')
+        baker.make('core.Candidate', assignment_group=test_feedbackset.group, relatedstudent__user=comment_user)
+        test_groupcomment = baker.make('devilry_group.GroupComment',
+                                       feedback_set=test_feedbackset,
+                                       text='This is a test',
+                                       user_role=Comment.USER_ROLE_STUDENT,
+                                       user=comment_user)
+        baker.make('devilry_account.UserEmail', user=comment_user, email='testuser@example.com')
+        send_examiner_comment_email(
+            comment_id=test_groupcomment.id,
+            domain_url_start='http://www.example.com/',)
+
+        self.assertEqual(len(mail.outbox), 2)
+        self.assertIn(mail.outbox[0].recipients()[0], ['period_admin@example.com', 'subject_admin@example.com'])
+        self.assertIn(mail.outbox[1].recipients()[0], ['period_admin@example.com', 'subject_admin@example.com'])
         for outbox in mail.outbox:
             self.assertEqual(
                 htmls.S(outbox.message().as_string()).one('.devilry_email_comment_assignment').alltext_normalized,
@@ -409,6 +719,50 @@ class TestExaminerCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
                 link_url,
                 htmls.S(outbox.message().as_string()).one('.devilry_email_comment_detail_url').alltext_normalized
             )
+
+    def test_send_examiner_comment_body_comment_with_files(self):
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           long_name='Assignment 1')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        test_feedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
+
+        self._setup_period_admin(assignment=testassignment)
+
+        # The user that posted the comment
+        comment_user = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com')
+        baker.make('core.Candidate', assignment_group=test_feedbackset.group, relatedstudent__user=comment_user)
+        test_groupcomment = baker.make('devilry_group.GroupComment',
+                                       feedback_set=test_feedbackset,
+                                       text='This is a test',
+                                       user_role=Comment.USER_ROLE_STUDENT,
+                                       user=comment_user)
+        commentfile1 = baker.make('devilry_comment.CommentFile', comment=test_groupcomment, filename='testfile1.py',
+                                  filesize=5600)
+        commentfile2 = baker.make('devilry_comment.CommentFile', comment=test_groupcomment, filename='testfile2.py',
+                                  filesize=3600)
+        baker.make('devilry_account.UserEmail', user=comment_user, email='testuser@example.com')
+        send_examiner_comment_email(
+            comment_id=test_groupcomment.id,
+            domain_url_start='http://www.example.com/')
+
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertTrue(htmls.S(mail.outbox[0].message().as_string()).exists('.devilry-email-comment-uploaded-files'))
+        self.assertEqual(
+            htmls.S(mail.outbox[0].message().as_string()).one('.devilry-email-comment-uploaded-files > p')
+                 .alltext_normalized,
+            'Uploaded files:')
+        file_meta_list = [
+            elem.alltext_normalized for elem in htmls.S(mail.outbox[0].message().as_string()).list(
+                '.devilry-email-comment-uploaded-file-meta'
+            )
+        ]
+        self.assertIn('{} (5.5 KB)'.format(commentfile1.filename, commentfile1.filesize), file_meta_list)
+        self.assertIn('{} (3.5 KB)'.format(commentfile2.filename, commentfile2.filesize), file_meta_list)
+
+
+class TestExaminerCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_send_examiner_comment_body(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -439,6 +793,7 @@ class TestExaminerCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
                 htmls.S(outbox.message().as_string()).one('.devilry_email_comment_assignment').alltext_normalized,
                 'Assignment: {}'.format(testassignment.long_name)
             )
+            self.assertFalse(htmls.S(outbox.message().as_string()).exists('.devilry_email_comment_no_examiner'))
             self.assertEqual(
                 htmls.S(outbox.message().as_string()).one('.devilry_email_comment_text').alltext_normalized,
                 'This is a test'

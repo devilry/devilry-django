@@ -212,7 +212,8 @@ def send_examiner_comment_email(comment_id, domain_url_start):
     comment = get_comment(comment_id=comment_id)
     absolute_url = build_feedbackfeed_absolute_url(
         domain_scheme=domain_url_start, group_id=comment.feedback_set.group.id, instance_id='devilry_group_examiner')
-    recipients = list(get_examiner_users_not_comment_poster(group=comment.feedback_set.group, exclude_user=comment.user))
+    recipients = list(
+        get_examiner_users_not_comment_poster(group=comment.feedback_set.group, exclude_user=comment.user))
     has_examiner = True
     if not recipients:
         recipients = list(get_subject_and_period_admins_users(group=comment.feedback_set.group))
