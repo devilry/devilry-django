@@ -32,6 +32,8 @@ AUTH_USER_MODEL = 'devilry_account.User'
 LOGIN_REDIRECT_URL = '/'
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
 
 INSTALLED_APPS = [
     'django.contrib.sessions',
