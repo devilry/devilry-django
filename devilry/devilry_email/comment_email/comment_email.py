@@ -101,10 +101,12 @@ def get_subject_and_period_admins_users(group):
     """
     period_permissiongroups = PeriodPermissionGroup.objects \
         .filter(period=group.parentnode.period) \
+        .filter(permissiongroup__grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN) \
         .values_list('permissiongroup_id', flat=True)
 
     subject_permissiongroups = SubjectPermissionGroup.objects \
         .filter(subject=group.parentnode.subject) \
+        .filter(permissiongroup__grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN) \
         .values_list('permissiongroup_id', flat=True)
 
     permissiongroups = PermissionGroup.objects \

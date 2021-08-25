@@ -14,6 +14,7 @@ from devilry.devilry_group import devilry_group_baker_factories as group_baker
 from devilry.devilry_email.comment_email.comment_email import send_student_comment_email, \
     send_examiner_comment_email
 from devilry.devilry_message.models import Message, MessageReceiver
+from devilry.devilry_account.models import PermissionGroup
 
 
 class TestCommentEmail(test.TestCase):
@@ -350,7 +351,8 @@ class TestExaminerNotAssignedCommentEmail(TestCommentEmailForUsersMixin, test.Te
 
     def _setup_period_admin(self, assignment, admin_user=None):
         permission_group = baker.make(
-            'devilry_account.PermissionGroup'
+            'devilry_account.PermissionGroup',
+            grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN
         )
         baker.make(
             'devilry_account.PeriodPermissionGroup',
@@ -368,7 +370,8 @@ class TestExaminerNotAssignedCommentEmail(TestCommentEmailForUsersMixin, test.Te
 
     def _setup_subject_admin(self, assignment):
         permission_group = baker.make(
-            'devilry_account.PermissionGroup'
+            'devilry_account.PermissionGroup',
+            grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN
         )
         baker.make(
             'devilry_account.SubjectPermissionGroup',
@@ -383,9 +386,58 @@ class TestExaminerNotAssignedCommentEmail(TestCommentEmailForUsersMixin, test.Te
             user=admin_user
         )
 
+    def _setup_department_admin(self, assignment):
+        permission_group = baker.make(
+            'devilry_account.PermissionGroup',
+            grouptype=PermissionGroup.GROUPTYPE_DEPARTMENTADMIN
+        )
+        baker.make(
+            'devilry_account.SubjectPermissionGroup',
+            subject=assignment.subject,
+            permissiongroup=permission_group
+        )
+        admin_user = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('devilry_account.UserEmail', user=admin_user, email='department_admin@example.com')
+        baker.make(
+            'devilry_account.PermissionGroupUser',
+            permissiongroup=permission_group,
+            user=admin_user
+        )
+
     def _setup_period_and_subject_admins(self, assignment):
         self._setup_period_admin(assignment=assignment)
         self._setup_subject_admin(assignment=assignment)
+
+    def test_does_not_send_email_to_department_admins_sanity(self):
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           long_name='Assignment 1')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        test_feedbackset = group_baker.feedbackset_first_attempt_unpublished(
+            group=testgroup, deadline_datetime=timezone.now() + timezone.timedelta(days=1))
+
+        # Setup admins.
+        self._setup_period_and_subject_admins(assignment=testassignment)
+        self._setup_department_admin(assignment=testassignment)
+
+        # The user that posted the comment
+        comment_user = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com')
+        baker.make('core.Candidate', assignment_group=test_feedbackset.group, relatedstudent__user=comment_user)
+        test_groupcomment = baker.make('devilry_group.GroupComment',
+                                       feedback_set=test_feedbackset,
+                                       text='This is a test',
+                                       user_role=Comment.USER_ROLE_STUDENT,
+                                       user=comment_user)
+        baker.make('devilry_account.UserEmail', user=comment_user, email='testuser@example.com')
+        send_examiner_comment_email(
+            comment_id=test_groupcomment.id,
+            domain_url_start='http://www.example.com/', )
+
+        self.assertEqual(len(mail.outbox), 2)
+
+        self.assertNotEqual(mail.outbox[0].recipients()[0], ['department_admin@example.com'])
+        self.assertNotEqual(mail.outbox[1].recipients()[0], ['department_admin@example.com'])
+        self.assertIn(mail.outbox[0].recipients()[0], ['period_admin@example.com', 'subject_admin@example.com'])
+        self.assertIn(mail.outbox[1].recipients()[0], ['period_admin@example.com', 'subject_admin@example.com'])
 
     def test_send_examiner_comment_no_examiner_subject_from_student_after_deadline(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -702,7 +754,7 @@ class TestExaminerNotAssignedCommentEmail(TestCommentEmailForUsersMixin, test.Te
             )
             self.assertEqual(
                 htmls.S(outbox.message().as_string()).one('.devilry_email_comment_no_examiner').alltext_normalized,
-                'You are receiving this email since the assignment is missing examiners.'
+                'You are receiving this e-mail because no examiners are assigned to the project group.'
             )
             self.assertEqual(
                 htmls.S(outbox.message().as_string()).one('.devilry_email_comment_text').alltext_normalized,
