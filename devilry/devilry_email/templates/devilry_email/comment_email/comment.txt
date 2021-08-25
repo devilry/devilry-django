@@ -8,7 +8,9 @@
 
 {% if not has_examiner %}
     <span class="devilry_email_comment_no_examiner">
-        {% trans "You are receiving this email since the assignment is missing examiners." context "devilry comment email" %}
+        <strong>
+            {% trans "You are receiving this e-mail because no examiners are assigned to the project group." context "devilry comment email" %}
+        </strong>
     </span>
     <br><br>
 {% endif %}
