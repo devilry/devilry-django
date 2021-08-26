@@ -2453,16 +2453,19 @@ class TestAssignmentGroupQuerysetAnnotateWithIsWaitingForDeliveries(TestCase):
         self.assertTrue(annotated_group.annotated_is_waiting_for_deliveries)
 
     def test_multiple_groups(self):
+        deadline_datetime_start = default_timezone_datetime(2000, 1, 1, 0, 59)
+        deadline_datetime_end = default_timezone_datetime(5999, 12, 31, 23, 59)
+
         testgroup1 = baker.make('core.AssignmentGroup',
-                                parentnode__first_deadline=ACTIVE_PERIOD_END)
+                                parentnode__first_deadline=deadline_datetime_end)
         testgroup2 = baker.make('core.AssignmentGroup',
-                                parentnode__first_deadline=ACTIVE_PERIOD_START)
+                                parentnode__first_deadline=deadline_datetime_start)
         testgroup3 = baker.make('core.AssignmentGroup',
-                                parentnode__first_deadline=ACTIVE_PERIOD_START)
+                                parentnode__first_deadline=deadline_datetime_start)
         testgroup4 = baker.make('core.AssignmentGroup',
-                                parentnode__first_deadline=ACTIVE_PERIOD_START)
+                                parentnode__first_deadline=deadline_datetime_start)
         testgroup5 = baker.make('core.AssignmentGroup',
-                                parentnode__first_deadline=ACTIVE_PERIOD_START)
+                                parentnode__first_deadline=deadline_datetime_start)
 
         # Should be waiting for deliveries
         devilry_group_baker_factories.feedbackset_first_attempt_unpublished(
@@ -2471,7 +2474,7 @@ class TestAssignmentGroupQuerysetAnnotateWithIsWaitingForDeliveries(TestCase):
             group=testgroup2)
         devilry_group_baker_factories.feedbackset_new_attempt_unpublished(
             group=testgroup2,
-            deadline_datetime=ACTIVE_PERIOD_END)
+            deadline_datetime=deadline_datetime_end)
 
         # Should not be waiting for deliveries
         devilry_group_baker_factories.feedbackset_first_attempt_published(

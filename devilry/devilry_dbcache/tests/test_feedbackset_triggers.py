@@ -186,7 +186,7 @@ class TestFeedbackSetTriggers(test.TestCase):
         group = baker.make('core.AssignmentGroup', parentnode=assignment)
         group_baker.feedbackset_first_attempt_published(group=group)
         new_attempt_deadline = timezone.localtime(timezone.now() + timezone.timedelta(days=1))
-        new_attempt_deadline = new_attempt_deadline.replace(microsecond=0)
+        new_attempt_deadline = new_attempt_deadline.replace(microsecond=0, second=59)
         feedback_set_new_attempt = group_baker.feedbackset_new_attempt_unpublished(
             group=group,
             deadline_datetime=new_attempt_deadline)

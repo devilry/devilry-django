@@ -547,6 +547,10 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testuser = baker.make(settings.AUTH_USER_MODEL)
         testgroup = baker.make('core.AssignmentGroup',
                                parentnode=baker.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        assignment = Assignment.objects.first()
+        assignment._clean_first_deadline(errors={})
+        assignment.save()
+        assignment.refresh_from_db()
         baker.make('core.Candidate',
                    relatedstudent__user=testuser,
                    assignment_group=testgroup)

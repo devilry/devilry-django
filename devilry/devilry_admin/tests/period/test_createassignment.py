@@ -652,7 +652,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(created_assignment.long_name, 'Test assignment')
         self.assertEqual(created_assignment.short_name, 'testassignment')
         self.assertEqual(
-            ACTIVE_PERIOD_END,
+            ACTIVE_PERIOD_END.replace(second=59),
             created_assignment.first_deadline)
 
     def test_post_success_redirect(self):
@@ -685,7 +685,9 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
             first_deadline=ASSIGNMENT_FUTUREPERIOD_START_FIRST_DEADLINE,
             publishing_time_delay_minutes=60
         )
-        self.assertEqual(created_assignment.publishing_time, (period.start_time + timedelta(minutes=60)))
+        self.assertEqual(
+            created_assignment.publishing_time.replace(second=59), (period.start_time + timedelta(minutes=60))
+        )
 
     def test_post_add_no_students(self):
         period = baker.make_recipe('devilry.apps.core.period_active')

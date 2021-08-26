@@ -147,7 +147,7 @@ class TestManageDeadlineNewAttemptAllGroupsView(AdminTestCaseMixin):
         baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
         baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         new_deadline = timezone.now() + timezone.timedelta(days=3)
-        new_deadline = new_deadline.replace(microsecond=0)
+        new_deadline = new_deadline.replace(microsecond=0, second=59)
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
             cradmin_instance=self._get_mock_instance(testassignment),
@@ -284,7 +284,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(AdminTestCaseMixin):
         baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
         baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         new_deadline = timezone.now() + timezone.timedelta(days=3)
-        new_deadline = new_deadline.replace(microsecond=0)
+        new_deadline = new_deadline.replace(microsecond=0, second=59)
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
             cradmin_instance=self._get_mock_instance(testassignment),
@@ -401,7 +401,7 @@ class TestManageDeadlineNewAttemptFromPreviousView(AdminTestCaseMixin):
         baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
         baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         new_deadline = timezone.now() + timezone.timedelta(days=3)
-        new_deadline = new_deadline.replace(microsecond=0)
+        new_deadline = new_deadline.replace(microsecond=0, second=59)
         self.mock_postrequest(
             cradmin_role=testassignment,
             cradmin_instance=self._get_mock_instance(testassignment),
@@ -519,7 +519,7 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(AdminTestCaseMixin):
         baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
         baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         new_deadline = timezone.now() + timezone.timedelta(days=3)
-        new_deadline = new_deadline.replace(microsecond=0)
+        new_deadline = new_deadline.replace(microsecond=0, second=59)
         self.mock_postrequest(
             cradmin_role=testassignment,
             cradmin_instance=self._get_mock_instance(testassignment),

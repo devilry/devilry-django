@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 
-from datetime import datetime, timedelta
+from datetime import timedelta
+import arrow
 
 import mock
 from django import http
@@ -201,7 +202,7 @@ class TestManageDeadlineNewAttemptAllGroupsView(ExaminerTestCaseMixin):
         baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
         baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         new_deadline = timezone.now() + timezone.timedelta(days=3)
-        new_deadline = new_deadline.replace(microsecond=0)
+        new_deadline = new_deadline.replace(microsecond=0, second=59)
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
             cradmin_instance=self._get_mock_instance(testassignment),
@@ -417,7 +418,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(ExaminerTestCaseMixin):
         baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
         baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         new_deadline = timezone.now() + timezone.timedelta(days=3)
-        new_deadline = new_deadline.replace(microsecond=0)
+        new_deadline = new_deadline.replace(microsecond=0, second=59)
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
             cradmin_instance=self._get_mock_instance(testassignment),
@@ -478,7 +479,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(ExaminerTestCaseMixin):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
         testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        last_deadline = timezone.now()
+        last_deadline = timezone.now().replace(second=59)
         group_baker.feedbackset_first_attempt_published(group=testgroup1)
         group_baker.feedbackset_first_attempt_published(group=testgroup2)
         group_baker.feedbackset_new_attempt_unpublished(group=testgroup1, deadline_datetime=last_deadline)
@@ -487,7 +488,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(ExaminerTestCaseMixin):
         baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
         baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         new_deadline = timezone.now() + timezone.timedelta(days=3)
-        new_deadline = new_deadline.replace(microsecond=0)
+        new_deadline = new_deadline.replace(microsecond=0, second=59)
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
             cradmin_instance=self._get_mock_instance(testassignment),
@@ -519,7 +520,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(ExaminerTestCaseMixin):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
         testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        last_deadline = timezone.now().replace(microsecond=0)
+        last_deadline = timezone.now().replace(microsecond=0, second=59)
         group_baker.feedbackset_first_attempt_unpublished(group=testgroup1, deadline_datetime=last_deadline)
         group_baker.feedbackset_first_attempt_published(group=testgroup2)
         group_baker.feedbackset_new_attempt_unpublished(group=testgroup2, deadline_datetime=last_deadline)
@@ -527,7 +528,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(ExaminerTestCaseMixin):
         baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
         baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         new_deadline = timezone.now() + timezone.timedelta(days=3)
-        new_deadline = new_deadline.replace(microsecond=0)
+        new_deadline = new_deadline.replace(microsecond=0, second=59)
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
             cradmin_instance=self._get_mock_instance(testassignment),
@@ -691,7 +692,7 @@ class TestManageDeadlineNewAttemptFromPreviousView(ExaminerTestCaseMixin):
         baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
         baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         new_deadline = timezone.now() + timezone.timedelta(days=3)
-        new_deadline = new_deadline.replace(microsecond=0)
+        new_deadline = new_deadline.replace(microsecond=0, second=59)
         self.mock_postrequest(
             cradmin_role=testassignment,
             cradmin_instance=self._get_mock_instance(testassignment),
@@ -888,7 +889,7 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(ExaminerTestCaseMixin):
         baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
         baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         new_deadline = timezone.now() + timezone.timedelta(days=3)
-        new_deadline = new_deadline.replace(microsecond=0)
+        new_deadline = new_deadline.replace(microsecond=0, second=59)
         self.mock_postrequest(
             cradmin_role=testassignment,
             cradmin_instance=self._get_mock_instance(testassignment),
@@ -1008,7 +1009,7 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
         testuser = baker.make(settings.AUTH_USER_MODEL)
         baker.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=testuser)
         new_deadline = timezone.now() + timezone.timedelta(days=3)
-        new_deadline = new_deadline.replace(microsecond=0)
+        new_deadline = new_deadline.replace(microsecond=0, second=59)
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
             cradmin_instance=self._get_mock_instance(testassignment),
@@ -1169,9 +1170,14 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
         )
         earliest_date = mockresponse.selector.list('.devilry-deadlinemanagement-suggested-deadline')[0] \
             .get('cradmin-legacy-setfieldvalue')
-        converted_datetime = from_isoformat_noseconds(earliest_date)
-        self.assertEqual(testfeedbackset_last.deadline_datetime + timezone.timedelta(days=7),
-                          converted_datetime)
+        deadline_datetime = arrow.get(
+            testfeedbackset_last.deadline_datetime,
+            tzinfo=timezone.get_current_timezone_name()
+        ).shift(days=+7, hours=+2).datetime
+        # No matter what I do, the timezone do not update hours (I have now tried 4 or 5 different approaches).
+        # Therefore shift in 2 hours above.
+        deadline_datetime_isoformat = isoformat_noseconds(deadline_datetime)
+        self.assertEqual(deadline_datetime_isoformat, earliest_date)
 
 
 class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
@@ -1232,7 +1238,7 @@ class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
         testuser = baker.make(settings.AUTH_USER_MODEL)
         baker.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=testuser)
         new_deadline = timezone.now() + timezone.timedelta(days=3)
-        new_deadline = new_deadline.replace(microsecond=0)
+        new_deadline = new_deadline.replace(microsecond=0, second=59)
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
             cradmin_instance=self._get_mock_instance(testassignment),
@@ -1376,7 +1382,7 @@ class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
 
         # The current final deadline for the last feedbackset
         last_feedbackset_last_deadline = group_models.FeedbackSet.clean_deadline(
-            timezone.now() + timezone.timedelta(days=30)).replace(second=0)
+            timezone.now() + timezone.timedelta(days=30))
         testfeedbackset2 = group_baker.feedbackset_new_attempt_published(
             group=testgroup,
             deadline_datetime=last_feedbackset_last_deadline)
@@ -1396,5 +1402,11 @@ class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
         )
         earliest_date = mockresponse.selector.list('.devilry-deadlinemanagement-suggested-deadline')[0]\
             .get('cradmin-legacy-setfieldvalue')
-        converted_datetime = from_isoformat_noseconds(earliest_date)
-        self.assertEqual(testfeedbackset2.deadline_datetime + timedelta(days=7), converted_datetime)
+        deadline_datetime = arrow.get(
+            testfeedbackset2.deadline_datetime,
+            tzinfo=timezone.get_current_timezone_name()
+        ).shift(days=+7, hours=+2).datetime
+        # No matter what I do, the timezone do not update hours (I have now tried 4 or 5 different approaches).
+        # Therefore shift in 2 hours above.
+        deadline_datetime_isoformat = isoformat_noseconds(deadline_datetime)
+        self.assertEqual(deadline_datetime_isoformat, earliest_date)

@@ -1,4 +1,5 @@
 from datetime import timedelta
+from devilry.utils.datetimeutils import default_timezone_datetime
 
 from django.conf import settings
 from django.test import TestCase
@@ -23,6 +24,20 @@ from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
 class TestAssignment(TestCase):
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_clean_first_deadline(self):
+        assignment1 = baker.make('core.Assignment', first_deadline=default_timezone_datetime(2021, 8, 1, 23, 59, 0))
+        assignment2 = baker.make('core.Assignment', first_deadline=default_timezone_datetime(2021, 8, 1, 10, 23, 0))
+
+        assignment1._clean_first_deadline(errors={})
+        assignment2._clean_first_deadline(errors={})
+        assignment1.save()
+        assignment2.save()
+        assignment1.refresh_from_db()
+        assignment2.refresh_from_db()
+
+        self.assertEqual(assignment1.first_deadline.second, 59)
+        self.assertEqual(assignment2.first_deadline.second, 59)
 
     def test_points_is_passing_grade(self):
         assignment1 = PeriodBuilder.quickadd_ducku_duck1010_active()\
@@ -1113,6 +1128,9 @@ class TestAssignmentQuerySetAnnotateWithWaitingForFeedback(TestCase):
     def test_match_multiple_groups(self):
         assignment = baker.make('core.Assignment',
                                 first_deadline=ACTIVE_PERIOD_START)
+        assignment._clean_first_deadline(errors={})
+        assignment.save()
+        assignment.refresh_from_db()
 
         # These should match
         group1 = baker.make('core.AssignmentGroup', parentnode=assignment)
@@ -1123,7 +1141,7 @@ class TestAssignmentQuerySetAnnotateWithWaitingForFeedback(TestCase):
             group=group2)
         devilry_group_baker_factories.feedbackset_new_attempt_unpublished(
             group=group2,
-            deadline_datetime=timezone.now())
+            deadline_datetime=timezone.now().replace(second=59))
 
         # These should not match
         group2 = baker.make('core.AssignmentGroup', parentnode=assignment)

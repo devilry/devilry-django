@@ -134,7 +134,10 @@ class DeadlineManager(models.Manager):
 
 
 class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCandidate):
-    """ A deadline on an `AssignmentGroup`_. A deadline contains zero or more
+    """ 
+    DEPRECATED!!!
+
+    A deadline on an `AssignmentGroup`_. A deadline contains zero or more
     `deliveries <Delivery>`_, the time of the deadline and an optional text.
 
     .. attribute:: assignment_group

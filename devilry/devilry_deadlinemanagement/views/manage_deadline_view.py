@@ -60,6 +60,10 @@ class ManageDeadlineForm(SelectedItemsForm):
     def get_minimum_datetime(self):
         return timezone.now().replace(microsecond=0)
 
+    def clean_new_deadline(self):
+        new_deadline = self.cleaned_data['new_deadline']
+        return new_deadline.replace(second=59)
+
     def clean(self):
         super(ManageDeadlineForm, self).clean()
         if 'new_deadline' not in self.cleaned_data:

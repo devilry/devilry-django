@@ -436,7 +436,7 @@ class FeedbackSet(models.Model):
 
     @classmethod
     def clean_deadline(cls, deadline_datetime):
-        return deadline_datetime.replace(microsecond=0)
+        return deadline_datetime.replace(second=59, microsecond=0)
 
     @property
     def is_merge_type(self):

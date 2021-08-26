@@ -232,6 +232,9 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, mixin_feedbackfeed_exami
 
     def test_post_first_attempt_draft_appear_before_grading_event(self):
         assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_end')
+        assignment._clean_first_deadline(errors={})
+        assignment.save()
+        assignment.refresh_from_db()
         testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
         examiner = baker.make('core.Examiner', assignmentgroup=testfeedbackset.group)
@@ -264,6 +267,9 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, mixin_feedbackfeed_exami
 
     def test_post_first_attempt_two_drafts_appear_before_grading_event(self):
         assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_end')
+        assignment._clean_first_deadline(errors={})
+        assignment.save()
+        assignment.refresh_from_db()
         testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
         examiner = baker.make('core.Examiner', assignmentgroup=testfeedbackset.group)
