@@ -54,3 +54,5 @@ ievv_buildstatic.appconfig.json
 
 .vscode/
 .vscode-atest-temp/
+
+dump.rdb
