@@ -198,7 +198,7 @@ class DeleteGroupsView(groupview_base.BaseMultiselectView):
         groupqueryset = form.cleaned_data['selected_items']
         candidatecount = self.__count_candidates_in_assignmentgroups(
             groupqueryset=groupqueryset)
-        groupqueryset.delete()
+        AssignmentGroup.objects.filter(id__in=groupqueryset.values_list('id', flat=True)).delete()
         messages.success(self.request, self.get_success_message(candidatecount=candidatecount))
         return super(DeleteGroupsView, self).form_valid(form=form)
 
