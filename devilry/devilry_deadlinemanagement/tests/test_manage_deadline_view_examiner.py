@@ -1178,6 +1178,27 @@ class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
     viewclass = manage_deadline_view.ManageDeadlineSingleGroupView
     handle_deadline = 'move-deadline'
 
+    def test_move_deadline_last_attempt_is_graded(self):
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        group_baker.feedbackset_first_attempt_published(group=testgroup)
+        examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=examiner_user)
+        new_deadline = timezone.now() + timezone.timedelta(days=3)
+        new_deadline = new_deadline.replace(microsecond=0)
+        with self.assertRaises(http.Http404):
+            self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup,
+                cradmin_instance=self._get_mock_instance(testassignment),
+                requestuser=examiner_user,
+                cradmin_app=self._get_mock_app(examiner_user),
+                viewkwargs={
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
+                    'handle_deadline': self.handle_deadline,
+                    'group_id': testgroup.id
+                }
+            )
+
     def test_info_box_not_showing_when_groups_should_be_excluded(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_OFF)
