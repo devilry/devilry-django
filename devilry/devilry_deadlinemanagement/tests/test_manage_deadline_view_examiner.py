@@ -223,6 +223,7 @@ class TestManageDeadlineNewAttemptAllGroupsView(ExaminerTestCaseMixin):
         self.assertEqual(3, feedbacksets.count())
         group1 = core_models.AssignmentGroup.objects.get(id=testgroup1.id)
         group2 = core_models.AssignmentGroup.objects.get(id=testgroup2.id)
+        new_deadline = new_deadline.replace(second=59) # Deadline is cleaned to seconds as 59.
         self.assertEqual(new_deadline, group1.cached_data.last_feedbackset.deadline_datetime)
         self.assertNotEqual(new_deadline, group2.cached_data.last_feedbackset.deadline_datetime)
 
@@ -440,6 +441,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(ExaminerTestCaseMixin):
         group1 = core_models.AssignmentGroup.objects.get(id=testgroup1.id)
         group2 = core_models.AssignmentGroup.objects.get(id=testgroup2.id)
         self.assertEqual(group1.cached_data.last_feedbackset, group1.cached_data.first_feedbackset)
+        new_deadline = new_deadline.replace(second=59) # Deadline is cleaned to seconds as 59.
         self.assertEqual(new_deadline, group1.cached_data.last_feedbackset.deadline_datetime)
         self.assertNotEqual(new_deadline, group2.cached_data.last_feedbackset.deadline_datetime)
 
@@ -510,6 +512,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(ExaminerTestCaseMixin):
         cached_data_group2 = core_models.AssignmentGroup.objects.get(id=testgroup2.id).cached_data
         self.assertEqual(cached_data_group1.first_feedbackset.deadline_datetime, testassignment.first_deadline)
         self.assertEqual(cached_data_group2.first_feedbackset.deadline_datetime, testassignment.first_deadline)
+        new_deadline = new_deadline.replace(second=59) # Deadline is cleaned to seconds as 59.
         self.assertEqual(cached_data_group2.last_feedbackset.deadline_datetime, new_deadline)
         self.assertEqual(cached_data_group2.last_feedbackset.deadline_datetime, new_deadline)
         self.assertEqual(cached_data_group2.last_feedbackset.last_updated_by, testuser)
@@ -548,6 +551,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(ExaminerTestCaseMixin):
         self.assertEqual(3, group_models.FeedbackSet.objects.count())
         cached_data_group1 = core_models.AssignmentGroup.objects.get(id=testgroup1.id).cached_data
         cached_data_group2 = core_models.AssignmentGroup.objects.get(id=testgroup2.id).cached_data
+        new_deadline = new_deadline.replace(second=59) # Deadline is cleaned to seconds as 59.
         self.assertEqual(cached_data_group1.last_feedbackset.deadline_datetime, new_deadline)
         self.assertEqual(cached_data_group1.last_feedbackset.last_updated_by, testuser)
         self.assertEqual(cached_data_group2.first_feedbackset.deadline_datetime, testassignment.first_deadline)
@@ -714,6 +718,7 @@ class TestManageDeadlineNewAttemptFromPreviousView(ExaminerTestCaseMixin):
         group_comments = group_models.GroupComment.objects.all()
         last_feedbackset_group1 = AssignmentGroupCachedData.objects.get(group_id=testgroup1.id).last_feedbackset
         last_feedbackset_group2 = AssignmentGroupCachedData.objects.get(group_id=testgroup2.id).last_feedbackset
+        new_deadline = new_deadline.replace(second=59) # Deadline is cleaned to seconds as 59.
         self.assertEqual(last_feedbackset_group1.deadline_datetime, new_deadline)
         self.assertEqual(last_feedbackset_group2.deadline_datetime, new_deadline)
         self.assertEqual(last_feedbackset_group1.last_updated_by, testuser)
@@ -911,6 +916,7 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(ExaminerTestCaseMixin):
         group_comments = group_models.GroupComment.objects.all()
         last_feedbackset_group1 = AssignmentGroupCachedData.objects.get(group_id=testgroup1.id).last_feedbackset
         last_feedbackset_group2 = AssignmentGroupCachedData.objects.get(group_id=testgroup2.id).last_feedbackset
+        new_deadline = new_deadline.replace(second=59) # Deadline is cleaned to seconds as 59.
         self.assertEqual(last_feedbackset_group1.deadline_datetime, new_deadline)
         self.assertEqual(last_feedbackset_group2.deadline_datetime, new_deadline)
         self.assertEqual(last_feedbackset_group1.last_updated_by, testuser)
@@ -1030,6 +1036,7 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
         self.assertEqual(2, group_models.FeedbackSet.objects.count())
         cached_data_group = core_models.AssignmentGroup.objects.get(id=testgroup.id).cached_data
         self.assertEqual(cached_data_group.first_feedbackset.deadline_datetime, testassignment.first_deadline)
+        new_deadline = new_deadline.replace(second=59) # Deadline is cleaned to seconds as 59.
         self.assertEqual(cached_data_group.last_feedbackset.deadline_datetime, new_deadline)
         self.assertEqual(cached_data_group.last_feedbackset.last_updated_by, testuser)
 
@@ -1254,6 +1261,7 @@ class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
         self.assertEqual(1, group_models.FeedbackSet.objects.count())
         cached_data_group = core_models.AssignmentGroup.objects.get(id=testgroup.id).cached_data
         self.assertEqual(cached_data_group.last_feedbackset, cached_data_group.first_feedbackset)
+        new_deadline = new_deadline.replace(second=59) # Deadline is cleaned to seconds as 59.
         self.assertEqual(cached_data_group.last_feedbackset.deadline_datetime, new_deadline)
         self.assertEqual(cached_data_group.last_feedbackset.last_updated_by, testuser)
 

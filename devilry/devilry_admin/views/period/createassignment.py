@@ -109,6 +109,12 @@ class CreateForm(forms.ModelForm):
             choices_list.append(self.__create_grouped_choice_tuple_for_assignment(assignment=assignment))
         return choices_list
 
+    def clean_first_deadline(self):
+        first_deadline = self.cleaned_data.get('first_deadline', None)
+        if first_deadline:
+            first_deadline = first_deadline.replace(second=59)
+        return first_deadline
+
     def clean(self):
         cleaned_data = super(CreateForm, self).clean()
         first_deadline = cleaned_data.get('first_deadline', None)
@@ -205,6 +211,7 @@ class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
             for days_forward in range(7, (7 * 4), 7):
                 suggested_deadline = first_suggested_deadline + timedelta(days=days_forward)
                 suggested_deadlines.append(suggested_deadline)
+            print(f'\n\n{suggested_deadlines}\n\n')
         return suggested_deadlines
 
     def __render_suggested_deadlines_box(self):

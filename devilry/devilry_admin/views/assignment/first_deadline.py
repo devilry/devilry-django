@@ -21,6 +21,15 @@ class AssignmentFirstDeadlineForm(forms.ModelForm):
         self.fields['first_deadline'].widget = DateTimePickerWidget()
         self.fields['first_deadline'].label = gettext_lazy('First deadline')
 
+    def clean_first_deadline(self):
+        first_deadline = self.cleaned_data.get('first_deadline', None)
+        if first_deadline:
+            first_deadline = first_deadline.replace(second=59)
+        return first_deadline
+    
+    def clean(self):
+        return super().clean()
+
 
 class AssignmentFirstDeadlineUpdateView(OnlySaveButtonMixin, UpdateView):
     model = coremodels.Assignment

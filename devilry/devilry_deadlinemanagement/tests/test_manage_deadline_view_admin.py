@@ -169,6 +169,7 @@ class TestManageDeadlineNewAttemptAllGroupsView(AdminTestCaseMixin):
         self.assertEqual(3, feedbacksets.count())
         group1 = core_models.AssignmentGroup.objects.get(id=testgroup1.id)
         group2 = core_models.AssignmentGroup.objects.get(id=testgroup2.id)
+        new_deadline = new_deadline.replace(second=59) # Deadline is cleaned to seconds as 59.
         self.assertEqual(new_deadline, group1.cached_data.last_feedbackset.deadline_datetime)
         self.assertNotEqual(new_deadline, group2.cached_data.last_feedbackset.deadline_datetime)
 
@@ -307,6 +308,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(AdminTestCaseMixin):
         group1 = core_models.AssignmentGroup.objects.get(id=testgroup1.id)
         group2 = core_models.AssignmentGroup.objects.get(id=testgroup2.id)
         self.assertEqual(group1.cached_data.last_feedbackset, group1.cached_data.first_feedbackset)
+        new_deadline = new_deadline.replace(second=59) # Deadline is cleaned to seconds as 59.
         self.assertEqual(new_deadline, group1.cached_data.last_feedbackset.deadline_datetime)
         self.assertNotEqual(new_deadline, group2.cached_data.last_feedbackset.deadline_datetime)
 
@@ -424,6 +426,7 @@ class TestManageDeadlineNewAttemptFromPreviousView(AdminTestCaseMixin):
         group_comments = group_models.GroupComment.objects.all()
         last_feedbackset_group1 = AssignmentGroupCachedData.objects.get(group_id=testgroup1.id).last_feedbackset
         last_feedbackset_group2 = AssignmentGroupCachedData.objects.get(group_id=testgroup2.id).last_feedbackset
+        new_deadline = new_deadline.replace(second=59) # Deadline is cleaned to seconds as 59.
         self.assertEqual(last_feedbackset_group1.deadline_datetime, new_deadline)
         self.assertEqual(last_feedbackset_group2.deadline_datetime, new_deadline)
         self.assertEqual(last_feedbackset_group1.last_updated_by, testuser)
@@ -542,6 +545,7 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(AdminTestCaseMixin):
         group_comments = group_models.GroupComment.objects.all()
         last_feedbackset_group1 = AssignmentGroupCachedData.objects.get(group_id=testgroup1.id).last_feedbackset
         last_feedbackset_group2 = AssignmentGroupCachedData.objects.get(group_id=testgroup2.id).last_feedbackset
+        new_deadline = new_deadline.replace(second=59) # Deadline is cleaned to seconds as 59.
         self.assertEqual(last_feedbackset_group1.deadline_datetime, new_deadline)
         self.assertEqual(last_feedbackset_group2.deadline_datetime, new_deadline)
         self.assertEqual(last_feedbackset_group1.last_updated_by, testuser)
