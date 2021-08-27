@@ -65,7 +65,8 @@ class CreateForm(forms.ModelForm):
             required=True,
             minimum_datetime=timezone.now() + timedelta(
                 minutes=settings.DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES),
-            maximum_datetime=self.period.end_time)
+            maximum_datetime=self.period.end_time,
+            use_last_hour_and_minute=True)
         self.fields['first_deadline'].required = True
         self.fields['first_deadline'].label = gettext_lazy('Set first deadline')
         self.fields['first_deadline'].help_text = gettext_lazy(
