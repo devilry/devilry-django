@@ -93,14 +93,17 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
 
     def can_move_deadline(self):
         """
-        Returns ``False`` if the type is `move-deadline`, request user is an
-        `examiner` and the group is already graded.
+        Check if the deadline can be moved.
+
+        Returns ``False`` is the type is `move-deadline` and the 
+        last feedbackset is published (graded).
         """
         if self.request.cradmin_role.__class__ == core_models.AssignmentGroup:
             if self.post_move_deadline:
                 group = self.request.cradmin_role
-                if self.request.cradmin_instance.get_devilryrole_type() == 'examiner' and \
-                        group.cached_data.last_published_feedbackset_is_last_feedbackset:
+                devilryrole_type = self.request.cradmin_instance.get_devilryrole_type()
+                if (devilryrole_type == 'examiner' or 'admin' in devilryrole_type) and \
+                    group.cached_data.last_published_feedbackset_is_last_feedbackset:
                     return False
         return True
 
@@ -363,9 +366,6 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
                     publishing_time=now_without_sec_and_micro,
                     text=text
                 )
-            # deadline_email.bulk_send_deadline_moved_email(
-            #     feedbackset_id_list=feedback_set_ids,
-            #     domain_url_start=self.request.build_absolute_uri('/'))
             deadline_email.bulk_send_deadline_moved_email(
                 assignment_id=self.assignment.id,
                 feedbackset_id_list=feedback_set_ids,
@@ -396,9 +396,6 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
                     text=text
                 )
                 feedbackset_id_list.append(feedbackset_id)
-            # deadline_email.bulk_send_new_attempt_email(
-            #     feedbackset_id_list=feedbackset_id_list,
-            #     domain_url_start=self.request.build_absolute_uri('/'))
             deadline_email.bulk_send_new_attempt_email(
                 assignment_id=self.assignment.id,
                 feedbackset_id_list=feedbackset_id_list,
