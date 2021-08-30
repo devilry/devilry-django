@@ -211,7 +211,6 @@ class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
             for days_forward in range(7, (7 * 4), 7):
                 suggested_deadline = first_suggested_deadline + timedelta(days=days_forward)
                 suggested_deadlines.append(suggested_deadline)
-            print(f'\n\n{suggested_deadlines}\n\n')
         return suggested_deadlines
 
     def __render_suggested_deadlines_box(self):
