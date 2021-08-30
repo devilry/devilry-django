@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 
-from datetime import datetime, timedelta
+from datetime import timedelta
 
+import arrow
 import mock
 from django import http
 from django import test
@@ -18,7 +19,7 @@ from devilry.devilry_deadlinemanagement.views import manage_deadline_view
 from devilry.devilry_group import devilry_group_baker_factories as group_baker
 from devilry.devilry_group import models as group_models
 from devilry.utils import datetimeutils
-from devilry.utils.datetimeutils import from_isoformat_noseconds, isoformat_withseconds, isoformat_noseconds
+from devilry.utils.datetimeutils import from_isoformat_noseconds, isoformat_withseconds
 
 
 class ExaminerTestCaseMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -223,6 +224,7 @@ class TestManageDeadlineNewAttemptAllGroupsView(ExaminerTestCaseMixin):
         self.assertEqual(3, feedbacksets.count())
         group1 = core_models.AssignmentGroup.objects.get(id=testgroup1.id)
         group2 = core_models.AssignmentGroup.objects.get(id=testgroup2.id)
+        new_deadline = new_deadline.replace(second=59) # Deadline is cleaned to seconds as 59.
         self.assertEqual(new_deadline, group1.cached_data.last_feedbackset.deadline_datetime)
         self.assertNotEqual(new_deadline, group2.cached_data.last_feedbackset.deadline_datetime)
 
@@ -440,6 +442,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(ExaminerTestCaseMixin):
         group1 = core_models.AssignmentGroup.objects.get(id=testgroup1.id)
         group2 = core_models.AssignmentGroup.objects.get(id=testgroup2.id)
         self.assertEqual(group1.cached_data.last_feedbackset, group1.cached_data.first_feedbackset)
+        new_deadline = new_deadline.replace(second=59) # Deadline is cleaned to seconds as 59.
         self.assertEqual(new_deadline, group1.cached_data.last_feedbackset.deadline_datetime)
         self.assertNotEqual(new_deadline, group2.cached_data.last_feedbackset.deadline_datetime)
 
@@ -510,6 +513,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(ExaminerTestCaseMixin):
         cached_data_group2 = core_models.AssignmentGroup.objects.get(id=testgroup2.id).cached_data
         self.assertEqual(cached_data_group1.first_feedbackset.deadline_datetime, testassignment.first_deadline)
         self.assertEqual(cached_data_group2.first_feedbackset.deadline_datetime, testassignment.first_deadline)
+        new_deadline = new_deadline.replace(second=59) # Deadline is cleaned to seconds as 59.
         self.assertEqual(cached_data_group2.last_feedbackset.deadline_datetime, new_deadline)
         self.assertEqual(cached_data_group2.last_feedbackset.deadline_datetime, new_deadline)
         self.assertEqual(cached_data_group2.last_feedbackset.last_updated_by, testuser)
@@ -548,6 +552,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(ExaminerTestCaseMixin):
         self.assertEqual(3, group_models.FeedbackSet.objects.count())
         cached_data_group1 = core_models.AssignmentGroup.objects.get(id=testgroup1.id).cached_data
         cached_data_group2 = core_models.AssignmentGroup.objects.get(id=testgroup2.id).cached_data
+        new_deadline = new_deadline.replace(second=59) # Deadline is cleaned to seconds as 59.
         self.assertEqual(cached_data_group1.last_feedbackset.deadline_datetime, new_deadline)
         self.assertEqual(cached_data_group1.last_feedbackset.last_updated_by, testuser)
         self.assertEqual(cached_data_group2.first_feedbackset.deadline_datetime, testassignment.first_deadline)
@@ -714,6 +719,7 @@ class TestManageDeadlineNewAttemptFromPreviousView(ExaminerTestCaseMixin):
         group_comments = group_models.GroupComment.objects.all()
         last_feedbackset_group1 = AssignmentGroupCachedData.objects.get(group_id=testgroup1.id).last_feedbackset
         last_feedbackset_group2 = AssignmentGroupCachedData.objects.get(group_id=testgroup2.id).last_feedbackset
+        new_deadline = new_deadline.replace(second=59) # Deadline is cleaned to seconds as 59.
         self.assertEqual(last_feedbackset_group1.deadline_datetime, new_deadline)
         self.assertEqual(last_feedbackset_group2.deadline_datetime, new_deadline)
         self.assertEqual(last_feedbackset_group1.last_updated_by, testuser)
@@ -911,6 +917,7 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(ExaminerTestCaseMixin):
         group_comments = group_models.GroupComment.objects.all()
         last_feedbackset_group1 = AssignmentGroupCachedData.objects.get(group_id=testgroup1.id).last_feedbackset
         last_feedbackset_group2 = AssignmentGroupCachedData.objects.get(group_id=testgroup2.id).last_feedbackset
+        new_deadline = new_deadline.replace(second=59) # Deadline is cleaned to seconds as 59.
         self.assertEqual(last_feedbackset_group1.deadline_datetime, new_deadline)
         self.assertEqual(last_feedbackset_group2.deadline_datetime, new_deadline)
         self.assertEqual(last_feedbackset_group1.last_updated_by, testuser)
@@ -1030,6 +1037,7 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
         self.assertEqual(2, group_models.FeedbackSet.objects.count())
         cached_data_group = core_models.AssignmentGroup.objects.get(id=testgroup.id).cached_data
         self.assertEqual(cached_data_group.first_feedbackset.deadline_datetime, testassignment.first_deadline)
+        new_deadline = new_deadline.replace(second=59) # Deadline is cleaned to seconds as 59.
         self.assertEqual(cached_data_group.last_feedbackset.deadline_datetime, new_deadline)
         self.assertEqual(cached_data_group.last_feedbackset.last_updated_by, testuser)
 
@@ -1113,9 +1121,17 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
             }
         )
         added_days = 7
+        feedbackset_current_deadline = arrow.get(testfeedbackset.deadline_datetime).to(settings.TIME_ZONE).replace(
+            hour=23, minute=59, second=59, microsecond=0)
         for element in mockresponse.selector.list('.devilry-deadlinemanagement-suggested-deadline'):
-            suggested_date = from_isoformat_noseconds(element.get('cradmin-legacy-setfieldvalue'))
-            self.assertEqual(suggested_date, testfeedbackset.deadline_datetime + timedelta(days=added_days))
+            # Replacing seconds simply ensures that the seconds correspond, since 
+            # the given isoformat does not contain seconds but the compared deadline 
+            # datetime does.
+            suggested_date = from_isoformat_noseconds(element.get('cradmin-legacy-setfieldvalue')).replace(second=59)
+            suggested_deadline_from_current_deadline = feedbackset_current_deadline.shift(days=+added_days).datetime
+            self.assertEqual(
+                suggested_date,
+                suggested_deadline_from_current_deadline)
             added_days += 7
 
     def test_get_earliest_possible_deadline_last_deadline_in_future(self):
@@ -1141,8 +1157,18 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
         )
         earliest_date = mockresponse.selector.list('.devilry-deadlinemanagement-suggested-deadline')[0] \
             .get('cradmin-legacy-setfieldvalue')
-        converted_datetime = from_isoformat_noseconds(earliest_date)
-        self.assertEqual(testfeedbackset.deadline_datetime + timezone.timedelta(days=7), converted_datetime)
+
+        # Replacing seconds simply ensures that the seconds correspond, since 
+        # the given isoformat does not contain seconds but the compared deadline 
+        # datetime does.
+        converted_datetime = from_isoformat_noseconds(earliest_date).replace(second=59)
+        now_with_same_time_as_deadline = arrow.get(last_feedbackset_last_deadline).to(settings.TIME_ZONE).replace(
+            hour=23,
+            minute=59,
+            second=59,
+            microsecond=0
+        ).shift(days=+7).datetime
+        self.assertEqual(now_with_same_time_as_deadline, converted_datetime)
 
     def test_get_earliest_possible_deadline_uses_multiple_feedbacksets(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -1169,14 +1195,44 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
         )
         earliest_date = mockresponse.selector.list('.devilry-deadlinemanagement-suggested-deadline')[0] \
             .get('cradmin-legacy-setfieldvalue')
-        converted_datetime = from_isoformat_noseconds(earliest_date)
-        self.assertEqual(testfeedbackset_last.deadline_datetime + timezone.timedelta(days=7),
-                          converted_datetime)
+
+        # Replacing seconds simply ensures that the seconds correspond, since 
+        # the given isoformat does not contain seconds but the compared deadline 
+        # datetime does.
+        converted_datetime = from_isoformat_noseconds(earliest_date).replace(second=59)
+        now_with_same_time_as_deadline = arrow.get(last_feedbackset_last_deadline).to(settings.TIME_ZONE).replace(
+            hour=23,
+            minute=59,
+            second=59,
+            microsecond=0
+        ).shift(days=+7).datetime
+        self.assertEqual(now_with_same_time_as_deadline, converted_datetime)
 
 
 class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
     viewclass = manage_deadline_view.ManageDeadlineSingleGroupView
     handle_deadline = 'move-deadline'
+
+    def test_move_deadline_last_attempt_is_graded(self):
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        group_baker.feedbackset_first_attempt_published(group=testgroup)
+        examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=examiner_user)
+        new_deadline = timezone.now() + timezone.timedelta(days=3)
+        new_deadline = new_deadline.replace(microsecond=0)
+        with self.assertRaises(http.Http404):
+            self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup,
+                cradmin_instance=self._get_mock_instance(testassignment),
+                requestuser=examiner_user,
+                cradmin_app=self._get_mock_app(examiner_user),
+                viewkwargs={
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
+                    'handle_deadline': self.handle_deadline,
+                    'group_id': testgroup.id
+                }
+            )
 
     def test_info_box_not_showing_when_groups_should_be_excluded(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -1254,6 +1310,7 @@ class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
         self.assertEqual(1, group_models.FeedbackSet.objects.count())
         cached_data_group = core_models.AssignmentGroup.objects.get(id=testgroup.id).cached_data
         self.assertEqual(cached_data_group.last_feedbackset, cached_data_group.first_feedbackset)
+        new_deadline = new_deadline.replace(second=59) # Deadline is cleaned to seconds as 59.
         self.assertEqual(cached_data_group.last_feedbackset.deadline_datetime, new_deadline)
         self.assertEqual(cached_data_group.last_feedbackset.last_updated_by, testuser)
 
@@ -1334,9 +1391,14 @@ class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
         earliest_date = mockresponse.selector.list('.devilry-deadlinemanagement-suggested-deadline')[0]\
             .get('cradmin-legacy-setfieldvalue')
         converted_datetime = from_isoformat_noseconds(earliest_date)
-        now_with_same_time_as_deadline = datetimeutils.datetime_with_same_time(
-            testfeedbackset.deadline_datetime, timezone.now())
-        self.assertEqual(now_with_same_time_as_deadline + timedelta(days=7), converted_datetime)
+        current_feedbackset_deadline = arrow.get(testfeedbackset.deadline_datetime).to(settings.TIME_ZONE)
+        now_with_same_time_as_deadline = arrow.utcnow().to(settings.TIME_ZONE).replace(
+            hour=current_feedbackset_deadline.hour,
+            minute=current_feedbackset_deadline.minute,
+            second=current_feedbackset_deadline.second,
+            microsecond=current_feedbackset_deadline.microsecond
+        ).shift(days=+7).datetime
+        self.assertEqual(now_with_same_time_as_deadline, converted_datetime)
 
     def test_get_all_suggested_deadlines_deadline_in_future(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -1358,9 +1420,17 @@ class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
             }
         )
         added_days = 7
+        feedbackset_current_deadline = arrow.get(testfeedbackset.deadline_datetime).to(settings.TIME_ZONE).replace(
+            hour=23, minute=59, second=59, microsecond=0)
         for element in mockresponse.selector.list('.devilry-deadlinemanagement-suggested-deadline'):
-            suggested_date = from_isoformat_noseconds(element.get('cradmin-legacy-setfieldvalue'))
-            self.assertEqual(suggested_date, testfeedbackset.deadline_datetime + timedelta(days=added_days))
+            # Replacing seconds simply ensures that the seconds correspond, since 
+            # the given isoformat does not contain seconds but the compared deadline 
+            # datetime does.
+            suggested_date = from_isoformat_noseconds(element.get('cradmin-legacy-setfieldvalue')).replace(second=59)
+            suggested_deadline_from_current_deadline = feedbackset_current_deadline.shift(days=+added_days).datetime
+            self.assertEqual(
+                suggested_date,
+                suggested_deadline_from_current_deadline)
             added_days += 7
 
     def test_get_earliest_possible_deadline_last_deadline_in_future(self):
@@ -1396,5 +1466,15 @@ class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
         )
         earliest_date = mockresponse.selector.list('.devilry-deadlinemanagement-suggested-deadline')[0]\
             .get('cradmin-legacy-setfieldvalue')
-        converted_datetime = from_isoformat_noseconds(earliest_date)
-        self.assertEqual(testfeedbackset2.deadline_datetime + timedelta(days=7), converted_datetime)
+        
+        # Replacing seconds simply ensures that the seconds correspond, since 
+        # the given isoformat does not contain seconds but the compared deadline 
+        # datetime does.
+        converted_datetime = from_isoformat_noseconds(earliest_date).replace(second=59)
+        now_with_same_time_as_deadline = arrow.get(testfeedbackset2.deadline_datetime).to(settings.TIME_ZONE).replace(
+            hour=23,
+            minute=59,
+            second=59,
+            microsecond=0
+        ).shift(days=+7).datetime
+        self.assertEqual(now_with_same_time_as_deadline, converted_datetime)

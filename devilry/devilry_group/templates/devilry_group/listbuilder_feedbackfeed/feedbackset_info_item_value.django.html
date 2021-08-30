@@ -65,11 +65,6 @@
                             {% trans "Edit grade" %}
                         </a>
                     {% endif %}
-                    {% if 'admin' in me.devilry_viewrole %}
-                        <a href="{% cradmin_instance_url appname="manage-deadline" viewname="manage-deadline-single-group" handle_deadline="move-deadline" deadline=me.deadline_as_string group_id=me.feedbackset.group.id %}"
-                            class="btn btn-default devilry-group-event__grade-move-deadline-button">{% trans "Move deadline" %}
-                        </a>
-                    {% endif %}
                 {% elif not me.feedbackset.group.cached_data.last_published_feedbackset_is_last_feedbackset %}
                     {% comment %}
                         The last published feedbackset is not the last feedbackset

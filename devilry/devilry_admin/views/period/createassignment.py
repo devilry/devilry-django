@@ -110,6 +110,12 @@ class CreateForm(forms.ModelForm):
             choices_list.append(self.__create_grouped_choice_tuple_for_assignment(assignment=assignment))
         return choices_list
 
+    def clean_first_deadline(self):
+        first_deadline = self.cleaned_data.get('first_deadline', None)
+        if first_deadline:
+            first_deadline = first_deadline.replace(second=59)
+        return first_deadline
+
     def clean(self):
         cleaned_data = super(CreateForm, self).clean()
         first_deadline = cleaned_data.get('first_deadline', None)

@@ -280,14 +280,13 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def test_post_missing_short_name(self):
         period = baker.make_recipe('devilry.apps.core.period_active')
-        first_deadline_isoformat = datetimeutils.isoformat_noseconds(OLD_PERIOD_START)
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=period,
             requestkwargs={
                 'data': {
                     'long_name': 'Test assignment',
                     'short_name': '',
-                    'first_deadline': first_deadline_isoformat,
+                    'first_deadline': datetimeutils.isoformat_noseconds(default_timezone_datetime(3000, 12, 31, 23, 59))
                 }
             })
         self.assertEqual(Assignment.objects.count(), 0)
@@ -297,14 +296,13 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def test_post_missing_long_name(self):
         period = baker.make_recipe('devilry.apps.core.period_active')
-        first_deadline_isoformat = datetimeutils.isoformat_noseconds(OLD_PERIOD_START)
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=period,
             requestkwargs={
                 'data': {
                     'long_name': '',
                     'short_name': 'testassignment',
-                    'first_deadline': first_deadline_isoformat,
+                    'first_deadline': datetimeutils.isoformat_noseconds(default_timezone_datetime(3000, 12, 31, 23, 59))
                 }
             })
         self.assertEqual(Assignment.objects.count(), 0)
@@ -356,7 +354,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
                 'data': {
                     'long_name': 'Test assignment',
                     'short_name': 'testassignment',
-                    'first_deadline': datetimeutils.isoformat_noseconds(ACTIVE_PERIOD_END),
+                    'first_deadline': datetimeutils.isoformat_noseconds(default_timezone_datetime(3000, 12, 31, 23, 59)),
                     'student_import_option': 'all'
                 }
             })
@@ -383,7 +381,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
                 'data': {
                     'long_name': 'Test assignment',
                     'short_name': 'testassignment',
-                    'first_deadline': datetimeutils.isoformat_noseconds(ACTIVE_PERIOD_END),
+                    'first_deadline': datetimeutils.isoformat_noseconds(default_timezone_datetime(3000, 12, 31, 23, 59)),
                     'student_import_option': 'all'
                 }
             })
@@ -401,7 +399,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
                 'data': {
                     'long_name': 'Test assignment',
                     'short_name': 'testassignment',
-                    'first_deadline': datetimeutils.isoformat_noseconds(ACTIVE_PERIOD_END),
+                    'first_deadline': datetimeutils.isoformat_noseconds(default_timezone_datetime(3000, 12, 31, 23, 59)),
                     'student_import_option': 'none'
                 }
             })
@@ -425,7 +423,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
                 'data': {
                     'long_name': 'Test assignment',
                     'short_name': 'testassignment',
-                    'first_deadline': datetimeutils.isoformat_noseconds(ACTIVE_PERIOD_END),
+                    'first_deadline': datetimeutils.isoformat_noseconds(default_timezone_datetime(3000, 12, 31, 23, 59)),
                     'student_import_option': '{}_all'.format(other_assignment.id)
                 }
             })
@@ -461,7 +459,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
                 'data': {
                     'long_name': 'Test assignment',
                     'short_name': 'testassignment',
-                    'first_deadline': datetimeutils.isoformat_noseconds(ACTIVE_PERIOD_END),
+                    'first_deadline': datetimeutils.isoformat_noseconds(default_timezone_datetime(3000, 12, 31, 23, 59)),
                     'student_import_option': '{}_all'.format(other_assignment.id)
                 }
             })
@@ -507,7 +505,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
                 'data': {
                     'long_name': 'Test assignment',
                     'short_name': 'testassignment',
-                    'first_deadline': datetimeutils.isoformat_noseconds(ACTIVE_PERIOD_END),
+                    'first_deadline': datetimeutils.isoformat_noseconds(default_timezone_datetime(3000, 12, 31, 23, 59)),
                     'student_import_option': '{}_passed'.format(other_assignment.id)
                 }
             })
@@ -537,7 +535,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
                 'data': {
                     'long_name': 'Test assignment',
                     'short_name': 'testassignment',
-                    'first_deadline': datetimeutils.isoformat_noseconds(ACTIVE_PERIOD_END),
+                    'first_deadline': datetimeutils.isoformat_noseconds(default_timezone_datetime(3000, 12, 31, 23, 59)),
                     'student_import_option': '{}_passed'.format(other_assignment.id)
                 }
             })
@@ -565,7 +563,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
                 'data': {
                     'long_name': 'Test assignment',
                     'short_name': 'testassignment',
-                    'first_deadline': datetimeutils.isoformat_noseconds(ACTIVE_PERIOD_END),
+                    'first_deadline': datetimeutils.isoformat_noseconds(default_timezone_datetime(3000, 12, 31, 23, 59)),
                     'student_import_option': '{}_passed'.format(other_assignment.id)
                 }
             })
@@ -627,8 +625,10 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
             self.assertEqual('First deadline must be at least 30 minutes from now.',
                              mockresponse.selector.one('#error_1_id_first_deadline').alltext_normalized)
 
-    def __valid_post_request(self, period=None, first_deadline=ACTIVE_PERIOD_END,
+    def __valid_post_request(self, period=None, first_deadline=None,
                              publishing_time_delay_minutes=60, student_import_option='all'):
+        if not first_deadline:
+            first_deadline = default_timezone_datetime(3000, 12, 31, 23, 59)
         if not period:
             period = baker.make_recipe('devilry.apps.core.period_active')
         with self.settings(DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES=publishing_time_delay_minutes):
@@ -647,17 +647,18 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def test_post_sanity(self):
         self.assertEqual(Assignment.objects.count(), 0)
-        created_assignment, mockresponse = self.__valid_post_request(first_deadline=ACTIVE_PERIOD_END)
+        first_deadline = default_timezone_datetime(3000, 12, 31, 23, 59)
+        created_assignment, mockresponse = self.__valid_post_request(first_deadline=first_deadline)
         self.assertEqual(Assignment.objects.count(), 1)
         self.assertEqual(created_assignment.long_name, 'Test assignment')
         self.assertEqual(created_assignment.short_name, 'testassignment')
         self.assertEqual(
-            ACTIVE_PERIOD_END,
+            first_deadline.replace(second=59),
             created_assignment.first_deadline)
 
     def test_post_success_redirect(self):
         self.assertEqual(Assignment.objects.count(), 0)
-        created_assignment, mockresponse = self.__valid_post_request(first_deadline=ACTIVE_PERIOD_END)
+        created_assignment, mockresponse = self.__valid_post_request()
         self.assertEqual(mockresponse.response['location'],
                          crinstance.reverse_cradmin_url(
                              instanceid='devilry_admin_assignmentadmin',
