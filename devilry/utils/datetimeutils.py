@@ -100,17 +100,6 @@ def datetime_with_same_day_of_week_and_time(weekdayandtimesource_datetime, targe
     return new_datetimeobject
 
 
-def datetime_with_same_time(timesource_datetime, target_datetime):
-    """
-    Returns a new datetime object with the same day as the given ``target_datetime``,
-    with the time replaced with the time from ``timesource_datetime``.
-    """
-    return target_datetime.replace(hour=timesource_datetime.hour,
-                                   minute=timesource_datetime.minute,
-                                   second=timesource_datetime.second,
-                                   microsecond=timesource_datetime.microsecond)
-
-
 URL_DATETIME_FORMAT = 'X'
 
 
