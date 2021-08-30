@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
-
+import datetime
 from datetime import timedelta
 
+import arrow
+from django.conf import settings
 from crispy_forms import layout
 from django import forms
 from django import http
@@ -14,7 +16,7 @@ from django.template import defaultfilters
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.translation import gettext_lazy, pgettext_lazy
-from cradmin_legacy.crispylayouts import PrimarySubmitBlock, PrimarySubmit
+from cradmin_legacy.crispylayouts import PrimarySubmit
 from cradmin_legacy.viewhelpers import formbase
 from cradmin_legacy.widgets.datetimepicker import DateTimePickerWidget
 
@@ -59,6 +61,12 @@ class ManageDeadlineForm(SelectedItemsForm):
 
     def get_minimum_datetime(self):
         return timezone.now().replace(microsecond=0)
+
+    def clean_new_deadline(self):
+        new_deadline = self.cleaned_data.get('new_deadline', None)
+        if new_deadline:
+            new_deadline = new_deadline.replace(second=59)
+        return new_deadline
 
     def clean(self):
         super(ManageDeadlineForm, self).clean()
@@ -226,19 +234,33 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
 
     def __get_suggested_deadlines(self):
         suggested_deadlines = []
-        previous_feedbackset = self.get_latest_previous_deadline()
-        if previous_feedbackset:
-            previous_deadline = previous_feedbackset
+        previous_feedbackset_deadline = self.get_latest_previous_deadline()
+        if previous_feedbackset_deadline:
+            previous_deadline = arrow.get(previous_feedbackset_deadline).to(settings.TIME_ZONE)
+            first_suggested_deadline = None
             if previous_deadline > timezone.now():
-                first_suggested_deadline = previous_deadline + timezone.timedelta(days=7)
+                # Since the previous deadline is in the future, get suggested 
+                # deadlines relative to the previous deadline.
+                first_suggested_deadline = previous_deadline
             else:
-                first_suggested_deadline = datetimeutils.datetime_with_same_time(
-                    timesource_datetime=previous_deadline,
-                    target_datetime=timezone.now() + timedelta(days=7))
-            suggested_deadlines.append(first_suggested_deadline)
+                # The previous deadline is in the past, so get the suggested 
+                # deadline relative to the current datetime.
+                first_suggested_deadline = arrow.utcnow().to(settings.TIME_ZONE)
+
+            first_suggested_deadline = first_suggested_deadline.replace(
+                hour=23,
+                minute=59,
+                second=59,
+                microsecond=0
+            ).shift(days=+7).datetime
+            suggested_deadlines.append(
+                first_suggested_deadline
+            )
+
             for days_forward in range(7, (7 * 4), 7):
-                suggested_deadline = first_suggested_deadline + timezone.timedelta(days=days_forward)
+                suggested_deadline = first_suggested_deadline + timedelta(days=days_forward)
                 suggested_deadlines.append(suggested_deadline)
+
         return suggested_deadlines
 
     def __render_suggested_deadlines(self):
