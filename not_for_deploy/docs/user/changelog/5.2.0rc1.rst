@@ -1,0 +1,17 @@
+.. _5.2.0rc1changelog:
+
+###############################
+What is new in Devilry 5.2.0rc1
+###############################
+
+
+What's new
+##########
+
+- Updated to Django 3.2.* LTS
+- WCAG: H2-tag is now used instead of h3 on account page.
+- Comment notifications: If no examiners are assigned to a group, the course and semester administrators will receive 
+    notifications when students post comments.
+- Deadline management: Admins can no longer move deadlines for graded attempts.
+- Deadline management: Suggestions always use midnight as the time for the suggested deadline.
+- Deadline calendar widget: Defaults to 23:59 instead of the current time.
