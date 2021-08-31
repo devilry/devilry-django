@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import datetime
 from datetime import timedelta
 
 import arrow
@@ -54,7 +53,8 @@ class ManageDeadlineForm(SelectedItemsForm):
         super(ManageDeadlineForm, self).__init__(*args, **kwargs)
         self.fields['new_deadline'].widget = DateTimePickerWidget(
             buttonlabel_novalue=pgettext_lazy('CrAdmin datetime picker typo fix', 'Select a date/time'),
-            minimum_datetime=self.get_minimum_datetime()
+            minimum_datetime=self.get_minimum_datetime(),
+            default_now_time={'hour': 23, 'minute': 59}
         )
         self.fields['new_deadline'].help_text = gettext_lazy('Pick a date and time from the '
                                                               'calendar, or select one of the suggested deadlines.')
