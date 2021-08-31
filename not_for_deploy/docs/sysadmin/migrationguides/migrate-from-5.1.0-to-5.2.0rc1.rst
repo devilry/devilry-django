@@ -29,4 +29,4 @@ Uninstall django_errortemplates with PIP **between** step 2 and 3 in the :doc:`.
     $ cd ~/devilrydeploy
     $ venv/bin/pip uninstall django_errortemplates
 
-Update the devilry version to ``5.2.0`` as described in :doc:`../update`.
+Update the devilry version to ``5.2.0rc1`` as described in :doc:`../update`.
