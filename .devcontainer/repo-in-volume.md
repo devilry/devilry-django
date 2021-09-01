@@ -10,13 +10,17 @@ It is very simple, we just:
 
 # How to
 
+## Update devcontainer.json
 Uncomment the following two lines in devcontainer.json (do NOT commit this change):
 ```
 	// "workspaceMount": "source=devilry_dockerdev_repo,destination=/workspace,type=volume",
 	// "workspaceFolder": "/workspace",
 ```
 
-Then do the following (you only need to do this once unless you remove the ``devilry_dockerdev_repo`` docker volume):
+## Step 1 (alternative 1)
+_NOTE: Unless you have trouble getting mutagen to work, you should skip to _(alternative 2)_ instead of following these steps._
+
+Do the following to make your sourcecode available within the docker container/volume (you only need to do this once unless you remove the ``devilry_dockerdev_repo`` docker volume):
 
 1. Open the repo locally vscode and run ``Remote containers: Reopen and reopen in container``.
 2. Wait for the container to finish building. Just ignore all the popups that ask you to install or select anything.
@@ -28,16 +32,22 @@ Then do the following (you only need to do this once unless you remove the ``dev
    ```
    $ git clone git@github.com:devilry/devilry-django.git /workspace/
    ```
+4. Close the vscode window.
 
 Now you have everything you need inside the docker container/volume, but some things like pipenv install
 failed in step (1/2). The easiest fix is:
 
-1. Close the vscode window.
-2. Re-open the project in vscode.
-3. Select the "reopen in container" popup that shows up, or run ``Remote containers: Reopen and reopen in container``.
+## Step 1 (alternative 2)
+You can avoid all the steps above if you setup mutagen sync as explained in _Using mutagen.io to sync host and docker image_ below. This is because mutagen takes care of syncing your local files into the docker volume, and that includes .git/, so it is functionally the same as cloning the repo within the docker container.
+
+
+## Step 3: Build the docker container and open it in vscode
+
+1. Re-open the project in vscode.
+2. Select the "reopen in container" popup that shows up, or run ``Remote containers: Rebuild and reopen in container``.
    Just ignore all the popups that ask you to install or select anything.
    This will solve itself when we get dependencies installed.
-4. You may have to _Select python interpreter_ in vscode when pipenv install is done. Select
+3. You may have to _Select python interpreter_ in vscode when pipenv install is done. Select
    the interpreter in ``~/persistent/virtualenvs/...``. You will normally need to open
    a new terminal after starting up the container since the initial terminal will
    open before the python extension that selects the virtualenv is loaded.
