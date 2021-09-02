@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-31 14:04+0200\n"
-"PO-Revision-Date: 2021-08-31 14:06+0200\n"
+"POT-Creation-Date: 2021-09-02 13:15+0200\n"
+"PO-Revision-Date: 2021-09-02 13:16+0200\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -2125,9 +2125,9 @@ msgstr "Total poengsum"
 #: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/grading_points_based/preview.django.html:15
 #: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/grading_points_based/select-assignments.django.html:20
 #: devilry/devilry_admin/templates/devilry_admin/period/students/add.django.html:20
-#: devilry/devilry_admin/views/period/students.py:111
-#: devilry/devilry_admin/views/period/students.py:148
-#: devilry/devilry_admin/views/period/students.py:230
+#: devilry/devilry_admin/views/period/students.py:112
+#: devilry/devilry_admin/views/period/students.py:149
+#: devilry/devilry_admin/views/period/students.py:243
 msgid "Back to students on semester overview"
 msgstr "Tilbake til oversikt av studenter i semesteret"
 
@@ -2919,7 +2919,7 @@ msgstr "Reaktiver %(user)s"
 #: devilry/devilry_admin/templates/devilry_admin/period/examiners/overview-itemvalue.django.html:22
 #: devilry/devilry_admin/templates/devilry_admin/period/students/overview-itemvalue.django.html:22
 #: devilry/devilry_admin/views/period/examiners.py:133
-#: devilry/devilry_admin/views/period/students.py:137
+#: devilry/devilry_admin/views/period/students.py:138
 msgid "Re-activate"
 msgstr "Reaktiver"
 
@@ -3140,6 +3140,22 @@ msgstr "Importer studenter"
 msgid "You have no students. Use the buttons above to add students."
 msgstr ""
 "Du har ingen studenter. Bruk knappen nedenfor for å legge til studenter."
+
+#: devilry/devilry_admin/templates/devilry_admin/period/students/students-not-added-to-assignments-warning.django.html:4
+#: devilry/devilry_gradingsystem/templates/devilry_gradingsystem/admin/selectplugin.django.html:16
+msgid "Warning"
+msgstr "Advarsel"
+
+#: devilry/devilry_admin/templates/devilry_admin/period/students/students-not-added-to-assignments-warning.django.html:5
+#, python-format
+msgid ""
+"This semester has %(assignment_count)s assignments. The students you just "
+"added has NOT BEEN ADDED TO ANY ASSIGNMENTS, and will not see any of these "
+"assignments until you add them to the assignments."
+msgstr ""
+"Dette semesteret har %(assignment_count)s oppgaver. Studentene du akkurat la "
+"til har IKKE BLITT LAGT TIL PÅ NOEN OPPGAVER, og vil ikke se noen av disse "
+"oppgavene før du legger de til på oppgavene."
 
 #: devilry/devilry_admin/templates/devilry_admin/period/students/userselectview-no-searchresults-message.django.html:5
 msgid "Could not find any students matching your search."
@@ -4105,7 +4121,7 @@ msgstr "Legg til valgte brukere som semesteradministratorer"
 
 #: devilry/devilry_admin/views/period/admins.py:148
 #: devilry/devilry_admin/views/period/examiners.py:198
-#: devilry/devilry_admin/views/period/students.py:202
+#: devilry/devilry_admin/views/period/students.py:212
 #: devilry/devilry_admin/views/subject/admins.py:131
 #, python-format
 msgid "Added %(usernames)s."
@@ -4294,12 +4310,12 @@ msgstr ""
 "når som helst reaktivere en inaktiv retter."
 
 #: devilry/devilry_admin/views/period/examiners.py:98
-#: devilry/devilry_admin/views/period/students.py:102
+#: devilry/devilry_admin/views/period/students.py:103
 msgid "Deactivate"
 msgstr "Deaktiver"
 
 #: devilry/devilry_admin/views/period/examiners.py:110
-#: devilry/devilry_admin/views/period/students.py:114
+#: devilry/devilry_admin/views/period/students.py:115
 #, python-format
 msgid "%(user)s was deactivated."
 msgstr "%(user)s ble deaktivert."
@@ -4310,13 +4326,13 @@ msgid "Re-activate examiner: %(user)s?"
 msgstr "Reaktiver retter: %(user)s?"
 
 #: devilry/devilry_admin/views/period/examiners.py:136
-#: devilry/devilry_admin/views/period/students.py:140
+#: devilry/devilry_admin/views/period/students.py:141
 #, python-format
 msgid "Please confirm that you want to re-activate %(user)s."
 msgstr "Vennligst bekreft at du ønsker å reaktivere %(user)s."
 
 #: devilry/devilry_admin/views/period/examiners.py:150
-#: devilry/devilry_admin/views/period/students.py:154
+#: devilry/devilry_admin/views/period/students.py:155
 #, python-format
 msgid "%(user)s was re-activated."
 msgstr "%(user)s ble reaktivert."
@@ -4492,12 +4508,12 @@ msgstr "Resultater for alle studenter"
 msgid "No students on period"
 msgstr "Ingen studenter for perioden"
 
-#: devilry/devilry_admin/views/period/students.py:82
+#: devilry/devilry_admin/views/period/students.py:83
 #, python-format
 msgid "Deactivate student: %(user)s?"
 msgstr "Deaktiver student: %(user)s?"
 
-#: devilry/devilry_admin/views/period/students.py:89
+#: devilry/devilry_admin/views/period/students.py:90
 #, python-format
 msgid ""
 "Are you sure you want to make %(user)s an inactive student for %(period)s? "
@@ -4516,33 +4532,33 @@ msgstr ""
 "som helst måte når du deaktiverer en student. Du kan når som helst "
 "reaktivere en deaktivert student."
 
-#: devilry/devilry_admin/views/period/students.py:132
+#: devilry/devilry_admin/views/period/students.py:133
 #, python-format
 msgid "Re-activate student: %(user)s?"
 msgstr "Reaktiver student: %(user)s?"
 
-#: devilry/devilry_admin/views/period/students.py:167
+#: devilry/devilry_admin/views/period/students.py:168
 msgid "Add selected students"
 msgstr "Legg til valgte studenter"
 
-#: devilry/devilry_admin/views/period/students.py:224
-#: devilry/devilry_admin/views/period/students.py:233
+#: devilry/devilry_admin/views/period/students.py:237
+#: devilry/devilry_admin/views/period/students.py:246
 msgid "Bulk import students"
 msgstr "Bulk-import av studenter"
 
-#: devilry/devilry_admin/views/period/students.py:239
-#: devilry/devilry_admin/views/period/students.py:256
+#: devilry/devilry_admin/views/period/students.py:252
+#: devilry/devilry_admin/views/period/students.py:272
 #, python-format
 msgid "Added %(count)s new students to %(period)s."
 msgstr "La til %(count)s nye studenter for %(period)s."
 
-#: devilry/devilry_admin/views/period/students.py:244
-#: devilry/devilry_admin/views/period/students.py:261
+#: devilry/devilry_admin/views/period/students.py:260
+#: devilry/devilry_admin/views/period/students.py:280
 msgid "No new students was added."
 msgstr "Det ble ikke lagt til nye studenter."
 
-#: devilry/devilry_admin/views/period/students.py:247
-#: devilry/devilry_admin/views/period/students.py:264
+#: devilry/devilry_admin/views/period/students.py:263
+#: devilry/devilry_admin/views/period/students.py:283
 #, python-format
 msgid "%(count)s users was already student on %(period)s."
 msgstr "%(count)s brukere var allerede studenter for %(period)s."
@@ -5629,10 +5645,6 @@ msgstr ""
 #: devilry/devilry_gradingsystem/templates/devilry_gradingsystem/admin/selectplugin.django.html:6
 msgid "How would you like to provide feedback to your students?"
 msgstr "Hvordan vil du gi tilbakemelding til studentene?"
-
-#: devilry/devilry_gradingsystem/templates/devilry_gradingsystem/admin/selectplugin.django.html:16
-msgid "Warning"
-msgstr "Advarsel"
 
 #: devilry/devilry_gradingsystem/templates/devilry_gradingsystem/admin/selectplugin.django.html:17
 msgid ""
