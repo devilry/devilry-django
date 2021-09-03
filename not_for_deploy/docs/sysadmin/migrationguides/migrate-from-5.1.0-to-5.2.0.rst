@@ -1,6 +1,6 @@
-===================================
-Migrating from 5.2.0rc1 to 5.2.0rc2
-===================================
+=============================
+Migrating from 5.1.0 to 5.2.0
+=============================
 
 
 What's new
@@ -21,12 +21,7 @@ Backup database and files
 BACKUP. YOUR. DATABASE. AND. FILES.
 
 
-Update devilry to 5.2.0rc2
-##########################
+Update devilry to 5.2.0
+#######################
 
-Uninstall django_errortemplates with PIP **between** step 2 and 3 in the :doc:`../update`::
-
-    $ cd ~/devilrydeploy
-    $ venv/bin/pip uninstall django_errortemplates
-
-Update the devilry version to ``5.2.0rc2`` as described in :doc:`../update`.
+Update the devilry version to ``5.2.0`` as described in :doc:`../update`.
