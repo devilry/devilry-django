@@ -122,8 +122,6 @@ class TestManageDeadlineNewAttemptAllGroupsView(AdminTestCaseMixin):
         testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
         group_baker.feedbackset_first_attempt_unpublished(group=testgroup2)
         testuser = self._get_admin_user(testassignment.parentnode)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self._get_mock_instance(testassignment),
@@ -144,8 +142,6 @@ class TestManageDeadlineNewAttemptAllGroupsView(AdminTestCaseMixin):
         group_baker.feedbackset_first_attempt_published(group=testgroup1)
         group_baker.feedbackset_first_attempt_unpublished(group=testgroup2)
         testuser = self._get_admin_user(testassignment.parentnode)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         new_deadline = timezone.now() + timezone.timedelta(days=3)
         new_deadline = new_deadline.replace(microsecond=0)
         self.mock_http302_postrequest(
@@ -169,6 +165,7 @@ class TestManageDeadlineNewAttemptAllGroupsView(AdminTestCaseMixin):
         self.assertEqual(3, feedbacksets.count())
         group1 = core_models.AssignmentGroup.objects.get(id=testgroup1.id)
         group2 = core_models.AssignmentGroup.objects.get(id=testgroup2.id)
+        new_deadline = new_deadline.replace(second=59) # Deadline is cleaned to seconds as 59.
         self.assertEqual(new_deadline, group1.cached_data.last_feedbackset.deadline_datetime)
         self.assertNotEqual(new_deadline, group2.cached_data.last_feedbackset.deadline_datetime)
 
@@ -179,8 +176,6 @@ class TestManageDeadlineNewAttemptAllGroupsView(AdminTestCaseMixin):
         group_baker.feedbackset_first_attempt_published(group=testgroup1)
         group_baker.feedbackset_first_attempt_unpublished(group=testgroup2)
         testuser = self._get_admin_user(testassignment.parentnode)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         new_deadline = timezone.now() + timezone.timedelta(days=3)
         new_deadline = new_deadline.replace(microsecond=0)
         with self.assertRaises(http.Http404):
@@ -229,10 +224,6 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(AdminTestCaseMixin):
         testgroup4 = baker.make('core.AssignmentGroup', parentnode=testassignment)
         group_baker.feedbackset_first_attempt_unpublished(group=testgroup4)
         testuser = self._get_admin_user(testassignment.parentnode)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
-        baker.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=testuser)
-        baker.make('core.Examiner', assignmentgroup=testgroup4, relatedexaminer__user=testuser)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self._get_mock_instance(testassignment),
@@ -259,8 +250,6 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(AdminTestCaseMixin):
         testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
         group_baker.feedbackset_first_attempt_published(group=testgroup2)
         testuser = self._get_admin_user(testassignment.parentnode)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self._get_mock_instance(testassignment),
@@ -281,8 +270,6 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(AdminTestCaseMixin):
         group_baker.feedbackset_first_attempt_unpublished(group=testgroup1)
         group_baker.feedbackset_first_attempt_published(group=testgroup2)
         testuser = self._get_admin_user(testassignment.parentnode)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         new_deadline = timezone.now() + timezone.timedelta(days=3)
         new_deadline = new_deadline.replace(microsecond=0)
         self.mock_http302_postrequest(
@@ -307,6 +294,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(AdminTestCaseMixin):
         group1 = core_models.AssignmentGroup.objects.get(id=testgroup1.id)
         group2 = core_models.AssignmentGroup.objects.get(id=testgroup2.id)
         self.assertEqual(group1.cached_data.last_feedbackset, group1.cached_data.first_feedbackset)
+        new_deadline = new_deadline.replace(second=59) # Deadline is cleaned to seconds as 59.
         self.assertEqual(new_deadline, group1.cached_data.last_feedbackset.deadline_datetime)
         self.assertNotEqual(new_deadline, group2.cached_data.last_feedbackset.deadline_datetime)
 
@@ -317,8 +305,6 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(AdminTestCaseMixin):
         group_baker.feedbackset_first_attempt_published(group=testgroup1)
         group_baker.feedbackset_first_attempt_unpublished(group=testgroup2)
         testuser = self._get_admin_user(testassignment.parentnode)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         new_deadline = timezone.now() + timezone.timedelta(days=3)
         new_deadline = new_deadline.replace(microsecond=0)
         with self.assertRaises(http.Http404):
@@ -368,8 +354,6 @@ class TestManageDeadlineNewAttemptFromPreviousView(AdminTestCaseMixin):
         testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
         group_baker.feedbackset_first_attempt_published(group=testgroup2)
         testuser = self._get_admin_user(testassignment.parentnode)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self._get_mock_instance(testassignment),
@@ -398,8 +382,6 @@ class TestManageDeadlineNewAttemptFromPreviousView(AdminTestCaseMixin):
         testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
         group_baker.feedbackset_first_attempt_published(group=testgroup2)
         testuser = self._get_admin_user(testassignment.parentnode)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         new_deadline = timezone.now() + timezone.timedelta(days=3)
         new_deadline = new_deadline.replace(microsecond=0)
         self.mock_postrequest(
@@ -424,6 +406,7 @@ class TestManageDeadlineNewAttemptFromPreviousView(AdminTestCaseMixin):
         group_comments = group_models.GroupComment.objects.all()
         last_feedbackset_group1 = AssignmentGroupCachedData.objects.get(group_id=testgroup1.id).last_feedbackset
         last_feedbackset_group2 = AssignmentGroupCachedData.objects.get(group_id=testgroup2.id).last_feedbackset
+        new_deadline = new_deadline.replace(second=59) # Deadline is cleaned to seconds as 59.
         self.assertEqual(last_feedbackset_group1.deadline_datetime, new_deadline)
         self.assertEqual(last_feedbackset_group2.deadline_datetime, new_deadline)
         self.assertEqual(last_feedbackset_group1.last_updated_by, testuser)
@@ -438,8 +421,6 @@ class TestManageDeadlineNewAttemptFromPreviousView(AdminTestCaseMixin):
         group_baker.feedbackset_first_attempt_published(group=testgroup1)
         group_baker.feedbackset_first_attempt_unpublished(group=testgroup2)
         testuser = self._get_admin_user(testassignment.parentnode)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         new_deadline = timezone.now() + timezone.timedelta(days=3)
         new_deadline = new_deadline.replace(microsecond=0)
         with self.assertRaises(http.Http404):
@@ -486,8 +467,6 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(AdminTestCaseMixin):
         testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
         group_baker.feedbackset_first_attempt_unpublished(group=testgroup2)
         testuser = self._get_admin_user(testassignment.parentnode)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self._get_mock_instance(testassignment),
@@ -516,8 +495,6 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(AdminTestCaseMixin):
         testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
         group_baker.feedbackset_first_attempt_published(group=testgroup2)
         testuser = self._get_admin_user(testassignment.parentnode)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         new_deadline = timezone.now() + timezone.timedelta(days=3)
         new_deadline = new_deadline.replace(microsecond=0)
         self.mock_postrequest(
@@ -542,6 +519,7 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(AdminTestCaseMixin):
         group_comments = group_models.GroupComment.objects.all()
         last_feedbackset_group1 = AssignmentGroupCachedData.objects.get(group_id=testgroup1.id).last_feedbackset
         last_feedbackset_group2 = AssignmentGroupCachedData.objects.get(group_id=testgroup2.id).last_feedbackset
+        new_deadline = new_deadline.replace(second=59) # Deadline is cleaned to seconds as 59.
         self.assertEqual(last_feedbackset_group1.deadline_datetime, new_deadline)
         self.assertEqual(last_feedbackset_group2.deadline_datetime, new_deadline)
         self.assertEqual(last_feedbackset_group1.last_updated_by, testuser)
@@ -556,8 +534,6 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(AdminTestCaseMixin):
         group_baker.feedbackset_first_attempt_published(group=testgroup1)
         group_baker.feedbackset_first_attempt_unpublished(group=testgroup2)
         testuser = self._get_admin_user(testassignment.parentnode)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         new_deadline = timezone.now() + timezone.timedelta(days=3)
         new_deadline = new_deadline.replace(microsecond=0)
         with self.assertRaises(http.Http404):
@@ -587,5 +563,40 @@ class TestSubjectAdminMoveDeadlineFromPreviousView(TestManageDeadlineMoveDeadlin
 
 
 class TestDepartmentAdminMoveDeadlineFromPreviousView(TestManageDeadlineMoveDeadlineFromPreviousView):
+    def _get_admin_user(self, period):
+        return self._create_department_admin(period)
+
+
+class TestManageDeadlineMoveDeadlineSingleGroup(AdminTestCaseMixin):
+    viewclass = manage_deadline_view.ManageDeadlineSingleGroupView
+    handle_deadline = 'move-deadline'
+
+    def test_period_admin_move_deadline_last_attempt_is_graded(self):
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        group_baker.feedbackset_first_attempt_published(group=testgroup)
+        testuser = self._get_admin_user(testassignment.parentnode)
+        new_deadline = timezone.now() + timezone.timedelta(days=3)
+        new_deadline = new_deadline.replace(microsecond=0)
+        with self.assertRaises(http.Http404):
+            self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup,
+                cradmin_instance=self._get_mock_instance(testassignment),
+                requestuser=testuser,
+                cradmin_app=self._get_mock_app(testuser),
+                viewkwargs={
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
+                    'handle_deadline': self.handle_deadline,
+                    'group_id': testgroup.id
+                }
+            )
+
+
+class TestSubjectAdminManageDeadlineMoveDeadlineSingleGroup(TestManageDeadlineMoveDeadlineSingleGroup):
+    def _get_admin_user(self, period):
+        return self._create_subject_admin(period)
+
+
+class TestDepartmentAdminManageDeadlineMoveDeadlineSingleGroup(TestManageDeadlineMoveDeadlineSingleGroup):
     def _get_admin_user(self, period):
         return self._create_department_admin(period)

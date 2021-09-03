@@ -1,13 +1,14 @@
 
 
-from django.contrib import messages
-from django.http import Http404
-from django.utils.translation import gettext_lazy
 from cradmin_legacy import crapp
 from cradmin_legacy.crispylayouts import DangerSubmit
+from django.contrib import messages
+from django.http import Http404
+from django.template.loader import render_to_string
+from django.utils.translation import gettext_lazy
 
-from devilry.apps.core.models import RelatedStudent
-from devilry.devilry_account.models import User, PermissionGroup
+from devilry.apps.core.models import RelatedStudent, Assignment
+from devilry.devilry_account.models import PermissionGroup, User
 from devilry.devilry_admin.cradminextensions.listbuilder import listbuilder_relatedstudent
 from devilry.devilry_admin.cradminextensions.listfilter import listfilter_relateduser
 from devilry.devilry_admin.views.common import bulkimport_users_common
@@ -167,6 +168,15 @@ class AddStudentsTarget(devilry_multiselect2.user.Target):
         return gettext_lazy('Add selected students')
 
 
+def students_not_added_to_assignments_warning(request, period):
+    assignment_queryset = Assignment.objects.filter(parentnode=period)
+    if not assignment_queryset.exists():
+        return
+    message = render_to_string('devilry_admin/period/students/students-not-added-to-assignments-warning.django.html', {
+        'assignment_queryset': assignment_queryset
+    })
+    messages.info(request, message)
+
 class AddView(devilry_multiselect2.user.BaseMultiselectUsersView):
     value_renderer_class = devilry_multiselect2.user.ItemValue
     template_name = 'devilry_admin/period/students/add.django.html'
@@ -217,6 +227,9 @@ class AddView(devilry_multiselect2.user.BaseMultiselectUsersView):
         selected_users = list(form.cleaned_data['selected_items'])
         self.__create_relatedstudents(selected_users=selected_users)
         messages.success(self.request, self.__get_success_message(added_users=selected_users))
+        students_not_added_to_assignments_warning(
+            request=self.request,
+            period=self.request.cradmin_role)
         return super(AddView, self).form_valid(form=form)
 
 
@@ -240,6 +253,9 @@ class ImportStudentsView(bulkimport_users_common.AbstractTypeInUsersView):
                 'count': result.created_relatedusers_queryset.count(),
                 'period': period.get_path()
             })
+            students_not_added_to_assignments_warning(
+                request=self.request,
+                period=self.request.cradmin_role)
         else:
             messages.warning(self.request, gettext_lazy('No new students was added.'))
 
@@ -257,6 +273,9 @@ class ImportStudentsView(bulkimport_users_common.AbstractTypeInUsersView):
                 'count': result.created_relatedusers_queryset.count(),
                 'period': period.get_path()
             })
+            students_not_added_to_assignments_warning(
+                request=self.request,
+                period=self.request.cradmin_role)
         else:
             messages.warning(self.request, gettext_lazy('No new students was added.'))
 

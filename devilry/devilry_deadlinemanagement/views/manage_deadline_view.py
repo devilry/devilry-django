@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-
 from datetime import timedelta
 
+import arrow
+from django.conf import settings
 from crispy_forms import layout
 from django import forms
 from django import http
@@ -14,7 +15,7 @@ from django.template import defaultfilters
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.translation import gettext_lazy, pgettext_lazy
-from cradmin_legacy.crispylayouts import PrimarySubmitBlock, PrimarySubmit
+from cradmin_legacy.crispylayouts import PrimarySubmit
 from cradmin_legacy.viewhelpers import formbase
 from cradmin_legacy.widgets.datetimepicker import DateTimePickerWidget
 
@@ -52,13 +53,20 @@ class ManageDeadlineForm(SelectedItemsForm):
         super(ManageDeadlineForm, self).__init__(*args, **kwargs)
         self.fields['new_deadline'].widget = DateTimePickerWidget(
             buttonlabel_novalue=pgettext_lazy('CrAdmin datetime picker typo fix', 'Select a date/time'),
-            minimum_datetime=self.get_minimum_datetime()
+            minimum_datetime=self.get_minimum_datetime(),
+            default_now_time={'hour': 23, 'minute': 59}
         )
         self.fields['new_deadline'].help_text = gettext_lazy('Pick a date and time from the '
                                                               'calendar, or select one of the suggested deadlines.')
 
     def get_minimum_datetime(self):
         return timezone.now().replace(microsecond=0)
+
+    def clean_new_deadline(self):
+        new_deadline = self.cleaned_data.get('new_deadline', None)
+        if new_deadline:
+            new_deadline = new_deadline.replace(second=59)
+        return new_deadline
 
     def clean(self):
         super(ManageDeadlineForm, self).clean()
@@ -87,14 +95,17 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
 
     def can_move_deadline(self):
         """
-        Returns ``False`` if the type is `move-deadline`, request user is an
-        `examiner` and the group is already graded.
+        Check if the deadline can be moved.
+
+        Returns ``False`` is the type is `move-deadline` and the 
+        last feedbackset is published (graded).
         """
         if self.request.cradmin_role.__class__ == core_models.AssignmentGroup:
             if self.post_move_deadline:
                 group = self.request.cradmin_role
-                if self.request.cradmin_instance.get_devilryrole_type() == 'examiner' and \
-                        group.cached_data.last_published_feedbackset_is_last_feedbackset:
+                devilryrole_type = self.request.cradmin_instance.get_devilryrole_type()
+                if (devilryrole_type == 'examiner' or 'admin' in devilryrole_type) and \
+                    group.cached_data.last_published_feedbackset_is_last_feedbackset:
                     return False
         return True
 
@@ -223,19 +234,33 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
 
     def __get_suggested_deadlines(self):
         suggested_deadlines = []
-        previous_feedbackset = self.get_latest_previous_deadline()
-        if previous_feedbackset:
-            previous_deadline = previous_feedbackset
+        previous_feedbackset_deadline = self.get_latest_previous_deadline()
+        if previous_feedbackset_deadline:
+            previous_deadline = arrow.get(previous_feedbackset_deadline).to(settings.TIME_ZONE)
+            first_suggested_deadline = None
             if previous_deadline > timezone.now():
-                first_suggested_deadline = previous_deadline + timezone.timedelta(days=7)
+                # Since the previous deadline is in the future, get suggested 
+                # deadlines relative to the previous deadline.
+                first_suggested_deadline = previous_deadline
             else:
-                first_suggested_deadline = datetimeutils.datetime_with_same_time(
-                    timesource_datetime=previous_deadline,
-                    target_datetime=timezone.now() + timedelta(days=7))
-            suggested_deadlines.append(first_suggested_deadline)
+                # The previous deadline is in the past, so get the suggested 
+                # deadline relative to the current datetime.
+                first_suggested_deadline = arrow.utcnow().to(settings.TIME_ZONE)
+
+            first_suggested_deadline = first_suggested_deadline.replace(
+                hour=23,
+                minute=59,
+                second=59,
+                microsecond=0
+            ).shift(days=+7).datetime
+            suggested_deadlines.append(
+                first_suggested_deadline
+            )
+
             for days_forward in range(7, (7 * 4), 7):
-                suggested_deadline = first_suggested_deadline + timezone.timedelta(days=days_forward)
+                suggested_deadline = first_suggested_deadline + timedelta(days=days_forward)
                 suggested_deadlines.append(suggested_deadline)
+
         return suggested_deadlines
 
     def __render_suggested_deadlines(self):
@@ -357,9 +382,6 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
                     publishing_time=now_without_sec_and_micro,
                     text=text
                 )
-            # deadline_email.bulk_send_deadline_moved_email(
-            #     feedbackset_id_list=feedback_set_ids,
-            #     domain_url_start=self.request.build_absolute_uri('/'))
             deadline_email.bulk_send_deadline_moved_email(
                 assignment_id=self.assignment.id,
                 feedbackset_id_list=feedback_set_ids,
@@ -390,9 +412,6 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
                     text=text
                 )
                 feedbackset_id_list.append(feedbackset_id)
-            # deadline_email.bulk_send_new_attempt_email(
-            #     feedbackset_id_list=feedbackset_id_list,
-            #     domain_url_start=self.request.build_absolute_uri('/'))
             deadline_email.bulk_send_new_attempt_email(
                 assignment_id=self.assignment.id,
                 feedbackset_id_list=feedbackset_id_list,

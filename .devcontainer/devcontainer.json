@@ -22,7 +22,11 @@
 		"batisteo.vscode-django",
 		"appresso.atest"
 	],
-	
+
+	// These two lines are for the IO performance approach documented in "repo-in-volume.md"
+	// "workspaceMount": "source=devilry_dockerdev_repo,destination=/workspace,type=volume",
+	// "workspaceFolder": "/workspace",
+
 	// Set *default* container specific settings.json values on container create.
 	"settings": { 
 		"terminal.integrated.shell.linux": "/bin/bash",

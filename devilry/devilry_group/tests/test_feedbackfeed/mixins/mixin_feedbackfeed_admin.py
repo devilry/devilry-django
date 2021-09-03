@@ -53,7 +53,7 @@ class MixinTestFeedbackfeedAdmin(mixin_feedbackfeed_common.MixinTestFeedbackFeed
         )
         self.assertTrue(mockresponse.selector.exists('.devilry-group-event__grade-move-deadline-button'))
 
-    def test_move_deadline_button_rendered_if_deadline_expired_and_feedbackset_is_graded(self):
+    def test_move_deadline_button_not_rendered_if_deadline_expired_and_feedbackset_is_graded(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
         deadline_datetime = timezone.now() - timezone.timedelta(days=1)
         testgroup = baker.make('core.AssignmentGroup',
@@ -65,7 +65,7 @@ class MixinTestFeedbackfeedAdmin(mixin_feedbackfeed_common.MixinTestFeedbackFeed
             requestuser=testuser,
             cradmin_instance=self.__mock_cradmin_instance()
         )
-        self.assertTrue(mockresponse.selector.exists('.devilry-group-event__grade-move-deadline-button'))
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-event__grade-move-deadline-button'))
 
     def test_new_attempt_button_rendered_if_deadline_expired_and_feedbackset_is_graded(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)

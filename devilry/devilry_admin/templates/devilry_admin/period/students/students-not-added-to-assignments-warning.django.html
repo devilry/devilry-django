@@ -1,0 +1,10 @@
+{% load i18n %}
+
+<p>
+<strong>{% trans "Warning" %}:</strong>
+{% blocktrans trimmed with assignment_count=assignment_queryset.count %}
+    This semester has {{ assignment_count }} assignments. The students you just added
+    has NOT BEEN ADDED TO ANY ASSIGNMENTS, and will not see any of these assignments
+    until you add them to the assignments.
+{% endblocktrans %}
+</p>

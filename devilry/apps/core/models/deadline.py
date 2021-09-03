@@ -226,6 +226,11 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         """
         return datetimeobj.replace(microsecond=0, second=0, tzinfo=None)
 
+    @classmethod
+    def _clean_deadline_seconds(cls, datetimeobj):
+        """Set the seconds of the deadline to '59' so deliveries can be done during the whole minute"""
+        return datetimeobj.replace(second=59, tzinfo=None)
+
     def _clean_deadline(self):
         self.deadline = Deadline.reduce_datetime_precision(
             self.deadline)  # NOTE: We want this so a unique deadline is a deadline which matches with second-specition.
@@ -235,6 +240,7 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         deadlines = Deadline.objects.filter(qry)
         if deadlines.count() > 0:
             raise ValidationError('Can not have more than one deadline with the same date/time on a single group.')
+        self.deadline = Deadline._clean_deadline_seconds(datetimeobj=self.deadline)
 
     def clean(self):
         """Validate the deadline.
