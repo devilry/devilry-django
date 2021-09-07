@@ -427,6 +427,8 @@ class TestExaminerNotAssignedCommentEmail(TestCommentEmailForUsersMixin, test.Te
                                        text='This is a test',
                                        user_role=Comment.USER_ROLE_STUDENT,
                                        user=comment_user)
+        baker.make('devilry_comment.CommentFile', comment=test_groupcomment, filename='testfile1.py',
+                                  filesize=5600)
         baker.make('devilry_account.UserEmail', user=comment_user, email='testuser@example.com')
         send_examiner_comment_email(
             comment_id=test_groupcomment.id,
@@ -456,6 +458,8 @@ class TestExaminerNotAssignedCommentEmail(TestCommentEmailForUsersMixin, test.Te
                                        text='This is a test',
                                        user_role=Comment.USER_ROLE_STUDENT,
                                        user=comment_user)
+        baker.make('devilry_comment.CommentFile', comment=test_groupcomment, filename='testfile1.py',
+                                  filesize=5600)
         baker.make('devilry_account.UserEmail', user=comment_user, email='testuser@example.com')
         send_examiner_comment_email(
             comment_id=test_groupcomment.id,
@@ -486,6 +490,8 @@ class TestExaminerNotAssignedCommentEmail(TestCommentEmailForUsersMixin, test.Te
                                        text='This is a test',
                                        user_role=Comment.USER_ROLE_STUDENT,
                                        user=comment_user)
+        baker.make('devilry_comment.CommentFile', comment=test_groupcomment, filename='testfile1.py',
+                                  filesize=5600)
         baker.make('devilry_account.UserEmail', user=comment_user, email='testuser@example.com')
         send_examiner_comment_email(
             comment_id=test_groupcomment.id,
@@ -517,6 +523,8 @@ class TestExaminerNotAssignedCommentEmail(TestCommentEmailForUsersMixin, test.Te
                                        text='This is a test',
                                        user_role=Comment.USER_ROLE_STUDENT,
                                        user=comment_user)
+        baker.make('devilry_comment.CommentFile', comment=test_groupcomment, filename='testfile1.py',
+                                  filesize=5600)
         baker.make('devilry_account.UserEmail', user=comment_user, email='testuser@example.com')
         send_examiner_comment_email(
             comment_id=test_groupcomment.id,
@@ -546,6 +554,8 @@ class TestExaminerNotAssignedCommentEmail(TestCommentEmailForUsersMixin, test.Te
                                        text='This is a test',
                                        user_role=Comment.USER_ROLE_EXAMINER,
                                        user=comment_user)
+        baker.make('devilry_comment.CommentFile', comment=test_groupcomment, filename='testfile1.py',
+                                  filesize=5600)
         baker.make('devilry_account.UserEmail', user=comment_user, email='testuser@example.com')
         send_examiner_comment_email(
             comment_id=test_groupcomment.id,
@@ -576,6 +586,8 @@ class TestExaminerNotAssignedCommentEmail(TestCommentEmailForUsersMixin, test.Te
                                        text='This is a test',
                                        user_role=Comment.USER_ROLE_ADMIN,
                                        user=comment_user)
+        baker.make('devilry_comment.CommentFile', comment=test_groupcomment, filename='testfile1.py',
+                                  filesize=5600)
         baker.make('devilry_account.UserEmail', user=comment_user, email='testuser@example.com')
         send_examiner_comment_email(
             comment_id=test_groupcomment.id,
@@ -589,6 +601,30 @@ class TestExaminerNotAssignedCommentEmail(TestCommentEmailForUsersMixin, test.Te
             '[Devilry] An admin added a new comment for {}'.format(
                 test_feedbackset.group.parentnode.long_name)
         )
+
+    def test_send_examiner_no_examiner_admin_no_file_comment(self):
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           long_name='Assignment 1')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        test_feedbackset = group_baker.feedbackset_first_attempt_unpublished(
+            group=testgroup, deadline_datetime=timezone.now() + timezone.timedelta(days=1))
+
+        # Another user on the group
+        self._setup_period_and_subject_admins(assignment=testassignment)
+
+        # The user that posted the comment
+        comment_user = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com')
+        test_groupcomment = baker.make('devilry_group.GroupComment',
+                                       feedback_set=test_feedbackset,
+                                       text='This is a test',
+                                       user_role=Comment.USER_ROLE_ADMIN,
+                                       user=comment_user)
+        baker.make('devilry_account.UserEmail', user=comment_user, email='testuser@example.com')
+        send_examiner_comment_email(
+            comment_id=test_groupcomment.id,
+            domain_url_start='http://www.example.com/', )
+
+        self.assertEqual(len(mail.outbox), 0)
 
     def test_send_examiner_comment_examiner_assigned_and_subject_admin(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -687,6 +723,8 @@ class TestExaminerNotAssignedCommentEmail(TestCommentEmailForUsersMixin, test.Te
                                        text='This is a test',
                                        user_role=Comment.USER_ROLE_STUDENT,
                                        user=comment_user)
+        baker.make('devilry_comment.CommentFile', comment=test_groupcomment, filename='testfile1.py',
+                                  filesize=5600)
         baker.make('devilry_account.UserEmail', user=comment_user, email='testuser@example.com')
         send_examiner_comment_email(
             comment_id=test_groupcomment.id,
@@ -713,6 +751,8 @@ class TestExaminerNotAssignedCommentEmail(TestCommentEmailForUsersMixin, test.Te
                                        text='This is a test',
                                        user_role=Comment.USER_ROLE_STUDENT,
                                        user=comment_user)
+        baker.make('devilry_comment.CommentFile', comment=test_groupcomment, filename='testfile1.py',
+                                  filesize=5600)
         baker.make('devilry_account.UserEmail', user=comment_user, email='testuser@example.com')
         send_examiner_comment_email(
             comment_id=test_groupcomment.id,
@@ -739,6 +779,8 @@ class TestExaminerNotAssignedCommentEmail(TestCommentEmailForUsersMixin, test.Te
                                        text='This is a test',
                                        user_role=Comment.USER_ROLE_STUDENT,
                                        user=comment_user)
+        baker.make('devilry_comment.CommentFile', comment=test_groupcomment, filename='testfile1.py',
+                                  filesize=5600)
         baker.make('devilry_account.UserEmail', user=comment_user, email='testuser@example.com')
         send_examiner_comment_email(
             comment_id=test_groupcomment.id,
