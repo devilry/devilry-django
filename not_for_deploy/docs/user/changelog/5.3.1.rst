@@ -4,8 +4,6 @@
 What is new in Devilry 5.3.1
 ############################
 
-.. note:: 5.3.0 should be skipped. There was a misunderstanding in the implementation, and it should not be used.
-
 
 What's new
 ##########
