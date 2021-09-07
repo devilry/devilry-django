@@ -218,11 +218,11 @@ def send_examiner_comment_email(comment_id, domain_url_start):
         get_examiner_users_not_comment_poster(group=comment.feedback_set.group, exclude_user=comment.user))
     has_examiner = True
     if not recipients:
-        if comment.commentfile_set.exists():
-            recipients = list(get_subject_and_period_admins_users(group=comment.feedback_set.group))
-            has_examiner = False
-        else:
+        if comment.text.strip() == '':
+            # Do not spam admins with notifications for comments without any text.
             return
+        recipients = list(get_subject_and_period_admins_users(group=comment.feedback_set.group))
+        has_examiner = False
     send_comment_email(
         comment=comment,
         user_list=recipients,
