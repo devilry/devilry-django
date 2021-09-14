@@ -604,6 +604,34 @@ class User(AbstractBaseUser):
             return None
 
 
+class MergedUser(models.Model):
+    """
+    A merge user is created when two users are merged
+    by `devilry.devilry_account.user_merger.UserMerger`.
+    """
+
+    source_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='+')
+    """
+    The user we merged from. This user will have
+    lost most of their data after the merge, but some foreign keys
+    like created_by etc. will still remain.
+    """
+    
+    target_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='+')
+    """
+    The target of the merge. Most foreign keys previously pointing
+    to `MergedUser.source_user` will have been moved to this user. This
+    is all documented in `MergedUser.summary_json`.
+    """
+
+    summary_json = models.JSONField(default=dict)
+    """
+    Summary of the merge as JSON.
+
+    Documents what changes was made during the merge.
+    """
+
+
 class AbstractUserIdentity(models.Model):
     """
     Base class for :class:`.UserEmail` and :class:`.UserName`.
