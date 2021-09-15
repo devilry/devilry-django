@@ -5,7 +5,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.utils.translation import gettext_lazy
 
-from devilry.devilry_account.models import SubjectPermissionGroup, PeriodPermissionGroup
+from devilry.devilry_account.models import MergedUser, SubjectPermissionGroup, PeriodPermissionGroup
 from devilry.devilry_account.models import User, UserEmail, UserName, PermissionGroup, PermissionGroupUser
 
 
@@ -93,6 +93,38 @@ class DevilryUserAdmin(UserAdmin):
 
 admin.site.unregister(authmodels.Group)
 admin.site.register(User, DevilryUserAdmin)
+
+
+class MergedUserAdmin(admin.ModelAdmin):
+    list_display = [
+        'id',
+        'source_user',
+        'target_user',
+    ]
+
+    search_fields = [
+        '=id',
+
+        '=source_user__id',
+        'source_user__shortname',
+        'source_user__fullname',
+        'source_user__useremail__email',
+        'source_user__username__username',
+
+        '=target_user__id',
+        'target_user__shortname',
+        'target_user__fullname',
+        'target_user__useremail__email',
+        'target_user__username__username',
+    ]
+
+    raw_id_fields = [
+        'source_user',
+        'target_user',
+    ]
+
+
+admin.site.register(MergedUser, MergedUserAdmin)
 
 
 class PermissionGroupUserInline(admin.TabularInline):

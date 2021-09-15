@@ -631,6 +631,16 @@ class MergedUser(models.Model):
     Documents what changes was made during the merge.
     """
 
+    @property
+    def short_summary_json(self):
+        short_summary = {}
+        for modelname, info in self.summary_json.items():
+            short_info = {
+                key:value for key, value in info.items() if key != 'details'
+            }
+            short_summary[modelname] = short_info
+        return short_summary
+
 
 class AbstractUserIdentity(models.Model):
     """
