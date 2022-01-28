@@ -334,9 +334,9 @@ class IsPassingGradeFilter(abstractselect.AbstractBoolean):
     def get_label(self):
         return pgettext_lazy('group is passing grade filter',
                              'Passing grade?')
-    
+
     def get_do_not_apply_label(self):
-        return pgettext_lazy('group is passing grade filter', 'Both')
+        return pgettext_lazy('group is passing grade filter', 'All')
 
     def filter(self, queryobject):
         cleaned_value = self.get_cleaned_value()
