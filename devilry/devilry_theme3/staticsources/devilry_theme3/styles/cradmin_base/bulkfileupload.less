@@ -26,6 +26,7 @@ The bulk file upload widget base styles.
       border-style: @cradmin-bulkfileupload-dropbox-border-style;
       border-color: @cradmin-bulkfileupload-dropbox-border-color;
       border-width: @cradmin-bulkfileupload-dropbox-border-width;
+      margin-bottom: 10px;
 
       .cradmin-legacy-bulkfileupload-dropbox-invalid-filetype-errormessage {
         display: none;
@@ -36,17 +37,17 @@ The bulk file upload widget base styles.
         top: 50%;
         .css3-transform(translateY(-50%));
 
-        p.cradmin-legacy-bulkfileupload-advanced-fileselectbutton-wrapper {
-          text-align: @cradmin-bulkfileupload-advanced-fileselectbutton-align;
-          margin-bottom: 0;
-          .cradmin-legacy-bulkfileupload-advanced-fileselectbutton {
-            display: inline-block;
-            color: @cradmin-bulkfileupload-advanced-fileselectbutton-color;
-            &:hover {
-              color: @cradmin-bulkfileupload-advanced-fileselectbutton-hover-color;
-            }
-          }
-        }
+        // p.cradmin-legacy-bulkfileupload-advanced-fileselectbutton-wrapper {
+        //   text-align: center;
+        //   margin-bottom: 10px;
+        //   .cradmin-legacy-bulkfileupload-advanced-fileselectbutton {
+        //     display: inline-block;
+        //     color: @cradmin-bulkfileupload-advanced-fileselectbutton-color;
+        //     &:hover {
+        //       color: @cradmin-bulkfileupload-advanced-fileselectbutton-hover-color;
+        //     }
+        //   }
+        // }
       }
 
       &.cradmin-legacy-bulkfileupload-dropbox-dragover {
@@ -146,6 +147,14 @@ The bulk file upload widget base styles.
           }
         }
       }
+    }
+  }
+
+  p.cradmin-legacy-bulkfileupload-advanced-fileselectbutton-wrapper {
+    text-align: center;
+    margin-bottom: 10px;
+    .cradmin-legacy-bulkfileupload-advanced-fileselectbutton {
+      display: inline-block;
     }
   }
 }

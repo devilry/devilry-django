@@ -19,7 +19,7 @@
         {% if roleselect_list.user_has_no_roles %}
             <div class="alert alert-warning">
                 {% trans "You do not have access to anything in Devilry." %}
-                <a href="{{ DEVILRY_LACKING_PERMISSIONS_URL }}" id="devilry_frontpage_lacking_permissions_link">
+                <a href="{{ DEVILRY_LACKING_PERMISSIONS_URL }}" id="devilry_frontpage_lacking_permissions_link" class='plain-link'>
                     {% trans "Click here to learn how to get access to Devilry" %}</a>.
             </div>
         {% else %}
@@ -28,7 +28,7 @@
                 <div class="col-sm-6 devilry-frontpage-more-roles-link-wrapper">
                     <a href="{{ DEVILRY_LACKING_PERMISSIONS_URL }}"
                             id="devilry_frontpage_lacking_permissions_link"
-                            class="devilry-frontpage-more-roles-link">
+                            class="devilry-frontpage-more-roles-link plain-link">
                         {% trans "I should have had more roles" %}
                     </a>
                 </div>
