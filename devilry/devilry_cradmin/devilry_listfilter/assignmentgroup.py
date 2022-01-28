@@ -296,7 +296,7 @@ class StatusSelectFilter(abstractselect.AbstractSelectFilter):
 
     def get_choices(self):
         return [
-            ('', ''),
+            ('', pgettext_lazy('group status', 'Any')),
             ('waiting-for-feedback', pgettext('group status', 'waiting for feedback')),
             ('waiting-for-deliveries', pgettext('group status', 'waiting for deliveries')),
             ('corrected', pgettext('group status', 'corrected')),
