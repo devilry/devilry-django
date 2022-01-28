@@ -1,0 +1,72 @@
+{% extends "cradmin_legacy/base.django.html" %}
+
+{% block title %}
+    WCAG debug
+{% endblock title %}
+
+{% block content %}
+    <div class="container" style='margin-bottom: 20px;'>
+        <a href='#'>Simple link without class directly in body (deprecated)</a><br/>
+        <a href='#' class='plain-link'>Link with class plain-link directly in body</a><br/>
+    </div>
+    <div class="container" style='margin-bottom: 20px;'>
+        <ol class="cradmin-legacy-listbuilder-list cradmin-legacy-listbuilder-rowlist devilry-frontpage-roleselectlist">
+            <li>
+                <a href="#" class='cradmin-legacy-listbuilder-itemframe cradmin-legacy-listbuilder-itemframe-defaultspacing cradmin-legacy-listbuilder-itemframe-link devilry-cradmin-legacy-listbuilder-itemframe-goforward devilry-frontpage-listbuilder-roleselect-itemframe devilry-frontpage-listbuilder-roleselect-itemframe-anyadmin'>
+                    <div class='cradmin-legacy-listbuilder-itemvalue cradmin-legacy-listbuilder-itemvalue-focusbox cradmin-legacy-listbuilder-itemvalue-titledescription devilry-frontpage-listbuilder-roleselect-itemvalue devilry-frontpage-listbuilder-roleselect-itemvalue-anyadmin'>
+                        admin role link
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="#" class='cradmin-legacy-listbuilder-itemframe cradmin-legacy-listbuilder-itemframe-defaultspacing cradmin-legacy-listbuilder-itemframe-link devilry-cradmin-legacy-listbuilder-itemframe-goforward devilry-frontpage-listbuilder-roleselect-itemframe devilry-frontpage-listbuilder-roleselect-itemframe-examiner'>
+                    <div class='cradmin-legacy-listbuilder-itemvalue cradmin-legacy-listbuilder-itemvalue-focusbox cradmin-legacy-listbuilder-itemvalue-titledescription devilry-frontpage-listbuilder-roleselect-itemvalue devilry-frontpage-listbuilder-roleselect-itemvalue-examiner'>
+                        examiner role link
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="#" class='cradmin-legacy-listbuilder-itemframe cradmin-legacy-listbuilder-itemframe-defaultspacing cradmin-legacy-listbuilder-itemframe-link devilry-cradmin-legacy-listbuilder-itemframe-goforward devilry-frontpage-listbuilder-roleselect-itemframe devilry-frontpage-listbuilder-roleselect-itemframe-student'>
+                    <div class='cradmin-legacy-listbuilder-itemvalue cradmin-legacy-listbuilder-itemvalue-focusbox cradmin-legacy-listbuilder-itemvalue-titledescription devilry-frontpage-listbuilder-roleselect-itemvalue devilry-frontpage-listbuilder-roleselect-itemvalue-student'>
+                        student role link
+                    </div>
+                </a>
+            </li>
+        </ol>
+        {% comment %} <p class='colortest-student'>Testing here</p>
+        <p class='colortest-examiner'>Testing here</p>
+        <p class='colortest-admin'>Testing here</p>
+        <p class='colortest-alert-success'>Testing here</p>
+        <p class='colortest-alert-info'>Testing here</p>
+        <p class='colortest-alert-warning'>Testing here</p> {% endcomment %}
+    </div>
+    <div class="container" style='margin-bottom: 20px;'>
+        <div class='alert alert-success'>
+            alert success
+        </div>
+        <div class='alert alert-info'>
+            alert info
+        </div>
+        <div class='alert alert-warning'>
+            alert warning
+        </div>
+        <div class='alert alert-danger'>
+            alert danger
+        </div>
+    </div>
+    <div class="container cradmin-legacy-container-focus">
+        focus styled container
+    </div>
+    <div class="container cradmin-legacy-container-focus cradmin-legacy-container-focus-success">
+        success styled container
+    </div>
+    <div class="container cradmin-legacy-container-focus cradmin-legacy-container-focus-info">
+        info styled container
+    </div>
+    <div class="container cradmin-legacy-container-focus cradmin-legacy-container-focus-warning">
+        warning styled container
+    </div>
+    <div class="container cradmin-legacy-container-focus cradmin-legacy-container-focus-danger">
+        danger styled container
+    </div>
+{% endblock content %}

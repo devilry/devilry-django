@@ -235,3 +235,7 @@ IEVVTASKS_MAKEMESSAGES_JAVASCRIPT_EXTENSIONS = ['.js']
 # RQ_QUEUES['email']['ASYNC'] = False
 # RQ_QUEUES['highpriority']['ASYNC'] = False
 
+
+DEBUG_TOOLBAR_CONFIG = {
+    'SHOW_TOOLBAR_CALLBACK': lambda r: False,  # comment this out to enable debug toolbar
+}
