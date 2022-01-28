@@ -16,6 +16,7 @@
                      accept="{{ accept }}"
                         {% endif %}
                      allow-dir="false"
+                     aria-hidden='true'
                      class="cradmin-legacy-bulkfileupload-dropbox"
                      ng-file-change="filesDropped($files, $event, $rejectedFiles)"
                      drag-over-class="{
@@ -57,16 +58,25 @@
                             {% if accept %}
                             accept="{{ accept }}"
                             {% endif %}
-                            class="btn-link cradmin-legacy-bulkfileupload-advanced-fileselectbutton">
+                            class="btn btn-xs btn-default cradmin-legacy-bulkfileupload-advanced-fileselectbutton">
                         {% block fileselectbutton-advanced-content %}
                             {% if advanced_fileselectbutton_text %}
                                 {{ advanced_fileselectbutton_text }}
                             {% else %}
-                                {% if singlemode %}
-                                    {% trans "... or select a file" %}
-                                {% else %}
-                                    {% trans "... or select files" %}
-                                {% endif %}
+                                <span aria-hidden='true'>
+                                    {% if singlemode %}
+                                        {% trans "... or select a file" %}
+                                    {% else %}
+                                        {% trans "... or select files" %}
+                                    {% endif %}
+                                </span>
+                                <span class='screenreader-only'>
+                                    {% if singlemode %}
+                                        {% trans "Select a file for upload" %}
+                                    {% else %}
+                                        {% trans "Select files for upload" %}
+                                    {% endif %}
+                                </span>
                             {% endif %}
                         {% endblock fileselectbutton-advanced-content %}
                     </button>
