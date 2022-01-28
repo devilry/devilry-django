@@ -1790,7 +1790,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             element.alltext_normalized
             for element in mockresponse.selector.list('#cradmin_legacy_listfilter_examiner_input option')]
         self.assertEqual(
-            ['', 'A', 'B', 'c'],
+            ['Any', 'A', 'B', 'c'],
             choices_labels)
 
     def test_filter_examiner(self):

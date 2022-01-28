@@ -109,7 +109,7 @@ class AbstractTagSelectFilter(abstractselect.AbstractSelectFilter):
 
     def __get_choices(self):
         choices = [
-            ('', ''),
+            ('', pgettext_lazy('tag', 'Any')),
             (self.get_notag_value(), pgettext_lazy('tag', 'NO TAG'))
         ]
         choices.extend(PeriodTag.objects.tags_and_ids_tuple_list(period=self.period))

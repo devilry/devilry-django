@@ -296,7 +296,7 @@ class StatusSelectFilter(abstractselect.AbstractSelectFilter):
 
     def get_choices(self):
         return [
-            ('', ''),
+            ('', pgettext_lazy('group status', 'Any')),
             ('waiting-for-feedback', pgettext('group status', 'waiting for feedback')),
             ('waiting-for-deliveries', pgettext('group status', 'waiting for deliveries')),
             ('corrected', pgettext('group status', 'corrected')),
@@ -334,6 +334,9 @@ class IsPassingGradeFilter(abstractselect.AbstractBoolean):
     def get_label(self):
         return pgettext_lazy('group is passing grade filter',
                              'Passing grade?')
+
+    def get_do_not_apply_label(self):
+        return pgettext_lazy('group is passing grade filter', 'All')
 
     def filter(self, queryobject):
         cleaned_value = self.get_cleaned_value()
@@ -378,7 +381,7 @@ class ExaminerFilter(abstractselect.AbstractSelectFilter):
 
     def get_choices(self):
         choices = [
-            ('', '')
+            ('', pgettext_lazy('group examiner filter', 'Any'))
         ]
         choices.extend(self.__get_choices_cached())
         return choices
@@ -477,7 +480,7 @@ class AbstractCandidateExaminerCountFilter(abstractselect.AbstractSelectFilter):
 
     def get_choices(self):
         return [
-            ('', ''),
+            ('', pgettext_lazy('examiner candidate count any', 'Any')),
             (pgettext_lazy('exact candidate num', 'Exactly'), self.get_exact_choices()),
             (pgettext_lazy('less than candidate num', 'Less than'), self.get_less_than_choices()),
             (pgettext_lazy('greater than candidate num', 'Greater than'), self.get_greater_than_choices())
@@ -553,7 +556,7 @@ class ActivityFilter(abstractselect.AbstractSelectFilter):
 
     def get_choices(self):
         return [
-            ('', ''),
+            ('', pgettext_lazy('group activity', 'All')),
             (pgettext_lazy('group activity', 'From student'), (
                 ('studentcomment', pgettext_lazy('group activity',
                                                  'Has comment(s) from student')),
