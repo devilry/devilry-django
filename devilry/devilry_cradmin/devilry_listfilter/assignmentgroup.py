@@ -480,7 +480,7 @@ class AbstractCandidateExaminerCountFilter(abstractselect.AbstractSelectFilter):
 
     def get_choices(self):
         return [
-            ('', ''),
+            ('', pgettext_lazy('exact candidate num', 'Any')),
             (pgettext_lazy('exact candidate num', 'Exactly'), self.get_exact_choices()),
             (pgettext_lazy('less than candidate num', 'Less than'), self.get_less_than_choices()),
             (pgettext_lazy('greater than candidate num', 'Greater than'), self.get_greater_than_choices())
