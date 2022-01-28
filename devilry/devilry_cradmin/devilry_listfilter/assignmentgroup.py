@@ -556,7 +556,7 @@ class ActivityFilter(abstractselect.AbstractSelectFilter):
 
     def get_choices(self):
         return [
-            ('', ''),
+            ('', pgettext_lazy('group activity', 'All')),
             (pgettext_lazy('group activity', 'From student'), (
                 ('studentcomment', pgettext_lazy('group activity',
                                                  'Has comment(s) from student')),
