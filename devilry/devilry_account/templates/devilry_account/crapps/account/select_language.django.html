@@ -2,6 +2,16 @@
 {% load i18n %}
 {% load cradmin_legacy_tags %}
 
+{% block custom_styles %}
+    {{ block.super }}
+    <style type="text/css" rel="stylesheet">
+        .h3 {
+            font-size: 16px;
+            font-weight: bold;
+        }
+    </style>
+{% endblock custom_styles %}
+
 {% block title %}
     {% trans 'Language options' %}
 {% endblock title %}
@@ -14,17 +24,17 @@
     <div class="container">
         <div class="devilry-dashboard-container">
             <form id="id_select-language-form" action="{% cradmin_appurl viewname='select_language' %}" method="POST">
+                <h2 class="h3">{% trans 'Current language' %}</h2>
                 {% csrf_token %}
                 {% for language_info in languages %}
                     {% if forloop.first %}
-                        <h2>{% trans 'Current language' %}</h2>
                         <input type="hidden" name="selected_language" value="{{ language_info.languagecode }}" />
                         <p class="test-current-language">
                             {{ language_info.language }} ({{ language_info.languagecode }})
                         </p>
                     {% else %}
                         {% if forloop.counter == 2 %}
-                            <h2>{% trans 'Change language' %}</h2>
+                            <h2 class="h3">{% trans 'Change language' %}</h2>
                         {% endif %}
                         <input type="hidden" name="selected_language" value="{{ language_info.languagecode }}" />
                         <a class="button button_default test-change-language" onclick="document.getElementById('id_select-language-form').submit()">

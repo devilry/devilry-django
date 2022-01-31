@@ -83,6 +83,9 @@
             </ul>
 
             <h2 class="h3">{% trans 'Language' %}</h2>
+                <p>
+                    {{ language_name }} ({{ language_code }})
+                </p>
                 <a class="btn btn-default" href="{% cradmin_appurl 'select_language' %}">
                     {% trans 'Change language' %}
                 </a>

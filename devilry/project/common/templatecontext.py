@@ -43,6 +43,7 @@ def template_variables(request):
         'DEVILRY_BRANDING_FAV_ICON_PATH': settings.DEVILRY_BRANDING_FAV_ICON_PATH
     }
     language_code = translation.get_language()
+    template_variables_dict['DEVILRY_LANGUAGE_CODE'] = language_code
     if language_code != 'en':
         # We don't need to set the default translatiion
         template_variables_dict['CRADMIN_LEGACY_MOMENTJS_LOCALE'] = language_code

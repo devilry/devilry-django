@@ -1,7 +1,8 @@
-
-
+from django.utils import translation
 from django.conf import settings
 from django.views.generic import TemplateView
+
+from devilry.devilry_account.crapps.account import utils
 
 
 class IndexView(TemplateView):
@@ -14,4 +15,7 @@ class IndexView(TemplateView):
         context['useremail_count'] = len(context['useremails'])
         context['usernames'] = list(self.request.user.username_set.all())
         context['username_count'] = len(context['usernames'])
+        languagecode = translation.get_language()
+        context['language_code'] = languagecode
+        context['language_name'] = utils.get_language_name(languagecode=languagecode)
         return context
