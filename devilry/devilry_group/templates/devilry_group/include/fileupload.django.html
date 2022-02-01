@@ -4,9 +4,6 @@
              class="cradmin-legacy-bulkfileupload">
 
     <div class="cradmin-legacy-bulkfileupload-content">
-        <div cradmin-legacy-bulkfileupload-progress></div>
-        <div cradmin-legacy-bulkfileupload-rejected-files="{{ invalid_filetype_message }}"></div>
-
         <div cradmin-legacy-bulkfileupload-advanced-widget>
             {% block droparea-advanced %}
                 <div ng-file-drop
@@ -107,6 +104,8 @@
                 </p>
             {% endblock fileselectbutton-simple %}
         </div>
+        <div cradmin-legacy-bulkfileupload-progress></div>
+        <div cradmin-legacy-bulkfileupload-rejected-files="{{ invalid_filetype_message }}"></div>
 
         <input type="hidden" name="{{ hiddenfieldname }}" cradmin-legacy-bulkfileupload-collectionid-field>
     </div>

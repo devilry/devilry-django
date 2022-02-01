@@ -12,7 +12,7 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.template.loader import render_to_string
 from django.utils import timezone
-from django.utils.translation import gettext_lazy
+from django.utils.translation import gettext_lazy, gettext
 from cradmin_legacy.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
 from cradmin_legacy.viewhelpers import create
 
@@ -369,6 +369,9 @@ class FeedbackFeedBaseView(create.CreateView):
                         "apiparameters": quoteattr(json.dumps({
                             "autosubmit": False,
                             "uploadapiurl": reverse('cradmin_temporary_file_upload_api'),
+                            "remove_file_label": gettext("Remove file"),
+                            "close_errormessage_label": gettext("Close error message"),
+                            "removing_file_message": gettext("Removing files"),
                             "unique_filenames": True,
                             "max_filename_length": comment_models.CommentFile.MAX_FILENAME_LENGTH,
                             "errormessage503": "Server timeout while uploading the file. "
