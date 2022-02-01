@@ -85,10 +85,73 @@ The bulk file upload widget base styles.
 
   }
 
+  .cradmin-legacy-bulkfileupload-progress,
+  .cradmin-legacy-bulkfileupload-rejectedfiles {
+    margin-bottom: 20px;
+    p.cradmin-legacy-bulkfileupload-progress-item,
+    p.cradmin-legacy-bulkfileupload-rejectedfile {
+      font-weight: @cradmin-bulkfileupload-progress-item-font-weight;
+      font-size: @cradmin-bulkfileupload-progress-item-font-size;
+      margin: 0 0 10px 0;
+      // padding: 7px 10px;
+      padding: 0;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+
+      .cradmin-legacy-bulkfileupload-iteminfo {
+        flex: 0 1 auto;
+        padding: 7px 10px;
+      }
+
+      .cradmin-legacy-bulkfileupload-remove-file-button,
+      .cradmin-legacy-bulkfileupload-error-closebutton {
+        flex: 0 0 auto;
+        margin: 0;
+        width: 55px;
+        align-self: stretch;
+        background: @cradmin-bulkfileupload-progress-item-remove-file-button-bg;
+        color: @cradmin-bulkfileupload-progress-item-remove-file-button-color;
+        &:hover {
+          background: @cradmin-bulkfileupload-progress-item-remove-file-button-hover-bg;
+          color: @cradmin-bulkfileupload-progress-item-remove-file-button-hover-color;
+        }
+      }
+
+      &.cradmin-legacy-bulkfileupload-errorparagraph {
+        background: @alert-danger-bg;
+        color: @cradmin-bulkfileupload-progress-item-error-color;
+
+        .cradmin-legacy-bulkfileupload-error-closebutton {
+          font-size: 20px;
+          color: @cradmin-bulkfileupload-progress-item-remove-file-button-color;
+          &:hover {
+            color: @cradmin-bulkfileupload-progress-item-error-closebutton-hover-color;
+          }
+        }
+      }
+    }
+
+    .cradmin-legacy-filename {
+      word-break: break-all;
+    }
+  }
+
   .cradmin-legacy-bulkfileupload-progress {
     background: @cradmin-bulkfileupload-bg;
     p.cradmin-legacy-bulkfileupload-progress-item {
       color: @cradmin-bulkfileupload-progress-item-color;
+      background: @cradmin-bulkfileupload-progress-item-bg;
+
+      .cradmin-legacy-bulkfileupload-remove-file-button {
+        background: @cradmin-bulkfileupload-progress-item-remove-file-button-bg;
+        color: @cradmin-bulkfileupload-progress-item-remove-file-button-color;
+        &:hover {
+          background: @cradmin-bulkfileupload-progress-item-remove-file-button-hover-bg;
+          color: @cradmin-bulkfileupload-progress-item-remove-file-button-hover-color;
+        }
+      }
 
       .cradmin-legacy-progressbar {
         display: inline-block;
@@ -109,54 +172,24 @@ The bulk file upload widget base styles.
           color: @cradmin-bulkfileupload-progresspercent-color;
         }
       }
-
-      .cradmin-legacy-filename {
-        word-break: break-all;
-      }
-
-      .cradmin-legacy-bulkfileupload-remove-file-button {
-        float: right;
-        margin-top: -7px;
-        margin-right: -7px;
-        color: @cradmin-bulkfileupload-progress-item-remove-file-button-color;
-        &:hover {
-          color: @cradmin-bulkfileupload-progress-item-remove-file-button-hover-color;
-        }
-      }
     }
   }
 
-  .cradmin-legacy-bulkfileupload-progress,
   .cradmin-legacy-bulkfileupload-rejectedfiles {
-    p.cradmin-legacy-bulkfileupload-progress-item,
-    p.cradmin-legacy-bulkfileupload-rejectedfile {
-      font-weight: @cradmin-bulkfileupload-progress-item-font-weight;
-      font-size: @cradmin-bulkfileupload-progress-item-font-size;
-      margin: @cradmin-bulkfileupload-progress-item-margin;
-      padding: @cradmin-bulkfileupload-progress-item-padding-mobile;
-
-      @media (min-width: @screen-md-min) {
-        padding: @cradmin-bulkfileupload-progress-item-padding;
-      }
-
-      &.cradmin-legacy-bulkfileupload-errorparagraph {
-        background: @cradmin-bulkfileupload-progress-item-error-bg;
-        color: @cradmin-bulkfileupload-progress-item-error-color;
-
-        .cradmin-legacy-bulkfileupload-error-closebutton {
-          float: right;
-          margin-top: -7px;
-          margin-right: -7px;
-          // color: @cradmin-bulkfileupload-progress-item-error-closebutton-color;
-          font-size: 20px;
-          color: @cradmin-bulkfileupload-progress-item-remove-file-button-color;
-          &:hover {
-            color: @cradmin-bulkfileupload-progress-item-error-closebutton-hover-color;
-          }
+    background: @alert-danger-bg;
+    .cradmin-legacy-bulkfileupload-rejectedfile {
+      color: @alert-danger-text;
+      .cradmin-legacy-bulkfileupload-error-closebutton {
+        background: shade(@alert-danger-bg, 5%);
+        color: tint(@alert-danger-text, 5%);
+        &:hover {
+          background: shade(@alert-danger-bg, 12%);
+          color: tint(@alert-danger-text, 12%);
         }
       }
     }
   }
+
 
   p.cradmin-legacy-bulkfileupload-advanced-fileselectbutton-wrapper {
     text-align: center;
