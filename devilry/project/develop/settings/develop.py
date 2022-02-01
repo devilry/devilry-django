@@ -138,6 +138,7 @@ IEVVTASKS_BUILDSTATIC_APPS = ievvbuildstatic.config.Apps(
             ),
             ievvbuildstatic.npmrun_jsbuild.Plugin(),
             ievvbuildstatic.mediacopy.Plugin(),
+            ievvbuildstatic.mediacopy.Plugin(sourcefolder='scripts/plain_es6')
         ]
     ),
     ievvbuildstatic.config.App(

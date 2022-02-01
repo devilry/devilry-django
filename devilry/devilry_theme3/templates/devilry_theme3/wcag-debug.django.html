@@ -348,4 +348,49 @@
             </li>
         </ol>
     </div>
+
+
+    <div class="container" style='margin-bottom: 20px; margin-top: 20px;'>
+        <hello-world data-what="cruel"></hello-world>
+        <custom-button data-what="fancy"></custom-button>
+        <custom-button data-what="shitty"></custom-button>
+    </div>
+
+    <script type="module">
+        import { helloWorld } from '{{ DEVILRY_THEME3_DIST_PATH }}/scripts/plain_es6/helloWorld.js';
+
+        helloWorld();
+
+        class HelloWorldComponent extends HTMLElement {
+            connectedCallback() {
+                const what = this.getAttribute('data-what');
+                this.innerHTML = `Hello ${what} world!`;
+                this.style.display = 'block';
+            }
+        }
+        window.customElements.define('hello-world', HelloWorldComponent);
+
+
+        class MoreFancyComponent extends HTMLElement {  // NOTE: We do not extend HTMLButtonElement since that is not as well supported
+            connectedCallback() {
+                this.style.display = 'inline-block';
+                this.what = this.getAttribute('data-what');
+                this.button = document.createElement('button');
+                this.button.setAttribute('type', 'button');
+                this.button.classList.add('btn');
+                this.button.classList.add('btn-default');
+                this.button.innerHTML = `Hello ${this.what} world!`;
+                this.button.addEventListener('click', (e) => {
+                    this._handleClick();
+                });
+                this.appendChild(this.button);
+            }
+
+            _handleClick () {
+                console.log(`Yey! (${this.what})`);
+                this.button.classList.toggle('btn-danger');
+            }
+        }
+        window.customElements.define('custom-button', MoreFancyComponent);
+    </script>
 {% endblock content %}
