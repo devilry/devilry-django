@@ -372,6 +372,7 @@ class FeedbackFeedBaseView(create.CreateView):
                             "remove_file_label": gettext("Remove file"),
                             "close_errormessage_label": gettext("Close error message"),
                             "removing_file_message": gettext("Removing files"),
+                            "upload_status": gettext("Upload status"),
                             "unique_filenames": True,
                             "max_filename_length": comment_models.CommentFile.MAX_FILENAME_LENGTH,
                             "errormessage503": "Server timeout while uploading the file. "
