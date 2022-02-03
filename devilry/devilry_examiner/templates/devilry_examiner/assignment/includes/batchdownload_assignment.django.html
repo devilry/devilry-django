@@ -2,31 +2,56 @@
 {% load cradmin_legacy_tags %}
 {% load i18n %}
 
-<div class="devilry-batchprocessed-download devilry-batchprocessed-download--none"
-            data-ievv-jsbase-widget="devilry-download-compressed-archive"
-            data-ievv-jsbase-widget-config='{
-                 "apiurl": "{% cradmin_instance_url appname="download" viewname="assignment-file-download-api" content_object_id=assignment.id %}",
-                 "signalNameSpace": "download-assignment-{{ assignment.id }}"
-            }'>
-    <span class="devilry-batchprocessed-download__preparing-download">
-        <span class="fa fa-spinner fa-spin" aria-hidden="true"></span>
-        <span class="text-muted">{% trans "preparing download" %}</span>
-    </span>
-    <button class="btn btn-default devilry-batchprocessed-download__startbutton"
-            data-ievv-jsbase-widget="devilry-download-compressed-archive-startbutton"
+{% comment %}
+    This is currently deprecated in favor of using "custom elements" 
+    from web-components.
+
+    We're keeping this for now in case we have to swap back due to missing 
+    or partial web-components browser support.
+
+    <div class="devilry-batchprocessed-download devilry-batchprocessed-download--none"
+                data-ievv-jsbase-widget="devilry-download-compressed-archive"
                 data-ievv-jsbase-widget-config='{
-                     "signalNameSpace": "download-assignment-{{ assignment.id }}"
+                    "apiurl": "{% cradmin_instance_url appname="download" viewname="assignment-file-download-api" content_object_id=assignment.id %}",
+                    "signalNameSpace": "download-assignment-{{ assignment.id }}"
                 }'>
-        {% trans "Download assignment" %}
-    </button>
-    <a class="btn btn-default devilry-batchprocessed-download__downloadlink"
-            data-ievv-jsbase-widget="devilry-download-compressed-archive-downloadlink"
-            data-ievv-jsbase-widget-config='{
-                 "signalNameSpace": "download-assignment-{{ assignment.id }}"
-            }'>
-        <small class="text-muted devilry-batchprocessed-download__download-ready-message">
-            {% trans "download is ready" %}
-        </small>
-        {% trans "Download assignment" %}
-    </a>
+        <span class="devilry-batchprocessed-download__preparing-download">
+            <span class="fa fa-spinner fa-spin" aria-hidden="true"></span>
+            <span class="text-muted">{% trans "preparing download" %}</span>
+        </span>
+        <button class="btn btn-default devilry-batchprocessed-download__startbutton"
+                data-ievv-jsbase-widget="devilry-download-compressed-archive-startbutton"
+                    data-ievv-jsbase-widget-config='{
+                        "signalNameSpace": "download-assignment-{{ assignment.id }}"
+                    }'>
+            {% trans "Download assignment" %}
+        </button>
+        <a class="btn btn-default devilry-batchprocessed-download__downloadlink"
+                data-ievv-jsbase-widget="devilry-download-compressed-archive-downloadlink"
+                data-ievv-jsbase-widget-config='{
+                    "signalNameSpace": "download-assignment-{{ assignment.id }}"
+                }'>
+            <small class="text-muted devilry-batchprocessed-download__download-ready-message">
+                {% trans "download is ready" %}
+            </small>
+            {% trans "Download assignment" %}
+        </a>
+    </div>
+{% endcomment %}
+
+
+{% include "devilry_group/include/batch_download_archive.django.html" %}
+
+<div aria-live="polite" class="devilry-group-feedbackfeed-buttonbar-deadlines">
+    <group-feedbackfeed-archivedownload
+        api-url="{% cradmin_instance_url appname='download' viewname='assignment-file-download-api' content_object_id=assignment.id %}"
+        start-download-text="{% trans 'Download assignment' %}"
+        archive-build-in-progress-text="{% trans 'Preparing download' %}"
+        download-archive-text="{% trans 'Download assignment' %}"
+        aria-label-archive-build-start="{% trans 'Build downloadable file-archive for assignment' %}"
+        aria-label-archive-build-in-progress="{% trans 'Preparing assignment file-archive for download' %}"
+        aria-label-archive-build-completed="{% trans 'Assignment file-archive ready for download' %}"
+        aria-label-archive-build-download="{% trans 'Download assignment file-archive' %}"
+    >
+    </group-feedbackfeed-archivedownload>
 </div>

@@ -75,9 +75,8 @@
         }
 
         get _pollDelayMilliseconds () {
-            // return 20000;
             if (this.pollCount < 3) {
-                return 700;
+                return 1000;
             } else if (this.pollCount < 10) {
                 return 2000;
             }
