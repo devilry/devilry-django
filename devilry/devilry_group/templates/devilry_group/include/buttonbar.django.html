@@ -5,7 +5,7 @@
 {% if devilry_ui_role == 'student' %}
     <div class="devilry-group-feedbackfeed-buttonbar">
         {% if sidebarbuilder_list != None %}
-            {% include "devilry_group/include/batch_download_archive.django.html" %}
+            {% include "devilry_group/include/batch_download_archive_script.django.html" %}
             <h2 class="devilry-group-feedbackfeed-buttonbar__title">{% trans "Download" %}:</h2>
             {% cradmin_render_renderable sidebarbuilder_list %}
         {% endif %}
@@ -20,7 +20,7 @@
             </a>
         {% endif %}
         {% if sidebarbuilder_list != None %}
-            {% include "devilry_group/include/batch_download_archive.django.html" %}
+            {% include "devilry_group/include/batch_download_archive_script.django.html" %}
             <h2 class="devilry-group-feedbackfeed-buttonbar__title">{% trans "Download" %}:</h2>
             {% cradmin_render_renderable sidebarbuilder_list %}
         {% endif %}
