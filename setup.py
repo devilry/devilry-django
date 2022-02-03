@@ -42,7 +42,7 @@ setup(
         'html5lib==0.9999999',
         'psycopg2==2.8.*',
         'django_cradmin>=9.0.0,<10.0.0',
-        'cradmin_legacy>=4.1.0,<5.0.0',
+        'cradmin_legacy>=4.1.2,<5.0.0',
         'ievv_opensource>=8.0.0,<9.0.0',
         'xlsxwriter==1.1.*',
         'arrow==0.12.*',
