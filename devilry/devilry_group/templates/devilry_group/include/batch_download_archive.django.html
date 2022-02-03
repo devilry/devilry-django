@@ -43,7 +43,6 @@
             this.startDownloadText = this.getAttribute('start-download-text');
             this.archiveBuildInProgressText = this.getAttribute('archive-build-in-progress-text');
             this.downloadArchiveText = this.getAttribute('download-archive-text');
-            
             this.ariaLabelArchiveBuildStart = this.getAttribute('aria-label-archive-build-start');
             this.ariaLabelArchiveBuildCompleted = this.getAttribute('aria-label-archive-build-completed');
             this.ariaLabelArchiveBuildDownload = this.getAttribute('aria-label-archive-build-download');
@@ -82,7 +81,7 @@
             return 5000;
         }
 
-        _handleApiResponse (responseData, method) {
+        _handleApiResponse (responseData) {
             this.pollCount++;
             const status = responseData['status'];
             if (status === API_STATUS_NO_FILES) {
@@ -107,22 +106,22 @@
         }
 
         _handleError () {
-            const errorWarning = document.createElement('div');
-            errorWarning.classList.add('alert');
-            errorWarning.classList.add('alert-warning');
-            errorWarning.innerHTML = 'ERROR';
+            const progressNodeElement = new DOMParser().parseFromString(`
+                <div class="alert alert-warning">
+                    <p>ERROR</p>
+                </div>
+            `, 'text/html').body.firstChild;
             this._removeCurrentDownloadElementNode();
             this.appendChild(errorWarning);
         }
 
-        _handleArchiveNotCreated () {
-            const button = document.createElement('button');
-            button.setAttribute('id', this.rootElementId);
-            button.setAttribute('type', 'button');
-            button.setAttribute('aria-label', this.ariaLabelArchiveBuildStart)
-            button.classList.add('btn');
-            button.classList.add('btn-default');
-            button.innerHTML = this.startDownloadText;
+        _handleArchiveNotCreated () {            
+            const button = new DOMParser().parseFromString(`
+                <button id=${this.rootElementId} class="btn btn-default" type="button" aria-label="${this.ariaLabelArchiveBuildStart}">
+                    ${this.startDownloadText}
+                </button>
+            `, 'text/html').body.firstChild;
+
             button.addEventListener('click', (e) => {
                 fetch(this.apiUrl, {
                     method: 'POST',
@@ -134,7 +133,7 @@
                 .then(response => response.json())
                 .then((responseData) => {
                     this.finishedWithinSameSession = true;
-                    this._handleApiResponse(responseData, 'POST');
+                    this._handleApiResponse(responseData);
                 })
                 .catch((error) => {
                     console.error(error);
@@ -146,37 +145,29 @@
         }
 
         _handleArchiveBuilding () {
-            const progressNodeElement = document.createElement('span');
-            progressNodeElement.setAttribute('id', this.rootElementId);
-
-            const spinner = document.createElement('span');
-            spinner.setAttribute('aria-hidden', 'true');
-            spinner.classList.add('fa');
-            spinner.classList.add('fa-spinner');
-            spinner.classList.add('fa-spin');
-            
-            const paragraph = document.createElement('p');
-            paragraph.classList.add('text-muted');
-            paragraph.innerHTML = this.archiveBuildInProgressText;
-
-            progressNodeElement.appendChild(spinner);
-            progressNodeElement.appendChild(paragraph);
+            const progressNodeElement = new DOMParser().parseFromString(`
+                <span id=${this.rootElementId}>
+                    <span class="fa fa-spinner fa-spin" aria-hidden="true"></span>
+                    <p class="text-muted">
+                        ${this.archiveBuildInProgressText}
+                    </p>
+                </span>
+            `, 'text/html').body.firstChild;
             this._removeCurrentDownloadElementNode();
             this.appendChild(progressNodeElement);
         }
 
         _handleArchiveReadyForDownload (downloadUrl) {
-            const downloadLink = document.createElement('a');
-            downloadLink.setAttribute('id', this.rootElementId);
-            downloadLink.setAttribute('href', downloadUrl);
-            if (this.finishedWithinSameSession) {
-                downloadLink.setAttribute('aria-label', this.ariaLabelArchiveBuildCompleted);
-            } else {
-                downloadLink.setAttribute('aria-label', this.ariaLabelArchiveBuildDownload);
-            }
-            downloadLink.classList.add('btn');
-            downloadLink.classList.add('btn-default');
-            downloadLink.innerHTML = this.downloadArchiveText;
+            const downloadLink = new DOMParser().parseFromString(`
+                <a 
+                    id="${this.rootElementId}"
+                    href="${downloadUrl}"
+                    aria-label="${this.finishedWithinSameSession ? this.ariaLabelArchiveBuildCompleted : this.ariaLabelArchiveBuildDownload}"
+                    class="btn btn-default"
+                >
+                    ${this.downloadArchiveText}
+                </a>
+            `, 'text/html').body.firstChild;
             this._removeCurrentDownloadElementNode();
             this.appendChild(downloadLink);
         }
