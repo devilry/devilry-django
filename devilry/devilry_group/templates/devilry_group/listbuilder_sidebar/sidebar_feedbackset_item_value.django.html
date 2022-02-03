@@ -2,35 +2,58 @@
 {% load cradmin_legacy_tags %}
 {% load i18n %}
 
-<div class="devilry-group-feedbackfeed-buttonbar-deadlines devilry-batchprocessed-download devilry-batchprocessed-download--none"
-            data-ievv-jsbase-widget="devilry-download-compressed-archive"
-            data-ievv-jsbase-widget-config='{
-                 "apiurl": "{% cradmin_instance_url appname="download" viewname="feedbackset-file-download-api" content_object_id=me.feedbackset.id %}",
-                 "signalNameSpace": "download-feedbackset-{{ me.feedbackset.id }}"
-            }'>
-    <span class="devilry-batchprocessed-download__preparing-download">
-        <span class="fa fa-spinner fa-spin" aria-hidden="true"></span>
-        <span class="text-muted">{% trans "preparing download" %}</span>
-    </span>
-    <button class="btn btn-default devilry-batchprocessed-download__startbutton"
-            data-ievv-jsbase-widget="devilry-download-compressed-archive-startbutton"
+{% comment %}
+    This is currently deprecated in favor of using "custom elements" 
+    from web-components.
+
+    We're keeping this for now in case we have to swap back due to missing 
+    or partial web-components browser support.
+
+    <div class="devilry-group-feedbackfeed-buttonbar-deadlines devilry-batchprocessed-download devilry-batchprocessed-download--none"
+                data-ievv-jsbase-widget="devilry-download-compressed-archive"
                 data-ievv-jsbase-widget-config='{
-                     "signalNameSpace": "download-feedbackset-{{ me.feedbackset.id }}"
+                    "apiurl": "{% cradmin_instance_url appname="download" viewname="feedbackset-file-download-api" content_object_id=me.feedbackset.id %}",
+                    "signalNameSpace": "download-feedbackset-{{ me.feedbackset.id }}"
                 }'>
-        {% blocktrans trimmed with verbose_feedbackset=''|devilry_verbosenumber:me.feedbackset_num %}
-            {{ verbose_feedbackset }} deadline
-        {% endblocktrans %}
-    </button>
-    <a class="btn btn-default devilry-batchprocessed-download__downloadlink"
-            data-ievv-jsbase-widget="devilry-download-compressed-archive-downloadlink"
-            data-ievv-jsbase-widget-config='{
-                 "signalNameSpace": "download-feedbackset-{{ me.feedbackset.id }}"
-            }'>
-        <small class="text-muted devilry-batchprocessed-download__download-ready-message">
-            {% trans "download is ready" %}
-        </small>
-        {% blocktrans trimmed with verbose_feedbackset=''|devilry_verbosenumber:me.feedbackset_num %}
-            {{ verbose_feedbackset }} deadline
-        {% endblocktrans %}
-    </a>
+        <span class="devilry-batchprocessed-download__preparing-download">
+            <span class="fa fa-spinner fa-spin" aria-hidden="true"></span>
+            <span class="text-muted">{% trans "preparing download" %}</span>
+        </span>
+        <button class="btn btn-default devilry-batchprocessed-download__startbutton"
+                data-ievv-jsbase-widget="devilry-download-compressed-archive-startbutton"
+                    data-ievv-jsbase-widget-config='{
+                        "signalNameSpace": "download-feedbackset-{{ me.feedbackset.id }}"
+                    }'>
+            {% blocktrans trimmed with verbose_feedbackset=''|devilry_verbosenumber:me.feedbackset_num %}
+                {{ verbose_feedbackset }} deadline
+            {% endblocktrans %}
+        </button>
+        <a class="btn btn-default devilry-batchprocessed-download__downloadlink"
+                data-ievv-jsbase-widget="devilry-download-compressed-archive-downloadlink"
+                data-ievv-jsbase-widget-config='{
+                    "signalNameSpace": "download-feedbackset-{{ me.feedbackset.id }}"
+                }'>
+            <small class="text-muted devilry-batchprocessed-download__download-ready-message">
+                {% trans "download is ready" %}
+            </small>
+            {% blocktrans trimmed with verbose_feedbackset=''|devilry_verbosenumber:me.feedbackset_num %}
+                {{ verbose_feedbackset }} deadline
+            {% endblocktrans %}
+        </a>
+    </div>
+{% endcomment %}
+
+
+<div class="devilry-group-feedbackfeed-buttonbar-deadlines">
+    <group-feedbackfeed-archivedownload
+        api-url="{% cradmin_instance_url appname='download' viewname='feedbackset-file-download-api' content_object_id=me.feedbackset.id %}"
+        start-download-text="{% blocktrans trimmed with verbose_feedbackset=''|devilry_verbosenumber:me.feedbackset_num %}{{ verbose_feedbackset }} deadline{% endblocktrans %}"
+        archive-build-in-progress-text="{% trans 'Preparing download' %}"
+        download-archive-text="{% blocktrans trimmed with verbose_feedbackset=''|devilry_verbosenumber:me.feedbackset_num %}{{ verbose_feedbackset }} deadline{% endblocktrans %}"
+        aria-label-archive-build-start="{% blocktrans trimmed with verbose_feedbackset=''|devilry_verbosenumber:me.feedbackset_num %}Build downloadable file-archive for {{ verbose_feedbackset }} deadline{% endblocktrans %}"
+        aria-label-archive-build-in-progress="{% blocktrans trimmed with verbose_feedbackset=''|devilry_verbosenumber:me.feedbackset_num %}Preparing {{ verbose_feedbackset }} deadline file-archive for download{% endblocktrans %}"
+        aria-label-archive-build-completed="{% blocktrans trimmed with verbose_feedbackset=''|devilry_verbosenumber:me.feedbackset_num %}{{ verbose_feedbackset }} deadline file-archive ready for download{% endblocktrans %}"
+        aria-label-archive-build-download="{% blocktrans trimmed with verbose_feedbackset=''|devilry_verbosenumber:me.feedbackset_num %}Download {{ verbose_feedbackset }} deadline file-archive{% endblocktrans %}"
+    >
+    </group-feedbackfeed-archivedownload>
 </div>
