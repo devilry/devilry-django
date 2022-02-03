@@ -6,10 +6,8 @@
     <div class="devilry-group-feedbackfeed-buttonbar">
         {% if sidebarbuilder_list != None %}
             {% include "devilry_group/include/batch_download_archive.django.html" %}
-            <div aria-live="polite">
-                <h2 class="devilry-group-feedbackfeed-buttonbar__title">{% trans "Download" %}:</h2>
-                {% cradmin_render_renderable sidebarbuilder_list %}
-            </div>
+            <h2 class="devilry-group-feedbackfeed-buttonbar__title">{% trans "Download" %}:</h2>
+            {% cradmin_render_renderable sidebarbuilder_list %}
         {% endif %}
     </div>
 {% else %}
@@ -23,10 +21,8 @@
         {% endif %}
         {% if sidebarbuilder_list != None %}
             {% include "devilry_group/include/batch_download_archive.django.html" %}
-            <div aria-live="polite">
-                <h2 class="devilry-group-feedbackfeed-buttonbar__title">{% trans "Download" %}:</h2>
-                {% cradmin_render_renderable sidebarbuilder_list %}
-            </div>
+            <h2 class="devilry-group-feedbackfeed-buttonbar__title">{% trans "Download" %}:</h2>
+            {% cradmin_render_renderable sidebarbuilder_list %}
         {% endif %}
     </div>
 {% endif %}

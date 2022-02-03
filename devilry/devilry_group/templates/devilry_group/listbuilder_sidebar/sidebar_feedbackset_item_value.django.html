@@ -44,7 +44,7 @@
 {% endcomment %}
 
 
-<div class="devilry-group-feedbackfeed-buttonbar-deadlines">
+<div aria-live="polite" class="devilry-group-feedbackfeed-buttonbar-deadlines">
     <group-feedbackfeed-archivedownload
         api-url="{% cradmin_instance_url appname='download' viewname='feedbackset-file-download-api' content_object_id=me.feedbackset.id %}"
         start-download-text="{% blocktrans trimmed with verbose_feedbackset=''|devilry_verbosenumber:me.feedbackset_num %}{{ verbose_feedbackset }} deadline{% endblocktrans %}"
