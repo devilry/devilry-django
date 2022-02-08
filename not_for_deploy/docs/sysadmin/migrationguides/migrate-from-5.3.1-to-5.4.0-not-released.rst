@@ -14,7 +14,7 @@ This update mainly contains WCAG-improvements.
 - WCAG: Fix some links not being interpreted as links.
 - WCAG: Add label to empty (default) filter-values.
 - WCAG: HTML-lang attribute uses the selected language.
-- django-allauth: Update to version 0.47, and bypass newly added signup-page default.
+- django-allauth: Update to version 0.48, and signup is not supported, so this is bypassed (automatic redirect to proxy-view introduced in 0.47).
 
 
 Backup database and files
