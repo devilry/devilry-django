@@ -12,7 +12,7 @@ class MessageReceiverInline(admin.StackedInline):
     fields = ['status']
     readonly_fields = ['status']
 
-    def has_add_permission(self, request):
+    def has_add_permission(self, request, obj=None):
         return False
 
     def has_delete_permission(self, request, obj=None):
