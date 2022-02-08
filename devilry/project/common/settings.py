@@ -206,3 +206,6 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = 'shortname'
 ACCOUNT_AUTHENTICATION_METHOD = 'username'
 
 DATAPORTEN_LOGOUT_URL = 'https://auth.dataporten.no/logout'
+
+# Bypasses built-in support for signup.
+SOCIALACCOUNT_LOGIN_ON_GET = True
