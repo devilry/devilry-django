@@ -1,0 +1,115 @@
+{% load i18n %}
+
+<script type="module">
+    class DevilryCommentEditor extends HTMLElement {
+        constructor () {
+            super();
+            console.log('DevilryCommentEditor: constructor');
+            this.attrRootElementId = this.getAttribute('root-element-id');
+            this.attrLabelFor = this.getAttribute('label-for');
+            this.attrLabelText = this.getAttribute('label-text');
+            this.attrTextareaName = this.getAttribute('textarea-name');
+            this.attrTextareaValue = this.getAttribute('textarea-value');
+            this.attrHelpText = this.getAttribute('help-text');
+            this.attrMarkdownGuideLinkUrl = this.getAttribute('markdown-guide-link-url');
+            this.attrMarkdownGuideLinkText = this.getAttribute('markdown-guide-link-text');
+            this.attrTextareaAttrs = ''
+            const _attrTextareaAttrs = JSON.parse(this.getAttribute('textarea-attrs'));
+            for (const key of Object.keys(_attrTextareaAttrs)) {
+                this.attrTextareaAttrs += `${key}="${_attrTextareaAttrs[key]}" `
+            }
+
+            console.log(`DevilryCommentEditor attrRootElementId: ${this.attrRootElementId}`);
+            console.log(`DevilryCommentEditor attrLabelFor: ${this.attrLabelFor}`);
+            console.log(`DevilryCommentEditor attrLabelText: ${this.attrLabelText}`);
+            console.log(`DevilryCommentEditor attrTextareaName: ${this.attrTextareaName}`);
+            console.log(`DevilryCommentEditor attrTextareaValue: start|${this.attrTextareaValue}|end`);
+            console.log(`DevilryCommentEditor attrTextareaAttrs: ${this.attrTextareaAttrs}`);
+            console.log(`DevilryCommentEditor attrHelpText: ${this.attrHelpText}`);
+            console.log(`DevilryCommentEditor attrMarkdownGuideLinkUrl: ${this.attrMarkdownGuideLinkUrl}`);
+            console.log(`DevilryCommentEditor attrMarkdownGuideLinkText: ${this.attrMarkdownGuideLinkText}`);
+        }
+
+        connectedCallback () {
+            this.renderEditor()
+        }
+
+        renderEditor () {
+            const commentEditor = new DOMParser().parseFromString(`
+                <div class="devilry-comment-editor">
+                    <div class="devilry-comment-editor devilry-comment-editor__toolbar">
+                    </div>
+                    <label for="id_${this.attrTextareaName}" class="screenreader-only">
+                        {% translate "Comment" context "devilry comment editor" %}
+                    </label>
+                    <div class="devilry-comment-editor__textarea">
+                        <textarea
+                            ${this.attrTextareaAttrs}
+                            name="${this.attrTextareaName}"
+                            aria-describedby="id_${this.attrTextareaName}_help">${this.attrTextareaValue}</textarea>
+                    </div>
+                    <div class="devilry-comment-editor devilry-comment-editor__example-help">
+                        <p id="id_${this.attrTextareaName}_help">
+                            ${this.attrHelpText}
+                            <a href="${this.attrMarkdownGuideLinkUrl}" target='_blank'>
+                                ${this.attrMarkdownGuideLinkText}
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            `, 'text/html').body.firstChild;
+            this.appendChild(commentEditor)
+        }
+    }
+
+    window.customElements.define('devilry-comment-editor', DevilryCommentEditor);
+</script>
+
+<devilry-comment-editor
+    root-element-id="id_comment_root"
+    label-for="id_{{ widget.name }}"
+    label-text="{% translate 'Comment' context 'devilry comment editor' %}"
+    textarea-name="{{ widget.name }}"
+    textarea-value="{% if widget.value %}{{ widget.value }}{% endif %}"
+    textarea-attrs="{{ widget.json_attrs }}"
+    help-text="{% blocktranslate trimmed context 'devilry comment editor' %}Write a comment in markdown format. Use <strong>**text here**</strong> for bold and <em>*text here*</em> for italic.{% endblocktranslate %}"
+    markdown-guide-link-url="/markdown-help"
+    markdown-guide-link-text="{% translate 'Full guide for the markdown we support here' context 'devilry comment editor' %}"
+></devilry-comment-editor>
+
+
+
+
+
+
+
+
+{% comment %}
+    <div class="devilry-comment-editor">
+        <div class="devilry-comment-editor devilry-comment-editor__toolbar">
+            
+        </div>
+        <label for="id_{{ widget.name }}" class="screenreader-only">
+            {% translate "Comment" context "devilry comment editor" %}
+        </label>
+        <div class="devilry-comment-editor__textarea">
+            <textarea
+                id="id_{{ widget.name }}"
+                name="{{ widget.name }}"
+                aria-describedby="id_{{ widget.name }}_help"
+                {% include "django/forms/widgets/attrs.html" %}>
+                {% if widget.value %}
+                    {{ widget.value }}
+                {% endif %}
+            </textarea>
+        </div>
+        <div class="devilry-comment-editor devilry-comment-editor__example-help">
+            <p id="id_{{ widget.name }}_help">
+                {% blocktranslate trimmed context "devilry comment editor" %}
+                    Write a comment in markdown format. Use <strong>**text here**</strong> for bold and <em>*text here*</em> for italic.
+                {% endblocktranslate %}
+                <a href="/markdown-help" target='_blank'>{% translate "Full guide for the markdown we support here" context "devilry comment editor" %}</a>
+            </p>
+        </div>
+    </div>
+{% endcomment %}
