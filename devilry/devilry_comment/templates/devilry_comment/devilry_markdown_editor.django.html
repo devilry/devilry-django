@@ -4,7 +4,6 @@
     class DevilryCommentEditor extends HTMLElement {
         constructor () {
             super();
-            console.log('DevilryCommentEditor: constructor');
             this.attrRootElementId = this.getAttribute('root-element-id');
             this.attrLabelFor = this.getAttribute('label-for');
             this.attrLabelText = this.getAttribute('label-text');
@@ -19,15 +18,15 @@
                 this.attrTextareaAttrs += `${key}="${_attrTextareaAttrs[key]}" `
             }
 
-            console.log(`DevilryCommentEditor attrRootElementId: ${this.attrRootElementId}`);
-            console.log(`DevilryCommentEditor attrLabelFor: ${this.attrLabelFor}`);
-            console.log(`DevilryCommentEditor attrLabelText: ${this.attrLabelText}`);
-            console.log(`DevilryCommentEditor attrTextareaName: ${this.attrTextareaName}`);
-            console.log(`DevilryCommentEditor attrTextareaValue: start|${this.attrTextareaValue}|end`);
-            console.log(`DevilryCommentEditor attrTextareaAttrs: ${this.attrTextareaAttrs}`);
-            console.log(`DevilryCommentEditor attrHelpText: ${this.attrHelpText}`);
-            console.log(`DevilryCommentEditor attrMarkdownGuideLinkUrl: ${this.attrMarkdownGuideLinkUrl}`);
-            console.log(`DevilryCommentEditor attrMarkdownGuideLinkText: ${this.attrMarkdownGuideLinkText}`);
+            // console.log(`DevilryCommentEditor attrRootElementId: ${this.attrRootElementId}`);
+            // console.log(`DevilryCommentEditor attrLabelFor: ${this.attrLabelFor}`);
+            // console.log(`DevilryCommentEditor attrLabelText: ${this.attrLabelText}`);
+            // console.log(`DevilryCommentEditor attrTextareaName: ${this.attrTextareaName}`);
+            // console.log(`DevilryCommentEditor attrTextareaValue: start|${this.attrTextareaValue}|end`);
+            // console.log(`DevilryCommentEditor attrTextareaAttrs: ${this.attrTextareaAttrs}`);
+            // console.log(`DevilryCommentEditor attrHelpText: ${this.attrHelpText}`);
+            // console.log(`DevilryCommentEditor attrMarkdownGuideLinkUrl: ${this.attrMarkdownGuideLinkUrl}`);
+            // console.log(`DevilryCommentEditor attrMarkdownGuideLinkText: ${this.attrMarkdownGuideLinkText}`);
         }
 
         connectedCallback () {
@@ -37,7 +36,19 @@
         renderEditor () {
             const commentEditor = new DOMParser().parseFromString(`
                 <div class="devilry-comment-editor">
-                    <div class="devilry-comment-editor devilry-comment-editor__toolbar">
+                    <div class="devilry-comment-editor-toolbar" aria-hidden="true">
+                        <div id="id_${this.attrTextareaName}_toolbar_option_heading" class="devilry-comment-editor-toolbar__option">
+                            <p>H</p>
+                        </div>
+                        <div id="id_${this.attrTextareaName}_toolbar_option_bold" class="devilry-comment-editor-toolbar__option">
+                            <p>B</p>
+                        </div>
+                        <div id="id_${this.attrTextareaName}_toolbar_option_italic" class="devilry-comment-editor-toolbar__option">
+                            <p>I</p>
+                        </div>
+                        <div id="id_${this.attrTextareaName}_toolbar_option_link" class="devilry-comment-editor-toolbar__option">
+                            <p>@</p>
+                        </div>
                     </div>
                     <label for="id_${this.attrTextareaName}" class="screenreader-only">
                         {% translate "Comment" context "devilry comment editor" %}
@@ -59,6 +70,40 @@
                 </div>
             `, 'text/html').body.firstChild;
             this.appendChild(commentEditor)
+
+            // Add event listeners
+            const toolbarOptionHeading = document.getElementById(`id_${this.attrTextareaName}_toolbar_option_heading`);
+            const toolbarOptionBold = document.getElementById(`id_${this.attrTextareaName}_toolbar_option_bold`);
+            const toolbarOptionItalic = document.getElementById(`id_${this.attrTextareaName}_toolbar_option_italic`);
+            const toolbarOptionLink = document.getElementById(`id_${this.attrTextareaName}_toolbar_option_link`);
+            toolbarOptionHeading.addEventListener('click', () => {this.insertAtCursor('heading', '###')}, false);
+            toolbarOptionBold.addEventListener('click', () => {this.insertAtCursor('bold', '** **')}, false);
+            toolbarOptionItalic.addEventListener('click', () => {this.insertAtCursor('italic', '* *')}, false);
+            toolbarOptionLink.addEventListener('click', () => {this.insertAtCursor('link', '[]()')}, false);
+        }
+
+        insertAtCursor (type, insertionValue) {
+            if (type === 'heading') {
+                console.log('insert HEADING');
+            } else if (type === 'bold') {
+                console.log('insert BOLD');
+            } else if (type === 'italic') {
+                console.log('insert ITALIC');
+            } else if (type === 'link') {
+                console.log('insert LINK');
+            } else {
+                throw Error('WHAT THE CRAP!');
+            }
+            const textArea = document.getElementById(`id_${this.attrTextareaName}`);
+            const startPosition = textArea.selectionStart;
+            const endPosition = textArea.selectionEnd;
+            if (textArea.selectionStart || textArea.selectionStart === '0') {
+                textArea.value = textArea.value.substring(0, startPosition) + insertionValue + textArea.value.substring(endPosition, textArea.value.length)
+            } else {
+                textArea.value += insertionValue;
+            }
+            textArea.focus()
+            textArea.selectionEnd = startPosition;
         }
     }
 
