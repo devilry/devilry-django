@@ -12,21 +12,10 @@
             this.attrHelpText = this.getAttribute('help-text');
             this.attrMarkdownGuideLinkUrl = this.getAttribute('markdown-guide-link-url');
             this.attrMarkdownGuideLinkText = this.getAttribute('markdown-guide-link-text');
-            this.attrTextareaAttrs = ''
-            const _attrTextareaAttrs = JSON.parse(this.getAttribute('textarea-attrs'));
-            for (const key of Object.keys(_attrTextareaAttrs)) {
-                this.attrTextareaAttrs += `${key}="${_attrTextareaAttrs[key]}" `
-            }
-
-            // console.log(`DevilryCommentEditor attrRootElementId: ${this.attrRootElementId}`);
-            // console.log(`DevilryCommentEditor attrLabelFor: ${this.attrLabelFor}`);
-            // console.log(`DevilryCommentEditor attrLabelText: ${this.attrLabelText}`);
-            // console.log(`DevilryCommentEditor attrTextareaName: ${this.attrTextareaName}`);
-            // console.log(`DevilryCommentEditor attrTextareaValue: start|${this.attrTextareaValue}|end`);
-            // console.log(`DevilryCommentEditor attrTextareaAttrs: ${this.attrTextareaAttrs}`);
-            // console.log(`DevilryCommentEditor attrHelpText: ${this.attrHelpText}`);
-            // console.log(`DevilryCommentEditor attrMarkdownGuideLinkUrl: ${this.attrMarkdownGuideLinkUrl}`);
-            // console.log(`DevilryCommentEditor attrMarkdownGuideLinkText: ${this.attrMarkdownGuideLinkText}`);
+        }
+        
+        get elementId () {
+            return `id_${this.attrTextareaName}`;
         }
 
         connectedCallback () {
@@ -37,30 +26,34 @@
             const commentEditor = new DOMParser().parseFromString(`
                 <div class="devilry-comment-editor">
                     <div class="devilry-comment-editor-toolbar" aria-hidden="true">
-                        <div id="id_${this.attrTextareaName}_toolbar_option_heading" class="devilry-comment-editor-toolbar__option">
-                            <p>H</p>
-                        </div>
-                        <div id="id_${this.attrTextareaName}_toolbar_option_bold" class="devilry-comment-editor-toolbar__option">
-                            <p>B</p>
-                        </div>
-                        <div id="id_${this.attrTextareaName}_toolbar_option_italic" class="devilry-comment-editor-toolbar__option">
-                            <p>I</p>
-                        </div>
-                        <div id="id_${this.attrTextareaName}_toolbar_option_link" class="devilry-comment-editor-toolbar__option">
-                            <p>@</p>
-                        </div>
+                        <button type="button" id="${this.elementId}_toolbar_option_heading" class="btn btn-default devilry-comment-editor-toolbar__option">
+                            <p>Heading</p>
+                        </button>
+                        <button type="button" id="${this.elementId}_toolbar_option_bold" class="btn btn-default devilry-comment-editor-toolbar__option">
+                            <p>Bold</p>
+                        </button>
+                        <button type="button" id="${this.elementId}_toolbar_option_italic" class="btn btn-default devilry-comment-editor-toolbar__option">
+                            <p>Italic</p>
+                        </button>
+                        <button type="button" id="${this.elementId}_toolbar_option_link" class="btn btn-default devilry-comment-editor-toolbar__option">
+                            <p>Link</p>
+                        </button>
                     </div>
-                    <label for="id_${this.attrTextareaName}" class="screenreader-only">
+                    <label for="${this.elementId}" class="screenreader-only">
                         {% translate "Comment" context "devilry comment editor" %}
                     </label>
                     <div class="devilry-comment-editor__textarea">
                         <textarea
-                            ${this.attrTextareaAttrs}
+                            id="${this.elementId}"
+                            cols="40"
+                            rows="10"
+                            class="devilry-comment-editor-textarea devilrymarkdownwidget form-control"
                             name="${this.attrTextareaName}"
-                            aria-describedby="id_${this.attrTextareaName}_help">${this.attrTextareaValue}</textarea>
+                            aria-describedby="${this.elementId}_help">${this.attrTextareaValue}</textarea>
+                        <div class="devilry-comment-editor-textarea--copy"></div>
                     </div>
                     <div class="devilry-comment-editor devilry-comment-editor__example-help">
-                        <p id="id_${this.attrTextareaName}_help">
+                        <p id="${this.elementId}_help">
                             ${this.attrHelpText}
                             <a href="${this.attrMarkdownGuideLinkUrl}" target='_blank'>
                                 ${this.attrMarkdownGuideLinkText}
@@ -71,18 +64,45 @@
             `, 'text/html').body.firstChild;
             this.appendChild(commentEditor)
 
-            // Add event listeners
-            const toolbarOptionHeading = document.getElementById(`id_${this.attrTextareaName}_toolbar_option_heading`);
-            const toolbarOptionBold = document.getElementById(`id_${this.attrTextareaName}_toolbar_option_bold`);
-            const toolbarOptionItalic = document.getElementById(`id_${this.attrTextareaName}_toolbar_option_italic`);
-            const toolbarOptionLink = document.getElementById(`id_${this.attrTextareaName}_toolbar_option_link`);
-            toolbarOptionHeading.addEventListener('click', () => {this.insertAtCursor('heading', '###')}, false);
-            toolbarOptionBold.addEventListener('click', () => {this.insertAtCursor('bold', '** **')}, false);
-            toolbarOptionItalic.addEventListener('click', () => {this.insertAtCursor('italic', '* *')}, false);
-            toolbarOptionLink.addEventListener('click', () => {this.insertAtCursor('link', '[]()')}, false);
+            // Add toolbar event listeners
+            document.getElementById(`${this.elementId}_toolbar_option_heading`)
+                .addEventListener('click', () => {
+                    this.insertAtCursor('heading', '\n###', '', 'ADD HEADING HERE')
+                }, false);
+            document.getElementById(`${this.elementId}_toolbar_option_bold`)
+                .addEventListener('click', () => {
+                    this.insertAtCursor('bold', '**', '**', 'ADD BOLD TEXT HERE')
+                }, false);
+            document.getElementById(`${this.elementId}_toolbar_option_italic`)
+                .addEventListener('click', () => {
+                    this.insertAtCursor('italic', '*', '*', 'ADD ITALIC TEXT HERE')
+                }, false);
+            document.getElementById(`${this.elementId}_toolbar_option_link`)
+                .addEventListener('click', () => {
+                    this.insertAtCursor('link', '[', ']()', 'ADD LINK TEXT HERE')
+                }, false);
+            
+            // Add toolbar keyboard-shortcut event listeners
+            // const keyPressed = {
+            //     'Meta': false,
+            //     'b': false
+            // };
+            // document.onkeydown = (keyDownEvent) => {
+            //     console.log(`DOWN: ${keyDownEvent.key}`);
+            //     keyPressed[keyDownEvent.key] = true;
+            //     if (document.activeElement.id === `${this.elementId}`) {
+            //         if (keyPressed['Meta'] && keyPressed['b']) {
+            //             this.insertAtCursor('bold', '**', '**', 'INSERT BOLD TEXT HERE');
+            //         }
+            //     }
+            // };
+            // document.onkeyup = (keyUpEvent) => {
+            //     console.log(`UP: ${keyUpEvent.key}`);
+            //     keyPressed[keyUpEvent.key] = false;
+            // };
         }
 
-        insertAtCursor (type, insertionValue) {
+        insertAtCursor (type, preTag, postTag, placeholder) {
             if (type === 'heading') {
                 console.log('insert HEADING');
             } else if (type === 'bold') {
@@ -92,18 +112,31 @@
             } else if (type === 'link') {
                 console.log('insert LINK');
             } else {
-                throw Error('WHAT THE CRAP!');
+                throw Error(`Unsupported tag: ${type}`);
             }
-            const textArea = document.getElementById(`id_${this.attrTextareaName}`);
-            const startPosition = textArea.selectionStart;
-            const endPosition = textArea.selectionEnd;
-            if (textArea.selectionStart || textArea.selectionStart === '0') {
-                textArea.value = textArea.value.substring(0, startPosition) + insertionValue + textArea.value.substring(endPosition, textArea.value.length)
-            } else {
-                textArea.value += insertionValue;
+
+            // Get textarea to manipulate
+            const textArea = document.getElementById(`${this.elementId}`);
+
+            // Get start and end position of the cursor.
+            const cursorStart = textArea.selectionStart;
+            const cursorEnd = textArea.selectionEnd;
+
+            // Get text marked in range. This is text, if any, is inserted 
+            // between the preTag and the postTag.
+            let selectedText = textArea.value.substring(cursorStart, cursorEnd);
+
+            // Insert markdown
+            if (!selectedText) {
+                selectedText = placeholder
             }
+            const taggedText = preTag + selectedText + postTag
+            textArea.value = textArea.value.substring(0, cursorStart) + taggedText + textArea.value.substring(cursorEnd, textArea.value.length)
+
+            // Place focus back to the end of the tagged text.
             textArea.focus()
-            textArea.selectionEnd = startPosition;
+            textArea.selectionEnd = cursorStart + taggedText.length;
+
         }
     }
 
@@ -116,45 +149,7 @@
     label-text="{% translate 'Comment' context 'devilry comment editor' %}"
     textarea-name="{{ widget.name }}"
     textarea-value="{% if widget.value %}{{ widget.value }}{% endif %}"
-    textarea-attrs="{{ widget.json_attrs }}"
     help-text="{% blocktranslate trimmed context 'devilry comment editor' %}Write a comment in markdown format. Use <strong>**text here**</strong> for bold and <em>*text here*</em> for italic.{% endblocktranslate %}"
     markdown-guide-link-url="/markdown-help"
     markdown-guide-link-text="{% translate 'Full guide for the markdown we support here' context 'devilry comment editor' %}"
 ></devilry-comment-editor>
-
-
-
-
-
-
-
-
-{% comment %}
-    <div class="devilry-comment-editor">
-        <div class="devilry-comment-editor devilry-comment-editor__toolbar">
-            
-        </div>
-        <label for="id_{{ widget.name }}" class="screenreader-only">
-            {% translate "Comment" context "devilry comment editor" %}
-        </label>
-        <div class="devilry-comment-editor__textarea">
-            <textarea
-                id="id_{{ widget.name }}"
-                name="{{ widget.name }}"
-                aria-describedby="id_{{ widget.name }}_help"
-                {% include "django/forms/widgets/attrs.html" %}>
-                {% if widget.value %}
-                    {{ widget.value }}
-                {% endif %}
-            </textarea>
-        </div>
-        <div class="devilry-comment-editor devilry-comment-editor__example-help">
-            <p id="id_{{ widget.name }}_help">
-                {% blocktranslate trimmed context "devilry comment editor" %}
-                    Write a comment in markdown format. Use <strong>**text here**</strong> for bold and <em>*text here*</em> for italic.
-                {% endblocktranslate %}
-                <a href="/markdown-help" target='_blank'>{% translate "Full guide for the markdown we support here" context "devilry comment editor" %}</a>
-            </p>
-        </div>
-    </div>
-{% endcomment %}

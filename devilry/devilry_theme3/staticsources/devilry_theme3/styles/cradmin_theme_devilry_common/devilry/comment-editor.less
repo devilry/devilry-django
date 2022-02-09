@@ -1,20 +1,19 @@
 .devilry-comment-editor {
     
     .devilry-comment-editor-toolbar {
-        height: 50px;
         display: flex;
-        flex-direction: row;
         align-items: flex-start;
 
         &__option {
-            background-color: @devilry-brand-color-default-light3;
-            color: #000;
-            width: 50px;
-            text-align: center;
-            margin-right: 10px;
+            margin-right: 5px;
         }
-        &__option:hover {
-            cursor: pointer;
+    }
+
+    &__textarea {
+        .devilry-comment-editor-textarea {
+            &--copy {
+                visibility: hidden;
+            }
         }
     }
 }
