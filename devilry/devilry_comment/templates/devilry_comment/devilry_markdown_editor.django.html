@@ -227,9 +227,10 @@
             const taggedText = openingTag + selectedText + closingTag
             textArea.value = textArea.value.substring(0, cursorStart) + taggedText + textArea.value.substring(cursorEnd, textArea.value.length)
 
-            // Place focus back to the end of the tagged text.
+            // Places focus to the marked text as the selected range.
             textArea.focus()
-            textArea.selectionEnd = cursorStart + taggedText.length;
+            textArea.selectionStart = cursorStart + openingTag.length;
+            textArea.selectionEnd = textArea.selectionStart + selectedText.length;
         }
     }
 
