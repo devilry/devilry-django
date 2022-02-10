@@ -1,11 +1,13 @@
 {% load i18n %}
 
 <script type="module">
-    const shortcutKeyMapPressed = {
-        'Meta': false,      // CMD
-        'b': false,         // CMD + b: bold
-        'i': false,         // CMD + i: italic
-        'k': false,         // CMD + k: link
+
+    const toolbarShortcutKeyMapPressed = {
+        'ctrl': false,      // CTRL (Windows)
+        'Meta': false,      // CMD (macOS)
+        'b': false,         // CTRL or CMD + b: bold
+        'i': false,         // CTRL or CMD + i: italic
+        'k': false,         // CTRL or CMD + k: link
     };
 
     class DevilryCommentEditor extends HTMLElement {
@@ -111,22 +113,23 @@
             // is performed.
             function _performToolbarKeyboardShortcutAction (event, actionFunction, key) {
                 event.preventDefault();
+                event.stopPropagation();
                 actionFunction();
-                shortcutKeyMapPressed[key] = false;
+                toolbarShortcutKeyMapPressed[key] = false;
             }
 
             // Add handler for keydown events.
             document.onkeydown = (keyDownEvent) => {
                 if (document.activeElement.id === `${this.elementId}`) {
-                    shortcutKeyMapPressed[keyDownEvent.key] = true;
-                    if (shortcutKeyMapPressed['Meta']) { // TODO handle windows ctrl press.
-                        if (shortcutKeyMapPressed['b']) {
+                    toolbarShortcutKeyMapPressed[keyDownEvent.key] = true;
+                    if (toolbarShortcutKeyMapPressed['Meta'] || toolbarShortcutKeyMapPressed['ctrl']) {
+                        if (toolbarShortcutKeyMapPressed['b']) {
                             _performToolbarKeyboardShortcutAction(
                                 keyDownEvent, () => {this.toolbarEventActionBold();}, 'b');
-                        } else if (shortcutKeyMapPressed['i']) {
+                        } else if (toolbarShortcutKeyMapPressed['i']) {
                             _performToolbarKeyboardShortcutAction(
                                 keyDownEvent, () => {this.toolbarEventActionItalic();}, 'i');
-                        } else if (shortcutKeyMapPressed['k']) {
+                        } else if (toolbarShortcutKeyMapPressed['k']) {
                             _performToolbarKeyboardShortcutAction(
                                 keyDownEvent, () => {this.toolbarEventActionLink();}, 'k');
                         }
@@ -137,11 +140,11 @@
             // Add handler for keyup events.
             // All keypress-tracking is set to `false` (not pressed). This ensures that we 
             // don't accidentally use the previous keyboard-shortcut next time a keyboard-shortcut 
-            // is used.
+            // is used (since it would then be marked as `true` (pressed)).
             document.onkeyup = (keyUpEvent) => {
                 if (document.activeElement.id === `${this.elementId}`) {
-                    Object.keys(shortcutKeyMapPressed).forEach(key => {
-                        shortcutKeyMapPressed[key] = false;
+                    Object.keys(toolbarShortcutKeyMapPressed).forEach(key => {
+                        toolbarShortcutKeyMapPressed[key] = false;
                     });
                 }
             };
