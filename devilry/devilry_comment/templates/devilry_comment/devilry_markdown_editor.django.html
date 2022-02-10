@@ -13,16 +13,15 @@
     class DevilryCommentEditor extends HTMLElement {
         constructor () {
             super();
-            this.attrRootElementId = this.getAttribute('root-element-id');
-            this.attrLabelFor = this.getAttribute('label-for');
-            this.attrLabelText = this.getAttribute('label-text');
-            this.attrTextareaName = this.getAttribute('textarea-name');
-            this.attrTextareaValue = this.getAttribute('textarea-value');
-            this.attrHelpText = this.getAttribute('help-text');
-            this.attrMarkdownGuideLinkUrl = this.getAttribute('markdown-guide-link-url');
-            this.attrMarkdownGuideLinkText = this.getAttribute('markdown-guide-link-text');
+            this.attrLabelText = this.getAttribute('labelText');
+            this.attrTextareaName = this.getAttribute('name');
+            this.attrTextareaValue = this.getAttribute('value');
+            this.attrHelpText = this.getAttribute('helpText');
+            this.attrMarkdownGuideLinkUrl = this.getAttribute('markdownGuideLinkUrl');
+            this.attrMarkdownGuideLinkText = this.getAttribute('markdownGuideLinkText');
+            this.attrToolbarConfig = JSON.parse(this.getAttribute('toolbarConfig'));
         }
-        
+
         get elementId () {
             return `id_${this.attrTextareaName}`;
         }
@@ -40,22 +39,40 @@
             const commentEditor = new DOMParser().parseFromString(`
                 <div class="devilry-comment-editor">
                     <div class="devilry-comment-editor-toolbar" aria-hidden="true">
-                        <button type="button" id="${this.elementId}_toolbar_option_heading" class="btn btn-default devilry-comment-editor-toolbar__option">
+                        <button
+                            id="${this.elementId}_toolbar_option_heading"
+                            type="button"
+                            title="${this.attrToolbarConfig.heading.tooltip}"
+                            class="btn btn-default devilry-comment-editor-toolbar__option"
+                        >
                             <p>Heading</p>
                         </button>
-                        <button type="button" id="${this.elementId}_toolbar_option_bold" class="btn btn-default devilry-comment-editor-toolbar__option">
+                        <button
+                            id="${this.elementId}_toolbar_option_bold"
+                            type="button"
+                            title="${this.attrToolbarConfig.bold.tooltip}"
+                            class="btn btn-default devilry-comment-editor-toolbar__option"
+                        >
                             <p>Bold</p>
                         </button>
-                        <button type="button" id="${this.elementId}_toolbar_option_italic" class="btn btn-default devilry-comment-editor-toolbar__option">
+                        <button
+                            id="${this.elementId}_toolbar_option_italic"
+                            type="button"
+                            title="${this.attrToolbarConfig.italic.tooltip}"
+                            class="btn btn-default devilry-comment-editor-toolbar__option"
+                        >
                             <p>Italic</p>
                         </button>
-                        <button type="button" id="${this.elementId}_toolbar_option_link" class="btn btn-default devilry-comment-editor-toolbar__option">
+                        <button
+                            id="${this.elementId}_toolbar_option_link"
+                            type="button"
+                            title="${this.attrToolbarConfig.link.tooltip}"
+                            class="btn btn-default devilry-comment-editor-toolbar__option"
+                        >
                             <p>Link</p>
                         </button>
                     </div>
-                    <label for="${this.elementId}" class="screenreader-only">
-                        {% translate "Comment" context "devilry comment editor" %}
-                    </label>
+                    <label for="${this.elementId}" class="screenreader-only">${this.attrLabelText}</label>
                     <div class="devilry-comment-editor__textarea">
                         <textarea
                             id="${this.elementId}"
@@ -154,29 +171,28 @@
          * Method for inserting heading markdown-tag at cursor.
          */
         toolbarEventActionHeading () {
-            this.insertAtCursor('heading', '\n###', '', 'ADD HEADING HERE');
+            this.insertAtCursor('heading', '\n###', '', this.attrToolbarConfig.heading.placeholderText);
         }
 
         /**
          * Method for inserting bold markdown-tag at cursor.
          */
         toolbarEventActionBold () {
-            console.log('THIS IS STRANGE');
-            this.insertAtCursor('bold', '**', '**', 'ADD BOLD TEXT HERE');
+            this.insertAtCursor('bold', '**', '**', this.attrToolbarConfig.bold.placeholderText);
         }
 
         /**
          * Method for inserting italic markdown-tag at cursor.
          */
         toolbarEventActionItalic () {
-            this.insertAtCursor('italic', '*', '*', 'ADD ITALIC TEXT HERE');
+            this.insertAtCursor('italic', '*', '*', this.attrToolbarConfig.italic.placeholderText);
         }
 
         /**
          * Method for inserting link markdown-tag at cursor.
          */
         toolbarEventActionLink () {
-            this.insertAtCursor('link', '[', '](url)', 'ADD LINK TEXT HERE');
+            this.insertAtCursor('link', '[', '](url)', this.attrToolbarConfig.link.placeholderText);
         }
 
         /**
@@ -193,18 +209,6 @@
          * @param {String} placeholder  This is the placeholder text inserted between the opening and closing markdown tags if no text is selected.
          */
         insertAtCursor (type, openingTag, closingTag, placeholder) {
-            if (type === 'heading') {
-                console.log('insert HEADING');
-            } else if (type === 'bold') {
-                console.log('insert BOLD');
-            } else if (type === 'italic') {
-                console.log('insert ITALIC');
-            } else if (type === 'link') {
-                console.log('insert LINK');
-            } else {
-                throw Error(`Unsupported tag: ${type}`);
-            }
-
             // Get textarea to manipulate
             const textArea = document.getElementById(`${this.elementId}`);
 
@@ -232,13 +236,4 @@
     window.customElements.define('devilry-comment-editor', DevilryCommentEditor);
 </script>
 
-<devilry-comment-editor
-    root-element-id="id_comment_root"
-    label-for="id_{{ widget.name }}"
-    label-text="{% translate 'Comment' context 'devilry comment editor' %}"
-    textarea-name="{{ widget.name }}"
-    textarea-value="{% if widget.value %}{{ widget.value }}{% endif %}"
-    help-text="{% blocktranslate trimmed context 'devilry comment editor' %}Write a comment in markdown format. Use <strong>**text here**</strong> for bold and <em>*text here*</em> for italic.{% endblocktranslate %}"
-    markdown-guide-link-url="/markdown-help"
-    markdown-guide-link-text="{% translate 'Full guide for the markdown we support here' context 'devilry comment editor' %}"
-></devilry-comment-editor>
+<devilry-comment-editor {{ attributes|safe }}></devilry-comment-editor>
