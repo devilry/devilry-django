@@ -1,6 +1,13 @@
 {% load i18n %}
 
 <script type="module">
+    const shortcutKeyMapPressed = {
+        'Meta': false,      // CMD
+        'b': false,         // CMD + b: bold
+        'i': false,         // CMD + i: italic
+        'k': false,         // CMD + k: link
+    };
+
     class DevilryCommentEditor extends HTMLElement {
         constructor () {
             super();
@@ -19,9 +26,14 @@
         }
 
         connectedCallback () {
-            this.renderEditor()
+            this.renderEditor();
+            this.addToolbarOptionEventListeners();
+            this.addToolbarKeyboardShortcutEvents();
         }
 
+        /**
+         * Renders the HTML for the editor.
+         */
         renderEditor () {
             const commentEditor = new DOMParser().parseFromString(`
                 <div class="devilry-comment-editor">
@@ -63,46 +75,121 @@
                 </div>
             `, 'text/html').body.firstChild;
             this.appendChild(commentEditor)
+        }
 
-            // Add toolbar event listeners
+        /**
+         * Add event-listeners to toolbar buttons.
+         * 
+         * Each event-listener ends up calling the `insertAtCursor` with 
+         * options according to which toolbar markdown option was pressed.
+         */
+        addToolbarOptionEventListeners () {
             document.getElementById(`${this.elementId}_toolbar_option_heading`)
                 .addEventListener('click', () => {
-                    this.insertAtCursor('heading', '\n###', '', 'ADD HEADING HERE')
+                    this.toolbarEventActionHeading();
                 }, false);
             document.getElementById(`${this.elementId}_toolbar_option_bold`)
                 .addEventListener('click', () => {
-                    this.insertAtCursor('bold', '**', '**', 'ADD BOLD TEXT HERE')
+                    this.toolbarEventActionBold();
                 }, false);
             document.getElementById(`${this.elementId}_toolbar_option_italic`)
                 .addEventListener('click', () => {
-                    this.insertAtCursor('italic', '*', '*', 'ADD ITALIC TEXT HERE')
+                    this.toolbarEventActionItalic();
                 }, false);
             document.getElementById(`${this.elementId}_toolbar_option_link`)
                 .addEventListener('click', () => {
-                    this.insertAtCursor('link', '[', ']()', 'ADD LINK TEXT HERE')
+                    this.toolbarEventActionLink();
                 }, false);
-            
-            // Add toolbar keyboard-shortcut event listeners
-            // const keyPressed = {
-            //     'Meta': false,
-            //     'b': false
-            // };
-            // document.onkeydown = (keyDownEvent) => {
-            //     console.log(`DOWN: ${keyDownEvent.key}`);
-            //     keyPressed[keyDownEvent.key] = true;
-            //     if (document.activeElement.id === `${this.elementId}`) {
-            //         if (keyPressed['Meta'] && keyPressed['b']) {
-            //             this.insertAtCursor('bold', '**', '**', 'INSERT BOLD TEXT HERE');
-            //         }
-            //     }
-            // };
-            // document.onkeyup = (keyUpEvent) => {
-            //     console.log(`UP: ${keyUpEvent.key}`);
-            //     keyPressed[keyUpEvent.key] = false;
-            // };
         }
 
-        insertAtCursor (type, preTag, postTag, placeholder) {
+        /**
+         * Add keyboard-shortcuts for toolbar actions.
+         */
+        addToolbarKeyboardShortcutEvents () {
+            // Scoped helper function that simply handles prevent default actions for 
+            // keyboard-shortcuts, and marks the pressed key as released when the action 
+            // is performed.
+            function _performToolbarKeyboardShortcutAction (event, actionFunction, key) {
+                event.preventDefault();
+                actionFunction();
+                shortcutKeyMapPressed[key] = false;
+            }
+
+            // Add handler for keydown events.
+            document.onkeydown = (keyDownEvent) => {
+                if (document.activeElement.id === `${this.elementId}`) {
+                    shortcutKeyMapPressed[keyDownEvent.key] = true;
+                    if (shortcutKeyMapPressed['Meta']) { // TODO handle windows ctrl press.
+                        if (shortcutKeyMapPressed['b']) {
+                            _performToolbarKeyboardShortcutAction(
+                                keyDownEvent, () => {this.toolbarEventActionBold();}, 'b');
+                        } else if (shortcutKeyMapPressed['i']) {
+                            _performToolbarKeyboardShortcutAction(
+                                keyDownEvent, () => {this.toolbarEventActionItalic();}, 'i');
+                        } else if (shortcutKeyMapPressed['k']) {
+                            _performToolbarKeyboardShortcutAction(
+                                keyDownEvent, () => {this.toolbarEventActionLink();}, 'k');
+                        }
+                    }
+                }
+            };
+
+            // Add handler for keyup events.
+            // All keypress-tracking is set to `false` (not pressed). This ensures that we 
+            // don't accidentally use the previous keyboard-shortcut next time a keyboard-shortcut 
+            // is used.
+            document.onkeyup = (keyUpEvent) => {
+                if (document.activeElement.id === `${this.elementId}`) {
+                    Object.keys(shortcutKeyMapPressed).forEach(key => {
+                        shortcutKeyMapPressed[key] = false;
+                    });
+                }
+            };
+        }
+
+        /**
+         * Method for inserting heading markdown-tag at cursor.
+         */
+        toolbarEventActionHeading () {
+            this.insertAtCursor('heading', '\n###', '', 'ADD HEADING HERE');
+        }
+
+        /**
+         * Method for inserting bold markdown-tag at cursor.
+         */
+        toolbarEventActionBold () {
+            console.log('THIS IS STRANGE');
+            this.insertAtCursor('bold', '**', '**', 'ADD BOLD TEXT HERE');
+        }
+
+        /**
+         * Method for inserting italic markdown-tag at cursor.
+         */
+        toolbarEventActionItalic () {
+            this.insertAtCursor('italic', '*', '*', 'ADD ITALIC TEXT HERE');
+        }
+
+        /**
+         * Method for inserting link markdown-tag at cursor.
+         */
+        toolbarEventActionLink () {
+            this.insertAtCursor('link', '[', '](url)', 'ADD LINK TEXT HERE');
+        }
+
+        /**
+         * Inserts markdown-tag at cursor-position.
+         * 
+         * Inserts markdown-tag at cursor-position, by adding a opening and closing 
+         * markdown-tag around the selected text (if any). When the markdown-tag is inserted, 
+         * and the value for the text-area is updated, the cursor is placed at the end of the 
+         * tagged text (including the closing markdown-tag).
+         * 
+         * @param {String} type         Type of markdown-tag.
+         * @param {String} openingTag   The opening markdown-tag. E.g. for links where the full markdown tag is "[]()", the opening-tag whould be "(".
+         * @param {String} closingTag   The closing markdown-tag. E.g. for links where the full markdown tag is "[]()", the closing-tag whould be "]()".
+         * @param {String} placeholder  This is the placeholder text inserted between the opening and closing markdown tags if no text is selected.
+         */
+        insertAtCursor (type, openingTag, closingTag, placeholder) {
             if (type === 'heading') {
                 console.log('insert HEADING');
             } else if (type === 'bold') {
@@ -123,20 +210,19 @@
             const cursorEnd = textArea.selectionEnd;
 
             // Get text marked in range. This is text, if any, is inserted 
-            // between the preTag and the postTag.
+            // between the openingTag and the closingTag.
             let selectedText = textArea.value.substring(cursorStart, cursorEnd);
 
             // Insert markdown
             if (!selectedText) {
                 selectedText = placeholder
             }
-            const taggedText = preTag + selectedText + postTag
+            const taggedText = openingTag + selectedText + closingTag
             textArea.value = textArea.value.substring(0, cursorStart) + taggedText + textArea.value.substring(cursorEnd, textArea.value.length)
 
             // Place focus back to the end of the tagged text.
             textArea.focus()
             textArea.selectionEnd = cursorStart + taggedText.length;
-
         }
     }
 
