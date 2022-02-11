@@ -5,10 +5,29 @@
     const toolbarShortcutKeyMapPressed = {
         'ctrl': false,      // CTRL (Windows)
         'Meta': false,      // CMD (macOS)
+        'Enter': false,     // Enter
         'b': false,         // CTRL or CMD + b: bold
         'i': false,         // CTRL or CMD + i: italic
         'k': false,         // CTRL or CMD + k: link
     };
+    const TOOLBAR_HEADING = 'heading';
+    const TOOLBAR_BOLD = 'bold';
+    const TOOLBAR_ITALIC = 'italic';
+    const TOOLBAR_LINK = 'link'; 
+    const TOOLBAR_CODE_INLINE = 'codeInline';
+    const TOOLBAR_CODE_BLOCK = 'codeBlock';
+    const TOOLBAR_UNORDERED_LIST = 'unorderedList';
+    const TOOLBAR_ORDERED_LIST = 'orderedList';
+    const TOOLBAR_MARKDOWN_TYPES = new Set([
+        TOOLBAR_HEADING,
+        TOOLBAR_BOLD,
+        TOOLBAR_ITALIC,
+        TOOLBAR_LINK,
+        TOOLBAR_CODE_INLINE,
+        TOOLBAR_CODE_BLOCK,
+        TOOLBAR_UNORDERED_LIST,
+        TOOLBAR_ORDERED_LIST,
+    ]);
 
     class DevilryCommentEditor extends HTMLElement {
         constructor () {
@@ -71,6 +90,38 @@
                         >
                             <p>Link</p>
                         </button>
+                        <button
+                            id="${this.elementId}_toolbar_option_code_inline"
+                            type="button"
+                            title="${this.attrToolbarConfig.codeInline.tooltip}"
+                            class="btn btn-default devilry-comment-editor-toolbar__option"
+                        >
+                            <p>Code</p>
+                        </button>
+                        <button
+                            id="${this.elementId}_toolbar_option_code_block"
+                            type="button"
+                            title="${this.attrToolbarConfig.codeBlock.tooltip}"
+                            class="btn btn-default devilry-comment-editor-toolbar__option"
+                        >
+                            <p>Code-block</p>
+                        </button>
+                        <button
+                            id="${this.elementId}_toolbar_option_unordered_list"
+                            type="button"
+                            title="${this.attrToolbarConfig.unorderedList.tooltip}"
+                            class="btn btn-default devilry-comment-editor-toolbar__option"
+                        >
+                            <p>UL</p>
+                        </button>
+                        <button
+                            id="${this.elementId}_toolbar_option_ordered_list"
+                            type="button"
+                            title="${this.attrToolbarConfig.orderedList.tooltip}"
+                            class="btn btn-default devilry-comment-editor-toolbar__option"
+                        >
+                            <p>OL</p>
+                        </button>
                     </div>
                     <label for="${this.elementId}" class="screenreader-only">${this.attrLabelText}</label>
                     <div class="devilry-comment-editor__textarea">
@@ -119,6 +170,22 @@
                 .addEventListener('click', () => {
                     this.toolbarEventActionLink();
                 }, false);
+            document.getElementById(`${this.elementId}_toolbar_option_code_inline`)
+                .addEventListener('click', () => {
+                    this.toolbarEventActionCodeInline();
+                }, false);
+            document.getElementById(`${this.elementId}_toolbar_option_code_block`)
+                .addEventListener('click', () => {
+                    this.toolbarEventActionCodeBlock();
+                }, false);
+            document.getElementById(`${this.elementId}_toolbar_option_unordered_list`)
+                .addEventListener('click', () => {
+                    this.toolbarEventActionUnorderedList();
+                }, false);
+            document.getElementById(`${this.elementId}_toolbar_option_ordered_list`)
+                .addEventListener('click', () => {
+                    this.toolbarEventActionOrderedList();
+                }, false);
         }
 
         /**
@@ -128,8 +195,10 @@
             // Scoped helper function that simply handles prevent default actions for 
             // keyboard-shortcuts, and marks the pressed key as released when the action 
             // is performed.
-            function _performToolbarKeyboardShortcutAction (event, actionFunction, key) {
-                event.preventDefault();
+            function _performToolbarKeyboardShortcutAction (event, actionFunction, key, preventDefault = true) {
+                if (preventDefault) {
+                    event.preventDefault();
+                }
                 event.stopPropagation();
                 actionFunction();
                 toolbarShortcutKeyMapPressed[key] = false;
@@ -150,6 +219,9 @@
                             _performToolbarKeyboardShortcutAction(
                                 keyDownEvent, () => {this.toolbarEventActionLink();}, 'k');
                         }
+                    } else if (toolbarShortcutKeyMapPressed['Enter']) {
+                        _performToolbarKeyboardShortcutAction(
+                            keyDownEvent, () => {this.toolbarEventActionOnEnter(keyDownEvent);}, 'Enter', false);
                     }
                 }
             };
@@ -171,28 +243,73 @@
          * Method for inserting heading markdown-tag at cursor.
          */
         toolbarEventActionHeading () {
-            this.insertAtCursor('heading', '\n###', '', this.attrToolbarConfig.heading.placeholderText);
+            this.insertBasicMarkdownAtCursor(TOOLBAR_HEADING, '\n### ', '', this.attrToolbarConfig.heading.placeholderText);
         }
 
         /**
          * Method for inserting bold markdown-tag at cursor.
          */
         toolbarEventActionBold () {
-            this.insertAtCursor('bold', '**', '**', this.attrToolbarConfig.bold.placeholderText);
+            this.insertBasicMarkdownAtCursor(TOOLBAR_BOLD, '**', '**', this.attrToolbarConfig.bold.placeholderText);
         }
 
         /**
          * Method for inserting italic markdown-tag at cursor.
          */
         toolbarEventActionItalic () {
-            this.insertAtCursor('italic', '*', '*', this.attrToolbarConfig.italic.placeholderText);
+            this.insertBasicMarkdownAtCursor(TOOLBAR_ITALIC, '_', '_', this.attrToolbarConfig.italic.placeholderText);
         }
 
         /**
          * Method for inserting link markdown-tag at cursor.
          */
         toolbarEventActionLink () {
-            this.insertAtCursor('link', '[', '](url)', this.attrToolbarConfig.link.placeholderText);
+            this.insertBasicMarkdownAtCursor(TOOLBAR_LINK, '[', '](url)', this.attrToolbarConfig.link.placeholderText);
+        }
+
+        /**
+         * Method for inserting inline code markdown-tag at cursor.
+         */
+         toolbarEventActionCodeInline () {
+            this.insertBasicMarkdownAtCursor(TOOLBAR_CODE_INLINE, '`', '`', this.attrToolbarConfig.codeInline.placeholderText);
+        }
+
+        /**
+         * Method for inserting inline code markdown-tag at cursor.
+         */
+         toolbarEventActionCodeBlock () {
+            this.insertBasicMarkdownAtCursor(TOOLBAR_CODE_BLOCK, '```', '\n\n```', this.attrToolbarConfig.codeBlock.placeholderText);
+        }
+
+        /**
+         * Method for inserting link markdown-tag at cursor.
+         */
+        toolbarEventActionOnEnter (event) {
+            const textArea = document.getElementById(`${this.elementId}`);
+            const cursorStart = textArea.selectionStart;
+            const cursorStartLine = textArea.value.substring(0, cursorStart).split('\n').slice(-1)[0];
+
+            if (cursorStartLine.match('^\n*\s*[\*\s].*$')) {
+                console.log(`UNORDERED LIST: ${cursorStartLine}`);
+                // event.preventDefault();
+            } else if (cursorStartLine.match('^\n*\s*[0-9]*\\..*$')) {
+                console.log(`ORDERED LIST: ${cursorStartLine}`);
+                // event.preventDefault();
+            }
+        }
+
+        /**
+         * Method for inserting link markdown-tag at cursor.
+         */
+         toolbarEventActionUnorderedList () {
+            this.insertMarkdownListAtCursor(TOOLBAR_UNORDERED_LIST);
+        }
+
+        /**
+         * Method for inserting link markdown-tag at cursor.
+         */
+         toolbarEventActionOrderedList () {
+            this.insertMarkdownListAtCursor(TOOLBAR_ORDERED_LIST);
         }
 
         /**
@@ -208,7 +325,11 @@
          * @param {String} closingTag   The closing markdown-tag. E.g. for links where the full markdown tag is "[]()", the closing-tag whould be "]()".
          * @param {String} placeholder  This is the placeholder text inserted between the opening and closing markdown tags if no text is selected.
          */
-        insertAtCursor (type, openingTag, closingTag, placeholder) {
+        insertBasicMarkdownAtCursor (type, openingTag, closingTag, placeholder) {
+            if (![TOOLBAR_HEADING, TOOLBAR_BOLD, TOOLBAR_ITALIC, TOOLBAR_LINK, TOOLBAR_CODE_INLINE, TOOLBAR_CODE_BLOCK].includes(type)) {
+                throw Error(`Type "${type}" not supported.`);
+            }
+
             // Get textarea to manipulate
             const textArea = document.getElementById(`${this.elementId}`);
 
@@ -220,9 +341,8 @@
             // between the openingTag and the closingTag.
             let selectedText = textArea.value.substring(cursorStart, cursorEnd);
 
-            // Insert markdown
             if (!selectedText) {
-                selectedText = placeholder
+                selectedText = placeholder || '';
             }
             const taggedText = openingTag + selectedText + closingTag
             textArea.value = textArea.value.substring(0, cursorStart) + taggedText + textArea.value.substring(cursorEnd, textArea.value.length)
@@ -231,6 +351,76 @@
             textArea.focus()
             textArea.selectionStart = cursorStart + openingTag.length;
             textArea.selectionEnd = textArea.selectionStart + selectedText.length;
+        }
+
+        /**
+         * Lists requires special handling for inserting markdown tags, and does not quite fit 
+         * the general solution for simple tags that simply wrap the selected text.
+         * 
+         * @param {String} type         Type of markdown-tag.
+         */
+        insertMarkdownListAtCursor (type) {
+            if (![TOOLBAR_UNORDERED_LIST, TOOLBAR_ORDERED_LIST].includes(type)) {
+                throw Error(`Type list-type "${type}" not supported.`);
+            }
+
+            // Get textarea to manipulate
+            const textArea = document.getElementById(`${this.elementId}`);
+
+            // Get start and end position of the cursor.
+            const cursorStart = textArea.selectionStart;
+            const cursorEnd = textArea.selectionEnd;
+
+            // Get the textarea value as an array split on lines.
+            // This array will be updated in-place.
+            const textAreaLineArray = textArea.value.split('\n');
+
+            // Get the indexes of which line the start-cursor and the end-cursor is placed.
+            const cursorStartIndex = textArea.value.substring(0, cursorStart).split('\n').length - 1;
+            const cursorEndIndex = textArea.value.substring(0, cursorEnd).split('\n').length - 1;
+
+            // Get diff between start index and end index.
+            const cursorStartEndIndexDiff = cursorEndIndex - cursorStartIndex;
+
+            // New textarea value with list tags inserted
+            let newTextAreaValue = '';
+
+            let markdownListTag = type === TOOLBAR_UNORDERED_LIST ? '* ' : '1. ';
+            let orderedListCounter = 1;
+            for (let i = cursorStartIndex; i <= cursorEndIndex; i++) {
+                if (type === TOOLBAR_ORDERED_LIST) {
+                    markdownListTag = `${orderedListCounter}. `;
+                    orderedListCounter++;
+                }
+                textAreaLineArray[i] = `${markdownListTag}${textAreaLineArray[i]}`;
+            }
+
+            // Add newline at the start if the before the startcursor line has content and/or
+            // add newline to the end if the line after endcursor has content.
+            if (cursorStartIndex > 0 && textAreaLineArray[cursorStartIndex - 1].trim().length > 0) {
+                textAreaLineArray[cursorStartIndex] = `\n${textAreaLineArray[cursorStartIndex]}`;
+            }
+            if (cursorEndIndex < textAreaLineArray.length - 1 && textAreaLineArray[cursorEndIndex + 1].trim().length > 0) {
+                textAreaLineArray[cursorEndIndex] = `${textAreaLineArray[cursorEndIndex]}\n`;
+            }
+
+            // Add back newlines removed from split.
+            for (let i = 0; i < textAreaLineArray.length; i++) {
+                if (i === 0) {
+                    newTextAreaValue += textAreaLineArray[i];
+                } else {
+                    newTextAreaValue += `\n${textAreaLineArray[i]}`;
+                }
+            }
+            textArea.focus()
+            textArea.value = newTextAreaValue;
+            if (cursorStartEndIndexDiff === 0) {
+                textArea.selectionStart = cursorStart + markdownListTag.length;
+                textArea.selectionEnd = cursorEnd + markdownListTag.length;
+            } else {
+                textArea.selectionStart = cursorStart + markdownListTag.length;
+                textArea.selectionEnd = cursorEnd + (cursorStartEndIndexDiff * markdownListTag.length) + markdownListTag.length;
+            }
         }
     }
 
