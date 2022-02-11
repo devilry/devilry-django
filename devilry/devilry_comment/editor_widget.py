@@ -30,9 +30,6 @@ class DevilryMarkdownWidget(forms.widgets.Textarea):
                 'markdownGuideLinkUrl': '/markdown-help',
                 'toolbarConfig': json.dumps({
                     'heading': {
-                        'placeholderText': pgettext(
-                            'devilry markdown widget toolbar placeholder text',
-                            'Add text here'),
                         'tooltip': pgettext(
                             'devilry markdown widget toolbar tooltip text',
                             'Heading')
@@ -61,6 +58,29 @@ class DevilryMarkdownWidget(forms.widgets.Textarea):
                             'devilry markdown widget toolbar tooltip text',
                             'Link, <ctrl+k>')
                     },
+                    'codeInline': {
+                        'tooltip': pgettext(
+                            'devilry markdown widget toolbar tooltip text',
+                            'Code')
+                    },
+                    'codeBlock': {
+                        'placeholderText': pgettext(
+                            'devilry markdown widget toolbar placeholder text',
+                            'Programminglanguage'),
+                        'tooltip': pgettext(
+                            'devilry markdown widget toolbar tooltip text',
+                            'Code-block')
+                    },
+                    'unorderedList': {
+                        'tooltip': pgettext(
+                            'devilry markdown widget toolbar tooltip text',
+                            'Bulleted list')
+                    },
+                    'orderedList': {
+                        'tooltip': pgettext(
+                            'devilry markdown widget toolbar tooltip text',
+                            'Numbered list')
+                    }
                 })
             }.items()
         )
