@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load cradmin_legacy_icon_tags %}
 
 <script type="module">
 
@@ -64,7 +65,7 @@
                             title="${this.attrToolbarConfig.heading.tooltip}"
                             class="btn btn-default devilry-comment-editor-toolbar__option"
                         >
-                            <p>Heading</p>
+                            <span class="{% cradmin_icon 'h3' %}"></span>
                         </button>
                         <button
                             id="${this.elementId}_toolbar_option_bold"
@@ -72,7 +73,7 @@
                             title="${this.attrToolbarConfig.bold.tooltip}"
                             class="btn btn-default devilry-comment-editor-toolbar__option"
                         >
-                            <p>Bold</p>
+                            <span class="{% cradmin_icon 'bold' %}"></span>
                         </button>
                         <button
                             id="${this.elementId}_toolbar_option_italic"
@@ -80,7 +81,7 @@
                             title="${this.attrToolbarConfig.italic.tooltip}"
                             class="btn btn-default devilry-comment-editor-toolbar__option"
                         >
-                            <p>Italic</p>
+                            <span class="{% cradmin_icon 'italic' %}"></span>
                         </button>
                         <button
                             id="${this.elementId}_toolbar_option_link"
@@ -88,7 +89,7 @@
                             title="${this.attrToolbarConfig.link.tooltip}"
                             class="btn btn-default devilry-comment-editor-toolbar__option"
                         >
-                            <p>Link</p>
+                            <span class="{% cradmin_icon 'link' %}"></span>
                         </button>
                         <button
                             id="${this.elementId}_toolbar_option_code_inline"
@@ -96,7 +97,7 @@
                             title="${this.attrToolbarConfig.codeInline.tooltip}"
                             class="btn btn-default devilry-comment-editor-toolbar__option"
                         >
-                            <p>Code</p>
+                            <span class="{% cradmin_icon 'codeblock' %}"></span>
                         </button>
                         <button
                             id="${this.elementId}_toolbar_option_code_block"
@@ -104,7 +105,7 @@
                             title="${this.attrToolbarConfig.codeBlock.tooltip}"
                             class="btn btn-default devilry-comment-editor-toolbar__option"
                         >
-                            <p>Code-block</p>
+                            <span class="{% cradmin_icon 'codeblock' %}"></span>
                         </button>
                         <button
                             id="${this.elementId}_toolbar_option_unordered_list"
@@ -112,7 +113,7 @@
                             title="${this.attrToolbarConfig.unorderedList.tooltip}"
                             class="btn btn-default devilry-comment-editor-toolbar__option"
                         >
-                            <p>UL</p>
+                            <span class="{% cradmin_icon 'list-ul' %}"></span>
                         </button>
                         <button
                             id="${this.elementId}_toolbar_option_ordered_list"
@@ -120,7 +121,7 @@
                             title="${this.attrToolbarConfig.orderedList.tooltip}"
                             class="btn btn-default devilry-comment-editor-toolbar__option"
                         >
-                            <p>OL</p>
+                            <span class="{% cradmin_icon 'list-ol' %}"></span>
                         </button>
                     </div>
                     <label for="${this.elementId}" class="screenreader-only">${this.attrLabelText}</label>
@@ -285,16 +286,13 @@
          * Method for inserting link markdown-tag at cursor.
          */
         toolbarEventActionOnEnter (event) {
-            const textArea = document.getElementById(`${this.elementId}`);
-            const cursorStart = textArea.selectionStart;
-            const cursorStartLine = textArea.value.substring(0, cursorStart).split('\n').slice(-1)[0];
-
-            if (cursorStartLine.match('^\n*\s*[\*\s].*$')) {
+            const cursorStartLine = this._getCursorLine();
+            if (cursorStartLine.match('^\n{0,1}\s*[\*\s].*\n{0,1}$')) {
                 console.log(`UNORDERED LIST: ${cursorStartLine}`);
-                // event.preventDefault();
-            } else if (cursorStartLine.match('^\n*\s*[0-9]*\\..*$')) {
+                this.continueMarkdownListOnEnter(TOOLBAR_UNORDERED_LIST, event);
+            } else if (cursorStartLine.match('^\n{0,1}\s*[0-9]*\..*\n{0,1}$')) {
                 console.log(`ORDERED LIST: ${cursorStartLine}`);
-                // event.preventDefault();
+                this.continueMarkdownListOnEnter(TOOLBAR_ORDERED_LIST, event);
             }
         }
 
@@ -421,6 +419,75 @@
                 textArea.selectionStart = cursorStart + markdownListTag.length;
                 textArea.selectionEnd = cursorEnd + (cursorStartEndIndexDiff * markdownListTag.length) + markdownListTag.length;
             }
+        }
+
+        _getCursorLine () {
+            const textArea = document.getElementById(`${this.elementId}`);
+            const cursorStart = textArea.selectionStart;
+            return textArea.value.substring(0, cursorStart).split('\n').slice(-1)[0];
+        }
+
+        continueMarkdownListOnEnter (type, keyPressEvent) {
+            console.log('continueMarkdownListOnEnter');
+            if (![TOOLBAR_UNORDERED_LIST, TOOLBAR_ORDERED_LIST].includes(type)) {
+                throw Error(`Type list-type "${type}" not supported.`);
+            }
+
+            // Get textarea to manipulate
+            const textArea = document.getElementById(`${this.elementId}`);
+
+            // Get start and end position of the cursor.
+            const cursorStart = textArea.selectionStart;
+            const cursorEnd = textArea.selectionEnd;
+
+            // Get the textarea value as an array split on lines.
+            // This array will be updated in-place.
+            let textAreaLineArray = textArea.value.split('\n');
+
+            // Get the indexes of which line the start-cursor and the end-cursor is placed.
+            let cursorStartIndex = textArea.value.substring(0, cursorStart).split('\n').length - 1;
+            let cursorEndIndex = textArea.value.substring(0, cursorEnd).split('\n').length - 1;
+
+            // Get diff between start index and end index.
+            const cursorStartEndIndexDiff = cursorEndIndex - cursorStartIndex;
+
+            // If multiple lines are selected, continuation of 
+            // list is not performed.
+            if (cursorStartEndIndexDiff !== 0) {
+                return;
+            }
+            event.preventDefault();
+            
+            // Create insertion value for the new inserted line.
+            // This will keep all spaces at the start until the line 
+            // tag. If the line-tag is a number, it will be incremented, 
+            // and for unordered lists the tag will be kept as is.
+            const cursorLine = this._getCursorLine();
+            let listTag = '* ';
+            if (type === TOOLBAR_ORDERED_LIST) {
+                console.log(cursorLine.match('^\s*[0-9]*\\.'));
+            }
+
+            console.log(cursorLine.match('^(\s*).*'));
+
+
+            textAreaLineArray = [
+                ...textAreaLineArray.slice(0, cursorStartIndex + 1),
+                listTag,
+                ...textAreaLineArray.slice(cursorStartIndex + 1)
+            ];
+
+            // Add back newlines removed from split.
+            let newTextAreaValue = '';
+            for (let i = 0; i < textAreaLineArray.length; i++) {
+                if (i === 0) {
+                    newTextAreaValue += textAreaLineArray[i];
+                } else {
+                    newTextAreaValue += `\n${textAreaLineArray[i]}`;
+                }
+            }
+            textArea.focus()
+            textArea.value = newTextAreaValue;
         }
     }
 
