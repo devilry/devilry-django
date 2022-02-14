@@ -1,6 +1,6 @@
-#######################################
-How to setup error tracking with Sentry
-#######################################
+###########################################
+How to configure error tracking with Sentry
+###########################################
 
 Sentry is an open-source error tracker service that either can 
 be rented (SaaS) or `self-hosted <https://develop.sentry.dev/self-hosted/>`_.
@@ -9,8 +9,8 @@ be rented (SaaS) or `self-hosted <https://develop.sentry.dev/self-hosted/>`_.
 Settings
 ********
 
-The default way of setting up error tracking with Sentry is to 
-use `Sentry's official Django integration <https://docs.sentry.io/platforms/python/guides/django/>`_.
+The default way of setting up error tracking of Devilry with 
+Sentry is to use `Sentry's official Django integration <https://docs.sentry.io/platforms/python/guides/django/>`_.
 
 Make sure Sentry's Python SDK is installed in Python environment::
 
@@ -48,11 +48,12 @@ Settings (legacy)
 Raven was the `official legacy Python client for Sentry <https://github.com/getsentry/raven-python>`_
 that some legacy Sentry servers might still require.
 
-Make sure Reven is installed in Python environment::
+Make sure Raven is installed in Python environment::
 
     $ venv/bin/pip install raven
 
-Update ``devilry_settings.py`` file with Sentry project info and add mapping of Devilry versions::
+Update the ``devilry_settings.py`` file with Sentry project info and add 
+mapping of Devilry versions::
 
     from devilry import __version__ as devilry_version
     
