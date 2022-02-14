@@ -19,12 +19,13 @@
     const TOOLBAR_CODE_BLOCK = 'codeBlock';
     const TOOLBAR_UNORDERED_LIST = 'unorderedList';
     const TOOLBAR_ORDERED_LIST = 'orderedList';
-    const OL_REGEX = '^(\\s*)([0-9]*)\\.';
-    const UL_REGEX = '^(\\s*)(\\*)';
+    const OL_REGEX = '^(\\s*)([0-9]*\\.\\s)';
+    const UL_REGEX = '^(\\s*)(\\*\\s)';
 
     class DevilryCommentEditor extends HTMLElement {
         constructor () {
             super();
+
             this.attrLabelText = this.getAttribute('labelText');
             this.attrTextareaName = this.getAttribute('name');
             this.attrTextareaValue = this.getAttribute('value');
@@ -401,7 +402,7 @@
                     listTag = match[1] + nextOrderNum + '. ';
                 } else {
                     const match = cursorLine.match(UL_REGEX);
-                    listTag = match[1] + match[2] + ' ';
+                    listTag = match[1] + match[2];
                 }
 
                 textAreaLineArray = [
