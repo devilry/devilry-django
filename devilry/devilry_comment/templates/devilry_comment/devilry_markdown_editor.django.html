@@ -189,13 +189,12 @@
             // Scoped helper function that simply handles prevent default actions for 
             // keyboard-shortcuts, and marks the pressed key as released when the action 
             // is performed.
-            function _performToolbarKeyboardShortcutAction (event, actionFunction, key, preventDefault = true) {
+            function _performToolbarKeyboardShortcutAction (event, actionFunction, preventDefault = true) {
                 if (preventDefault) {
                     event.preventDefault();
                 }
                 event.stopPropagation();
                 actionFunction();
-                toolbarShortcutKeyMapPressed[key] = false;
             }
 
             // Add handler for keydown events.
@@ -205,17 +204,17 @@
                     if (toolbarShortcutKeyMapPressed['Meta'] || toolbarShortcutKeyMapPressed['ctrl']) {
                         if (toolbarShortcutKeyMapPressed['b']) {
                             _performToolbarKeyboardShortcutAction(
-                                keyDownEvent, () => {this.toolbarEventActionBold();}, 'b');
+                                keyDownEvent, () => {this.toolbarEventActionBold();});
                         } else if (toolbarShortcutKeyMapPressed['i']) {
                             _performToolbarKeyboardShortcutAction(
-                                keyDownEvent, () => {this.toolbarEventActionItalic();}, 'i');
+                                keyDownEvent, () => {this.toolbarEventActionItalic();});
                         } else if (toolbarShortcutKeyMapPressed['k']) {
                             _performToolbarKeyboardShortcutAction(
-                                keyDownEvent, () => {this.toolbarEventActionLink();}, 'k');
+                                keyDownEvent, () => {this.toolbarEventActionLink();});
                         }
                     } else if (toolbarShortcutKeyMapPressed['Enter']) {
                         _performToolbarKeyboardShortcutAction(
-                            keyDownEvent, () => {this.toolbarEventActionOnEnter(keyDownEvent);}, 'Enter', false);
+                            keyDownEvent, () => {this.toolbarEventActionOnEnter(keyDownEvent);}, false);
                     }
                 }
             };
