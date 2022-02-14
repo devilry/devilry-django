@@ -19,16 +19,8 @@
     const TOOLBAR_CODE_BLOCK = 'codeBlock';
     const TOOLBAR_UNORDERED_LIST = 'unorderedList';
     const TOOLBAR_ORDERED_LIST = 'orderedList';
-    const TOOLBAR_MARKDOWN_TYPES = new Set([
-        TOOLBAR_HEADING,
-        TOOLBAR_BOLD,
-        TOOLBAR_ITALIC,
-        TOOLBAR_LINK,
-        TOOLBAR_CODE_INLINE,
-        TOOLBAR_CODE_BLOCK,
-        TOOLBAR_UNORDERED_LIST,
-        TOOLBAR_ORDERED_LIST,
-    ]);
+    const OL_REGEX = '^(\\s*)([0-9]*)\\.';
+    const UL_REGEX = '^(\\s*)(\\*)';
 
     class DevilryCommentEditor extends HTMLElement {
         constructor () {
@@ -287,12 +279,10 @@
          */
         toolbarEventActionOnEnter (event) {
             const cursorStartLine = this._getCursorLine();
-            if (cursorStartLine.match('^\n{0,1}\s*[\*\s].*\n{0,1}$')) {
-                console.log(`UNORDERED LIST: ${cursorStartLine}`);
-                this.continueMarkdownListOnEnter(TOOLBAR_UNORDERED_LIST, event);
-            } else if (cursorStartLine.match('^\n{0,1}\s*[0-9]*\..*\n{0,1}$')) {
-                console.log(`ORDERED LIST: ${cursorStartLine}`);
-                this.continueMarkdownListOnEnter(TOOLBAR_ORDERED_LIST, event);
+            if (cursorStartLine.match(UL_REGEX)) {
+                this.insertMarkdownListAtCursor(TOOLBAR_UNORDERED_LIST, event);
+            } else if (cursorStartLine.match(OL_REGEX)) {
+                this.insertMarkdownListAtCursor(TOOLBAR_ORDERED_LIST, event);
             }
         }
 
@@ -355,9 +345,12 @@
          * Lists requires special handling for inserting markdown tags, and does not quite fit 
          * the general solution for simple tags that simply wrap the selected text.
          * 
-         * @param {String} type         Type of markdown-tag.
+         * @param {String} type                 Type of markdown-tag.
+         * @param {Object} enterKeyPressEvent   Enter key pressed event. Defaults to null. 
+         *                                      If this is not null, then keypress is handled 
+         *                                      by continuing the list on the current line.
          */
-        insertMarkdownListAtCursor (type) {
+         insertMarkdownListAtCursor (type, enterKeyPressEvent = null) {
             if (![TOOLBAR_UNORDERED_LIST, TOOLBAR_ORDERED_LIST].includes(type)) {
                 throw Error(`Type list-type "${type}" not supported.`);
             }
@@ -368,10 +361,12 @@
             // Get start and end position of the cursor.
             const cursorStart = textArea.selectionStart;
             const cursorEnd = textArea.selectionEnd;
+            let newSelectionStart = null;
+            let newSelectionEnd = null;
 
             // Get the textarea value as an array split on lines.
             // This array will be updated in-place.
-            const textAreaLineArray = textArea.value.split('\n');
+            let textAreaLineArray = textArea.value.split('\n');
 
             // Get the indexes of which line the start-cursor and the end-cursor is placed.
             const cursorStartIndex = textArea.value.substring(0, cursorStart).split('\n').length - 1;
@@ -383,41 +378,93 @@
             // New textarea value with list tags inserted
             let newTextAreaValue = '';
 
-            let markdownListTag = type === TOOLBAR_UNORDERED_LIST ? '* ' : '1. ';
-            let orderedListCounter = 1;
-            for (let i = cursorStartIndex; i <= cursorEndIndex; i++) {
+            if (enterKeyPressEvent) {
+                // Continue list on enter key-press.
+                // Handle keypress events such as enter to check if the list should be continued.
+
+                // If multiple lines are selected, continuation of 
+                // list is not performed.
+                if (cursorStartEndIndexDiff !== 0) {
+                    return;
+                }
+                event.preventDefault();
+
+                // Create insertion value for the new inserted line.
+                // This will keep all spaces at the start until the line 
+                // tag. If the line-tag is a number, it will be incremented, 
+                // and for unordered lists the tag will be kept as is.
+                const cursorLine = this._getCursorLine();
+                let listTag = '';
                 if (type === TOOLBAR_ORDERED_LIST) {
-                    markdownListTag = `${orderedListCounter}. `;
-                    orderedListCounter++;
-                }
-                textAreaLineArray[i] = `${markdownListTag}${textAreaLineArray[i]}`;
-            }
-
-            // Add newline at the start if the before the startcursor line has content and/or
-            // add newline to the end if the line after endcursor has content.
-            if (cursorStartIndex > 0 && textAreaLineArray[cursorStartIndex - 1].trim().length > 0) {
-                textAreaLineArray[cursorStartIndex] = `\n${textAreaLineArray[cursorStartIndex]}`;
-            }
-            if (cursorEndIndex < textAreaLineArray.length - 1 && textAreaLineArray[cursorEndIndex + 1].trim().length > 0) {
-                textAreaLineArray[cursorEndIndex] = `${textAreaLineArray[cursorEndIndex]}\n`;
-            }
-
-            // Add back newlines removed from split.
-            for (let i = 0; i < textAreaLineArray.length; i++) {
-                if (i === 0) {
-                    newTextAreaValue += textAreaLineArray[i];
+                    const match = cursorLine.match(OL_REGEX);
+                    const nextOrderNum = parseInt(match[2]) + 1;
+                    listTag = match[1] + nextOrderNum + '. ';
                 } else {
-                    newTextAreaValue += `\n${textAreaLineArray[i]}`;
+                    const match = cursorLine.match(UL_REGEX);
+                    listTag = match[1] + match[2] + ' ';
+                }
+
+                textAreaLineArray = [
+                    ...textAreaLineArray.slice(0, cursorStartIndex + 1),
+                    listTag,
+                    ...textAreaLineArray.slice(cursorStartIndex + 1)
+                ];
+
+                // Add back newlines removed from split.
+                // let newTextAreaValue = '';
+                for (let i = 0; i < textAreaLineArray.length; i++) {
+                    if (i === 0) {
+                        newTextAreaValue += textAreaLineArray[i];
+                    } else {
+                        newTextAreaValue += `\n${textAreaLineArray[i]}`;
+                    }
+                }
+            } else {
+                // Convert marked text to list.
+                // Handles the case where a block of text has been selected should be converted to a list.
+
+                let markdownListTag = type === TOOLBAR_UNORDERED_LIST ? '* ' : '1. ';
+                let orderedListCounter = 1;
+                for (let i = cursorStartIndex; i <= cursorEndIndex; i++) {
+                    if (type === TOOLBAR_ORDERED_LIST) {
+                        markdownListTag = `${orderedListCounter}. `;
+                        orderedListCounter++;
+                    }
+                    textAreaLineArray[i] = `${markdownListTag}${textAreaLineArray[i]}`;
+                }
+
+                // Add newline at the start if the before the startcursor line has content and/or
+                // add newline to the end if the line after endcursor has content.
+                if (cursorStartIndex > 0 && textAreaLineArray[cursorStartIndex - 1].trim().length > 0) {
+                    textAreaLineArray[cursorStartIndex] = `\n${textAreaLineArray[cursorStartIndex]}`;
+                }
+                if (cursorEndIndex < textAreaLineArray.length - 1 && textAreaLineArray[cursorEndIndex + 1].trim().length > 0) {
+                    textAreaLineArray[cursorEndIndex] = `${textAreaLineArray[cursorEndIndex]}\n`;
+                }
+
+                // Add back newlines removed from split.
+                for (let i = 0; i < textAreaLineArray.length; i++) {
+                    if (i === 0) {
+                        newTextAreaValue += textAreaLineArray[i];
+                    } else {
+                        newTextAreaValue += `\n${textAreaLineArray[i]}`;
+                    }
+                }
+                if (cursorStartEndIndexDiff === 0) {
+                    newSelectionStart = cursorStart + markdownListTag.length;
+                    newSelectionEnd = cursorEnd + markdownListTag.length;
+                } else {
+                    newSelectionStart = cursorStart + markdownListTag.length;
+                    newSelectionEnd = cursorEnd + (cursorStartEndIndexDiff * markdownListTag.length) + markdownListTag.length;
                 }
             }
-            textArea.focus()
+            textArea.focus();
             textArea.value = newTextAreaValue;
-            if (cursorStartEndIndexDiff === 0) {
-                textArea.selectionStart = cursorStart + markdownListTag.length;
-                textArea.selectionEnd = cursorEnd + markdownListTag.length;
-            } else {
-                textArea.selectionStart = cursorStart + markdownListTag.length;
-                textArea.selectionEnd = cursorEnd + (cursorStartEndIndexDiff * markdownListTag.length) + markdownListTag.length;
+            if (newSelectionStart) {
+                textArea.selectionStart = newSelectionStart;    
+            }
+            if (newSelectionEnd) {
+                textArea.selectionEnd = newSelectionEnd;
             }
         }
 
@@ -425,69 +472,6 @@
             const textArea = document.getElementById(`${this.elementId}`);
             const cursorStart = textArea.selectionStart;
             return textArea.value.substring(0, cursorStart).split('\n').slice(-1)[0];
-        }
-
-        continueMarkdownListOnEnter (type, keyPressEvent) {
-            console.log('continueMarkdownListOnEnter');
-            if (![TOOLBAR_UNORDERED_LIST, TOOLBAR_ORDERED_LIST].includes(type)) {
-                throw Error(`Type list-type "${type}" not supported.`);
-            }
-
-            // Get textarea to manipulate
-            const textArea = document.getElementById(`${this.elementId}`);
-
-            // Get start and end position of the cursor.
-            const cursorStart = textArea.selectionStart;
-            const cursorEnd = textArea.selectionEnd;
-
-            // Get the textarea value as an array split on lines.
-            // This array will be updated in-place.
-            let textAreaLineArray = textArea.value.split('\n');
-
-            // Get the indexes of which line the start-cursor and the end-cursor is placed.
-            let cursorStartIndex = textArea.value.substring(0, cursorStart).split('\n').length - 1;
-            let cursorEndIndex = textArea.value.substring(0, cursorEnd).split('\n').length - 1;
-
-            // Get diff between start index and end index.
-            const cursorStartEndIndexDiff = cursorEndIndex - cursorStartIndex;
-
-            // If multiple lines are selected, continuation of 
-            // list is not performed.
-            if (cursorStartEndIndexDiff !== 0) {
-                return;
-            }
-            event.preventDefault();
-            
-            // Create insertion value for the new inserted line.
-            // This will keep all spaces at the start until the line 
-            // tag. If the line-tag is a number, it will be incremented, 
-            // and for unordered lists the tag will be kept as is.
-            const cursorLine = this._getCursorLine();
-            let listTag = '* ';
-            if (type === TOOLBAR_ORDERED_LIST) {
-                console.log(cursorLine.match('^\s*[0-9]*\\.'));
-            }
-
-            console.log(cursorLine.match('^(\s*).*'));
-
-
-            textAreaLineArray = [
-                ...textAreaLineArray.slice(0, cursorStartIndex + 1),
-                listTag,
-                ...textAreaLineArray.slice(cursorStartIndex + 1)
-            ];
-
-            // Add back newlines removed from split.
-            let newTextAreaValue = '';
-            for (let i = 0; i < textAreaLineArray.length; i++) {
-                if (i === 0) {
-                    newTextAreaValue += textAreaLineArray[i];
-                } else {
-                    newTextAreaValue += `\n${textAreaLineArray[i]}`;
-                }
-            }
-            textArea.focus()
-            textArea.value = newTextAreaValue;
         }
     }
 
