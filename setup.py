@@ -18,7 +18,7 @@ setup(
     description="A system for handling electronic deliveries. See https://github.com/devilry/devilry-django.",
     packages=find_packages(exclude=["devilry_rest"]),
     install_requires=[
-        'setuptools',
+        'setuptools<58',
         'pyyaml==5.4.*',
         'Markdown==2.6.*',
         'Pygments==2.7.*',
