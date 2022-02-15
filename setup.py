@@ -30,7 +30,6 @@ setup(
         'URLObject==2.4.*',
         'mimeparse==0.1.*',
         'numpy==1.19.*',
-        'anyjson==0.4.*',
         'rq==1.8.*',
         'django-rq==2.4.*',
         'redis==3.5.*',
