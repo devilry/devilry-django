@@ -343,6 +343,9 @@
             // Get textarea to manipulate
             const textArea = document.getElementById(`${this.elementId}`);
 
+            // New textarea value with list tags inserted
+            let newTextAreaValue = '';
+
             // Get start and end position of the cursor.
             const cursorStart = textArea.selectionStart;
             const cursorEnd = textArea.selectionEnd;
@@ -350,7 +353,8 @@
             let newSelectionEnd = null;
 
             // Get the textarea value as an array split on lines.
-            // This array will be updated in-place.
+            // This array will be updated in-place, and the end be 
+            // converted back to a string and set as the textarea value.
             let textAreaLineArray = textArea.value.split('\n');
             for (let i = 0; i < textAreaLineArray.length; i++) {
                 if (i !== textAreaLineArray.length - 1 ) {
@@ -365,12 +369,8 @@
             // Get diff between start index and end index.
             const cursorStartEndIndexDiff = cursorEndIndex - cursorStartIndex;
 
-            // New textarea value with list tags inserted
-            let newTextAreaValue = '';
-
             if (enterKeyPressEvent) {
                 // Continue list on enter key-press.
-                // Handle keypress events such as enter to check if the list should be continued.
 
                 // If multiple lines are selected, continuation of 
                 // list is not performed.
@@ -399,27 +399,35 @@
                     '\n' + listTag,
                     ...textAreaLineArray.slice(cursorStartIndex + 1)
                 ];
-
-                for (let i = 0; i < textAreaLineArray.length; i++) {
-                    newTextAreaValue += textAreaLineArray[i];
-                }
             } else {
-                // Convert marked text to list.
-                // Handles the case where a block of text has been selected should be converted to a list.
-
+                // Convert selected lines to list.
                 let markdownListTag = type === TOOLBAR_UNORDERED_LIST ? '* ' : '1. ';
                 let orderedListCounter = 1;
+
+                // Isolate the selected area, and add tags.
+                const selectedAreaChunk = [];
                 for (let i = cursorStartIndex; i <= cursorEndIndex; i++) {
                     if (type === TOOLBAR_ORDERED_LIST) {
                         markdownListTag = `${orderedListCounter}. `;
                         orderedListCounter++;
                     }
-                    textAreaLineArray[i] = `${markdownListTag}${textAreaLineArray[i]}`;
+                    selectedAreaChunk.push(
+                        `${markdownListTag}${textAreaLineArray[i]}`
+                    );
                 }
 
-                for (let i = 0; i < textAreaLineArray.length; i++) {
-                    newTextAreaValue += textAreaLineArray[i];
-                }
+                // Reinsert the tagged selected area.
+                // If the line above the tagged area has content, add a newline. 
+                // Same for line below the tagged area, if any content add a newline 
+                // to the end of the tagged area.
+                textAreaLineArray = [
+                    ...textAreaLineArray.slice(0, cursorStartIndex),
+                    cursorStartIndex > 0 && textAreaLineArray[cursorStartIndex - 1].match('\.') ? '\n' : '',
+                    ...selectedAreaChunk,
+                    cursorEndIndex < textAreaLineArray.length - 1 && textAreaLineArray[cursorEndIndex + 1].match('\.') ? '\n' : '',
+                    ...textAreaLineArray.slice(cursorEndIndex + 1)
+                ];
+
                 if (cursorStartEndIndexDiff === 0) {
                     newSelectionStart = cursorStart + markdownListTag.length;
                     newSelectionEnd = cursorEnd + markdownListTag.length;
@@ -428,10 +436,13 @@
                     newSelectionEnd = cursorEnd + (cursorStartEndIndexDiff * markdownListTag.length) + markdownListTag.length;
                 }
             }
-            textArea.focus();
+            for (let i = 0; i < textAreaLineArray.length; i++) {
+                newTextAreaValue += textAreaLineArray[i];
+            }
             textArea.value = newTextAreaValue;
+            textArea.focus();
             if (newSelectionStart) {
-                textArea.selectionStart = newSelectionStart;    
+                textArea.selectionStart = newSelectionStart;
             }
             if (newSelectionEnd) {
                 textArea.selectionEnd = newSelectionEnd;
