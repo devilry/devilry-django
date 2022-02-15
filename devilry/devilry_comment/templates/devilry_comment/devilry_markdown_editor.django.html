@@ -189,9 +189,7 @@
          * Add keyboard-shortcuts for toolbar actions.
          */
         addToolbarKeyboardShortcutEvents () {
-            // Scoped helper function that simply handles prevent default actions for 
-            // keyboard-shortcuts, and marks the pressed key as released when the action 
-            // is performed.
+            // Prevents default behaviour and stops event propagation.
             function _performToolbarKeyboardShortcutAction (event, actionFunction, preventDefault = true) {
                 if (preventDefault) {
                     event.preventDefault();
@@ -225,15 +223,21 @@
                         }
                     } else if (toolbarShortcutKeyMapPressed['Enter']) {
                         _performToolbarKeyboardShortcutAction(
-                            keyDownEvent, () => {this.toolbarEventActionOnEnter(keyDownEvent);}, false);
+                            keyDownEvent,
+                            () => {
+                                const cursorStartLine = this._getCursorLine();
+                                if (cursorStartLine.match(UL_REGEX)) {
+                                    this.insertMarkdownListAtCursor(TOOLBAR_UNORDERED_LIST, event);
+                                } else if (cursorStartLine.match(OL_REGEX)) {
+                                    this.insertMarkdownListAtCursor(TOOLBAR_ORDERED_LIST, event);
+                                }
+                            },
+                            false);
                     }
                 }
             };
 
-            // Add handler for keyup events.
-            // All keypress-tracking is set to `false` (not pressed). This ensures that we 
-            // don't accidentally use the previous keyboard-shortcut next time a keyboard-shortcut 
-            // is used (since it would then be marked as `true` (pressed)).
+            // Set all keys in map to `false` when key up event is registered.
             document.onkeyup = (keyUpEvent) => {
                 if (document.activeElement.id === `${this.elementId}`) {
                     Object.keys(toolbarShortcutKeyMapPressed).forEach(key => {
@@ -243,70 +247,34 @@
             };
         }
 
-        /**
-         * Method for inserting heading markdown-tag at cursor.
-         */
         toolbarEventActionHeading () {
             this.insertBasicMarkdownAtCursor(TOOLBAR_HEADING, '\n### ', '', this.attrToolbarConfig.heading.placeholderText);
         }
 
-        /**
-         * Method for inserting bold markdown-tag at cursor.
-         */
         toolbarEventActionBold () {
             this.insertBasicMarkdownAtCursor(TOOLBAR_BOLD, '**', '**', this.attrToolbarConfig.bold.placeholderText);
         }
 
-        /**
-         * Method for inserting italic markdown-tag at cursor.
-         */
         toolbarEventActionItalic () {
             this.insertBasicMarkdownAtCursor(TOOLBAR_ITALIC, '_', '_', this.attrToolbarConfig.italic.placeholderText);
         }
 
-        /**
-         * Method for inserting link markdown-tag at cursor.
-         */
         toolbarEventActionLink () {
             this.insertBasicMarkdownAtCursor(TOOLBAR_LINK, '[', '](url)', this.attrToolbarConfig.link.placeholderText);
         }
 
-        /**
-         * Method for inserting inline code markdown-tag at cursor.
-         */
          toolbarEventActionCodeInline () {
             this.insertBasicMarkdownAtCursor(TOOLBAR_CODE_INLINE, '`', '`', this.attrToolbarConfig.codeInline.placeholderText);
         }
 
-        /**
-         * Method for inserting inline code markdown-tag at cursor.
-         */
          toolbarEventActionCodeBlock () {
             this.insertBasicMarkdownAtCursor(TOOLBAR_CODE_BLOCK, '```', '\n\n```', this.attrToolbarConfig.codeBlock.placeholderText);
         }
 
-        /**
-         * Method for inserting link markdown-tag at cursor.
-         */
-        toolbarEventActionOnEnter (event) {
-            const cursorStartLine = this._getCursorLine();
-            if (cursorStartLine.match(UL_REGEX)) {
-                this.insertMarkdownListAtCursor(TOOLBAR_UNORDERED_LIST, event);
-            } else if (cursorStartLine.match(OL_REGEX)) {
-                this.insertMarkdownListAtCursor(TOOLBAR_ORDERED_LIST, event);
-            }
-        }
-
-        /**
-         * Method for inserting link markdown-tag at cursor.
-         */
          toolbarEventActionUnorderedList () {
             this.insertMarkdownListAtCursor(TOOLBAR_UNORDERED_LIST);
         }
 
-        /**
-         * Method for inserting link markdown-tag at cursor.
-         */
          toolbarEventActionOrderedList () {
             this.insertMarkdownListAtCursor(TOOLBAR_ORDERED_LIST);
         }
