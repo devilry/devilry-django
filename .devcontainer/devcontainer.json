@@ -18,10 +18,10 @@
 		// Python extensions
 		"ms-python.python",
 		"ms-python.vscode-pylance",
-		"brainfit.vscode-importmagic",
 		"batisteo.vscode-django",
 		"appresso.atest",
-		"pachwenko.django-test-runner"
+		"pachwenko.django-test-runner",
+		"trond-snekvik.simple-rst"
 	],
 
 	// These two lines are for the IO performance approach documented in "repo-in-volume.md"
@@ -42,6 +42,7 @@
 		"python.linting.flake8Path": "/home/codemonkey/.local/bin/flake8",
 		"python.linting.flake8Enabled": true,
 		"python.djangoTestRunner.prefixCommand": " DJANGOENV=test ",
+		"python.analysis.indexing": true,
 		"atest.runners": {
 			"pytest": true
 		},
