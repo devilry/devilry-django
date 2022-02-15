@@ -3,7 +3,7 @@
 
 <script type="module">
 
-    const toolbarShortcutKeyMapPressed = {
+    const TOOLBAR_KEYBOARD_MAP = {
         'ctrl': false,      // CTRL (Windows)
         'Meta': false,      // CMD (macOS)
         'Enter': false,     // Enter
@@ -198,30 +198,36 @@
                 actionFunction();
             }
 
-            // Add handler for keydown events.
+            // Add key down event listener.
             document.onkeydown = (keyDownEvent) => {
                 if (document.activeElement.id === `${this.elementId}`) {
-                    toolbarShortcutKeyMapPressed[keyDownEvent.key] = true;
-                    if (toolbarShortcutKeyMapPressed['Meta'] || toolbarShortcutKeyMapPressed['ctrl']) {
-                        if (toolbarShortcutKeyMapPressed['b']) {
+                    TOOLBAR_KEYBOARD_MAP[keyDownEvent.key] = true;
+                    
+                    // Handle MacOS vs everything else.
+                    let controlKey = 'Control';
+                    if (window.navigator.platform.toUpperCase().startsWith('MAC')) {
+                        controlKey = 'Meta';
+                    }
+
+                    if (TOOLBAR_KEYBOARD_MAP[controlKey] && TOOLBAR_KEYBOARD_MAP['b']) {
+                        _performToolbarKeyboardShortcutAction(
+                            keyDownEvent, () => {this.toolbarEventActionBold();});
+                    } else if (TOOLBAR_KEYBOARD_MAP[controlKey] && TOOLBAR_KEYBOARD_MAP['i']) {
+                        _performToolbarKeyboardShortcutAction(
+                            keyDownEvent, () => {this.toolbarEventActionItalic();});
+                    } else if (TOOLBAR_KEYBOARD_MAP[controlKey] && TOOLBAR_KEYBOARD_MAP['k']) {
+                        _performToolbarKeyboardShortcutAction(
+                            keyDownEvent, () => {this.toolbarEventActionLink();});
+                    } else if (TOOLBAR_KEYBOARD_MAP[controlKey] && TOOLBAR_KEYBOARD_MAP['e']) {
+                        _performToolbarKeyboardShortcutAction(
+                            keyDownEvent, () => {this.toolbarEventActionCodeInline();});
+                    } else if (TOOLBAR_KEYBOARD_MAP[controlKey] && TOOLBAR_KEYBOARD_MAP['Shift'] && TOOLBAR_KEYBOARD_MAP['7']) {
                             _performToolbarKeyboardShortcutAction(
-                                keyDownEvent, () => {this.toolbarEventActionBold();});
-                        } else if (toolbarShortcutKeyMapPressed['i']) {
-                            _performToolbarKeyboardShortcutAction(
-                                keyDownEvent, () => {this.toolbarEventActionItalic();});
-                        } else if (toolbarShortcutKeyMapPressed['k']) {
-                            _performToolbarKeyboardShortcutAction(
-                                keyDownEvent, () => {this.toolbarEventActionLink();});
-                        } else if (toolbarShortcutKeyMapPressed['Shift']) {
-                            if (toolbarShortcutKeyMapPressed['7']) {
-                                _performToolbarKeyboardShortcutAction(
-                                    keyDownEvent, () => {this.toolbarEventActionOrderedList();});
-                            } else if (toolbarShortcutKeyMapPressed['8']) {
-                                _performToolbarKeyboardShortcutAction(
-                                    keyDownEvent, () => {this.toolbarEventActionUnorderedList();});
-                            }
-                        }
-                    } else if (toolbarShortcutKeyMapPressed['Enter']) {
+                                keyDownEvent, () => {this.toolbarEventActionOrderedList();});
+                    } else if (TOOLBAR_KEYBOARD_MAP[controlKey] && TOOLBAR_KEYBOARD_MAP['Shift'] && TOOLBAR_KEYBOARD_MAP['8']) {
+                        _performToolbarKeyboardShortcutAction(
+                            keyDownEvent, () => {this.toolbarEventActionUnorderedList();});
+                    } else if (TOOLBAR_KEYBOARD_MAP['Enter']) {
                         _performToolbarKeyboardShortcutAction(
                             keyDownEvent,
                             () => {
@@ -237,11 +243,11 @@
                 }
             };
 
-            // Set all keys in map to `false` when key up event is registered.
+            // Add key up event listener.
             document.onkeyup = (keyUpEvent) => {
                 if (document.activeElement.id === `${this.elementId}`) {
-                    Object.keys(toolbarShortcutKeyMapPressed).forEach(key => {
-                        toolbarShortcutKeyMapPressed[key] = false;
+                    Object.keys(TOOLBAR_KEYBOARD_MAP).forEach(key => {
+                        TOOLBAR_KEYBOARD_MAP[key] = false;
                     });
                 }
             };
