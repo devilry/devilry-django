@@ -7,14 +7,17 @@
         'ctrl': false,      // CTRL (Windows)
         'Meta': false,      // CMD (macOS)
         'Enter': false,     // Enter
+        'Shift': false,     // Shift
         'b': false,         // CTRL or CMD + b: bold
         'i': false,         // CTRL or CMD + i: italic
         'k': false,         // CTRL or CMD + k: link
+        '7': false,         // CTRL or CMD + Shift + 7: Ordered list
+        '8': false,         // CTRL or CMD + Shift + 8: Unordered list
     };
     const TOOLBAR_HEADING = 'heading';
     const TOOLBAR_BOLD = 'bold';
     const TOOLBAR_ITALIC = 'italic';
-    const TOOLBAR_LINK = 'link'; 
+    const TOOLBAR_LINK = 'link';
     const TOOLBAR_CODE_INLINE = 'codeInline';
     const TOOLBAR_CODE_BLOCK = 'codeBlock';
     const TOOLBAR_UNORDERED_LIST = 'unorderedList';
@@ -211,6 +214,14 @@
                         } else if (toolbarShortcutKeyMapPressed['k']) {
                             _performToolbarKeyboardShortcutAction(
                                 keyDownEvent, () => {this.toolbarEventActionLink();});
+                        } else if (toolbarShortcutKeyMapPressed['Shift']) {
+                            if (toolbarShortcutKeyMapPressed['7']) {
+                                _performToolbarKeyboardShortcutAction(
+                                    keyDownEvent, () => {this.toolbarEventActionOrderedList();});
+                            } else if (toolbarShortcutKeyMapPressed['8']) {
+                                _performToolbarKeyboardShortcutAction(
+                                    keyDownEvent, () => {this.toolbarEventActionUnorderedList();});
+                            }
                         }
                     } else if (toolbarShortcutKeyMapPressed['Enter']) {
                         _performToolbarKeyboardShortcutAction(
