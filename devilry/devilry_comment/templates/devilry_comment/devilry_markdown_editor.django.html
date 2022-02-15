@@ -367,6 +367,11 @@
             // Get the textarea value as an array split on lines.
             // This array will be updated in-place.
             let textAreaLineArray = textArea.value.split('\n');
+            for (let i = 0; i < textAreaLineArray.length; i++) {
+                if (i !== textAreaLineArray.length - 1 ) {
+                    textAreaLineArray[i] = textAreaLineArray[i] + '\n';    
+                }
+            }
 
             // Get the indexes of which line the start-cursor and the end-cursor is placed.
             const cursorStartIndex = textArea.value.substring(0, cursorStart).split('\n').length - 1;
@@ -406,18 +411,12 @@
 
                 textAreaLineArray = [
                     ...textAreaLineArray.slice(0, cursorStartIndex + 1),
-                    listTag,
+                    '\n' + listTag,
                     ...textAreaLineArray.slice(cursorStartIndex + 1)
                 ];
 
-                // Add back newlines removed from split.
-                // let newTextAreaValue = '';
                 for (let i = 0; i < textAreaLineArray.length; i++) {
-                    if (i === 0) {
-                        newTextAreaValue += textAreaLineArray[i];
-                    } else {
-                        newTextAreaValue += `\n${textAreaLineArray[i]}`;
-                    }
+                    newTextAreaValue += textAreaLineArray[i];
                 }
             } else {
                 // Convert marked text to list.
@@ -433,22 +432,8 @@
                     textAreaLineArray[i] = `${markdownListTag}${textAreaLineArray[i]}`;
                 }
 
-                // Add newline at the start if the before the startcursor line has content and/or
-                // add newline to the end if the line after endcursor has content.
-                if (cursorStartIndex > 0 && textAreaLineArray[cursorStartIndex - 1].trim().length > 0) {
-                    textAreaLineArray[cursorStartIndex] = `\n${textAreaLineArray[cursorStartIndex]}`;
-                }
-                if (cursorEndIndex < textAreaLineArray.length - 1 && textAreaLineArray[cursorEndIndex + 1].trim().length > 0) {
-                    textAreaLineArray[cursorEndIndex] = `${textAreaLineArray[cursorEndIndex]}\n`;
-                }
-
-                // Add back newlines removed from split.
                 for (let i = 0; i < textAreaLineArray.length; i++) {
-                    if (i === 0) {
-                        newTextAreaValue += textAreaLineArray[i];
-                    } else {
-                        newTextAreaValue += `\n${textAreaLineArray[i]}`;
-                    }
+                    newTextAreaValue += textAreaLineArray[i];
                 }
                 if (cursorStartEndIndexDiff === 0) {
                     newSelectionStart = cursorStart + markdownListTag.length;
