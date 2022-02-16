@@ -2,10 +2,10 @@
 Testing automated building
 ##########################
 
-This is a test 1
+This is a test 2
 
 ****
-Test 1
+Test 2
 ****
 
-Test 1
+Test 3
