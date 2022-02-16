@@ -367,9 +367,9 @@
             if (enterKeyPressEvent) {
                 // Continue list on enter key-press.
 
-                // If multiple lines are selected, continuation of 
+                // If a range of text is selected, continuation of 
                 // list is not performed.
-                if (cursorStartEndIndexDiff !== 0) {
+                if (cursorStart !== cursorEnd) {
                     return;
                 }
                 event.preventDefault();
@@ -382,8 +382,7 @@
                 let listTag = '';
                 if (type === TOOLBAR_ORDERED_LIST) {
                     const match = cursorLine.match(OL_REGEX);
-                    const nextOrderNum = parseInt(match[2]) + 1;
-                    listTag = match[1] + nextOrderNum + '. ';
+                    listTag = match[1] + (parseInt(match[2]) + 1) + '. ';
                 } else {
                     const match = cursorLine.match(UL_REGEX);
                     listTag = match[1] + match[2];
@@ -436,14 +435,13 @@
             }
 
             // Rebuild the textarea value from the textAreaLineArray.
-            const arrayLength = textAreaLineArray.length;
+            // Append a newline character to each line except the last.
+            const arrayLength = textAreaLineArray.length - 1;
             for (let i = 0; i < arrayLength; i++) {
-                if (arrayLength > 1 && i < arrayLength - 1) {
-                    newTextAreaValue += textAreaLineArray[i] + '\n';
-                } else {
-                    newTextAreaValue += textAreaLineArray[i];
-                }
+                newTextAreaValue += textAreaLineArray[i] + '\n';
             }
+            newTextAreaValue += textAreaLineArray[arrayLength];
+
             textArea.value = newTextAreaValue;
             textArea.focus();
             if (newSelectionStart) {
