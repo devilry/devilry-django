@@ -5,6 +5,7 @@ Devilry sysadmin docs
 .. toctree::
    :maxdepth: 2
 
+   automated_doc_build_test
    gettingstarted
    authbackend
    rq
