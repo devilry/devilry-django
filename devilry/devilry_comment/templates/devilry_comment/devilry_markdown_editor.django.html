@@ -303,26 +303,19 @@
                 throw Error(`Type "${type}" not supported.`);
             }
 
-            // Get textarea to manipulate
             const textArea = document.getElementById(`${this.elementId}`);
 
-            // Get start and end position of the cursor.
-            const cursorStart = textArea.selectionStart;
-            const cursorEnd = textArea.selectionEnd;
-
-            // Get text marked in range. This is text, if any, is inserted 
-            // between the openingTag and the closingTag.
-            let selectedText = textArea.value.substring(cursorStart, cursorEnd);
+            let selectedText = textArea.value.substring(textArea.selectionStart, textArea.selectionEnd);
 
             if (!selectedText) {
                 selectedText = placeholder || '';
             }
             const taggedText = openingTag + selectedText + closingTag
-            textArea.value = textArea.value.substring(0, cursorStart) + taggedText + textArea.value.substring(cursorEnd, textArea.value.length)
+            textArea.value = textArea.value.substring(0, textArea.selectionStart) + taggedText + textArea.value.substring(textArea.selectionEnd, textArea.value.length)
 
             // Places focus to the marked text as the selected range.
             textArea.focus()
-            textArea.selectionStart = cursorStart + openingTag.length;
+            textArea.selectionStart = textArea.selectionStart + openingTag.length;
             textArea.selectionEnd = textArea.selectionStart + selectedText.length;
         }
 
@@ -340,44 +333,34 @@
                 throw Error(`Type list-type "${type}" not supported.`);
             }
 
-            // Get textarea to manipulate
             const textArea = document.getElementById(`${this.elementId}`);
+            const cursorStartIndex = textArea.value.substring(0, textArea.selectionStart).split('\n').length - 1;
+            const cursorEndIndex = textArea.value.substring(0, textArea.selectionEnd).split('\n').length - 1;
+            const cursorStartEndIndexDiff = cursorEndIndex - cursorStartIndex;
 
-            // New textarea value with list tags inserted
+            let textAreaLineArray = textArea.value.split('\n');
             let newTextAreaValue = '';
-
-            // Get start and end position of the cursor.
-            const cursorStart = textArea.selectionStart;
-            const cursorEnd = textArea.selectionEnd;
             let newSelectionStart = null;
             let newSelectionEnd = null;
 
-            // Get the textarea value as an array split on lines.
-            // This array will be updated in-place, and the end be 
-            // converted back to a string and set as the textarea value.
-            let textAreaLineArray = textArea.value.split('\n');
-
-            // Get the indexes of which line the start-cursor and the end-cursor is placed.
-            const cursorStartIndex = textArea.value.substring(0, cursorStart).split('\n').length - 1;
-            const cursorEndIndex = textArea.value.substring(0, cursorEnd).split('\n').length - 1;
-
-            // Get diff between start index and end index.
-            const cursorStartEndIndexDiff = cursorEndIndex - cursorStartIndex;
-
             if (enterKeyPressEvent) {
-                // Continue list on enter key-press.
-
-                // If a range of text is selected, continuation of 
-                // list is not performed.
-                if (cursorStart !== cursorEnd) {
+                // Continue list on "Enter"-keypress.
+                //
+                // Continue the list by parsing the current line to find out 
+                // if the current line is a OL or UL. Then next line will then 
+                // continued with the appropriate tag, where OL tag will be 
+                // incremented from the value of the current line. The array is 
+                // then updated with the new OL/UL line inserted.
+                //
+                // The list will NOT be continued if a range of text is selected. In 
+                // this case the default "Enter"-keypress behaviour will be applied 
+                // instead.
+                if (textArea.selectionStart !== textArea.selectionEnd) {
                     return;
                 }
                 event.preventDefault();
 
-                // Create insertion value for the new inserted line.
-                // This will keep all spaces at the start until the line 
-                // tag. If the line-tag is a number, it will be incremented, 
-                // and for unordered lists the tag will be kept as is.
+                // Set tag to be used.
                 const cursorLine = this._getCursorLine();
                 let listTag = '';
                 if (type === TOOLBAR_ORDERED_LIST) {
@@ -388,16 +371,20 @@
                     listTag = match[1] + match[2];
                 }
 
+                // Update array with tag on new line, and set cursor position.
                 textAreaLineArray = [
                     ...textAreaLineArray.slice(0, cursorStartIndex + 1),
                     listTag,
                     ...textAreaLineArray.slice(cursorStartIndex + 1)
                 ];
-                newSelectionStart = cursorStart + listTag.length + 1;
-                newSelectionEnd = cursorStart + listTag.length + 1;
+                newSelectionStart = textArea.selectionStart + listTag.length + 1;
+                newSelectionEnd = textArea.selectionStart + listTag.length + 1;
 
             } else {
                 // Convert selected lines to list.
+                //
+                // The line(s) of the selected range of text will be converted to 
+                // a list, where each line receives the appropriate list-tag (OL/UL).
                 let markdownListTag = type === TOOLBAR_UNORDERED_LIST ? '* ' : '1. ';
                 let orderedListCounter = 1;
 
@@ -413,10 +400,7 @@
                     );
                 }
 
-                // Reinsert the tagged selected area.
-                // If the line above the tagged area has content, add a "newline" to the array. 
-                // Same for line below the tagged area, if any content add a "newline" 
-                // to the end of the tagged area.
+                // Update the array where the selected range has been tagged, and set cursor positions.
                 textAreaLineArray = [
                     ...textAreaLineArray.slice(0, cursorStartIndex),
                     ...cursorStartIndex > 0 && textAreaLineArray[cursorStartIndex - 1].match('\.') ? [''] : [],
@@ -424,13 +408,12 @@
                     ...cursorEndIndex < textAreaLineArray.length - 1 && textAreaLineArray[cursorEndIndex + 1].match('\.') ? [''] : [],
                     ...textAreaLineArray.slice(cursorEndIndex + 1)
                 ];
-
                 if (cursorStartEndIndexDiff === 0) {
-                    newSelectionStart = cursorStart + markdownListTag.length;
-                    newSelectionEnd = cursorEnd + markdownListTag.length;
+                    newSelectionStart = textArea.selectionStart + markdownListTag.length;
+                    newSelectionEnd = textArea.selectionEnd + markdownListTag.length;
                 } else {
-                    newSelectionStart = cursorStart + markdownListTag.length;
-                    newSelectionEnd = cursorEnd + (cursorStartEndIndexDiff * markdownListTag.length) + markdownListTag.length;
+                    newSelectionStart = textArea.selectionStart + markdownListTag.length;
+                    newSelectionEnd = textArea.selectionEnd + (cursorStartEndIndexDiff * markdownListTag.length) + markdownListTag.length;
                 }
             }
 
@@ -442,6 +425,7 @@
             }
             newTextAreaValue += textAreaLineArray[arrayLength];
 
+            // Update textarea.
             textArea.value = newTextAreaValue;
             textArea.focus();
             if (newSelectionStart) {
@@ -454,8 +438,7 @@
 
         _getCursorLine () {
             const textArea = document.getElementById(`${this.elementId}`);
-            const cursorStart = textArea.selectionStart;
-            return textArea.value.substring(0, cursorStart).split('\n').slice(-1)[0];
+            return textArea.value.substring(0, textArea.selectionStart).split('\n').slice(-1)[0];
         }
     }
 
