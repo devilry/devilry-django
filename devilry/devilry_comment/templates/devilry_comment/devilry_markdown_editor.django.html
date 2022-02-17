@@ -187,7 +187,7 @@
 
         _fetchAndInjectRenderedMarkdown () {
             const previewArea = document.getElementById(`${this.elementId}_comment_editor_preview_section`);
-            const textArea = document.getElementById(`${this.elementId}`);
+            const textArea = this.textArea;
             fetch(this.attrMarkdownPreviewUrl, {
                 method: 'POST',
                 headers: {
@@ -209,7 +209,7 @@
         addPreviewToggleEventListener () {
             document.getElementById(`${this.elementId}_preview_markdown_button`)
                 .addEventListener('click', () => {
-                    const textArea = document.getElementById(`${this.elementId}`);
+                    const textArea = this.textArea;
                     if (!textArea.value) {
                         return;
                     }
@@ -372,6 +372,10 @@
             this.insertMarkdownListAtCursor(TOOLBAR_ORDERED_LIST);
         }
 
+        get textArea () {
+            return document.getElementById(`${this.elementId}`);
+        }
+
         /**
          * Inserts markdown-tag at cursor-position.
          * 
@@ -390,7 +394,7 @@
                 throw Error(`Type "${type}" not supported.`);
             }
 
-            const textArea = document.getElementById(`${this.elementId}`);
+            const textArea = this.textArea;
             const initialSelectionStart = textArea.selectionStart;
             const initialSelectionEnd = textArea.selectionEnd;
 
@@ -422,7 +426,7 @@
                 throw Error(`Type list-type "${type}" not supported.`);
             }
 
-            const textArea = document.getElementById(`${this.elementId}`);
+            const textArea = this.textArea;
             const cursorStartIndex = textArea.value.substring(0, textArea.selectionStart).split('\n').length - 1;
             const cursorEndIndex = textArea.value.substring(0, textArea.selectionEnd).split('\n').length - 1;
             const cursorStartEndIndexDiff = cursorEndIndex - cursorStartIndex;
@@ -526,7 +530,7 @@
         }
 
         _getCursorLine () {
-            const textArea = document.getElementById(`${this.elementId}`);
+            const textArea = this.textArea;
             return textArea.value.substring(0, textArea.selectionStart).split('\n').slice(-1)[0];
         }
     }
