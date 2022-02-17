@@ -391,6 +391,8 @@
             }
 
             const textArea = document.getElementById(`${this.elementId}`);
+            const initialSelectionStart = textArea.selectionStart;
+            const initialSelectionEnd = textArea.selectionEnd;
 
             let selectedText = textArea.value.substring(textArea.selectionStart, textArea.selectionEnd);
 
@@ -398,12 +400,12 @@
                 selectedText = placeholder || '';
             }
             const taggedText = openingTag + selectedText + closingTag
-            textArea.value = textArea.value.substring(0, textArea.selectionStart) + taggedText + textArea.value.substring(textArea.selectionEnd, textArea.value.length)
+            textArea.value = textArea.value.substring(0, initialSelectionStart) + taggedText + textArea.value.substring(textArea.selectionEnd, textArea.value.length)
 
             // Places focus to the marked text as the selected range.
             textArea.focus()
-            textArea.selectionStart = textArea.selectionStart + openingTag.length;
-            textArea.selectionEnd = textArea.selectionStart + selectedText.length;
+            textArea.selectionStart = initialSelectionStart + openingTag.length;
+            textArea.selectionEnd = initialSelectionEnd + openingTag.length;
         }
 
         /**
