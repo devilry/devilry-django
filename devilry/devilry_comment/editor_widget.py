@@ -4,10 +4,20 @@ from xml.sax.saxutils import quoteattr
 
 from django.utils.translation import pgettext
 from django import forms
+from django.urls import reverse
 
 
 class DevilryMarkdownWidget(forms.widgets.Textarea):
     template_name = 'devilry_comment/devilry_markdown_editor.django.html'
+
+    def __init__(self, *args, request=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.request = request
+
+    def _get_preview_markdown_api_url(self):
+        if self.request:
+            return f'{self.request.scheme}://{self.request.get_host()}{reverse("devilry_comment_api_preview_markdown")}'
+        return None
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
@@ -28,6 +38,10 @@ class DevilryMarkdownWidget(forms.widgets.Textarea):
                     'devilry markdown widget',
                     'Full guide for the markdown we support here'),
                 'markdownGuideLinkUrl': '/markdown-help',
+                'markdownPreviewButtonText': pgettext(
+                    'devilry markdown widget',
+                    'Preview'),
+                'markdownPreviewUrl': self._get_preview_markdown_api_url(),
                 'toolbarConfig': json.dumps({
                     'heading': {
                         'tooltip': pgettext(

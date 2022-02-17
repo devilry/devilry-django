@@ -29,6 +29,7 @@ devilry_urls = [
     path('devilry_bulkcreate_users/', include('devilry.devilry_bulkcreate_users.urls')),
     path('devilry_examiner/', include('devilry.devilry_examiner.urls')),
     path('devilry_statistics/', include('devilry.devilry_statistics.urls')),
+    path('devilry_comment/', include('devilry.devilry_comment.urls')),
     path('markdown-help', markdown_help.MarkdownHelpView.as_view()),
     path('', include(crinstance_frontpage.CrAdminInstance.urls()))
 ]

@@ -409,7 +409,7 @@ class FeedbackFeedBaseView(create.CreateView):
     def get_form(self, form_class=None):
         form = super(FeedbackFeedBaseView, self).get_form(form_class=form_class)
         # form.fields['text'].widget = self.get_acemarkdown_widget_class()()
-        form.fields['text'].widget = self.get_markdown_widget_class()()
+        form.fields['text'].widget = self.get_markdown_widget_class()(request=self.request)
         form.fields['text'].label = False
         form.fields['temporary_file_collection_id'] = forms.IntegerField(required=False)
         return form

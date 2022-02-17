@@ -3,6 +3,28 @@
 
 <script type="module">
 
+    class CSRFToken {
+        constructor () {
+            this.csrftoken = this._getCookie('csrftoken');
+        }
+
+        _getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    }
+
     const TOOLBAR_KEYBOARD_MAP = {
         'ctrl': false,      // CTRL (Windows)
         'Meta': false,      // CMD (macOS)
@@ -35,7 +57,11 @@
             this.attrHelpText = this.getAttribute('helpText');
             this.attrMarkdownGuideLinkUrl = this.getAttribute('markdownGuideLinkUrl');
             this.attrMarkdownGuideLinkText = this.getAttribute('markdownGuideLinkText');
+            this.attrMarkdownPreviewButtonText = this.getAttribute('markdownPreviewButtonText');
+            this.attrMarkdownPreviewUrl = this.getAttribute('markdownPreviewUrl');
             this.attrToolbarConfig = JSON.parse(this.getAttribute('toolbarConfig'));
+
+            this.previewActive = false;
         }
 
         get elementId () {
@@ -46,6 +72,7 @@
             this.renderEditor();
             this.addToolbarOptionEventListeners();
             this.addToolbarKeyboardShortcutEvents();
+            this.addPreviewToggleEventListener();
         }
 
         /**
@@ -53,95 +80,155 @@
          */
         renderEditor () {
             const commentEditor = new DOMParser().parseFromString(`
-                <div class="devilry-comment-editor">
-                    <div class="devilry-comment-editor-toolbar" aria-hidden="true">
-                        <button
-                            id="${this.elementId}_toolbar_option_heading"
-                            type="button"
-                            title="${this.attrToolbarConfig.heading.tooltip}"
-                            class="btn btn-default devilry-comment-editor-toolbar__option"
-                        >
-                            <span class="{% cradmin_icon 'h3' %}"></span>
-                        </button>
-                        <button
-                            id="${this.elementId}_toolbar_option_bold"
-                            type="button"
-                            title="${this.attrToolbarConfig.bold.tooltip}"
-                            class="btn btn-default devilry-comment-editor-toolbar__option"
-                        >
-                            <span class="{% cradmin_icon 'bold' %}"></span>
-                        </button>
-                        <button
-                            id="${this.elementId}_toolbar_option_italic"
-                            type="button"
-                            title="${this.attrToolbarConfig.italic.tooltip}"
-                            class="btn btn-default devilry-comment-editor-toolbar__option"
-                        >
-                            <span class="{% cradmin_icon 'italic' %}"></span>
-                        </button>
-                        <button
-                            id="${this.elementId}_toolbar_option_link"
-                            type="button"
-                            title="${this.attrToolbarConfig.link.tooltip}"
-                            class="btn btn-default devilry-comment-editor-toolbar__option"
-                        >
-                            <span class="{% cradmin_icon 'link' %}"></span>
-                        </button>
-                        <button
-                            id="${this.elementId}_toolbar_option_code_inline"
-                            type="button"
-                            title="${this.attrToolbarConfig.codeInline.tooltip}"
-                            class="btn btn-default devilry-comment-editor-toolbar__option"
-                        >
-                            <span class="{% cradmin_icon 'codeblock' %}"></span>
-                        </button>
-                        <button
-                            id="${this.elementId}_toolbar_option_code_block"
-                            type="button"
-                            title="${this.attrToolbarConfig.codeBlock.tooltip}"
-                            class="btn btn-default devilry-comment-editor-toolbar__option"
-                        >
-                            <span class="{% cradmin_icon 'codeblock' %}"></span>
-                        </button>
-                        <button
-                            id="${this.elementId}_toolbar_option_unordered_list"
-                            type="button"
-                            title="${this.attrToolbarConfig.unorderedList.tooltip}"
-                            class="btn btn-default devilry-comment-editor-toolbar__option"
-                        >
-                            <span class="{% cradmin_icon 'list-ul' %}"></span>
-                        </button>
-                        <button
-                            id="${this.elementId}_toolbar_option_ordered_list"
-                            type="button"
-                            title="${this.attrToolbarConfig.orderedList.tooltip}"
-                            class="btn btn-default devilry-comment-editor-toolbar__option"
-                        >
-                            <span class="{% cradmin_icon 'list-ol' %}"></span>
-                        </button>
+                <div>
+                    <button 
+                        id="${this.elementId}_preview_markdown_button"
+                        type="button"
+                        title="Preview the rendered markdown"
+                        class="btn btn-default devilry-comment-editor-toolbar__option"
+                    >
+                        ${this.attrMarkdownPreviewButtonText}
+                    </button>
+
+                    <div id="${this.elementId}_comment_editor_preview_section" class="devilry-comment-editor-preview--display-none"></div>
+
+                    <div id="${this.elementId}_comment_editor_section" class="devilry-comment-editor">
+                        <div class="devilry-comment-editor-toolbar" aria-hidden="true">
+                            <button
+                                id="${this.elementId}_toolbar_option_heading"
+                                type="button"
+                                title="${this.attrToolbarConfig.heading.tooltip}"
+                                class="btn btn-default devilry-comment-editor-toolbar__option"
+                            >
+                                <span class="{% cradmin_icon 'h3' %}"></span>
+                            </button>
+                            <button
+                                id="${this.elementId}_toolbar_option_bold"
+                                type="button"
+                                title="${this.attrToolbarConfig.bold.tooltip}"
+                                class="btn btn-default devilry-comment-editor-toolbar__option"
+                            >
+                                <span class="{% cradmin_icon 'bold' %}"></span>
+                            </button>
+                            <button
+                                id="${this.elementId}_toolbar_option_italic"
+                                type="button"
+                                title="${this.attrToolbarConfig.italic.tooltip}"
+                                class="btn btn-default devilry-comment-editor-toolbar__option"
+                            >
+                                <span class="{% cradmin_icon 'italic' %}"></span>
+                            </button>
+                            <button
+                                id="${this.elementId}_toolbar_option_link"
+                                type="button"
+                                title="${this.attrToolbarConfig.link.tooltip}"
+                                class="btn btn-default devilry-comment-editor-toolbar__option"
+                            >
+                                <span class="{% cradmin_icon 'link' %}"></span>
+                            </button>
+                            <button
+                                id="${this.elementId}_toolbar_option_code_inline"
+                                type="button"
+                                title="${this.attrToolbarConfig.codeInline.tooltip}"
+                                class="btn btn-default devilry-comment-editor-toolbar__option"
+                            >
+                                <span class="{% cradmin_icon 'codeblock' %}"></span>
+                            </button>
+                            <button
+                                id="${this.elementId}_toolbar_option_code_block"
+                                type="button"
+                                title="${this.attrToolbarConfig.codeBlock.tooltip}"
+                                class="btn btn-default devilry-comment-editor-toolbar__option"
+                            >
+                                <span class="{% cradmin_icon 'codeblock' %}"></span>
+                            </button>
+                            <button
+                                id="${this.elementId}_toolbar_option_unordered_list"
+                                type="button"
+                                title="${this.attrToolbarConfig.unorderedList.tooltip}"
+                                class="btn btn-default devilry-comment-editor-toolbar__option"
+                            >
+                                <span class="{% cradmin_icon 'list-ul' %}"></span>
+                            </button>
+                            <button
+                                id="${this.elementId}_toolbar_option_ordered_list"
+                                type="button"
+                                title="${this.attrToolbarConfig.orderedList.tooltip}"
+                                class="btn btn-default devilry-comment-editor-toolbar__option"
+                                ${this.previewActive ? 'disabled': ''}
+                            >
+                                <span class="{% cradmin_icon 'list-ol' %}"></span>
+                            </button>
+                        </div>
+                        <label for="${this.elementId}" class="screenreader-only">${this.attrLabelText}</label>
+                        <div class="devilry-comment-editor__textarea">
+                            <textarea
+                                id="${this.elementId}"
+                                cols="40"
+                                rows="10"
+                                class="devilry-comment-editor-textarea form-control"
+                                name="${this.attrTextareaName}"
+                                aria-describedby="${this.elementId}_help">${this.attrTextareaValue}</textarea>
+                            <div class="devilry-comment-editor-textarea--copy" aria-hidden="true"></div>
+                        </div>
+                        <div class="devilry-comment-editor devilry-comment-editor__example-help">
+                            <p id="${this.elementId}_help">
+                                ${this.attrHelpText}
+                                <a href="${this.attrMarkdownGuideLinkUrl}" target='_blank'>
+                                    ${this.attrMarkdownGuideLinkText}
+                                </a>
+                            </p>
+                        </div>
                     </div>
-                    <label for="${this.elementId}" class="screenreader-only">${this.attrLabelText}</label>
-                    <div class="devilry-comment-editor__textarea">
-                        <textarea
-                            id="${this.elementId}"
-                            cols="40"
-                            rows="10"
-                            class="devilry-comment-editor-textarea form-control"
-                            name="${this.attrTextareaName}"
-                            aria-describedby="${this.elementId}_help">${this.attrTextareaValue}</textarea>
-                        <div class="devilry-comment-editor-textarea--copy" aria-hidden="true"></div>
-                    </div>
-                    <div class="devilry-comment-editor devilry-comment-editor__example-help">
-                        <p id="${this.elementId}_help">
-                            ${this.attrHelpText}
-                            <a href="${this.attrMarkdownGuideLinkUrl}" target='_blank'>
-                                ${this.attrMarkdownGuideLinkText}
-                            </a>
-                        </p>
-                    </div>
-                </div>
+                <div>
             `, 'text/html').body.firstChild;
             this.appendChild(commentEditor)
+        }
+
+        _fetchAndInjectRenderedMarkdown () {
+            const previewArea = document.getElementById(`${this.elementId}_comment_editor_preview_section`);
+            const textArea = document.getElementById(`${this.elementId}`);
+            fetch(this.attrMarkdownPreviewUrl, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': new CSRFToken().csrftoken
+                },
+                body: JSON.stringify({'markdown_text': textArea.value})
+            })
+            .then(response => response.json())
+            .then((responseData) => {
+                previewArea.innerHTML = responseData['markdown_result'];
+            })
+            .catch((error) => {
+                console.error(error)
+            });
+        }
+
+        addPreviewToggleEventListener () {
+            document.getElementById(`${this.elementId}_preview_markdown_button`)
+                .addEventListener('click', () => {
+                    const textArea = document.getElementById(`${this.elementId}`);
+                    if (!textArea.value) {
+                        return;
+                    }
+                    this.previewActive = !this.previewActive;
+                    const previewAreaClasses = document.getElementById(`${this.elementId}_comment_editor_preview_section`).classList;
+                    const editorAreaClasses = document.getElementById(`${this.elementId}_comment_editor_section`).classList;
+                    if (this.previewActive) {
+                        editorAreaClasses.remove('devilry-comment-editor');
+                        editorAreaClasses.add('devilry-comment-editor--display-none');
+                        previewAreaClasses.remove('devilry-comment-editor-preview--display-none');
+                        previewAreaClasses.add('devilry-comment-editor-preview');
+                        this._fetchAndInjectRenderedMarkdown();
+                    } else {
+                        previewAreaClasses.remove('devilry-comment-editor-preview');
+                        previewAreaClasses.add('devilry-comment-editor-preview--display-none');
+                        editorAreaClasses.remove('devilry-comment-editor--display-none');
+                        editorAreaClasses.add('devilry-comment-editor');
+                    }
+                });
         }
 
         /**
