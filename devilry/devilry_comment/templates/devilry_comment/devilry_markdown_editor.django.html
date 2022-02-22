@@ -413,8 +413,7 @@
         }
 
         /**
-         * Lists requires special handling for inserting markdown tags, and does not quite fit 
-         * the general solution for simple tags that simply wrap the selected text.
+         * Insert ordered/unorderd list for selected text.
          * 
          * @param {String} type                 Type of markdown-tag.
          * @param {Object} enterKeyPressEvent   Enter key pressed event. Defaults to null. 
@@ -440,10 +439,15 @@
                 // Continue list on "Enter"-keypress.
                 //
                 // Continue the list by parsing the current line to find out 
-                // if the current line is a OL or UL. Then next line will then 
-                // continued with the appropriate tag, where OL tag will be 
-                // incremented from the value of the current line. The array is 
-                // then updated with the new OL/UL line inserted.
+                // if the current line is a numbered or a bulleted list. The 
+                // next line will then be continued with the appropriate tag, 
+                // where a numbered tag will be incremented based on the value 
+                // of the current line. The array is then updated with the new 
+                // numbered/bulleted line.
+                //
+                // The list will NOT be continued if the current line is an empty 
+                // numbered or bulleted line. In this case, the will be "reset", and 
+                // cursor is moved to the start of the line.
                 //
                 // The list will NOT be continued if a range of text is selected. In 
                 // this case the default "Enter"-keypress behaviour will be applied 
@@ -453,26 +457,53 @@
                 }
                 event.preventDefault();
 
-                // Set tag to be used.
                 const cursorLine = this._getCursorLine();
                 let listTag = '';
+
+                // Set the tag to be used.
+                // If the tag is empty, i.e has not been set, this means that 
+                // the current list has no content after the tag. This will 
+                // result in the line being reset.
                 if (type === TOOLBAR_ORDERED_LIST) {
-                    const match = cursorLine.match(OL_REGEX);
-                    listTag = match[1] + (parseInt(match[2]) + 1) + '. ';
+                    const match = cursorLine.match('^(\\s*)([0-9]*\\.\\s)(.+)');
+                    if (match) {
+                        listTag = match[1] + (parseInt(match[2]) + 1) + '. ';
+                    }
                 } else {
-                    const match = cursorLine.match(UL_REGEX);
-                    listTag = match[1] + match[2];
+                    const match = cursorLine.match('^(\\s*)(\\*\\s)(.+)');
+                    if (match) {
+                        listTag = match[1] + match[2];
+                    }
+                }
+                
+                // This is the cursor position after the new line has been inserted with offset 
+                // relative to where the cursor is currently at, and will be used set the cursor 
+                // to the correct position when the new list-line has been added.
+                let cursorPositionWithOffset = null;
+
+                // Build the line array based on whether the new line to be inserted should continue 
+                // the list or "reset" it.
+                if (listTag) {
+                    textAreaLineArray = [
+                        ...textAreaLineArray.slice(0, cursorStartIndex + 1),
+                        listTag,
+                        ...textAreaLineArray.slice(cursorStartIndex + 1)
+                    ];
+                    cursorPositionWithOffset = textArea.selectionStart + listTag.length + 1; 
+                } else {
+                    // Current list-line has no content, remove content and set 
+                    // cursor to line start.
+                    textAreaLineArray = [
+                        ...textAreaLineArray.slice(0, cursorStartIndex),
+                        listTag,
+                        ...textAreaLineArray.slice(cursorStartIndex + 1)
+                    ];
+                    cursorPositionWithOffset = textArea.selectionStart - cursorLine.length; 
                 }
 
-                // Update array with tag on new line, and set cursor position.
-                textAreaLineArray = [
-                    ...textAreaLineArray.slice(0, cursorStartIndex + 1),
-                    listTag,
-                    ...textAreaLineArray.slice(cursorStartIndex + 1)
-                ];
-                newSelectionStart = textArea.selectionStart + listTag.length + 1;
-                newSelectionEnd = textArea.selectionStart + listTag.length + 1;
-
+                // Set new cursor position.
+                newSelectionStart = cursorPositionWithOffset;
+                newSelectionEnd = cursorPositionWithOffset;
             } else {
                 // Convert selected lines to list.
                 //
