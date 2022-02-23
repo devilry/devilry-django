@@ -30,6 +30,10 @@ class DevilryMarkdownWidget(forms.widgets.Textarea):
             for key, value in {
                 'name': name,
                 'value': value,
+                'placeholder': pgettext(
+                    'devilry markdown widget',
+                    'Write your comment here'
+                ),
                 'labelText': pgettext(
                     'devilry markdown widget',
                     'Comment'
@@ -69,7 +73,7 @@ class DevilryMarkdownWidget(forms.widgets.Textarea):
                             'Add text here'),
                         'tooltip': pgettext(
                             'devilry markdown widget toolbar tooltip text',
-                            'Bold, <ctrl+b>')
+                            'Bold')
                     },
                     'italic': {
                         'placeholderText': pgettext(
@@ -77,7 +81,7 @@ class DevilryMarkdownWidget(forms.widgets.Textarea):
                             'Add text here'),
                         'tooltip': pgettext(
                             'devilry markdown widget toolbar tooltip text',
-                            'Italic, <ctrl+i>')
+                            'Italic')
                     },
                     'link': {
                         'placeholderText': pgettext(
@@ -85,7 +89,7 @@ class DevilryMarkdownWidget(forms.widgets.Textarea):
                             'Add text here'),
                         'tooltip': pgettext(
                             'devilry markdown widget toolbar tooltip text',
-                            'Link, <ctrl+k>')
+                            'Link')
                     },
                     'codeInline': {
                         'tooltip': pgettext(
