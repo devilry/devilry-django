@@ -13,6 +13,10 @@ class DevilryMarkdownWidget(forms.widgets.Textarea):
     def __init__(self, *args, request=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.request = request
+    
+    @property
+    def preview_enabled(self):
+        return True
 
     def _get_preview_markdown_api_url(self):
         if self.request:
@@ -42,6 +46,14 @@ class DevilryMarkdownWidget(forms.widgets.Textarea):
                     'devilry markdown widget',
                     'Preview'),
                 'markdownPreviewUrl': self._get_preview_markdown_api_url(),
+                'markdownPreviewEnabled': 'true' if self.preview_enabled else 'false',
+                'markdownPreviewConfig': json.dumps({
+                    'buttonText': pgettext(
+                        'devilry markdown widget',
+                        'Preview'),
+                    'apiUrl': self._get_preview_markdown_api_url(),
+                    'enabled': self.preview_enabled
+                }),
                 'toolbarConfig': json.dumps({
                     'heading': {
                         'tooltip': pgettext(

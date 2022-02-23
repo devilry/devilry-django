@@ -57,8 +57,7 @@
             this.attrHelpText = this.getAttribute('helpText');
             this.attrMarkdownGuideLinkUrl = this.getAttribute('markdownGuideLinkUrl');
             this.attrMarkdownGuideLinkText = this.getAttribute('markdownGuideLinkText');
-            this.attrMarkdownPreviewButtonText = this.getAttribute('markdownPreviewButtonText');
-            this.attrMarkdownPreviewUrl = this.getAttribute('markdownPreviewUrl');
+            this.attrMarkdownPreviewConfig = JSON.parse(this.getAttribute('markdownPreviewConfig'));
             this.attrToolbarConfig = JSON.parse(this.getAttribute('toolbarConfig'));
 
             this.previewActive = false;
@@ -75,23 +74,30 @@
             this.addPreviewToggleEventListener();
         }
 
+        _getPreviewSection () {
+            if (!this.attrMarkdownPreviewConfig.enabled) {
+                return '';
+            }
+            return `
+            <button 
+                id="${this.elementId}_preview_markdown_button"
+                type="button"
+                title="Preview the rendered markdown"
+                class="btn btn-default devilry-comment-editor-toolbar__option"
+            >
+                ${this.attrMarkdownPreviewConfig.buttonText}
+            </button>
+            <div id="${this.elementId}_comment_editor_preview_section" class="devilry-comment-editor-preview--display-none"></div>
+            `;
+        }
+
         /**
          * Renders the HTML for the editor.
          */
         renderEditor () {
             const commentEditor = new DOMParser().parseFromString(`
                 <div>
-                    <button 
-                        id="${this.elementId}_preview_markdown_button"
-                        type="button"
-                        title="Preview the rendered markdown"
-                        class="btn btn-default devilry-comment-editor-toolbar__option"
-                    >
-                        ${this.attrMarkdownPreviewButtonText}
-                    </button>
-
-                    <div id="${this.elementId}_comment_editor_preview_section" class="devilry-comment-editor-preview--display-none"></div>
-
+                    ${this._getPreviewSection()}
                     <div id="${this.elementId}_comment_editor_section" class="devilry-comment-editor">
                         <div class="devilry-comment-editor-toolbar" aria-hidden="true">
                             <button
@@ -186,9 +192,12 @@
         }
 
         _fetchAndInjectRenderedMarkdown () {
+            if (!this.attrMarkdownPreviewConfig.enabled) {
+                return;
+            }
             const previewArea = document.getElementById(`${this.elementId}_comment_editor_preview_section`);
             const textArea = this.textArea;
-            fetch(this.attrMarkdownPreviewUrl, {
+            fetch(this.attrMarkdownPreviewConfig.apiUrl, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -207,6 +216,9 @@
         }
 
         addPreviewToggleEventListener () {
+            if (!this.attrMarkdownPreviewConfig.enabled) {
+                return;
+            }
             document.getElementById(`${this.elementId}_preview_markdown_button`)
                 .addEventListener('click', () => {
                     const textArea = this.textArea;
