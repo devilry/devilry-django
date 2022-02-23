@@ -383,6 +383,31 @@ class FeedbackFeedBaseView(create.CreateView):
                         })),
                         "hiddenfieldname": "temporary_file_collection_id",
 
+
+                        "attributes": ' '.join(
+                            f'{key}={quoteattr(value)}'
+                            for key, value in {
+                                # "hiddenFieldName": "temporary_file_collection_id",
+                                "idPrefix": "id_temporary_file_upload",
+                                "labelDragDropHelp": gettext(
+                                    'Upload files by dragging and dropping them here'
+                                ),
+                                "labelUploadFilesButton": gettext(
+                                    '... or select files'
+                                ),
+                                "screenReaderLabelUploadFilesButton": gettext(
+                                    'Select files for upload'
+                                ),
+                                "labelInvalidFileType": gettext(
+                                    'Invalid filetype'
+                                ),
+                                # "uploadApiUrl": reverse('cradmin_temporary_file_upload_api'),
+                                # "maxFilenameLength": str(comment_models.CommentFile.MAX_FILENAME_LENGTH),
+                                # "errorMessage503": gettext(
+                                #     'Server timeout while uploading the file. '
+                                #     'This may be caused by a poor upload link and/or a too large file.'),
+                            }.items()
+                        )
                     })),
                 # css_class='panel-footer'
             ))

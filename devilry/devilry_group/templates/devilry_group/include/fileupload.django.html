@@ -1,5 +1,58 @@
 {% load i18n %}
 
+<script type="module">
+    class DevilryTemporaryFileUpload extends HTMLElement {
+        constructor () {
+            super();
+            this.idPrefix = this.getAttribute('idPrefix');
+            this.labelDragDropHelp = this.getAttribute('labelDragDropHelp');
+            this.labelUploadFilesButton = this.getAttribute('labelUploadFilesButton');
+            this.screenReaderLabelUploadFilesButton = this.getAttribute('screenReaderLabelUploadFilesButton');
+            this.labelInvalidFileType = this.getAttribute('labelInvalidFileType');
+        }
+        
+        getDomId (suffix = '') {
+            if (suffix) {
+                return `${this.idPrefix}_${suffix}`
+            }
+            return this.idPrefix;
+        }
+
+        _parseDomString (domString) {
+            return new DOMParser().parseFromString(domString, 'text/html').body.firstChild;
+        }
+
+        connectedCallback () {
+            this.setAttribute('class', 'devilry-fileupload');
+            this.contentElement = this._parseDomString(`
+                <div class="devilry-fileupload-content">
+                    <div class='devilry-fileupload-dropbox' aria-hidden='true'>
+                        <div class='devilry-fileupload-dropbox-text'>
+                            ${this.labelDragDropHelp}
+                        </div>
+                        <div class='devilry-fileupload-dropbox-invalid-filetype-errormessage' style='display: none;'>
+                            ${this.labelInvalidFileType}
+                        </div>
+                    </div>
+                    <p class='devilry-fileupload-advanced-fileselectbutton-wrapper'>
+                        <button type="button" multiple="true" class="btn btn-xs btn-default devilry-fileupload-advanced-fileselectbutton" style="overflow: hidden;"
+                                aria-label='${this.screenReaderLabelUploadFilesButton}'>
+                            <span aria-hidden="true">${this.labelUploadFilesButton}</span>
+                            <input type="file" multiple="multiple" tabindex="-1" style="width: 1px; height: 1px; opacity: 0; position: absolute; padding: 0px; margin: 0px; overflow: hidden;">
+                        </button>
+                    </p>
+                </div>
+            `);
+            this.appendChild(this.contentElement)
+        }
+
+    }
+
+    window.customElements.define('devilry-temporary-file-upload', DevilryTemporaryFileUpload);
+</script>
+
+<devilry-temporary-file-upload {{ attributes|safe }}></devilry-temporary-file-upload>
+
 <div cradmin-legacy-bulkfileupload={{ apiparameters|safe }} {# NOTE: The missing quotes are correct - they are added by quoteattr #}
              class="cradmin-legacy-bulkfileupload">
 
