@@ -21,9 +21,10 @@ class DevilryMarkdownWidget(forms.widgets.Textarea):
     def _get_preview_markdown_api_url(self):
         if self.request:
             return f'{self.request.scheme}://{self.request.get_host()}{reverse("devilry_comment_api_preview_markdown")}'
-        return None
+        return ''
 
     def get_context(self, name, value, attrs):
+        value = value or ''
         context = super().get_context(name, value, attrs)
         context['attributes'] = ' '.join(
             f'{key}={quoteattr(value)}'
@@ -118,3 +119,9 @@ class DevilryMarkdownWidget(forms.widgets.Textarea):
             }.items()
         )
         return context
+
+
+class DevilryMarkdownNoPreviewWidget(DevilryMarkdownWidget):
+    @property
+    def preview_enabled(self):
+        return False
