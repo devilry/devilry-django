@@ -74,6 +74,13 @@
             this.addPreviewToggleEventListener();
         }
 
+        get _previewToggleButtonText () {
+            if (this.previewActive) {
+                return this.attrMarkdownPreviewConfig.previewActiveButtonText;
+            }
+            return this.attrMarkdownPreviewConfig.editorActiveButtonText;
+        }
+
         _getPreviewSection () {
             if (!this.attrMarkdownPreviewConfig.enabled) {
                 return '';
@@ -85,7 +92,7 @@
                 title="Preview the rendered markdown"
                 class="btn btn-default devilry-comment-editor-toolbar__option"
             >
-                ${this.attrMarkdownPreviewConfig.buttonText}
+                ${this._previewToggleButtonText}
             </button>
             <div id="${this.elementId}_comment_editor_preview_section" class="devilry-comment-editor-preview--display-none"></div>
             `;
@@ -240,6 +247,8 @@
                         editorAreaClasses.remove('devilry-comment-editor--display-none');
                         editorAreaClasses.add('devilry-comment-editor');
                     }
+                    const previewToggleButton = document.getElementById(`${this.elementId}_preview_markdown_button`);
+                    previewToggleButton.innerHTML = this._previewToggleButtonText;
                 });
         }
 

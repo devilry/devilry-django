@@ -48,9 +48,12 @@ class DevilryMarkdownWidget(forms.widgets.Textarea):
                 'markdownPreviewUrl': self._get_preview_markdown_api_url(),
                 'markdownPreviewEnabled': 'true' if self.preview_enabled else 'false',
                 'markdownPreviewConfig': json.dumps({
-                    'buttonText': pgettext(
+                    'editorActiveButtonText': pgettext(
                         'devilry markdown widget',
                         'Preview'),
+                    'previewActiveButtonText': pgettext(
+                        'devilry markdown widget',
+                        'Write'),
                     'apiUrl': self._get_preview_markdown_api_url(),
                     'enabled': self.preview_enabled
                 }),
