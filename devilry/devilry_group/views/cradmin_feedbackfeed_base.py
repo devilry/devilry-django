@@ -18,7 +18,6 @@ from cradmin_legacy.viewhelpers import create
 
 from devilry.apps.core.models import Assignment
 from devilry.devilry_comment import models as comment_models
-from devilry.devilry_cradmin import devilry_acemarkdown
 from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_sidebar
 from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_timeline
 from devilry.devilry_group import models as group_models
@@ -399,16 +398,12 @@ class FeedbackFeedBaseView(create.CreateView):
                 css_class='comment-form-container'
             )
         ]
-
-    def get_acemarkdown_widget_class(self):
-        return devilry_acemarkdown.Default
     
     def get_markdown_widget_class(self):
         return DevilryMarkdownWidget
 
     def get_form(self, form_class=None):
         form = super(FeedbackFeedBaseView, self).get_form(form_class=form_class)
-        # form.fields['text'].widget = self.get_acemarkdown_widget_class()()
         form.fields['text'].widget = self.get_markdown_widget_class()(request=self.request)
         form.fields['text'].label = False
         form.fields['temporary_file_collection_id'] = forms.IntegerField(required=False)
