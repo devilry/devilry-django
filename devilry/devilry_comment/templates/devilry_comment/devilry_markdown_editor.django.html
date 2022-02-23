@@ -54,6 +54,7 @@
             this.attrLabelText = this.getAttribute('labelText');
             this.attrTextareaName = this.getAttribute('name');
             this.attrTextareaValue = this.getAttribute('value');
+            this.attrTextareaPlaceholder = this.getAttribute('placeholder');
             this.attrHelpText = this.getAttribute('helpText');
             this.attrMarkdownGuideLinkUrl = this.getAttribute('markdownGuideLinkUrl');
             this.attrMarkdownGuideLinkText = this.getAttribute('markdownGuideLinkText');
@@ -98,6 +99,10 @@
             `;
         }
 
+        get _tooltipMetaKeyForPlatform () {
+            return this._isMac ? 'Cmd' : 'Ctrl'
+        }
+
         /**
          * Renders the HTML for the editor.
          */
@@ -118,7 +123,7 @@
                             <button
                                 id="${this.elementId}_toolbar_option_bold"
                                 type="button"
-                                title="${this.attrToolbarConfig.bold.tooltip}"
+                                title="${this.attrToolbarConfig.bold.tooltip}, ${this._tooltipMetaKeyForPlatform}+b"
                                 class="btn btn-default devilry-comment-editor-toolbar__option"
                             >
                                 <span class="{% cradmin_icon 'bold' %}"></span>
@@ -126,7 +131,7 @@
                             <button
                                 id="${this.elementId}_toolbar_option_italic"
                                 type="button"
-                                title="${this.attrToolbarConfig.italic.tooltip}"
+                                title="${this.attrToolbarConfig.italic.tooltip}, ${this._tooltipMetaKeyForPlatform}+i"
                                 class="btn btn-default devilry-comment-editor-toolbar__option"
                             >
                                 <span class="{% cradmin_icon 'italic' %}"></span>
@@ -134,7 +139,7 @@
                             <button
                                 id="${this.elementId}_toolbar_option_link"
                                 type="button"
-                                title="${this.attrToolbarConfig.link.tooltip}"
+                                title="${this.attrToolbarConfig.link.tooltip}, ${this._tooltipMetaKeyForPlatform}+k"
                                 class="btn btn-default devilry-comment-editor-toolbar__option"
                             >
                                 <span class="{% cradmin_icon 'link' %}"></span>
@@ -142,7 +147,7 @@
                             <button
                                 id="${this.elementId}_toolbar_option_code_inline"
                                 type="button"
-                                title="${this.attrToolbarConfig.codeInline.tooltip}"
+                                title="${this.attrToolbarConfig.codeInline.tooltip}, ${this._tooltipMetaKeyForPlatform}+e"
                                 class="btn btn-default devilry-comment-editor-toolbar__option"
                             >
                                 <span class="{% cradmin_icon 'codeblock' %}"></span>
@@ -156,21 +161,21 @@
                                 <span class="{% cradmin_icon 'codeblock' %}"></span>
                             </button>
                             <button
-                                id="${this.elementId}_toolbar_option_unordered_list"
-                                type="button"
-                                title="${this.attrToolbarConfig.unorderedList.tooltip}"
-                                class="btn btn-default devilry-comment-editor-toolbar__option"
-                            >
-                                <span class="{% cradmin_icon 'list-ul' %}"></span>
-                            </button>
-                            <button
                                 id="${this.elementId}_toolbar_option_ordered_list"
                                 type="button"
-                                title="${this.attrToolbarConfig.orderedList.tooltip}"
+                                title="${this.attrToolbarConfig.orderedList.tooltip}, ${this._tooltipMetaKeyForPlatform}+Shift+7"
                                 class="btn btn-default devilry-comment-editor-toolbar__option"
                                 ${this.previewActive ? 'disabled': ''}
                             >
                                 <span class="{% cradmin_icon 'list-ol' %}"></span>
+                            </button>
+                            <button
+                                id="${this.elementId}_toolbar_option_unordered_list"
+                                type="button"
+                                title="${this.attrToolbarConfig.unorderedList.tooltip}, ${this._tooltipMetaKeyForPlatform}+Shift+8"
+                                class="btn btn-default devilry-comment-editor-toolbar__option"
+                            >
+                                <span class="{% cradmin_icon 'list-ul' %}"></span>
                             </button>
                         </div>
                         <label for="${this.elementId}" class="screenreader-only">${this.attrLabelText}</label>
@@ -180,6 +185,7 @@
                                 cols="40"
                                 rows="10"
                                 class="devilry-comment-editor-textarea form-control"
+                                placeholder="${this.attrTextareaPlaceholder}"
                                 name="${this.attrTextareaName}"
                                 aria-describedby="${this.elementId}_help">${this.attrTextareaValue}</textarea>
                             <div class="devilry-comment-editor-textarea--copy" aria-hidden="true"></div>
@@ -293,6 +299,10 @@
                 }, false);
         }
 
+        get _isMac () {
+            return window.navigator.platform.toUpperCase().startsWith('MAC');
+        }
+
         /**
          * Add keyboard-shortcuts for toolbar actions.
          */
@@ -313,7 +323,7 @@
                     
                     // Handle MacOS vs everything else.
                     let controlKey = 'Control';
-                    if (window.navigator.platform.toUpperCase().startsWith('MAC')) {
+                    if (this._isMac) {
                         controlKey = 'Meta';
                     }
 
