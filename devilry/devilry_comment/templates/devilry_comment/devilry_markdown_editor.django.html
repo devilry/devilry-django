@@ -1,155 +1,572 @@
 {% load i18n %}
+{% load cradmin_legacy_icon_tags %}
 
 <script type="module">
+
+    class CSRFToken {
+        constructor () {
+            this.csrftoken = this._getCookie('csrftoken');
+        }
+
+        _getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    }
+
+    const TOOLBAR_KEYBOARD_MAP = {
+        'ctrl': false,      // CTRL (Windows)
+        'Meta': false,      // CMD (macOS)
+        'Enter': false,     // Enter
+        'Shift': false,     // Shift
+        'b': false,         // CTRL or CMD + b: bold
+        'i': false,         // CTRL or CMD + i: italic
+        'k': false,         // CTRL or CMD + k: link
+        '7': false,         // CTRL or CMD + Shift + 7: Ordered list
+        '8': false,         // CTRL or CMD + Shift + 8: Unordered list
+    };
+    const TOOLBAR_HEADING = 'heading';
+    const TOOLBAR_BOLD = 'bold';
+    const TOOLBAR_ITALIC = 'italic';
+    const TOOLBAR_LINK = 'link';
+    const TOOLBAR_CODE_INLINE = 'codeInline';
+    const TOOLBAR_CODE_BLOCK = 'codeBlock';
+    const TOOLBAR_UNORDERED_LIST = 'unorderedList';
+    const TOOLBAR_ORDERED_LIST = 'orderedList';
+    const OL_REGEX = '^(\\s*)([0-9]*\\.\\s)';
+    const UL_REGEX = '^(\\s*)(\\*\\s)';
+
     class DevilryCommentEditor extends HTMLElement {
         constructor () {
             super();
-            this.attrRootElementId = this.getAttribute('root-element-id');
-            this.attrLabelFor = this.getAttribute('label-for');
-            this.attrLabelText = this.getAttribute('label-text');
-            this.attrTextareaName = this.getAttribute('textarea-name');
-            this.attrTextareaValue = this.getAttribute('textarea-value');
-            this.attrHelpText = this.getAttribute('help-text');
-            this.attrMarkdownGuideLinkUrl = this.getAttribute('markdown-guide-link-url');
-            this.attrMarkdownGuideLinkText = this.getAttribute('markdown-guide-link-text');
+
+            this.attrLabelText = this.getAttribute('labelText');
+            this.attrTextareaName = this.getAttribute('name');
+            this.attrTextareaValue = this.getAttribute('value');
+            this.attrHelpText = this.getAttribute('helpText');
+            this.attrMarkdownGuideLinkUrl = this.getAttribute('markdownGuideLinkUrl');
+            this.attrMarkdownGuideLinkText = this.getAttribute('markdownGuideLinkText');
+            this.attrMarkdownPreviewButtonText = this.getAttribute('markdownPreviewButtonText');
+            this.attrMarkdownPreviewUrl = this.getAttribute('markdownPreviewUrl');
+            this.attrToolbarConfig = JSON.parse(this.getAttribute('toolbarConfig'));
+
+            this.previewActive = false;
         }
-        
+
         get elementId () {
             return `id_${this.attrTextareaName}`;
         }
 
         connectedCallback () {
-            this.renderEditor()
+            this.renderEditor();
+            this.addToolbarOptionEventListeners();
+            this.addToolbarKeyboardShortcutEvents();
+            this.addPreviewToggleEventListener();
         }
 
+        /**
+         * Renders the HTML for the editor.
+         */
         renderEditor () {
             const commentEditor = new DOMParser().parseFromString(`
-                <div class="devilry-comment-editor">
-                    <div class="devilry-comment-editor-toolbar" aria-hidden="true">
-                        <button type="button" id="${this.elementId}_toolbar_option_heading" class="btn btn-default devilry-comment-editor-toolbar__option">
-                            <p>Heading</p>
-                        </button>
-                        <button type="button" id="${this.elementId}_toolbar_option_bold" class="btn btn-default devilry-comment-editor-toolbar__option">
-                            <p>Bold</p>
-                        </button>
-                        <button type="button" id="${this.elementId}_toolbar_option_italic" class="btn btn-default devilry-comment-editor-toolbar__option">
-                            <p>Italic</p>
-                        </button>
-                        <button type="button" id="${this.elementId}_toolbar_option_link" class="btn btn-default devilry-comment-editor-toolbar__option">
-                            <p>Link</p>
-                        </button>
+                <div>
+                    <button 
+                        id="${this.elementId}_preview_markdown_button"
+                        type="button"
+                        title="Preview the rendered markdown"
+                        class="btn btn-default devilry-comment-editor-toolbar__option"
+                    >
+                        ${this.attrMarkdownPreviewButtonText}
+                    </button>
+
+                    <div id="${this.elementId}_comment_editor_preview_section" class="devilry-comment-editor-preview--display-none"></div>
+
+                    <div id="${this.elementId}_comment_editor_section" class="devilry-comment-editor">
+                        <div class="devilry-comment-editor-toolbar" aria-hidden="true">
+                            <button
+                                id="${this.elementId}_toolbar_option_heading"
+                                type="button"
+                                title="${this.attrToolbarConfig.heading.tooltip}"
+                                class="btn btn-default devilry-comment-editor-toolbar__option"
+                            >
+                                <span class="{% cradmin_icon 'h3' %}"></span>
+                            </button>
+                            <button
+                                id="${this.elementId}_toolbar_option_bold"
+                                type="button"
+                                title="${this.attrToolbarConfig.bold.tooltip}"
+                                class="btn btn-default devilry-comment-editor-toolbar__option"
+                            >
+                                <span class="{% cradmin_icon 'bold' %}"></span>
+                            </button>
+                            <button
+                                id="${this.elementId}_toolbar_option_italic"
+                                type="button"
+                                title="${this.attrToolbarConfig.italic.tooltip}"
+                                class="btn btn-default devilry-comment-editor-toolbar__option"
+                            >
+                                <span class="{% cradmin_icon 'italic' %}"></span>
+                            </button>
+                            <button
+                                id="${this.elementId}_toolbar_option_link"
+                                type="button"
+                                title="${this.attrToolbarConfig.link.tooltip}"
+                                class="btn btn-default devilry-comment-editor-toolbar__option"
+                            >
+                                <span class="{% cradmin_icon 'link' %}"></span>
+                            </button>
+                            <button
+                                id="${this.elementId}_toolbar_option_code_inline"
+                                type="button"
+                                title="${this.attrToolbarConfig.codeInline.tooltip}"
+                                class="btn btn-default devilry-comment-editor-toolbar__option"
+                            >
+                                <span class="{% cradmin_icon 'codeblock' %}"></span>
+                            </button>
+                            <button
+                                id="${this.elementId}_toolbar_option_code_block"
+                                type="button"
+                                title="${this.attrToolbarConfig.codeBlock.tooltip}"
+                                class="btn btn-default devilry-comment-editor-toolbar__option"
+                            >
+                                <span class="{% cradmin_icon 'codeblock' %}"></span>
+                            </button>
+                            <button
+                                id="${this.elementId}_toolbar_option_unordered_list"
+                                type="button"
+                                title="${this.attrToolbarConfig.unorderedList.tooltip}"
+                                class="btn btn-default devilry-comment-editor-toolbar__option"
+                            >
+                                <span class="{% cradmin_icon 'list-ul' %}"></span>
+                            </button>
+                            <button
+                                id="${this.elementId}_toolbar_option_ordered_list"
+                                type="button"
+                                title="${this.attrToolbarConfig.orderedList.tooltip}"
+                                class="btn btn-default devilry-comment-editor-toolbar__option"
+                                ${this.previewActive ? 'disabled': ''}
+                            >
+                                <span class="{% cradmin_icon 'list-ol' %}"></span>
+                            </button>
+                        </div>
+                        <label for="${this.elementId}" class="screenreader-only">${this.attrLabelText}</label>
+                        <div class="devilry-comment-editor__textarea">
+                            <textarea
+                                id="${this.elementId}"
+                                cols="40"
+                                rows="10"
+                                class="devilry-comment-editor-textarea form-control"
+                                name="${this.attrTextareaName}"
+                                aria-describedby="${this.elementId}_help">${this.attrTextareaValue}</textarea>
+                            <div class="devilry-comment-editor-textarea--copy" aria-hidden="true"></div>
+                        </div>
+                        <div class="devilry-comment-editor devilry-comment-editor__example-help">
+                            <p id="${this.elementId}_help">
+                                ${this.attrHelpText}
+                                <a href="${this.attrMarkdownGuideLinkUrl}" target='_blank'>
+                                    ${this.attrMarkdownGuideLinkText}
+                                </a>
+                            </p>
+                        </div>
                     </div>
-                    <label for="${this.elementId}" class="screenreader-only">
-                        {% translate "Comment" context "devilry comment editor" %}
-                    </label>
-                    <div class="devilry-comment-editor__textarea">
-                        <textarea
-                            id="${this.elementId}"
-                            cols="40"
-                            rows="10"
-                            class="devilry-comment-editor-textarea devilrymarkdownwidget form-control"
-                            name="${this.attrTextareaName}"
-                            aria-describedby="${this.elementId}_help">${this.attrTextareaValue}</textarea>
-                        <div class="devilry-comment-editor-textarea--copy"></div>
-                    </div>
-                    <div class="devilry-comment-editor devilry-comment-editor__example-help">
-                        <p id="${this.elementId}_help">
-                            ${this.attrHelpText}
-                            <a href="${this.attrMarkdownGuideLinkUrl}" target='_blank'>
-                                ${this.attrMarkdownGuideLinkText}
-                            </a>
-                        </p>
-                    </div>
-                </div>
+                <div>
             `, 'text/html').body.firstChild;
             this.appendChild(commentEditor)
+        }
 
-            // Add toolbar event listeners
+        _fetchAndInjectRenderedMarkdown () {
+            const previewArea = document.getElementById(`${this.elementId}_comment_editor_preview_section`);
+            const textArea = this.textArea;
+            fetch(this.attrMarkdownPreviewUrl, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': new CSRFToken().csrftoken
+                },
+                body: JSON.stringify({'markdown_text': textArea.value})
+            })
+            .then(response => response.json())
+            .then((responseData) => {
+                previewArea.innerHTML = responseData['markdown_result'];
+            })
+            .catch((error) => {
+                console.error(error)
+            });
+        }
+
+        addPreviewToggleEventListener () {
+            document.getElementById(`${this.elementId}_preview_markdown_button`)
+                .addEventListener('click', () => {
+                    const textArea = this.textArea;
+                    if (!textArea.value) {
+                        return;
+                    }
+                    this.previewActive = !this.previewActive;
+                    const previewAreaClasses = document.getElementById(`${this.elementId}_comment_editor_preview_section`).classList;
+                    const editorAreaClasses = document.getElementById(`${this.elementId}_comment_editor_section`).classList;
+                    if (this.previewActive) {
+                        editorAreaClasses.remove('devilry-comment-editor');
+                        editorAreaClasses.add('devilry-comment-editor--display-none');
+                        previewAreaClasses.remove('devilry-comment-editor-preview--display-none');
+                        previewAreaClasses.add('devilry-comment-editor-preview');
+                        this._fetchAndInjectRenderedMarkdown();
+                    } else {
+                        previewAreaClasses.remove('devilry-comment-editor-preview');
+                        previewAreaClasses.add('devilry-comment-editor-preview--display-none');
+                        editorAreaClasses.remove('devilry-comment-editor--display-none');
+                        editorAreaClasses.add('devilry-comment-editor');
+                    }
+                });
+        }
+
+        /**
+         * Add event-listeners to toolbar buttons.
+         * 
+         * Each event-listener ends up calling the `insertAtCursor` with 
+         * options according to which toolbar markdown option was pressed.
+         */
+        addToolbarOptionEventListeners () {
             document.getElementById(`${this.elementId}_toolbar_option_heading`)
                 .addEventListener('click', () => {
-                    this.insertAtCursor('heading', '\n###', '', 'ADD HEADING HERE')
+                    this.toolbarEventActionHeading();
                 }, false);
             document.getElementById(`${this.elementId}_toolbar_option_bold`)
                 .addEventListener('click', () => {
-                    this.insertAtCursor('bold', '**', '**', 'ADD BOLD TEXT HERE')
+                    this.toolbarEventActionBold();
                 }, false);
             document.getElementById(`${this.elementId}_toolbar_option_italic`)
                 .addEventListener('click', () => {
-                    this.insertAtCursor('italic', '*', '*', 'ADD ITALIC TEXT HERE')
+                    this.toolbarEventActionItalic();
                 }, false);
             document.getElementById(`${this.elementId}_toolbar_option_link`)
                 .addEventListener('click', () => {
-                    this.insertAtCursor('link', '[', ']()', 'ADD LINK TEXT HERE')
+                    this.toolbarEventActionLink();
                 }, false);
-            
-            // Add toolbar keyboard-shortcut event listeners
-            // const keyPressed = {
-            //     'Meta': false,
-            //     'b': false
-            // };
-            // document.onkeydown = (keyDownEvent) => {
-            //     console.log(`DOWN: ${keyDownEvent.key}`);
-            //     keyPressed[keyDownEvent.key] = true;
-            //     if (document.activeElement.id === `${this.elementId}`) {
-            //         if (keyPressed['Meta'] && keyPressed['b']) {
-            //             this.insertAtCursor('bold', '**', '**', 'INSERT BOLD TEXT HERE');
-            //         }
-            //     }
-            // };
-            // document.onkeyup = (keyUpEvent) => {
-            //     console.log(`UP: ${keyUpEvent.key}`);
-            //     keyPressed[keyUpEvent.key] = false;
-            // };
+            document.getElementById(`${this.elementId}_toolbar_option_code_inline`)
+                .addEventListener('click', () => {
+                    this.toolbarEventActionCodeInline();
+                }, false);
+            document.getElementById(`${this.elementId}_toolbar_option_code_block`)
+                .addEventListener('click', () => {
+                    this.toolbarEventActionCodeBlock();
+                }, false);
+            document.getElementById(`${this.elementId}_toolbar_option_unordered_list`)
+                .addEventListener('click', () => {
+                    this.toolbarEventActionUnorderedList();
+                }, false);
+            document.getElementById(`${this.elementId}_toolbar_option_ordered_list`)
+                .addEventListener('click', () => {
+                    this.toolbarEventActionOrderedList();
+                }, false);
         }
 
-        insertAtCursor (type, preTag, postTag, placeholder) {
-            if (type === 'heading') {
-                console.log('insert HEADING');
-            } else if (type === 'bold') {
-                console.log('insert BOLD');
-            } else if (type === 'italic') {
-                console.log('insert ITALIC');
-            } else if (type === 'link') {
-                console.log('insert LINK');
-            } else {
-                throw Error(`Unsupported tag: ${type}`);
+        /**
+         * Add keyboard-shortcuts for toolbar actions.
+         */
+        addToolbarKeyboardShortcutEvents () {
+            // Prevents default behaviour and stops event propagation.
+            function _performToolbarKeyboardShortcutAction (event, actionFunction, preventDefault = true) {
+                if (preventDefault) {
+                    event.preventDefault();
+                }
+                event.stopPropagation();
+                actionFunction();
             }
 
-            // Get textarea to manipulate
-            const textArea = document.getElementById(`${this.elementId}`);
+            // Add key down event listener.
+            document.onkeydown = (keyDownEvent) => {
+                if (document.activeElement.id === `${this.elementId}`) {
+                    TOOLBAR_KEYBOARD_MAP[keyDownEvent.key] = true;
+                    
+                    // Handle MacOS vs everything else.
+                    let controlKey = 'Control';
+                    if (window.navigator.platform.toUpperCase().startsWith('MAC')) {
+                        controlKey = 'Meta';
+                    }
 
-            // Get start and end position of the cursor.
-            const cursorStart = textArea.selectionStart;
-            const cursorEnd = textArea.selectionEnd;
+                    if (TOOLBAR_KEYBOARD_MAP[controlKey] && TOOLBAR_KEYBOARD_MAP['b']) {
+                        _performToolbarKeyboardShortcutAction(
+                            keyDownEvent, () => {this.toolbarEventActionBold();});
+                    } else if (TOOLBAR_KEYBOARD_MAP[controlKey] && TOOLBAR_KEYBOARD_MAP['i']) {
+                        _performToolbarKeyboardShortcutAction(
+                            keyDownEvent, () => {this.toolbarEventActionItalic();});
+                    } else if (TOOLBAR_KEYBOARD_MAP[controlKey] && TOOLBAR_KEYBOARD_MAP['k']) {
+                        _performToolbarKeyboardShortcutAction(
+                            keyDownEvent, () => {this.toolbarEventActionLink();});
+                    } else if (TOOLBAR_KEYBOARD_MAP[controlKey] && TOOLBAR_KEYBOARD_MAP['e']) {
+                        _performToolbarKeyboardShortcutAction(
+                            keyDownEvent, () => {this.toolbarEventActionCodeInline();});
+                    } else if (TOOLBAR_KEYBOARD_MAP[controlKey] && TOOLBAR_KEYBOARD_MAP['Shift'] && TOOLBAR_KEYBOARD_MAP['7']) {
+                            _performToolbarKeyboardShortcutAction(
+                                keyDownEvent, () => {this.toolbarEventActionOrderedList();});
+                    } else if (TOOLBAR_KEYBOARD_MAP[controlKey] && TOOLBAR_KEYBOARD_MAP['Shift'] && TOOLBAR_KEYBOARD_MAP['8']) {
+                        _performToolbarKeyboardShortcutAction(
+                            keyDownEvent, () => {this.toolbarEventActionUnorderedList();});
+                    } else if (TOOLBAR_KEYBOARD_MAP['Enter']) {
+                        _performToolbarKeyboardShortcutAction(
+                            keyDownEvent,
+                            () => {
+                                const cursorStartLine = this._getCursorLine();
+                                if (cursorStartLine.match(UL_REGEX)) {
+                                    this.insertMarkdownListAtCursor(TOOLBAR_UNORDERED_LIST, event);
+                                } else if (cursorStartLine.match(OL_REGEX)) {
+                                    this.insertMarkdownListAtCursor(TOOLBAR_ORDERED_LIST, event);
+                                }
+                            },
+                            false);
+                    }
+                }
+            };
 
-            // Get text marked in range. This is text, if any, is inserted 
-            // between the preTag and the postTag.
-            let selectedText = textArea.value.substring(cursorStart, cursorEnd);
+            // Add key up event listener.
+            document.onkeyup = (keyUpEvent) => {
+                if (document.activeElement.id === `${this.elementId}`) {
+                    Object.keys(TOOLBAR_KEYBOARD_MAP).forEach(key => {
+                        TOOLBAR_KEYBOARD_MAP[key] = false;
+                    });
+                }
+            };
+        }
 
-            // Insert markdown
+        toolbarEventActionHeading () {
+            this.insertBasicMarkdownAtCursor(TOOLBAR_HEADING, '\n### ', '', this.attrToolbarConfig.heading.placeholderText);
+        }
+
+        toolbarEventActionBold () {
+            this.insertBasicMarkdownAtCursor(TOOLBAR_BOLD, '**', '**', this.attrToolbarConfig.bold.placeholderText);
+        }
+
+        toolbarEventActionItalic () {
+            this.insertBasicMarkdownAtCursor(TOOLBAR_ITALIC, '_', '_', this.attrToolbarConfig.italic.placeholderText);
+        }
+
+        toolbarEventActionLink () {
+            this.insertBasicMarkdownAtCursor(TOOLBAR_LINK, '[', '](url)', this.attrToolbarConfig.link.placeholderText);
+        }
+
+         toolbarEventActionCodeInline () {
+            this.insertBasicMarkdownAtCursor(TOOLBAR_CODE_INLINE, '`', '`', this.attrToolbarConfig.codeInline.placeholderText);
+        }
+
+         toolbarEventActionCodeBlock () {
+            this.insertBasicMarkdownAtCursor(TOOLBAR_CODE_BLOCK, '```', '\n\n```', this.attrToolbarConfig.codeBlock.placeholderText);
+        }
+
+         toolbarEventActionUnorderedList () {
+            this.insertMarkdownListAtCursor(TOOLBAR_UNORDERED_LIST);
+        }
+
+         toolbarEventActionOrderedList () {
+            this.insertMarkdownListAtCursor(TOOLBAR_ORDERED_LIST);
+        }
+
+        get textArea () {
+            return document.getElementById(`${this.elementId}`);
+        }
+
+        /**
+         * Inserts markdown-tag at cursor-position.
+         * 
+         * Inserts markdown-tag at cursor-position, by adding a opening and closing 
+         * markdown-tag around the selected text (if any). When the markdown-tag is inserted, 
+         * and the value for the text-area is updated, the cursor is placed at the end of the 
+         * tagged text (including the closing markdown-tag).
+         * 
+         * @param {String} type         Type of markdown-tag.
+         * @param {String} openingTag   The opening markdown-tag. E.g. for links where the full markdown tag is "[]()", the opening-tag whould be "(".
+         * @param {String} closingTag   The closing markdown-tag. E.g. for links where the full markdown tag is "[]()", the closing-tag whould be "]()".
+         * @param {String} placeholder  This is the placeholder text inserted between the opening and closing markdown tags if no text is selected.
+         */
+        insertBasicMarkdownAtCursor (type, openingTag, closingTag, placeholder) {
+            if (![TOOLBAR_HEADING, TOOLBAR_BOLD, TOOLBAR_ITALIC, TOOLBAR_LINK, TOOLBAR_CODE_INLINE, TOOLBAR_CODE_BLOCK].includes(type)) {
+                throw Error(`Type "${type}" not supported.`);
+            }
+
+            const textArea = this.textArea;
+            const initialSelectionStart = textArea.selectionStart;
+            const initialSelectionEnd = textArea.selectionEnd;
+
+            let selectedText = textArea.value.substring(textArea.selectionStart, textArea.selectionEnd);
+
             if (!selectedText) {
-                selectedText = placeholder
+                selectedText = placeholder || '';
             }
-            const taggedText = preTag + selectedText + postTag
-            textArea.value = textArea.value.substring(0, cursorStart) + taggedText + textArea.value.substring(cursorEnd, textArea.value.length)
+            const taggedText = openingTag + selectedText + closingTag
+            textArea.value = textArea.value.substring(0, initialSelectionStart) + taggedText + textArea.value.substring(textArea.selectionEnd, textArea.value.length)
 
-            // Place focus back to the end of the tagged text.
+            // Places focus to the marked text as the selected range.
             textArea.focus()
-            textArea.selectionEnd = cursorStart + taggedText.length;
+            textArea.selectionStart = initialSelectionStart + openingTag.length;
+            textArea.selectionEnd = initialSelectionEnd + openingTag.length;
+        }
 
+        /**
+         * Insert ordered/unorderd list for selected text.
+         * 
+         * @param {String} type                 Type of markdown-tag.
+         * @param {Object} enterKeyPressEvent   Enter key pressed event. Defaults to null. 
+         *                                      If this is not null, then keypress is handled 
+         *                                      by continuing the list on the current line.
+         */
+         insertMarkdownListAtCursor (type, enterKeyPressEvent = null) {
+            if (![TOOLBAR_UNORDERED_LIST, TOOLBAR_ORDERED_LIST].includes(type)) {
+                throw Error(`Type list-type "${type}" not supported.`);
+            }
+
+            const textArea = this.textArea;
+            const cursorStartIndex = textArea.value.substring(0, textArea.selectionStart).split('\n').length - 1;
+            const cursorEndIndex = textArea.value.substring(0, textArea.selectionEnd).split('\n').length - 1;
+            const cursorStartEndIndexDiff = cursorEndIndex - cursorStartIndex;
+
+            let textAreaLineArray = textArea.value.split('\n');
+            let newTextAreaValue = '';
+            let newSelectionStart = null;
+            let newSelectionEnd = null;
+
+            if (enterKeyPressEvent) {
+                // Continue list on "Enter"-keypress.
+                //
+                // Continue the list by parsing the current line to find out 
+                // if the current line is a numbered or a bulleted list. The 
+                // next line will then be continued with the appropriate tag, 
+                // where a numbered tag will be incremented based on the value 
+                // of the current line. The array is then updated with the new 
+                // numbered/bulleted line.
+                //
+                // The list will NOT be continued if the current line is an empty 
+                // numbered or bulleted line. In this case, the will be "reset", and 
+                // cursor is moved to the start of the line.
+                //
+                // The list will NOT be continued if a range of text is selected. In 
+                // this case the default "Enter"-keypress behaviour will be applied 
+                // instead.
+                if (textArea.selectionStart !== textArea.selectionEnd) {
+                    return;
+                }
+                event.preventDefault();
+
+                const cursorLine = this._getCursorLine();
+                let listTag = '';
+
+                // Set the tag to be used.
+                // If the tag is empty, i.e has not been set, this means that 
+                // the current list has no content after the tag. This will 
+                // result in the line being reset.
+                if (type === TOOLBAR_ORDERED_LIST) {
+                    const match = cursorLine.match('^(\\s*)([0-9]*\\.\\s)(.+)');
+                    if (match) {
+                        listTag = match[1] + (parseInt(match[2]) + 1) + '. ';
+                    }
+                } else {
+                    const match = cursorLine.match('^(\\s*)(\\*\\s)(.+)');
+                    if (match) {
+                        listTag = match[1] + match[2];
+                    }
+                }
+                
+                // This is the cursor position after the new line has been inserted with offset 
+                // relative to where the cursor is currently at, and will be used set the cursor 
+                // to the correct position when the new list-line has been added.
+                let cursorPositionWithOffset = null;
+
+                // Build the line array based on whether the new line to be inserted should continue 
+                // the list or "reset" it.
+                if (listTag) {
+                    textAreaLineArray = [
+                        ...textAreaLineArray.slice(0, cursorStartIndex + 1),
+                        listTag,
+                        ...textAreaLineArray.slice(cursorStartIndex + 1)
+                    ];
+                    cursorPositionWithOffset = textArea.selectionStart + listTag.length + 1; 
+                } else {
+                    // Current list-line has no content, remove content and set 
+                    // cursor to line start.
+                    textAreaLineArray = [
+                        ...textAreaLineArray.slice(0, cursorStartIndex),
+                        listTag,
+                        ...textAreaLineArray.slice(cursorStartIndex + 1)
+                    ];
+                    cursorPositionWithOffset = textArea.selectionStart - cursorLine.length; 
+                }
+
+                // Set new cursor position.
+                newSelectionStart = cursorPositionWithOffset;
+                newSelectionEnd = cursorPositionWithOffset;
+            } else {
+                // Convert selected lines to list.
+                //
+                // The line(s) of the selected range of text will be converted to 
+                // a list, where each line receives the appropriate list-tag (OL/UL).
+                let markdownListTag = type === TOOLBAR_UNORDERED_LIST ? '* ' : '1. ';
+                let orderedListCounter = 1;
+
+                // Isolate the selected area, and add tags.
+                const selectedAreaChunk = [];
+                for (let i = cursorStartIndex; i <= cursorEndIndex; i++) {
+                    if (type === TOOLBAR_ORDERED_LIST) {
+                        markdownListTag = `${orderedListCounter}. `;
+                        orderedListCounter++;
+                    }
+                    selectedAreaChunk.push(
+                        `${markdownListTag}${textAreaLineArray[i]}`
+                    );
+                }
+
+                // Update the array where the selected range has been tagged, and set cursor positions.
+                textAreaLineArray = [
+                    ...textAreaLineArray.slice(0, cursorStartIndex),
+                    ...cursorStartIndex > 0 && textAreaLineArray[cursorStartIndex - 1].match('\.') ? [''] : [],
+                    ...selectedAreaChunk,
+                    ...cursorEndIndex < textAreaLineArray.length - 1 && textAreaLineArray[cursorEndIndex + 1].match('\.') ? [''] : [],
+                    ...textAreaLineArray.slice(cursorEndIndex + 1)
+                ];
+                if (cursorStartEndIndexDiff === 0) {
+                    newSelectionStart = textArea.selectionStart + markdownListTag.length;
+                    newSelectionEnd = textArea.selectionEnd + markdownListTag.length;
+                } else {
+                    newSelectionStart = textArea.selectionStart + markdownListTag.length;
+                    newSelectionEnd = textArea.selectionEnd + (cursorStartEndIndexDiff * markdownListTag.length) + markdownListTag.length;
+                }
+            }
+
+            // Rebuild the textarea value from the textAreaLineArray.
+            // Append a newline character to each line except the last.
+            const arrayLength = textAreaLineArray.length - 1;
+            for (let i = 0; i < arrayLength; i++) {
+                newTextAreaValue += textAreaLineArray[i] + '\n';
+            }
+            newTextAreaValue += textAreaLineArray[arrayLength];
+
+            // Update textarea.
+            textArea.value = newTextAreaValue;
+            textArea.focus();
+            if (newSelectionStart) {
+                textArea.selectionStart = newSelectionStart;
+            }
+            if (newSelectionEnd) {
+                textArea.selectionEnd = newSelectionEnd;
+            }
+        }
+
+        _getCursorLine () {
+            const textArea = this.textArea;
+            return textArea.value.substring(0, textArea.selectionStart).split('\n').slice(-1)[0];
         }
     }
 
     window.customElements.define('devilry-comment-editor', DevilryCommentEditor);
 </script>
 
-<devilry-comment-editor
-    root-element-id="id_comment_root"
-    label-for="id_{{ widget.name }}"
-    label-text="{% translate 'Comment' context 'devilry comment editor' %}"
-    textarea-name="{{ widget.name }}"
-    textarea-value="{% if widget.value %}{{ widget.value }}{% endif %}"
-    help-text="{% blocktranslate trimmed context 'devilry comment editor' %}Write a comment in markdown format. Use <strong>**text here**</strong> for bold and <em>*text here*</em> for italic.{% endblocktranslate %}"
-    markdown-guide-link-url="/markdown-help"
-    markdown-guide-link-text="{% translate 'Full guide for the markdown we support here' context 'devilry comment editor' %}"
-></devilry-comment-editor>
+<devilry-comment-editor {{ attributes|safe }}></devilry-comment-editor>

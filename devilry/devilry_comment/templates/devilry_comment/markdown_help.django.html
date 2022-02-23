@@ -1,0 +1,124 @@
+{% extends "cradmin_legacy/base.django.html" %}
+{% load i18n %}
+{% load cradmin_legacy_tags %}
+
+{% block title %}
+    {% trans "Markdown help" %}
+{% endblock title %}
+
+{% block pageheader-inner %}
+    <h1>{% trans "Markdown help" %}</h1>
+{% endblock pageheader-inner %}
+
+{% block content %}
+    <div class="container">
+        <p>
+            {% blocktranslate trimmed %}
+                Devilry supports basic markdown formatting.
+            {% endblocktranslate %}
+        </p>
+    </div>
+
+    <div class="container">
+        <h2>
+            {% trans "Headings" %}
+        </h2>
+        <p>
+            {% blocktranslate trimmed %}
+                To create a heading, add one or more # symbols before your heading text. 
+                The number of # symbols will determine the heading size. One # symbol is 
+                the largest heading, and six # symbols is the smallest heading.
+            {% endblocktranslate %}
+        </p>
+        <p aria-hidden="true">
+            {% blocktranslate trimmed %}
+                Example heading level 1: # Heading 1
+            {% endblocktranslate %}
+        </p>
+        <p aria-hidden="true">
+            {% blocktranslate trimmed %}
+                Example heading level 2: # Heading 3
+            {% endblocktranslate %}
+        </p>
+        <p aria-hidden="true">
+            {% blocktranslate trimmed %}
+                Example heading level 6: # Heading 6
+            {% endblocktranslate %}
+        </p>
+    </div>
+
+    <div class="container">
+        <h2>
+            {% trans "Styling text" %}
+        </h2>
+        <p>
+            {% blocktranslate trimmed %}
+                You can style simple words or sentences with inlined bold or italic styling.   
+            {% endblocktranslate %}
+        </p>
+        <h3>
+            {% trans "Bold" %}
+        </h3>
+        <p>
+            {% blocktranslate trimmed %}
+                Add two * symbols before and after the text you want bold formatting for.
+            {% endblocktranslate %}
+        </p>
+        <p aria-hidden="true">
+            {% blocktranslate trimmed %}
+                Example: **your text**
+            {% endblocktranslate %}
+        </p>
+        <h3>
+            {% trans "Italic" %}
+        </h3>
+        <p>
+            {% blocktranslate trimmed %}
+                Add one * symbol before and after the text you want italic formatting for.
+            {% endblocktranslate %}
+        </p>
+        <p aria-hidden="true">
+            {% blocktranslate trimmed %}
+                Example: *your text*
+            {% endblocktranslate %}
+        </p>
+    </div>
+
+    <div class="container">
+        <h2>
+            {% trans "Links" %}
+        </h2>
+        <p>
+            {% blocktranslate trimmed %}
+                To format links, add a starting bracket symbol and a closing bracket symbol encapsulating the link-text. 
+                Directly follow this with a starting parantheses symbol and a closing parantheses symbol encapsulating the actual 
+                link address.
+            {% endblocktranslate %}
+        </p>
+        <p aria-hidden="true">
+            {% blocktranslate trimmed %}
+                Example: [My link text](https://www.devilry.test)
+            {% endblocktranslate %}
+        </p>
+    </div>
+
+    <div class="container">
+        <h2>
+            {% trans "Code" %}
+        </h2>
+        <p>
+            {% blocktranslate trimmed %}
+                Mark code within a sentence with single backticks. The text encapsulated by the backticks will be formatted inline.
+            {% endblocktranslate %}
+        </p>
+        <p aria-hidden="true">
+            {% blocktranslate trimmed %}
+                Example: Use this command `ls -a` to do something.
+            {% endblocktranslate %}
+        </p>
+    </div>
+{% endblock content %}
+
+{% block devilry_footer %}
+    {% include "devilry_deploy/frontpage_footer.django.html" %}
+{% endblock devilry_footer %}

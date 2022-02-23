@@ -26,6 +26,7 @@ from devilry.devilry_group.feedbackfeed_builder import builder_base
 from devilry.devilry_group.feedbackfeed_builder import feedbackfeed_sidebarbuilder
 from devilry.devilry_group.feedbackfeed_builder import feedbackfeed_timelinebuilder
 from devilry.utils import datetimeutils
+from devilry.devilry_comment.editor_widget import DevilryMarkdownWidget
 
 
 class GroupCommentForm(forms.ModelForm):
@@ -426,10 +427,14 @@ class FeedbackFeedBaseView(create.CreateView):
 
     def get_acemarkdown_widget_class(self):
         return devilry_acemarkdown.Default
+    
+    def get_markdown_widget_class(self):
+        return DevilryMarkdownWidget
 
     def get_form(self, form_class=None):
         form = super(FeedbackFeedBaseView, self).get_form(form_class=form_class)
-        form.fields['text'].widget = self.get_acemarkdown_widget_class()()
+        # form.fields['text'].widget = self.get_acemarkdown_widget_class()()
+        form.fields['text'].widget = self.get_markdown_widget_class()(request=self.request)
         form.fields['text'].label = False
         form.fields['temporary_file_collection_id'] = forms.IntegerField(required=False)
         return form
