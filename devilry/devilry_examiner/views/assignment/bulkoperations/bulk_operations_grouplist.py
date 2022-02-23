@@ -1,17 +1,15 @@
 # -*- coding: utf-8 -*-
 
 
+from cradmin_legacy.viewhelpers import multiselect2, multiselect2view
 from django import forms
 from django.db import models
-from django.db.models.functions import Lower, Concat
+from django.db.models.functions import Concat, Lower
 from django.utils.translation import gettext_lazy, pgettext_lazy
-from cradmin_legacy.viewhelpers import multiselect2
-from cradmin_legacy.viewhelpers import multiselect2view
 
 from devilry.apps.core import models as core_models
-from devilry.devilry_cradmin import devilry_acemarkdown
-from devilry.devilry_cradmin import devilry_listbuilder
-from devilry.devilry_cradmin import devilry_listfilter
+from devilry.devilry_comment.editor_widget import DevilryMarkdownNoPreviewWidget
+from devilry.devilry_cradmin import devilry_listbuilder, devilry_listfilter
 
 
 class SelectedAssignmentGroupForm(forms.Form):
@@ -37,7 +35,7 @@ class SelectedAssignmentGroupForm(forms.Form):
 
     #: A wysiwig editor for writing a feedback message.
     feedback_comment_text = forms.CharField(
-        widget=devilry_acemarkdown.Small,
+        widget=DevilryMarkdownNoPreviewWidget(),
         help_text=gettext_lazy('Add a general comment to the feedback'),
         initial=gettext_lazy('Delivery has been corrected.'),
         label=gettext_lazy('Feedback comment text')

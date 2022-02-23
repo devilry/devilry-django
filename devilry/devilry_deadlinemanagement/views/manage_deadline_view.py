@@ -20,7 +20,7 @@ from cradmin_legacy.viewhelpers import formbase
 from cradmin_legacy.widgets.datetimepicker import DateTimePickerWidget
 
 from devilry.apps.core import models as core_models
-from devilry.devilry_cradmin import devilry_acemarkdown
+from devilry.devilry_comment.editor_widget import DevilryMarkdownWidget
 from devilry.devilry_deadlinemanagement.views import viewutils
 from devilry.devilry_group import models as group_models
 from devilry.utils import datetimeutils
@@ -39,9 +39,7 @@ class SelectedItemsForm(forms.Form):
 
 class ManageDeadlineForm(SelectedItemsForm):
     comment_text = forms.CharField(
-        widget=devilry_acemarkdown.Small,
-        help_text=gettext_lazy('Add a suitable comment describing why the the deadline was changed.'),
-        label=gettext_lazy('Comment Text')
+        label=gettext_lazy('Comment text')
     )
 
     new_deadline = forms.DateTimeField(
@@ -50,7 +48,9 @@ class ManageDeadlineForm(SelectedItemsForm):
 
     def __init__(self, *args, **kwargs):
         self.last_deadline = kwargs.pop('last_deadline')
+        self.request = kwargs.pop('request')
         super(ManageDeadlineForm, self).__init__(*args, **kwargs)
+        self.fields['comment_text'].widget = DevilryMarkdownWidget(request=self.request)
         self.fields['new_deadline'].widget = DateTimePickerWidget(
             buttonlabel_novalue=pgettext_lazy('CrAdmin datetime picker typo fix', 'Select a date/time'),
             minimum_datetime=self.get_minimum_datetime(),
@@ -182,7 +182,8 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
         return form_class(
             accessible_groups_queryset=self.request.cradmin_app.get_accessible_group_queryset(),
             initial={'selected_items': self.get_initially_selected_items()},
-            last_deadline=self.get_latest_previous_deadline()
+            last_deadline=self.get_latest_previous_deadline(),
+            request=self.request
         )
 
     def get_form(self, form_class=None):
@@ -205,6 +206,7 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
         kwargs = super(ManageDeadlineView, self).get_form_kwargs()
         kwargs['accessible_groups_queryset'] = self.request.cradmin_app.get_accessible_group_queryset()
         kwargs['last_deadline'] = self.get_latest_previous_deadline()
+        kwargs['request'] = self.request
         return kwargs
 
     def get_previous_view_url(self):

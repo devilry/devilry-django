@@ -4,13 +4,15 @@ from django import forms
 from django.contrib import messages
 from django.db import transaction
 from django.http import Http404
+from django.utils import timezone
 from django.shortcuts import redirect
 from django.utils.translation import gettext_lazy
 
-from devilry.devilry_cradmin import devilry_acemarkdown
+from devilry.devilry_comment.editor_widget import DevilryMarkdownNoPreviewWidget
 from devilry.devilry_admin.views.assignment.students import groupview_base
 from devilry.devilry_cradmin import devilry_listbuilder
-from devilry.devilry_group.models import FeedbacksetPassedPreviousPeriod
+from devilry.devilry_group import models as group_models
+from devilry.devilry_comment import models as comment_models
 
 
 class TargetRenderer(devilry_listbuilder.assignmentgroup.GroupTargetRenderer):
@@ -34,8 +36,7 @@ class SelectedAssignmentGroupsForm(groupview_base.SelectedGroupsForm):
     def __init__(self, *args, **kwargs):
         super(SelectedAssignmentGroupsForm, self).__init__(*args, **kwargs)
         self.fields['feedback_comment_text'] = forms.CharField(
-            widget=devilry_acemarkdown.Small,
-            help_text=gettext_lazy('Add a general comment to the feedback'),
+            widget=DevilryMarkdownNoPreviewWidget(),
             initial=gettext_lazy('Delivery has been corrected. Passed in a previous semester.'),
             label=gettext_lazy('Feedback comment text')
         )
@@ -80,7 +81,7 @@ class PassAssignmentGroupsView(groupview_base.BaseMultiselectView):
     def __get_grading_points(self):
         return self.assignment.max_points
 
-    def __publish_grading_on_current_assignment(self, queryset, published_by):
+    def __publish_grading_on_current_assignment(self, queryset, published_by, comment_text):
         """
         Publish grading on current assignment ``self.assignment``
 
@@ -91,10 +92,20 @@ class PassAssignmentGroupsView(groupview_base.BaseMultiselectView):
         grading_points = self.__get_grading_points()
         with transaction.atomic():
             for group in queryset:
+                group_models.GroupComment.objects.create(
+                    feedback_set_id=group.cached_data.last_feedbackset_id,
+                    part_of_grading=True,
+                    visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                    user=self.request.user,
+                    user_role=comment_models.Comment.USER_ROLE_ADMIN,
+                    text=comment_text,
+                    comment_type=comment_models.Comment.COMMENT_TYPE_GROUPCOMMENT,
+                    published_datetime=timezone.now()
+                )
                 group.cached_data.last_feedbackset.publish(published_by, grading_points)
-                FeedbacksetPassedPreviousPeriod(
+                group_models.FeedbacksetPassedPreviousPeriod(
                     feedbackset=group.cached_data.last_feedbackset,
-                    passed_previous_period_type=FeedbacksetPassedPreviousPeriod.PASSED_PREVIOUS_SEMESTER_TYPES.MANUAL.value,
+                    passed_previous_period_type=group_models.FeedbacksetPassedPreviousPeriod.PASSED_PREVIOUS_SEMESTER_TYPES.MANUAL.value,
                     created_by=self.request.user
                 ).save()
 
@@ -102,5 +113,6 @@ class PassAssignmentGroupsView(groupview_base.BaseMultiselectView):
         queryset = form.cleaned_data['selected_items']
         self.__publish_grading_on_current_assignment(
             queryset=queryset,
-            published_by=self.request.user)
+            published_by=self.request.user,
+            comment_text=form.cleaned_data['feedback_comment_text'])
         return redirect(str(self.get_success_url()))
