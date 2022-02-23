@@ -20,10 +20,5 @@ class MarkdownPreviewApi(APIView):
         if not request.user.is_authenticated:
             raise PermissionDenied()
         markdown_text = request.data.get('markdown_text', None)
-        if not markdown_text:
-            return Response({'error': 'Missing "markdown_text".'}, status=status.HTTP_400_BAD_REQUEST)
-        try:
-            markdown_result = parse_markdown.markdown_full(markdown_text)
-        except Exception:
-            return Response({'error': 'Error occurred while parsing markdown.'}, status=status.HTTP_400_BAD_REQUEST)
+        markdown_result = parse_markdown.markdown_full(markdown_text)
         return Response({'markdown_result': mark_safe(markdown_result)}, status=status.HTTP_200_OK)

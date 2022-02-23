@@ -209,6 +209,14 @@
                 return;
             }
             const previewArea = document.getElementById(`${this.elementId}_comment_editor_preview_section`);
+            previewArea.innerHTML = `
+            <span>
+                <span class="fa fa-spinner fa-spin" aria-hidden="true"></span>
+                <p class="text-muted">
+                    ${this.attrMarkdownPreviewConfig.previewApiFetchingMessage}
+                </p>
+            </span>
+            `
             const textArea = this.textArea;
             fetch(this.attrMarkdownPreviewConfig.apiUrl, {
                 method: 'POST',
@@ -224,7 +232,7 @@
                 previewArea.innerHTML = responseData['markdown_result'];
             })
             .catch((error) => {
-                console.error(error)
+                previewArea.innerHTML = this.attrMarkdownPreviewConfig.previewApiErrorMessage
             });
         }
 

@@ -47,11 +47,6 @@ class DevilryMarkdownWidget(forms.widgets.Textarea):
                     'devilry markdown widget',
                     'Full guide for the markdown we support here'),
                 'markdownGuideLinkUrl': '/markdown-help',
-                'markdownPreviewButtonText': pgettext(
-                    'devilry markdown widget',
-                    'Preview'),
-                'markdownPreviewUrl': self._get_preview_markdown_api_url(),
-                'markdownPreviewEnabled': 'true' if self.preview_enabled else 'false',
                 'markdownPreviewConfig': json.dumps({
                     'editorActiveButtonText': pgettext(
                         'devilry markdown widget',
@@ -59,6 +54,14 @@ class DevilryMarkdownWidget(forms.widgets.Textarea):
                     'previewActiveButtonText': pgettext(
                         'devilry markdown widget',
                         'Write'),
+                    'previewApiErrorMessage': pgettext(
+                        'devilry markdown widget',
+                        'Something went wrong.'
+                    ),
+                    'previewApiFetchingMessage': pgettext(
+                        'devilry markdown widget',
+                        'Preparing preview'
+                    ),
                     'apiUrl': self._get_preview_markdown_api_url(),
                     'enabled': self.preview_enabled
                 }),
