@@ -44,8 +44,8 @@
     const TOOLBAR_CODE_BLOCK = 'codeBlock';
     const TOOLBAR_UNORDERED_LIST = 'unorderedList';
     const TOOLBAR_ORDERED_LIST = 'orderedList';
-    const OL_REGEX = '^(\\s*)([0-9]*\\.\\s)';
-    const UL_REGEX = '^(\\s*)(\\*\\s)';
+    const ORDERED_LIST_REGEX = '^(\\s*)([0-9]*\\.\\s)';
+    const UNORDERED_LIST_REGEX = '^(\\s*)(\\*\\s)';
 
     class DevilryCommentEditor extends HTMLElement {
         constructor () {
@@ -319,9 +319,9 @@
                             keyDownEvent,
                             () => {
                                 const cursorStartLine = this._getCursorLine();
-                                if (cursorStartLine.match(UL_REGEX)) {
+                                if (cursorStartLine.match(UNORDERED_LIST_REGEX)) {
                                     this.insertMarkdownListAtCursor(TOOLBAR_UNORDERED_LIST, event);
-                                } else if (cursorStartLine.match(OL_REGEX)) {
+                                } else if (cursorStartLine.match(ORDERED_LIST_REGEX)) {
                                     this.insertMarkdownListAtCursor(TOOLBAR_ORDERED_LIST, event);
                                 }
                             },
@@ -465,12 +465,12 @@
                 // the current list has no content after the tag. This will 
                 // result in the line being reset.
                 if (type === TOOLBAR_ORDERED_LIST) {
-                    const match = cursorLine.match('^(\\s*)([0-9]*\\.\\s)(.+)');
+                    const match = cursorLine.match(`${ORDERED_LIST_REGEX}(.+)`);
                     if (match) {
                         listTag = match[1] + (parseInt(match[2]) + 1) + '. ';
                     }
                 } else {
-                    const match = cursorLine.match('^(\\s*)(\\*\\s)(.+)');
+                    const match = cursorLine.match(`${UNORDERED_LIST_REGEX}(.+)`);
                     if (match) {
                         listTag = match[1] + match[2];
                     }
