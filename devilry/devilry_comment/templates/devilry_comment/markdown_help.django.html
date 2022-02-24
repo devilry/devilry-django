@@ -30,21 +30,18 @@
                 the largest heading, and six # symbols is the smallest heading.
             {% endblocktranslate %}
         </p>
-        <p aria-hidden="true">
-            {% blocktranslate trimmed %}
-                Example heading level 1: # Heading 1
-            {% endblocktranslate %}
+        <p>
+            {% trans "Example heading level 1" %}:
         </p>
-        <p aria-hidden="true">
-            {% blocktranslate trimmed %}
-                Example heading level 2: ## Heading 2
-            {% endblocktranslate %}
+        <pre style="white-space: pre-line;">
+            # Heading 1
+        </pre>
+        <p>
+            {% trans "Example heading level 3" %}:
         </p>
-        <p aria-hidden="true">
-            {% blocktranslate trimmed %}
-                Example heading level 6: ####### Heading 6
-            {% endblocktranslate %}
-        </p>
+        <pre style="white-space: pre-line;">
+            ### Heading 3
+        </pre>
     </div>
 
     <div class="container">
@@ -64,24 +61,26 @@
                 Add two * symbols before and after the text you want bold formatting for.
             {% endblocktranslate %}
         </p>
-        <p aria-hidden="true">
-            {% blocktranslate trimmed %}
-                Example: **your text**
-            {% endblocktranslate %}
+        <p>
+            {% trans "Example" %}:
         </p>
+        <pre style="white-space: pre-line;">
+            **Bold text**
+        </pre>
         <h3>
             {% trans "Italic" %}
         </h3>
         <p>
             {% blocktranslate trimmed %}
-                Add one * symbol before and after the text you want italic formatting for.
+                Add one _ symbol before and after the text you want italic formatting for.
             {% endblocktranslate %}
         </p>
-        <p aria-hidden="true">
-            {% blocktranslate trimmed %}
-                Example: *your text*
-            {% endblocktranslate %}
+        <p>
+            {% trans "Example" %}:
         </p>
+        <pre style="white-space: pre-line;">
+            _Italic text_
+        </pre>
     </div>
 
     <div class="container">
@@ -95,11 +94,12 @@
                 link address.
             {% endblocktranslate %}
         </p>
-        <p aria-hidden="true">
-            {% blocktranslate trimmed %}
-                Example: [My link text](https://www.devilry.test)
-            {% endblocktranslate %}
+        <p>
+            {% trans "Example" %}:
         </p>
+        <pre style="white-space: pre-line;">
+            [My link text](https://www.devilry.test)
+        </pre>
     </div>
 
     <div class="container">
@@ -108,14 +108,82 @@
         </h2>
         <p>
             {% blocktranslate trimmed %}
-                Mark code within a sentence with single backticks. The text encapsulated by the backticks will be formatted inline.
+                Mark a short snippet of text to call it out as code with single backticks. The text encapsulated by the 
+                backticks will be formatted as a inline piece of code.
             {% endblocktranslate %}
         </p>
-        <p aria-hidden="true">
+        <p>
+            {% trans "Example" %}:
+        </p>
+        <pre style="white-space: pre-line;">
+            `ls -l`
+        </pre>
+        <p>
             {% blocktranslate trimmed %}
-                Example: Use this command `ls -a` to do something.
+                To format code or text into its own distinct block, use three backticks instead.
             {% endblocktranslate %}
         </p>
+        <p>
+            {% trans "Example" %}:
+        </p>
+        <pre style="white-space: pre-line;">
+            ```
+            ls -l
+            cd /some/folder
+            ls -l
+            ````
+        </pre>
+    </div>
+
+    <div class="container">
+        <h2>
+            {% trans "Lists" %}
+        </h2>
+        <p>
+            {% blocktranslate trimmed %}
+                Make an unordered list by preceding one or more lines of text with * symbol.
+            {% endblocktranslate %}
+        </p>
+        <p>
+            {% trans "Example" %}:
+        </p>
+        <pre style="white-space: pre-line;">
+            - List item 1
+            - List item 2
+            - List item 3
+        </pre>
+        <p>
+            {% blocktranslate trimmed %}
+                If you want to order a list, precede each line with a number.
+            {% endblocktranslate %}
+        </p>
+        <p>
+            {% trans "Example" %}:
+        </p>
+        <pre style="white-space: pre-line;">
+            1. List item 1
+            2. List item 2
+            3. List item 3
+        </pre>
+    </div>
+
+    <div class="container">
+        <h2>
+            {% trans "Nested lists" %}
+        </h2>
+        <p>
+            {% blocktranslate trimmed %}
+                A nested list can be created by indenting one or more list items below another item with 4 spaces.
+            {% endblocktranslate %}
+        </p>
+        <p>
+            {% trans "Example" %}:
+        </p>
+        <pre style="white-space: pre-line;">
+            1. List item 1
+            &nbsp;&nbsp;&nbsp;&nbsp;* Nested item 1
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Nested item 2
+        </pre>
     </div>
 {% endblock content %}
 
