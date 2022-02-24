@@ -178,7 +178,7 @@
                                 <span class="{% cradmin_icon 'list-ul' %}"></span>
                             </button>
                         </div>
-                        <label for="${this.elementId}" class="screenreader-only">${this.attrLabelText}</label>
+                        <label for="${this.elementId}" class="screenreader-only" aria-hidden="true">${this.attrLabelText}</label>
                         <div class="devilry-comment-editor__textarea">
                             <textarea
                                 id="${this.elementId}"
@@ -380,7 +380,7 @@
         }
 
         toolbarEventActionHeading () {
-            this.insertBasicMarkdownAtCursor(TOOLBAR_HEADING, '\n### ', '', this.attrToolbarConfig.heading.placeholderText);
+            this.insertBasicMarkdownAtCursor(TOOLBAR_HEADING, '### ', '', this.attrToolbarConfig.heading.placeholderText);
         }
 
         toolbarEventActionBold () {
