@@ -27,6 +27,7 @@ from devilry.devilry_group.feedbackfeed_builder import feedbackfeed_sidebarbuild
 from devilry.devilry_group.feedbackfeed_builder import feedbackfeed_timelinebuilder
 from devilry.utils import datetimeutils
 from devilry.devilry_comment.editor_widget import DevilryMarkdownWidget
+from devilry.utils.templatecontext_utils import get_devilry_theme3_dist_path
 
 
 class GroupCommentForm(forms.ModelForm):
@@ -384,7 +385,7 @@ class FeedbackFeedBaseView(create.CreateView):
                         })),
                         "hiddenfieldname": "temporary_file_collection_id",
 
-
+                        'DEVILRY_THEME3_DIST_PATH': get_devilry_theme3_dist_path(),
                         "attributes": ' '.join(
                             f'{key}={quoteattr(value)}'
                             for key, value in {
@@ -399,10 +400,16 @@ class FeedbackFeedBaseView(create.CreateView):
                                 "screenReaderLabelUploadFilesButton": gettext(
                                     'Select files for upload'
                                 ),
+                                "screenReaderFilesQueuedMessage": gettext(
+                                    'Files queued for upload:'
+                                ),
+                                "screenReaderFilesQueueHowtoMessage": gettext(
+                                    'You can browse the upload queue and check upload status further down on the page.'  # TODO: Landmark?
+                                ),
                                 "labelInvalidFileType": gettext(
                                     'Invalid filetype'
                                 ),
-                                # "uploadApiUrl": reverse('cradmin_temporary_file_upload_api'),
+                                "uploadApiUrl": reverse('cradmin_temporary_file_upload_api'),
                                 # "maxFilenameLength": str(comment_models.CommentFile.MAX_FILENAME_LENGTH),
                                 # "errorMessage503": gettext(
                                 #     'Server timeout while uploading the file. '

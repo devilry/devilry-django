@@ -1,10 +1,10 @@
 from django.conf import settings
-from django.templatetags.static import static
 from django.utils import translation
 
 import devilry
 
 from devilry.devilry_settings.views import urlsetting_or_unsetview
+from devilry.utils.templatecontext_utils import get_devilry_theme3_dist_path
 
 
 def template_variables(request):
@@ -39,7 +39,7 @@ def template_variables(request):
         'DEVILRY_PROFILEPAGE_HEADER_INCLUDE_TEMPLATE': settings.DEVILRY_PROFILEPAGE_HEADER_INCLUDE_TEMPLATE,
         'DEVILRY_PROFILEPAGE_FOOTER_INCLUDE_TEMPLATE': settings.DEVILRY_PROFILEPAGE_FOOTER_INCLUDE_TEMPLATE,
         'DEVILRY_ENABLE_REALTIME_ZIPFILE_CREATION': settings.DEVILRY_ENABLE_REALTIME_ZIPFILE_CREATION,
-        'DEVILRY_THEME3_DIST_PATH': static('devilry_theme3/{}'.format(devilry.__version__)),
+        'DEVILRY_THEME3_DIST_PATH': get_devilry_theme3_dist_path(),
         'DEVILRY_BRANDING_FAV_ICON_PATH': settings.DEVILRY_BRANDING_FAV_ICON_PATH
     }
     language_code = translation.get_language()
