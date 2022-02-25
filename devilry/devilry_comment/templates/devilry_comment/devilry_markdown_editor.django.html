@@ -84,6 +84,28 @@
             `;
         }
 
+        _getButtonTab () {
+            if (!this.attrMarkdownPreviewConfig.enabled) {
+                return '';
+            }
+            return `
+            <div class="tab">
+                <button
+                    id="${this.elementId}_tab_button_write"
+                    class="tablinks active"
+                    type="button" disabled="true">
+                        ${this.attrMarkdownPreviewConfig.editorActiveButtonText}
+                    </button>
+                <button
+                    id="${this.elementId}_tab_button_preview"
+                    class="tablinks"
+                    type="button">
+                    ${this.attrMarkdownPreviewConfig.previewActiveButtonText}
+                    </button>
+            </div>
+            `
+        }
+
         get _tooltipMetaKeyForPlatform () {
             return this._isMac ? 'Cmd' : 'Ctrl'
         }
@@ -91,20 +113,7 @@
         renderEditor () {
             const commentEditor = new DOMParser().parseFromString(`
                 <div aria-live="polite">
-                    <div class="tab" role="tablist">
-                        <button
-                            id="${this.elementId}_tab_button_write"
-                            class="tablinks active"
-                            type="button" disabled="true">
-                                ${this.attrMarkdownPreviewConfig.editorActiveButtonText}
-                            </button>
-                        <button
-                            id="${this.elementId}_tab_button_preview"
-                            class="tablinks"
-                            type="button" tabindex="-1">
-                            ${this.attrMarkdownPreviewConfig.previewActiveButtonText}
-                            </button>
-                    </div>
+                    ${this._getButtonTab()}
 
                     <div id="${this.elementId}_tab_content_write" class="tabcontent" style="display:block;">
                         <div id="${this.elementId}_comment_editor_section" class="devilry-comment-editor">
