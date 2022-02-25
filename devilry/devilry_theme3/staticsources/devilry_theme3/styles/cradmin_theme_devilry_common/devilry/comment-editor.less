@@ -26,7 +26,6 @@
 
         &__option {
             margin-right: 3px;
-            margin-top: 3px;
         }
     }
 
@@ -37,4 +36,32 @@
             }
         }
     }
+}
+
+
+.tab {
+    overflow: hidden;
+}
+
+.tab button {
+    background-color: #f1f1f1;
+    float: left;
+    border: none;
+    outline: none;
+    padding: 12px 14px;
+    transition: 0.3s;
+    font-size: 17px;
+}
+
+.tab button:hover {
+    background-color: @devilry-brand-color-default-light3;
+}
+  
+.tab button.active {
+    background-color: @devilry-brand-color-default-light3;
+}
+  
+.tabcontent {
+    display: none;
+    margin-top: 3px;
 }

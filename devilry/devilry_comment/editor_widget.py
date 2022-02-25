@@ -50,10 +50,10 @@ class DevilryMarkdownWidget(forms.widgets.Textarea):
                 'markdownPreviewConfig': json.dumps({
                     'editorActiveButtonText': pgettext(
                         'devilry markdown widget',
-                        'Preview'),
+                        'Write'),
                     'previewActiveButtonText': pgettext(
                         'devilry markdown widget',
-                        'Write'),
+                        'Preview'),
                     'previewApiErrorMessage': pgettext(
                         'devilry markdown widget',
                         'Something went wrong.'
