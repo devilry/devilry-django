@@ -281,35 +281,35 @@ class DevilryCommentEditor extends HTMLElement {
     addToolbarOptionEventListeners () {
         document.getElementById(`${this._elementId}_toolbar_option_heading`)
             .addEventListener('click', () => {
-                this.toolbarEventActionHeading();
+                this.markdownActionHeading();
             }, false);
         document.getElementById(`${this._elementId}_toolbar_option_bold`)
             .addEventListener('click', () => {
-                this.toolbarEventActionBold();
+                this.markdownActionBold();
             }, false);
         document.getElementById(`${this._elementId}_toolbar_option_italic`)
             .addEventListener('click', () => {
-                this.toolbarEventActionItalic();
+                this.markdownActionItalic();
             }, false);
         document.getElementById(`${this._elementId}_toolbar_option_link`)
             .addEventListener('click', () => {
-                this.toolbarEventActionLink();
+                this.markdownActionLink();
             }, false);
         document.getElementById(`${this._elementId}_toolbar_option_code_inline`)
             .addEventListener('click', () => {
-                this.toolbarEventActionCodeInline();
+                this.markdownActionCodeInline();
             }, false);
         document.getElementById(`${this._elementId}_toolbar_option_code_block`)
             .addEventListener('click', () => {
-                this.toolbarEventActionCodeBlock();
+                this.markdownActionCodeBlock();
             }, false);
         document.getElementById(`${this._elementId}_toolbar_option_unordered_list`)
             .addEventListener('click', () => {
-                this.toolbarEventActionUnorderedList();
+                this.markdownActionUnorderedList();
             }, false);
         document.getElementById(`${this._elementId}_toolbar_option_ordered_list`)
             .addEventListener('click', () => {
-                this.toolbarEventActionOrderedList();
+                this.markdownActionOrderedList();
             }, false);
     }
 
@@ -317,15 +317,6 @@ class DevilryCommentEditor extends HTMLElement {
      * Add keyboard-shortcuts for toolbar actions.
      */
     addToolbarKeyboardShortcutEvents () {
-        // Prevents default behaviour and stops event propagation.
-        function _performToolbarKeyboardShortcutAction (event, actionFunction, preventDefault = true) {
-            if (preventDefault) {
-                event.preventDefault();
-            }
-            event.stopPropagation();
-            actionFunction();
-        }
-
         // Add key down event listener.
         document.onkeydown = (keyDownEvent) => {
             if (document.activeElement.id === `${this._elementId}`) {
@@ -338,35 +329,24 @@ class DevilryCommentEditor extends HTMLElement {
                 }
 
                 if (TOOLBAR_KEYBOARD_MAP[controlKey] && TOOLBAR_KEYBOARD_MAP['b']) {
-                    _performToolbarKeyboardShortcutAction(
-                        keyDownEvent, () => {this.toolbarEventActionBold();});
+                    this.markdownActionBold(keyDownEvent);
                 } else if (TOOLBAR_KEYBOARD_MAP[controlKey] && TOOLBAR_KEYBOARD_MAP['i']) {
-                    _performToolbarKeyboardShortcutAction(
-                        keyDownEvent, () => {this.toolbarEventActionItalic();});
+                    this.markdownActionItalic(keyDownEvent);
                 } else if (TOOLBAR_KEYBOARD_MAP[controlKey] && TOOLBAR_KEYBOARD_MAP['k']) {
-                    _performToolbarKeyboardShortcutAction(
-                        keyDownEvent, () => {this.toolbarEventActionLink();});
+                    this.markdownActionLink(keyDownEvent);
                 } else if (TOOLBAR_KEYBOARD_MAP[controlKey] && TOOLBAR_KEYBOARD_MAP['e']) {
-                    _performToolbarKeyboardShortcutAction(
-                        keyDownEvent, () => {this.toolbarEventActionCodeInline();});
+                    this.markdownActionCodeInline(keyDownEvent);
                 } else if (TOOLBAR_KEYBOARD_MAP[controlKey] && TOOLBAR_KEYBOARD_MAP['Shift'] && TOOLBAR_KEYBOARD_MAP['7']) {
-                        _performToolbarKeyboardShortcutAction(
-                            keyDownEvent, () => {this.toolbarEventActionOrderedList();});
+                    this.markdownActionOrderedList();
                 } else if (TOOLBAR_KEYBOARD_MAP[controlKey] && TOOLBAR_KEYBOARD_MAP['Shift'] && TOOLBAR_KEYBOARD_MAP['8']) {
-                    _performToolbarKeyboardShortcutAction(
-                        keyDownEvent, () => {this.toolbarEventActionUnorderedList();});
+                    this.markdownActionUnorderedList();
                 } else if (TOOLBAR_KEYBOARD_MAP['Enter']) {
-                    _performToolbarKeyboardShortcutAction(
-                        keyDownEvent,
-                        () => {
-                            const cursorStartLine = this._cursorLine;
-                            if (cursorStartLine.match(UNORDERED_LIST_REGEX)) {
-                                this.insertMarkdownListAtCursor(TOOLBAR_UNORDERED_LIST, keyDownEvent);
-                            } else if (cursorStartLine.match(ORDERED_LIST_REGEX)) {
-                                this.insertMarkdownListAtCursor(TOOLBAR_ORDERED_LIST, keyDownEvent);
-                            }
-                        },
-                        false);
+                    const cursorStartLine = this._cursorLine;
+                    if (cursorStartLine.match(UNORDERED_LIST_REGEX)) {
+                        this.markdownActionUnorderedList(keyDownEvent, false);
+                    } else if (cursorStartLine.match(ORDERED_LIST_REGEX)) {
+                        this.markdownActionOrderedList(keyDownEvent, false);
+                    }
                 }
             }
         };
@@ -381,36 +361,54 @@ class DevilryCommentEditor extends HTMLElement {
         };
     }
 
-    toolbarEventActionHeading () {
+    _handleEventBehaviour (event = null, preventDefault = true) {
+        if (event === null) {
+            return;
+        }
+        if (preventDefault) {
+            event.preventDefault();
+        }
+        event.stopPropagation();
+    }
+
+    markdownActionHeading (event = null) {
+        this._handleEventBehaviour(event, true);
         this.insertBasicMarkdownAtCursor(TOOLBAR_HEADING, '### ', '', this.attrToolbarConfig.heading.placeholderText);
     }
 
-    toolbarEventActionBold () {
+    markdownActionBold (event = null) {
+        this._handleEventBehaviour(event, true);
         this.insertBasicMarkdownAtCursor(TOOLBAR_BOLD, '**', '**', this.attrToolbarConfig.bold.placeholderText);
     }
 
-    toolbarEventActionItalic () {
+    markdownActionItalic (event = null) {
+        this._handleEventBehaviour(event, true);
         this.insertBasicMarkdownAtCursor(TOOLBAR_ITALIC, '_', '_', this.attrToolbarConfig.italic.placeholderText);
     }
 
-    toolbarEventActionLink () {
+    markdownActionLink (event = null) {
+        this._handleEventBehaviour(event, true);
         this.insertBasicMarkdownAtCursor(TOOLBAR_LINK, '[', '](url)', this.attrToolbarConfig.link.placeholderText);
     }
 
-    toolbarEventActionCodeInline () {
+    markdownActionCodeInline (event = null) {
+        this._handleEventBehaviour(event, true);
         this.insertBasicMarkdownAtCursor(TOOLBAR_CODE_INLINE, '`', '`', this.attrToolbarConfig.codeInline.placeholderText);
     }
 
-    toolbarEventActionCodeBlock () {
+    markdownActionCodeBlock (event = null) {
+        this._handleEventBehaviour(event, true);
         this.insertBasicMarkdownAtCursor(TOOLBAR_CODE_BLOCK, '```', '\n\n```', this.attrToolbarConfig.codeBlock.placeholderText);
     }
 
-    toolbarEventActionUnorderedList () {
-        this.insertMarkdownListAtCursor(TOOLBAR_UNORDERED_LIST);
+    markdownActionUnorderedList (event = null, preventDefault = true) {
+        this._handleEventBehaviour(event, preventDefault);
+        this.insertMarkdownListAtCursor(TOOLBAR_UNORDERED_LIST, event);
     }
 
-    toolbarEventActionOrderedList () {
-        this.insertMarkdownListAtCursor(TOOLBAR_ORDERED_LIST);
+    markdownActionOrderedList (event = null, preventDefault = true) {
+        this._handleEventBehaviour(event, preventDefault);
+        this.insertMarkdownListAtCursor(TOOLBAR_ORDERED_LIST, event);
     }
 
     /**
