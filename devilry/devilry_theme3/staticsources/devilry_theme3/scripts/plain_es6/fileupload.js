@@ -3,28 +3,55 @@ import { getCookie } from './cookie.js';
 
 
 class DevilryTemporaryFileUploadQueueItem {
-    constructor ({idPrefix, file, uploadApiUrl}) {
+    constructor ({idPrefix, file, uploadApiUrl, collectionId = null}) {
         this.idPrefix = idPrefix;
         this.file = file;
         this.uploadApiUrl = uploadApiUrl;
+        this.collectionId = collectionId;
         this.domElement = devilryParseDomString(`<div>${file.name}</div>`);
+        this.response = null;
+        this.responseData = null;
         this.status = 'not_started';
     }
 
     async uploadFile (onComplete) {
         this.status = 'uploading';
         let formData = new FormData();
+        if (this.collectionId !== null) {
+            formData.append('collectionid', this.collectionId);
+        }
         formData.append('file', this.file);
         try {
-            const response = await fetch(this.uploadApiUrl, {
+            this.response = await fetch(this.uploadApiUrl, {
                 method: "POST", 
                 body: formData,
                 headers: {
                     'X-CSRFToken': getCookie('csrftoken')
                 }
             });
-            console.log('SUCCESS:', response);
-            this.status = 'success';
+            console.log('RESPONSE:', this.response);
+            if (this.response.status === 200) {
+                this.status === 'success';
+            } else {
+                this.status === 'failed';
+            }
+            if (this.response.status === 200 || this.response.status === 400) {
+                this.response.json()
+                    .then((responseData) => {
+                        console.log('responseData:', responseData);
+                        this.responseData = responseData;
+                        if (this.collectionId === null) {
+                            this.collectionId = responseData.collectionid;
+                        } else if (this.collectionId !== responseData.collectionid) {
+                            throw new Error(`collectionId mismatch. ${this.collectionId} !== ${responseData.collectionid}`);
+                        }
+                    })
+                    .catch((error) => {
+                        // It is very very strange if we get a 200 or 400 error that is not
+                        // valid JSON, so we just crash.
+                        throw error;
+                    });
+            }
         } catch (error) {
             console.error('FAILED:', error);
             this.status = 'failed';
@@ -56,31 +83,52 @@ class DevilryTemporaryFileUpload extends HTMLElement {
         return this.idPrefix;
     }
 
+    onQueueItemUploadComplete (queueItem, isFirstQueueItem) {
+        console.log('upload complete:', queueItem);
+        if (isFirstQueueItem && this.collectionId === null) {
+            console.log('FIRST upload complete:', queueItem);
+            this.collectionId = queueItem.collectionId;
+            // Upload the other files that have come while we uploaded the first
+            for (let otherQueueItem of this.uploadQueue) {
+                if (otherQueueItem.status === 'not_started') {
+                    otherQueueItem.uploadFile(() => {
+                        this.onQueueItemUploadComplete(otherQueueItem, false);
+                    })
+                }
+            }
+        }
+    }
+
+    uploadQueueItem (queueItem, isFirstQueueItem) {
+        if (this.collectionId === null) {
+            if (isFirstQueueItem) {
+                queueItem.uploadFile(() => {
+                    this.onQueueItemUploadComplete(queueItem, true);
+                });
+            }
+            // If we do not have a collectionId, we only upload the first file to get
+            // the collectionId. onQueueItemUploadComplete() makes sure the rest of the file 
+            // upload queue is uploaded when we get the collectionId
+        } else {
+            queueItem.uploadFile(() => {
+                this.onQueueItemUploadComplete(queueItem, false);
+            });
+        }
+    }
+
     addFileToUploadQueue (file) {
         const queueItem = new DevilryTemporaryFileUploadQueueItem({
             idPrefix: `${this.getDomId(this.fileIndex)}`,
             file: file,
-            uploadApiUrl: this.uploadApiUrl
+            uploadApiUrl: this.uploadApiUrl,
+            collectionId: this.collectionId
         });
         this.fileIndex ++;
         this.uploadQueue.push(queueItem);
         const isFirstQueueItem = this.uploadQueue.length === 1;
         const uploadQueueElement = document.getElementById(this.getDomId('uploadqueue'));
         uploadQueueElement.appendChild(queueItem.domElement);
-
-        if (this.collectionId === null) {
-            if (isFirstQueueItem) {
-                queueItem.uploadFile((queueItem) => {
-                    console.log('FIRST upload complete:', queueItem);
-                    this.collectionId = queueItem.collectionId;
-                    // TODO: Start uploading the other files that have come while we uploaded the first
-                });
-            }
-        } else {
-            queueItem.uploadFile((queueItem) => {
-                console.log('upload complete:', queueItem);
-            });
-        }
+        this.uploadQueueItem(queueItem, isFirstQueueItem);
     }
 
     onFileSelect (fileList) {
