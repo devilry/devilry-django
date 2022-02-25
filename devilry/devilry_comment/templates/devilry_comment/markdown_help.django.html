@@ -12,16 +12,60 @@
 
 {% block content %}
     <div class="container">
-        <p>
-            {% blocktranslate trimmed %}
-                Devilry supports basic markdown formatting.
-            {% endblocktranslate %}
-        </p>
+        <nav role="doc-toc">
+            <h2 id="contents">
+                {% trans "Contents" %}
+            </h2>
+            <ol>
+                <li>
+                    <a href="#heading">
+                        {% trans "Heading" %}
+                    </a>
+                </li>
+                <li>
+                    <a href="#styling-text">
+                        {% trans "Styling text" %}
+                    </a>
+                    <ol>
+                        <li>
+                            <a href="#styling-text-bold">
+                                {% trans "Bold" %}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#styling-text-bold">
+                                {% trans "Italic" %}
+                            </a>
+                        </li>
+                    </ol>
+                </li>
+                <li>
+                    <a href="#link">
+                        {% trans "Link" %}
+                    </a>
+                </li>
+                <li>
+                    <a href="#code">
+                        {% trans "Code" %}
+                    </a>
+                </li>
+                <li>
+                    <a href="#lists">
+                        {% trans "Lists" %}
+                    </a>
+                </li>
+                <li>
+                    <a href="#nested-lists">
+                        {% trans "Nested lists" %}
+                    </a>
+                </li>
+            </ol>
+        </nav>
     </div>
 
     <div class="container">
-        <h2>
-            {% trans "Headings" %}
+        <h2 id="heading">
+            {% trans "Heading" %}
         </h2>
         <p>
             {% blocktranslate trimmed %}
@@ -45,7 +89,7 @@
     </div>
 
     <div class="container">
-        <h2>
+        <h2 id="styling-text">
             {% trans "Styling text" %}
         </h2>
         <p>
@@ -53,7 +97,7 @@
                 You can style simple words or sentences with inlined bold or italic styling.   
             {% endblocktranslate %}
         </p>
-        <h3>
+        <h3 id="styling-text-bold">
             {% trans "Bold" %}
         </h3>
         <p>
@@ -67,7 +111,7 @@
         <pre style="white-space: pre-line;">
             **Bold text**
         </pre>
-        <h3>
+        <h3 id="styling-text-italic">
             {% trans "Italic" %}
         </h3>
         <p>
@@ -84,8 +128,8 @@
     </div>
 
     <div class="container">
-        <h2>
-            {% trans "Links" %}
+        <h2 id="link">
+            {% trans "Link" %}
         </h2>
         <p>
             {% blocktranslate trimmed %}
@@ -103,7 +147,7 @@
     </div>
 
     <div class="container">
-        <h2>
+        <h2 id="code">
             {% trans "Code" %}
         </h2>
         <p>
@@ -136,7 +180,7 @@
     </div>
 
     <div class="container">
-        <h2>
+        <h2 id="lists">
             {% trans "Lists" %}
         </h2>
         <p>
@@ -168,7 +212,7 @@
     </div>
 
     <div class="container">
-        <h2>
+        <h2 id="nested-lists">
             {% trans "Nested lists" %}
         </h2>
         <p>
