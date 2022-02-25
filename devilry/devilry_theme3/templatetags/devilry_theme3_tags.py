@@ -1,4 +1,7 @@
 from django import template
+from django.templatetags.static import static
+
+import devilry
 
 register = template.Library()
 
@@ -12,3 +15,8 @@ def devilry_status_verbose_inline(status):
     return {
         'status': status.qualifies
     }
+
+
+@register.simple_tag()
+def devilry_theme3_dist_path():
+    return static('devilry_theme3/{}'.format(devilry.__version__))
