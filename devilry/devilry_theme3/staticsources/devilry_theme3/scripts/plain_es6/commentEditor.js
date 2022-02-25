@@ -202,40 +202,6 @@ class DevilryCommentEditor extends HTMLElement {
         this.appendChild(commentEditor)
     }
 
-    addTabEventListener () {
-        if (!this.attrMarkdownPreviewConfig.enabled) {
-            return;
-        }
-        const writeTabButton = document.getElementById(`${this._elementId}_tab_button_write`)
-        const previewTabButton = document.getElementById(`${this._elementId}_tab_button_preview`)
-        const writeTabContent = document.getElementById(`${this._elementId}_tab_content_write`);
-        const previewTabContent = document.getElementById(`${this._elementId}_tab_content_preview`);
-        writeTabButton.addEventListener('click', () => {
-            previewTabContent.style.display = 'none';
-            previewTabButton.className = previewTabButton.className.replace(' active', '');
-            previewTabButton.disabled = false;
-
-            writeTabContent.style.display = 'block';
-            writeTabButton.className += ' active';
-            writeTabButton.disabled = true;
-
-            this.activeTab = 'write';
-            this._textArea.focus();
-        });
-        previewTabButton.addEventListener('click', () => {
-            writeTabContent.style.display = 'none';
-            writeTabButton.className = previewTabButton.className.replace(' active', '');
-            writeTabButton.disabled = false;
-
-            previewTabContent.style.display = 'block';
-            previewTabButton.className += ' active';
-            previewTabButton.disabled = true;
-
-            this.activeTab = 'preview';
-            this._fetchAndInjectRenderedMarkdown();
-        });
-    }
-
     _fetchAndInjectRenderedMarkdown () {
         if (!this.attrMarkdownPreviewConfig.enabled) {
             return;
@@ -269,10 +235,48 @@ class DevilryCommentEditor extends HTMLElement {
     }
 
     /**
+     * Add event-listeners for write/preview "tab" buttons.
+     */
+    addTabEventListener () {
+        if (!this.attrMarkdownPreviewConfig.enabled) {
+            return;
+        }
+        const writeTabButton = document.getElementById(`${this._elementId}_tab_button_write`)
+        const previewTabButton = document.getElementById(`${this._elementId}_tab_button_preview`)
+        const writeTabContent = document.getElementById(`${this._elementId}_tab_content_write`);
+        const previewTabContent = document.getElementById(`${this._elementId}_tab_content_preview`);
+
+        // Active write tab content, deactive preview tab content.
+        writeTabButton.addEventListener('click', () => {
+            previewTabContent.style.display = 'none';
+            previewTabButton.className = previewTabButton.className.replace(' active', '');
+            previewTabButton.disabled = false;
+
+            writeTabContent.style.display = 'block';
+            writeTabButton.className += ' active';
+            writeTabButton.disabled = true;
+
+            this.activeTab = 'write';
+            this._textArea.focus();
+        });
+
+        // Active preview tab content, deactive write tab content.
+        previewTabButton.addEventListener('click', () => {
+            writeTabContent.style.display = 'none';
+            writeTabButton.className = previewTabButton.className.replace(' active', '');
+            writeTabButton.disabled = false;
+
+            previewTabContent.style.display = 'block';
+            previewTabButton.className += ' active';
+            previewTabButton.disabled = true;
+
+            this.activeTab = 'preview';
+            this._fetchAndInjectRenderedMarkdown();
+        });
+    }
+
+    /**
      * Add event-listeners to toolbar buttons.
-     * 
-     * Each event-listener ends up calling the `insertAtCursor` with 
-     * options according to which toolbar markdown option was pressed.
      */
     addToolbarOptionEventListeners () {
         document.getElementById(`${this._elementId}_toolbar_option_heading`)
