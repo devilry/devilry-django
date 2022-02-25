@@ -361,9 +361,9 @@ class DevilryCommentEditor extends HTMLElement {
                         () => {
                             const cursorStartLine = this._cursorLine;
                             if (cursorStartLine.match(UNORDERED_LIST_REGEX)) {
-                                this.insertMarkdownListAtCursor(TOOLBAR_UNORDERED_LIST, event);
+                                this.insertMarkdownListAtCursor(TOOLBAR_UNORDERED_LIST, keyDownEvent);
                             } else if (cursorStartLine.match(ORDERED_LIST_REGEX)) {
-                                this.insertMarkdownListAtCursor(TOOLBAR_ORDERED_LIST, event);
+                                this.insertMarkdownListAtCursor(TOOLBAR_ORDERED_LIST, keyDownEvent);
                             }
                         },
                         false);
@@ -492,7 +492,7 @@ class DevilryCommentEditor extends HTMLElement {
             if (textArea.selectionStart !== textArea.selectionEnd) {
                 return;
             }
-            event.preventDefault();
+            enterKeyPressEvent.preventDefault();
 
             const cursorLine = this._cursorLine;
             let listTag = '';
