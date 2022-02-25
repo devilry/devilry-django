@@ -38,7 +38,7 @@ class SelectedAssignmentGroupForm(forms.Form):
         widget=DevilryMarkdownNoPreviewWidget(),
         help_text=gettext_lazy('Add a general comment to the feedback'),
         initial=gettext_lazy('Delivery has been corrected.'),
-        label=gettext_lazy('Feedback comment text')
+        label=False
     )
 
     def __init__(self, *args, **kwargs):

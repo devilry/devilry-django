@@ -10,9 +10,10 @@ from django.urls import reverse
 class DevilryMarkdownWidget(forms.widgets.Textarea):
     template_name = 'devilry_comment/devilry_markdown_editor.django.html'
 
-    def __init__(self, *args, request=None, **kwargs):
+    def __init__(self, *args, label='', request=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.request = request
+        self.label = label or pgettext('devilry markdown widget', 'Comment text')
     
     @property
     def preview_enabled(self):
@@ -35,10 +36,7 @@ class DevilryMarkdownWidget(forms.widgets.Textarea):
                     'devilry markdown widget',
                     'Write your comment here'
                 ),
-                'labelText': pgettext(
-                    'devilry markdown widget',
-                    'Comment'
-                ),
+                'labelText': self.label,
                 'helpText': pgettext(
                     'devilry markdown widget',
                     'Write a comment in markdown format. Use <strong>**text here**</strong> for bold and <em>*text here*</em> for italic.'

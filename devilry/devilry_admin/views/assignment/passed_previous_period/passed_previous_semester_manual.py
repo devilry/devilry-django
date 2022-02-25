@@ -38,7 +38,7 @@ class SelectedAssignmentGroupsForm(groupview_base.SelectedGroupsForm):
         self.fields['feedback_comment_text'] = forms.CharField(
             widget=DevilryMarkdownNoPreviewWidget(),
             initial=gettext_lazy('Delivery has been corrected. Passed in a previous semester.'),
-            label=gettext_lazy('Feedback comment text')
+            label=False
         )
 
 

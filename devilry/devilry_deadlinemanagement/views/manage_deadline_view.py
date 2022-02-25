@@ -38,9 +38,7 @@ class SelectedItemsForm(forms.Form):
 
 
 class ManageDeadlineForm(SelectedItemsForm):
-    comment_text = forms.CharField(
-        label=gettext_lazy('Comment text')
-    )
+    comment_text = forms.CharField()
 
     new_deadline = forms.DateTimeField(
         label=gettext_lazy('New deadline')
@@ -51,6 +49,7 @@ class ManageDeadlineForm(SelectedItemsForm):
         self.request = kwargs.pop('request')
         super(ManageDeadlineForm, self).__init__(*args, **kwargs)
         self.fields['comment_text'].widget = DevilryMarkdownWidget(request=self.request)
+        self.fields['comment_text'].label = False
         self.fields['new_deadline'].widget = DateTimePickerWidget(
             buttonlabel_novalue=pgettext_lazy('CrAdmin datetime picker typo fix', 'Select a date/time'),
             minimum_datetime=self.get_minimum_datetime(),
