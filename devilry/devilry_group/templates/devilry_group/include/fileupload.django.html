@@ -1,5 +1,11 @@
 {% load i18n %}
 
+<script type="module">
+    import '{{ DEVILRY_THEME3_DIST_PATH }}/scripts/plain_es6/fileupload.js';
+</script>
+
+<devilry-temporary-file-upload {{ attributes|safe }}></devilry-temporary-file-upload>
+
 <div cradmin-legacy-bulkfileupload={{ apiparameters|safe }} {# NOTE: The missing quotes are correct - they are added by quoteattr #}
              class="cradmin-legacy-bulkfileupload">
 
@@ -112,10 +118,4 @@
 </div>
 
 <script>
-    window.addEventListener("dragover", function(e) {
-      e.preventDefault()
-    }, false);
-    window.addEventListener("drop", function(e) {
-      e.preventDefault()
-    }, false);
 </script>
