@@ -139,12 +139,12 @@ class DevilryCommentEditor extends HTMLElement {
                                 <span class="fa fa-link"></span>
                             </button>
                             <button
-                                id="${this._elementId}_toolbar_option_code_inline"
+                                id="${this._elementId}_toolbar_option_unordered_list"
                                 type="button"
-                                title="${this.attrToolbarConfig.codeInline.tooltip}, ${this._tooltipMetaKeyForPlatform}+e"
+                                title="${this.attrToolbarConfig.unorderedList.tooltip}, ${this._tooltipMetaKeyForPlatform}+Shift+8"
                                 class="btn btn-default devilry-comment-editor-toolbar__option"
                             >
-                                <span class="fa fa-code"></span>
+                                <span class="fa fa-list-ul"></span>
                             </button>
                             <button
                                 id="${this._elementId}_toolbar_option_code_block"
@@ -154,22 +154,6 @@ class DevilryCommentEditor extends HTMLElement {
                             >
                                 <span class="fa fa-code"></span>
                             </button>
-                            <button
-                                id="${this._elementId}_toolbar_option_ordered_list"
-                                type="button"
-                                title="${this.attrToolbarConfig.orderedList.tooltip}, ${this._tooltipMetaKeyForPlatform}+Shift+7"
-                                class="btn btn-default devilry-comment-editor-toolbar__option"
-                            >
-                                <span class="fa fa-list-ol"></span>
-                            </button>
-                            <button
-                                id="${this._elementId}_toolbar_option_unordered_list"
-                                type="button"
-                                title="${this.attrToolbarConfig.unorderedList.tooltip}, ${this._tooltipMetaKeyForPlatform}+Shift+8"
-                                class="btn btn-default devilry-comment-editor-toolbar__option"
-                            >
-                                <span class="fa fa-list-ul"></span>
-                            </button>
                         </div>
                         <label for="${this._elementId}" class="screenreader-only" aria-hidden="true">${this.attrLabelText}</label>
                         <div class="devilry-comment-editor__textarea">
@@ -177,11 +161,11 @@ class DevilryCommentEditor extends HTMLElement {
                                 id="${this._elementId}"
                                 cols="40"
                                 rows="10"
-                                class="devilry-comment-editor-textarea form-control"
+                                class="devilry-comment-editor-textarea devilry-comment-editor-textarea--real"
                                 placeholder="${this.attrTextareaPlaceholder}"
                                 name="${this.attrTextareaName}"
                                 aria-describedby="${this._elementId}_help">${this.attrTextareaValue}</textarea>
-                            <div class="devilry-comment-editor-textarea--copy" aria-hidden="true"></div>
+                            <div id="${this._elementId}_textarea_content_copy" class="devilry-comment-editor-textarea devilry-comment-editor-textarea--copy" aria-hidden="true"></div>
                         </div>
                         <div class="devilry-comment-editor devilry-comment-editor__example-help">
                             <p id="${this._elementId}_help">
@@ -295,10 +279,6 @@ class DevilryCommentEditor extends HTMLElement {
             .addEventListener('click', () => {
                 this.markdownActionLink();
             }, false);
-        document.getElementById(`${this._elementId}_toolbar_option_code_inline`)
-            .addEventListener('click', () => {
-                this.markdownActionCodeInline();
-            }, false);
         document.getElementById(`${this._elementId}_toolbar_option_code_block`)
             .addEventListener('click', () => {
                 this.markdownActionCodeBlock();
@@ -306,10 +286,6 @@ class DevilryCommentEditor extends HTMLElement {
         document.getElementById(`${this._elementId}_toolbar_option_unordered_list`)
             .addEventListener('click', () => {
                 this.markdownActionUnorderedList();
-            }, false);
-        document.getElementById(`${this._elementId}_toolbar_option_ordered_list`)
-            .addEventListener('click', () => {
-                this.markdownActionOrderedList();
             }, false);
     }
 
@@ -354,6 +330,8 @@ class DevilryCommentEditor extends HTMLElement {
         // Add key up event listener.
         document.onkeyup = (keyUpEvent) => {
             if (document.activeElement.id === `${this._elementId}`) {
+                const textAreaContentCopy = document.getElementById(`${this._elementId}_textarea_content_copy`);
+                textAreaContentCopy.innerHTML = `${this._textArea.value}X`;
                 Object.keys(TOOLBAR_KEYBOARD_MAP).forEach(key => {
                     TOOLBAR_KEYBOARD_MAP[key] = false;
                 });

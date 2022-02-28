@@ -30,9 +30,30 @@
     }
 
     &__textarea {
+        position: relative;
         .devilry-comment-editor-textarea {
+            .cradminFormControl();
+            border-width: 3px;
+            border-radius: 0;
+            padding: 6px 12px;
+            white-space: pre-wrap;
+            letter-spacing: 1px;
+            width: 100%;
+            min-height: 200px;
+            overflow-y: hidden;
+            
+            &--real {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                height: 100%;                
+            }
+
             &--copy {
                 visibility: hidden;
+                margin-bottom: 15px;
             }
         }
     }
