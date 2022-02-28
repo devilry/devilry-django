@@ -177,11 +177,11 @@ class DevilryCommentEditor extends HTMLElement {
                                 id="${this._elementId}"
                                 cols="40"
                                 rows="10"
-                                class="devilry-comment-editor-textarea form-control"
+                                class="devilry-comment-editor-textarea devilry-comment-editor-textarea--real"
                                 placeholder="${this.attrTextareaPlaceholder}"
                                 name="${this.attrTextareaName}"
                                 aria-describedby="${this._elementId}_help">${this.attrTextareaValue}</textarea>
-                            <div class="devilry-comment-editor-textarea--copy" aria-hidden="true"></div>
+                            <div id="${this._elementId}_textarea_content_copy" class="devilry-comment-editor-textarea devilry-comment-editor-textarea--copy" aria-hidden="true"></div>
                         </div>
                         <div class="devilry-comment-editor devilry-comment-editor__example-help">
                             <p id="${this._elementId}_help">
@@ -354,6 +354,8 @@ class DevilryCommentEditor extends HTMLElement {
         // Add key up event listener.
         document.onkeyup = (keyUpEvent) => {
             if (document.activeElement.id === `${this._elementId}`) {
+                const textAreaContentCopy = document.getElementById(`${this._elementId}_textarea_content_copy`);
+                textAreaContentCopy.innerHTML = `${this._textArea.value}X`;
                 Object.keys(TOOLBAR_KEYBOARD_MAP).forEach(key => {
                     TOOLBAR_KEYBOARD_MAP[key] = false;
                 });
