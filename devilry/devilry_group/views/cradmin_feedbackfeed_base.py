@@ -388,7 +388,7 @@ class FeedbackFeedBaseView(create.CreateView):
                         "attributes": ' '.join(
                             f'{key}={quoteattr(value)}'
                             for key, value in {
-                                # "hiddenFieldName": "temporary_file_collection_id",
+                                "hiddenFieldName": "temporary_file_collection_id",
                                 "idPrefix": "id_temporary_file_upload",
                                 "uploadApiUrl": reverse('cradmin_temporary_file_upload_api'),
                                 "labelDragDropHelp": gettext(
@@ -412,6 +412,8 @@ class FeedbackFeedBaseView(create.CreateView):
                                 "uploadStatusUploading": pgettext('devilry_fileupload', 'Uploading'),
                                 "uploadStatusSuccess": pgettext('devilry_fileupload', 'Uploaded'),
                                 "uploadStatusFailed": pgettext('devilry_fileupload', 'Failed'),
+                                "uploadStatusDeleting": pgettext('devilry_fileupload', 'Deleting'),
+                                "uploadStatusDeleteFailed": pgettext('devilry_fileupload', 'Delete failed, try again'),
                                 "uploadStatusLabel": pgettext('devilry_fileupload', 'Upload status:'),
                                 "closeErrorLabel": pgettext('devilry_fileupload', 'Dismiss/close error message'),
                                 "removeFileLabel": pgettext('devilry_fileupload', 'Remove file'),
@@ -423,7 +425,12 @@ class FeedbackFeedBaseView(create.CreateView):
                                     'Server timeout while uploading the file. '
                                     'This may be caused by a poor upload link and/or a too large file.'),
                                 "errorMessageUnknown": gettext(
-                                    'Unknown error. May be a server glitch or a bug. Please try again, and report the error if it happens multiple times.'),
+                                    'Unknown error. May be a server glitch or a bug. Please try again, and '
+                                    'report the error if it happens multiple times.'),
+                                "deleteFileFailedMessage": gettext(
+                                    'We could not delete the file. This may be a server glitch or bug. Please try again, '
+                                    'and report if the error happens multiple times.'
+                                )
                             }.items()
                         )
                     })),
