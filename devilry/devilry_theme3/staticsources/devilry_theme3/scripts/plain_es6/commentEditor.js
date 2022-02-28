@@ -64,8 +64,8 @@ class DevilryCommentEditor extends HTMLElement {
     }
 
     get _cursorLine () {
-        const textArea = this._textArea;
-        return textArea.value.substring(0, textArea.selectionStart).split('\n').slice(-1)[0];
+        const cursorStartIndex = this._textArea.value.substring(0, this._textArea.selectionStart).split('\n').length - 1;
+        return this._textArea.value.split('\n')[cursorStartIndex];
     }
 
     get _newPreviewSection () {
@@ -478,7 +478,9 @@ class DevilryCommentEditor extends HTMLElement {
             // next line will then be continued with the appropriate tag, 
             // where a numbered tag will be incremented based on the value 
             // of the current line. The array is then updated with the new 
-            // numbered/bulleted line.
+            // numbered/bulleted line. If the cursor is in between text on 
+            // the current line, the remainder of the text (from cursor position 
+            // to the end of the line) will be cut, and added to the next line.
             //
             // The list will NOT be continued if the current line is an empty 
             // numbered or bulleted line. In this case, the will be "reset", and 
@@ -510,7 +512,7 @@ class DevilryCommentEditor extends HTMLElement {
                     listTag = match[1] + match[2];
                 }
             }
-            
+
             // This is the cursor position after the new line has been inserted with offset 
             // relative to where the cursor is currently at, and will be used set the cursor 
             // to the correct position when the new list-line has been added.
@@ -519,12 +521,23 @@ class DevilryCommentEditor extends HTMLElement {
             // Build the line array based on whether the new line to be inserted should continue 
             // the list or "reset" it.
             if (listTag) {
+
+                // Cuts remainder of current line and adds it to 
+                // the next line (if any).
+                let totalLengthUntilCursorLine = 0;
+                for (let i = 0; i < cursorStartIndex; i++) {
+                    totalLengthUntilCursorLine += textAreaLineArray[i].length;
+                }
+                const indexWithinCursorLine = textArea.selectionStart - totalLengthUntilCursorLine - cursorStartIndex;
+
+                // Build text area content with list item.
                 textAreaLineArray = [
-                    ...textAreaLineArray.slice(0, cursorStartIndex + 1),
-                    listTag,
+                    ...textAreaLineArray.slice(0, cursorStartIndex),
+                    cursorLine.substring(0, indexWithinCursorLine),
+                    `${listTag}${cursorLine.substring(indexWithinCursorLine)}`,
                     ...textAreaLineArray.slice(cursorStartIndex + 1)
                 ];
-                cursorPositionWithOffset = textArea.selectionStart + listTag.length + 1; 
+                cursorPositionWithOffset = textArea.selectionStart + listTag.length + 1;
             } else {
                 // Current list-line has no content, remove content and set 
                 // cursor to line start.
