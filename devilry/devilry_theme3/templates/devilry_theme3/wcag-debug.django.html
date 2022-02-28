@@ -1,4 +1,5 @@
 {% extends "cradmin_legacy/base.django.html" %}
+{% load devilry_theme3_tags %}
 
 {% block title %}
     WCAG debug
@@ -357,7 +358,7 @@
     </div>
 
     <script type="module">
-        import { helloWorld } from '{{ DEVILRY_THEME3_DIST_PATH }}/scripts/plain_es6/helloWorld.js';
+        import { helloWorld } from '{% devilry_theme3_dist_path %}/scripts/plain_es6/helloWorld.js';
 
         helloWorld();
 

@@ -1,7 +1,8 @@
 {% load i18n %}
+{% load devilry_theme3_tags %}
 
 <script type="module">
-    import '{{ DEVILRY_THEME3_DIST_PATH }}/scripts/plain_es6/fileupload.js';
+    import '{% devilry_theme3_dist_path %}/scripts/plain_es6/fileupload.js';
 </script>
 
 <devilry-temporary-file-upload {{ attributes|safe }}></devilry-temporary-file-upload>

@@ -26,7 +26,6 @@ from devilry.devilry_group.feedbackfeed_builder import feedbackfeed_sidebarbuild
 from devilry.devilry_group.feedbackfeed_builder import feedbackfeed_timelinebuilder
 from devilry.utils import datetimeutils
 from devilry.devilry_comment.editor_widget import DevilryMarkdownWidget
-from devilry.utils.templatecontext_utils import get_devilry_theme3_dist_path
 
 
 class GroupCommentForm(forms.ModelForm):
@@ -367,24 +366,6 @@ class FeedbackFeedBaseView(create.CreateView):
                 layout.HTML(render_to_string(
                     'devilry_group/include/fileupload.django.html',
                     {
-                        "apiparameters": quoteattr(json.dumps({
-                            "autosubmit": False,
-                            "uploadapiurl": reverse('cradmin_temporary_file_upload_api'),
-                            "remove_file_label": gettext("Remove file"),
-                            "close_errormessage_label": gettext("Close error message"),
-                            "removing_file_message": gettext("Removing files"),
-                            "upload_status": gettext("Upload status"),
-                            "unique_filenames": True,
-                            "max_filename_length": comment_models.CommentFile.MAX_FILENAME_LENGTH,
-                            "errormessage503": "Server timeout while uploading the file. "
-                                               "This may be caused by a poor upload link and/or a too large file.",
-                            "apiparameters": {
-                                "singlemode": False,
-                            },
-                        })),
-                        "hiddenfieldname": "temporary_file_collection_id",
-
-                        'DEVILRY_THEME3_DIST_PATH': get_devilry_theme3_dist_path(),
                         "attributes": ' '.join(
                             f'{key}={quoteattr(value)}'
                             for key, value in {
