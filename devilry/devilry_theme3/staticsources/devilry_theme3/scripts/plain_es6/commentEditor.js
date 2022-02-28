@@ -522,24 +522,19 @@ class DevilryCommentEditor extends HTMLElement {
             // the list or "reset" it.
             if (listTag) {
 
-                // Cuts remainder of current line and add to 
+                // Cuts remainder of current line and adds it to 
                 // the next line (if any).
                 let totalLengthUntilCursorLine = 0;
                 for (let i = 0; i < cursorStartIndex; i++) {
                     totalLengthUntilCursorLine += textAreaLineArray[i].length;
                 }
                 const indexWithinCursorLine = textArea.selectionStart - totalLengthUntilCursorLine - cursorStartIndex;
-                const trailingLineText = cursorLine.substring(indexWithinCursorLine);
-                let newLine = listTag;
-                if (trailingLineText) {
-                    newLine = `${newLine}${trailingLineText}`;
-                }
 
                 // Build text area content with list item.
                 textAreaLineArray = [
                     ...textAreaLineArray.slice(0, cursorStartIndex),
                     cursorLine.substring(0, indexWithinCursorLine),
-                    newLine,
+                    `${listTag}${cursorLine.substring(indexWithinCursorLine)}`,
                     ...textAreaLineArray.slice(cursorStartIndex + 1)
                 ];
                 cursorPositionWithOffset = textArea.selectionStart + listTag.length + 1;
