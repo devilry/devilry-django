@@ -3,22 +3,45 @@ import { getCookie } from './cookie.js';
 
 
 class DevilryTemporaryFileUploadQueueItem {
-    constructor ({idPrefix, file, uploadApiUrl, collectionId = null}) {
+    constructor ({idPrefix, file, uploadApiUrl, i18n}) {
         this.idPrefix = idPrefix;
         this.file = file;
         this.uploadApiUrl = uploadApiUrl;
-        this.collectionId = collectionId;
-        this.domElement = devilryParseDomString(`<div>${file.name}</div>`);
+        this.i18n = i18n;
+        this.status = 'not-started';
         this.response = null;
         this.responseData = null;
-        this.status = 'not_started';
+        this.domElement = devilryParseDomString(`
+            <div class='devilry-fileupload-queue-item'>
+                <div class='devilry-fileupload-iteminfo'>
+                    <span class='devilry-fileupload-filestatus' id='${this.getDomId("filestatus")}'>
+                        <span class='sr-only'>${this.i18n.uploadStatusLabel}</span>
+                        <span id='${this.getDomId("filestatus_text")}'>${this.fileStatusLabel}</span>
+                    </span>
+                    <span class='devilry-fileupload-itemdetails' id='${this.getDomId("itemdetails")}'>
+                        <span class='devilry-fileupload-filename'>${file.name}</span>
+                        <span id='${this.getDomId("errormessage")}' class='devilry-fileupload-errormessage'>${this.errorMessage}</span>
+                    </span>
+                </div>
+                <button type='button' class='btn btn--default devilry-fileupload-queue-removeitem' id='${this.getDomId("removeitem")}'
+                        aria-describedby='${this.getDomId("itemdetails")} ${this.getDomId("filestatus")}'>
+                    <span class='fa fa-times' aria-hidden='true'></span>
+                </button>
+            </div>`);
     }
 
-    async uploadFile (onComplete) {
+    getDomId (suffix = '') {
+        if (suffix) {
+            return `${this.idPrefix}_${suffix}`
+        }
+        return this.idPrefix;
+    }
+
+    async uploadFile (collectionId, onComplete) {
         this.status = 'uploading';
         let formData = new FormData();
-        if (this.collectionId !== null) {
-            formData.append('collectionid', this.collectionId);
+        if (collectionId !== null) {
+            formData.append('collectionid', collectionId);
         }
         formData.append('file', this.file);
         try {
@@ -31,32 +54,92 @@ class DevilryTemporaryFileUploadQueueItem {
             });
             console.log('RESPONSE:', this.response);
             if (this.response.status === 200) {
-                this.status === 'success';
+                this.status = 'success';
             } else {
-                this.status === 'failed';
+                this.status = 'failed';
             }
             if (this.response.status === 200 || this.response.status === 400) {
                 this.response.json()
                     .then((responseData) => {
                         console.log('responseData:', responseData);
                         this.responseData = responseData;
-                        if (this.collectionId === null) {
-                            this.collectionId = responseData.collectionid;
-                        } else if (this.collectionId !== responseData.collectionid) {
-                            throw new Error(`collectionId mismatch. ${this.collectionId} !== ${responseData.collectionid}`);
-                        }
+                        onComplete(this);
                     })
                     .catch((error) => {
                         // It is very very strange if we get a 200 or 400 error that is not
                         // valid JSON, so we just crash.
                         throw error;
                     });
+            } else {
+                onComplete(this);
             }
         } catch (error) {
             console.error('FAILED:', error);
             this.status = 'failed';
+            onComplete(this);
         }
-        onComplete(this);
+    }
+
+    get fileStatusLabel () {
+        if (this.status === 'failed') {
+            return this.i18n.uploadStatusFailed;
+        } else if (this.status === 'success') {
+            return this.i18n.uploadStatusSuccess;
+        } else {
+            return this.i18n.uploadStatusUploading;
+        }
+    }
+
+    get removeItemLabel () {
+        if (this.status === 'failed') {
+            return this.i18n.closeErrorLabel;
+        } else {
+            return this.i18n.removeFileLabel;
+        }
+    }
+
+    get apiErrorMessages () {
+        if (this.response === null || this.response.status !== 400) {
+            return [];
+        }
+        let errorMessages = [];
+        for (let [fieldname, errors] of Object.entries(this.responseData)) {
+            console.log(fieldname, errors);
+            for (let error of errors) {
+                errorMessages.push(error.message);
+            }
+        }
+        console.log(errorMessages);
+        return errorMessages;
+    }
+
+    get errorMessage () {
+        if (this.status !== 'failed') {
+            return '';
+        }
+        if (this.response !== null) {
+            if (this.response.status === 400) {
+                return this.apiErrorMessages.join(' ');
+            } else if (this.response.status === 503) {
+                return this.i18n.errorMessage503;
+            }
+        }
+        return this.i18n.errorMessageUnknown;
+    }
+
+    refreshDomItem () {
+        console.log('REFRESH:', this);
+        this.domElement.classList.remove('devilry-fileupload-queue-item--success');
+        this.domElement.classList.remove('devilry-fileupload-queue-item--not-started');
+        this.domElement.classList.remove('devilry-fileupload-queue-item--failed');
+        this.domElement.classList.add(`devilry-fileupload-queue-item--${this.status}`);
+
+        const fileStatusTextElement = document.getElementById(this.getDomId("filestatus_text"));
+        const removeItemElement = document.getElementById(this.getDomId("removeitem"));
+        const errorMessageElement = document.getElementById(this.getDomId("errormessage"));
+        fileStatusTextElement.innerText = this.fileStatusLabel;
+        removeItemElement.setAttribute('title', this.removeItemLabel);
+        errorMessageElement.innerText = this.errorMessage;
     }
 }
 
@@ -71,6 +154,16 @@ class DevilryTemporaryFileUpload extends HTMLElement {
         this.screenReaderFilesQueuedMessage = this.getAttribute('screenReaderFilesQueuedMessage');
         this.screenReaderFilesQueueHowtoMessage = this.getAttribute('screenReaderFilesQueueHowtoMessage');
         this.labelInvalidFileType = this.getAttribute('labelInvalidFileType');
+        this.uploadStatusUploading = this.getAttribute('uploadStatusUploading');
+        this.uploadStatusSuccess = this.getAttribute('uploadStatusSuccess');
+        this.uploadStatusFailed = this.getAttribute('uploadStatusFailed');
+        this.uploadStatusLabel = this.getAttribute('uploadStatusLabel');
+        this.closeErrorLabel = this.getAttribute('closeErrorLabel');
+        this.removeFileLabel = this.getAttribute('removeFileLabel');
+        this.maxFilenameLength = this.getAttribute('maxFilenameLength');
+        this.maxFilenameLengthErrorMessage = this.getAttribute('maxFilenameLengthErrorMessage');
+        this.errorMessage503 = this.getAttribute('errorMessage503');
+        this.errorMessageUnknown = this.getAttribute('errorMessageUnknown');
         this.uploadQueue = [];
         this.collectionId = null;
         this.fileIndex = 0;
@@ -85,13 +178,14 @@ class DevilryTemporaryFileUpload extends HTMLElement {
 
     onQueueItemUploadComplete (queueItem, isFirstQueueItem) {
         console.log('upload complete:', queueItem);
+        queueItem.refreshDomItem();
         if (isFirstQueueItem && this.collectionId === null) {
             console.log('FIRST upload complete:', queueItem);
-            this.collectionId = queueItem.collectionId;
+            this.collectionId = queueItem.responseData.collectionid;
             // Upload the other files that have come while we uploaded the first
             for (let otherQueueItem of this.uploadQueue) {
-                if (otherQueueItem.status === 'not_started') {
-                    otherQueueItem.uploadFile(() => {
+                if (otherQueueItem.status === 'not-started') {
+                    otherQueueItem.uploadFile(this.collectionId, () => {
                         this.onQueueItemUploadComplete(otherQueueItem, false);
                     })
                 }
@@ -102,7 +196,7 @@ class DevilryTemporaryFileUpload extends HTMLElement {
     uploadQueueItem (queueItem, isFirstQueueItem) {
         if (this.collectionId === null) {
             if (isFirstQueueItem) {
-                queueItem.uploadFile(() => {
+                queueItem.uploadFile(null, () => {
                     this.onQueueItemUploadComplete(queueItem, true);
                 });
             }
@@ -110,7 +204,7 @@ class DevilryTemporaryFileUpload extends HTMLElement {
             // the collectionId. onQueueItemUploadComplete() makes sure the rest of the file 
             // upload queue is uploaded when we get the collectionId
         } else {
-            queueItem.uploadFile(() => {
+            queueItem.uploadFile(this.collectionId, () => {
                 this.onQueueItemUploadComplete(queueItem, false);
             });
         }
@@ -121,7 +215,19 @@ class DevilryTemporaryFileUpload extends HTMLElement {
             idPrefix: `${this.getDomId(this.fileIndex)}`,
             file: file,
             uploadApiUrl: this.uploadApiUrl,
-            collectionId: this.collectionId
+            collectionId: this.collectionId,
+            i18n: {
+                'uploadStatusUploading': this.uploadStatusUploading,
+                'uploadStatusSuccess': this.uploadStatusSuccess,
+                'uploadStatusFailed': this.uploadStatusFailed,
+                'uploadStatusLabel': this.uploadStatusLabel,
+                'closeErrorLabel': this.closeErrorLabel,
+                'removeFileLabel': this.removeFileLabel,
+                'maxFilenameLength': this.maxFilenameLength,
+                'maxFilenameLengthErrorMessage': this.maxFilenameLengthErrorMessage,
+                'errorMessage503': this.errorMessage503,
+                'errorMessageUnknown': this.errorMessageUnknown,
+            }
         });
         this.fileIndex ++;
         this.uploadQueue.push(queueItem);
@@ -173,7 +279,7 @@ class DevilryTemporaryFileUpload extends HTMLElement {
                         class='devilry-fileupload-fileselect-input'>
                 </p>
                 <div id='${this.getDomId('aria-notify')}' class='sr-only' aria-live='assertive'></div>
-                <div id='${this.getDomId('uploadqueue')}'></div>
+                <div id='${this.getDomId('uploadqueue')}' class='devilry-fileupload-queue'></div>
             </div>
         `);
         this.appendChild(this.contentElement);

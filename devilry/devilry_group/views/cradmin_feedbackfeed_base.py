@@ -12,7 +12,7 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.template.loader import render_to_string
 from django.utils import timezone
-from django.utils.translation import gettext_lazy, gettext
+from django.utils.translation import gettext_lazy, gettext, pgettext
 from cradmin_legacy.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
 from cradmin_legacy.viewhelpers import create
 
@@ -390,6 +390,7 @@ class FeedbackFeedBaseView(create.CreateView):
                             for key, value in {
                                 # "hiddenFieldName": "temporary_file_collection_id",
                                 "idPrefix": "id_temporary_file_upload",
+                                "uploadApiUrl": reverse('cradmin_temporary_file_upload_api'),
                                 "labelDragDropHelp": gettext(
                                     'Upload files by dragging and dropping them here'
                                 ),
@@ -408,11 +409,21 @@ class FeedbackFeedBaseView(create.CreateView):
                                 "labelInvalidFileType": gettext(
                                     'Invalid filetype'
                                 ),
-                                "uploadApiUrl": reverse('cradmin_temporary_file_upload_api'),
-                                # "maxFilenameLength": str(comment_models.CommentFile.MAX_FILENAME_LENGTH),
-                                # "errorMessage503": gettext(
-                                #     'Server timeout while uploading the file. '
-                                #     'This may be caused by a poor upload link and/or a too large file.'),
+                                "uploadStatusUploading": pgettext('devilry_fileupload', 'Uploading'),
+                                "uploadStatusSuccess": pgettext('devilry_fileupload', 'Uploaded'),
+                                "uploadStatusFailed": pgettext('devilry_fileupload', 'Failed'),
+                                "uploadStatusLabel": pgettext('devilry_fileupload', 'Upload status:'),
+                                "closeErrorLabel": pgettext('devilry_fileupload', 'Dismiss/close error message'),
+                                "removeFileLabel": pgettext('devilry_fileupload', 'Remove file'),
+                                "maxFilenameLength": str(comment_models.CommentFile.MAX_FILENAME_LENGTH),
+                                "maxFilenameLengthErrorMessage": gettext('Filename is too long. Please use file names shorter than %(max_filename_length)s characters.') % {
+                                    'max_filename_length': comment_models.CommentFile.MAX_FILENAME_LENGTH
+                                },
+                                "errorMessage503": gettext(
+                                    'Server timeout while uploading the file. '
+                                    'This may be caused by a poor upload link and/or a too large file.'),
+                                "errorMessageUnknown": gettext(
+                                    'Unknown error. May be a server glitch or a bug. Please try again, and report the error if it happens multiple times.'),
                             }.items()
                         )
                     })),
