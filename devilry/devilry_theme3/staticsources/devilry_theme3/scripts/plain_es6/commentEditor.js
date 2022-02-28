@@ -530,17 +530,15 @@ class DevilryCommentEditor extends HTMLElement {
                 }
                 const indexWithinCursorLine = textArea.selectionStart - totalLengthUntilCursorLine - cursorStartIndex;
                 const trailingLineText = cursorLine.substring(indexWithinCursorLine);
-                let currentLine = cursorLine;
                 let newLine = listTag;
                 if (trailingLineText) {
                     newLine = `${newLine}${trailingLineText}`;
-                    currentLine = currentLine.substring(0, indexWithinCursorLine);
                 }
 
                 // Build text area content with list item.
                 textAreaLineArray = [
                     ...textAreaLineArray.slice(0, cursorStartIndex),
-                    currentLine,
+                    cursorLine.substring(0, indexWithinCursorLine),
                     newLine,
                     ...textAreaLineArray.slice(cursorStartIndex + 1)
                 ];
