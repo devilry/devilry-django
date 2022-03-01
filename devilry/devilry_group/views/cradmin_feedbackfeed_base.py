@@ -370,6 +370,7 @@ class FeedbackFeedBaseView(create.CreateView):
                             f'{key}={quoteattr(value)}'
                             for key, value in {
                                 "hiddenFieldName": "temporary_file_collection_id",
+                                "id": "id_temporary_file_upload_component",
                                 "idPrefix": "id_temporary_file_upload",
                                 "uploadApiUrl": reverse('cradmin_temporary_file_upload_api'),
                                 "labelDragDropHelp": gettext(

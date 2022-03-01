@@ -240,6 +240,21 @@ class DevilryTemporaryFileUpload extends HTMLElement {
         return this.idPrefix;
     }
 
+    sendChangeEvent () {
+        this.dispatchEvent(new CustomEvent('devilryFileuploadHasContent', {
+            detail: this.hasUploadedFiles() || this.isUploading() || this.isDeleting()
+        }));
+    }
+
+    hasUploadedFiles () {
+        for (let queueItem of this.uploadQueue) {
+            if (queueItem.status === 'upload-success') {
+                return true;
+            }
+        }
+        return false;
+    }
+
     updateHiddenFormField () {
         if (this.collectionId !== null) {
             document.getElementById(this.getDomId('collection_id_field')).value = `${this.collectionId}`;
@@ -290,11 +305,21 @@ class DevilryTemporaryFileUpload extends HTMLElement {
         }
         this.updateHiddenFormField();
         this.enableFormSubmitButtonIfNotUploading();
+        this.sendChangeEvent();
     }
 
     isUploading () {
         for (let queueItem of this.uploadQueue) {
             if (queueItem.status === 'uploading') {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    isDeleting () {
+        for (let queueItem of this.uploadQueue) {
+            if (queueItem.status === 'deleting') {
                 return true;
             }
         }
@@ -317,10 +342,12 @@ class DevilryTemporaryFileUpload extends HTMLElement {
                 this.onQueueItemUploadComplete(queueItem);
             });
         }
+        this.sendChangeEvent();
     }
 
     onDeleteQueueItemStart (queueItem) {
         this.disableFormSubmitButton();
+        this.sendChangeEvent();
     }
 
     onDeleteQueueItemComplete (deletedQueueItem) {
@@ -340,6 +367,7 @@ class DevilryTemporaryFileUpload extends HTMLElement {
                 this.uploadQueue[focusIndex].removeItemElement.focus();
             }
         }
+        this.sendChangeEvent();
     }
 
     addFileToUploadQueue (file) {
