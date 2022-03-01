@@ -4,6 +4,7 @@
 {% load crispy_forms_tags %}
 {% load i18n %}
 {% load cradmin_legacy_tags %}
+{% load devilry_theme3_tags %}
 
 {% block title %}
     {{ assignment.get_path }}
@@ -121,6 +122,11 @@
             let feedbackset_button = buttons[i];
             feedbackset_button.addEventListener('click', addListener);
         }
+    </script>
+
+    <script type="module">
+        import {DevilryCommentEditorHasContent} from '{% devilry_theme3_dist_path %}/scripts/plain_es6/commenEditorFileuploadHasContent.js';
+        new DevilryCommentEditorHasContent('{% trans "You have a unsubmitted comment and/or files. Do you want to navigate away?" %}');
     </script>
     {% include "devilry_theme3/include/devilry_all_js.django.html" %}
 {% endblock end-of-body %}

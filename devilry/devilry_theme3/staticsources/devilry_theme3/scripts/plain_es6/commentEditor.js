@@ -225,8 +225,8 @@ class DevilryCommentEditor extends HTMLElement {
         if (!this.attrMarkdownPreviewConfig.enabled) {
             return;
         }
-        const writeTabButton = document.getElementById(`${this._elementId}_tab_button_write`)
-        const previewTabButton = document.getElementById(`${this._elementId}_tab_button_preview`)
+        const writeTabButton = document.getElementById(`${this._elementId}_tab_button_write`);
+        const previewTabButton = document.getElementById(`${this._elementId}_tab_button_preview`);
         const writeTabContent = document.getElementById(`${this._elementId}_tab_content_write`);
         const previewTabContent = document.getElementById(`${this._elementId}_tab_content_preview`);
 
@@ -330,6 +330,8 @@ class DevilryCommentEditor extends HTMLElement {
         // Add key up event listener.
         document.onkeyup = (keyUpEvent) => {
             if (document.activeElement.id === `${this._elementId}`) {
+                this.dispatchEvent(new CustomEvent('devilryCommentEditorHasContent', {detail: this._textArea.value ? true : false}));
+
                 const textAreaContentCopy = document.getElementById(`${this._elementId}_textarea_content_copy`);
                 textAreaContentCopy.innerHTML = `${this._textArea.value}X`;
                 Object.keys(TOOLBAR_KEYBOARD_MAP).forEach(key => {
