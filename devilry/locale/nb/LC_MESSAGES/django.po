@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-02 12:43+0100\n"
-"PO-Revision-Date: 2022-03-02 12:44+0100\n"
+"POT-Creation-Date: 2022-03-02 15:01+0100\n"
+"PO-Revision-Date: 2022-03-02 15:09+0100\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -1963,12 +1963,29 @@ msgid "No data available. There are no examiners assigned to any groups."
 msgstr ""
 "Data ikke tilgjengelig. Det er ikke satt opp noen rettere for gruppene."
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:31
+#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:33
+msgctxt "devilry_admin assignment statistics"
+msgid "WARNING:"
+msgstr "ADVARSEL:"
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:35
+msgid ""
+"This assignment has student groups with multiple examiners assigned to them. "
+"Multiple examiners are assumed to be collaborating on the grading, thus "
+"giving the same credit to all assigned examiners regardless of who added the "
+"grade or posted a feedback to the student group."
+msgstr ""
+"Denne oppgaven innholder studentgrupper med flere rettere. Det antas at alle "
+"rettere på en gruppe samarbeider om rettingen, hvor bidraget da er fordelt "
+"på hver retter uavhengig av hvem som faktisk satt karakteren eller ga "
+"tilbakemelding til studentgruppen."
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:46
 msgctxt "devilry_admin assignment statistics"
 msgid "Points (average)"
 msgstr "Poeng (gjennomsnitt)"
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:35
+#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:50
 msgid ""
 "Average points given by each examiner registered on the assignment. The "
 "points are calculated by the last published feedback, this means that points "
@@ -1978,12 +1995,12 @@ msgstr ""
 "regnet ut fra den siste publiserte tilbakemeldingen for hver gruppe. Dette "
 "betyr at poeng tildelt på tidligere forsøk ikke er tatt med i beregningen."
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:46
+#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:61
 msgctxt "devilry_admin assignment statistics"
 msgid "Result/Progress"
 msgstr "Resultat/Fremgang"
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:50
+#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:65
 msgid ""
 "The feedback progress in percentages. How many of the groups has been given "
 "the grade passed/failed or have not been corrected yet."
@@ -1991,34 +2008,34 @@ msgstr ""
 "Fremgang i prosenter. Hvor stor andel av gruppene fått karakteren bestått/"
 "ikke-bestått, eller har ikke blitt rettet enda."
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:61
+#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:76
 msgctxt "devilry_admin assignment statistics"
 msgid "Details"
 msgstr "Detaljer"
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:65
+#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:80
 msgid "Detailed statistics per examiner."
 msgstr "Detaljert statistikk per retter."
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:73
+#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:88
 msgid "What does the different sections for each examiner mean?"
 msgstr "Hva betyr de forskjellige punktene for hver retter?"
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:77
+#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:92
 msgctxt "devilry_admin assignment statistics"
 msgid "Corrected groups"
 msgstr "Rettede grupper"
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:78
+#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:93
 msgid "The number of groups the examiner has corrected."
 msgstr "Antallet grupper som har blitt rettet."
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:82
+#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:97
 msgctxt "devilry_admin assignment statistics"
 msgid "Groups with passing grade"
 msgstr "Grupper som har bestått"
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:83
+#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:98
 msgid ""
 "The number of groups that where given points above or equal to the minimum "
 "required points to pass configured on the assignment."
@@ -2026,12 +2043,12 @@ msgstr ""
 "Antallet grupper som ble gitt poengsum over eller lik minste poengsum for å "
 "bestå, konfigurert på oppgaven."
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:88
+#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:103
 msgctxt "devilry_admin assignment statistics"
 msgid "Groups with failing grade"
 msgstr "Grupper som ikke har bestått"
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:89
+#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:104
 msgid ""
 "The number of groups that where given points below the minimum required "
 "points to pass configured on the assignment."
@@ -2039,12 +2056,12 @@ msgstr ""
 "Antallet grupper som ble gitt poengsum under minste poengsum for å bestå, "
 "konfigurert på oppgaven."
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:94
+#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:109
 msgctxt "devilry_admin assignment statistics"
 msgid "Groups waiting for feedback"
 msgstr "Grupper som venter på tilbakemelding"
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:95
+#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:110
 msgid ""
 "The number of groups that have not been corrected yet and the deadline has "
 "expired."
@@ -2052,12 +2069,12 @@ msgstr ""
 "Antallet grupper som ikke har blitt rettet enda og innleveringsfristen har "
 "utgått."
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:99
+#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:114
 msgctxt "devilry_admin assignment statistics"
 msgid "Groups waiting for the deadline to expire"
 msgstr "Grupper som venter på at innleveringsfristen skal utgå"
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:100
+#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:115
 msgid ""
 "The number of groups that have not been corrected yet and the deadline has "
 "not expired."
@@ -2065,17 +2082,17 @@ msgstr ""
 "Antallet grupper som ikke har blitt rettet enda og innleveringsfristen ikke "
 "har utgått."
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:104
+#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:119
 msgctxt "devilry_admin assignment statistics"
 msgid "Note that students can have individual deadlines."
 msgstr "Vær klar over at grupper kan ha individuelle frister."
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:107
+#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:122
 msgctxt "devilry_admin assignment statistics"
 msgid "Points"
 msgstr "Poeng"
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:108
+#: devilry/devilry_admin/templates/devilry_admin/assignment/statistics/overview.django.html:123
 msgid "The average, highest and lowest points given by the examiner."
 msgstr "Gjennomsnittlig, høyeste og laveste poeng gitt av retteren."
 
@@ -3605,77 +3622,77 @@ msgstr "Det er ingen studenter på denne oppgaven."
 msgid "Bulk pass students"
 msgstr "Bulk-godkjenn studenter"
 
-#: devilry/devilry_admin/views/assignment/statistics/statistics_overview.py:38
+#: devilry/devilry_admin/views/assignment/statistics/statistics_overview.py:39
 msgctxt "devilry_admin assignment examiner statistics"
 msgid "Fetching data"
 msgstr "Henter data"
 
-#: devilry/devilry_admin/views/assignment/statistics/statistics_overview.py:48
+#: devilry/devilry_admin/views/assignment/statistics/statistics_overview.py:49
 msgctxt "devilry_admin assignment examiner statistics"
 msgid "Points (average)"
 msgstr "Poeng (gjennomsnitt)"
 
-#: devilry/devilry_admin/views/assignment/statistics/statistics_overview.py:56
+#: devilry/devilry_admin/views/assignment/statistics/statistics_overview.py:57
 msgctxt "devilry_admin assignment examiner statistics"
 msgid "Corrected groups"
 msgstr "Rettede grupper"
 
-#: devilry/devilry_admin/views/assignment/statistics/statistics_overview.py:58
+#: devilry/devilry_admin/views/assignment/statistics/statistics_overview.py:59
 msgctxt "devilry_admin assignment examiner statistics"
 msgid "Groups with passing grade"
 msgstr "Grupper med bestått karakter"
 
-#: devilry/devilry_admin/views/assignment/statistics/statistics_overview.py:60
+#: devilry/devilry_admin/views/assignment/statistics/statistics_overview.py:61
 msgctxt "devilry_admin assignment examiner statistics"
 msgid "Groups with failing grade"
 msgstr "Grupper med ikke-bestått karakter"
 
-#: devilry/devilry_admin/views/assignment/statistics/statistics_overview.py:62
+#: devilry/devilry_admin/views/assignment/statistics/statistics_overview.py:63
 msgctxt "devilry_admin assignment examiner statistics"
 msgid "Groups waiting for feedback"
 msgstr "Grupper som venter på tilbakemelding"
 
-#: devilry/devilry_admin/views/assignment/statistics/statistics_overview.py:64
+#: devilry/devilry_admin/views/assignment/statistics/statistics_overview.py:65
 msgctxt "devilry_admin assignment examiner statistics"
 msgid "Groups waiting for the deadline to expire"
 msgstr "Venter på at innleveringsfristen skal utgå"
 
-#: devilry/devilry_admin/views/assignment/statistics/statistics_overview.py:66
+#: devilry/devilry_admin/views/assignment/statistics/statistics_overview.py:67
 msgctxt "devilry_admin assignment examiner statistics"
 msgid "Points"
 msgstr "Poeng"
 
-#: devilry/devilry_admin/views/assignment/statistics/statistics_overview.py:68
+#: devilry/devilry_admin/views/assignment/statistics/statistics_overview.py:69
 msgctxt "devilry_admin assignment examiner statistics"
 msgid "Average"
 msgstr "Gjennomsnitt"
 
-#: devilry/devilry_admin/views/assignment/statistics/statistics_overview.py:70
+#: devilry/devilry_admin/views/assignment/statistics/statistics_overview.py:71
 msgctxt "devilry_admin assignment examiner statistics"
 msgid "Highest"
 msgstr "Høyeste"
 
-#: devilry/devilry_admin/views/assignment/statistics/statistics_overview.py:72
+#: devilry/devilry_admin/views/assignment/statistics/statistics_overview.py:73
 msgctxt "devilry_admin assignment examiner statistics"
 msgid "Lowest"
 msgstr "Laveste"
 
-#: devilry/devilry_admin/views/assignment/statistics/statistics_overview.py:80
+#: devilry/devilry_admin/views/assignment/statistics/statistics_overview.py:81
 msgctxt "devilry_admin assignment examiner statistics"
 msgid "Percentage"
 msgstr "Prosent"
 
-#: devilry/devilry_admin/views/assignment/statistics/statistics_overview.py:82
+#: devilry/devilry_admin/views/assignment/statistics/statistics_overview.py:83
 msgctxt "devilry_admin assignment examiner statistics"
 msgid "Passed"
 msgstr "Bestått"
 
-#: devilry/devilry_admin/views/assignment/statistics/statistics_overview.py:84
+#: devilry/devilry_admin/views/assignment/statistics/statistics_overview.py:85
 msgctxt "devilry_admin assignment examiner statistics"
 msgid "Failed"
 msgstr "Ikke bestått"
 
-#: devilry/devilry_admin/views/assignment/statistics/statistics_overview.py:86
+#: devilry/devilry_admin/views/assignment/statistics/statistics_overview.py:87
 msgctxt "devilry_admin assignment examiner statistics"
 msgid "Not corrected"
 msgstr "Ikke rettet"
