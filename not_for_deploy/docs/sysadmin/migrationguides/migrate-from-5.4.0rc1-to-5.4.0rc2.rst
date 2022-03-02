@@ -7,7 +7,7 @@ You can also just update directly from `5.3.1`.
 What's new
 ##########
 
-This update contains improvements for accessibility.
+This update contains improvements for accessibility:
 
 - WCAG: Fix comment-editor keyboard-trap.
 - WCAG: Improvements to the fileupload section of the editor.
