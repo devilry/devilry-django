@@ -20,12 +20,27 @@
 
 {% block content %}
     {% if not examiners_exist %}
-        <div class="container devilry-dashboard-container">
+        <div class="container devilry-dashboard-container" id="id_examiner_statistics_no_examiners_assigned_to_groups">
             <p>
                 {% trans "No data available. There are no examiners assigned to any groups." context "devilry_admin assignment statistics" %}
             </p>
         </div>
     {% else %}
+        {% if groups_with_multiple_examiners_exist %}
+            <div class="container devilry-dashboard-container">
+                <p class="alert-paragraph alert-paragraph--warning">
+                    <span class="alert-paragraph__title">
+                        {% trans "WARNING:" context "devilry_admin assignment statistics"%}
+                    </span>
+                    {% blocktrans trimmed with context="devilry_admin assignment statistics" %}
+                        This assignment has student groups with multiple examiners assigned to them. Multiple examiners 
+                        are assumed to be collaborating on the grading, thus giving the same credit to all assigned examiners regardless 
+                        of who added the grade or posted a feedback to the student group.
+                    {% endblocktrans %}
+                </p>
+            </div>
+        {% endif %}
+
         <div class="container devilry-dashboard-container">
             <h2 class="h3">
                 {% trans "Points (average)" context "devilry_admin assignment statistics" %}

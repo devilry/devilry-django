@@ -4,11 +4,12 @@
 import json
 
 from django.utils.translation import pgettext
+from django.db import models
 from cradmin_legacy import crapp
 from cradmin_legacy.viewhelpers.detail import DetailRoleView
 
 from devilry.apps.core import models as coremodels
-from devilry.apps.core.models import Examiner, RelatedExaminer
+from devilry.apps.core.models import Examiner, RelatedExaminer, AssignmentGroup
 
 
 class Overview(DetailRoleView):
@@ -96,6 +97,11 @@ class Overview(DetailRoleView):
         context['examiner_detail_config'] = json.dumps(
             self.get_examiner_detail_js_base_widget_config())
         context['examiners_exist'] = self.__examiners_exist()
+        context['groups_with_multiple_examiners_exist'] = AssignmentGroup.objects \
+            .filter(parentnode=self.assignment.id) \
+            .annotate(num_examiners=models.Count('examiners')) \
+            .filter(num_examiners__gt=1) \
+            .exists()
         return context
 
 
