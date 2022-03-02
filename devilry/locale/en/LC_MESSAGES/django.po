@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-02 13:15+0200\n"
+"POT-Creation-Date: 2022-03-02 12:43+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -950,22 +950,22 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
-#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:87
-#: devilry/devilry_account/templates/devilry_account/crapps/account/select_language.django.html:27
+#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:90
+#: devilry/devilry_account/templates/devilry_account/crapps/account/select_language.django.html:37
 msgid "Change language"
 msgstr ""
 
-#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:94
+#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:97
 #: devilry/devilry_header/templates/devilry_header/header2include.django.html:102
 msgid "Sign out"
 msgstr ""
 
-#: devilry/devilry_account/templates/devilry_account/crapps/account/select_language.django.html:6
-#: devilry/devilry_account/templates/devilry_account/crapps/account/select_language.django.html:10
+#: devilry/devilry_account/templates/devilry_account/crapps/account/select_language.django.html:16
+#: devilry/devilry_account/templates/devilry_account/crapps/account/select_language.django.html:20
 msgid "Language options"
 msgstr ""
 
-#: devilry/devilry_account/templates/devilry_account/crapps/account/select_language.django.html:20
+#: devilry/devilry_account/templates/devilry_account/crapps/account/select_language.django.html:27
 msgid "Current language"
 msgstr ""
 
@@ -1013,10 +1013,15 @@ msgstr ""
 
 #: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:63
 msgctxt "listfilter relateduser"
+msgid "All"
+msgstr ""
+
+#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:66
+msgctxt "listfilter relateduser"
 msgid "Is active?"
 msgstr ""
 
-#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:81
+#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:84
 #: devilry/devilry_admin/cradminextensions/listfilter/listfilter_tags.py:29
 #: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:16
 #: devilry/devilry_cradmin/devilry_listfilter/user.py:9
@@ -1028,7 +1033,7 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
-#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:84
+#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:87
 #: devilry/devilry_admin/cradminextensions/listfilter/listfilter_tags.py:32
 #: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:24
 #: devilry/devilry_cradmin/devilry_listfilter/user.py:14
@@ -1068,6 +1073,11 @@ msgstr ""
 #: devilry/devilry_admin/cradminextensions/listfilter/listfilter_tags.py:108
 msgctxt "tag"
 msgid "Has tag"
+msgstr ""
+
+#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_tags.py:112
+msgctxt "tag"
+msgid "Any"
 msgstr ""
 
 #: devilry/devilry_admin/cradminextensions/listfilter/listfilter_tags.py:113
@@ -1601,23 +1611,32 @@ msgstr ""
 msgid "Edit passed previous semester"
 msgstr ""
 
+#: devilry/devilry_admin/templates/devilry_admin/assignment/includes/batchdownload_assignment.django.html:11
 #: devilry/devilry_admin/templates/devilry_admin/assignment/includes/batchdownload_assignment.django.html:13
-#: devilry/devilry_examiner/templates/devilry_examiner/assignment/includes/batchdownload_assignment.django.html:13
-#: devilry/devilry_group/templates/devilry_group/listbuilder_sidebar/sidebar_feedbackset_item_value.django.html:13
-msgid "preparing download"
-msgstr ""
-
-#: devilry/devilry_admin/templates/devilry_admin/assignment/includes/batchdownload_assignment.django.html:20
-#: devilry/devilry_admin/templates/devilry_admin/assignment/includes/batchdownload_assignment.django.html:30
-#: devilry/devilry_examiner/templates/devilry_examiner/assignment/includes/batchdownload_assignment.django.html:20
-#: devilry/devilry_examiner/templates/devilry_examiner/assignment/includes/batchdownload_assignment.django.html:30
+#: devilry/devilry_examiner/templates/devilry_examiner/assignment/includes/batchdownload_assignment.django.html:10
+#: devilry/devilry_examiner/templates/devilry_examiner/assignment/includes/batchdownload_assignment.django.html:12
 msgid "Download assignment"
 msgstr ""
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/includes/batchdownload_assignment.django.html:28
-#: devilry/devilry_examiner/templates/devilry_examiner/assignment/includes/batchdownload_assignment.django.html:28
-#: devilry/devilry_group/templates/devilry_group/listbuilder_sidebar/sidebar_feedbackset_item_value.django.html:30
-msgid "download is ready"
+#: devilry/devilry_admin/templates/devilry_admin/assignment/includes/batchdownload_assignment.django.html:12
+#: devilry/devilry_examiner/templates/devilry_examiner/assignment/includes/batchdownload_assignment.django.html:11
+#: devilry/devilry_group/templates/devilry_group/listbuilder_sidebar/sidebar_feedbackset_item_value.django.html:51
+msgid "Preparing download"
+msgstr ""
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/includes/batchdownload_assignment.django.html:14
+#: devilry/devilry_examiner/templates/devilry_examiner/assignment/includes/batchdownload_assignment.django.html:13
+msgid "Build downloadable file-archive for assignment"
+msgstr ""
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/includes/batchdownload_assignment.django.html:15
+#: devilry/devilry_examiner/templates/devilry_examiner/assignment/includes/batchdownload_assignment.django.html:14
+msgid "Assignment file-archive ready for download"
+msgstr ""
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/includes/batchdownload_assignment.django.html:16
+#: devilry/devilry_examiner/templates/devilry_examiner/assignment/includes/batchdownload_assignment.django.html:15
+msgid "Download assignment file-archive"
 msgstr ""
 
 #: devilry/devilry_admin/templates/devilry_admin/assignment/overview.django.html:22
@@ -2115,7 +2134,7 @@ msgid "View feedback details"
 msgstr ""
 
 #: devilry/devilry_admin/templates/devilry_admin/assignment/students/groupdetails/view.django.html:34
-#: devilry/devilry_group/templates/devilry_group/include/buttonbar.django.html:18
+#: devilry/devilry_group/templates/devilry_group/include/buttonbar.django.html:19
 msgid "Split group"
 msgstr ""
 
@@ -3209,33 +3228,23 @@ msgstr ""
 msgid "%(students)s was marked as approved for this assignment."
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/passed_previous_period/passed_previous_semester_manual.py:18
+#: devilry/devilry_admin/views/assignment/passed_previous_period/passed_previous_semester_manual.py:20
 msgid "Pass students"
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/passed_previous_period/passed_previous_semester_manual.py:21
+#: devilry/devilry_admin/views/assignment/passed_previous_period/passed_previous_semester_manual.py:23
 msgid "Students to pass"
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/passed_previous_period/passed_previous_semester_manual.py:38
-#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:41
-msgid "Add a general comment to the feedback"
-msgstr ""
-
-#: devilry/devilry_admin/views/assignment/passed_previous_period/passed_previous_semester_manual.py:39
+#: devilry/devilry_admin/views/assignment/passed_previous_period/passed_previous_semester_manual.py:40
 msgid "Delivery has been corrected. Passed in a previous semester."
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/passed_previous_period/passed_previous_semester_manual.py:40
-#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:43
-msgid "Feedback comment text"
-msgstr ""
-
-#: devilry/devilry_admin/views/assignment/passed_previous_period/passed_previous_semester_manual.py:60
+#: devilry/devilry_admin/views/assignment/passed_previous_period/passed_previous_semester_manual.py:61
 msgid "There are no students on this assignment."
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/passed_previous_period/passed_previous_semester_manual.py:64
+#: devilry/devilry_admin/views/assignment/passed_previous_period/passed_previous_semester_manual.py:65
 msgid "Bulk pass students"
 msgstr ""
 
@@ -3780,7 +3789,7 @@ msgstr ""
 #: devilry/devilry_gradingsystem/templates/devilry_gradingsystem/admin/summary.django.html:81
 #: devilry/devilry_gradingsystemplugin_points/apps.py:11
 #: devilry/devilry_gradingsystemplugin_points/views/feedbackeditor.py:25
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:76
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:75
 msgid "Points"
 msgstr ""
 
@@ -3809,7 +3818,7 @@ msgstr ""
 #: devilry/devilry_admin/views/period/createassignment.py:64
 #: devilry/devilry_admin/views/subject/createperiod.py:31
 #: devilry/devilry_admin/views/subject/createperiod.py:35
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:55
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:54
 msgctxt "CrAdmin datetime picker typo fix"
 msgid "Select a date/time"
 msgstr ""
@@ -4214,6 +4223,100 @@ msgstr ""
 msgid "Update all candidate IDs and anonymous IDs."
 msgstr ""
 
+#: devilry/devilry_comment/editor_widget.py:16
+msgctxt "devilry markdown widget"
+msgid "Comment text"
+msgstr ""
+
+#: devilry/devilry_comment/editor_widget.py:37
+msgctxt "devilry markdown widget"
+msgid "Write your comment here"
+msgstr ""
+
+#: devilry/devilry_comment/editor_widget.py:42
+msgctxt "devilry markdown widget"
+msgid ""
+"Write a comment in markdown format. Use <strong>**text here**</strong> for "
+"bold and <em>*text here*</em> for italic."
+msgstr ""
+
+#: devilry/devilry_comment/editor_widget.py:46
+msgctxt "devilry markdown widget"
+msgid "Here you can get an overview of the supported Markdown."
+msgstr ""
+
+#: devilry/devilry_comment/editor_widget.py:51
+msgctxt "devilry markdown widget"
+msgid "Write"
+msgstr ""
+
+#: devilry/devilry_comment/editor_widget.py:54
+msgctxt "devilry markdown widget"
+msgid "Preview"
+msgstr ""
+
+#: devilry/devilry_comment/editor_widget.py:57
+msgctxt "devilry markdown widget"
+msgid "Something went wrong."
+msgstr ""
+
+#: devilry/devilry_comment/editor_widget.py:61
+msgctxt "devilry markdown widget"
+msgid "Preparing preview"
+msgstr ""
+
+#: devilry/devilry_comment/editor_widget.py:70
+msgctxt "devilry markdown widget toolbar tooltip text"
+msgid "Heading"
+msgstr ""
+
+#: devilry/devilry_comment/editor_widget.py:75
+#: devilry/devilry_comment/editor_widget.py:83
+#: devilry/devilry_comment/editor_widget.py:91
+msgctxt "devilry markdown widget toolbar placeholder text"
+msgid "Add text here"
+msgstr ""
+
+#: devilry/devilry_comment/editor_widget.py:78
+msgctxt "devilry markdown widget toolbar tooltip text"
+msgid "Bold"
+msgstr ""
+
+#: devilry/devilry_comment/editor_widget.py:86
+msgctxt "devilry markdown widget toolbar tooltip text"
+msgid "Italic"
+msgstr ""
+
+#: devilry/devilry_comment/editor_widget.py:94
+msgctxt "devilry markdown widget toolbar tooltip text"
+msgid "Link"
+msgstr ""
+
+#: devilry/devilry_comment/editor_widget.py:99
+msgctxt "devilry markdown widget toolbar tooltip text"
+msgid "Code"
+msgstr ""
+
+#: devilry/devilry_comment/editor_widget.py:104
+msgctxt "devilry markdown widget toolbar placeholder text"
+msgid "Programminglanguage"
+msgstr ""
+
+#: devilry/devilry_comment/editor_widget.py:107
+msgctxt "devilry markdown widget toolbar tooltip text"
+msgid "Code-block"
+msgstr ""
+
+#: devilry/devilry_comment/editor_widget.py:112
+msgctxt "devilry markdown widget toolbar tooltip text"
+msgid "Bulleted list"
+msgstr ""
+
+#: devilry/devilry_comment/editor_widget.py:117
+msgctxt "devilry markdown widget toolbar tooltip text"
+msgid "Numbered list"
+msgstr ""
+
 #: devilry/devilry_comment/models.py:54
 msgctxt "comment user_role_choices"
 msgid "Student"
@@ -4227,6 +4330,140 @@ msgstr ""
 #: devilry/devilry_comment/models.py:56
 msgctxt "comment user_role_choices"
 msgid "Admin"
+msgstr ""
+
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:6
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:10
+msgid "Markdown help"
+msgstr ""
+
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:17
+msgid "Contents"
+msgstr ""
+
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:22
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:68
+#: devilry/devilry_cradmin/templates/devilry_cradmin/devilry_acemarkdown.django.html:12
+#: devilry/devilry_gradingsystem/templates/devilry_gradingsystem/widgets/editmarkdown.django.html:47
+msgid "Heading"
+msgstr ""
+
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:27
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:93
+msgid "Styling text"
+msgstr ""
+
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:32
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:101
+#: devilry/devilry_cradmin/templates/devilry_cradmin/devilry_acemarkdown.django.html:17
+#: devilry/devilry_gradingsystem/templates/devilry_gradingsystem/widgets/editmarkdown.django.html:14
+msgid "Bold"
+msgstr ""
+
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:37
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:115
+#: devilry/devilry_cradmin/templates/devilry_cradmin/devilry_acemarkdown.django.html:22
+#: devilry/devilry_gradingsystem/templates/devilry_gradingsystem/widgets/editmarkdown.django.html:15
+msgid "Italic"
+msgstr ""
+
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:44
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:132
+#: devilry/devilry_cradmin/templates/devilry_cradmin/devilry_acemarkdown.django.html:29
+msgid "Link"
+msgstr ""
+
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:49
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:151
+msgid "Code"
+msgstr ""
+
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:54
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:184
+msgid "Lists"
+msgstr ""
+
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:59
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:216
+msgid "Nested lists"
+msgstr ""
+
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:71
+msgid ""
+"To create a heading, add one or more # symbols before your heading text. The "
+"number of # symbols will determine the heading size. One # symbol is the "
+"largest heading, and six # symbols is the smallest heading."
+msgstr ""
+
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:78
+msgid "Example heading level 1"
+msgstr ""
+
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:84
+msgid "Example heading level 3"
+msgstr ""
+
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:96
+msgid ""
+"You can style simple words or sentences with inlined bold or italic styling."
+msgstr ""
+
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:104
+msgid ""
+"Add two * symbols before and after the text you want bold formatting for."
+msgstr ""
+
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:109
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:123
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:142
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:160
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:171
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:192
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:205
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:224
+#: devilry/devilry_gradingsystem/templates/devilry_gradingsystem/admin/setup_custom_table.django.html:40
+msgid "Example"
+msgstr ""
+
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:118
+msgid ""
+"Add one _ symbol before and after the text you want italic formatting for."
+msgstr ""
+
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:135
+msgid ""
+"To format links, add a starting bracket symbol and a closing bracket symbol "
+"encapsulating the link-text. Directly follow this with a starting "
+"parantheses symbol and a closing parantheses symbol encapsulating the actual "
+"link address."
+msgstr ""
+
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:154
+msgid ""
+"Mark a short snippet of text to call it out as code with single backticks. "
+"The text encapsulated by the backticks will be formatted as a inline piece "
+"of code."
+msgstr ""
+
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:166
+msgid ""
+"To format code or text into its own distinct block, use three backticks "
+"instead."
+msgstr ""
+
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:187
+msgid ""
+"Make an unordered list by preceding one or more lines of text with * symbol."
+msgstr ""
+
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:200
+msgid "If you want to order a list, precede each line with a number."
+msgstr ""
+
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:219
+msgid ""
+"A nested list can be created by indenting one or more list items below "
+"another item with 4 spaces."
 msgstr ""
 
 #: devilry/devilry_compressionutil/models.py:118
@@ -4387,9 +4624,19 @@ msgctxt "group status"
 msgid "all students"
 msgstr ""
 
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:299
+msgctxt "group status"
+msgid "Any"
+msgstr ""
+
 #: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:321
 msgctxt "group points filter"
 msgid "Points"
+msgstr ""
+
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:327
+msgctxt "group points filter"
+msgid "Type a number ..."
 msgstr ""
 
 #: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:336
@@ -4397,97 +4644,117 @@ msgctxt "group is passing grade filter"
 msgid "Passing grade?"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:364
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:339
+msgctxt "group is passing grade filter"
+msgid "Both"
+msgstr ""
+
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:367
 msgctxt "group examiner filter"
 msgid "Examiner"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:481
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:384
+msgctxt "group examiner filter"
+msgid "Any"
+msgstr ""
+
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:483
+msgctxt "examiner candidate count any"
+msgid "Any"
+msgstr ""
+
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:484
 msgctxt "exact candidate num"
 msgid "Exactly"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:482
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:485
 msgctxt "less than candidate num"
 msgid "Less than"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:483
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:486
 msgctxt "greater than candidate num"
 msgid "Greater than"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:501
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:504
 msgctxt "group examiner filter"
 msgid "Number of examiners"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:521
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:524
 msgctxt "group student filter"
 msgid "Number of students"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:552
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:555
 msgctxt "group activity"
 msgid "Activity"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:557
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:559
+msgctxt "group activity"
+msgid "All"
+msgstr ""
+
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:560
 msgctxt "group activity"
 msgid "From student"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:559
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:562
 msgctxt "group activity"
 msgid "Has comment(s) from student"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:561
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:564
 msgctxt "group activity"
 msgid "Has file(s) from student"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:563
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:566
 msgctxt "group activity"
 msgid "No comments from student"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:565
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:568
 msgctxt "group activity"
 msgid "No files from student"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:567
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:570
 msgctxt "group activity"
 msgid "From examiner"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:569
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:572
 msgctxt "group activity"
 msgid "Has comment(s) from examiner"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:571
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:574
 msgctxt "group activity"
 msgid "Has unpublished feedback draft"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:573
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:576
 msgctxt "group activity"
 msgid "Has unpublished comment(s) from YOU"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:575
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:578
 msgctxt "group activity"
 msgid "No comments from examiner"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:577
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:580
 msgctxt "group activity"
 msgid "From administrator"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:579
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:582
 msgctxt "group activity"
 msgid "Has comment(s) from administrator"
 msgstr ""
@@ -4507,23 +4774,8 @@ msgctxt "admin multiselect2_users"
 msgid "No users selected"
 msgstr ""
 
-#: devilry/devilry_cradmin/templates/devilry_cradmin/devilry_acemarkdown.django.html:12
-#: devilry/devilry_gradingsystem/templates/devilry_gradingsystem/widgets/editmarkdown.django.html:47
-msgid "Heading"
-msgstr ""
-
 #: devilry/devilry_cradmin/templates/devilry_cradmin/devilry_acemarkdown.django.html:15
 msgid "Text here"
-msgstr ""
-
-#: devilry/devilry_cradmin/templates/devilry_cradmin/devilry_acemarkdown.django.html:17
-#: devilry/devilry_gradingsystem/templates/devilry_gradingsystem/widgets/editmarkdown.django.html:14
-msgid "Bold"
-msgstr ""
-
-#: devilry/devilry_cradmin/templates/devilry_cradmin/devilry_acemarkdown.django.html:22
-#: devilry/devilry_gradingsystem/templates/devilry_gradingsystem/widgets/editmarkdown.django.html:15
-msgid "Italic"
 msgstr ""
 
 #: devilry/devilry_cradmin/templates/devilry_cradmin/devilry_acemarkdown.django.html:26
@@ -4534,10 +4786,6 @@ msgstr ""
 
 #: devilry/devilry_cradmin/templates/devilry_cradmin/devilry_acemarkdown.django.html:27
 msgid "Link title here"
-msgstr ""
-
-#: devilry/devilry_cradmin/templates/devilry_cradmin/devilry_acemarkdown.django.html:29
-msgid "Link"
 msgstr ""
 
 #: devilry/devilry_cradmin/templates/devilry_cradmin/devilry_acemarkdown.django.html:38
@@ -4636,7 +4884,7 @@ msgstr ""
 
 #: devilry/devilry_deadlinemanagement/templates/devilry_deadlinemanagement/select-deadline-item-value.django.html:34
 #: devilry/devilry_deadlinemanagement/templates/devilry_deadlinemanagement/select-deadline-item-value.django.html:53
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:293
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:294
 #: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:79
 msgid "Move deadline"
 msgstr ""
@@ -4674,39 +4922,31 @@ msgctxt "deadline_list_view select_deadline"
 msgid "Please choose how you would like to manage the deadline."
 msgstr ""
 
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:43
-msgid "Add a suitable comment describing why the the deadline was changed."
-msgstr ""
-
 #: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:44
-msgid "Comment Text"
-msgstr ""
-
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:48
 msgid "New deadline"
 msgstr ""
 
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:59
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:58
 msgid ""
 "Pick a date and time from the calendar, or select one of the suggested "
 "deadlines."
 msgstr ""
 
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:141
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:140
 #, python-format
 msgid "Manage deadline %(deadline)s"
 msgstr ""
 
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:273
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:274
 msgid "test placeholder"
 msgstr ""
 
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:294
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:295
 #: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:62
 msgid "Give new attempt"
 msgstr ""
 
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:447
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:448
 #, python-format
 msgid "Deadline managed for %(group_names)s"
 msgstr ""
@@ -4728,14 +4968,14 @@ msgid "Continue with selected %(what)s"
 msgstr ""
 
 #: devilry/devilry_deadlinemanagement/views/multiselect_groups_view.py:68
-#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:71
+#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:69
 #, python-format
 msgctxt "assignment_group_target_renderer with_items_title"
 msgid "Selected %(what)s"
 msgstr ""
 
 #: devilry/devilry_deadlinemanagement/views/multiselect_groups_view.py:74
-#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:77
+#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:75
 #, python-format
 msgctxt "assignment_group_target_renderer without_items_text"
 msgid "No %(what)s selected"
@@ -4914,14 +5154,14 @@ msgid "You have not finished correcting any students yet."
 msgstr ""
 
 #: devilry/devilry_examiner/templates/devilry_examiner/assignment/simple_group_bulk_feedback/grade_cell_value.django.html:8
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:47
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:46
 #: devilry/devilry_student/templates/devilry_student/devilry_student_shortgrade_tag.django.html:4
 #: devilry/devilry_student/templates/devilry_student/devilry_student_shortgrade_tag.django.html:11
 msgid "Passed"
 msgstr ""
 
 #: devilry/devilry_examiner/templates/devilry_examiner/assignment/simple_group_bulk_feedback/grade_cell_value.django.html:9
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:48
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:47
 #: devilry/devilry_message/models/base.py:353
 #: devilry/devilry_student/templates/devilry_student/devilry_student_shortgrade_tag.django.html:6
 #: devilry/devilry_student/templates/devilry_student/devilry_student_shortgrade_tag.django.html:13
@@ -4974,13 +5214,13 @@ msgid "Show feedback"
 msgstr ""
 
 #: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback.py:52
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:363
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:359
 msgctxt "grading"
 msgid "Passed?"
 msgstr ""
 
 #: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback.py:53
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:364
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:360
 msgctxt "grading"
 msgid "Check to provide a passing grade."
 msgstr ""
@@ -4999,8 +5239,8 @@ msgid "Students in groups"
 msgstr ""
 
 #: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:91
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:345
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:368
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:341
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:364
 msgid "Grading"
 msgstr ""
 
@@ -5020,20 +5260,24 @@ msgstr ""
 msgid "No groups to receive feedback"
 msgstr ""
 
-#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:21
+#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:19
 msgctxt "selected_assignment_group_form error_message"
 msgid "Invalid assignment group items was selected."
 msgstr ""
 
-#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:42
+#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:39
+msgid "Add a general comment to the feedback"
+msgstr ""
+
+#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:40
 msgid "Delivery has been corrected."
 msgstr ""
 
-#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:60
+#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:58
 msgid "assignment group"
 msgstr ""
 
-#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:65
+#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:63
 #, python-format
 msgctxt "assignment_group_target_renderer submit_button_text"
 msgid "Submit selected %(what)s"
@@ -5109,7 +5353,7 @@ msgstr ""
 
 #: devilry/devilry_gradeform/views/setup_gradeform.py:66
 #: devilry/devilry_group/views/admin/feedbackfeed_admin.py:74
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:263
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:259
 msgid "Add comment"
 msgstr ""
 
@@ -5255,10 +5499,6 @@ msgstr ""
 
 #: devilry/devilry_gradingsystem/templates/devilry_gradingsystem/admin/setup_custom_table.django.html:32
 msgid "Add more rows"
-msgstr ""
-
-#: devilry/devilry_gradingsystem/templates/devilry_gradingsystem/admin/setup_custom_table.django.html:40
-msgid "Example"
 msgstr ""
 
 #: devilry/devilry_gradingsystem/templates/devilry_gradingsystem/admin/summary.django.html:11
@@ -5618,8 +5858,13 @@ msgid ""
 "is disabled."
 msgstr ""
 
-#: devilry/devilry_group/templates/devilry_group/feedbackfeed.django.html:40
+#: devilry/devilry_group/templates/devilry_group/feedbackfeed.django.html:41
 msgid "Project group details"
+msgstr ""
+
+#: devilry/devilry_group/templates/devilry_group/feedbackfeed.django.html:129
+msgid ""
+"You have a unsubmitted comment and/or files. Do you want to navigate away?"
 msgstr ""
 
 #: devilry/devilry_group/templates/devilry_group/feedbackfeed_admin/feedbackfeed_admin_base.django.html:28
@@ -5651,7 +5896,7 @@ msgstr ""
 
 #: devilry/devilry_group/templates/devilry_group/feedbackfeed_examiner/feedbackfeed_examiner_edit_grade.django.html:21
 #: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:67
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:400
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:396
 msgid "Edit grade"
 msgstr ""
 
@@ -5697,12 +5942,12 @@ msgid ""
 "and admins."
 msgstr ""
 
-#: devilry/devilry_group/templates/devilry_group/include/buttonbar.django.html:8
-#: devilry/devilry_group/templates/devilry_group/include/buttonbar.django.html:22
+#: devilry/devilry_group/templates/devilry_group/include/buttonbar.django.html:9
+#: devilry/devilry_group/templates/devilry_group/include/buttonbar.django.html:24
 msgid "Download"
 msgstr ""
 
-#: devilry/devilry_group/templates/devilry_group/include/buttonbar.django.html:16
+#: devilry/devilry_group/templates/devilry_group/include/buttonbar.django.html:17
 msgid "Actions"
 msgstr ""
 
@@ -5724,34 +5969,6 @@ msgstr ""
 msgid ""
 "Anything you write or upload here is visible to the student(s), co-examiners "
 "(if any), and admins, but it is not considered part of your feedback/grading."
-msgstr ""
-
-#: devilry/devilry_group/templates/devilry_group/include/fileupload.django.html:32
-msgid "Upload a file by dragging and dropping it here"
-msgstr ""
-
-#: devilry/devilry_group/templates/devilry_group/include/fileupload.django.html:34
-msgid "Upload files by dragging and dropping them here"
-msgstr ""
-
-#: devilry/devilry_group/templates/devilry_group/include/fileupload.django.html:44
-msgid "Invalid filetype"
-msgstr ""
-
-#: devilry/devilry_group/templates/devilry_group/include/fileupload.django.html:66
-msgid "... or select a file"
-msgstr ""
-
-#: devilry/devilry_group/templates/devilry_group/include/fileupload.django.html:68
-msgid "... or select files"
-msgstr ""
-
-#: devilry/devilry_group/templates/devilry_group/include/fileupload.django.html:90
-msgid "Select a file ..."
-msgstr ""
-
-#: devilry/devilry_group/templates/devilry_group/include/fileupload.django.html:92
-msgid "Select files ..."
 msgstr ""
 
 #: devilry/devilry_group/templates/devilry_group/include/groupcomment_edit_delete_option.html:6
@@ -5868,10 +6085,25 @@ msgstr ""
 msgid "after deadline"
 msgstr ""
 
-#: devilry/devilry_group/templates/devilry_group/listbuilder_sidebar/sidebar_feedbackset_item_value.django.html:20
-#: devilry/devilry_group/templates/devilry_group/listbuilder_sidebar/sidebar_feedbackset_item_value.django.html:32
+#: devilry/devilry_group/templates/devilry_group/listbuilder_sidebar/sidebar_feedbackset_item_value.django.html:50
+#: devilry/devilry_group/templates/devilry_group/listbuilder_sidebar/sidebar_feedbackset_item_value.django.html:52
 #, python-format
 msgid "%(verbose_feedbackset)s deadline"
+msgstr ""
+
+#: devilry/devilry_group/templates/devilry_group/listbuilder_sidebar/sidebar_feedbackset_item_value.django.html:53
+#, python-format
+msgid "Build downloadable file-archive for %(verbose_feedbackset)s deadline"
+msgstr ""
+
+#: devilry/devilry_group/templates/devilry_group/listbuilder_sidebar/sidebar_feedbackset_item_value.django.html:54
+#, python-format
+msgid "File-archive for %(verbose_feedbackset)s deadline ready for download"
+msgstr ""
+
+#: devilry/devilry_group/templates/devilry_group/listbuilder_sidebar/sidebar_feedbackset_item_value.django.html:55
+#, python-format
+msgid "Download file-archive for %(verbose_feedbackset)s deadline"
 msgstr ""
 
 #: devilry/devilry_group/templates/devilry_group/listbuilder_sidebar/sidebar_file_item_value.django.html:21
@@ -5927,7 +6159,7 @@ msgid "tenth"
 msgstr ""
 
 #: devilry/devilry_group/views/admin/feedbackfeed_admin.py:114
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:304
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:300
 msgid "Add note"
 msgstr ""
 
@@ -5965,49 +6197,140 @@ msgstr ""
 msgid "Post comment"
 msgstr ""
 
-#: devilry/devilry_group/views/cradmin_feedbackfeed_base.py:490
+#: devilry/devilry_group/views/cradmin_feedbackfeed_base.py:377
+msgid "Upload files by dragging and dropping them here"
+msgstr ""
+
+#: devilry/devilry_group/views/cradmin_feedbackfeed_base.py:380
+msgid "... or select files"
+msgstr ""
+
+#: devilry/devilry_group/views/cradmin_feedbackfeed_base.py:383
+msgid "Select files for upload"
+msgstr ""
+
+#: devilry/devilry_group/views/cradmin_feedbackfeed_base.py:386
+msgid "Files queued for upload:"
+msgstr ""
+
+#: devilry/devilry_group/views/cradmin_feedbackfeed_base.py:389
+msgid ""
+"You can browse the upload queue and check upload status further down on the "
+"page."
+msgstr ""
+
+#: devilry/devilry_group/views/cradmin_feedbackfeed_base.py:392
+msgid "Invalid filetype"
+msgstr ""
+
+#: devilry/devilry_group/views/cradmin_feedbackfeed_base.py:394
+msgctxt "devilry_fileupload"
+msgid "Uploading"
+msgstr ""
+
+#: devilry/devilry_group/views/cradmin_feedbackfeed_base.py:395
+msgctxt "devilry_fileupload"
+msgid "Uploaded"
+msgstr ""
+
+#: devilry/devilry_group/views/cradmin_feedbackfeed_base.py:396
+msgctxt "devilry_fileupload"
+msgid "Failed"
+msgstr ""
+
+#: devilry/devilry_group/views/cradmin_feedbackfeed_base.py:397
+msgctxt "devilry_fileupload"
+msgid "Deleting"
+msgstr ""
+
+#: devilry/devilry_group/views/cradmin_feedbackfeed_base.py:398
+msgctxt "devilry_fileupload"
+msgid "Delete failed, try again"
+msgstr ""
+
+#: devilry/devilry_group/views/cradmin_feedbackfeed_base.py:399
+msgctxt "devilry_fileupload"
+msgid "Upload status:"
+msgstr ""
+
+#: devilry/devilry_group/views/cradmin_feedbackfeed_base.py:400
+msgctxt "devilry_fileupload"
+msgid "Dismiss/close error message"
+msgstr ""
+
+#: devilry/devilry_group/views/cradmin_feedbackfeed_base.py:401
+msgctxt "devilry_fileupload"
+msgid "Remove file"
+msgstr ""
+
+#: devilry/devilry_group/views/cradmin_feedbackfeed_base.py:403
+#, python-format
+msgid ""
+"Filename is too long. Please use file names shorter than "
+"%(max_filename_length)s characters."
+msgstr ""
+
+#: devilry/devilry_group/views/cradmin_feedbackfeed_base.py:407
+msgid ""
+"Server timeout while uploading the file. This may be caused by a poor upload "
+"link and/or a too large file."
+msgstr ""
+
+#: devilry/devilry_group/views/cradmin_feedbackfeed_base.py:410
+msgid ""
+"Unknown error. May be a server glitch or a bug. Please try again, and report "
+"the error if it happens multiple times."
+msgstr ""
+
+#: devilry/devilry_group/views/cradmin_feedbackfeed_base.py:413
+msgid ""
+"We could not delete the file. This may be a server glitch or bug. Please try "
+"again, and report if the error happens multiple times."
+msgstr ""
+
+#: devilry/devilry_group/views/cradmin_feedbackfeed_base.py:526
 msgid "Comment added!"
 msgstr ""
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:50
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:49
 msgctxt "grading"
 msgid "Grade"
 msgstr ""
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:51
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:50
 msgctxt "grading"
 msgid "Choose grade"
 msgstr ""
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:81
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:80
 #, python-format
 msgctxt "grading"
 msgid "Number between 0 and %(max_points)s."
 msgstr ""
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:190
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:186
 msgid "Save draft and preview"
 msgstr ""
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:193
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:189
 msgid "Publish feedback"
 msgstr ""
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:232
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:228
 msgid "Feedback is already published!"
 msgstr ""
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:348
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:344
 msgid ""
 "Give a score between {} to {} where {} is the minimum amount of points "
 "needed to pass."
 msgstr ""
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:369
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:365
 msgid "Check the box to give a passing grade"
 msgstr ""
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:498
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:494
 msgid "Groupcomment"
 msgstr ""
 
