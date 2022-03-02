@@ -125,8 +125,8 @@
     </script>
 
     <script type="module">
-        import {DevilryCommentEditorHasContent} from '{% devilry_theme3_dist_path %}/scripts/plain_es6/commenEditorFileuploadHasContent.js';
-        new DevilryCommentEditorHasContent('{% trans "You have a unsubmitted comment and/or files. Do you want to navigate away?" %}');
+        import {DevilryFeedbackfeedbNavigationHandler} from '{% devilry_theme3_dist_path %}/scripts/plain_es6/feedbackfeedNavigationHandler.js';
+        new DevilryFeedbackfeedbNavigationHandler('{% trans "You have a unsubmitted comment and/or files. Do you want to navigate away?" %}');
     </script>
     {% include "devilry_theme3/include/devilry_all_js.django.html" %}
 {% endblock end-of-body %}

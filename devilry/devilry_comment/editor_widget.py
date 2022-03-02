@@ -43,7 +43,7 @@ class DevilryMarkdownWidget(forms.widgets.Textarea):
                 ),
                 'markdownGuideLinkText': pgettext(
                     'devilry markdown widget',
-                    'Full guide for the markdown we support here'),
+                    'Here you can get an overview of the supported Markdown.'),
                 'markdownGuideLinkUrl': '/markdown-help',
                 'markdownPreviewConfig': json.dumps({
                     'editorActiveButtonText': pgettext(

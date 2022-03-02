@@ -323,8 +323,8 @@ class PointsFilter(listfilter.django.single.textinput.IntSearch):
     def get_modelfields(self):
         return ['cached_data__last_published_feedbackset__grading_points']
 
-    # def get_placeholder(self):
-    #     return pgettext_lazy('group points filter', 'Type a number ...')
+    def get_placeholder(self):
+        return pgettext_lazy('group points filter', 'Type a number ...')
 
 
 class IsPassingGradeFilter(abstractselect.AbstractBoolean):
@@ -336,7 +336,7 @@ class IsPassingGradeFilter(abstractselect.AbstractBoolean):
                              'Passing grade?')
 
     def get_do_not_apply_label(self):
-        return pgettext_lazy('group is passing grade filter', 'All')
+        return pgettext_lazy('group is passing grade filter', 'Both')
 
     def filter(self, queryobject):
         cleaned_value = self.get_cleaned_value()
