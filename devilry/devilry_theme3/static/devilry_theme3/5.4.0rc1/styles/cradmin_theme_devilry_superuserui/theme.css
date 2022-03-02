@@ -265,7 +265,7 @@ html {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 body {
-  font-family: 'Quicksand', sans-serif;
+  font-family: 'Fira Sans', sans-serif;
   font-size: 16px;
   line-height: 1.42857143;
   color: #000000;
@@ -280,7 +280,7 @@ textarea {
   line-height: inherit;
 }
 a {
-  color: #262626;
+  color: #055569;
   text-decoration: none;
 }
 a:hover,
@@ -489,7 +489,7 @@ cite {
   text-align: justify;
 }
 .text-muted {
-  color: #747474;
+  color: #555;
 }
 .text-primary {
   color: #428bca;
@@ -1767,7 +1767,7 @@ output {
   padding-top: 7px;
   font-size: 16px;
   line-height: 1.42857143;
-  color: #555555;
+  color: #222222;
 }
 .form-control {
   display: block;
@@ -1776,7 +1776,7 @@ output {
   padding: 6px 12px;
   font-size: 16px;
   line-height: 1.42857143;
-  color: #555555;
+  color: #222222;
   background-color: #fff;
   background-image: none;
   border: 1px solid #ccc;
@@ -1793,14 +1793,14 @@ output {
   box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
 }
 .form-control::-moz-placeholder {
-  color: #999999;
+  color: #767676;
   opacity: 1;
 }
 .form-control:-ms-input-placeholder {
-  color: #999999;
+  color: #767676;
 }
 .form-control::-webkit-input-placeholder {
-  color: #999999;
+  color: #767676;
 }
 .form-control[disabled],
 .form-control[readonly],
@@ -2099,7 +2099,7 @@ select[multiple].input-lg {
 }
 .btn:hover,
 .btn:focus {
-  color: #262626;
+  color: #055569;
   text-decoration: none;
 }
 .btn:active,
@@ -2120,7 +2120,7 @@ fieldset[disabled] .btn {
   box-shadow: none;
 }
 .btn-default {
-  color: #262626;
+  color: #055569;
   background-color: #fff;
   border-color: #D9D9D9;
 }
@@ -2129,7 +2129,7 @@ fieldset[disabled] .btn {
 .btn-default:active,
 .btn-default.active,
 .open .dropdown-toggle.btn-default {
-  color: #262626;
+  color: #055569;
   background-color: #ebebeb;
   border-color: #bababa;
 }
@@ -2158,12 +2158,12 @@ fieldset[disabled] .btn-default.active {
 }
 .btn-default .badge {
   color: #fff;
-  background-color: #262626;
+  background-color: #055569;
 }
 .btn-primary {
   color: #f2f2f2;
-  background-color: #262626;
-  border-color: #262626;
+  background-color: #055569;
+  border-color: #055569;
 }
 .btn-primary:hover,
 .btn-primary:focus,
@@ -2171,8 +2171,8 @@ fieldset[disabled] .btn-default.active {
 .btn-primary.active,
 .open .dropdown-toggle.btn-primary {
   color: #f2f2f2;
-  background-color: #121212;
-  border-color: #070707;
+  background-color: #033642;
+  border-color: #02262f;
 }
 .btn-primary:active,
 .btn-primary.active,
@@ -2194,11 +2194,11 @@ fieldset[disabled] .btn-primary:active,
 .btn-primary.disabled.active,
 .btn-primary[disabled].active,
 fieldset[disabled] .btn-primary.active {
-  background-color: #262626;
-  border-color: #262626;
+  background-color: #055569;
+  border-color: #055569;
 }
 .btn-primary .badge {
-  color: #262626;
+  color: #055569;
   background-color: #f2f2f2;
 }
 .btn-success {
@@ -2366,7 +2366,7 @@ fieldset[disabled] .btn-danger.active {
   background-color: #E84D3D;
 }
 .btn-link {
-  color: #262626;
+  color: #055569;
   font-weight: normal;
   cursor: pointer;
   border-radius: 0;
@@ -3456,7 +3456,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   font-size: 16px;
   font-weight: normal;
   line-height: 1;
-  color: #555555;
+  color: #222222;
   text-align: center;
   background-color: #eeeeee;
   border: 1px solid #ccc;
@@ -3542,7 +3542,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   padding: 6px 12px;
   line-height: 1.42857143;
   text-decoration: none;
-  color: #262626;
+  color: #055569;
   background-color: #fff;
   border: 1px solid #ddd;
   margin-left: -1px;
@@ -3757,7 +3757,7 @@ a.badge:focus {
 }
 a.list-group-item.active > .badge,
 .nav-pills > .active > a > .badge {
-  color: #262626;
+  color: #055569;
   background-color: #fff;
 }
 .nav-pills > li > a > .badge {
@@ -3817,7 +3817,7 @@ a.list-group-item.active > .badge,
 a.thumbnail:hover,
 a.thumbnail:focus,
 a.thumbnail.active {
-  border-color: #262626;
+  border-color: #055569;
 }
 .thumbnail .caption {
   padding: 9px;
@@ -3853,23 +3853,23 @@ a.thumbnail.active {
   color: inherit;
 }
 .alert-success {
-  background-color: #52921e;
-  border-color: #52921e;
+  background-color: #407217;
+  border-color: #407217;
   color: #fff;
 }
 .alert-success hr {
-  border-top-color: #467d19;
+  border-top-color: #345d13;
 }
 .alert-success .alert-link {
   color: #e6e6e6;
 }
 .alert-info {
-  background-color: #129dc1;
-  border-color: #129dc1;
+  background-color: #06647c;
+  border-color: #06647c;
   color: #fff;
 }
 .alert-info hr {
-  border-top-color: #108aaa;
+  border-top-color: #055064;
 }
 .alert-info .alert-link {
   color: #e6e6e6;
@@ -4659,16 +4659,32 @@ button.close {
   }
 }
 @font-face {
-  font-family: 'Quicksand';
-  font-style: normal;
+  font-family: 'Fira Sans';
+  font-style: italic;
   font-weight: 400;
-  src: url(https://fonts.gstatic.com/s/quicksand/v24/6xK-dSZaM9iE8KbpRA_LJ3z8mH9BOJvgkP8o58a-xw.ttf) format('truetype');
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/firasans/v15/va9C4kDNxMZdWfMOD5VvkojO.ttf) format('truetype');
 }
 @font-face {
-  font-family: 'Quicksand';
+  font-family: 'Fira Sans';
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/firasans/v15/va9f4kDNxMZdWfMOD5VvkrByRBf_.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Fira Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/firasans/v15/va9E4kDNxMZdWfMOD5VfkA.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Fira Sans';
   font-style: normal;
   font-weight: 700;
-  src: url(https://fonts.gstatic.com/s/quicksand/v24/6xK-dSZaM9iE8KbpRA_LJ3z8mH9BOJvgkBgv58a-xw.ttf) format('truetype');
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/firasans/v15/va9B4kDNxMZdWfMOD5VnLK3uQQ.ttf) format('truetype');
 }
 #cradmin_legacy_bodycontentwrapper {
   width: 100%;
@@ -4710,8 +4726,8 @@ a {
   text-decoration: underline;
 }
 .cradmin-legacy-container-focus.cradmin-legacy-container-focus-info {
-  background: #129dc1;
-  border-color: #129dc1;
+  background: #06647c;
+  border-color: #06647c;
   color: #fff;
 }
 .cradmin-legacy-container-focus.cradmin-legacy-container-focus-info a {
@@ -4719,8 +4735,8 @@ a {
   text-decoration: underline;
 }
 .cradmin-legacy-container-focus.cradmin-legacy-container-focus-success {
-  background: #52921e;
-  border-color: #52921e;
+  background: #407217;
+  border-color: #407217;
   color: #fff;
 }
 .cradmin-legacy-container-focus.cradmin-legacy-container-focus-success a {
@@ -4958,7 +4974,7 @@ form .alert-block.alert-danger ul li {
 .form-control:focus,
 .cradmin-div-styled-as-textarea:focus {
   background: #fff;
-  border-color: #262626;
+  border-color: #055569;
   box-shadow: none;
 }
 .cradmin-div-styled-as-textarea {
@@ -4975,10 +4991,10 @@ textarea.cradmin-textarea-small {
   top: 0;
   right: 0;
   display: none;
-  color: #747474;
+  color: #555;
 }
 .cradmin-legacy-clearable-textinput .cradmin-legacy-clearable-textinput-button:hover {
-  color: #262626;
+  color: #055569;
 }
 .cradmin-legacy-clearable-textinput .cradmin-legacy-clearable-textinput-button.cradmin-legacy-clearable-textinput-button-visible {
   display: inline-block;
@@ -5048,20 +5064,20 @@ table.table.cradmin-legacy-table tbody td:last-child {
 .btn.btn-default:focus {
   background: #fff;
   border-color: #D9D9D9;
-  color: #262626;
+  color: #055569;
 }
 @media (min-width: 768px) {
   .btn.btn-default:hover,
   .btn.btn-default:focus {
-    background: #262626;
-    border-color: #262626;
+    background: #055569;
+    border-color: #055569;
     color: #fff;
   }
 }
 .btn.btn-primary:hover,
 .btn.btn-primary:focus {
-  background: #000000;
-  border-color: #000000;
+  background: #021a20;
+  border-color: #021a20;
   color: #fff;
 }
 .btn.btn-success:hover,
@@ -5085,12 +5101,12 @@ table.table.cradmin-legacy-table tbody td:last-child {
   }
 }
 .btn.btn-cancel {
-  color: #262626;
+  color: #055569;
   text-decoration: underline;
 }
 .btn.btn-cancel:hover,
 .btn.btn-cancel:focus {
-  color: #000000;
+  color: #021a20;
 }
 .cradmin-legacy-icon-font-lg {
   font-size: 20px !important;
@@ -5151,7 +5167,7 @@ table.table.cradmin-legacy-table tbody td:last-child {
 }
 .pager-container .pager li > a:hover {
   background: transparent;
-  color: #262626;
+  color: #055569;
 }
 .pager-container .pager li.disabled > a,
 .pager-container .pager li.disabled > a:hover,
@@ -5357,12 +5373,12 @@ table.table.cradmin-legacy-table tbody td:last-child {
 .cradmin-legacy-form .cradmin-legacy-filewidget .cradmin-legacy-filewidget-field-and-overlay-wrapper.cradmin-legacy-filewidget-field-and-overlay-wrapper-hover a.btn.btn-default {
   background: #fff;
   border-color: #D9D9D9;
-  color: #262626;
+  color: #055569;
 }
 @media (min-width: 768px) {
   .cradmin-legacy-form .cradmin-legacy-filewidget .cradmin-legacy-filewidget-field-and-overlay-wrapper.cradmin-legacy-filewidget-field-and-overlay-wrapper-hover a.btn.btn-default {
-    background: #262626;
-    border-color: #262626;
+    background: #055569;
+    border-color: #055569;
     color: #fff;
   }
 }
@@ -5632,7 +5648,7 @@ ul.cradmin-legacy-roleselect-list.cradmin-legacy-roleselect-list-flat li a h2.cr
   font-weight: bold;
 }
 ul.cradmin-legacy-roleselect-list.cradmin-legacy-roleselect-list-flat li a .cradmin-legacy-roleselect-role-description {
-  color: #747474;
+  color: #555;
   font-size: 14px;
 }
 ul.cradmin-legacy-roleselect-list.cradmin-legacy-roleselect-list-flat li a .cradmin-legacy-roleselect-role-description p:last-child {
@@ -5642,7 +5658,7 @@ ul.cradmin-legacy-roleselect-list.cradmin-legacy-roleselect-list-flat li a:hover
   text-decoration: none;
 }
 ul.cradmin-legacy-roleselect-list.cradmin-legacy-roleselect-list-flat li a:hover .cradmin-legacy-roleselect-role-description {
-  color: #5a5a5a;
+  color: #3b3b3b;
 }
 ul.cradmin-legacy-roleselect-list.cradmin-legacy-roleselect-list-flat li:last-child {
   border-bottom: none;
@@ -5672,6 +5688,7 @@ The bulk file upload widget base styles.
   border-style: dashed;
   border-color: #e0e0e0;
   border-width: 2px;
+  margin-bottom: 10px;
 }
 .cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-dropbox .cradmin-legacy-bulkfileupload-dropbox-invalid-filetype-errormessage {
   display: none;
@@ -5683,22 +5700,11 @@ The bulk file upload widget base styles.
   -moz-transform: translateY(-50%);
   transform: translateY(-50%);
 }
-.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-dropbox .cradmin-legacy-bulkfileupload-dropbox-text p.cradmin-legacy-bulkfileupload-advanced-fileselectbutton-wrapper {
-  text-align: center;
-  margin-bottom: 0;
-}
-.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-dropbox .cradmin-legacy-bulkfileupload-dropbox-text p.cradmin-legacy-bulkfileupload-advanced-fileselectbutton-wrapper .cradmin-legacy-bulkfileupload-advanced-fileselectbutton {
-  display: inline-block;
-  color: #262626;
-}
-.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-dropbox .cradmin-legacy-bulkfileupload-dropbox-text p.cradmin-legacy-bulkfileupload-advanced-fileselectbutton-wrapper .cradmin-legacy-bulkfileupload-advanced-fileselectbutton:hover {
-  color: #262626;
-}
 .cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-dropbox.cradmin-legacy-bulkfileupload-dropbox-dragover {
-  background: #52921e;
+  background: #407217;
   color: #fff;
   border-style: solid;
-  border-color: #52921e;
+  border-color: #407217;
 }
 .cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-dropbox.cradmin-legacy-bulkfileupload-dropbox-dragover .cradmin-legacy-bulkfileupload-dropbox-text p.cradmin-legacy-bulkfileupload-advanced-fileselectbutton-wrapper {
   display: none;
@@ -5722,77 +5728,133 @@ The bulk file upload widget base styles.
 .cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content p.cradmin-legacy-bulkfileupload-simple-button-wrapper .btn.cradmin-legacy-bulkfileupload-simple-button {
   padding: 10px 16px;
 }
-.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item,
-.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-progress-item,
-.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-rejectedfile,
-.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-rejectedfile {
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-progress,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-rejectedfiles {
+  margin-bottom: 20px;
+}
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-progress-item,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-rejectedfile,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-rejectedfile {
   font-weight: normal;
   font-size: 16px;
+  margin: 0 0 10px 0;
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item .cradmin-legacy-bulkfileupload-iteminfo,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-progress-item .cradmin-legacy-bulkfileupload-iteminfo,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-rejectedfile .cradmin-legacy-bulkfileupload-iteminfo,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-rejectedfile .cradmin-legacy-bulkfileupload-iteminfo {
+  flex: 0 1 auto;
+  padding: 7px 10px;
+}
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item .cradmin-legacy-bulkfileupload-remove-file-button,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-progress-item .cradmin-legacy-bulkfileupload-remove-file-button,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-rejectedfile .cradmin-legacy-bulkfileupload-remove-file-button,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-rejectedfile .cradmin-legacy-bulkfileupload-remove-file-button,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item .cradmin-legacy-bulkfileupload-error-closebutton,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-progress-item .cradmin-legacy-bulkfileupload-error-closebutton,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-rejectedfile .cradmin-legacy-bulkfileupload-error-closebutton,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-rejectedfile .cradmin-legacy-bulkfileupload-error-closebutton {
+  flex: 0 0 auto;
   margin: 0;
-  padding: 20px 15px;
+  width: 55px;
+  align-self: stretch;
+  background: #e0e0e0;
+  color: #111;
 }
-@media (min-width: 992px) {
-  .cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item,
-  .cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-progress-item,
-  .cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-rejectedfile,
-  .cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-rejectedfile {
-    padding: 10px 15px;
-  }
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item .cradmin-legacy-bulkfileupload-remove-file-button:hover,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-progress-item .cradmin-legacy-bulkfileupload-remove-file-button:hover,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-rejectedfile .cradmin-legacy-bulkfileupload-remove-file-button:hover,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-rejectedfile .cradmin-legacy-bulkfileupload-remove-file-button:hover,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item .cradmin-legacy-bulkfileupload-error-closebutton:hover,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-progress-item .cradmin-legacy-bulkfileupload-error-closebutton:hover,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-rejectedfile .cradmin-legacy-bulkfileupload-error-closebutton:hover,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-rejectedfile .cradmin-legacy-bulkfileupload-error-closebutton:hover {
+  background: #ccc;
+  color: #000;
 }
-.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item.cradmin-legacy-bulkfileupload-errorparagraph,
-.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-progress-item.cradmin-legacy-bulkfileupload-errorparagraph,
-.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-rejectedfile.cradmin-legacy-bulkfileupload-errorparagraph,
-.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-rejectedfile.cradmin-legacy-bulkfileupload-errorparagraph {
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item.cradmin-legacy-bulkfileupload-errorparagraph,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-progress-item.cradmin-legacy-bulkfileupload-errorparagraph,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-rejectedfile.cradmin-legacy-bulkfileupload-errorparagraph,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-rejectedfile.cradmin-legacy-bulkfileupload-errorparagraph {
   background: #a0372f;
   color: #fef6f5;
 }
-.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item.cradmin-legacy-bulkfileupload-errorparagraph .cradmin-legacy-bulkfileupload-error-closebutton,
-.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-progress-item.cradmin-legacy-bulkfileupload-errorparagraph .cradmin-legacy-bulkfileupload-error-closebutton,
-.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-rejectedfile.cradmin-legacy-bulkfileupload-errorparagraph .cradmin-legacy-bulkfileupload-error-closebutton,
-.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-rejectedfile.cradmin-legacy-bulkfileupload-errorparagraph .cradmin-legacy-bulkfileupload-error-closebutton {
-  float: right;
-  margin-top: -7px;
-  margin-right: -7px;
-  color: #fef6f5;
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item.cradmin-legacy-bulkfileupload-errorparagraph .cradmin-legacy-bulkfileupload-error-closebutton,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-progress-item.cradmin-legacy-bulkfileupload-errorparagraph .cradmin-legacy-bulkfileupload-error-closebutton,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-rejectedfile.cradmin-legacy-bulkfileupload-errorparagraph .cradmin-legacy-bulkfileupload-error-closebutton,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-rejectedfile.cradmin-legacy-bulkfileupload-errorparagraph .cradmin-legacy-bulkfileupload-error-closebutton {
+  font-size: 20px;
+  color: #111;
 }
-.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item.cradmin-legacy-bulkfileupload-errorparagraph .cradmin-legacy-bulkfileupload-error-closebutton:hover,
-.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-progress-item.cradmin-legacy-bulkfileupload-errorparagraph .cradmin-legacy-bulkfileupload-error-closebutton:hover,
-.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-rejectedfile.cradmin-legacy-bulkfileupload-errorparagraph .cradmin-legacy-bulkfileupload-error-closebutton:hover,
-.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-rejectedfile.cradmin-legacy-bulkfileupload-errorparagraph .cradmin-legacy-bulkfileupload-error-closebutton:hover {
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item.cradmin-legacy-bulkfileupload-errorparagraph .cradmin-legacy-bulkfileupload-error-closebutton:hover,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-progress-item.cradmin-legacy-bulkfileupload-errorparagraph .cradmin-legacy-bulkfileupload-error-closebutton:hover,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-rejectedfile.cradmin-legacy-bulkfileupload-errorparagraph .cradmin-legacy-bulkfileupload-error-closebutton:hover,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-rejectedfiles p.cradmin-legacy-bulkfileupload-rejectedfile.cradmin-legacy-bulkfileupload-errorparagraph .cradmin-legacy-bulkfileupload-error-closebutton:hover {
   color: #f8c4bd;
 }
-.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress {
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-progress .cradmin-legacy-filename,
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-rejectedfiles .cradmin-legacy-filename {
+  word-break: break-all;
+}
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-progress {
   background: #fff;
 }
-.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item {
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item {
   color: #000000;
+  background: #f5f5f5;
 }
-.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item .cradmin-legacy-progressbar {
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item .cradmin-legacy-bulkfileupload-remove-file-button {
+  background: #e0e0e0;
+  color: #111;
+}
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item .cradmin-legacy-bulkfileupload-remove-file-button:hover {
+  background: #ccc;
+  color: #000;
+}
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item .cradmin-legacy-progressbar {
   display: inline-block;
   background: #333;
   width: 100px;
   position: relative;
 }
-.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item .cradmin-legacy-progressbar .cradmin-legacy-progressbar-progress {
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item .cradmin-legacy-progressbar .cradmin-legacy-progressbar-progress {
   display: inline-block;
   height: 100%;
-  background: #262626;
+  background: #055569;
 }
-.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item .cradmin-legacy-progressbar .cradmin-legacy-progresspercent {
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item .cradmin-legacy-progressbar .cradmin-legacy-progresspercent {
   position: absolute;
   top: 1px;
   left: 5px;
   font-size: 14px;
   color: #fff;
 }
-.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item .cradmin-legacy-bulkfileupload-remove-file-button {
-  float: right;
-  margin-top: -7px;
-  margin-right: -7px;
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-rejectedfiles {
+  background: #a0372f;
+}
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-rejectedfiles .cradmin-legacy-bulkfileupload-rejectedfile {
   color: #fef6f5;
 }
-.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-progress p.cradmin-legacy-bulkfileupload-progress-item .cradmin-legacy-bulkfileupload-remove-file-button:hover {
-  color: #f8c4bd;
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-rejectedfiles .cradmin-legacy-bulkfileupload-rejectedfile .cradmin-legacy-bulkfileupload-error-closebutton {
+  background: #98342d;
+  color: #fef6f6;
+}
+.cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-rejectedfiles .cradmin-legacy-bulkfileupload-rejectedfile .cradmin-legacy-bulkfileupload-error-closebutton:hover {
+  background: #8d3029;
+  color: #fef7f6;
+}
+.cradmin-legacy-bulkfileupload p.cradmin-legacy-bulkfileupload-advanced-fileselectbutton-wrapper {
+  text-align: center;
+  margin-bottom: 10px;
+}
+.cradmin-legacy-bulkfileupload p.cradmin-legacy-bulkfileupload-advanced-fileselectbutton-wrapper .cradmin-legacy-bulkfileupload-advanced-fileselectbutton {
+  display: inline-block;
 }
 /**
 ## .cradmin-legacy-bulkfileupload-form-overlay
@@ -5963,10 +6025,10 @@ child of ``<body>``.
   display: none;
 }
 .cradmin-legacy-bulkfileupload-overlaywrapper.cradmin-legacy-bulkfileupload-overlaywrapper-window-dragover .cradmin-legacy-bulkfileupload-form-overlay .cradmin-legacy-bulkfileupload .cradmin-legacy-bulkfileupload-content .cradmin-legacy-bulkfileupload-dropbox.cradmin-legacy-bulkfileupload-dropbox-dragover {
-  background: #52921e;
+  background: #407217;
   color: #fff;
   border-style: solid;
-  border-color: #52921e;
+  border-color: #407217;
 }
 .cradmin-legacy-focusedpage-wrapper {
   width: 100%;
@@ -6013,11 +6075,11 @@ child of ``<body>``.
   }
 }
 nav.cradmin-legacy-menu {
-  background: #262626;
+  background: #055569;
 }
 nav.cradmin-legacy-menu .cradmin-legacy-menu-content {
   display: none;
-  background: #262626;
+  background: #055569;
 }
 nav.cradmin-legacy-menu .cradmin-legacy-menu-content.cradmin-legacy-menu-content-display {
   display: block;
@@ -6036,7 +6098,7 @@ nav.cradmin-legacy-menu .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-i
 }
 nav.cradmin-legacy-menu .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-item a {
   display: block;
-  color: #cccccc;
+  color: #ddd;
   padding: 10px 16px 10px 16px;
   transition: color 0.15s ease;
   text-overflow: ellipsis;
@@ -6047,16 +6109,16 @@ nav.cradmin-legacy-menu .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-i
 }
 nav.cradmin-legacy-menu .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-item a:hover {
   text-decoration: none;
-  color: #eee;
+  color: #fff;
 }
 nav.cradmin-legacy-menu .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-item.cradmin-legacy-menu-activeitem .cradmin-legacy-menu-activeitemwrapper > a,
 nav.cradmin-legacy-menu .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-item.cradmin-legacy-menu-activeitem > a {
-  color: #eee;
+  color: #fff;
   font-weight: bold;
   text-decoration: none;
 }
 nav.cradmin-legacy-menu .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-item.cradmin-legacy-menu-expandeditem > a {
-  color: #eee;
+  color: #fff;
 }
 nav.cradmin-legacy-menu .cradmin-legacy-menu-content ul li.cradmin-legacy-menu-item.cradmin-legacy-menu-expandeditem .cradmin-legacy-menu-childitems ul {
   padding-left: 15px;
@@ -6073,13 +6135,13 @@ nav.cradmin-legacy-menu .cradmin-legacy-menu-mobileheader .cradmin-legacy-menu-m
   border-radius: 0;
   cursor: pointer;
   text-decoration: none;
-  color: #cccccc;
-  background-color: #262626;
+  color: #ddd;
+  background-color: #055569;
 }
 nav.cradmin-legacy-menu .cradmin-legacy-menu-mobileheader .cradmin-legacy-menu-mobiletoggle:hover,
 nav.cradmin-legacy-menu .cradmin-legacy-menu-mobileheader .cradmin-legacy-menu-mobiletoggle.cradmin-legacy-menu-mobile-toggle-button-expanded {
-  color: #eee;
-  background-color: #191919;
+  color: #fff;
+  background-color: #044151;
   outline: none;
   text-decoration: none;
 }
@@ -6093,10 +6155,10 @@ nav.cradmin-legacy-menu .cradmin-legacy-menu-mobileheader .cradmin-legacy-menu-m
 }
 @media (min-width: 992px) {
   nav#cradmin_legacy_mainmenu.cradmin-legacy-menu .cradmin-legacy-menu-content ul.cradmin-legacy-menu-content-header {
-    background: #191919;
+    background: #044151;
   }
   nav#cradmin_legacy_mainmenu.cradmin-legacy-menu .cradmin-legacy-menu-content ul.cradmin-legacy-menu-content-footer {
-    background: #191919;
+    background: #044151;
   }
 }
 nav.cradmin-legacy-menu.cradmin-legacy-menu-vertical .cradmin-legacy-menu-mobileheader .cradmin-legacy-menu-mobiletoggle {
@@ -6323,13 +6385,13 @@ nav.cradmin-legacy-menu.cradmin-legacy-menu-vertical .cradmin-legacy-menu-mobile
   top: 0;
   padding: 10px 20px;
   font-size: 20px;
-  color: #747474;
+  color: #555;
 }
 .cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-page .cradmin-legacy-datetime-selector-closebutton:hover,
 .cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-page .cradmin-legacy-datetime-selector-closebutton:active,
 .cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-page .cradmin-legacy-datetime-selector-closebutton:focus {
   text-decoration: none;
-  color: #262626;
+  color: #055569;
 }
 .cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview {
   padding-top: 15px;
@@ -6402,7 +6464,7 @@ nav.cradmin-legacy-menu.cradmin-legacy-menu-vertical .cradmin-legacy-menu-mobile
 .cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell {
   margin: 0;
   background: #fff;
-  color: #262626;
+  color: #055569;
   border: none;
   height: 62.5px;
   position: relative;
@@ -6452,35 +6514,35 @@ nav.cradmin-legacy-menu.cradmin-legacy-menu-vertical .cradmin-legacy-menu-mobile
 }
 .cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell.cradmin-legacy-datetime-selector-daybuttoncell-today button {
   background: #fff;
-  color: #262626;
+  color: #055569;
 }
 .cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell.cradmin-legacy-datetime-selector-daybuttoncell-selected button {
-  background: #0c0c0c;
+  background: #032e39;
   color: #fff;
 }
 .cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell.cradmin-legacy-datetime-selector-daybuttoncell-not-in-current-month button {
   background: #fff;
-  color: #747474;
+  color: #555;
 }
 .cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell.cradmin-legacy-datetime-selector-daybuttoncell-disabled button {
-  background: #e6e6e6;
+  background: #030303;
   color: #646464;
 }
 .cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell.cradmin-legacy-datetime-selector-daybuttoncell-disabled button:hover,
 .cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell.cradmin-legacy-datetime-selector-daybuttoncell-disabled button:active,
 .cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell.cradmin-legacy-datetime-selector-daybuttoncell-disabled button:focus {
   cursor: not-allowed;
-  background: #e6e6e6;
+  background: #030303;
   color: #646464;
 }
 .cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell.cradmin-legacy-datetime-selector-daybuttoncell-disabled.cradmin-legacy-datetime-selector-daybuttoncell-not-in-current-month button {
-  background: #cdcdcd;
+  background: #000000;
   color: #7e7e7e;
 }
 .cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell.cradmin-legacy-datetime-selector-daybuttoncell-disabled.cradmin-legacy-datetime-selector-daybuttoncell-not-in-current-month button:hover,
 .cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell.cradmin-legacy-datetime-selector-daybuttoncell-disabled.cradmin-legacy-datetime-selector-daybuttoncell-not-in-current-month button:active,
 .cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell.cradmin-legacy-datetime-selector-daybuttoncell-disabled.cradmin-legacy-datetime-selector-daybuttoncell-not-in-current-month button:focus {
-  background: #cdcdcd;
+  background: #000000;
   color: #7e7e7e;
 }
 .cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell button:hover,
@@ -6491,7 +6553,7 @@ nav.cradmin-legacy-menu.cradmin-legacy-menu-vertical .cradmin-legacy-menu-mobile
 .cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell.cradmin-legacy-datetime-selector-daybuttoncell-today button:focus,
 .cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell.cradmin-legacy-datetime-selector-daybuttoncell-selected button:focus,
 .cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell.cradmin-legacy-datetime-selector-daybuttoncell-not-in-current-month button:focus {
-  background: #262626;
+  background: #055569;
   color: #fff;
 }
 .cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-dateview table.cradmin-legacy-datetime-selector-table tbody tr td.cradmin-legacy-datetime-selector-daybuttoncell:first-child {
@@ -6519,7 +6581,7 @@ nav.cradmin-legacy-menu.cradmin-legacy-menu-vertical .cradmin-legacy-menu-mobile
   padding: 0;
   width: 50px;
   height: 100%;
-  color: #262626;
+  color: #055569;
   border-radius: 0;
   margin: 0;
   text-align: center;
@@ -6548,7 +6610,7 @@ nav.cradmin-legacy-menu.cradmin-legacy-menu-vertical .cradmin-legacy-menu-mobile
 .cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-timeview .cradmin-legacy-datetime-selector-backbutton:focus,
 .cradmin-legacy-datetime-selector .cradmin-legacy-datetime-selector-contentwrapper .cradmin-legacy-datetime-selector-timeview .cradmin-legacy-datetime-selector-backbutton:active {
   background: #f2f2f2;
-  color: #191919;
+  color: #044151;
   text-decoration: none;
   outline: 0;
   background-image: none;
@@ -6773,10 +6835,10 @@ a.cradmin-legacy-listbuilder-itemframe-link .cradmin-legacy-listbuilder-itemvalu
   color: #000000;
 }
 a.cradmin-legacy-listbuilder-itemframe-link .cradmin-legacy-listbuilder-itemvalue.cradmin-legacy-listbuilder-itemvalue-focusbox .cradmin-legacy-listbuilder-itemvalue-titledescription .cradmin-legacy-listbuilder-itemvalue-titledescription-title {
-  color: #262626;
+  color: #055569;
 }
 a.cradmin-legacy-listbuilder-itemframe-link:hover .cradmin-legacy-listbuilder-itemvalue.cradmin-legacy-listbuilder-itemvalue-focusbox {
-  border-color: #262626;
+  border-color: #055569;
 }
 a.cradmin-legacy-listbuilder-itemframe-link:hover .cradmin-legacy-listbuilder-itemvalue.cradmin-legacy-listbuilder-itemvalue-focusbox .cradmin-legacy-listbuilder-itemvalue-titledescription .cradmin-legacy-listbuilder-itemvalue-titledescription-title {
   color: #262626;
@@ -6851,8 +6913,8 @@ ol.cradmin-legacy-listfilter-filterlist.cradmin-legacy-listfilter-filterlist-hor
 }
 .cradmin-legacy-listfilter-target-loading .cradmin-legacy-listfilter-message.cradmin-legacy-listfilter-message-loading,
 .cradmin-legacy-listfilter-target-loaderror .cradmin-legacy-listfilter-message.cradmin-legacy-listfilter-message-loading {
-  background: #129dc1;
-  border: 1px solid #129dc1;
+  background: #06647c;
+  border: 1px solid #06647c;
   color: #fff;
 }
 .cradmin-legacy-listfilter-target-loading .cradmin-legacy-listfilter-message.cradmin-legacy-listfilter-message-error,
@@ -6914,7 +6976,7 @@ ol.cradmin-legacy-listfilter-filterlist.cradmin-legacy-listfilter-filterlist-hor
   margin-top: 0;
 }
 .cradmin-legacy-multiselect2-target .cradmin-legacy-multiselect2-target-formfields .form-group .controls .checkbox label:hover {
-  color: #262626;
+  color: #055569;
   cursor: pointer;
 }
 .cradmin-legacy-multiselect2-target .cradmin-legacy-multiselect2-target-formfields .btn {
@@ -6931,7 +6993,7 @@ ol.cradmin-legacy-listfilter-filterlist.cradmin-legacy-listfilter-filterlist-hor
 }
 .cradmin-legacy-multiselect2-target .cradmin-legacy-multiselect2-target-no-items-selected {
   display: none;
-  color: #747474;
+  color: #555;
   font-style: italic;
 }
 .cradmin-legacy-multiselect2-target.cradmin-legacy-multiselect2-target-with-items .cradmin-legacy-multiselect2-target-with-items-content {
@@ -6968,7 +7030,7 @@ ol.cradmin-legacy-listfilter-filterlist.cradmin-legacy-listfilter-filterlist-hor
 .cradmin-legacy-multiselect2-item-wrapper-selected .cradmin-legacy-multiselect2-itemvalue .cradmin-legacy-multiselect2-itemvalue-selectedsummary {
   display: block;
   font-size: 14px;
-  color: #747474;
+  color: #555;
 }
 .cradmin-legacy-multiselect2-item-wrapper-selected .cradmin-legacy-multiselect2-itemvalue .cradmin-legacy-multiselect2-itemvalue-selectedsummary .cradmin-legacy-multiselect2-itemvalue-selectedsummary-prefix-icon {
   color: #3c763d;
@@ -7022,6 +7084,13 @@ ol.cradmin-legacy-listfilter-filterlist.cradmin-legacy-listfilter-filterlist-hor
     display: block;
   }
 }
+a.plain-link {
+  text-decoration: underline;
+  color: #055569;
+}
+a.plain-link:hover {
+  color: #262626;
+}
 @media (min-width: 992px) {
   nav#cradmin_legacy_mainmenu.cradmin-legacy-menu {
     position: absolute;
@@ -7068,7 +7137,7 @@ ol.cradmin-legacy-listfilter-filterlist.cradmin-legacy-listfilter-filterlist-hor
     bottom: 0;
     height: 100%;
     width: 250px;
-    background: #262626;
+    background: #055569;
   }
 }
 body {
@@ -7294,7 +7363,7 @@ ol.cradmin-legacy-listbuilder-list h3:first-child {
   color: #000000;
 }
 .cradmin-legacy-page-header-outer.devilry-page-header-with-backlink .cradmin-legacy-page-header-inner a.devilry-page-header-backlink:hover {
-  color: #262626;
+  color: #055569;
 }
 .devilry-cradmin-groupitemvalue h2,
 .devilry-cradmin-groupitemvalue h3 {
@@ -7316,11 +7385,11 @@ ol.cradmin-legacy-listbuilder-list h3:first-child {
 .devilry-cradmin-groupitemvalue .devilry-cradmin-groupitemvalue-comments {
   margin-bottom: 1px;
   font-size: 14px;
-  color: #747474;
+  color: #555;
 }
 .devilry-cradmin-groupitemvalue .devilry-cradmin-groupitemvalue-grade .devilry-core-grade-passed {
   font-weight: bold;
-  color: #52921e;
+  color: #407217;
 }
 .devilry-cradmin-groupitemvalue .devilry-cradmin-groupitemvalue-grade .devilry-core-grade-failed {
   font-weight: bold;
@@ -7387,7 +7456,7 @@ a.cradmin-legacy-listbuilder-itemframe-link.devilry-cradmin-legacy-listbuilder-i
   transition: all 0.15s ease-in-out;
 }
 a.cradmin-legacy-listbuilder-itemframe-link.devilry-cradmin-legacy-listbuilder-itemframe-goforward:hover .devilry-cradmin-legacy-listbuilder-itemframe-goforward-icon {
-  color: #262626;
+  color: #055569;
 }
 a.cradmin-legacy-listbuilder-itemframe-link.devilry-cradmin-legacy-listbuilder-itemframe-goforward .cradmin-legacy-listbuilder-itemvalue.cradmin-legacy-listbuilder-itemvalue-focusbox {
   padding-right: 55px;
@@ -7402,7 +7471,7 @@ a.cradmin-legacy-listbuilder-itemframe-link .cradmin-legacy-listbuilder-itemvalu
 }
 a.cradmin-legacy-listbuilder-itemframe-link .cradmin-legacy-listbuilder-itemvalue-titledescription.devilry-cradmin-legacy-listbuilder-itemvalue-titledescription-description-muted .cradmin-legacy-listbuilder-itemvalue-titledescription-description,
 .cradmin-legacy-listbuilder-itemvalue-titledescription-description.devilry-cradmin-legacy-listbuilder-itemvalue-titledescription-description-muted .cradmin-legacy-listbuilder-itemvalue-titledescription-description {
-  color: #747474;
+  color: #555;
 }
 .cradmin-legacy-listbuilder-itemvalue-titledescription.devilry-cradmin-legacy-listbuilder-itemvalue-titledescription-lg h2,
 .cradmin-legacy-listbuilder-itemvalue-titledescription.devilry-cradmin-legacy-listbuilder-itemvalue-titledescription-lg h3 {
@@ -7516,7 +7585,7 @@ h3 .devilry-user-verbose-inline small {
 .devilry-dangerzone ul.devilry-dangerzone-actionlist li a small {
   display: block;
   text-decoration: none;
-  color: #747474;
+  color: #555;
 }
 .devilry-dangerzone ul.devilry-dangerzone-actionlist li a:hover {
   text-decoration: none;
@@ -7526,7 +7595,7 @@ h3 .devilry-user-verbose-inline small {
   text-decoration: underline;
 }
 .devilry-dangerzone ul.devilry-dangerzone-actionlist li a:hover small {
-  color: #747474;
+  color: #555;
 }
 .devilry-listbuilderlist-footer {
   font-size: 14px;
@@ -7598,11 +7667,11 @@ h3 {
   border-top-right-radius: 0;
   margin-right: 5px;
   background-color: #fff;
-  color: #262626;
+  color: #055569;
 }
 .devilry-tabs__tab:hover,
 .devilry-tabs__tab:focus {
-  background-color: #262626;
+  background-color: #055569;
   color: #fff;
   text-decoration: none;
 }
@@ -7610,7 +7679,7 @@ h3 {
 .devilry-tabs__tab--active:hover,
 .devilry-tabs__tab--active:focus {
   color: #fff;
-  background-color: #262626;
+  background-color: #055569;
 }
 .devilry-tabs__title {
   font-weight: bold;
@@ -7635,7 +7704,7 @@ h3 {
 }
 .devilry-ace-editor .btn-toolbar {
   margin-bottom: 0;
-  opacity: 0.5;
+  opacity: 0.8;
 }
 @media (min-width: 600px) {
   .devilry-ace-editor .btn-toolbar .btn {
@@ -7663,7 +7732,7 @@ h3 {
 .devilry-ace-editor.cradmin-focus .devilry-ace-editor-acewrapper,
 .devilry-ace-editor.cradmin-focus .ace_editor {
   background: #fff;
-  border-color: #262626;
+  border-color: #055569;
 }
 .devilry-ace-editor--small .ace_editor {
   height: 70px;
@@ -7757,6 +7826,236 @@ h3 {
 }
 .paragraph--nomargin {
   margin-bottom: 0;
+}
+.screenreader-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+.devilry-comment-editor-preview {
+  width: auto;
+  min-height: 400px;
+  border: 3px solid #D9D9D9;
+  padding: 10px;
+}
+.devilry-comment-editor-preview--display-none {
+  display: none;
+}
+.devilry-comment-editor--display-none {
+  display: none;
+}
+.devilry-comment-editor .devilry-comment-editor-toolbar {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.devilry-comment-editor .devilry-comment-editor-toolbar .btn {
+  margin-bottom: 0;
+}
+.devilry-comment-editor .devilry-comment-editor-toolbar__option {
+  margin-right: 3px;
+}
+.devilry-comment-editor__textarea {
+  position: relative;
+}
+.devilry-comment-editor__textarea .devilry-comment-editor-textarea {
+  border: 1px solid #D9D9D9;
+  border-radius: 4px;
+  outline: none;
+  box-shadow: none;
+  background: #fff;
+  border-width: 3px;
+  border-radius: 0;
+  padding: 6px 12px;
+  white-space: pre-wrap;
+  letter-spacing: 1px;
+  width: 100%;
+  min-height: 200px;
+  overflow-y: hidden;
+}
+.devilry-comment-editor__textarea .devilry-comment-editor-textarea:focus {
+  background: #fff;
+  border-color: #055569;
+  box-shadow: none;
+}
+.devilry-comment-editor__textarea .devilry-comment-editor-textarea--real {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100%;
+}
+.devilry-comment-editor__textarea .devilry-comment-editor-textarea--copy {
+  visibility: hidden;
+  margin-bottom: 15px;
+}
+.tab {
+  overflow: hidden;
+}
+.tab button {
+  background-color: #f1f1f1;
+  float: left;
+  border: none;
+  outline: none;
+  padding: 12px 14px;
+  transition: 0.3s;
+  font-size: 17px;
+}
+.tab button:hover {
+  background-color: #dadada;
+}
+.tab button.active {
+  background-color: #dadada;
+}
+.tabcontent {
+  display: none;
+  margin-top: 3px;
+}
+.devilry-fileupload .devilry-fileupload-content {
+  padding: 0;
+  background: #fff;
+}
+.devilry-fileupload .devilry-fileupload-content .devilry-fileupload-dropbox {
+  background: #ffffff;
+  color: #000000;
+  font-weight: bold;
+  font-size: inherit;
+  padding: 5px 30px 5px 30px;
+  height: 100px;
+  text-align: center;
+  border-style: dashed;
+  border-color: #e0e0e0;
+  border-width: 2px;
+  margin-bottom: 10px;
+}
+.devilry-fileupload .devilry-fileupload-content .devilry-fileupload-dropbox .devilry-fileupload-dropbox-invalid-filetype-errormessage {
+  display: none;
+}
+.devilry-fileupload .devilry-fileupload-content .devilry-fileupload-dropbox .devilry-fileupload-dropbox-text {
+  position: relative;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -moz-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+.devilry-fileupload .devilry-fileupload-content .devilry-fileupload-dropbox.devilry-fileupload-dropbox-dragover {
+  background: #407217;
+  color: #fff;
+  border-style: solid;
+  border-color: #407217;
+}
+.devilry-fileupload .devilry-fileupload-content .devilry-fileupload-dropbox.devilry-fileupload-dropbox-dragover .devilry-fileupload-dropbox-text p.devilry-fileupload-advanced-fileselectbutton-wrapper {
+  display: none;
+}
+.devilry-fileupload .devilry-fileupload-content .devilry-fileupload-dropbox.devilry-fileupload-dropbox-dragover-error {
+  background: #a0372f;
+  color: #fef6f5;
+  border-style: solid;
+  border-color: #a0372f;
+}
+.devilry-fileupload .devilry-fileupload-content .devilry-fileupload-dropbox.devilry-fileupload-dropbox-dragover-error .devilry-fileupload-dropbox-invalid-filetype-errormessage {
+  display: block;
+}
+.devilry-fileupload .devilry-fileupload-content .devilry-fileupload-dropbox.devilry-fileupload-dropbox-dragover-error .devilry-fileupload-dropbox-text {
+  display: none;
+}
+.devilry-fileupload .devilry-fileupload-content p.devilry-fileupload-simple-button-wrapper {
+  padding: 10px 15px;
+  margin: 0;
+}
+.devilry-fileupload .devilry-fileupload-content p.devilry-fileupload-simple-button-wrapper .btn.devilry-fileupload-simple-button {
+  padding: 10px 16px;
+}
+.devilry-fileupload .devilry-fileupload-queue {
+  margin-bottom: 20px;
+}
+.devilry-fileupload .devilry-fileupload-queue .devilry-fileupload-queue-item {
+  background: #f5f5f5;
+  color: #000000;
+  font-size: 16px;
+  margin: 0 0 10px 0;
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.devilry-fileupload .devilry-fileupload-queue .devilry-fileupload-queue-item .devilry-fileupload-iteminfo {
+  flex: 0 1 auto;
+  padding: 7px 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
+.devilry-fileupload .devilry-fileupload-queue .devilry-fileupload-queue-item .devilry-fileupload-iteminfo .devilry-fileupload-filestatus {
+  display: inline-block;
+  background: #06647c;
+  color: #fff;
+  font-size: 14px;
+  text-transform: uppercase;
+  padding: 3px 5px;
+  margin-right: 6px;
+}
+.devilry-fileupload .devilry-fileupload-queue .devilry-fileupload-queue-item .devilry-fileupload-iteminfo .devilry-fileupload-itemdetails .devilry-fileupload-filename {
+  word-break: break-all;
+}
+.devilry-fileupload .devilry-fileupload-queue .devilry-fileupload-queue-item .devilry-fileupload-iteminfo .devilry-fileupload-itemdetails .devilry-fileupload-errormessage {
+  display: none;
+}
+.devilry-fileupload .devilry-fileupload-queue .devilry-fileupload-queue-item .devilry-fileupload-queue-removeitem {
+  flex: 0 0 auto;
+  margin: 0;
+  width: 55px;
+  align-self: stretch;
+  display: none;
+  background: #e0e0e0;
+  color: #111;
+}
+.devilry-fileupload .devilry-fileupload-queue .devilry-fileupload-queue-item .devilry-fileupload-queue-removeitem:hover {
+  background: #ccc;
+  color: #000;
+}
+.devilry-fileupload .devilry-fileupload-queue .devilry-fileupload-queue-item.devilry-fileupload-queue-item--upload-failed {
+  background: #a0372f;
+  color: #fef6f5;
+}
+.devilry-fileupload .devilry-fileupload-queue .devilry-fileupload-queue-item.devilry-fileupload-queue-item--upload-failed .devilry-fileupload-iteminfo .devilry-fileupload-filestatus {
+  background: #a0372f;
+  color: #fef6f5;
+}
+.devilry-fileupload .devilry-fileupload-queue .devilry-fileupload-queue-item.devilry-fileupload-queue-item--upload-failed .devilry-fileupload-iteminfo .devilry-fileupload-itemdetails .devilry-fileupload-errormessage {
+  display: block;
+  margin-top: 8px;
+}
+.devilry-fileupload .devilry-fileupload-queue .devilry-fileupload-queue-item.devilry-fileupload-queue-item--upload-failed .devilry-fileupload-queue-removeitem {
+  display: inline-block;
+  font-size: 20px;
+  background: #882f28;
+  color: #fef6f5;
+}
+.devilry-fileupload .devilry-fileupload-queue .devilry-fileupload-queue-item.devilry-fileupload-queue-item--upload-failed .devilry-fileupload-queue-removeitem:hover {
+  color: #f8c4bd;
+  background: #a54139;
+}
+.devilry-fileupload .devilry-fileupload-queue .devilry-fileupload-queue-item.devilry-fileupload-queue-item--upload-success .devilry-fileupload-iteminfo .devilry-fileupload-filestatus {
+  background: #407217;
+  color: #fff;
+}
+.devilry-fileupload .devilry-fileupload-queue .devilry-fileupload-queue-item.devilry-fileupload-queue-item--upload-success .devilry-fileupload-queue-removeitem {
+  display: inline-block;
+}
+.devilry-fileupload .devilry-fileupload-fileselect-wrapper {
+  text-align: center;
+}
+.devilry-fileupload .devilry-fileupload-fileselect-wrapper .devilry-fileupload-fileselect-input {
+  display: none;
 }
 #cradmin_legacy_bodycontentwrapper {
   padding-bottom: 15px;
