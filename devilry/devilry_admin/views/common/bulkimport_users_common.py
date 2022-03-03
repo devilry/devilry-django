@@ -48,11 +48,9 @@ class AbstractTypeInUsersView(formbase.FormView):
 
     def __get_users_blob_help_text(self):
         if settings.CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND:
-            return gettext_lazy('Type or paste in email addresses separated '
-                     'by comma (","), space or one user on each line.')
+            return gettext_lazy('Type or paste in email addresses separated by comma (","), space or one user on each line.')
         else:
-            return gettext_lazy('Type or paste in usernames separated '
-                     'by comma (","), space or one user on each line.')
+            return gettext_lazy('Type or paste in usernames separated by comma (","), space or one user on each line.')
 
     def __get_users_blob_placeholder(self):
         if settings.CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND:
@@ -145,4 +143,5 @@ class AbstractTypeInUsersView(formbase.FormView):
         context = super(AbstractTypeInUsersView, self).get_context_data(**kwargs)
         context['backlink_url'] = self.get_backlink_url()
         context['backlink_label'] = self.get_backlink_label()
+        context['uses_email_auth_backend'] = settings.CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND
         return context

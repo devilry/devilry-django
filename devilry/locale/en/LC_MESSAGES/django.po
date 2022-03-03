@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-02 15:01+0100\n"
+"POT-Creation-Date: 2022-03-03 11:03+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2225,10 +2225,16 @@ msgstr ""
 msgid "Select the student to split from project group"
 msgstr ""
 
-#: devilry/devilry_admin/templates/devilry_admin/common/abstract-type-in-users.django.html:26
+#: devilry/devilry_admin/templates/devilry_admin/common/abstract-type-in-users.django.html:27
 msgid ""
 "Please verify that the emails you add below match existing users in Devilry "
 "to avoid generating new users."
+msgstr ""
+
+#: devilry/devilry_admin/templates/devilry_admin/common/abstract-type-in-users.django.html:31
+msgid ""
+"Please verify that the usernames you add below match existing users in "
+"Devilry to avoid generating new users."
 msgstr ""
 
 #: devilry/devilry_admin/templates/devilry_admin/common/admin-list-view.django.html:13
@@ -3653,30 +3659,30 @@ msgid ""
 "user on each line."
 msgstr ""
 
-#: devilry/devilry_admin/views/common/bulkimport_users_common.py:54
+#: devilry/devilry_admin/views/common/bulkimport_users_common.py:53
 msgid ""
 "Type or paste in usernames separated by comma (\",\"), space or one user on "
 "each line."
 msgstr ""
 
-#: devilry/devilry_admin/views/common/bulkimport_users_common.py:59
+#: devilry/devilry_admin/views/common/bulkimport_users_common.py:57
 msgid ""
 "jane@example.com\n"
 "john@example.com"
 msgstr ""
 
-#: devilry/devilry_admin/views/common/bulkimport_users_common.py:61
+#: devilry/devilry_admin/views/common/bulkimport_users_common.py:59
 msgid ""
 "jane\n"
 "john"
 msgstr ""
 
-#: devilry/devilry_admin/views/common/bulkimport_users_common.py:83
+#: devilry/devilry_admin/views/common/bulkimport_users_common.py:81
 #, python-format
 msgid "Invalid email addresses: %(emails)s"
 msgstr ""
 
-#: devilry/devilry_admin/views/common/bulkimport_users_common.py:98
+#: devilry/devilry_admin/views/common/bulkimport_users_common.py:96
 #, python-format
 msgid "Invalid usernames: %(usernames)s"
 msgstr ""

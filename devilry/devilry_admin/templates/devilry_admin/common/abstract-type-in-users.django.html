@@ -23,10 +23,15 @@
         <div class="devilry-dashboard-container">
             <strong>
                 <p class="devilry-cradmin-confirmview-message">
-                    {% blocktrans trimmed %}
-                        Please verify that the emails you add below match existing users in Devilry to avoid generating
-                        new users.
-                    {% endblocktrans %}
+                    {% if uses_email_auth_backend %}
+                        {% blocktrans trimmed %}
+                            Please verify that the emails you add below match existing users in Devilry to avoid generating new users.
+                        {% endblocktrans %}
+                    {% else %}
+                        {% blocktrans trimmed %}
+                            Please verify that the usernames you add below match existing users in Devilry to avoid generating new users.
+                        {% endblocktrans %}
+                    {% endif %}
                 </p>
             </strong>
         </div>

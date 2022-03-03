@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-02 15:01+0100\n"
-"PO-Revision-Date: 2022-03-02 15:09+0100\n"
+"POT-Creation-Date: 2022-03-03 11:03+0100\n"
+"PO-Revision-Date: 2022-03-03 11:06+0100\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -2452,13 +2452,21 @@ msgstr "Del studenter fra prosjektgruppe"
 msgid "Select the student to split from project group"
 msgstr "Velg studenten som skal splittes fra prosjektgruppen"
 
-#: devilry/devilry_admin/templates/devilry_admin/common/abstract-type-in-users.django.html:26
+#: devilry/devilry_admin/templates/devilry_admin/common/abstract-type-in-users.django.html:27
 msgid ""
 "Please verify that the emails you add below match existing users in Devilry "
 "to avoid generating new users."
 msgstr ""
 "Vennligst verifiser at epostene du legger til under hører til eksisterende "
 "brukere i Devilry for å unngå at nye brukere blir opprettet."
+
+#: devilry/devilry_admin/templates/devilry_admin/common/abstract-type-in-users.django.html:31
+msgid ""
+"Please verify that the usernames you add below match existing users in "
+"Devilry to avoid generating new users."
+msgstr ""
+"Vennligst verifiser at brukernavnene du legger til under hører til "
+"eksisterende brukere i Devilry for å unngå at nye brukere blir opprettet."
 
 #: devilry/devilry_admin/templates/devilry_admin/common/admin-list-view.django.html:13
 msgid "Inherited administrators"
@@ -4045,39 +4053,39 @@ msgid ""
 "Type or paste in email addresses separated by comma (\",\"), space or one "
 "user on each line."
 msgstr ""
-"Skriv eller lim inn e-postadressene adskilt med komma(\",\"), mellomrom "
-"eller en bruker per linje."
+"Skriv eller lim inn epostene adskilt med komma (\",\"), mellomrom eller en "
+"bruker per linje."
 
-#: devilry/devilry_admin/views/common/bulkimport_users_common.py:54
+#: devilry/devilry_admin/views/common/bulkimport_users_common.py:53
 msgid ""
 "Type or paste in usernames separated by comma (\",\"), space or one user on "
 "each line."
 msgstr ""
-"Skriv eller lim in e-brukernavnene adskilt med komma(\",\"), mellomrom eller "
+"Skriv eller lim inn brukernavnene adskilt med komma (\",\"), mellomrom eller "
 "en bruker per linje."
+
+#: devilry/devilry_admin/views/common/bulkimport_users_common.py:57
+msgid ""
+"jane@example.com\n"
+"john@example.com"
+msgstr ""
+"jane@example.com\n"
+"john@example.com"
 
 #: devilry/devilry_admin/views/common/bulkimport_users_common.py:59
 msgid ""
-"jane@example.com\n"
-"john@example.com"
-msgstr ""
-"jane@example.com\n"
-"john@example.com"
-
-#: devilry/devilry_admin/views/common/bulkimport_users_common.py:61
-msgid ""
 "jane\n"
 "john"
 msgstr ""
 "jane\n"
 "john"
 
-#: devilry/devilry_admin/views/common/bulkimport_users_common.py:83
+#: devilry/devilry_admin/views/common/bulkimport_users_common.py:81
 #, python-format
 msgid "Invalid email addresses: %(emails)s"
 msgstr "Ugyldige e-postadresser: %(emails)s"
 
-#: devilry/devilry_admin/views/common/bulkimport_users_common.py:98
+#: devilry/devilry_admin/views/common/bulkimport_users_common.py:96
 #, python-format
 msgid "Invalid usernames: %(usernames)s"
 msgstr "Ugyldige brukernavn: %(usernames)s"
