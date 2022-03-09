@@ -1,14 +1,13 @@
-.. _5.4.0rc3changelog:
+=============================
+Migrating from 5.3.1 to 5.4.0
+=============================
 
-###############################
-What is new in Devilry 5.4.0rc3
-###############################
-
+You can also just update directly from `5.4.0`.
 
 What's new
 ##########
 
-This update contains improvements for accessibility.
+This update contains improvements for accessibility:
 
 - WCAG: Fix comment-editor keyboard-trap.
 - WCAG: Improvements to the fileupload section of the editor.
@@ -24,3 +23,15 @@ This update contains improvements for accessibility.
 - Comment-editor: Overview page of supported Markdown.
 - Various text-fixes and translations.
 - Admin: Add warning when groups with multiple examiners exist in examiner statistics view.
+
+
+Backup database and files
+#########################
+
+BACKUP. YOUR. DATABASE. AND. FILES.
+
+
+Update devilry to 5.4.0
+#######################
+
+Update the devilry version to ``5.4.0`` as described in :doc:`../update`.
