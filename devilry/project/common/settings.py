@@ -174,7 +174,7 @@ gettext_noop = lambda s: s
 LANGUAGES = [('en', gettext_noop('English')),
              ('nb', gettext_noop('Norwegian Bokmal'))]
 
-CRADMIN_LEGACY_MOMENTJS_LOCALE = LANGUAGE_CODE
+CRADMIN_LEGACY_MOMENTJS_LOCALE = None
 
 
 LOCALE_PATHS = [
