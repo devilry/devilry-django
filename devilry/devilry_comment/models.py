@@ -204,10 +204,21 @@ def commentfile_directory_path(instance, filename):
     return '{}/file/{}'.format(comment_directory, instance.id)
 
 
+class CommentFileQuerySet(models.QuerySet):
+    def delete(self):
+        raise NotImplementedError(
+            'Bulk deletion not supported. Delete each CommentFile instead. This is because '
+            'multiple CommentFiles can point to the same FileField.path, and this check is '
+            'handled in a pre_delete signal.'
+        )
+
+
 class CommentFile(models.Model):
     """
     Main class for a file uploaded to a :class:`Comment`
     """
+    objects = CommentFileQuerySet.as_manager()
+
     MAX_FILENAME_LENGTH = 255
 
     mimetype = models.CharField(max_length=255)
@@ -217,7 +228,7 @@ class CommentFile(models.Model):
     #: for :meth:`.commentfile_directory_path`, then updated with
     #: a file set to something.
     file = models.FileField(upload_to=commentfile_directory_path, max_length=512,
-                            null=False, blank=True, default='')
+                            null=False, blank=True, default='', db_index=True)
 
     #: The name of the file - this is the name of the file that was uploaded.
     filename = models.CharField(max_length=MAX_FILENAME_LENGTH)
@@ -332,22 +343,33 @@ def commentfileimage_thumbnail_directory_path(instance, filename):
     return '{}/thumbnail/{}_{}'.format(comment_directory, instance.comment_file.id, instance.id)
 
 
+class CommentFileImageQuerySet(models.QuerySet):
+    def delete(self):
+        raise NotImplementedError(
+            'Bulk deletion not supported. Delete each CommentFileImage instead. This is because '
+            'multiple CommentFileImages can point to the same FileField.path, and this check is '
+            'handled in a pre_delete signal.'
+        )
+
+
 class CommentFileImage(models.Model):
     """
     An image representing a single page of a :class:`CommentFile`.
     """
+    objects = CommentFileImageQuerySet.as_manager()
+
     comment_file = models.ForeignKey(CommentFile, on_delete=models.CASCADE)
 
     image = models.FileField(upload_to=commentfileimage_directory_path,
                              max_length=512,
-                             null=False, blank=True, default='')
+                             null=False, blank=True, default='', db_index=True)
 
     image_width = models.PositiveIntegerField()
     image_height = models.PositiveIntegerField()
 
     thumbnail = models.FileField(upload_to=commentfileimage_thumbnail_directory_path,
                                  max_length=512,
-                                 null=False, blank=True, default='')
+                                 null=False, blank=True, default='', db_index=True)
     thumbnail_width = models.PositiveIntegerField()
     thumbnail_height = models.PositiveIntegerField()
 
@@ -356,13 +378,17 @@ class CommentFileImage(models.Model):
 def on_post_delete_commentfile(sender, instance, **kwargs):
     commentfile = instance
     if commentfile.file:
-        commentfile.file.delete()
+        if not CommentFile.objects.exclude(id=commentfile.id).filter(file=commentfile.file).exists():
+            commentfile.file.delete()
 
 
 @receiver(pre_delete, sender=CommentFileImage)
 def on_post_delete_commentfileimage(sender, instance, **kwargs):
     commentfileimage = instance
+    queryset = CommentFileImage.objects.exclude(id=commentfileimage.id)
     if commentfileimage.image:
-        commentfileimage.image.delete()
+        if not queryset.filter(image=commentfileimage.image).exists():
+            commentfileimage.image.delete()
     if commentfileimage.thumbnail:
-        commentfileimage.thumbnail.delete()
+        if not queryset.filter(thumbnail=commentfileimage.thumbnail).exists():
+            commentfileimage.thumbnail.delete()
