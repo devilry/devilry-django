@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-03 11:03+0100\n"
+"POT-Creation-Date: 2022-05-09 15:10+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -322,7 +322,7 @@ msgid "Administrators"
 msgstr ""
 
 #: devilry/apps/core/models/custom_db_fields.py:20
-#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:36
+#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:37
 #: devilry/devilry_admin/views/dashboard/overview.py:107
 msgid "Short name"
 msgstr ""
@@ -339,7 +339,7 @@ msgstr ""
 
 #: devilry/apps/core/models/custom_db_fields.py:40
 #: devilry/devilry_account/models.py:883
-#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:27
+#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:28
 #: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:24
 #: devilry/devilry_cradmin/devilry_listfilter/assignment.py:17
 #: devilry/devilry_cradmin/devilry_listfilter/assignment.py:63
@@ -574,14 +574,14 @@ msgstr ""
 
 #: devilry/apps/core/templates/devilry_core/templatetags/grade-full-plain.django.html:10
 #: devilry/apps/core/templates/devilry_core/templatetags/grade-full.django.html:12
-#: devilry/apps/core/templatetags/devilry_core_tags.py:38
+#: devilry/apps/core/templatetags/devilry_core_tags.py:39
 #: devilry/devilry_examiner/templatetags/devilry_examiner_tags.py:28
 msgid "passed"
 msgstr ""
 
 #: devilry/apps/core/templates/devilry_core/templatetags/grade-full-plain.django.html:12
 #: devilry/apps/core/templates/devilry_core/templatetags/grade-full.django.html:12
-#: devilry/apps/core/templatetags/devilry_core_tags.py:40
+#: devilry/apps/core/templatetags/devilry_core_tags.py:41
 #: devilry/devilry_changelog/models.py:40
 #: devilry/devilry_examiner/templatetags/devilry_examiner_tags.py:30
 msgid "failed"
@@ -657,7 +657,7 @@ msgid "Devilry account"
 msgstr ""
 
 #: devilry/devilry_account/cradminextensions/devilry_crmenu_account.py:10
-#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:16
+#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:17
 msgid "Account"
 msgstr ""
 
@@ -719,12 +719,12 @@ msgid "Short name is required."
 msgstr ""
 
 #: devilry/devilry_account/models.py:640
-#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:69
+#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:70
 msgid "Email address"
 msgstr ""
 
 #: devilry/devilry_account/models.py:641
-#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:67
+#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:68
 msgid "Email addresses"
 msgstr ""
 
@@ -763,14 +763,14 @@ msgid "%(email)s - User%(userid)s#%(userhortname)s"
 msgstr ""
 
 #: devilry/devilry_account/models.py:705 devilry/devilry_account/models.py:714
-#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:53
+#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:54
 #: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:17
 #: devilry/devilry_header/templates/devilry_header/about_me.django.html:29
 msgid "Username"
 msgstr ""
 
 #: devilry/devilry_account/models.py:706
-#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:51
+#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:52
 msgid "Usernames"
 msgstr ""
 
@@ -924,38 +924,62 @@ msgstr ""
 msgid "Only a single editable permission group is allowed for a course."
 msgstr ""
 
-#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:20
+#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:21
 msgid "Account overview"
 msgstr ""
 
-#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:32
+#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:33
 msgid "Name not registered for account"
 msgstr ""
 
-#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:38
+#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:39
 msgid "Shown instead of your name some places in the UI"
 msgstr ""
 
-#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:43
+#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:44
 #: devilry/devilry_header/templates/devilry_header/about_me.django.html:48
 msgid "Last login"
 msgstr ""
 
-#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:78
+#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:79
 msgid "use for notifications"
 msgstr ""
 
-#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:85
+#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:86
 #: devilry/devilry_header/templates/devilry_header/about_me.django.html:42
 msgid "Language"
 msgstr ""
 
-#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:90
+#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:91
 #: devilry/devilry_account/templates/devilry_account/crapps/account/select_language.django.html:37
 msgid "Change language"
 msgstr ""
 
 #: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:97
+msgid "My roles"
+msgstr ""
+
+#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:101
+msgid ""
+"You are not currently assigned student and/or examiner roles on active "
+"semesters"
+msgstr ""
+
+#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:105
+msgid ""
+"Active semesters where you have been assigned a role as a student, an "
+"examiner or both."
+msgstr ""
+
+#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:112
+msgid "As examiner"
+msgstr ""
+
+#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:125
+msgid "As student"
+msgstr ""
+
+#: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:141
 #: devilry/devilry_header/templates/devilry_header/header2include.django.html:102
 msgid "Sign out"
 msgstr ""
@@ -5362,11 +5386,16 @@ msgstr ""
 msgid "Click here to learn how to get access to Devilry"
 msgstr ""
 
-#: devilry/devilry_frontpage/templates/devilry_frontpage/frontpage.django.html:32
+#: devilry/devilry_frontpage/templates/devilry_frontpage/frontpage.django.html:31
+#: devilry/devilry_frontpage/templates/devilry_frontpage/frontpage.django.html:50
+msgid "See all active roles"
+msgstr ""
+
+#: devilry/devilry_frontpage/templates/devilry_frontpage/frontpage.django.html:42
 msgid "I should have had more roles"
 msgstr ""
 
-#: devilry/devilry_frontpage/templates/devilry_frontpage/frontpage.django.html:38
+#: devilry/devilry_frontpage/templates/devilry_frontpage/frontpage.django.html:56
 msgid "Superuser UI"
 msgstr ""
 
