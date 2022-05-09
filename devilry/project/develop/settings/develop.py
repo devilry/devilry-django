@@ -240,3 +240,29 @@ IEVVTASKS_MAKEMESSAGES_JAVASCRIPT_EXTENSIONS = ['.js']
 DEBUG_TOOLBAR_CONFIG = {
     'SHOW_TOOLBAR_CALLBACK': lambda r: False,  # comment this out to enable debug toolbar
 }
+
+
+DEVILRY_ASSIGNMENT_GUIDELINES = {
+    'student': [
+        (r'duck10.+', {
+            '__default__': {
+                'htmltext': 'This is the assignment guidelines for inf10xx courses.',
+                'url': 'http://example.com'
+            },
+           'nb': {
+                'htmltext': 'Dette er retningslinjene for oppgaver i inf10xx kurs',
+                'url': 'http://vg.no'
+            }
+        }),
+        (r'duck11.+', {
+            '__default__': {
+                'htmltext': 'This is the assignment guidelines for inf11xx courses.',
+                'url': 'http://example.com'
+            },
+            'nb': {
+                'htmltext': 'Dette er retningslinjene for oppgaver i inf11xx kurs',
+                'url': 'http://vg.no'
+            }
+        })
+    ]
+}

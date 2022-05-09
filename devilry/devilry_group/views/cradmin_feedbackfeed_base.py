@@ -8,15 +8,17 @@ from crispy_forms import layout
 from django import forms
 from django.contrib import messages
 from django.core.exceptions import ValidationError
+from django.template.response import TemplateResponse
 from django.urls import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template.loader import render_to_string
 from django.utils import timezone
-from django.utils.translation import gettext_lazy, gettext, pgettext
+from django.utils.translation import gettext_lazy, gettext, pgettext, get_language
 from cradmin_legacy.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
 from cradmin_legacy.viewhelpers import create
 
 from devilry.apps.core.models import Assignment
+from devilry.devilry_account.models import PeriodUserGuidelineAcceptance
 from devilry.devilry_comment import models as comment_models
 from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_sidebar
 from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_timeline
@@ -114,14 +116,49 @@ class FeedbackFeedBaseView(create.CreateView):
             return e.message
         return None
 
+    def handle_guidelines_post(self):
+        PeriodUserGuidelineAcceptance.objects.mark_guidelines_as_accepted(
+            user=self.request.user,
+            period=self.assignment_group.period,
+            devilryrole=self.get_devilryrole()
+        )
+        return HttpResponseRedirect(self.request.get_full_path())
+
     def post(self, request, *args, **kwargs):
+        if self.request.POST.get('has_read_assignment_guidelines'):
+            return self.handle_guidelines_post()
         disable_comment_form_message = self.__should_disable_comment_form(request=request)
         if disable_comment_form_message:
             messages.warning(request=request, message=disable_comment_form_message)
             return HttpResponseRedirect(request.path_info)
         return super(FeedbackFeedBaseView, self).post(request=request, *args, **kwargs)
 
+    def render_guidelines_form(self, guidelines_dict: dict) -> HttpResponse:
+        assignment = self.__get_assignment()
+        group = self.assignment_group
+
+        return TemplateResponse(
+            request=self.request,
+            template='devilry_group/feedbackfeed_guidelines.django.html',
+            context={
+                'devilry_ui_role': self.get_devilryrole(),
+                'group': group,
+                'subject': assignment.period.subject,
+                'period': assignment.period,
+                'guidelines_dict': guidelines_dict.get(get_language(), guidelines_dict.get('__default__', {})),
+                'assignment': assignment,
+            },
+            using=self.template_engine
+        )
+
     def get(self, request, *args, **kwargs):
+        guidelines_dict = PeriodUserGuidelineAcceptance.objects.get_guidelines_if_not_accepted(
+            user=self.request.user,
+            period=self.assignment_group.period,
+            devilryrole=self.get_devilryrole()
+        )
+        if guidelines_dict:
+            return self.render_guidelines_form(guidelines_dict=guidelines_dict)
         self.form_disabled_message = self.__should_disable_comment_form(request=request)
         return super(FeedbackFeedBaseView, self).get(request=request, *args, **kwargs)
 

@@ -1,3 +1,5 @@
+import re
+import typing
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.core.exceptions import ValidationError
@@ -6,6 +8,9 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy
 
 from devilry.devilry_account.exceptions import IllegalOperationError
+
+if typing.TYPE_CHECKING:
+    from devilry.apps.core.models import Period
 
 
 class UserQuerySet(models.QuerySet):
@@ -1229,5 +1234,68 @@ class SubjectPermissionGroup(models.Model):
             if self.id is not None:
                 queryset = queryset.exclude(id=self.id)
             if queryset.exists():
-                raise ValidationError(gettext_lazy('Only a single editable permission group '
-                                        'is allowed for a course.'))
+                raise ValidationError(gettext_lazy(
+                    'Only a single editable permission group is allowed for a course.'))
+
+
+class AssignmentGuidelinesLookupError(Exception):
+    pass
+
+
+class PeriodUserGuidelineAcceptanceQuerySet(models.QuerySet):
+    def get_guidelines(self, period: 'Period', devilryrole: str) -> dict:
+        guidelines_spec = getattr(settings, 'DEVILRY_ASSIGNMENT_GUIDELINES', None)
+        period_path = period.get_path()
+        if not guidelines_spec:
+            raise AssignmentGuidelinesLookupError('The DEVILRY_ASSIGNMENT_GUIDELINES setting is blank or not set.')
+        guidelines_role_spec = guidelines_spec.get(devilryrole, None)
+        if not guidelines_role_spec:
+            raise AssignmentGuidelinesLookupError(f'The DEVILRY_ASSIGNMENT_GUIDELINES setting does not contain a {devilryrole!r} key.')
+        for regex, guidelines_dict in guidelines_role_spec:
+            if re.fullmatch(regex, period_path):
+                return guidelines_dict
+        raise AssignmentGuidelinesLookupError(
+            f'The DEVILRY_ASSIGNMENT_GUIDELINES setting does not contain any matches for the {devilryrole!r} role for period {period_path!r}.')
+
+    def get_guidelines_if_not_accepted(self, user: User, period: 'Period', devilryrole: str) -> dict:
+        try:
+            guidelines_dict = self.get_guidelines(period=period, devilryrole=devilryrole)
+        except AssignmentGuidelinesLookupError:
+            return None
+        if guidelines_dict:
+            if not PeriodUserGuidelineAcceptance.objects.filter(
+                user=user, period=period, devilryrole=devilryrole
+            ).exists():
+                return guidelines_dict
+        return None
+
+    def mark_guidelines_as_accepted(self, user: User, period: 'Period', devilryrole: str):
+        if not PeriodUserGuidelineAcceptance.objects.filter(
+            user=user, period=period, devilryrole=devilryrole
+        ).exists():
+            PeriodUserGuidelineAcceptance.objects.create(
+                user=user,
+                period=period,
+                devilryrole=devilryrole
+            )
+
+
+class PeriodUserGuidelineAcceptance(models.Model):
+    objects = PeriodUserGuidelineAcceptanceQuerySet.as_manager()
+    user = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE)
+    period = models.ForeignKey(
+        to='core.Period',
+        on_delete=models.CASCADE
+    )
+    devilryrole = models.CharField(max_length=20, db_index=True)
+    accepted_datetime = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'period', 'devilryrole'], name='unique_user_period_role'),
+        ]
+
+    def __str__(self):
+        return f'{self.user}:{self.period} ({self.devilryrole})'
