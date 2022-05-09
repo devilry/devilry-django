@@ -24,10 +24,6 @@
 		"trond-snekvik.simple-rst"
 	],
 
-	// These two lines are for the IO performance approach documented in "repo-in-volume.md"
-	// "workspaceMount": "source=devilry_dockerdev_repo,destination=/workspace,type=volume",
-	// "workspaceFolder": "/workspace",
-
 	// Set *default* container specific settings.json values on container create.
 	"settings": { 
 		"terminal.integrated.profiles.linux": {
@@ -43,18 +39,24 @@
 		"python.linting.flake8Enabled": true,
 		"python.djangoTestRunner.prefixCommand": " DJANGOENV=test ",
 		"python.analysis.indexing": true,
+		"python.analysis.packageIndexDepths": [
+			["django", 4, true] // Make the module import indexer go 4 modules deep in django
+		],
 		"atest.runners": {
 			"pytest": true
 		},
 		"importMagic.maxColumns": 120
 	},
 
+	"workspaceMount": "source=devilry_dockerdev_repo,destination=/workspace,type=volume",
+	"workspaceFolder": "/workspace",
+
 	"mounts": [
 		"source=${localEnv:HOME}${localEnv:USERPROFILE},target=/host_userhome/,type=bind,consistency=cached",
 		
 		// Mount a persistent directory for yarn, pip and pipenv caches + dbdev_tempdata.
 		// Speeds up builds, and speeds up the postgres database.
-		"source=devilry-django_dockerdev_persistent,destination=/home/codemonkey/persistent/"
+		"source=devilry_dockerdev_persistent,destination=/home/codemonkey/persistent/"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
