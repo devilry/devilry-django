@@ -22,17 +22,35 @@
                 <a href="{{ DEVILRY_LACKING_PERMISSIONS_URL }}" id="devilry_frontpage_lacking_permissions_link" class='plain-link'>
                     {% trans "Click here to learn how to get access to Devilry" %}</a>.
             </div>
+            <div class="row">
+                <div class="col-sm-4 devilry-frontpage-more-roles-link-wrapper">
+                    <a href="{% cradmin_url instanceid='devilry_account' appname='account' viewname='INDEX' roleid='' %}"
+                            target="_blank"
+                            id="devilry_frontpage_see_active_roles_link"
+                            class="devilry-frontpage-see-active-roles-link plain-link">
+                        {% trans "See all active roles" %}
+                    </a>
+                </div>
+            </div>
         {% else %}
             {% cradmin_render_renderable roleselect_list %}
             <div class="row">
-                <div class="col-sm-6 devilry-frontpage-more-roles-link-wrapper">
+                <div class="col-sm-4 devilry-frontpage-more-roles-link-wrapper">
                     <a href="{{ DEVILRY_LACKING_PERMISSIONS_URL }}"
                             id="devilry_frontpage_lacking_permissions_link"
                             class="devilry-frontpage-more-roles-link plain-link">
                         {% trans "I should have had more roles" %}
                     </a>
                 </div>
-                <div class="col-sm-6 devilry-frontpage-superuser-link-wrapper">
+                <div class="col-sm-4 devilry-frontpage-more-roles-link-wrapper">
+                    <a href="{% cradmin_url instanceid='devilry_account' appname='account' viewname='INDEX' roleid='' %}"
+                            target="_blank"
+                            id="devilry_frontpage_see_active_roles_link"
+                            class="devilry-frontpage-see-active-roles-link plain-link">
+                        {% trans "See all active roles" %}
+                    </a>
+                </div>
+                <div class="col-sm-4 devilry-frontpage-superuser-link-wrapper">
                     {% if request.user.is_superuser %}
                         <a href="{% url 'admin:index' %}" class="devilry-frontpage-superuser-link plain-link">
                             {% trans "Superuser UI" %}
