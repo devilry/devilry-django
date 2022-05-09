@@ -1,5 +1,6 @@
 {% extends "cradmin_legacy/base.django.html" %}
 {% load i18n %}
+{% load devilry_core_tags %}
 {% load cradmin_legacy_tags %}
 
 {% block custom_styles %}
@@ -89,6 +90,49 @@
                 <a class="btn btn-default" href="{% cradmin_appurl 'select_language' %}">
                     {% trans 'Change language' %}
                 </a>
+        </div>
+
+        <div class="devilry-dashboard-container">
+            <h2 class="{% devilry_test_css_class 'role-list-heading' %}">
+                {% trans 'My roles' %}
+            </h2>
+            {% if not related_examiners_for_active_periods.exists and not related_students_for_active_periods.exists %}
+                <p class="{% devilry_test_css_class 'no-roles-message' %}">
+                    {% trans 'You are not currently assigned any roles on active semesters' %}
+                </p>
+            {% else %}
+                <p class="text-muted">
+                    {% blocktrans trimmed %}
+                        Active semesters where you have been assigned a role as a student, an examiner or both.
+                    {% endblocktrans %}
+                </p>
+                
+                {% if related_examiners_for_active_periods.exists %}
+                    <h3 class="{% devilry_test_css_class 'examiner-role-heading' %}">
+                        {% trans 'As examiner' %}
+                    </h3>
+                    <ul>
+                        {% for related_examiner in related_examiners_for_active_periods %}
+                            <li class="{% devilry_test_css_class 'examiner-role-list-item' %}">
+                                {{ related_examiner.period.parentnode.long_name }}: {{ related_examiner.period.long_name }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+                {% if related_students_for_active_periods.exists %}
+                    <h3 class="{% devilry_test_css_class 'student-role-heading' %}">
+                        {% trans 'As student' %}
+                    </h3>
+                    <ul>
+                        {% for related_student in related_students_for_active_periods %}
+                            <li class="{% devilry_test_css_class 'student-role-list-item' %}">
+                                {{ related_student.period.parentnode.long_name }}: {{ related_student.period.long_name }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endif %}
         </div>
 
         <form method="POST" action="{% url 'account_logout' %}">

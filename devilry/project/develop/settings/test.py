@@ -70,6 +70,9 @@ MIGRATION_MODULES = DisableMigrations()
 # DEVILRY_V2_DATABASE_MAX_BULK_CREATE_OVERRIDE = 100
 DEVILRY_V2_DATABASE_PRINT_PROGRESS_DOTS = False
 
+# Enable test css-classes
+DEVILRY_INCLUDE_TEST_CSS_CLASSES = True
+
 ###################################################################################
 # RQ
 ###################################################################################
