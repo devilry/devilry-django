@@ -14,3 +14,4 @@ recursive-include devilry *.svg
 recursive-include devilry *.otf
 recursive-include devilry *.sql
 prune devilry/devilry_theme3/staticsources
+prune tools/devcontainer-helpers
