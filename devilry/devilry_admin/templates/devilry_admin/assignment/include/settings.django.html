@@ -47,18 +47,16 @@
             <h3>
                 {% trans "Deadline handling" %}
             </h3>
-
-            {% if assignment.deadline_handling == 0 %}
-                {% blocktrans trimmed %}
-                    SOFT. Students can add deliveries and comment after the deadline has expired.
-                {% endblocktrans %}
-            {% elif assignment.deadline_handling == 1 %}
-                {% blocktrans trimmed %}
-                    HARD. Students can not add deliveries or comment after the deadline has expired.
-                {% endblocktrans %}
-            {% endif %}
             <p>
-
+                {% if assignment.deadline_handling == 0 %}
+                    {% blocktrans trimmed %}
+                        SOFT. Students can add deliveries and comment after the deadline has expired.
+                    {% endblocktrans %}
+                {% elif assignment.deadline_handling == 1 %}
+                    {% blocktrans trimmed %}
+                        HARD. Students can not add deliveries or comment after the deadline has expired.
+                    {% endblocktrans %}
+                {% endif %}
             </p>
             {% if user_is_subjectadmin_or_higher %}
                 <div id="devilry_admin_assignment_deadline_handling_buttons">
@@ -70,6 +68,33 @@
                     {% trans 'You do not have access to change this setting.' context 'admin assignment overview' %}
                 </p>
             {% endif %}
+        </div>
+    </div>
+</div>
+
+
+<div class="row" style="padding-top: 15px;">
+    <div class="col-sm-4">
+        <div id="devilry_admin_assignment_overview_settings_selfassign">
+            <h3>
+                {% trans "Examiner self-assign" %}
+            </h3>
+            <p>
+                {% if assignment.examiners_can_self_assign %}
+                    {% blocktrans trimmed with examiner_selfassign_limit=assignment.examiner_self_assign_limit %}
+                        Examiners can assign themselves to project groups on this assignment. Examiner 
+                        self-assign limit for each project group is set to {{ examiner_selfassign_limit }}.
+                    {% endblocktrans %}
+                {% else %}
+                    {% blocktrans trimmed %}
+                        Examiners can not assign themselves to project groups on this assignment. As an administrator you are able to add examiners to the projects groups.
+                    {% endblocktrans %}
+                {% endif %}
+            </p>
+            <div id="devilry_admin_assignment_overview_settings_selfassign_buttons">
+                <a href="{% cradmin_appurl "update_examiner_selfassign_settings" assignment.id %}" type="button"
+                   class="btn btn-default btn-sm">{% trans "Edit self-assign settings" %}</a>
+            </div>
         </div>
     </div>
 </div>

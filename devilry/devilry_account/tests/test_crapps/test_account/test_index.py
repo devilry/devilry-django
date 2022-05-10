@@ -144,7 +144,7 @@ class TestIndexView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=requestuser)
         self.assertEqual(
             mockresponse.selector.one('.test-no-roles-message').alltext_normalized,
-            'You are not currently assigned any roles on active semesters'
+            'You are not currently assigned student and/or examiner roles on active semesters'
         )
 
     def test_no_role_active_semester(self):
@@ -158,7 +158,7 @@ class TestIndexView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=requestuser)
         self.assertEqual(
             mockresponse.selector.one('.test-no-roles-message').alltext_normalized,
-            'You are not currently assigned any roles on active semesters'
+            'You are not currently assigned student and/or examiner roles on active semesters'
         )
     
     def test_inactive_role_active_semester_examiner(self):
@@ -173,7 +173,7 @@ class TestIndexView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=requestuser)
         self.assertEqual(
             mockresponse.selector.one('.test-no-roles-message').alltext_normalized,
-            'You are not currently assigned any roles on active semesters'
+            'You are not currently assigned student and/or examiner roles on active semesters'
         )
 
     def test_role_examiner_no_active_semester(self):
@@ -188,7 +188,7 @@ class TestIndexView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=requestuser)
         self.assertEqual(
             mockresponse.selector.one('.test-no-roles-message').alltext_normalized,
-            'You are not currently assigned any roles on active semesters'
+            'You are not currently assigned student and/or examiner roles on active semesters'
         )
     
     def test_inactive_role_active_semester_student(self):
@@ -203,7 +203,7 @@ class TestIndexView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=requestuser)
         self.assertEqual(
             mockresponse.selector.one('.test-no-roles-message').alltext_normalized,
-            'You are not currently assigned any roles on active semesters'
+            'You are not currently assigned student and/or examiner roles on active semesters'
         )
     
     def test_role_student_no_active_semester(self):
@@ -218,7 +218,7 @@ class TestIndexView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=requestuser)
         self.assertEqual(
             mockresponse.selector.one('.test-no-roles-message').alltext_normalized,
-            'You are not currently assigned any roles on active semesters'
+            'You are not currently assigned student and/or examiner roles on active semesters'
         )
 
     def test_role_active_semester_examiner_single_semester(self):

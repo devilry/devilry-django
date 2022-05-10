@@ -3,7 +3,7 @@ from datetime import timedelta
 
 import mock
 from django.conf import settings
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.utils import timezone
 from cradmin_legacy import cradmin_testhelpers
 from cradmin_legacy.crinstance import reverse_cradmin_url
@@ -324,6 +324,283 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
                 '#devilry_admin_assignment_overview_utilities_passed_previous_buttons'
             ).alltext_normalized,
             'Edit passed previous semester'
+        )
+
+    def test_settings_project_groups_sanity(self):
+        assignment = baker.make('core.Assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(
+            mockresponse.selector.one(
+                '#devilry_admin_assignment_overview_settings_projectgroups h3'
+            ).alltext_normalized,
+            'Project groups'
+        )
+        self.assertEqual(
+            mockresponse.selector.one(
+                '#devilry_admin_assignment_overview_settings_projectgroups p'
+            ).alltext_normalized,
+            'Students can not create project groups on their own. As an administrator you are '
+            'able to create the groups in the "Students" overview.'
+        )
+        self.assertEqual(
+            mockresponse.selector.one(
+                '#devilry_admin_assignment_projectgroups_buttons a'
+            ).alltext_normalized,
+            'Edit project group settings'
+        )
+    
+    def test_settings_project_groups_turned_on(self):
+        assignment = baker.make('core.Assignment', students_can_create_groups=True)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(
+            mockresponse.selector.one(
+                '#devilry_admin_assignment_overview_settings_projectgroups h3'
+            ).alltext_normalized,
+            'Project groups'
+        )
+        self.assertEqual(
+            mockresponse.selector.one(
+                '#devilry_admin_assignment_overview_settings_projectgroups p'
+            ).alltext_normalized,
+            'Student can create project groups on their own.'
+        )
+        self.assertEqual(
+            mockresponse.selector.one(
+                '#devilry_admin_assignment_projectgroups_buttons a'
+            ).alltext_normalized,
+            'Edit project group settings'
+        )
+
+    def test_settings_anonymization_sanity(self):
+        assignment = baker.make('core.Assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(
+            mockresponse.selector.one(
+                '#devilry_admin_assignment_overview_settings_anonymization h3'
+            ).alltext_normalized,
+            'Anonymization'
+        )
+        self.assertEqual(
+            mockresponse.selector.one(
+                '#devilry_admin_assignment_overview_settings_anonymization p'
+            ).alltext_normalized,
+            'OFF. Normal assignment where semester and course admins can see everything, '
+            'and examiners and students can see each others names and contact information.'
+        )
+        self.assertEqual(
+            mockresponse.selector.one(
+                '#devilry_admin_assignment_anonymization_buttons a'
+            ).alltext_normalized,
+            'Edit anonymization mode'
+        )
+    
+    def test_settings_anonymization_semi_anonymous(self):
+        assignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(
+            mockresponse.selector.one(
+                '#devilry_admin_assignment_overview_settings_anonymization h3'
+            ).alltext_normalized,
+            'Anonymization'
+        )
+        self.assertEqual(
+            mockresponse.selector.one(
+                '#devilry_admin_assignment_overview_settings_anonymization p'
+            ).alltext_normalized,
+            'SEMI ANONYMOUS. Students and examiners can not see information about each other. '
+            'Comments added by course admins are not anonymized. '
+            'Semester admins do not have access to the assignment in the admin UI. Course admins '
+            'have the same permissions as for "OFF".'
+        )
+        self.assertEqual(
+            mockresponse.selector.one(
+                '#devilry_admin_assignment_anonymization_buttons a'
+            ).alltext_normalized,
+            'Edit anonymization mode'
+        )
+
+    def test_settings_anonymization_fully_anonymous(self):
+        assignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(
+            mockresponse.selector.one(
+                '#devilry_admin_assignment_overview_settings_anonymization h3'
+            ).alltext_normalized,
+            'Anonymization'
+        )
+        self.assertEqual(
+            mockresponse.selector.one(
+                '#devilry_admin_assignment_overview_settings_anonymization p'
+            ).alltext_normalized,
+            'FULLY ANONYMIZED. Intended for exams where course admins are examiners. '
+            'Students and examiners can not see information about each other. Hidden '
+            'from semester admins. Course admins can not view grading details. Only '
+            'departmentadmins and superusers can change this back to another "anoymization mode" '
+            'when feedback has been added to the assignment. Course admins can not edit '
+            'examiners after the first feedback is provided.'
+        )
+        self.assertEqual(
+            mockresponse.selector.one(
+                '#devilry_admin_assignment_anonymization_buttons a'
+            ).alltext_normalized,
+            'Edit anonymization mode'
+        )
+    
+    @override_settings(DEFAULT_DEADLINE_HANDLING_METHOD=0)
+    def test_settings_deadline_handling_no_access_sanity(self):
+        assignment = baker.make('core.Assignment')
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=assignment, requestuser=testuser)
+        self.assertEqual(
+            mockresponse.selector.one(
+                '#devilry_admin_assignment_overview_settings_deadline_handling h3'
+            ).alltext_normalized,
+            'Deadline handling'
+        )
+        self.assertEqual(
+            mockresponse.selector.list(
+                '#devilry_admin_assignment_overview_settings_deadline_handling p'
+            )[0].alltext_normalized,
+            'SOFT. Students can add deliveries and comment after the deadline has expired.'
+        )
+        self.assertEqual(
+            mockresponse.selector.list(
+                '#devilry_admin_assignment_overview_settings_deadline_handling p'
+            )[1].alltext_normalized,
+            'You do not have access to change this setting.'
+        )
+
+    @override_settings(DEFAULT_DEADLINE_HANDLING_METHOD=0)
+    def test_settings_deadline_handling_periodadmin_no_access_sanity(self):
+        assignment = baker.make('core.Assignment')
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('devilry_account.PermissionGroupUser', user=testuser,
+                   permissiongroup=baker.make('devilry_account.PeriodPermissionGroup',
+                                              period=assignment.parentnode).permissiongroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=assignment, requestuser=testuser)
+        self.assertEqual(
+            mockresponse.selector.one(
+                '#devilry_admin_assignment_overview_settings_deadline_handling h3'
+            ).alltext_normalized,
+            'Deadline handling'
+        )
+        self.assertEqual(
+            mockresponse.selector.list(
+                '#devilry_admin_assignment_overview_settings_deadline_handling p'
+            )[0].alltext_normalized,
+            'SOFT. Students can add deliveries and comment after the deadline has expired.'
+        )
+        self.assertEqual(
+            mockresponse.selector.list(
+                '#devilry_admin_assignment_overview_settings_deadline_handling p'
+            )[1].alltext_normalized,
+            'You do not have access to change this setting.'
+        )
+
+    @override_settings(DEFAULT_DEADLINE_HANDLING_METHOD=0)
+    def test_settings_deadline_handling_soft_subjectadmin_has_access_sanity(self):
+        assignment = baker.make('core.Assignment')
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('devilry_account.PermissionGroupUser', user=testuser,
+                   permissiongroup=baker.make('devilry_account.SubjectPermissionGroup',
+                                              permissiongroup__grouptype=PermissionGroup.GROUPTYPE_DEPARTMENTADMIN,
+                                              subject=assignment.parentnode.parentnode).permissiongroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=assignment, requestuser=testuser)
+        self.assertEqual(
+            mockresponse.selector.one(
+                '#devilry_admin_assignment_overview_settings_deadline_handling h3'
+            ).alltext_normalized,
+            'Deadline handling'
+        )
+        self.assertEqual(
+            mockresponse.selector.one(
+                '#devilry_admin_assignment_overview_settings_deadline_handling p'
+            ).alltext_normalized,
+            'SOFT. Students can add deliveries and comment after the deadline has expired.'
+        )
+        self.assertEqual(
+            mockresponse.selector.one(
+                '#devilry_admin_assignment_deadline_handling_buttons a'
+            ).alltext_normalized,
+            'Edit deadline handling'
+        )
+    
+    @override_settings(DEFAULT_DEADLINE_HANDLING_METHOD=0)
+    def test_settings_deadline_handling_hard_subjectadmin_has_access_sanity(self):
+        assignment = baker.make('core.Assignment', deadline_handling=1)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('devilry_account.PermissionGroupUser', user=testuser,
+                   permissiongroup=baker.make('devilry_account.SubjectPermissionGroup',
+                                              permissiongroup__grouptype=PermissionGroup.GROUPTYPE_DEPARTMENTADMIN,
+                                              subject=assignment.parentnode.parentnode).permissiongroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=assignment, requestuser=testuser)
+        self.assertEqual(
+            mockresponse.selector.one(
+                '#devilry_admin_assignment_overview_settings_deadline_handling h3'
+            ).alltext_normalized,
+            'Deadline handling'
+        )
+        self.assertEqual(
+            mockresponse.selector.one(
+                '#devilry_admin_assignment_overview_settings_deadline_handling p'
+            ).alltext_normalized,
+            'HARD. Students can not add deliveries or comment after the deadline has expired.'
+        )
+        self.assertEqual(
+            mockresponse.selector.one(
+                '#devilry_admin_assignment_deadline_handling_buttons a'
+            ).alltext_normalized,
+            'Edit deadline handling'
+        )
+
+    def test_settings_examiner_selfassign_sanity(self):
+        assignment = baker.make('core.Assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(
+            mockresponse.selector.one(
+                '#devilry_admin_assignment_overview_settings_selfassign h3'
+            ).alltext_normalized,
+            'Examiner self-assign'
+        )
+        self.assertEqual(
+            mockresponse.selector.one(
+                '#devilry_admin_assignment_overview_settings_selfassign p'
+            ).alltext_normalized,
+            'Examiners can not assign themselves to project groups on this assignment. As '
+            'an administrator you are able to add examiners to the projects groups.'
+        )
+        self.assertEqual(
+            mockresponse.selector.one(
+                '#devilry_admin_assignment_overview_settings_selfassign_buttons a'
+            ).alltext_normalized,
+            'Edit self-assign settings'
+        )
+    
+    def test_settings_examiner_selfassign_turned_on(self):
+        assignment = baker.make('core.Assignment', examiners_can_self_assign=True, examiner_self_assign_limit=2)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(
+            mockresponse.selector.one(
+                '#devilry_admin_assignment_overview_settings_selfassign h3'
+            ).alltext_normalized,
+            'Examiner self-assign'
+        )
+        self.assertEqual(
+            mockresponse.selector.one(
+                '#devilry_admin_assignment_overview_settings_selfassign p'
+            ).alltext_normalized,
+            'Examiners can assign themselves to project groups on this assignment. '
+            'Examiner self-assign limit for each project group is set to 2.'
+        )
+        self.assertEqual(
+            mockresponse.selector.one(
+                '#devilry_admin_assignment_overview_settings_selfassign_buttons a'
+            ).alltext_normalized,
+            'Edit self-assign settings'
         )
 
 

@@ -576,6 +576,17 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         )
     )
 
+    examiners_can_self_assign = models.BooleanField(
+        default=False,
+        verbose_name=gettext_lazy('Examiners can assign themselves to the assignment?'),
+        help_text=gettext_lazy('Select this if you want examiners to be able to self-assign to the assignment.')
+    )
+    examiner_self_assign_limit = models.PositiveIntegerField(
+        default=1,
+        help_text=gettext_lazy('The max number of examiners that are allowed '
+            'to self-assign to each project group within the assignment.')
+    )
+
     @property
     def subject(self):
         return self.parentnode.parentnode
@@ -949,7 +960,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                                                    'current maximum is %(max_points)s.') % {
                                                      'max_points': self.max_points
                                                  }
-
         if errors:
             raise ValidationError(errors)
 
