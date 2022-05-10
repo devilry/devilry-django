@@ -6509,7 +6509,7 @@ msgstr "Oppgaveretningslinjer"
 msgid ""
 "Before you can access this assignment, you must read the assignment "
 "guidelines for %(period)s."
-msgstr "Du må lese retningslinjene for %(period)s før du får tilgang til denne oppgaven."
+msgstr "Du må lese retningslinjene for %(period)s for å få tilgang til denne oppgaven."
 
 #: devilry/devilry_group/templates/devilry_group/feedbackfeed_guidelines.django.html:63
 msgid "I have read the guidelines"
