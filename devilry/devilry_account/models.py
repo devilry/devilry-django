@@ -1253,7 +1253,10 @@ class PeriodUserGuidelineAcceptanceQuerySet(models.QuerySet):
             raise AssignmentGuidelinesLookupError(f'The DEVILRY_ASSIGNMENT_GUIDELINES setting does not contain a {devilryrole!r} key.')
         for regex, guidelines_dict in guidelines_role_spec:
             if re.fullmatch(regex, period_path):
-                return guidelines_dict
+                return dict(
+                    __matched_regex__=regex,
+                    **guidelines_dict
+                )
         raise AssignmentGuidelinesLookupError(
             f'The DEVILRY_ASSIGNMENT_GUIDELINES setting does not contain any matches for the {devilryrole!r} role for period {period_path!r}.')
 
@@ -1264,20 +1267,30 @@ class PeriodUserGuidelineAcceptanceQuerySet(models.QuerySet):
             return None
         if guidelines_dict:
             if not PeriodUserGuidelineAcceptance.objects.filter(
-                user=user, period=period, devilryrole=devilryrole
+                user=user, period=period, devilryrole=devilryrole,
+                guidelines_version=guidelines_dict['__version__']
             ).exists():
                 return guidelines_dict
         return None
 
-    def mark_guidelines_as_accepted(self, user: User, period: 'Period', devilryrole: str):
-        if not PeriodUserGuidelineAcceptance.objects.filter(
-            user=user, period=period, devilryrole=devilryrole
-        ).exists():
+    def mark_guidelines_as_accepted(self, user: User, period: 'Period', devilryrole: str) -> bool:
+        """
+        Mark guidelines as accepted unless they already are for the given user, period and devilryrole.
+
+        Returns:
+            bool: True if a new `PeriodUserGuidelineAcceptance` instance was created, otherwise return False.
+        """
+        guidelines_dict = self.get_guidelines_if_not_accepted(user=user, period=period, devilryrole=devilryrole)
+        if guidelines_dict:
             PeriodUserGuidelineAcceptance.objects.create(
                 user=user,
                 period=period,
-                devilryrole=devilryrole
+                devilryrole=devilryrole,
+                matched_regex=guidelines_dict['__matched_regex__'],
+                guidelines_version=guidelines_dict['__version__']
             )
+            return True
+        return False
 
 
 class PeriodUserGuidelineAcceptance(models.Model):
@@ -1291,10 +1304,12 @@ class PeriodUserGuidelineAcceptance(models.Model):
     )
     devilryrole = models.CharField(max_length=20, db_index=True)
     accepted_datetime = models.DateTimeField(auto_now_add=True, db_index=True)
+    guidelines_version = models.CharField(max_length=20, db_index=True)
+    matched_regex = models.TextField()
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['user', 'period', 'devilryrole'], name='unique_user_period_role'),
+            models.UniqueConstraint(fields=['user', 'period', 'devilryrole', 'guidelines_version'], name='unique_user_period_role_version'),
         ]
 
     def __str__(self):

@@ -50,6 +50,7 @@ class TestFeedbackfeedStudent(TestCase, mixin_feedbackfeed_common.MixinTestFeedb
         DEVILRY_ASSIGNMENT_GUIDELINES = {
             'student': [
                 (r'subject11.+', {
+                    '__version__': '1',
                     '__default__': {
                         'htmltext': 'This is the assignment guidelines for inf10xx courses.',
                         'url': 'http://example.com'
@@ -82,6 +83,7 @@ class TestFeedbackfeedStudent(TestCase, mixin_feedbackfeed_common.MixinTestFeedb
         DEVILRY_ASSIGNMENT_GUIDELINES = {
             'student': [
                 (r'subject11.+', {
+                    '__version__': '1',
                     '__default__': {
                         'htmltext': 'This is the assignment guidelines for inf10xx courses.',
                         'url': 'http://example.com'
@@ -102,7 +104,8 @@ class TestFeedbackfeedStudent(TestCase, mixin_feedbackfeed_common.MixinTestFeedb
             'devilry_account.PeriodUserGuidelineAcceptance',
             user=candidate.relatedstudent.user,
             period=candidate.assignment_group.parentnode.period,
-            devilryrole='student')
+            devilryrole='student',
+            guidelines_version='1')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
                                                           requestuser=candidate.relatedstudent.user)
         self.assertFalse(mockresponse.selector.exists('#id_assignment_guidelines_text'))
@@ -111,6 +114,38 @@ class TestFeedbackfeedStudent(TestCase, mixin_feedbackfeed_common.MixinTestFeedb
         DEVILRY_ASSIGNMENT_GUIDELINES = {
             'student': [
                 (r'subject11.+', {
+                    '__version__': '2',
+                    '__default__': {
+                        'htmltext': 'This is the assignment guidelines for inf10xx courses.',
+                        'url': 'http://example.com'
+                    },
+                }),
+            ]
+        }
+    )
+    def test_get_assignment_guidelines_already_accepted_wrong_version(self):
+        candidate = baker.make('core.Candidate',
+                               assignment_group__parentnode=baker.make(
+                                    'core.Assignment',
+                                    parentnode__short_name='period0001',
+                                    parentnode__parentnode__short_name='subject1100'
+                               ),
+                               relatedstudent=baker.make('core.RelatedStudent'))
+        baker.make(
+            'devilry_account.PeriodUserGuidelineAcceptance',
+            user=candidate.relatedstudent.user,
+            period=candidate.assignment_group.parentnode.period,
+            devilryrole='student',
+            guidelines_version='1')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
+                                                          requestuser=candidate.relatedstudent.user)
+        self.assertTrue(mockresponse.selector.exists('#id_assignment_guidelines_text'))
+
+    @override_settings(
+        DEVILRY_ASSIGNMENT_GUIDELINES = {
+            'student': [
+                (r'subject11.+', {
+                    '__version__': '1',
                     '__default__': {
                         'htmltext': 'This is the assignment guidelines for inf10xx courses.',
                         'url': 'http://example.com'
@@ -131,12 +166,25 @@ class TestFeedbackfeedStudent(TestCase, mixin_feedbackfeed_common.MixinTestFeedb
                                                           requestuser=candidate.relatedstudent.user)
         self.assertFalse(mockresponse.selector.exists('#id_assignment_guidelines_text'))
 
+    @override_settings(
+        DEVILRY_ASSIGNMENT_GUIDELINES = {
+            'student': [
+                (r'subject11.+', {
+                    '__version__': '1',
+                    '__default__': {
+                        'htmltext': 'This is the assignment guidelines for inf10xx courses.',
+                        'url': 'http://example.com'
+                    },
+                }),
+            ]
+        }
+    )
     def test_post_assignment_guidelines_accepted(self):
         candidate = baker.make('core.Candidate',
                                assignment_group__parentnode=baker.make(
                                     'core.Assignment',
                                     parentnode__short_name='period0001',
-                                    parentnode__parentnode__short_name='subject1000'
+                                    parentnode__parentnode__short_name='subject1100'
                                ),
                                relatedstudent=baker.make('core.RelatedStudent'))
         self.assertFalse(PeriodUserGuidelineAcceptance.objects.filter(
@@ -154,11 +202,13 @@ class TestFeedbackfeedStudent(TestCase, mixin_feedbackfeed_common.MixinTestFeedb
                     'has_read_assignment_guidelines': 'on',
                 }
             })
-        self.assertTrue(PeriodUserGuidelineAcceptance.objects.filter(
+        queryset = PeriodUserGuidelineAcceptance.objects.filter(
             user=candidate.relatedstudent.user,
             period=candidate.assignment_group.parentnode.period,
             devilryrole='student'
-        ).exists())
+        )
+        self.assertTrue(queryset.exists())
+        # if 
 
     def test_assignment_soft_deadline_info_box_not_rendered(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)

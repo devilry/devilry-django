@@ -245,16 +245,18 @@ DEBUG_TOOLBAR_CONFIG = {
 DEVILRY_ASSIGNMENT_GUIDELINES = {
     'student': [
         (r'duck10.+', {
+            '__version__': '1',
             '__default__': {
                 'htmltext': 'This is the assignment guidelines for inf10xx courses.',
                 'url': 'http://example.com'
             },
-           'nb': {
+            'nb': {
                 'htmltext': 'Dette er retningslinjene for oppgaver i inf10xx kurs',
                 'url': 'http://vg.no'
             }
         }),
         (r'duck11.+', {
+            '__version__': '1',
             '__default__': {
                 'htmltext': 'This is the assignment guidelines for inf11xx courses.',
                 'url': 'http://example.com'
