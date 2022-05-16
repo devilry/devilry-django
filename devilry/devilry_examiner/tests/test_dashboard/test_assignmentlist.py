@@ -490,32 +490,6 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             ],
             self.__get_titles(mockresponse.selector))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     def test_selfassign_user_not_related_examiner_on_period_sanity(self):
         examiner_user = baker.make(settings.AUTH_USER_MODEL)
         assignment = baker.make_recipe(

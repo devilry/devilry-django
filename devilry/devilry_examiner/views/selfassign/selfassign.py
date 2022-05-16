@@ -9,11 +9,9 @@ from cradmin_legacy.viewhelpers import listbuilderview
 from cradmin_legacy.viewhelpers import listbuilder
 
 from devilry.apps.core import models as coremodels
-from devilry.apps.core.models import Candidate, Examiner, RelatedExaminer
+from devilry.apps.core.models import Candidate, Examiner
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin import devilry_listfilter
-from devilry.apps.core.models import period_tag
-from devilry.devilry_admin.cradminextensions.listfilter import listfilter_assignmentgroup
 from devilry.devilry_examiner.views.selfassign.utils import assignment_groups_available_for_self_assign
 
 
@@ -97,36 +95,10 @@ class SelfAssignGroupListView(listbuilderview.FilterListMixin, listbuilderview.V
             'period': self.period
         }
 
-    # def __add_filterlist_items_anonymous_uses_custom_candidate_ids(self, filterlist):
-    #     filterlist.append(devilry_listfilter.assignmentgroup.SearchAnonymousUsesCustomCandidateIds())
-    #     filterlist.append(devilry_listfilter.assignmentgroup.OrderByAnonymousUsesCustomCandidateIds())
-
-    # def __add_filterlist_items_anonymous(self, filterlist):
-    #     filterlist.append(devilry_listfilter.assignmentgroup.SearchAnonymous())
-    #     filterlist.append(devilry_listfilter.assignmentgroup.OrderByAnonymous())
-
-    def __add_filterlist_items_not_anonymous(self, filterlist):
-        filterlist.append(devilry_listfilter.assignmentgroup.SearchNotAnonymous())
-        filterlist.append(devilry_listfilter.assignmentgroup.OrderByNotAnonymous())
-
     def add_filterlist_items(self, filterlist):
-        # if self.assignment.is_anonymous:
-        #     if self.assignment.uses_custom_candidate_ids:
-        #         self.__add_filterlist_items_anonymous_uses_custom_candidate_ids(filterlist=filterlist)
-        #     else:
-        #         self.__add_filterlist_items_anonymous(filterlist=filterlist)
-        # else:
-        self.__add_filterlist_items_not_anonymous(filterlist=filterlist)
+        filterlist.append(devilry_listfilter.assignmentgroup.SearchNotAnonymous())
         filterlist.append(devilry_listfilter.assignmentgroup.StatusRadioFilter(view=self))
-        filterlist.append(devilry_listfilter.assignmentgroup.IsPassingGradeFilter())
-        filterlist.append(devilry_listfilter.assignmentgroup.PointsFilter())
-        if self.__has_multiple_examiners():
-            filterlist.append(devilry_listfilter.assignmentgroup.ExaminerFilter(view=self))
-        filterlist.append(devilry_listfilter.assignmentgroup.ActivityFilter())
-        
-        period = self.get_period()
-        if period_tag.PeriodTag.objects.filter(period=period).exists():
-            filterlist.append(listfilter_assignmentgroup.AssignmentGroupRelatedStudentTagSelectFilter(period=period))
+        filterlist.append(devilry_listfilter.assignmentgroup.AssignmentCheckboxFilter(view=self))
 
     def get_unfiltered_queryset_for_role(self, role):
         candidatequeryset = Candidate.objects\
@@ -177,20 +149,18 @@ class SelfAssignGroupListView(listbuilderview.FilterListMixin, listbuilderview.V
                         assignmentgroup_id=models.OuterRef('id')
                     )
                 )
-                # has_files=models.Exists(
-                #     CommentFile.objects.filter(comment_id=models.OuterRef('id'))
-                # )
             ) \
             .annotate_with_is_waiting_for_feedback_count() \
             .annotate_with_is_waiting_for_deliveries_count() \
             .annotate_with_is_corrected_count() \
-            .annotate_with_number_of_private_groupcomments_from_user(user=self.request.user) \
-            .annotate_with_number_of_private_imageannotationcomments_from_user(user=self.request.user) \
             .distinct() \
             .select_related('cached_data__last_published_feedbackset',
                             'cached_data__last_feedbackset',
                             'cached_data__first_feedbackset',
-                            'parentnode')
+                            'parentnode') \
+            .order_by(
+                'cached_data__last_feedbackset__deadline_datetime'
+            )
         return queryset
 
     def __get_unfiltered_queryset_for_role(self):
@@ -231,30 +201,15 @@ class SelfAssignGroupListView(listbuilderview.FilterListMixin, listbuilderview.V
                     exclude={'status'})\
             .filter(annotated_is_corrected__gt=0)\
             .count()
-
-    def __get_distinct_relatedexaminer_ids(self):
-        if not hasattr(self, '_distinct_relatedexaminer_ids'):
-            self._distinct_relatedexaminer_ids = Examiner.objects\
-                .filter(assignmentgroup__in=self.__get_unfiltered_queryset_for_role())\
-                .values_list('relatedexaminer_id', flat=True)\
-                .distinct()
-            self._distinct_relatedexaminer_ids = list(self._distinct_relatedexaminer_ids)
-        return self._distinct_relatedexaminer_ids
-
-    def __has_multiple_examiners(self):
-        return len(self.__get_distinct_relatedexaminer_ids()) > 1
-
-    def get_distinct_relatedexaminers(self):
-        return RelatedExaminer.objects\
-            .filter(id__in=self.__get_distinct_relatedexaminer_ids())\
-            .select_related('user')\
-            .order_by(
-                Lower(
-                    Concat(
-                        'user__fullname',
-                        'user__shortname',
-                        output_field=models.CharField()
-                    )))
+    
+    def get_distinct_assignments_queryset(self):
+        if not hasattr(self, '_distinct_assignment_ids'):
+            self._distinct_assignment_ids = self.__get_unfiltered_queryset_for_role() \
+                .values_list('parentnode_id', flat=True)
+        return coremodels.Assignment.objects \
+            .filter(id__in=self._distinct_assignment_ids) \
+            .distinct() \
+            .order_by('short_name')
 
     def use_pagination_load_all(self):
         return True
