@@ -1,3 +1,4 @@
+from re import S
 from django.conf import settings
 from django.db import models
 from django.utils.safestring import mark_safe
@@ -606,4 +607,28 @@ class ActivityFilter(abstractselect.AbstractSelectFilter):
             queryobject = queryobject.filter(
                 models.Q(number_of_private_groupcomments_from_user__gt=0) |
                 models.Q(number_of_private_imageannotationcomments_from_user__gt=0))
+        return queryobject
+
+
+class AssignmentCheckboxFilter(listfilter.basefilters.multi.abstractcheckbox.AbstractCheckboxFilter):
+    def __init__(self, **kwargs):
+        self.view = kwargs.pop('view', None)
+        super().__init__(**kwargs)
+
+    def get_slug(self):
+        return 'assignmentname'
+    
+    def get_label(self):
+        return pgettext_lazy('assignment filter', 'Assignments')
+
+    def get_choices(self):
+        choices = [(assignment.short_name, assignment.long_name)
+            for assignment in self.view.get_distinct_assignments_queryset()
+        ]
+        return choices
+
+    def filter(self, queryobject):
+        cleaned_values = self.get_cleaned_values()
+        if cleaned_values:
+            queryobject = queryobject.filter(parentnode__short_name__in=cleaned_values)
         return queryobject
