@@ -490,3 +490,213 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             ],
             self.__get_titles(mockresponse.selector))
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    def test_selfassign_user_not_related_examiner_on_period_sanity(self):
+        examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        assignment = baker.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            long_name='Assignment One',
+            examiners_can_self_assign=True
+        )
+        baker.make('core.AssignmentGroup', parentnode=assignment)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=examiner_user,
+            requestuser=examiner_user
+        )
+        self.assertFalse(mockresponse.selector.exists('#id-devilry-examiner-selfassign-section'))
+    
+    def test_selfassign_period_not_active_ended(self):
+        examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        assignment = baker.make_recipe(
+            'devilry.apps.core.assignment_oldperiod_start',
+            long_name='Assignment One',
+            examiners_can_self_assign=True
+        )
+        baker.make('core.RelatedExaminer', period=assignment.parentnode, user=examiner_user)
+        baker.make('core.AssignmentGroup', parentnode=assignment)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=examiner_user,
+            requestuser=examiner_user
+        )
+        self.assertFalse(mockresponse.selector.exists('#id-devilry-examiner-selfassign-section'))
+
+    def test_selfassign_period_not_active_not_started(self):
+        examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        assignment = baker.make_recipe(
+            'devilry.apps.core.assignment_futureperiod_start',
+            long_name='Assignment One',
+            examiners_can_self_assign=True
+        )
+        baker.make('core.RelatedExaminer', period=assignment.parentnode, user=examiner_user)
+        baker.make('core.AssignmentGroup', parentnode=assignment)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=examiner_user,
+            requestuser=examiner_user
+        )
+        self.assertFalse(mockresponse.selector.exists('#id-devilry-examiner-selfassign-section'))
+    
+    def test_selfassign_period_accessible_text_sanity(self):
+        examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        assignment = baker.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            long_name='Assignment One',
+            examiners_can_self_assign=True
+        )
+        baker.make('core.RelatedExaminer', period=assignment.parentnode, user=examiner_user)
+        baker.make('core.AssignmentGroup', parentnode=assignment)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=examiner_user,
+            requestuser=examiner_user
+        )
+        self.assertTrue(mockresponse.selector.exists('#id-devilry-examiner-selfassign-section'))
+        self.assertIn(
+            'Self-assign available',
+            mockresponse.selector.one('#id-devilry-examiner-selfassign-section').alltext_normalized
+        )
+        self.assertIn(
+            'Semesters where assigning yourself as examiner is available. '
+            'This list is available as long as there are projectgroups open '
+            'for selfassigning or you have already assigned yourself to one or '
+            'more projectgroups. Use the same flow to unassign yourself.',
+            mockresponse.selector.one('#id-devilry-examiner-selfassign-section').alltext_normalized
+        )
+        self.assertEqual(
+            reverse_cradmin_url(
+                instanceid='devilry_examiner_selfassign',
+                appname='self-assign',
+                roleid=assignment.parentnode.id,
+                viewname=crapp.INDEXVIEW_NAME,
+            ),
+            mockresponse.selector.list('#id-devilry-examiner-selfassign-section-links > a')[0]['href'])
+
+    def test_selfassign_single_period_accessible_sanity(self):
+        examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        assignment = baker.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            long_name='Assignment One',
+            examiners_can_self_assign=True
+        )
+        baker.make('core.RelatedExaminer', period=assignment.parentnode, user=examiner_user)
+        baker.make('core.AssignmentGroup', parentnode=assignment)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=examiner_user,
+            requestuser=examiner_user
+        )
+        self.assertTrue(mockresponse.selector.exists('#id-devilry-examiner-selfassign-section'))
+        selfassign_links = mockresponse.selector.list('#id-devilry-examiner-selfassign-section-links > a')
+        self.assertEqual(len(selfassign_links), 1)
+        self.assertEqual(
+            selfassign_links[0].alltext_normalized,
+            f'{assignment.parentnode.parentnode.long_name} - {assignment.parentnode.long_name}'
+        )
+        self.assertEqual(
+            reverse_cradmin_url(
+                instanceid='devilry_examiner_selfassign',
+                appname='self-assign',
+                roleid=assignment.parentnode.id,
+                viewname=crapp.INDEXVIEW_NAME,
+            ),
+            mockresponse.selector.list('#id-devilry-examiner-selfassign-section-links > a')[0]['href'])
+
+    def test_selfassign_multiple_periods_accessible_sanity(self):
+        examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        assignment1 = baker.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            long_name='Assignment One',
+            examiners_can_self_assign=True
+        )
+        assignment2 = baker.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            long_name='Assignment Two',
+            examiners_can_self_assign=True
+        )
+        baker.make('core.RelatedExaminer', period=assignment1.parentnode, user=examiner_user)
+        baker.make('core.AssignmentGroup', parentnode=assignment1)
+        baker.make('core.RelatedExaminer', period=assignment2.parentnode, user=examiner_user)
+        baker.make('core.AssignmentGroup', parentnode=assignment2)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=examiner_user,
+            requestuser=examiner_user
+        )
+        self.assertTrue(mockresponse.selector.exists('#id-devilry-examiner-selfassign-section'))
+        selfassign_links = mockresponse.selector.list('#id-devilry-examiner-selfassign-section-links > a')
+        self.assertEqual(len(selfassign_links), 2)
+        self.assertEqual(
+            selfassign_links[0].alltext_normalized,
+            f'{assignment1.parentnode.parentnode.long_name} - {assignment1.parentnode.long_name}'
+        )
+        self.assertEqual(
+            reverse_cradmin_url(
+                instanceid='devilry_examiner_selfassign',
+                appname='self-assign',
+                roleid=assignment1.parentnode.id,
+                viewname=crapp.INDEXVIEW_NAME,
+            ),
+            mockresponse.selector.list('#id-devilry-examiner-selfassign-section-links > a')[0]['href'])
+        self.assertEqual(
+            selfassign_links[1].alltext_normalized,
+            f'{assignment2.parentnode.parentnode.long_name} - {assignment2.parentnode.long_name}'
+        )
+        self.assertEqual(
+            reverse_cradmin_url(
+                instanceid='devilry_examiner_selfassign',
+                appname='self-assign',
+                roleid=assignment2.parentnode.id,
+                viewname=crapp.INDEXVIEW_NAME,
+            ),
+            mockresponse.selector.list('#id-devilry-examiner-selfassign-section-links > a')[1]['href'])
+
+    def test_selfassign_period_accessible_user_already_examiner(self):
+        examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        assignment = baker.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            long_name='Assignment One',
+            examiners_can_self_assign=True
+        )
+        relatedexaminer = baker.make('core.RelatedExaminer', period=assignment.parentnode, user=examiner_user)
+        group = baker.make('core.AssignmentGroup', parentnode=assignment)
+        baker.make('core.Examiner', assignmentgroup=group, relatedexaminer=relatedexaminer)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=examiner_user,
+            requestuser=examiner_user
+        )
+        self.assertTrue(mockresponse.selector.exists('#id-devilry-examiner-selfassign-section'))
+        selfassign_links = mockresponse.selector.list('#id-devilry-examiner-selfassign-section-links > a')
+        self.assertEqual(len(selfassign_links), 1)
+        self.assertEqual(
+            selfassign_links[0].alltext_normalized,
+            f'{assignment.parentnode.parentnode.long_name} - {assignment.parentnode.long_name}'
+        )
+        self.assertEqual(
+            reverse_cradmin_url(
+                instanceid='devilry_examiner_selfassign',
+                appname='self-assign',
+                roleid=assignment.parentnode.id,
+                viewname=crapp.INDEXVIEW_NAME,
+            ),
+            mockresponse.selector.list('#id-devilry-examiner-selfassign-section-links > a')[0]['href'])

@@ -1,0 +1,23 @@
+{% extends "devilry_cradmin/devilry_listbuilder/assignmentgroup/examiner-item-value.django.html" %}
+{% load i18n %}
+{% load devilry_theme3_tags %}
+
+{% block title-content %}
+    <div style="float:right;">
+        <devilry-examiner-selfassign-button
+            id="id_devilry_examiner_selfassign_button"
+            {{ me.attributes|safe }}>
+        </devilry-examiner-selfassign-button>
+    </div>
+    <p class="text-muted">
+        {{ me.get_assignment.long_name }}
+    </p>
+    {{ block.super }}
+{% endblock title-content %}
+
+{% block end-of-content %}
+    {{ block.super }}
+    <script type="module">
+        import '{% devilry_theme3_dist_path %}/scripts/plain_es6/examinerSelfAssignButton.js';
+    </script>
+{% endblock end-of-content %}

@@ -10,6 +10,7 @@ from cradmin_legacy.viewhelpers import listfilter
 from devilry.apps.core import models as coremodels
 from devilry.devilry_cradmin import devilry_listfilter
 from devilry.devilry_cradmin import devilry_listbuilder
+from devilry.devilry_examiner.views.selfassign import utils as selfassign_utils
 
 
 class AssignmentItemValue(listbuilder.itemvalue.TitleDescription):
@@ -81,11 +82,18 @@ class AssignmentListView(listbuilderview.FilterListMixin,
         filterlist.append(devilry_listfilter.assignment.OrderByFullPath())
 
     def get_unfiltered_queryset_for_role(self, role):
-        return coremodels.Assignment.objects\
-            .filter_examiner_has_access(user=self.request.user)\
-            .annotate_with_waiting_for_feedback_count()\
+        return coremodels.Assignment.objects \
+            .filter_examiner_has_access(user=self.request.user) \
+            .annotate_with_waiting_for_feedback_count() \
             .select_related('parentnode', 'parentnode__parentnode')
 
+    def __get_period_with_selfassignable_assignments(self):
+        return selfassign_utils.selfassign_available_periods(user=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['selfassign_available_periods'] = self.__get_period_with_selfassignable_assignments()
+        return context
 
 class App(crapp.App):
     appurls = [

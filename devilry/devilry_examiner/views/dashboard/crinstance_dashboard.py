@@ -14,7 +14,7 @@ class Menu(devilry_crmenu_examiner.Menu):
 class CrAdminInstance(devilry_crinstance.BaseCrInstanceExaminer):
     menuclass = Menu
     apps = [
-        ('assignmentlist', assignmentlist.App),
+        ('assignmentlist', assignmentlist.App)
     ]
     id = 'devilry_examiner'
     rolefrontpage_appname = 'assignmentlist'

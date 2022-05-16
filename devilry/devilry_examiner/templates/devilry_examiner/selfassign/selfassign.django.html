@@ -1,7 +1,6 @@
 {% extends "cradmin_legacy/viewhelpers/listbuilderview/filterlist-right.django.html" %}
 {% load i18n %}
 {% load cradmin_legacy_tags %}
-{% load devilry_theme3_tags %}
 
 {% block pageheader-inner %}
     {{ block.super }}
@@ -10,23 +9,6 @@
 
 {% block listbuilderview_buttons %}
     {{ block.super }}
-    <p id="devilry_examiner_bulk_operations_overview_buttonbar" class="devilry-buttonbar">
-        {% if waiting_for_feedback_count > 0 %}
-                <a id="devilry-examiner-bulk-feedback-button" class="btn btn-default"
-                    href="{% cradmin_appurl 'bulk-feedback' %}">
-                    {% trans "Bulk feedback" %}
-                </a>
-                <a id="devilry-examiner-simple-bulk-feedback-button" class="btn btn-default"
-                    href="{% cradmin_appurl 'bulk-feedback-simple' %}">
-                    {% trans "Simple bulk feedback" %}
-                </a>
-        {% endif %}
-        <a id="devilry-examiner-bulk-new-attempt-button" class="btn btn-default"
-            href="{% cradmin_instance_appindex_url 'manage-deadlines' %}">
-            {% trans "Manage deadlines" %}
-        </a>
-    </p>
-    {% include "devilry_examiner/assignment/includes/batchdownload_assignment.django.html" %}
 {% endblock %}
 
 {% block no-items-wrapper %}
