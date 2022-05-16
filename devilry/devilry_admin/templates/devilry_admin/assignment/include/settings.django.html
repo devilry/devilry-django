@@ -90,6 +90,14 @@
                         Examiners can not assign themselves to project groups on this assignment. As an administrator you are able to add examiners to the projects groups.
                     {% endblocktrans %}
                 {% endif %}
+
+                {% if assignment.is_anonymous %}
+                    <strong>
+                        {% blocktrans trimmed %}
+                            Assignment is anonymized. Examiners will not be able to self-assign.
+                        {% endblocktrans %}
+                    </strong>
+                {% endif %}
             </p>
             <div id="devilry_admin_assignment_overview_settings_selfassign_buttons">
                 <a href="{% cradmin_appurl "update_examiner_selfassign_settings" assignment.id %}" type="button"
