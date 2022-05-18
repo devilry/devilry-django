@@ -24,7 +24,6 @@ class ExaminerSelfAssignGroupItemValue(devilry_listbuilder.assignmentgroup.Exami
 
     @property
     def is_assigned_to_group(self):
-        # return self.group.is_examiner
         return Examiner.objects.filter(
             assignmentgroup=self.group,
             relatedexaminer__user=self.kwargs['request'].user
@@ -33,7 +32,7 @@ class ExaminerSelfAssignGroupItemValue(devilry_listbuilder.assignmentgroup.Exami
     @property
     def selfassign_api_url(self):
         request = self.kwargs['request']
-        return f'{request.scheme}://{request.get_host()}{reverse("devilry_examiner_selfassign_api", kwargs={"group_id": self.group.id})}'
+        return f'{request.scheme}://{request.get_host()}{reverse("devilry_examiner_selfassign_api", kwargs={"period_id": self.kwargs["period"].id})}'
 
     @property
     def attributes(self):
@@ -49,12 +48,21 @@ class ExaminerSelfAssignGroupItemValue(devilry_listbuilder.assignmentgroup.Exami
                 'assignText': pgettext(
                     'examiner selfassign group item value',
                     'Assign'),
+                'assignProgressText': pgettext(
+                    'examiner selfassign group item value',
+                    'Assigning'
+                ),
                 'unassignText': pgettext(
                     'examiner selfassign group item value',
                     'Unassign'),
-                'updatingText': pgettext(
+                'unassignProgressText': pgettext(
                     'examiner selfassign group item value',
-                    'Updating'),
+                    'Unassigning'
+                ),
+                'unavailableText': pgettext(
+                    'examiner selfassign group item value',
+                    'UNAVAILABLE'
+                )
             }.items()
         )
         return attributes

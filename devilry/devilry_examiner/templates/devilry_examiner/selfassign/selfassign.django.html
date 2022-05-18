@@ -11,26 +11,49 @@
     {{ block.super }}
 {% endblock %}
 
+
+{% block content %}
+    <div class="container">
+        <div class="devilry-dashboard-container">
+            <p>
+                <strong>
+                    {% trans "Regarding groups being unavailable for assign/unassign" context "examiner selfassign view" %}
+                </strong>
+            </p>
+            <p>
+                {% blocktrans trimmed with context="examiner selfassign view" %}
+                    When you assign to/unassign from a project group, the assign/unassign button may show an "UNAVAILABLE" message. 
+                    There are multiple reasons for this happening, and some of them are:
+                {% endblocktrans %}
+                <ul>
+                    <li>
+                        Changes are made to the semester making it unavailable to you
+                    </li>
+                    <li>
+                        The assignment has been unpublished
+                    </li>
+                    <li>
+                        Self-assign limit of the project group has been reached
+                    </li>
+                    <li>
+                        You have been removed as an examiner from the semester
+                    </li>
+                </ul>
+                {% blocktrans trimmed with context="examiner selfassign view" %}
+                    If this happens, please reload the page. If this issue persists for the same project groups, please contact support.
+                {% endblocktrans %}
+            </p>
+        </div>
+    </div>
+    {{ block.super }}
+{% endblock content %}
+
+
 {% block no-items-wrapper %}
     {% if excluding_filters_other_than_status_is_applied %}
         <p class="cradmin-legacy-listing-no-items-message cradmin-legacy-listbuilderview-no-items-message">
             {% trans "No students found matching your filters/search." %}
         </p>
-    {% else %}
-        <div class="devilry-examiner-grouplist-empty devilry-examiner-grouplist-empty-{{ status_filter_value_normalized }}">
-            {% if status_filter_value_normalized == "waiting-for-feedback" %}
-                {% trans "You have no students waiting for feedback." %}
-            {% elif status_filter_value_normalized == "waiting-for-deliveries" %}
-                {% trans "You are currently not expecting new deliveries from any students." %}
-            {% elif status_filter_value_normalized == "corrected" %}
-                {% trans "You have not finished correcting any students yet." %}
-            {% endif %}
-            {% comment %}
-                NOTE: We never get status_filter_value_normalized == "all" here
-                      - that would end in a 404 instead because the examiner does
-                      not have access.
-            {% endcomment %}
-        </div>
     {% endif %}
 {% endblock no-items-wrapper %}
 

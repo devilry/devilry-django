@@ -15,8 +15,9 @@ class DevilryExaminerSelfAssignButton extends HTMLElement {
         this.attrAssignText = this.getAttribute('assignText');
         this.attrUnassignText = this.getAttribute('unassignText');
         this.attrUpdatingText = this.getAttribute('updatingText');
-
-        console.log(`${this.attrAssignmentGroupId} - ${this.attrAssignStatus}`)
+        this.attrAssignProgressText = this.getAttribute('assignProgressText');
+        this.attrUnassignProgressText = this.getAttribute('unassignProgressText');
+        this.attrUnavailableText = this.getAttribute('unavailableText');
     }
 
     connectedCallback () {
@@ -36,7 +37,7 @@ class DevilryExaminerSelfAssignButton extends HTMLElement {
         } else if (this.attrAssignStatus === 'updating') {
             return this.attrUpdatingText;
         } else {
-            return 'ERROR';
+            return this.attrUnavailableText;
         }
     }
 
@@ -49,15 +50,19 @@ class DevilryExaminerSelfAssignButton extends HTMLElement {
         buttonElement.classList.add(cssClassToSet);
     }
 
-    _setUpdating (buttonElement) {
+    _setUpdating (buttonElement, action) {
         this.attrAssignStatus = 'updating';
-        buttonElement.innerText = this._buttonText;
+        if (action === ACTION_TYPE_ASSIGN) {
+            buttonElement.innerText = this.attrAssignProgressText;
+        } else {
+            buttonElement.innerText = this.attrUnassignProgressText;
+        }
         this._updateCssClass(buttonElement, 'examiner-selfassign-button--updating');
     }
 
     _performAssignUnassignAction (buttonElement, action, onSuccessCallback, onErrorCallback) {
         // Set updating state.
-        this._setUpdating(buttonElement)
+        this._setUpdating(buttonElement, action)
 
         // Perform API call.
         fetch(this.attrSelfAssignApiUrl, {
@@ -68,6 +73,7 @@ class DevilryExaminerSelfAssignButton extends HTMLElement {
                 'X-CSRFToken': getCookie('csrftoken')
             },
             body: JSON.stringify({
+                'group_id': this.attrAssignmentGroupId,
                 'action': action
             })
         })
@@ -97,39 +103,33 @@ class DevilryExaminerSelfAssignButton extends HTMLElement {
         this._updateCssClass(buttonElement, 'examiner-selfassign-button--unassigned');
     }
 
-    _setError (buttonElement) {
-        this.attrAssignStatus = 'error';
+    _setUnavailable (buttonElement) {
+        this.attrAssignStatus = 'unavailable';
         buttonElement.innerText = this._buttonText;
     }
 
     addEventListeners () {
         const buttonElement = document.getElementById(this._elementId);
         buttonElement.addEventListener('click', () => {
-            if (this.attrAssignStatus === 'updating') {
-                return;
-            }
             if (this.attrAssignStatus === 'assigned') {
                 this._performAssignUnassignAction(
                     buttonElement,
-                    ACTION_TYPE_ASSIGN,
+                    ACTION_TYPE_UNASSIGN,
                     () => {this._setUnassigned(buttonElement);},
-                    () => {this._setError(buttonElement);}
+                    () => {this._setUnavailable(buttonElement);}
                 );
             } else if (this.attrAssignStatus === 'unassigned') {
                 this._performAssignUnassignAction(
                     buttonElement,
-                    ACTION_TYPE_UNASSIGN,
+                    ACTION_TYPE_ASSIGN,
                     () => {this._setAssigned(buttonElement);},
-                    () => {this._setError(buttonElement);}
+                    () => {this._setUnavailable(buttonElement);}
                 );
-            } else {
-                console.error(`ERROR ${this.attrAssignStatus}`);
             }
         });
     }
 
     renderButton () {
-        console.log('Render button');
         const selfAssignButton = devilryParseDomString(`
             <button
                 type="button"
