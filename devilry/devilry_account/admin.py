@@ -285,7 +285,9 @@ class PeriodUserGuidelineAcceptanceAdmin(admin.ModelAdmin):
         'user',
         'period',
         'devilryrole',
-        'accepted_datetime'
+        'accepted_datetime',
+        'guidelines_version',
+        'matched_regex',
     ]
     search_fields = [
         '=period__short_name',
@@ -298,11 +300,15 @@ class PeriodUserGuidelineAcceptanceAdmin(admin.ModelAdmin):
         'user',
         'period',
         'devilryrole',
-        'accepted_datetime'
+        'accepted_datetime',
+        'guidelines_version',
+        'matched_regex',
     ]
     list_filter = [
         'accepted_datetime',
         'devilryrole',
+        'matched_regex',
+        'guidelines_version',
     ]
 
     def has_change_permission(self, *args, **kwargs) -> bool:

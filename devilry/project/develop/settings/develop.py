@@ -98,7 +98,7 @@ EMAIL_BACKEND = 'devilry.devilry_email.rq_backend.RQEmailBackend'
 # MIGRATION_MODULES = DisableMigrations()
 
 
-# LANGUAGE_CODE = 'nb'
+LANGUAGE_CODE = 'nb'
 
 
 IEVVTASKS_BUILDSTATIC_APPS = ievvbuildstatic.config.Apps(
@@ -245,22 +245,24 @@ DEBUG_TOOLBAR_CONFIG = {
 DEVILRY_ASSIGNMENT_GUIDELINES = {
     'student': [
         (r'duck10.+', {
+            '__version__': '1',
             '__default__': {
-                'htmltext': 'This is the assignment guidelines for inf10xx courses.',
+                'htmltext': 'This is the assignment guidelines for duck10xx courses.',
                 'url': 'http://example.com'
             },
-           'nb': {
-                'htmltext': 'Dette er retningslinjene for oppgaver i inf10xx kurs',
+            'nb': {
+                'htmltext': 'Dette er retningslinjene for oppgaver i duck10xx kurs',
                 'url': 'http://vg.no'
             }
         }),
         (r'duck11.+', {
+            '__version__': '1',
             '__default__': {
-                'htmltext': 'This is the assignment guidelines for inf11xx courses.',
+                'htmltext': 'This is the assignment guidelines for duck11xx courses.',
                 'url': 'http://example.com'
             },
             'nb': {
-                'htmltext': 'Dette er retningslinjene for oppgaver i inf11xx kurs',
+                'htmltext': 'Dette er retningslinjene for oppgaver i duck11xx kurs',
                 'url': 'http://vg.no'
             }
         })
