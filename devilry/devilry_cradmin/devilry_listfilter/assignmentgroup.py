@@ -632,3 +632,35 @@ class AssignmentCheckboxFilter(listfilter.basefilters.multi.abstractcheckbox.Abs
         if cleaned_values:
             queryobject = queryobject.filter(parentnode__short_name__in=cleaned_values)
         return queryobject
+
+
+class AssignedUnassignedRadioFilter(abstractradio.AbstractRadioFilter):
+    def __init__(self, **kwargs):
+        self.view = kwargs.pop('view', None)
+        super(AssignedUnassignedRadioFilter, self).__init__(**kwargs)
+
+    def copy(self):
+        copy = super(AssignedUnassignedRadioFilter, self).copy()
+        copy.view = self.view
+        return copy
+
+    def get_slug(self):
+        return 'assignedstatus'
+
+    def get_label(self):
+        return pgettext_lazy('group assigned status', 'Assign status')
+
+    def get_choices(self):
+        return [
+            ('', pgettext('group assigned status', 'All students')),
+            ('assigned', pgettext('group assigned status', 'Assigned')),
+            ('unassigned', pgettext('group assigned status', 'Unassigned'))
+        ]
+
+    def filter(self, queryobject):
+        cleaned_value = self.get_cleaned_value() or ''
+        if cleaned_value == 'assigned':
+            queryobject = queryobject.filter(examiners__relatedexaminer__user=self.view.request.user)
+        elif cleaned_value == 'unassigned':
+            queryobject = queryobject.exclude(examiners__relatedexaminer__user=self.view.request.user)
+        return queryobject

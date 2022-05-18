@@ -7,7 +7,7 @@ from cradmin_legacy import cradmin_testhelpers
 from model_bakery import baker
 
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
-
+from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_examiner.views.selfassign import selfassign
 
 
@@ -342,7 +342,9 @@ class TestSelfassignGrouplistViewFilters(test.TestCase, cradmin_testhelpers.Test
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
         self.period = baker.make_recipe('devilry.apps.core.period_active', short_name='thesemester', long_name='The Semester')
-    
+        self.examiner_user = baker.make(settings.AUTH_USER_MODEL)
+        self.related_examiner = baker.make('core.RelatedExaminer', period=self.period, user=self.examiner_user)
+
     def __make_group_with_student(self, assignment, fullname, shortname):
         group = baker.make('core.AssignmentGroup', parentnode=assignment)
         relatedstudent = baker.make(
@@ -359,25 +361,23 @@ class TestSelfassignGrouplistViewFilters(test.TestCase, cradmin_testhelpers.Test
             examiners_can_self_assign=True, parentnode=self.period,
             long_name=long_name, short_name=short_name)
 
-    def __make_single_assignment_with_multiple_groups(self, examiner_user):
+    def __make_single_assignment_with_multiple_groups(self):
         assignment = self.__make_assignment(long_name='Assignment', short_name='assignment')
         self.__make_group_with_student(assignment, 'Student1', 'student1@example.com')
         self.__make_group_with_student(assignment, 'Student2', 'student2@example.com')
         self.__make_group_with_student(assignment, 'Student3', 'student3@example.com')
-        baker.make('core.RelatedExaminer', period=self.period, user=examiner_user)
         return assignment
 
-    def __make_multiple_assignments_with_single_group(self, examiner_user):
+    def __make_multiple_assignments_with_single_group(self):
         assignment1 = self.__make_assignment(long_name='Assignment 1', short_name='assignment1')
         self.__make_group_with_student(assignment1, 'Assignment1 Student', 'assignment1student@example.com')
         assignment2 = self.__make_assignment(long_name='Assignment 2', short_name='assignment2')
         self.__make_group_with_student(assignment2, 'Assignment2 Student', 'assignment2student@example.com')
         assignment3 = self.__make_assignment(long_name='Assignment 3', short_name='assignment3')
         self.__make_group_with_student(assignment3, 'Assignment3 Student', 'assignment3student@example.com')
-        baker.make('core.RelatedExaminer', period=self.period, user=examiner_user)
         return assignment1, assignment2, assignment3
 
-    def __make_multiple_assignments_with_multiple_groups(self, examiner_user):
+    def __make_multiple_assignments_with_multiple_groups(self):
         assignment1 = self.__make_assignment(long_name='Assignment 1', short_name='assignment1')
         self.__make_group_with_student(assignment1, 'Assignment1 Student1', 'assignment1student1@example.com')
         self.__make_group_with_student(assignment1, 'Assignment1 Student2', 'assignment1student2@example.com')
@@ -390,15 +390,13 @@ class TestSelfassignGrouplistViewFilters(test.TestCase, cradmin_testhelpers.Test
         self.__make_group_with_student(assignment3, 'Assignment3 Student1', 'assignment3student1@example.com')
         self.__make_group_with_student(assignment3, 'Assignment3 Student2', 'assignment3student2@example.com')
         self.__make_group_with_student(assignment3, 'Assignment3 Student3', 'assignment3student3@example.com')
-        baker.make('core.RelatedExaminer', period=self.period, user=examiner_user)
         return assignment1, assignment2, assignment3
     
     def test_assignment_filter_label_sanity(self):
-        testuser = baker.make(settings.AUTH_USER_MODEL)
-        self.__make_single_assignment_with_multiple_groups(testuser)
+        self.__make_single_assignment_with_multiple_groups()
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=self.period,
-            requestuser=testuser
+            requestuser=self.examiner_user
         )
         self.assertEqual(
             mockresponse.selector.one('#cradmin_legacy_listfilter_assignmentname_label').alltext_normalized,
@@ -406,11 +404,10 @@ class TestSelfassignGrouplistViewFilters(test.TestCase, cradmin_testhelpers.Test
         )        
 
     def test_assignment_filter_name_single_assignment_sanity(self):
-        testuser = baker.make(settings.AUTH_USER_MODEL)
-        assignment = self.__make_single_assignment_with_multiple_groups(testuser)
+        assignment = self.__make_single_assignment_with_multiple_groups()
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=self.period,
-            requestuser=testuser
+            requestuser=self.examiner_user
         )
         self.assertEqual(
             mockresponse.selector.one(f'#cradmin_legacy_listfilter_assignmentname_input_{assignment.short_name}_label').alltext_normalized,
@@ -418,11 +415,10 @@ class TestSelfassignGrouplistViewFilters(test.TestCase, cradmin_testhelpers.Test
         )
 
     def test_assignment_filter_name_multiple_assignments_sanity(self):
-        testuser = baker.make(settings.AUTH_USER_MODEL)
-        assignment1, assignment2, assignment3 = self.__make_multiple_assignments_with_single_group(testuser)
+        assignment1, assignment2, assignment3 = self.__make_multiple_assignments_with_single_group()
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=self.period,
-            requestuser=testuser
+            requestuser=self.examiner_user
         )
         self.assertEqual(
             mockresponse.selector.one(f'#cradmin_legacy_listfilter_assignmentname_input_{assignment1.short_name}_label').alltext_normalized,
@@ -438,11 +434,10 @@ class TestSelfassignGrouplistViewFilters(test.TestCase, cradmin_testhelpers.Test
         )
 
     def test_filter_no_filter_sanity(self):
-        testuser = baker.make(settings.AUTH_USER_MODEL)
-        assignment = self.__make_single_assignment_with_multiple_groups(testuser)
+        assignment = self.__make_single_assignment_with_multiple_groups()
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=self.period,
-            requestuser=testuser,
+            requestuser=self.examiner_user,
             viewkwargs={'filters_string': ''}
         )
         group_itemvalue_list = mockresponse.selector.list('.cradmin-legacy-listbuilder-itemvalue')
@@ -454,12 +449,11 @@ class TestSelfassignGrouplistViewFilters(test.TestCase, cradmin_testhelpers.Test
         self.assertIn(assignment.long_name, group_itemvalue_list[2].alltext_normalized)
         self.assertIn('student3@example.com', group_itemvalue_list[2].alltext_normalized)
     
-    def test_filter_sanity(self):
-        testuser = baker.make(settings.AUTH_USER_MODEL)
-        assignment = self.__make_single_assignment_with_multiple_groups(testuser)
+    def test_assignment_filter_sanity(self):
+        assignment = self.__make_single_assignment_with_multiple_groups()
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=self.period,
-            requestuser=testuser,
+            requestuser=self.examiner_user,
             viewkwargs={'filters_string': f'assignmentname-{assignment.short_name}'}
         )
         group_itemvalue_list = mockresponse.selector.list('.cradmin-legacy-listbuilder-itemvalue')
@@ -471,12 +465,11 @@ class TestSelfassignGrouplistViewFilters(test.TestCase, cradmin_testhelpers.Test
         self.assertIn(assignment.long_name, group_itemvalue_list[2].alltext_normalized)
         self.assertIn('student3@example.com', group_itemvalue_list[2].alltext_normalized)
 
-    def test_filter_single_assignment_sanity(self):
-        testuser = baker.make(settings.AUTH_USER_MODEL)
-        assignment1, assignment2, assignment3 = self.__make_multiple_assignments_with_single_group(testuser)
+    def test_assignment_filter_single_assignment_sanity(self):
+        assignment1, assignment2, assignment3 = self.__make_multiple_assignments_with_single_group()
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=self.period,
-            requestuser=testuser,
+            requestuser=self.examiner_user,
             viewkwargs={'filters_string': f'assignmentname-{assignment1.short_name}'}
         )
         group_itemvalue_list = mockresponse.selector.list('.cradmin-legacy-listbuilder-itemvalue')
@@ -484,12 +477,11 @@ class TestSelfassignGrouplistViewFilters(test.TestCase, cradmin_testhelpers.Test
         self.assertIn(assignment1.long_name, group_itemvalue_list[0].alltext_normalized)
         self.assertIn('assignment1student@example.com', group_itemvalue_list[0].alltext_normalized)
 
-    def test_filter_multiple_assignments_sanity(self):
-        testuser = baker.make(settings.AUTH_USER_MODEL)
-        assignment1, assignment2, assignment3 = self.__make_multiple_assignments_with_single_group(testuser)
+    def test_assignment_filter_multiple_assignments_sanity(self):
+        assignment1, assignment2, assignment3 = self.__make_multiple_assignments_with_single_group()
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=self.period,
-            requestuser=testuser,
+            requestuser=self.examiner_user,
             viewkwargs={'filters_string': f'assignmentname-{assignment1.short_name}%2C{assignment2.short_name}'}
         )
         group_itemvalue_list = mockresponse.selector.list('.cradmin-legacy-listbuilder-itemvalue')
@@ -499,12 +491,11 @@ class TestSelfassignGrouplistViewFilters(test.TestCase, cradmin_testhelpers.Test
         self.assertIn(assignment2.long_name, group_itemvalue_list[1].alltext_normalized)
         self.assertIn('assignment2student@example.com', group_itemvalue_list[1].alltext_normalized)
 
-    def test_filter_all_assignments_sanity(self):
-        testuser = baker.make(settings.AUTH_USER_MODEL)
-        assignment1, assignment2, assignment3 = self.__make_multiple_assignments_with_single_group(testuser)
+    def test_assignment_filter_all_assignments_sanity(self):
+        assignment1, assignment2, assignment3 = self.__make_multiple_assignments_with_single_group()
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=self.period,
-            requestuser=testuser,
+            requestuser=self.examiner_user,
             viewkwargs={'filters_string': f'assignmentname-{assignment1.short_name}%2C{assignment2.short_name}%2C{assignment3.short_name}'}
         )
         group_itemvalue_list = mockresponse.selector.list('.cradmin-legacy-listbuilder-itemvalue')
@@ -516,12 +507,11 @@ class TestSelfassignGrouplistViewFilters(test.TestCase, cradmin_testhelpers.Test
         self.assertIn(assignment3.long_name, group_itemvalue_list[2].alltext_normalized)
         self.assertIn('assignment3student@example.com', group_itemvalue_list[2].alltext_normalized)
 
-    def test_filter_single_assignment_multiple_groups_sanity(self):
-        testuser = baker.make(settings.AUTH_USER_MODEL)
-        assignment1, assignment2, assignment3 = self.__make_multiple_assignments_with_multiple_groups(testuser)
+    def test_assignment_filter_single_assignment_multiple_groups_sanity(self):
+        assignment1, assignment2, assignment3 = self.__make_multiple_assignments_with_multiple_groups()
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=self.period,
-            requestuser=testuser,
+            requestuser=self.examiner_user,
             viewkwargs={'filters_string': f'assignmentname-{assignment1.short_name}'}
         )
         group_itemvalue_list = mockresponse.selector.list('.cradmin-legacy-listbuilder-itemvalue')
@@ -540,12 +530,11 @@ class TestSelfassignGrouplistViewFilters(test.TestCase, cradmin_testhelpers.Test
         self.assertNotIn(assignment3.long_name, group_itemvalue_list[1].alltext_normalized)
         self.assertNotIn(assignment3.long_name, group_itemvalue_list[2].alltext_normalized)
 
-    def test_filter_multiple_assignment_multiple_groups_sanity(self):
-        testuser = baker.make(settings.AUTH_USER_MODEL)
-        assignment1, assignment2, assignment3 = self.__make_multiple_assignments_with_multiple_groups(testuser)
+    def test_assignment_filter_multiple_assignment_multiple_groups_sanity(self):
+        assignment1, assignment2, assignment3 = self.__make_multiple_assignments_with_multiple_groups()
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=self.period,
-            requestuser=testuser,
+            requestuser=self.examiner_user,
             viewkwargs={'filters_string': f'assignmentname-{assignment1.short_name}%2C{assignment3.short_name}'}
         )
         group_itemvalue_list = mockresponse.selector.list('.cradmin-legacy-listbuilder-itemvalue')
@@ -556,7 +545,7 @@ class TestSelfassignGrouplistViewFilters(test.TestCase, cradmin_testhelpers.Test
         self.assertIn('assignment1student2@example.com', group_itemvalue_list[1].alltext_normalized)
         self.assertIn(assignment1.long_name, group_itemvalue_list[2].alltext_normalized)
         self.assertIn('assignment1student3@example.com', group_itemvalue_list[2].alltext_normalized)
-        
+
         self.assertIn(assignment3.long_name, group_itemvalue_list[3].alltext_normalized)
         self.assertIn('assignment3student1@example.com', group_itemvalue_list[3].alltext_normalized)
         self.assertIn(assignment3.long_name, group_itemvalue_list[4].alltext_normalized)
@@ -570,3 +559,51 @@ class TestSelfassignGrouplistViewFilters(test.TestCase, cradmin_testhelpers.Test
         self.assertNotIn(assignment2.long_name, group_itemvalue_list[3].alltext_normalized)
         self.assertNotIn(assignment2.long_name, group_itemvalue_list[4].alltext_normalized)
         self.assertNotIn(assignment2.long_name, group_itemvalue_list[5].alltext_normalized)
+
+    def test_assignstatus_filter_all_groups(self):
+        assignment1, assignment2, assignment3 = self.__make_multiple_assignments_with_single_group()
+        baker.make('core.Examiner', relatedexaminer=self.related_examiner, assignmentgroup=AssignmentGroup.objects.get(parentnode=assignment1))
+        baker.make('core.Examiner', relatedexaminer=self.related_examiner, assignmentgroup=AssignmentGroup.objects.get(parentnode=assignment2))
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=self.period,
+            requestuser=self.examiner_user,
+            viewkwargs={'filters_string': ''}
+        )
+        group_itemvalue_list = mockresponse.selector.list('.cradmin-legacy-listbuilder-itemvalue')
+        self.assertEqual(len(group_itemvalue_list), 3)
+        self.assertIn(assignment1.long_name, group_itemvalue_list[0].alltext_normalized)
+        self.assertIn('assignment1student@example.com', group_itemvalue_list[0].alltext_normalized)
+        self.assertIn(assignment2.long_name, group_itemvalue_list[1].alltext_normalized)
+        self.assertIn('assignment2student@example.com', group_itemvalue_list[1].alltext_normalized)
+        self.assertIn(assignment3.long_name, group_itemvalue_list[2].alltext_normalized)
+        self.assertIn('assignment3student@example.com', group_itemvalue_list[2].alltext_normalized)
+
+    def test_assignstatus_filter_assigned_groups_only(self):
+        assignment1, assignment2, assignment3 = self.__make_multiple_assignments_with_single_group()
+        baker.make('core.Examiner', relatedexaminer=self.related_examiner, assignmentgroup=AssignmentGroup.objects.get(parentnode=assignment1))
+        baker.make('core.Examiner', relatedexaminer=self.related_examiner, assignmentgroup=AssignmentGroup.objects.get(parentnode=assignment2))
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=self.period,
+            requestuser=self.examiner_user,
+            viewkwargs={'filters_string': 'assignedstatus-assigned'}
+        )
+        group_itemvalue_list = mockresponse.selector.list('.cradmin-legacy-listbuilder-itemvalue')
+        self.assertEqual(len(group_itemvalue_list), 2)
+        self.assertIn(assignment1.long_name, group_itemvalue_list[0].alltext_normalized)
+        self.assertIn('assignment1student@example.com', group_itemvalue_list[0].alltext_normalized)
+        self.assertIn(assignment2.long_name, group_itemvalue_list[1].alltext_normalized)
+        self.assertIn('assignment2student@example.com', group_itemvalue_list[1].alltext_normalized)
+
+    def test_assignstatus_filter_unassigned_groups_only(self):
+        assignment1, assignment2, assignment3 = self.__make_multiple_assignments_with_single_group()
+        baker.make('core.Examiner', relatedexaminer=self.related_examiner, assignmentgroup=AssignmentGroup.objects.get(parentnode=assignment1))
+        baker.make('core.Examiner', relatedexaminer=self.related_examiner, assignmentgroup=AssignmentGroup.objects.get(parentnode=assignment2))
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=self.period,
+            requestuser=self.examiner_user,
+            viewkwargs={'filters_string': 'assignedstatus-unassigned'}
+        )
+        group_itemvalue_list = mockresponse.selector.list('.cradmin-legacy-listbuilder-itemvalue')
+        self.assertEqual(len(group_itemvalue_list), 1)
+        self.assertIn(assignment3.long_name, group_itemvalue_list[0].alltext_normalized)
+        self.assertIn('assignment3student@example.com', group_itemvalue_list[0].alltext_normalized)
