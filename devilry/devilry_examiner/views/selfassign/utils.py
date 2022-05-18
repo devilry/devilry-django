@@ -13,6 +13,7 @@ def assignment_groups_available_for_self_assign(period, user):
     # Excluding anonymized assignments for now.
     assignment_queryset = Assignment.objects \
         .select_related('parentnode') \
+        .filter_is_active() \
         .filter(
             anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF
         ) \
