@@ -1,34 +1,38 @@
 from django import test
 from model_bakery import baker
 
+from devilry.apps.core.models import Assignment
 from devilry.devilry_account.models import PermissionGroup
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
-from devilry.devilry_statistics.tests.test_api import api_test_mixin
-from devilry.devilry_statistics.api.assignment import examiner_group_results
+from devilry.utils.api import api_test_mixin
+from devilry.devilry_statistics.api.assignment import examiner_average_grading_points
 from devilry.devilry_group import devilry_group_baker_factories as group_baker
 
 
-class TestExaminerGroupResultsApi(test.TestCase, api_test_mixin.ApiTestMixin):
-    apiview_class = examiner_group_results.ExaminerGroupResultApi
+class TestExaminerAverageGradingPointsApi(test.TestCase, api_test_mixin.ApiTestMixin):
+    apiview_class = examiner_average_grading_points.ExaminerAverageGradingPointsApi
 
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
-    def __make_published_group_for_relatedexaminer(self, assignment, relatedexaminer, grading_points):
-        group = baker.make('core.AssignmentGroup', parentnode=assignment)
-        baker.make('core.Examiner', relatedexaminer=relatedexaminer, assignmentgroup=group)
-        group_baker.feedbackset_first_attempt_published(group=group, grading_points=grading_points)
-        return group
-
-    def __make_unpublished_group_for_relatedexaminer(self, assignment, relatedexaminer):
-        group = baker.make('core.AssignmentGroup', parentnode=assignment)
-        baker.make('core.Examiner', relatedexaminer=relatedexaminer, assignmentgroup=group)
-        group_baker.feedbackset_first_attempt_unpublished(group=group)
-        return group
-
-    def test_user_not_authenticated(self):
+    def test_not_authenticated(self):
         response = self.make_get_request()
         self.assertEqual(response.status_code, 403)
+
+    def test_validator_assignment_id_missing_raises_403(self):
+        # Raises 403 because permission query is executed first (requires assignment_id)
+        response = self.make_get_request(
+            requestuser=self.make_superuser(),
+            viewkwargs={'relatedexaminer_id': 1})
+        self.assertEqual(response.status_code, 403)
+
+    def test_validator_relatedexaminer_id_missing(self):
+        assignment = baker.make('core.Assignment')
+        response = self.make_get_request(
+            requestuser=self.make_superuser(),
+            viewkwargs={'assignment_id': assignment.id})
+        self.assertEqual(str(response.data['relatedexaminer_id'][0]), 'This field is required.')
+        self.assertEqual(response.status_code, 400)
 
     def test_user_has_no_access(self):
         assignment = baker.make('core.Assignment')
@@ -57,7 +61,7 @@ class TestExaminerGroupResultsApi(test.TestCase, api_test_mixin.ApiTestMixin):
         period = baker.make('core.Period')
         assignment = baker.make('core.Assignment', parentnode=period)
         relatedexaminer = baker.make('core.RelatedExaminer', period=period, user__fullname='Test User')
-        self.__make_published_group_for_relatedexaminer(assignment=assignment, relatedexaminer=relatedexaminer, grading_points=1)
+        self.__make_group_for_relatedexaminer(assignment=assignment, relatedexaminer=relatedexaminer, grading_points=1)
         requestuser = self.make_user()
         permissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                      period=period)
@@ -91,7 +95,7 @@ class TestExaminerGroupResultsApi(test.TestCase, api_test_mixin.ApiTestMixin):
         period = baker.make('core.Period', parentnode=subject)
         assignment = baker.make('core.Assignment', parentnode=period)
         relatedexaminer = baker.make('core.RelatedExaminer', period=period, user__fullname='Test User')
-        self.__make_published_group_for_relatedexaminer(assignment=assignment, relatedexaminer=relatedexaminer, grading_points=1)
+        self.__make_group_for_relatedexaminer(assignment=assignment, relatedexaminer=relatedexaminer, grading_points=1)
         requestuser = self.make_user()
         permissiongroup = baker.make('devilry_account.SubjectPermissionGroup',
                                      permissiongroup__grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN,
@@ -109,7 +113,7 @@ class TestExaminerGroupResultsApi(test.TestCase, api_test_mixin.ApiTestMixin):
         period = baker.make('core.Period', parentnode=subject)
         assignment = baker.make('core.Assignment', parentnode=period)
         relatedexaminer = baker.make('core.RelatedExaminer', period=period, user__fullname='Test User')
-        self.__make_published_group_for_relatedexaminer(assignment=assignment, relatedexaminer=relatedexaminer, grading_points=1)
+        self.__make_group_for_relatedexaminer(assignment=assignment, relatedexaminer=relatedexaminer, grading_points=1)
         requestuser = self.make_user()
         permissiongroup = baker.make('devilry_account.SubjectPermissionGroup',
                                      subject=subject, permissiongroup__grouptype='departmentadmin')
@@ -121,123 +125,72 @@ class TestExaminerGroupResultsApi(test.TestCase, api_test_mixin.ApiTestMixin):
             viewkwargs={'assignment_id': assignment.id, 'relatedexaminer_id': relatedexaminer.id})
         self.assertEqual(response.status_code, 200)
 
-    def calculate_percentage(self, p, total):
-        if p == 0 or total == 0:
-            return 0
-        return 100 * (float(p) / float(total))
+    def __make_group_for_relatedexaminer(self, assignment, relatedexaminer, grading_points):
+        group = baker.make('core.AssignmentGroup', parentnode=assignment)
+        baker.make('core.Examiner', relatedexaminer=relatedexaminer, assignmentgroup=group)
+        group_baker.feedbackset_first_attempt_published(group=group, grading_points=grading_points)
+        return group
 
     def test_sanity(self):
         period = baker.make('core.Period')
         assignment = baker.make('core.Assignment', parentnode=period)
         relatedexaminer = baker.make('core.RelatedExaminer', period=period, user__fullname='Test User')
-        self.__make_published_group_for_relatedexaminer(assignment=assignment, relatedexaminer=relatedexaminer,
-                                                        grading_points=1)
-        self.__make_published_group_for_relatedexaminer(assignment=assignment, relatedexaminer=relatedexaminer,
-                                                        grading_points=0)
-        self.__make_published_group_for_relatedexaminer(assignment=assignment, relatedexaminer=relatedexaminer,
-                                                        grading_points=0)
-        self.__make_unpublished_group_for_relatedexaminer(assignment=assignment, relatedexaminer=relatedexaminer)
-        self.__make_unpublished_group_for_relatedexaminer(assignment=assignment, relatedexaminer=relatedexaminer)
-        self.__make_unpublished_group_for_relatedexaminer(assignment=assignment, relatedexaminer=relatedexaminer)
+        self.__make_group_for_relatedexaminer(assignment=assignment, relatedexaminer=relatedexaminer, grading_points=1)
 
         response = self.make_get_request(
             requestuser=self.make_superuser(),
             viewkwargs={'assignment_id': assignment.id, 'relatedexaminer_id': relatedexaminer.id})
-        self.assertEqual(
-            response.data,
-            {
-                'groups_passed': '{0:.2f}'.format(self.calculate_percentage(p=1, total=6)),
-                'groups_failed': '{0:.2f}'.format(self.calculate_percentage(p=2, total=6)),
-                'groups_not_corrected': '{0:.2f}'.format(self.calculate_percentage(p=3, total=6)),
-                'user_name': 'Test User'
-            })
+        self.assertEqual(response.data,
+                         {'average_grading_points_given': '1.00',
+                          'user_name': 'Test User'})
 
-    def test_single_group_passed(self):
+    def test_assignment_grading_average_sanity(self):
         period = baker.make('core.Period')
-        assignment = baker.make('core.Assignment', parentnode=period)
+        assignment = baker.make('core.Assignment', parentnode=period,
+                                max_points=50,
+                                points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS)
         relatedexaminer = baker.make('core.RelatedExaminer', period=period, user__fullname='Test User')
-        self.__make_published_group_for_relatedexaminer(assignment=assignment, relatedexaminer=relatedexaminer,
-                                                        grading_points=1)
-        response = self.make_get_request(
-            requestuser=self.make_superuser(),
-            viewkwargs={'assignment_id': assignment.id, 'relatedexaminer_id': relatedexaminer.id})
-        self.assertEqual(
-            response.data,
-            {
-                'groups_passed': '100.00',
-                'groups_failed': '0.00',
-                'groups_not_corrected': '0.00',
-                'user_name': 'Test User'
-            })
+        self.__make_group_for_relatedexaminer(assignment=assignment, relatedexaminer=relatedexaminer, grading_points=25)
 
-    def test_single_group_failed(self):
-        period = baker.make('core.Period')
-        assignment = baker.make('core.Assignment', parentnode=period)
-        relatedexaminer = baker.make('core.RelatedExaminer', period=period, user__fullname='Test User')
-        self.__make_published_group_for_relatedexaminer(assignment=assignment, relatedexaminer=relatedexaminer,
-                                                        grading_points=0)
         response = self.make_get_request(
             requestuser=self.make_superuser(),
             viewkwargs={'assignment_id': assignment.id, 'relatedexaminer_id': relatedexaminer.id})
-        self.assertEqual(
-            response.data,
-            {
-                'groups_passed': '0.00',
-                'groups_failed': '100.00',
-                'groups_not_corrected': '0.00',
-                'user_name': 'Test User'
-            })
+        self.assertEqual(response.data,
+                         {'average_grading_points_given': '25.00',
+                          'user_name': 'Test User'})
 
-    def test_single_group_not_corrected(self):
+    def test_assignment_multiple_groups_grading_average_sanity(self):
         period = baker.make('core.Period')
-        assignment = baker.make('core.Assignment', parentnode=period)
+        assignment = baker.make('core.Assignment',
+                                parentnode=period, max_points=10,
+                                points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS)
         relatedexaminer = baker.make('core.RelatedExaminer', period=period, user__fullname='Test User')
-        self.__make_unpublished_group_for_relatedexaminer(assignment=assignment, relatedexaminer=relatedexaminer)
-        response = self.make_get_request(
-            requestuser=self.make_superuser(),
-            viewkwargs={'assignment_id': assignment.id, 'relatedexaminer_id': relatedexaminer.id})
-        self.assertEqual(
-            response.data,
-            {
-                'groups_passed': '0.00',
-                'groups_failed': '0.00',
-                'groups_not_corrected': '100.00',
-                'user_name': 'Test User'
-            })
+        self.__make_group_for_relatedexaminer(assignment=assignment, relatedexaminer=relatedexaminer, grading_points=5)
+        self.__make_group_for_relatedexaminer(assignment=assignment, relatedexaminer=relatedexaminer, grading_points=10)
+        self.__make_group_for_relatedexaminer(assignment=assignment, relatedexaminer=relatedexaminer, grading_points=15)
 
-    def test_equally_many_passed_failed_not_corrected(self):
-        period = baker.make('core.Period')
-        assignment = baker.make('core.Assignment', parentnode=period)
-        relatedexaminer = baker.make('core.RelatedExaminer', period=period, user__fullname='Test User')
-        self.__make_published_group_for_relatedexaminer(assignment=assignment, relatedexaminer=relatedexaminer,
-                                                        grading_points=1)
-        self.__make_published_group_for_relatedexaminer(assignment=assignment, relatedexaminer=relatedexaminer,
-                                                        grading_points=0)
-        self.__make_unpublished_group_for_relatedexaminer(assignment=assignment, relatedexaminer=relatedexaminer)
         response = self.make_get_request(
             requestuser=self.make_superuser(),
             viewkwargs={'assignment_id': assignment.id, 'relatedexaminer_id': relatedexaminer.id})
-        self.assertEqual(
-            response.data,
-            {
-                'groups_passed': '33.33',
-                'groups_failed': '33.33',
-                'groups_not_corrected': '33.33',
-                'user_name': 'Test User'
-            })
+        self.assertEqual(response.data,
+                         {'average_grading_points_given': '10.00',
+                          'user_name': 'Test User'})
 
-    def test_relatedexaminer_no_groups_sanity(self):
+    def test_assignment_grading_average_only_for_relatedexaminer_id_passed(self):
         period = baker.make('core.Period')
-        assignment = baker.make('core.Assignment', parentnode=period)
-        relatedexaminer = baker.make('core.RelatedExaminer', period=period, user__fullname='Test User')
+        assignment = baker.make('core.Assignment',
+                                parentnode=period, max_points=10,
+                                points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS)
+        relatedexaminer1 = baker.make('core.RelatedExaminer', period=period, user__fullname='Test User 1')
+        relatedexaminer2 = baker.make('core.RelatedExaminer', period=period, user__fullname='Test User 2')
+        self.__make_group_for_relatedexaminer(
+            assignment=assignment, relatedexaminer=relatedexaminer1, grading_points=5)
+        self.__make_group_for_relatedexaminer(
+            assignment=assignment, relatedexaminer=relatedexaminer2, grading_points=10)
+
         response = self.make_get_request(
             requestuser=self.make_superuser(),
-            viewkwargs={'assignment_id': assignment.id, 'relatedexaminer_id': relatedexaminer.id})
-        self.assertEqual(
-            response.data,
-            {
-                'groups_passed': '0.00',
-                'groups_failed': '0.00',
-                'groups_not_corrected': '0.00',
-                'user_name': 'Test User'
-            })
+            viewkwargs={'assignment_id': assignment.id, 'relatedexaminer_id': relatedexaminer1.id})
+        self.assertEqual(response.data,
+                         {'average_grading_points_given': '5.00',
+                          'user_name': 'Test User 1'})

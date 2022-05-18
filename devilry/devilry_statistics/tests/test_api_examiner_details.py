@@ -5,7 +5,7 @@ from model_bakery import baker
 from devilry.apps.core.models import Assignment
 from devilry.devilry_account.models import PermissionGroup
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
-from devilry.devilry_statistics.tests.test_api import api_test_mixin
+from devilry.utils.api import api_test_mixin
 from devilry.devilry_statistics.api.assignment import examiner_details
 from devilry.devilry_group import devilry_group_baker_factories as group_baker
 
