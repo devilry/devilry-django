@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 
-from devilry.apps.core.models import AssignmentGroup, Examiner
+from devilry.apps.core.models import AssignmentGroup, Examiner, RelatedExaminer, Period
 from devilry.devilry_examiner.views.selfassign import utils as selfassign_utils
 
 
@@ -17,46 +17,79 @@ class ExaminerSelfAssignApi(APIView):
     def get(self, request, *args, **kwargs):
         raise Http404()
 
-    def examiner_can_assign(self):
-        requestuser = self.request.user
-        return True
-
-    def examiner_can_unassign(self):
-        group_is_available_to_user = selfassign_utils.assignment_groups_available_for_self_assign(
-            period=self.assignment_group.parentnode.parentnode.id,
-            user=self.request.user
-        ).exists()
-        user_is_examiner_for_group = Examiner.objects \
+    def is_assigned_to_group(self):
+        return Examiner.objects \
             .filter(
                 assignmentgroup=self.assignment_group,
-                relatedstudent__user=self.request.user) \
+                relatedexaminer__user=self.request.user) \
             .exists()
-        print(group_is_available_to_user)
-        print(user_is_examiner_for_group)
-        return group_is_available_to_user and user_is_examiner_for_group
 
     def assign_to_group(self):
-        pass
+        if not self.is_assigned_to_group():
+            relatedexaminer = RelatedExaminer.objects \
+                .filter(active=True) \
+                .get(period=self.period, user=self.request.user)
+            examiner = Examiner(assignmentgroup=self.assignment_group, relatedexaminer=relatedexaminer)
+            examiner.full_clean()
+            examiner.save()
 
     def unassign_from_group(self):
-        examiner_instance = Examiner.objects \
-            .filter(
-                assignmentgroup=self.assignment_group,
-                relatedexaminer__user=self.request.user
-            ).get()
-        examiner_instance.delete()
+        if self.is_assigned_to_group():
+            examiner = Examiner.objects \
+                .filter(
+                    assignmentgroup=self.assignment_group,
+                    relatedexaminer__user=self.request.user
+                ) \
+                .get()
+            examiner.delete()
 
     def post(self, request, *args, **kwargs):
-        time.sleep(2)
-        self.assignment_group = AssignmentGroup.objects \
-            .get(id=self.kwargs['group_id'])
+        try:
+            self.period = Period.objects \
+                .filter_active() \
+                .get(id=self.kwargs['period_id'])
+        except Period.DoesNotExist:
+            return Response(
+                status=status.HTTP_404_NOT_FOUND
+            )
 
-        action = request.data.get('action')
-        print(action)
-        if action == 'ASSIGN' and self.examiner_can_assign():
+        # Validate and get AssignmentGroup
+        group_id = request.data.get('group_id', None)
+        if group_id is None:
+            return Response(
+                {'error': 'Missing "group_id".'},
+                status=status.HTTP_400_BAD_REQUEST  
+            )
+        try:
+            self.assignment_group = selfassign_utils \
+                .assignment_groups_available_for_self_assign(
+                    period=self.period,
+                    user=self.request.user
+                ) \
+                .get(id=group_id)
+        except AssignmentGroup.DoesNotExist:
+            return Response(
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        # Validate action
+        action = request.data.get('action', None)
+        if action is None:
+            return Response(
+              {'error': 'Missing "action".'},
+              status=status.HTTP_400_BAD_REQUEST
+            )
+        if action not in ['ASSIGN', 'UNASSIGN']:
+            return Response(
+                {'error': f'Unknown action "{action}".'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Perform assign/unassign
+        if action == 'ASSIGN':
             self.assign_to_group()
-        elif action == 'UNASSIGN' and self.examiner_can_unassign():
+            return Response({'status': 'assigned'}, status=status.HTTP_200_OK)
+        elif action == 'UNASSIGN':
             self.unassign_from_group()
-
-        return Response({'status': 'assigned'}, status=status.HTTP_200_OK)
-        # return Response({'status': 'assigned'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'status': 'unassigned'}, status=status.HTTP_200_OK)
+        return Response({'error': 'Something went wrong.'}, status=status.HTTP_400_BAD_REQUEST)
