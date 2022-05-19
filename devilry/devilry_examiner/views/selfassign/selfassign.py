@@ -108,6 +108,7 @@ class SelfAssignGroupListView(listbuilderview.FilterListMixin, listbuilderview.V
         filterlist.append(devilry_listfilter.assignmentgroup.StatusRadioFilter(view=self))
         filterlist.append(devilry_listfilter.assignmentgroup.AssignmentCheckboxFilter(view=self))
         filterlist.append(devilry_listfilter.assignmentgroup.AssignedUnassignedRadioFilter(view=self))
+        filterlist.append(devilry_listfilter.assignmentgroup.ExaminerCountFilter())
 
     def get_unfiltered_queryset_for_role(self, role):
         candidatequeryset = Candidate.objects\
