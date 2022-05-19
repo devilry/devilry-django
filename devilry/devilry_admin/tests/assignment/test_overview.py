@@ -570,8 +570,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one(
                 '#devilry_admin_assignment_overview_settings_selfassign p'
             ).alltext_normalized,
-            'Examiners can not assign themselves to project groups on this assignment. As '
-            'an administrator you are able to add examiners to the projects groups.'
+            'Examiners can not assign themselves to project groups on this assignment.'
         )
         self.assertEqual(
             mockresponse.selector.one(

@@ -42,7 +42,17 @@ def assignment_groups_available_for_self_assign(period, user):
     return assignmentgroup_queryset
 
 
-def user_is_relatedexaminer_on_periods(user):
+def get_assignments_available_for_selfassign():
+    return Assignment.objects \
+        .select_related('parentnode') \
+        .filter_is_active() \
+        .filter(
+            anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF,
+            examiners_can_self_assign=True
+        )
+
+
+def selfassign_available_periods(user):
     return Period.objects \
         .filter_active() \
         .filter(
@@ -51,13 +61,12 @@ def user_is_relatedexaminer_on_periods(user):
                 .filter(active=True, user=user) \
                 .values_list('period_id', flat=True)
         ) \
+        .annotate(
+            has_assignments_with_selfassign_enabled=models.Exists(
+                get_assignments_available_for_selfassign().filter(parentnode_id=models.OuterRef('id'))
+            )
+        ) \
+        .filter(
+            has_assignments_with_selfassign_enabled=True
+        ) \
         .distinct()
-
-
-def selfassign_available_periods(user):
-    period_ids = []
-    for period in user_is_relatedexaminer_on_periods(user=user).iterator():
-        if assignment_groups_available_for_self_assign(period=period, user=user).exists():
-            period_ids.append(period.id)
-    return Period.objects.filter(id__in=period_ids)
-    

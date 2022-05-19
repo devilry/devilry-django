@@ -549,14 +549,11 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         )
         self.assertTrue(mockresponse.selector.exists('#id-devilry-examiner-selfassign-section'))
         self.assertIn(
-            'Self-assign available',
+            'Add me to assignments',
             mockresponse.selector.one('#id-devilry-examiner-selfassign-section').alltext_normalized
         )
         self.assertIn(
-            'Semesters where assigning yourself as examiner is available. '
-            'This list is available as long as there are projectgroups open '
-            'for selfassigning or you have already assigned yourself to one or '
-            'more projectgroups. Use the same flow to unassign yourself.',
+            'Semesters with assignments available for self-assign:',
             mockresponse.selector.one('#id-devilry-examiner-selfassign-section').alltext_normalized
         )
         self.assertEqual(

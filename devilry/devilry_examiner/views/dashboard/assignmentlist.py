@@ -87,12 +87,11 @@ class AssignmentListView(listbuilderview.FilterListMixin,
             .annotate_with_waiting_for_feedback_count() \
             .select_related('parentnode', 'parentnode__parentnode')
 
-    def __get_period_with_selfassignable_assignments(self):
-        return selfassign_utils.selfassign_available_periods(user=self.request.user)
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['selfassign_available_periods'] = self.__get_period_with_selfassignable_assignments()
+        context['selfassign_available_periods'] = selfassign_utils.selfassign_available_periods(
+            user=self.request.user
+        )
         return context
 
 class App(crapp.App):

@@ -27,16 +27,16 @@
                 {% endblocktrans %}
                 <ul>
                     <li>
-                        Changes are made to the semester making it unavailable to you
+                        {% trans "Changes are made to the semester" context "examiner selfassign view" %}
                     </li>
                     <li>
-                        The assignment has been unpublished
+                        {% trans "The assignment has been unpublished" context "examiner selfassign view" %}
                     </li>
                     <li>
-                        Self-assign limit of the project group has been reached
+                        {% trans "Self-assign limit of the project group has been reached" context "examiner selfassign view" %}
                     </li>
                     <li>
-                        You have been removed as an examiner from the semester
+                        {% trans "You have been removed as an examiner from the semester" context "examiner selfassign view" %}
                     </li>
                 </ul>
                 {% blocktrans trimmed with context="examiner selfassign view" %}
@@ -53,6 +53,12 @@
     {% if excluding_filters_other_than_status_is_applied %}
         <p class="cradmin-legacy-listing-no-items-message cradmin-legacy-listbuilderview-no-items-message">
             {% trans "No students found matching your filters/search." %}
+        </p>
+    {% elif total_group_count == 0 %}
+        <p>
+            {% blocktrans trimmed %}
+                No projectgroups available at this moment. This can happen if changes are made to the assignments, or the limit of examiners per projectgroup is reached.
+            {% endblocktrans %}
         </p>
     {% endif %}
 {% endblock no-items-wrapper %}

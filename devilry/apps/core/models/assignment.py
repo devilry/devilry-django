@@ -578,7 +578,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
     examiners_can_self_assign = models.BooleanField(
         default=False,
-        verbose_name=gettext_lazy('Examiners can assign themselves to the assignment?'),
+        verbose_name=gettext_lazy('Can examiners assign themselves to the assignment?'),
         help_text=gettext_lazy('Select this if you want examiners to be able to self-assign to the assignment.')
     )
     examiner_self_assign_limit = models.PositiveIntegerField(

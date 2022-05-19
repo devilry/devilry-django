@@ -47,17 +47,17 @@ class ExaminerSelfAssignGroupItemValue(devilry_listbuilder.assignmentgroup.Exami
                 'assignStatus': assign_status,
                 'assignText': pgettext(
                     'examiner selfassign group item value',
-                    'Assign'),
+                    'Add me'),
                 'assignProgressText': pgettext(
                     'examiner selfassign group item value',
-                    'Assigning'
+                    'Adding...'
                 ),
                 'unassignText': pgettext(
                     'examiner selfassign group item value',
-                    'Unassign'),
+                    'Remove me'),
                 'unassignProgressText': pgettext(
                     'examiner selfassign group item value',
-                    'Unassigning'
+                    'Removing...'
                 ),
                 'unavailableText': pgettext(
                     'examiner selfassign group item value',
