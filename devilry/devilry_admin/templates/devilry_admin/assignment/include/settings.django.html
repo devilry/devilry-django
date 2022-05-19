@@ -80,7 +80,11 @@
                 {% trans "Examiner self-assign" %}
             </h3>
             <p>
-                {% if assignment.examiners_can_self_assign %}
+                {% if assignment.is_anonymous %}
+                    {% blocktrans trimmed %}
+                        Assignment is anonymized. Examiners will not be able to self-assign.
+                    {% endblocktrans %}
+                {% elif assignment.examiners_can_self_assign %}
                     {% blocktrans trimmed with examiner_selfassign_limit=assignment.examiner_self_assign_limit %}
                         Examiners can assign themselves to project groups on this assignment. Examiner 
                         self-assign limit for each project group is set to {{ examiner_selfassign_limit }}.
@@ -89,14 +93,6 @@
                     {% blocktrans trimmed %}
                         Examiners can not assign themselves to project groups on this assignment.
                     {% endblocktrans %}
-                {% endif %}
-
-                {% if assignment.is_anonymous %}
-                    <strong>
-                        {% blocktrans trimmed %}
-                            Assignment is anonymized. Examiners will not be able to self-assign.
-                        {% endblocktrans %}
-                    </strong>
                 {% endif %}
             </p>
             <div id="devilry_admin_assignment_overview_settings_selfassign_buttons">
