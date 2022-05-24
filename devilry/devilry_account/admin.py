@@ -1,8 +1,10 @@
+import json
 from django import forms
 from django.contrib import admin
 from django.contrib.auth import models as authmodels
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from django.utils.html import format_html
 from django.utils.translation import gettext_lazy
 
 from devilry.devilry_account.models import MergedUser, PeriodUserGuidelineAcceptance, SubjectPermissionGroup, PeriodPermissionGroup
@@ -122,6 +124,27 @@ class MergedUserAdmin(admin.ModelAdmin):
         'source_user',
         'target_user',
     ]
+
+    fields = [
+        'source_user',
+        'target_user',
+        'get_summary_json_pretty',
+    ]
+
+    readonly_fields = [
+        'source_user',
+        'target_user',
+        'get_summary_json_pretty',
+    ]
+
+    @admin.display(
+        description='Summary json'
+    )
+    def get_summary_json_pretty(self, obj):
+        return format_html(
+            '<pre>{}</pre>',
+            json.dumps(obj.summary_json, indent=2, sort_keys=True)
+        )
 
 
 admin.site.register(MergedUser, MergedUserAdmin)
