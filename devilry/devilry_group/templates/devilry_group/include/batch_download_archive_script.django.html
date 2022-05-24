@@ -1,0 +1,177 @@
+{% load devilry_group_tags %}
+{% load cradmin_legacy_tags %}
+{% load i18n %}
+
+<script type="module">
+    class CSRFToken {
+        constructor () {
+            this.csrftoken = this._getCookie('csrftoken');
+        }
+
+        _getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    }
+
+    const API_STATUS_NO_FILES = 'no-files';
+    const API_STATUS_NOT_CREATED = 'not-created';
+    const API_STATUS_NOT_STARTED = 'not-started';
+    const API_STATUS_RUNNING = 'running';
+    const API_STATUS_FINISHED = 'finished';
+
+    class GroupFeedbackFeedArchiveDownload extends HTMLElement {
+        constructor () {
+            super();
+            this.rootElementId = 'groupFeedbackFeedArchiveDownloadContent-' + btoa(Math.random().toString()).substr(2, 10);
+            this.pollCount = 0;
+            this.finishedWithinSameSession = false;
+
+            // Tag-attributes
+            this.apiUrl = this.getAttribute('api-url');
+            this.startDownloadText = this.getAttribute('start-download-text');
+            this.archiveBuildInProgressText = this.getAttribute('archive-build-in-progress-text');
+            this.downloadArchiveText = this.getAttribute('download-archive-text');
+            this.ariaLabelArchiveBuildStart = this.getAttribute('aria-label-archive-build-start');
+            this.ariaLabelArchiveBuildCompleted = this.getAttribute('aria-label-archive-build-completed');
+            this.ariaLabelArchiveBuildDownload = this.getAttribute('aria-label-archive-build-download');
+
+            this.statuses = [
+                'none',
+                'not-created',
+                'not-started',
+                'running',
+                'finished'
+            ];
+        }
+
+        connectedCallback () {
+            this._requestStatusUpdate();
+        }
+
+        _requestStatusUpdate () {
+            fetch(this.apiUrl)
+            .then(response => response.json())
+            .then(responseData => {
+                this._handleApiResponse(responseData, 'GET');
+            })
+            .catch((error) => {
+                console.log(error);
+                this._handleError();
+            });
+        }
+
+        get _pollDelayMilliseconds () {
+            if (this.pollCount < 3) {
+                return 1000;
+            } else if (this.pollCount < 10) {
+                return 2000;
+            }
+            return 5000;
+        }
+
+        _handleApiResponse (responseData) {
+            this.pollCount++;
+            const status = responseData['status'];
+            if (status === API_STATUS_NO_FILES) {
+                return;
+            } else if (status === API_STATUS_NOT_CREATED) {
+                this._handleArchiveNotCreated();
+            } else if (status === API_STATUS_NOT_STARTED || status === API_STATUS_RUNNING) {
+                this._handleArchiveBuilding();
+                window.setTimeout(() => {
+                    this._requestStatusUpdate();
+                }, this._pollDelayMilliseconds);
+            } else if (status === API_STATUS_FINISHED) {
+                this._handleArchiveReadyForDownload(responseData['download_link'])
+            }
+        }
+
+        _removeCurrentDownloadElementNode () {
+            const childNode = document.getElementById(this.rootElementId)
+            if (childNode !== null) {
+                this.removeChild(childNode);
+            }
+        }
+
+        _handleError () {
+            const progressNodeElement = new DOMParser().parseFromString(`
+                <div class="alert alert-warning">
+                    <p>ERROR</p>
+                </div>
+            `, 'text/html').body.firstChild;
+            this._removeCurrentDownloadElementNode();
+            this.appendChild(errorWarning);
+        }
+
+        _handleArchiveNotCreated () {            
+            const button = new DOMParser().parseFromString(`
+                <button id=${this.rootElementId} class="btn btn-default" type="button" aria-label="${this.ariaLabelArchiveBuildStart}">
+                    ${this.startDownloadText}
+                </button>
+            `, 'text/html').body.firstChild;
+
+            button.addEventListener('click', (e) => {
+                fetch(this.apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': new CSRFToken().csrftoken
+                    }
+                })
+                .then(response => response.json())
+                .then((responseData) => {
+                    this.finishedWithinSameSession = true;
+                    this._handleApiResponse(responseData);
+                })
+                .catch((error) => {
+                    console.error(error);
+                    this._handleError();
+                })
+            });
+            this._removeCurrentDownloadElementNode();
+            this.appendChild(button);
+        }
+
+        _handleArchiveBuilding () {
+            const progressNodeElement = new DOMParser().parseFromString(`
+                <span id=${this.rootElementId}>
+                    <span class="fa fa-spinner fa-spin" aria-hidden="true"></span>
+                    <p class="text-muted">
+                        ${this.archiveBuildInProgressText}
+                    </p>
+                </span>
+            `, 'text/html').body.firstChild;
+            this._removeCurrentDownloadElementNode();
+            this.appendChild(progressNodeElement);
+        }
+
+        _handleArchiveReadyForDownload (downloadUrl) {
+            const downloadLink = new DOMParser().parseFromString(`
+                <a 
+                    id="${this.rootElementId}"
+                    href="${downloadUrl}"
+                    aria-label="${this.finishedWithinSameSession ? this.ariaLabelArchiveBuildCompleted : this.ariaLabelArchiveBuildDownload}"
+                    class="btn btn-default"
+                >
+                    ${this.downloadArchiveText}
+                </a>
+            `, 'text/html').body.firstChild;
+            this._removeCurrentDownloadElementNode();
+            this.appendChild(downloadLink);
+        }
+    }
+
+    window.customElements.define('group-feedbackfeed-archivedownload', GroupFeedbackFeedArchiveDownload);
+</script>

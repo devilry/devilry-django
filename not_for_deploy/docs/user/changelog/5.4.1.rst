@@ -1,0 +1,11 @@
+.. _5.4.1changelog:
+
+############################
+What is new in Devilry 5.4.1
+############################
+
+
+Fixes
+#####
+
+- Moment JS: Ensure locale-setting is not set for default language (en). This is handled when updating the template context.

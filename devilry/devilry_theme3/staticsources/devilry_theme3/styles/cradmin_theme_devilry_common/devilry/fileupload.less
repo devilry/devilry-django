@@ -1,0 +1,227 @@
+.devilry-fileupload {  
+  .devilry-fileupload-content {
+    padding: 0;
+    background: @cradmin-bulkfileupload-bg;
+
+    .devilry-fileupload-dropbox {
+      background: @cradmin-bulkfileupload-dropbox-bg;
+      color: @cradmin-bulkfileupload-dropbox-color;
+      font-weight: @cradmin-bulkfileupload-dropbox-font-weight;
+      font-size: @cradmin-bulkfileupload-dropbox-font-size;
+      padding: @cradmin-bulkfileupload-dropbox-padding;
+      height: @cradmin-bulkfileupload-dropbox-height;
+      text-align: @cradmin-bulkfileupload-dropbox-text-align;
+      border-style: @cradmin-bulkfileupload-dropbox-border-style;
+      border-color: @cradmin-bulkfileupload-dropbox-border-color;
+      border-width: @cradmin-bulkfileupload-dropbox-border-width;
+      margin-bottom: 10px;
+
+      .devilry-fileupload-dropbox-invalid-filetype-errormessage {
+        display: none;
+      }
+
+      .devilry-fileupload-dropbox-text {
+        position: relative;
+        top: 50%;
+        .css3-transform(translateY(-50%));
+
+        // p.devilry-fileupload-advanced-fileselectbutton-wrapper {
+        //   text-align: center;
+        //   margin-bottom: 10px;
+        //   .devilry-fileupload-advanced-fileselectbutton {
+        //     display: inline-block;
+        //     color: @cradmin-bulkfileupload-advanced-fileselectbutton-color;
+        //     &:hover {
+        //       color: @cradmin-bulkfileupload-advanced-fileselectbutton-hover-color;
+        //     }
+        //   }
+        // }
+      }
+
+      &.devilry-fileupload-dropbox-dragover {
+        background: @cradmin-bulkfileupload-dropbox-dragover-bg;
+        color: @cradmin-bulkfileupload-dropbox-dragover-color;
+        border-style: @cradmin-bulkfileupload-dropbox-dragover-border-style;
+        border-color: @cradmin-bulkfileupload-dropbox-dragover-border-color;
+        .devilry-fileupload-dropbox-text {
+          p.devilry-fileupload-advanced-fileselectbutton-wrapper {
+            display: none;
+          }
+        }
+      }
+      &.devilry-fileupload-dropbox-dragover-error {
+        background: @cradmin-bulkfileupload-dropbox-dragover-error-bg;
+        color: @cradmin-bulkfileupload-dropbox-dragover-error-color;
+        border-style: @cradmin-bulkfileupload-dropbox-dragover-error-border-style;
+        border-color: @cradmin-bulkfileupload-dropbox-dragover-error-border-color;
+        .devilry-fileupload-dropbox-invalid-filetype-errormessage {
+          display: block;
+        }
+        .devilry-fileupload-dropbox-text {
+          display: none;
+        }
+      }
+    }
+
+    p.devilry-fileupload-simple-button-wrapper {
+      padding: @cradmin-bulkfileupload-simple-button-wrapper-padding;
+      margin: 0;
+      .btn.devilry-fileupload-simple-button {
+        padding: @cradmin-bulkfileupload-simple-button-padding;
+      }
+    }
+
+  }
+
+  .devilry-fileupload-queue {
+    margin-bottom: 20px;
+
+    .devilry-fileupload-queue-item {
+      background: #f5f5f5;
+      color: @cradmin-bodycolor;
+      font-size: @font-size-base;
+      margin: 0 0 10px 0;
+      // padding: 7px 10px;
+      padding: 0;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+
+      .devilry-fileupload-iteminfo {
+        flex: 0 1 auto;
+        padding: 7px 10px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;  
+        .devilry-fileupload-filestatus {
+          display: inline-block;
+          background: @alert-info-bg;
+          color: @alert-info-text;
+          font-size: 14px;
+          text-transform: uppercase;
+          padding: 3px 5px;
+          margin-right: 6px;
+        }
+        .devilry-fileupload-itemdetails {
+          .devilry-fileupload-filename {
+            word-break: break-all;
+          }
+          .devilry-fileupload-errormessage {
+            display: none;
+          }
+        }
+      }
+
+      .devilry-fileupload-queue-removeitem {
+        flex: 0 0 auto;
+        margin: 0;
+        width: 55px;
+        align-self: stretch;
+        display: none;
+        background: @cradmin-bulkfileupload-progress-item-remove-file-button-bg;
+        color: @cradmin-bulkfileupload-progress-item-remove-file-button-color;
+        &:hover {
+          background: @cradmin-bulkfileupload-progress-item-remove-file-button-hover-bg;
+          color: @cradmin-bulkfileupload-progress-item-remove-file-button-hover-color;
+        }
+      }
+
+      &.devilry-fileupload-queue-item--upload-failed {
+        background: @alert-danger-bg;
+        color: @cradmin-bulkfileupload-progress-item-error-color;
+
+        .devilry-fileupload-iteminfo {
+          .devilry-fileupload-filestatus {
+            background: @alert-danger-bg;
+            color: @alert-danger-text;  
+          }  
+          .devilry-fileupload-itemdetails {
+            .devilry-fileupload-errormessage {
+              display: block;
+              margin-top: 8px;
+            }
+          }
+        }
+        
+        .devilry-fileupload-queue-removeitem {
+          display: inline-block;
+          font-size: 20px;
+          background: shade(@alert-danger-bg, 15%);
+          color: @alert-danger-text;
+          &:hover {
+            color: @cradmin-bulkfileupload-progress-item-error-closebutton-hover-color;
+            background: tint(@alert-danger-bg, 5%);
+          }
+        }
+      }
+
+      &.devilry-fileupload-queue-item--upload-success {
+        .devilry-fileupload-iteminfo {
+          .devilry-fileupload-filestatus {
+            background: @alert-success-bg;
+            color: @alert-success-text;  
+          }
+        }  
+        .devilry-fileupload-queue-removeitem {
+          display: inline-block;
+        }
+      }
+
+      // &.devilry-fileupload-errorparagraph {
+      //   background: @alert-danger-bg;
+      //   color: @cradmin-bulkfileupload-progress-item-error-color;
+
+      //   .devilry-fileupload-error-closebutton {
+      //     font-size: 20px;
+      //     color: @cradmin-bulkfileupload-progress-item-remove-file-button-color;
+      //     &:hover {
+      //       color: @cradmin-bulkfileupload-progress-item-error-closebutton-hover-color;
+      //     }
+      //   }
+      // }
+    }
+  }
+
+  // .devilry-fileupload-queue {
+  //   background: @cradmin-bulkfileupload-bg;
+  //   p.devilry-fileupload-queue-item {
+  //     color: @cradmin-bulkfileupload-progress-item-color;
+  //     background: @cradmin-bulkfileupload-progress-item-bg;
+
+  //     .devilry-fileupload-remove-file-button {
+  //       background: @cradmin-bulkfileupload-progress-item-remove-file-button-bg;
+  //       color: @cradmin-bulkfileupload-progress-item-remove-file-button-color;
+  //       &:hover {
+  //         background: @cradmin-bulkfileupload-progress-item-remove-file-button-hover-bg;
+  //         color: @cradmin-bulkfileupload-progress-item-remove-file-button-hover-color;
+  //       }
+  //     }
+  //   }
+  // }
+
+  // .devilry-fileupload-rejectedfiles {
+  //   background: @alert-danger-bg;
+  //   .devilry-fileupload-rejectedfile {
+  //     color: @alert-danger-text;
+  //     .devilry-fileupload-error-closebutton {
+  //       background: shade(@alert-danger-bg, 5%);
+  //       color: tint(@alert-danger-text, 5%);
+  //       &:hover {
+  //         background: shade(@alert-danger-bg, 12%);
+  //         color: tint(@alert-danger-text, 12%);
+  //       }
+  //     }
+  //   }
+  // }
+
+  .devilry-fileupload-fileselect-wrapper {
+    text-align: center;
+    .devilry-fileupload-fileselect-label {
+    }
+    .devilry-fileupload-fileselect-input {
+      display: none;
+    }
+  }
+}

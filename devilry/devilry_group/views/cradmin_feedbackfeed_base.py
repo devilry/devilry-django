@@ -8,17 +8,18 @@ from crispy_forms import layout
 from django import forms
 from django.contrib import messages
 from django.core.exceptions import ValidationError
+from django.template.response import TemplateResponse
 from django.urls import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template.loader import render_to_string
 from django.utils import timezone
-from django.utils.translation import gettext_lazy
+from django.utils.translation import gettext_lazy, gettext, pgettext, get_language
 from cradmin_legacy.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
 from cradmin_legacy.viewhelpers import create
 
 from devilry.apps.core.models import Assignment
+from devilry.devilry_account.models import PeriodUserGuidelineAcceptance
 from devilry.devilry_comment import models as comment_models
-from devilry.devilry_cradmin import devilry_acemarkdown
 from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_sidebar
 from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_timeline
 from devilry.devilry_group import models as group_models
@@ -26,6 +27,7 @@ from devilry.devilry_group.feedbackfeed_builder import builder_base
 from devilry.devilry_group.feedbackfeed_builder import feedbackfeed_sidebarbuilder
 from devilry.devilry_group.feedbackfeed_builder import feedbackfeed_timelinebuilder
 from devilry.utils import datetimeutils
+from devilry.devilry_comment.editor_widget import DevilryMarkdownWidget
 
 
 class GroupCommentForm(forms.ModelForm):
@@ -114,14 +116,49 @@ class FeedbackFeedBaseView(create.CreateView):
             return e.message
         return None
 
+    def handle_guidelines_post(self):
+        PeriodUserGuidelineAcceptance.objects.mark_guidelines_as_accepted(
+            user=self.request.user,
+            period=self.assignment_group.period,
+            devilryrole=self.get_devilryrole()
+        )
+        return HttpResponseRedirect(self.request.get_full_path())
+
     def post(self, request, *args, **kwargs):
+        if self.request.POST.get('has_read_assignment_guidelines'):
+            return self.handle_guidelines_post()
         disable_comment_form_message = self.__should_disable_comment_form(request=request)
         if disable_comment_form_message:
             messages.warning(request=request, message=disable_comment_form_message)
             return HttpResponseRedirect(request.path_info)
         return super(FeedbackFeedBaseView, self).post(request=request, *args, **kwargs)
 
+    def render_guidelines_form(self, guidelines_dict: dict) -> HttpResponse:
+        assignment = self.__get_assignment()
+        group = self.assignment_group
+
+        return TemplateResponse(
+            request=self.request,
+            template='devilry_group/feedbackfeed_guidelines.django.html',
+            context={
+                'devilry_ui_role': self.get_devilryrole(),
+                'group': group,
+                'subject': assignment.period.subject,
+                'period': assignment.period,
+                'guidelines_dict': guidelines_dict.get(get_language(), guidelines_dict.get('__default__', {})),
+                'assignment': assignment,
+            },
+            using=self.template_engine
+        )
+
     def get(self, request, *args, **kwargs):
+        guidelines_dict = PeriodUserGuidelineAcceptance.objects.get_guidelines_if_not_accepted(
+            user=self.request.user,
+            period=self.assignment_group.period,
+            devilryrole=self.get_devilryrole()
+        )
+        if guidelines_dict:
+            return self.render_guidelines_form(guidelines_dict=guidelines_dict)
         self.form_disabled_message = self.__should_disable_comment_form(request=request)
         return super(FeedbackFeedBaseView, self).get(request=request, *args, **kwargs)
 
@@ -366,19 +403,55 @@ class FeedbackFeedBaseView(create.CreateView):
                 layout.HTML(render_to_string(
                     'devilry_group/include/fileupload.django.html',
                     {
-                        "apiparameters": quoteattr(json.dumps({
-                            "autosubmit": False,
-                            "uploadapiurl": reverse('cradmin_temporary_file_upload_api'),
-                            "unique_filenames": True,
-                            "max_filename_length": comment_models.CommentFile.MAX_FILENAME_LENGTH,
-                            "errormessage503": "Server timeout while uploading the file. "
-                                               "This may be caused by a poor upload link and/or a too large file.",
-                            "apiparameters": {
-                                "singlemode": False,
-                            },
-                        })),
-                        "hiddenfieldname": "temporary_file_collection_id",
-
+                        "attributes": ' '.join(
+                            f'{key}={quoteattr(value)}'
+                            for key, value in {
+                                "hiddenFieldName": "temporary_file_collection_id",
+                                "id": "id_temporary_file_upload_component",
+                                "idPrefix": "id_temporary_file_upload",
+                                "uploadApiUrl": reverse('cradmin_temporary_file_upload_api'),
+                                "labelDragDropHelp": gettext(
+                                    'Upload files by dragging and dropping them here'
+                                ),
+                                "labelUploadFilesButton": gettext(
+                                    '... or select files'
+                                ),
+                                "screenReaderLabelUploadFilesButton": gettext(
+                                    'Select files for upload'
+                                ),
+                                "screenReaderFilesQueuedMessage": gettext(
+                                    'Files queued for upload:'
+                                ),
+                                "screenReaderFilesQueueHowtoMessage": gettext(
+                                    'You can browse the upload queue and check upload status further down on the page.'  # TODO: Landmark?
+                                ),
+                                "labelInvalidFileType": gettext(
+                                    'Invalid filetype'
+                                ),
+                                "uploadStatusUploading": pgettext('devilry_fileupload', 'Uploading'),
+                                "uploadStatusSuccess": pgettext('devilry_fileupload', 'Uploaded'),
+                                "uploadStatusFailed": pgettext('devilry_fileupload', 'Failed'),
+                                "uploadStatusDeleting": pgettext('devilry_fileupload', 'Deleting'),
+                                "uploadStatusDeleteFailed": pgettext('devilry_fileupload', 'Delete failed, try again'),
+                                "uploadStatusLabel": pgettext('devilry_fileupload', 'Upload status:'),
+                                "closeErrorLabel": pgettext('devilry_fileupload', 'Dismiss/close error message'),
+                                "removeFileLabel": pgettext('devilry_fileupload', 'Remove file'),
+                                "maxFilenameLength": str(comment_models.CommentFile.MAX_FILENAME_LENGTH),
+                                "maxFilenameLengthErrorMessage": gettext('Filename is too long. Please use file names shorter than %(max_filename_length)s characters.') % {
+                                    'max_filename_length': comment_models.CommentFile.MAX_FILENAME_LENGTH
+                                },
+                                "errorMessage503": gettext(
+                                    'Server timeout while uploading the file. '
+                                    'This may be caused by a poor upload link and/or a too large file.'),
+                                "errorMessageUnknown": gettext(
+                                    'Unknown error. May be a server glitch or a bug. Please try again, and '
+                                    'report the error if it happens multiple times.'),
+                                "deleteFileFailedMessage": gettext(
+                                    'We could not delete the file. This may be a server glitch or bug. Please try again, '
+                                    'and report if the error happens multiple times.'
+                                )
+                            }.items()
+                        )
                     })),
                 # css_class='panel-footer'
             ))
@@ -394,13 +467,13 @@ class FeedbackFeedBaseView(create.CreateView):
                 css_class='comment-form-container'
             )
         ]
-
-    def get_acemarkdown_widget_class(self):
-        return devilry_acemarkdown.Default
+    
+    def get_markdown_widget_class(self):
+        return DevilryMarkdownWidget
 
     def get_form(self, form_class=None):
         form = super(FeedbackFeedBaseView, self).get_form(form_class=form_class)
-        form.fields['text'].widget = self.get_acemarkdown_widget_class()()
+        form.fields['text'].widget = self.get_markdown_widget_class()(request=self.request)
         form.fields['text'].label = False
         form.fields['temporary_file_collection_id'] = forms.IntegerField(required=False)
         return form

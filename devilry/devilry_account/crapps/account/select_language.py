@@ -1,9 +1,10 @@
-import pycountry as pycountry
+# import pycountry as pycountry
 from django.conf import settings
 from django.http import HttpResponseRedirect, Http404
 from django.utils import translation
 from django.views.generic import TemplateView
 
+from devilry.devilry_account.crapps.account import utils
 from devilry.devilry_account.models import User
 
 
@@ -14,14 +15,7 @@ class LanguageInfo(object):
         self.language = language or self.__get_language()
 
     def __get_language(self):
-        try:
-            if len(self.languagecode) == 2:
-                return pycountry.languages.get(alpha_2=self.languagecode).name
-            elif len(self.languagecode) == 3:
-                return pycountry.languages.get(alpha_3=self.languagecode).name
-        except Exception:
-            return self.languagecode
-        return self.languagecode
+        return utils.get_language_name(languagecode=self.languagecode)
 
 
 class SelectLanguageView(TemplateView):

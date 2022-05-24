@@ -1,0 +1,69 @@
+{% extends "cradmin_legacy/viewhelpers/listbuilderview/filterlist-right.django.html" %}
+{% load i18n %}
+{% load cradmin_legacy_tags %}
+
+{% block pageheader-inner %}
+    {{ block.super }}
+{% endblock pageheader-inner %}
+
+
+{% block listbuilderview_buttons %}
+    {{ block.super }}
+{% endblock %}
+
+
+{% block content %}
+    <div class="container">
+        <div class="devilry-dashboard-container">
+            <p>
+                <strong>
+                    {% trans "Regarding groups being unavailable for assign/unassign" context "examiner selfassign view" %}
+                </strong>
+            </p>
+            <p>
+                {% blocktrans trimmed with context="examiner selfassign view" %}
+                    When you assign to/unassign from a project group, the assign/unassign button may show an "UNAVAILABLE" message. 
+                    There are multiple reasons for this happening, and some of them are:
+                {% endblocktrans %}
+                <ul>
+                    <li>
+                        {% trans "Changes are made to the semester" context "examiner selfassign view" %}
+                    </li>
+                    <li>
+                        {% trans "The assignment has been unpublished" context "examiner selfassign view" %}
+                    </li>
+                    <li>
+                        {% trans "Self-assign limit of the project group has been reached" context "examiner selfassign view" %}
+                    </li>
+                    <li>
+                        {% trans "You have been removed as an examiner from the semester" context "examiner selfassign view" %}
+                    </li>
+                </ul>
+                {% blocktrans trimmed with context="examiner selfassign view" %}
+                    If this happens, please reload the page. If this issue persists for the same project groups, please contact support.
+                {% endblocktrans %}
+            </p>
+        </div>
+    </div>
+    {{ block.super }}
+{% endblock content %}
+
+
+{% block no-items-wrapper %}
+    {% if excluding_filters_other_than_status_is_applied %}
+        <p class="cradmin-legacy-listing-no-items-message cradmin-legacy-listbuilderview-no-items-message">
+            {% trans "No students found matching your filters/search." %}
+        </p>
+    {% elif total_group_count == 0 %}
+        <p>
+            {% blocktrans trimmed %}
+                No projectgroups available at this moment. This can happen if changes are made to the assignments, or the limit of examiners per projectgroup is reached.
+            {% endblocktrans %}
+        </p>
+    {% endif %}
+{% endblock no-items-wrapper %}
+
+{% block end-of-body %}
+    {{ block.super }}
+    {% include "devilry_theme3/include/devilry_all_js.django.html" %}
+{% endblock end-of-body %}

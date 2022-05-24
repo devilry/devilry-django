@@ -78,6 +78,39 @@ DEVILRY_DEFAULT_EMAIL_USERNAME_SUFFIX = None
 
 DEFAULT_DEADLINE_HANDLING_METHOD = 0
 
+#: Maps devilryrole to assignment guidelines. What guidelines to show is matched using regex (re.fullmatch).
+#:
+#: Example::
+#:
+#:    DEVILRY_ASSIGNMENT_GUIDELINES = {
+#:        'student': [
+#:            (r'duck10.+', {
+#:                '__default__': {
+#:                    'htmltext': 'This is the assignment guidelines for inf10xx courses.',
+#:                    'url': 'http://example.com'
+#:                },
+#:               'nb': {
+#:                    'htmltext': 'Dette er retningslinjene for oppgaver i inf10xx kurs',
+#:                    'url': 'http://example.com'
+#:                }
+#:            }),
+#:            (r'duck11.+', {
+#:                '__default__': {
+#:                    'htmltext': 'This is the assignment guidelines for inf11xx courses.',
+#:                    'url': 'http://example.com'
+#:                },
+#:                'nb': {
+#:                    'htmltext': 'Dette er retningslinjene for oppgaver i inf11xx kurs',
+#:                    'url': 'http://example.com'
+#:                }
+#:            })
+#:        ]
+#:    }
+#:
+#: You can test the regexes using ``python manage.py devilry_show_assignment_guidelines``.
+DEVILRY_ASSIGNMENT_GUIDELINES = {}
+
+
 
 #: Url where users are directed when they do not have the permissions they believe they should have.
 DEVILRY_LACKING_PERMISSIONS_URL = None

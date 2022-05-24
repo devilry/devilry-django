@@ -5,7 +5,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.utils.translation import gettext_lazy
 
-from devilry.devilry_account.models import MergedUser, SubjectPermissionGroup, PeriodPermissionGroup
+from devilry.devilry_account.models import MergedUser, PeriodUserGuidelineAcceptance, SubjectPermissionGroup, PeriodPermissionGroup
 from devilry.devilry_account.models import User, UserEmail, UserName, PermissionGroup, PermissionGroupUser
 
 
@@ -309,3 +309,45 @@ class UserNameAdmin(admin.ModelAdmin):
 
 
 admin.site.register(UserName, UserNameAdmin)
+
+
+
+class PeriodUserGuidelineAcceptanceAdmin(admin.ModelAdmin):
+    readonly_fields = [
+        'user',
+        'period',
+        'devilryrole',
+        'accepted_datetime',
+        'guidelines_version',
+        'matched_regex',
+    ]
+    search_fields = [
+        '=period__short_name',
+        '=period__id',
+        '=period__parentnode__short_name',
+        '=period__parentnode__id',
+        '=user__shortname',
+    ]
+    list_display = [
+        'user',
+        'period',
+        'devilryrole',
+        'accepted_datetime',
+        'guidelines_version',
+        'matched_regex',
+    ]
+    list_filter = [
+        'accepted_datetime',
+        'devilryrole',
+        'matched_regex',
+        'guidelines_version',
+    ]
+
+    def has_change_permission(self, *args, **kwargs) -> bool:
+        return False
+
+    def has_add_permission(self, *args, **kwargs) -> bool:
+        return False
+
+
+admin.site.register(PeriodUserGuidelineAcceptance, PeriodUserGuidelineAcceptanceAdmin)

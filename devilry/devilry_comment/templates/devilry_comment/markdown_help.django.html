@@ -1,0 +1,236 @@
+{% extends "cradmin_legacy/base.django.html" %}
+{% load i18n %}
+{% load cradmin_legacy_tags %}
+
+{% block title %}
+    {% trans "Markdown help" %}
+{% endblock title %}
+
+{% block pageheader-inner %}
+    <h1>{% trans "Markdown help" %}</h1>
+{% endblock pageheader-inner %}
+
+{% block content %}
+    <div class="container">
+        <nav role="doc-toc">
+            <h2 id="contents">
+                {% trans "Contents" %}
+            </h2>
+            <ol>
+                <li>
+                    <a href="#heading">
+                        {% trans "Heading" %}
+                    </a>
+                </li>
+                <li>
+                    <a href="#styling-text">
+                        {% trans "Styling text" %}
+                    </a>
+                    <ol>
+                        <li>
+                            <a href="#styling-text-bold">
+                                {% trans "Bold" %}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#styling-text-bold">
+                                {% trans "Italic" %}
+                            </a>
+                        </li>
+                    </ol>
+                </li>
+                <li>
+                    <a href="#link">
+                        {% trans "Link" %}
+                    </a>
+                </li>
+                <li>
+                    <a href="#code">
+                        {% trans "Code" %}
+                    </a>
+                </li>
+                <li>
+                    <a href="#lists">
+                        {% trans "Lists" %}
+                    </a>
+                </li>
+                <li>
+                    <a href="#nested-lists">
+                        {% trans "Nested lists" %}
+                    </a>
+                </li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="container">
+        <h2 id="heading">
+            {% trans "Heading" %}
+        </h2>
+        <p>
+            {% blocktranslate trimmed %}
+                To create a heading, add one or more # symbols before your heading text. 
+                The number of # symbols will determine the heading size. One # symbol is 
+                the largest heading, and six # symbols is the smallest heading.
+            {% endblocktranslate %}
+        </p>
+        <p>
+            {% trans "Example heading level 1" %}:
+        </p>
+        <pre style="white-space: pre-line;">
+            # Heading 1
+        </pre>
+        <p>
+            {% trans "Example heading level 3" %}:
+        </p>
+        <pre style="white-space: pre-line;">
+            ### Heading 3
+        </pre>
+    </div>
+
+    <div class="container">
+        <h2 id="styling-text">
+            {% trans "Styling text" %}
+        </h2>
+        <p>
+            {% blocktranslate trimmed %}
+                You can style simple words or sentences with inlined bold or italic styling.   
+            {% endblocktranslate %}
+        </p>
+        <h3 id="styling-text-bold">
+            {% trans "Bold" %}
+        </h3>
+        <p>
+            {% blocktranslate trimmed %}
+                Add two * symbols before and after the text you want bold formatting for.
+            {% endblocktranslate %}
+        </p>
+        <p>
+            {% trans "Example" %}:
+        </p>
+        <pre style="white-space: pre-line;">
+            **Bold text**
+        </pre>
+        <h3 id="styling-text-italic">
+            {% trans "Italic" %}
+        </h3>
+        <p>
+            {% blocktranslate trimmed %}
+                Add one _ symbol before and after the text you want italic formatting for.
+            {% endblocktranslate %}
+        </p>
+        <p>
+            {% trans "Example" %}:
+        </p>
+        <pre style="white-space: pre-line;">
+            _Italic text_
+        </pre>
+    </div>
+
+    <div class="container">
+        <h2 id="link">
+            {% trans "Link" %}
+        </h2>
+        <p>
+            {% blocktranslate trimmed %}
+                To format links, add a starting bracket symbol and a closing bracket symbol encapsulating the link-text. 
+                Directly follow this with a starting parantheses symbol and a closing parantheses symbol encapsulating the actual 
+                link address.
+            {% endblocktranslate %}
+        </p>
+        <p>
+            {% trans "Example" %}:
+        </p>
+        <pre style="white-space: pre-line;">
+            [My link text](https://www.devilry.test)
+        </pre>
+    </div>
+
+    <div class="container">
+        <h2 id="code">
+            {% trans "Code" %}
+        </h2>
+        <p>
+            {% blocktranslate trimmed %}
+                Mark a short snippet of text to call it out as code with single backticks. The text encapsulated by the 
+                backticks will be formatted as a inline piece of code.
+            {% endblocktranslate %}
+        </p>
+        <p>
+            {% trans "Example" %}:
+        </p>
+        <pre style="white-space: pre-line;">
+            `ls -l`
+        </pre>
+        <p>
+            {% blocktranslate trimmed %}
+                To format code or text into its own distinct block, use three backticks instead.
+            {% endblocktranslate %}
+        </p>
+        <p>
+            {% trans "Example" %}:
+        </p>
+        <pre style="white-space: pre-line;">
+            ```
+            ls -l
+            cd /some/folder
+            ls -l
+            ````
+        </pre>
+    </div>
+
+    <div class="container">
+        <h2 id="lists">
+            {% trans "Lists" %}
+        </h2>
+        <p>
+            {% blocktranslate trimmed %}
+                Make an unordered list by preceding one or more lines of text with * symbol.
+            {% endblocktranslate %}
+        </p>
+        <p>
+            {% trans "Example" %}:
+        </p>
+        <pre style="white-space: pre-line;">
+            - List item 1
+            - List item 2
+            - List item 3
+        </pre>
+        <p>
+            {% blocktranslate trimmed %}
+                If you want to order a list, precede each line with a number.
+            {% endblocktranslate %}
+        </p>
+        <p>
+            {% trans "Example" %}:
+        </p>
+        <pre style="white-space: pre-line;">
+            1. List item 1
+            2. List item 2
+            3. List item 3
+        </pre>
+    </div>
+
+    <div class="container">
+        <h2 id="nested-lists">
+            {% trans "Nested lists" %}
+        </h2>
+        <p>
+            {% blocktranslate trimmed %}
+                A nested list can be created by indenting one or more list items below another item with 4 spaces.
+            {% endblocktranslate %}
+        </p>
+        <p>
+            {% trans "Example" %}:
+        </p>
+        <pre style="white-space: pre-line;">
+            1. List item 1
+            &nbsp;&nbsp;&nbsp;&nbsp;* Nested item 1
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Nested item 2
+        </pre>
+    </div>
+{% endblock content %}
+
+{% block devilry_footer %}
+    {% include "devilry_deploy/frontpage_footer.django.html" %}
+{% endblock devilry_footer %}

@@ -11,6 +11,7 @@ from cradmin_legacy import cradmin_testhelpers
 from model_bakery import baker
 
 from devilry.apps.core import models as core_models
+from devilry.devilry_account.models import PeriodUserGuidelineAcceptance
 from devilry.devilry_comment import models as comment_models
 from devilry.devilry_compressionutil.models import CompressedArchiveMeta
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
@@ -44,6 +45,170 @@ class TestFeedbackfeedStudent(TestCase, mixin_feedbackfeed_common.MixinTestFeedb
         self.assertEqual(mockresponse.selector.one('title').alltext_normalized,
                           candidate.assignment_group.assignment.get_path())
         self.assertEqual(1, group_models.FeedbackSet.objects.count())
+
+    @override_settings(
+        DEVILRY_ASSIGNMENT_GUIDELINES = {
+            'student': [
+                (r'subject11.+', {
+                    '__version__': '1',
+                    '__default__': {
+                        'htmltext': 'This is the assignment guidelines for inf10xx courses.',
+                        'url': 'http://example.com'
+                    },
+                }),
+            ]
+        }
+    )
+    def test_get_assignment_guidelines_not_accepted(self):
+        candidate = baker.make('core.Candidate',
+                               assignment_group__parentnode=baker.make(
+                                    'core.Assignment',
+                                    parentnode__short_name='period0001',
+                                    parentnode__parentnode__short_name='subject1100'
+                               ),
+                               relatedstudent=baker.make('core.RelatedStudent'))
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
+                                                          requestuser=candidate.relatedstudent.user)
+        self.assertEqual(mockresponse.selector.one('title').alltext_normalized,
+                          candidate.assignment_group.assignment.get_path())
+        self.assertTrue(mockresponse.selector.exists('#id_assignment_guidelines_text'))
+        self.assertIn(
+            'This is the assignment guidelines for inf10xx courses.',
+            mockresponse.selector.one('#id_assignment_guidelines_text').alltext_normalized)
+        self.assertEqual(
+            mockresponse.selector.one('#id_assignment_guidelines_link').get('href'),
+            'http://example.com')
+
+    @override_settings(
+        DEVILRY_ASSIGNMENT_GUIDELINES = {
+            'student': [
+                (r'subject11.+', {
+                    '__version__': '1',
+                    '__default__': {
+                        'htmltext': 'This is the assignment guidelines for inf10xx courses.',
+                        'url': 'http://example.com'
+                    },
+                }),
+            ]
+        }
+    )
+    def test_get_assignment_guidelines_already_accepted(self):
+        candidate = baker.make('core.Candidate',
+                               assignment_group__parentnode=baker.make(
+                                    'core.Assignment',
+                                    parentnode__short_name='period0001',
+                                    parentnode__parentnode__short_name='subject1100'
+                               ),
+                               relatedstudent=baker.make('core.RelatedStudent'))
+        baker.make(
+            'devilry_account.PeriodUserGuidelineAcceptance',
+            user=candidate.relatedstudent.user,
+            period=candidate.assignment_group.parentnode.period,
+            devilryrole='student',
+            guidelines_version='1')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
+                                                          requestuser=candidate.relatedstudent.user)
+        self.assertFalse(mockresponse.selector.exists('#id_assignment_guidelines_text'))
+
+    @override_settings(
+        DEVILRY_ASSIGNMENT_GUIDELINES = {
+            'student': [
+                (r'subject11.+', {
+                    '__version__': '2',
+                    '__default__': {
+                        'htmltext': 'This is the assignment guidelines for inf10xx courses.',
+                        'url': 'http://example.com'
+                    },
+                }),
+            ]
+        }
+    )
+    def test_get_assignment_guidelines_already_accepted_wrong_version(self):
+        candidate = baker.make('core.Candidate',
+                               assignment_group__parentnode=baker.make(
+                                    'core.Assignment',
+                                    parentnode__short_name='period0001',
+                                    parentnode__parentnode__short_name='subject1100'
+                               ),
+                               relatedstudent=baker.make('core.RelatedStudent'))
+        baker.make(
+            'devilry_account.PeriodUserGuidelineAcceptance',
+            user=candidate.relatedstudent.user,
+            period=candidate.assignment_group.parentnode.period,
+            devilryrole='student',
+            guidelines_version='1')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
+                                                          requestuser=candidate.relatedstudent.user)
+        self.assertTrue(mockresponse.selector.exists('#id_assignment_guidelines_text'))
+
+    @override_settings(
+        DEVILRY_ASSIGNMENT_GUIDELINES = {
+            'student': [
+                (r'subject11.+', {
+                    '__version__': '1',
+                    '__default__': {
+                        'htmltext': 'This is the assignment guidelines for inf10xx courses.',
+                        'url': 'http://example.com'
+                    },
+                }),
+            ]
+        }
+    )
+    def test_get_assignment_guidelines_not_accepted_no_match(self):
+        candidate = baker.make('core.Candidate',
+                               assignment_group__parentnode=baker.make(
+                                    'core.Assignment',
+                                    parentnode__short_name='period0001',
+                                    parentnode__parentnode__short_name='subject1000'
+                               ),
+                               relatedstudent=baker.make('core.RelatedStudent'))
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
+                                                          requestuser=candidate.relatedstudent.user)
+        self.assertFalse(mockresponse.selector.exists('#id_assignment_guidelines_text'))
+
+    @override_settings(
+        DEVILRY_ASSIGNMENT_GUIDELINES = {
+            'student': [
+                (r'subject11.+', {
+                    '__version__': '1',
+                    '__default__': {
+                        'htmltext': 'This is the assignment guidelines for inf10xx courses.',
+                        'url': 'http://example.com'
+                    },
+                }),
+            ]
+        }
+    )
+    def test_post_assignment_guidelines_accepted(self):
+        candidate = baker.make('core.Candidate',
+                               assignment_group__parentnode=baker.make(
+                                    'core.Assignment',
+                                    parentnode__short_name='period0001',
+                                    parentnode__parentnode__short_name='subject1100'
+                               ),
+                               relatedstudent=baker.make('core.RelatedStudent'))
+        self.assertFalse(PeriodUserGuidelineAcceptance.objects.filter(
+            user=candidate.relatedstudent.user,
+            period=candidate.assignment_group.parentnode.period,
+            devilryrole='student'
+        ).exists())
+        self.mock_http302_postrequest(
+            cradmin_role=candidate.assignment_group,
+            requestuser=candidate.relatedstudent.user,
+            viewkwargs={'pk': candidate.assignment_group},
+            cradmin_instance=self.__mock_cradmin_instance(),
+            requestkwargs={
+                'data': {
+                    'has_read_assignment_guidelines': 'on',
+                }
+            })
+        queryset = PeriodUserGuidelineAcceptance.objects.filter(
+            user=candidate.relatedstudent.user,
+            period=candidate.assignment_group.parentnode.period,
+            devilryrole='student'
+        )
+        self.assertTrue(queryset.exists())
+        # if 
 
     def test_assignment_soft_deadline_info_box_not_rendered(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)

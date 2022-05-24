@@ -1,4 +1,5 @@
 {% extends "cradmin_legacy/viewhelpers/listbuilderview/filterlist-right.django.html" %}
+{% load cradmin_legacy_tags %}
 {% load i18n %}
 
 {% block pageheader-inner %}
@@ -7,3 +8,31 @@
         {% trans "Listing of assigments where you are set as examiner." %}
     </p>
 {% endblock pageheader-inner %}
+
+
+{% block content %}
+    {% if selfassign_available_periods %}
+        <div class="container" id="id-devilry-examiner-selfassign-section">
+            <div class="devilry-dashboard-container">
+                <h2 class="h3">
+                    {% trans "Add me to assignments" context "examiner dashboard" %}
+                </h2>
+                <p>
+                    {% blocktrans trimmed with context="examiner dashboard" %}
+                        Semesters with assignments available for self-assign:
+                    {% endblocktrans %}
+                </p>
+                <ul>
+                    {% for period in selfassign_available_periods %}
+                        <li id="id-devilry-examiner-selfassign-section-links">
+                            <a href="{% cradmin_url instanceid='devilry_examiner_selfassign' appname='self-assign' roleid=period.id viewname='INDEX' %}">
+                                {{ period.parentnode.long_name}} - {{ period.long_name }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% endif %}
+    {{ block.super }}
+{% endblock content %}

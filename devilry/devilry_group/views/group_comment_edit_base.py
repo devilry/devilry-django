@@ -9,8 +9,8 @@ from django.http import Http404, HttpResponseRedirect
 from django.utils.translation import gettext_lazy
 from cradmin_legacy.viewhelpers import update
 
-from devilry.devilry_cradmin import devilry_acemarkdown
 from devilry.devilry_group import models as group_models
+from devilry.devilry_comment.editor_widget import DevilryMarkdownWidget
 
 
 class EditGroupCommentForm(forms.ModelForm):
@@ -68,7 +68,7 @@ class EditGroupCommentBase(update.UpdateView):
 
     def get_form(self, form_class=None):
         form = super(EditGroupCommentBase, self).get_form(form_class=form_class)
-        form.fields['text'].widget = devilry_acemarkdown.Large()
+        form.fields['text'].widget = DevilryMarkdownWidget(request=self.request)
         form.fields['text'].label = False
         return form
 

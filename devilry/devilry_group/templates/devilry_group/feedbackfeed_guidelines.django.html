@@ -1,0 +1,81 @@
+{% extends "devilry_group/base.django.html" %}
+{% load i18n %}
+
+{% block title %}
+    {{ assignment.get_path }}
+{% endblock title %}
+
+{% block pageheader %}
+    <div class="container">
+        <div class="row">
+            <div class="devilry-group-feedbackfeed-header">
+                <div class="col-sm-10 text-left">
+                    {% block feedbackfeed-header-content %}
+                        <h1 class="devilry-group-feedbackfeed-header-assignment">
+                            {{ assignment.long_name }}
+                        </h1>
+                        <div class="devilry-group-feedbackfeed-header-subject-period">
+                            <p class="devilry-group-feedbackfeed-header-subject">
+                                {{ subject.long_name }}
+                            </p>
+                            <p class="devilry-group-feedbackfeed-header-period">
+                                {{ period.long_name }}
+                            </p>
+                        </div>
+                    {% endblock feedbackfeed-header-content %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock pageheader %}
+
+{% block content %}
+    <div class="container cradmin-legacy-container-focus">
+        <h2>
+            {% trans "Assignment guidelines" %}
+        </h2>
+        <p class='text-muted'><em>
+            {% blocktrans trimmed with period=period %}
+                Before you can access this assignment, you must read the assignment
+                guidelines for {{ period }}.
+            {% endblocktrans %}
+        </em></p>
+        <div style='margin: 20px 15px;' id='id_assignment_guidelines_text'>
+            {% if guidelines_dict.htmltext %}
+                <div style='margin-bottom: 10px'>
+                    {{ guidelines_dict.htmltext|safe }}
+                </div>
+            {% endif %}
+            {% if guidelines_dict.url %}
+                <p><a href='{{ guidelines_dict.url }}' target='_blank' id='id_assignment_guidelines_link'>
+                    {% trans "Assignment guidelines" %}
+                    <span class="fa fa-external-link"></span>
+                </a></p>
+            {% endif %}
+        </div>
+        <form method='post' action='{{ request.get_full_path }}'>
+            {% csrf_token %}
+            <p>
+                <label>
+                    <input type="checkbox" name="has_read_assignment_guidelines" id='id_has_read_assignment_guidelines'
+                        required
+                        aria-describedby='id_assignment_guidelines_text' />
+                    {% trans 'I have read the guidelines' %}
+                </label>
+            </p>
+            <button class="btn btn-primary" type='submit' disabled id='id_assignment_guidelines_submit' name='assignment_guidelines_submit'>
+                {% trans "Save" %}
+            </button>
+        </form>
+    </div>
+{% endblock content %}
+
+{% block end-of-body %}
+    {{ block.super }}
+    <script>
+        document.getElementById('id_has_read_assignment_guidelines').addEventListener("change", function () {
+            var submitButton = document.getElementById('id_assignment_guidelines_submit');
+            submitButton.disabled = !this.checked;
+        });
+    </script>
+{% endblock end-of-body %}

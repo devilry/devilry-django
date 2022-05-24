@@ -7,9 +7,9 @@
               aria-hidden="true"></span>
     </span>
     {% if menuitem.user.fullname %}
-        <span class="devilry_accountbutton__initials">{{ menuitem.user.get_initials }}</span>
+        <span class="devilry_accountbutton__initials" aria-hidden="true">{{ menuitem.user.get_initials }}</span>
     {% else %}
-        <span class="devilry_accountbutton__shortname">{{ menuitem.user.shortname }}</span>
+        <span class="devilry_accountbutton__shortname" aria-hidden="true">{{ menuitem.user.shortname }}</span>
     {% endif %}
     <span class="devilry_accountbutton__displayname">{{ menuitem.user.get_displayname }}</span>
 {% endblock link-label %}

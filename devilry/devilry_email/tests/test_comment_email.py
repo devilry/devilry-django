@@ -788,7 +788,7 @@ class TestExaminerNotAssignedCommentEmail(TestCommentEmailForUsersMixin, test.Te
                 htmls.S(outbox.message().as_string()).one('.devilry_email_comment_detail_text').alltext_normalized,
                 'See the delivery feed for more details:'
             )
-            url = reverse_cradmin_url(instanceid='devilry_group_examiner', appname='feedbackfeed',
+            url = reverse_cradmin_url(instanceid='devilry_group_admin', appname='feedbackfeed',
                                       roleid=testgroup.id)
             link_url = 'http://www.example.com' + url
             self.assertEqual(

@@ -59,6 +59,9 @@ class IsActiveFilter(listfilter.django.single.select.Boolean):
     def get_slug(self):
         return 'active'
 
+    def get_do_not_apply_label(self):
+        return pgettext_lazy('listfilter relateduser', 'All')
+
     def get_label(self):
         return pgettext_lazy('listfilter relateduser', 'Is active?')
 

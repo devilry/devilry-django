@@ -98,7 +98,7 @@ EMAIL_BACKEND = 'devilry.devilry_email.rq_backend.RQEmailBackend'
 # MIGRATION_MODULES = DisableMigrations()
 
 
-# LANGUAGE_CODE = 'nb'
+LANGUAGE_CODE = 'nb'
 
 
 IEVVTASKS_BUILDSTATIC_APPS = ievvbuildstatic.config.Apps(
@@ -138,6 +138,7 @@ IEVVTASKS_BUILDSTATIC_APPS = ievvbuildstatic.config.Apps(
             ),
             ievvbuildstatic.npmrun_jsbuild.Plugin(),
             ievvbuildstatic.mediacopy.Plugin(),
+            ievvbuildstatic.mediacopy.Plugin(sourcefolder='scripts/plain_es6')
         ]
     ),
     ievvbuildstatic.config.App(
@@ -235,3 +236,35 @@ IEVVTASKS_MAKEMESSAGES_JAVASCRIPT_EXTENSIONS = ['.js']
 # RQ_QUEUES['email']['ASYNC'] = False
 # RQ_QUEUES['highpriority']['ASYNC'] = False
 
+
+DEBUG_TOOLBAR_CONFIG = {
+    'SHOW_TOOLBAR_CALLBACK': lambda r: False,  # comment this out to enable debug toolbar
+}
+
+
+DEVILRY_ASSIGNMENT_GUIDELINES = {
+    'student': [
+        (r'duck10.+', {
+            '__version__': '1',
+            '__default__': {
+                'htmltext': 'This is the assignment guidelines for duck10xx courses.',
+                'url': 'http://example.com'
+            },
+            'nb': {
+                'htmltext': 'Dette er retningslinjene for oppgaver i duck10xx kurs',
+                'url': 'http://vg.no'
+            }
+        }),
+        (r'duck11.+', {
+            '__version__': '1',
+            '__default__': {
+                'htmltext': 'This is the assignment guidelines for duck11xx courses.',
+                'url': 'http://example.com'
+            },
+            'nb': {
+                'htmltext': 'Dette er retningslinjene for oppgaver i duck11xx kurs',
+                'url': 'http://vg.no'
+            }
+        })
+    ]
+}

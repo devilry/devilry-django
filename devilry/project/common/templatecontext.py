@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.templatetags.static import static
 from django.utils import translation
 
 import devilry
@@ -39,10 +38,10 @@ def template_variables(request):
         'DEVILRY_PROFILEPAGE_HEADER_INCLUDE_TEMPLATE': settings.DEVILRY_PROFILEPAGE_HEADER_INCLUDE_TEMPLATE,
         'DEVILRY_PROFILEPAGE_FOOTER_INCLUDE_TEMPLATE': settings.DEVILRY_PROFILEPAGE_FOOTER_INCLUDE_TEMPLATE,
         'DEVILRY_ENABLE_REALTIME_ZIPFILE_CREATION': settings.DEVILRY_ENABLE_REALTIME_ZIPFILE_CREATION,
-        'DEVILRY_THEME3_DIST_PATH': static('devilry_theme3/{}/'.format(devilry.__version__)),
         'DEVILRY_BRANDING_FAV_ICON_PATH': settings.DEVILRY_BRANDING_FAV_ICON_PATH
     }
     language_code = translation.get_language()
+    template_variables_dict['DEVILRY_LANGUAGE_CODE'] = language_code
     if language_code != 'en':
         # We don't need to set the default translatiion
         template_variables_dict['CRADMIN_LEGACY_MOMENTJS_LOCALE'] = language_code

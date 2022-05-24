@@ -1,3 +1,4 @@
+from re import S
 from django.conf import settings
 from django.db import models
 from django.utils.safestring import mark_safe
@@ -296,7 +297,7 @@ class StatusSelectFilter(abstractselect.AbstractSelectFilter):
 
     def get_choices(self):
         return [
-            ('', ''),
+            ('', pgettext_lazy('group status', 'Any')),
             ('waiting-for-feedback', pgettext('group status', 'waiting for feedback')),
             ('waiting-for-deliveries', pgettext('group status', 'waiting for deliveries')),
             ('corrected', pgettext('group status', 'corrected')),
@@ -323,8 +324,8 @@ class PointsFilter(listfilter.django.single.textinput.IntSearch):
     def get_modelfields(self):
         return ['cached_data__last_published_feedbackset__grading_points']
 
-    # def get_placeholder(self):
-    #     return pgettext_lazy('group points filter', 'Type a number ...')
+    def get_placeholder(self):
+        return pgettext_lazy('group points filter', 'Type a number ...')
 
 
 class IsPassingGradeFilter(abstractselect.AbstractBoolean):
@@ -334,6 +335,9 @@ class IsPassingGradeFilter(abstractselect.AbstractBoolean):
     def get_label(self):
         return pgettext_lazy('group is passing grade filter',
                              'Passing grade?')
+
+    def get_do_not_apply_label(self):
+        return pgettext_lazy('group is passing grade filter', 'Both')
 
     def filter(self, queryobject):
         cleaned_value = self.get_cleaned_value()
@@ -378,7 +382,7 @@ class ExaminerFilter(abstractselect.AbstractSelectFilter):
 
     def get_choices(self):
         choices = [
-            ('', '')
+            ('', pgettext_lazy('group examiner filter', 'Any'))
         ]
         choices.extend(self.__get_choices_cached())
         return choices
@@ -477,7 +481,7 @@ class AbstractCandidateExaminerCountFilter(abstractselect.AbstractSelectFilter):
 
     def get_choices(self):
         return [
-            ('', ''),
+            ('', pgettext_lazy('examiner candidate count any', 'Any')),
             (pgettext_lazy('exact candidate num', 'Exactly'), self.get_exact_choices()),
             (pgettext_lazy('less than candidate num', 'Less than'), self.get_less_than_choices()),
             (pgettext_lazy('greater than candidate num', 'Greater than'), self.get_greater_than_choices())
@@ -553,7 +557,7 @@ class ActivityFilter(abstractselect.AbstractSelectFilter):
 
     def get_choices(self):
         return [
-            ('', ''),
+            ('', pgettext_lazy('group activity', 'All')),
             (pgettext_lazy('group activity', 'From student'), (
                 ('studentcomment', pgettext_lazy('group activity',
                                                  'Has comment(s) from student')),
@@ -603,4 +607,60 @@ class ActivityFilter(abstractselect.AbstractSelectFilter):
             queryobject = queryobject.filter(
                 models.Q(number_of_private_groupcomments_from_user__gt=0) |
                 models.Q(number_of_private_imageannotationcomments_from_user__gt=0))
+        return queryobject
+
+
+class AssignmentCheckboxFilter(listfilter.basefilters.multi.abstractcheckbox.AbstractCheckboxFilter):
+    def __init__(self, **kwargs):
+        self.view = kwargs.pop('view', None)
+        super().__init__(**kwargs)
+
+    def get_slug(self):
+        return 'assignmentname'
+    
+    def get_label(self):
+        return pgettext_lazy('assignment filter', 'Assignments')
+
+    def get_choices(self):
+        choices = [(assignment.short_name, assignment.long_name)
+            for assignment in self.view.get_distinct_assignments_queryset()
+        ]
+        return choices
+
+    def filter(self, queryobject):
+        cleaned_values = self.get_cleaned_values()
+        if cleaned_values:
+            queryobject = queryobject.filter(parentnode__short_name__in=cleaned_values)
+        return queryobject
+
+
+class AssignedUnassignedRadioFilter(abstractradio.AbstractRadioFilter):
+    def __init__(self, **kwargs):
+        self.view = kwargs.pop('view', None)
+        super(AssignedUnassignedRadioFilter, self).__init__(**kwargs)
+
+    def copy(self):
+        copy = super(AssignedUnassignedRadioFilter, self).copy()
+        copy.view = self.view
+        return copy
+
+    def get_slug(self):
+        return 'assignedstatus'
+
+    def get_label(self):
+        return pgettext_lazy('group assigned status', 'Assign status')
+
+    def get_choices(self):
+        return [
+            ('', pgettext('group assigned status', 'All students')),
+            ('assigned', pgettext('group assigned status', 'Assigned')),
+            ('unassigned', pgettext('group assigned status', 'Unassigned'))
+        ]
+
+    def filter(self, queryobject):
+        cleaned_value = self.get_cleaned_value() or ''
+        if cleaned_value == 'assigned':
+            queryobject = queryobject.filter(examiners__relatedexaminer__user=self.view.request.user)
+        elif cleaned_value == 'unassigned':
+            queryobject = queryobject.exclude(examiners__relatedexaminer__user=self.view.request.user)
         return queryobject

@@ -14,6 +14,7 @@ from devilry.devilry_admin.views.assignment.deadline_handling import AssignmentD
 from devilry.devilry_admin.views.assignment.gradingconfiguration import AssignmentGradingConfigurationUpdateView
 from devilry.devilry_admin.views.assignment.long_and_shortname import AssignmentLongAndShortNameUpdateView
 from devilry.devilry_admin.views.assignment.projectgroups import AssignmentProjectGroupUpdateView
+from devilry.devilry_admin.views.assignment.examiner_selfassign import AssignmentExaminerSelfAssignUpdateView
 from .first_deadline import AssignmentFirstDeadlineUpdateView
 from .publishing_time import AssignmentPublishingTimeUpdateView, PublishNowRedirectView
 
@@ -114,5 +115,8 @@ class App(crapp.App):
 
         crapp.Url(r'^update_deadlinehandling/(?P<pk>\d+)',
                   AssignmentDeadlineHandlingUpdateView.as_view(),
-                  name='update_deadline_handling')
+                  name='update_deadline_handling'),
+        crapp.Url(f'^update_examiner_selfassign_settings/(?P<pk>\d+)',
+                AssignmentExaminerSelfAssignUpdateView.as_view(),
+                name='update_examiner_selfassign_settings')
     ]

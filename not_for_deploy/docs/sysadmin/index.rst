@@ -11,6 +11,8 @@ Devilry sysadmin docs
    rq_email
    supervisord
    webserver
+   sentry
+   logging
    debug
    update
    autoset_empty_email_by_username

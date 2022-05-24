@@ -1,6 +1,8 @@
 {% extends "cradmin_legacy/standalone-base-internal.django.html" %}
 {% load static %}
 
+{% block html-element-lang %}{{ DEVILRY_LANGUAGE_CODE }}{% endblock %}
+
 {% block styles %}
     {{ block.super }}
     {% include "devilry_theme3/favicons.django.html" %}

@@ -1,0 +1,397 @@
+{% extends "cradmin_legacy/base.django.html" %}
+{% load devilry_theme3_tags %}
+
+{% block title %}
+    WCAG debug
+{% endblock title %}
+
+{% block content %}
+    <div class="container devilry-body-examiner" style='margin-bottom: 20px;'>
+        <a href='#'>Simple link without class directly in body (deprecated)</a><br/>
+        <a href='#' class='plain-link'>Link with class plain-link directly in body</a><br/>
+    </div>
+    <div class="container devilry-body-student" style='margin-bottom: 20px;'>
+        <a href='#'>Simple link without class directly in body (deprecated)</a><br/>
+        <a href='#' class='plain-link'>Link with class plain-link directly in body</a><br/>
+    </div>
+    <div class="container devilry-body-admin" style='margin-bottom: 20px;'>
+        <a href='#'>Simple link without class directly in body (deprecated)</a><br/>
+        <a href='#' class='plain-link'>Link with class plain-link directly in body</a><br/>
+    </div>
+    <div class="container" style='margin-bottom: 20px;'>
+        <ol class="cradmin-legacy-listbuilder-list cradmin-legacy-listbuilder-rowlist devilry-frontpage-roleselectlist">
+            <li>
+                <a href="#" class='cradmin-legacy-listbuilder-itemframe cradmin-legacy-listbuilder-itemframe-defaultspacing cradmin-legacy-listbuilder-itemframe-link devilry-cradmin-legacy-listbuilder-itemframe-goforward devilry-frontpage-listbuilder-roleselect-itemframe devilry-frontpage-listbuilder-roleselect-itemframe-anyadmin'>
+                    <div class='cradmin-legacy-listbuilder-itemvalue cradmin-legacy-listbuilder-itemvalue-focusbox cradmin-legacy-listbuilder-itemvalue-titledescription devilry-frontpage-listbuilder-roleselect-itemvalue devilry-frontpage-listbuilder-roleselect-itemvalue-anyadmin'>
+                        admin role link
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="#" class='cradmin-legacy-listbuilder-itemframe cradmin-legacy-listbuilder-itemframe-defaultspacing cradmin-legacy-listbuilder-itemframe-link devilry-cradmin-legacy-listbuilder-itemframe-goforward devilry-frontpage-listbuilder-roleselect-itemframe devilry-frontpage-listbuilder-roleselect-itemframe-examiner'>
+                    <div class='cradmin-legacy-listbuilder-itemvalue cradmin-legacy-listbuilder-itemvalue-focusbox cradmin-legacy-listbuilder-itemvalue-titledescription devilry-frontpage-listbuilder-roleselect-itemvalue devilry-frontpage-listbuilder-roleselect-itemvalue-examiner'>
+                        examiner role link
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="#" class='cradmin-legacy-listbuilder-itemframe cradmin-legacy-listbuilder-itemframe-defaultspacing cradmin-legacy-listbuilder-itemframe-link devilry-cradmin-legacy-listbuilder-itemframe-goforward devilry-frontpage-listbuilder-roleselect-itemframe devilry-frontpage-listbuilder-roleselect-itemframe-student'>
+                    <div class='cradmin-legacy-listbuilder-itemvalue cradmin-legacy-listbuilder-itemvalue-focusbox cradmin-legacy-listbuilder-itemvalue-titledescription devilry-frontpage-listbuilder-roleselect-itemvalue devilry-frontpage-listbuilder-roleselect-itemvalue-student'>
+                        student role link
+                    </div>
+                </a>
+            </li>
+        </ol>
+        {% comment %} <p class='colortest-student'>Testing here</p>
+        <p class='colortest-examiner'>Testing here</p>
+        <p class='colortest-admin'>Testing here</p>
+        <p class='colortest-alert-success'>Testing here</p>
+        <p class='colortest-alert-info'>Testing here</p>
+        <p class='colortest-alert-warning'>Testing here</p> {% endcomment %}
+    </div>
+    <div class="container" style='margin-bottom: 20px;'>
+        <div class='alert alert-success'>
+            alert success
+        </div>
+        <div class='alert alert-info'>
+            alert info
+        </div>
+        <div class='alert alert-warning'>
+            alert warning
+        </div>
+        <div class='alert alert-danger'>
+            alert danger
+        </div>
+    </div>
+    <div class="container cradmin-legacy-container-focus">
+        focus styled container
+    </div>
+    <div class="container cradmin-legacy-container-focus cradmin-legacy-container-focus-success">
+        success styled container
+    </div>
+    <div class="container cradmin-legacy-container-focus cradmin-legacy-container-focus-info">
+        info styled container
+    </div>
+    <div class="container cradmin-legacy-container-focus cradmin-legacy-container-focus-warning">
+        warning styled container
+    </div>
+    <div class="container cradmin-legacy-container-focus cradmin-legacy-container-focus-danger">
+        danger styled container
+    </div>
+
+    <div class="container" style='margin-bottom: 20px; margin-top: 20px;'>
+        <div id="cradmin_legacy_listfilter" cradmin-legacy-listfilter="{&quot;loadspinner_css_class&quot;: &quot;fa fa-spin fa-spinner&quot;, &quot;target_dom_id&quot;: &quot;cradmin_legacy_listbuilderview_listwrapper&quot;, &quot;loaderror_message&quot;: &quot;An error occurred. Please try to reload the page.&quot;, &quot;loadingmessage_delay_milliseconds&quot;: 1000}" class="ng-isolate-scope">
+            <ol class="cradmin-legacy-listfilter-filterlist cradmin-legacy-listfilter-filterlist-vertical">
+                <li>
+                    <div id="cradmin_legacy_listfilter_search" class="cradmin-legacy-listfilter-filter cradmin-legacy-listfilter-filter-single-input cradmin-legacy-listfilter-filter-single-input-search">
+                        <label for="cradmin_legacy_listfilter_search_input" id="cradmin_legacy_listfilter_search_label" class="sr-only">
+                            Search
+                        </label>
+                        <div class="cradmin-legacy-clearable-textinput">
+                            <input id="cradmin_legacy_listfilter_search_input" type="text" class="form-control ng-isolate-scope" placeholder="Search ..." value="" aria-controls="cradmin_legacy_listbuilderview_listwrapper" cradmin-legacy-listfilter-urlpattern="#" cradmin-legacy-listfilter-emptyvalue-url="#" cradmin-legacy-listfilter-textinput="{&quot;loadingmessage&quot;: &quot;Searching&quot;, &quot;timeout_milliseconds&quot;: 500, &quot;urlpattern_replace_text&quot;: &quot;_-_TEXTINPUT_-_VALUE_-_&quot;}">
+                            <button type="button" class="btn btn-link cradmin-legacy-clearable-textinput-button" cradmin-legacy-clearable-textinput="#cradmin_legacy_listfilter_search_input" aria-label="Clear Search">
+                                <span class="fa fa-times" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                    </div>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="container devilry-body-student cradmin-legacy-listbuilderview-page cradmin-legacy-listbuilderview-filterlist-right-page" style='margin-bottom: 20px; margin-top: 20px;'>
+        <ol class="cradmin-legacy-listbuilder-list cradmin-legacy-listbuilder-rowlist">
+            <li>
+                <a href="#" class="cradmin-legacy-listbuilder-itemframe cradmin-legacy-listbuilder-itemframe-defaultspacing cradmin-legacy-listbuilder-itemframe-link devilry-cradmin-legacy-listbuilder-itemframe-goforward devilry-student-listbuilder-grouplist-itemframe">
+                    <div class="cradmin-legacy-listbuilder-itemvalue cradmin-legacy-listbuilder-itemvalue-focusbox cradmin-legacy-listbuilder-itemvalue-titledescription devilry-cradmin-groupitemvalue">
+                        <h2 class="cradmin-legacy-listbuilder-itemvalue-titledescription-title">
+                            subject.period - Assignment
+                        </h2>
+                        <p class="devilry-cradmin-groupitemvalue-status">
+                            <span class="devilry-cradmin-groupitemvalue-status-title sr-only">
+                                Status:
+                            </span>
+                            <span class="devilry-core-groupstatus devilry-core-groupstatus-waiting-for-deliveries">
+                                    waiting for deliveries
+                            </span>
+                        </p>        
+                        <p class="devilry-cradmin-groupitemvalue-deadline">
+                            <span class="devilry-cradmin-groupitemvalue-deadline__label">
+                                Deadline:
+                            </span>
+                            <span class="devilry-cradmin-groupitemvalue-deadline__datetime">
+                                Thursday March 15, 2040, 23:59
+                            </span>
+                        </p>
+                        <p class="devilry-cradmin-groupitemvalue-comments">
+                            <span class="devilry-core-comment-summary">
+                                <span class="devilry-core-comment-summary-studentcomments">
+                                    0 comments from student.
+                                </span>
+                                <span class="devilry-core-comment-summary-studentfiles">
+                                    1 files from student.
+                                </span>
+                                <span class="devilry-core-comment-summary-examinercomments">
+                                    2 comments from examiner.
+                                </span>
+                            </span>
+                        </p>
+                    </div>
+                    <span class="fa fa-angle-right devilry-cradmin-legacy-listbuilder-itemframe-goforward-icon" aria-hidden="true"></span>
+                </a>           
+            </li>
+        </ol>
+    </div>
+
+    <div class="container devilry-body-examiner cradmin-legacy-listbuilderview-page cradmin-legacy-listbuilderview-filterlist-right-page" style='margin-bottom: 20px; margin-top: 20px;'>
+        <ol class="cradmin-legacy-listbuilder-list cradmin-legacy-listbuilder-rowlist">
+            <li>
+                <a href="#" class="cradmin-legacy-listbuilder-itemframe cradmin-legacy-listbuilder-itemframe-defaultspacing cradmin-legacy-listbuilder-itemframe-link devilry-cradmin-legacy-listbuilder-itemframe-goforward">
+                    <div class="cradmin-legacy-listbuilder-itemvalue cradmin-legacy-listbuilder-itemvalue-focusbox cradmin-legacy-listbuilder-itemvalue-titledescription devilry-cradmin-groupitemvalue">
+                        <h2 class="cradmin-legacy-listbuilder-itemvalue-titledescription-title">
+                            <span class="devilry-user-verbose-inline devilry-user-verbose-inline-both">
+                                <span class="devilry-user-verbose-inline-fullname">Stud Ent</span>
+                                <small class="devilry-user-verbose-inline-shortname">(student@example.com)</small>
+                            </span>
+                        </h2>
+                        <p class="devilry-cradmin-groupitemvalue-status">
+                            <span class="devilry-cradmin-groupitemvalue-status-title sr-only">
+                                Status:
+                            </span>
+                            <span class="devilry-core-groupstatus devilry-core-groupstatus-waiting-for-deliveries">
+                                waiting for deliveries
+                            </span>
+                        </p>
+                        <p class="devilry-cradmin-groupitemvalue-deadline">
+                            <span class="devilry-cradmin-groupitemvalue-deadline__label">
+                                Deadline:
+                            </span>
+                            <span class="devilry-cradmin-groupitemvalue-deadline__datetime">
+                                Tuesday January 31, 2040, 12:30
+                            </span>
+                        </p>
+                        <p class="devilry-cradmin-groupitemvalue-comments">
+                            <span class="devilry-core-comment-summary">
+                                <span class="devilry-core-comment-summary-studentcomments">
+                                    0 comment from student.
+                                </span>
+                                <span class="devilry-core-comment-summary-studentfiles">
+                                    1 files from student.
+                                </span>
+                                <span class="devilry-core-comment-summary-examinercomments">
+                                    2 comment from examiner.
+                                </span>
+                            </span>
+                        </p>
+                    </div>
+                    <span class="fa fa-angle-right devilry-cradmin-legacy-listbuilder-itemframe-goforward-icon" aria-hidden="true"></span>
+                </a>
+            </li>
+        </ol>
+    </div>
+
+    <div class="container devilry-body-admin cradmin-legacy-listbuilderview-page cradmin-legacy-listbuilderview-filterlist-right-page" style='margin-bottom: 20px; margin-top: 20px;'>
+        <ol class="cradmin-legacy-listbuilder-list cradmin-legacy-listbuilder-rowlist">
+            <li>
+                <a href="#" class="cradmin-legacy-listbuilder-itemframe cradmin-legacy-listbuilder-itemframe-defaultspacing cradmin-legacy-listbuilder-itemframe-link devilry-cradmin-legacy-listbuilder-itemframe-goforward">
+                    <div class="cradmin-legacy-listbuilder-itemvalue cradmin-legacy-listbuilder-itemvalue-focusbox cradmin-legacy-listbuilder-itemvalue-titledescription devilry-cradmin-groupitemvalue">
+                        <h2 class="cradmin-legacy-listbuilder-itemvalue-titledescription-title">
+                            <span class="devilry-user-verbose-inline devilry-user-verbose-inline-both">
+                                <span class="devilry-user-verbose-inline-fullname">Stud Ent</span>
+                                <small class="devilry-user-verbose-inline-shortname">(student@example.com)</small>
+                            </span>
+                        </h2>
+                        <p class="devilry-cradmin-groupitemvalue-status">
+                            <span class="devilry-cradmin-groupitemvalue-status-title sr-only">
+                                Status:
+                            </span>
+                            <span class="devilry-core-groupstatus devilry-core-groupstatus-waiting-for-deliveries">
+                                waiting for deliveries
+                            </span>
+                        </p>
+                        <p class="devilry-cradmin-groupitemvalue-deadline">
+                            <span class="devilry-cradmin-groupitemvalue-deadline__label">
+                                Deadline:
+                            </span>
+                            <span class="devilry-cradmin-groupitemvalue-deadline__datetime">
+                                Tuesday January 31, 2040, 12:30
+                            </span>
+                        </p>
+                        <p class="devilry-cradmin-groupitemvalue-comments">
+                            <span class="devilry-core-comment-summary">
+                                <span class="devilry-core-comment-summary-studentcomments">
+                                    0 comment from student.
+                                </span>
+                                <span class="devilry-core-comment-summary-studentfiles">
+                                    1 files from student.
+                                </span>
+                                <span class="devilry-core-comment-summary-examinercomments">
+                                    2 comment from examiner.
+                                </span>
+                            </span>
+                        </p>
+                    </div>
+                    <span class="fa fa-angle-right devilry-cradmin-legacy-listbuilder-itemframe-goforward-icon" aria-hidden="true"></span>
+                </a>
+            </li>
+        </ol>
+    </div>
+
+    <div class="container" style='margin-bottom: 20px; margin-top: 20px;'>
+        <ol class="cradmin-legacy-listbuilder-list devilry-group-feedbackfeed-feed">
+            <li>
+                <ol class="cradmin-legacy-listbuilder-list devilry-group-feedbackfeed-feed__feedbackset-wrapper">
+                    <li>
+                        <ol class="cradmin-legacy-listbuilder-list devilry-group-feedbackfeed-feed__feedbackset-wrapper--content">
+                            <li>
+                                <div class="devilry-group-feedbackfeed-event-message devilry-group-feedbackfeed-itemvalue devilry-group-feedbackfeed-event-message__deadline-expired">
+                                    <p>
+                                        <span class="timeline-datetime">
+                                            Feb 8 2016, 20:00
+                                        </span>:
+                                        <span class="devilry-group-event__deadline-expired">
+                                            <strong>Deadline expired</strong>
+                                        </span>
+                                    </p>
+                                </div>
+                            </li>
+                        </ol>
+                    </li>
+                </ol>
+            </li>
+        </ol>
+    </div>
+
+    <div class="container" style='margin-bottom: 20px; margin-top: 20px;'>
+        <ol class="cradmin-legacy-listbuilder-list devilry-group-feedbackfeed-feed">
+            <li>
+                <ol class="cradmin-legacy-listbuilder-list devilry-group-feedbackfeed-feed__feedbackset-wrapper">
+                    <li>
+                        <ol class="cradmin-legacy-listbuilder-list devilry-group-feedbackfeed-feed__feedbackset-wrapper--content">
+                            <li>
+                                <div class="devilry-group-feedbackfeed-event-message devilry-group-feedbackfeed-itemvalue devilry-group-feedbackfeed-event-message__grade">
+                                    <p>
+                                        <span class="timeline-datetime">
+                                            Oct 15 2018, 11:54
+                                        </span>:
+                                        <span class="devilry-group-event__grade">
+                                            <strong>
+                                                This delivery was corrected, and given:
+                                            </strong>
+                                            <span class="devilry-core-grade devilry-core-grade-mapper-passed-failed devilry-core-grade-passed devilry-core-grade-full">
+                                                <span class="devilry-core-grade-main">
+                                                    passed
+                                                </span>
+                                                <span class="devilry-core-grade-details">
+                                                    (<span class="devilry-core-grade-details-points">1/1</span>)
+                                                </span>
+                                            </span>
+                                            by
+                                            <span class="devilry-group-feedbackfeed-event-message__user_display_name">
+                                                <strong>
+                                                    <span class="devilry-user-verbose-inline devilry-user-verbose-inline-both">
+                                                        <span class="devilry-user-verbose-inline-fullname">Exa Miner</span>
+                                                        <small class="devilry-user-verbose-inline-shortname">(examiner@example.com)</small>
+                                                    </span>            
+                                                </strong>
+                                            </span>
+                                        </span>
+                                    </p>
+                                </div>
+                            </li>
+                        </ol>
+                    </li>
+                </ol>
+            </li>
+        </ol>
+    </div>
+
+    <div class="container" style='margin-bottom: 20px; margin-top: 20px;'>
+        <ol class="cradmin-legacy-listbuilder-list devilry-group-feedbackfeed-feed">
+            <li>
+                <ol class="cradmin-legacy-listbuilder-list devilry-group-feedbackfeed-feed__feedbackset-wrapper">
+                    <li>
+                        <ol class="cradmin-legacy-listbuilder-list devilry-group-feedbackfeed-feed__feedbackset-wrapper--content">
+                            <li>
+                                <div class="devilry-group-feedbackfeed-event-message devilry-group-feedbackfeed-itemvalue devilry-group-feedbackfeed-event-message__grade">
+                                    <p>
+                                        <span class="timeline-datetime">
+                                            Oct 15 2018, 11:54
+                                        </span>:
+                                        <span class="devilry-group-event__grade">
+                                            <strong>
+                                                This delivery was corrected, and given:
+                                            </strong>
+                                            <span class="devilry-core-grade devilry-core-grade-mapper-passed-failed devilry-core-grade-failed devilry-core-grade-full">
+                                                <span class="devilry-core-grade-main">
+                                                    failed
+                                                </span>
+                                                <span class="devilry-core-grade-details">
+                                                    (<span class="devilry-core-grade-details-points">0/1</span>)
+                                                </span>
+                                            </span>
+                                            by
+                                            <span class="devilry-group-feedbackfeed-event-message__user_display_name">
+                                                <strong>
+                                                    <span class="devilry-user-verbose-inline devilry-user-verbose-inline-both">
+                                                        <span class="devilry-user-verbose-inline-fullname">Exa Miner</span>
+                                                        <small class="devilry-user-verbose-inline-shortname">(examiner@example.com)</small>
+                                                    </span>            
+                                                </strong>
+                                            </span>
+                                        </span>
+                                    </p>
+                                </div>
+                            </li>
+                        </ol>
+                    </li>
+                </ol>
+            </li>
+        </ol>
+    </div>
+
+
+    <div class="container" style='margin-bottom: 20px; margin-top: 20px;'>
+        <hello-world data-what="cruel"></hello-world>
+        <custom-button data-what="fancy"></custom-button>
+        <custom-button data-what="shitty"></custom-button>
+    </div>
+
+    <script type="module">
+        import { helloWorld } from '{% devilry_theme3_dist_path %}/scripts/plain_es6/helloWorld.js';
+
+        helloWorld();
+
+        class HelloWorldComponent extends HTMLElement {
+            connectedCallback() {
+                const what = this.getAttribute('data-what');
+                this.innerHTML = `Hello ${what} world!`;
+                this.style.display = 'block';
+            }
+        }
+        window.customElements.define('hello-world', HelloWorldComponent);
+
+
+        class MoreFancyComponent extends HTMLElement {  // NOTE: We do not extend HTMLButtonElement since that is not as well supported
+            connectedCallback() {
+                this.style.display = 'inline-block';
+                this.what = this.getAttribute('data-what');
+                this.button = document.createElement('button');
+                this.button.setAttribute('type', 'button');
+                this.button.classList.add('btn');
+                this.button.classList.add('btn-default');
+                this.button.innerHTML = `Hello ${this.what} world!`;
+                this.button.addEventListener('click', (e) => {
+                    this._handleClick();
+                });
+                this.appendChild(this.button);
+            }
+
+            _handleClick () {
+                console.log(`Yey! (${this.what})`);
+                this.button.classList.toggle('btn-danger');
+            }
+        }
+        window.customElements.define('custom-button', MoreFancyComponent);
+    </script>
+{% endblock content %}
