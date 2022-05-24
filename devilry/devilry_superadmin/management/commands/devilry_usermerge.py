@@ -4,7 +4,6 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand, CommandError
 
-from devilry.apps.core.models import PeriodTag
 from devilry.devilry_account.user_merger import UserMerger
 
 
