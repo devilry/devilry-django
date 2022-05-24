@@ -8,13 +8,13 @@
 {% load i18n %}
 
 {% block content %}
-    <h3>
+    <h2>
         <span>
             <span class="header-title">
                 {% trans "Deadline" %}: {{ me.feedbackset.deadline_datetime|date:'DATETIME_FORMAT' }}
             </span>
         </span>
-    </h3>
+    </h2>
     <div class="header-attempt-number">
         {% if not me.feedbackset.is_merge_type %}
             {% trans "Attempt" %} {{ me.attempt_num }}
