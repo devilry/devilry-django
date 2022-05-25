@@ -20,7 +20,7 @@ setup(
     install_requires=[
         'setuptools',
         'pyyaml==5.4.*',
-        'Markdown==2.6.*',
+        'Markdown==3.3.*',
         'Pygments==2.7.*',
         'flup==1.0.*',
         'gunicorn==19.9.*',

@@ -50,6 +50,11 @@
                     </a>
                 </li>
                 <li>
+                    <a href="#codediff">
+                        {% trans "Code diff" %}
+                    </a>
+                </li>
+                <li>
                     <a href="#lists">
                         {% trans "Lists" %}
                     </a>
@@ -177,6 +182,62 @@
             ls -l
             ````
         </pre>
+    </div>
+
+    <div class="container">
+        <h2 id="codediff">
+            {% trans "Code diff" %}
+        </h2>
+        <p>
+            {% blocktranslate trimmed %}
+                Use the syntax shown in the example below to show code diffs.
+            {% endblocktranslate %}
+        </p>
+        <p>
+            {% trans "Example" %}:
+        </p>
+        <pre>##<##
+def Hello(self, x):
+    print(f'Hello')
+    print('World')
+##>##
+def hello(self, x):
+    print(f'Hello {x}')
+    print('World')
+##<##</pre>
+        <p>
+            The result will be a diff view that can be used to show the difference
+            between the two code snippets in 3 different diff layouts (simple, compact and side-by-side).
+            By default, we show the simple style on "load", but you can tune this with a keyword at the end of the
+            first line (the keyword can be: simple, compact or sidebyside):
+        </p>
+        
+        <pre>### DIFF With the compact style by default:
+
+##<## compact
+def Hello(self, x):
+    print(f'Hello')
+    print('World')
+##>##
+def hello(self, x):
+    print(f'Hello {x}')
+    print('World')
+##<##
+
+### DIFF With the sidebyside style by default:
+
+##<## sidebyside
+def Hello(self, x):
+    print(f'Hello')
+    print('World')
+##>##
+def hello(self, x):
+    print(f'Hello {x}')
+    print('World')
+##<##</pre>
+
+        <p><strong>{% trans "Warning:" %}</strong>{% trans "Switching diff styles does not work in markdown preview window/tab." %}</p>
+
     </div>
 
     <div class="container">

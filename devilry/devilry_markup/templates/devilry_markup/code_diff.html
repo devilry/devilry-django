@@ -1,0 +1,59 @@
+{% load i18n %}
+<div class='diffwrapper' id='{{ dom_id }}'>
+    <div class='tab' role='tablist'>
+        <button role='tab' type='button' aria-controls='{{ dom_id }}_simple' id='{{ dom_id }}_button_simple'
+            {% if diffstyle == "simple" %}aria-selected="true"{% endif %}
+            class='tablinks diffwrapper__tablink {% if diffstyle == "simple" %}active{% endif %}'>{% trans "Simple diff" %}</button>
+        <button role='tab' type='button' aria-controls='{{ dom_id }}_compact' id='{{ dom_id }}_button_compact'
+            {% if diffstyle == "compact" %}aria-selected="true"{% endif %}
+            class='tablinks diffwrapper__tablink {% if diffstyle == "compact" %}active{% endif %}'>{% trans "Compact diff" %}</button>
+        <button role='tab' type='button' aria-controls='{{ dom_id }}_sidebyside' id='{{ dom_id }}_button_sidebyside'
+            {% if diffstyle == "sidebyside" %}aria-selected="true"{% endif %}
+            class='tablinks diffwrapper__tablink {% if diffstyle == "sidebyside" %}active{% endif %}'>{% trans "Side-by-side diff" %}</button>
+    </div>
+
+    <div id='{{ dom_id }}_simple' aria-labelledby='{{ dom_id }}_button_simple' role='tabpanel' class='diffpanel {% if diffstyle == "simple" %}diffpanel--active{% endif %}'>
+        <div class='diff'>{{ simple|safe }}</div>
+    </div>
+    <div id='{{ dom_id }}_compact' aria-labelledby='{{ dom_id }}_button_compact' role='tabpanel' class='diffpanel {% if diffstyle == "compact" %}diffpanel--active{% endif %}'>
+        <div class='diff'>{{ compact|safe }}</div>
+    </div>
+    <div id='{{ dom_id }}_sidebyside' aria-labelledby='{{ dom_id }}_button_sidebyside' role='tabpanel' class='diffpanel {% if diffstyle == "sidebyside" %}diffpanel--active{% endif %}'>
+        <div class='diffpanel__sidebyside'>
+            <div class='diffpanel__sidebysideitem'>
+                <div class='diff'>{{ sidebyside.a|safe }}</div>
+            </div>
+            <div class='diffpanel__sidebysideitem'>
+                <div class='diff'>{{ sidebyside.b|safe }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function switchDiffTab (domId, diffstyle) {
+        const diffWrapper = document.getElementById(domId);
+        const tabButtons = Array.from(diffWrapper.querySelectorAll('.diffwrapper__tablink'));
+        for (let style of ['simple', 'compact', 'sidebyside']) {
+            let tabButton = document.getElementById(`${domId}_button_${style}`);
+            let tabDiv = document.getElementById(`${domId}_${style}`);
+            tabButton.classList.remove('active');
+            tabDiv.classList.remove('diffpanel--active');
+            tabButton.setAttribute('aria-selected', diffstyle === style? 'true' : 'false');
+            if (diffstyle === style) {
+                tabButton.classList.add('active');
+                tabDiv.classList.add('diffpanel--active');
+            }
+        }
+    }
+
+    document.getElementById("{{ dom_id }}_button_simple").addEventListener('click', () => {
+        switchDiffTab('{{ dom_id }}', 'simple');
+    }, false);
+    document.getElementById("{{ dom_id }}_button_compact").addEventListener('click', () => {
+        switchDiffTab('{{ dom_id }}', 'compact');
+    }, false);
+    document.getElementById("{{ dom_id }}_button_sidebyside").addEventListener('click', () => {
+        switchDiffTab('{{ dom_id }}', 'sidebyside');
+    }, false);
+</script>
