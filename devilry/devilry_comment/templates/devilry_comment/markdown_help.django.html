@@ -187,6 +187,26 @@
             ls -l
             ````
         </pre>
+        <p>
+            {% blocktranslate trimmed %}
+                To add syntax hilighting to the code block, add the language on the first line:
+            {% endblocktranslate %}
+        </p>
+        <pre>```python
+class Hello:
+    def __init__(self, what):
+        self.what = what
+
+    def hello(self):
+        print(f"Hello {what} world")
+```</pre>
+        <p>
+            {% blocktranslate trimmed %}
+                The available languages are those supported by the pygments python library.
+                For most languages, you simply use the name of the language.
+                The full list is available here: https://pygments.org/docs/lexers/ (the "Short names").
+            {% endblocktranslate %}
+        </p>
     </div>
 
     <div class="container">
