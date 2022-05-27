@@ -1,6 +1,7 @@
 import markdown
 
 from devilry.devilry_markup.markdown_extensions.code_diff import CodeDiffExtension
+from devilry.devilry_markup.markdown_extensions.latex_math import LatexMathExtension, LatexMathInlineExtension
 
 
 def markdown_full(inputMarkdown):
@@ -9,6 +10,8 @@ def markdown_full(inputMarkdown):
         safe_mode="escape",
         extensions=[
             CodeDiffExtension(),
+            LatexMathExtension(),
+            LatexMathInlineExtension(),
             'codehilite', # Syntax hilite code
             'fenced_code', # Support github style code blocks
             'nl2br', # Support github style newline handling

@@ -55,6 +55,11 @@
                     </a>
                 </li>
                 <li>
+                    <a href="#latexmath">
+                        {% trans "Latex math" %}
+                    </a>
+                </li>
+                <li>
                     <a href="#lists">
                         {% trans "Lists" %}
                     </a>
@@ -238,6 +243,29 @@ def hello(self, x):
 
         <p><strong>{% trans "Warning:" %}</strong>{% trans "Switching diff styles does not work in markdown preview window/tab." %}</p>
 
+    </div>
+    <div class="container">
+        <h2 id="latexmath">
+            {% trans "Latex math" %}
+        </h2>
+        <p>
+            {% blocktranslate trimmed %}
+                You can add latex math using the <code>$math$ $/math$</code>
+                or <code>$mathblock$ $/mathblock$</code> tags.
+            {% endblocktranslate %}
+        </p>
+        <p>
+            {% trans "Example" %}:
+        </p>
+        <pre>### Inline latex math example
+This is an inline latex example $math$c = \pm\sqrt{a^2 + b^2}$/math$ with some extra text behind!
+
+### Block latex math example
+This is a block latex example:
+$mathblock$
+c = \pm\sqrt{a^2 + b^2}
+$/mathblock$
+with some extra text below.</pre>
     </div>
 
     <div class="container">

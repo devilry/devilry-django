@@ -1,0 +1,7 @@
+{% load devilry_theme3_tags %}
+
+<devilry-latex-math data-latex-code={{ latex_code_attr_safe }} data-variant="{{ variant }}"></devilry-latex-math>
+
+<script type='module'>
+    import '{% devilry_theme3_dist_path %}/scripts/plain_es6/latex_math.js';
+</script>

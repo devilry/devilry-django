@@ -138,7 +138,15 @@ IEVVTASKS_BUILDSTATIC_APPS = ievvbuildstatic.config.Apps(
             ),
             ievvbuildstatic.npmrun_jsbuild.Plugin(),
             ievvbuildstatic.mediacopy.Plugin(),
-            ievvbuildstatic.mediacopy.Plugin(sourcefolder='scripts/plain_es6')
+            ievvbuildstatic.mediacopy.Plugin(sourcefolder='scripts/plain_es6'),
+            ievvbuildstatic.nodemodulescopy.Plugin(
+                destinationfolder=os.path.join('scripts', 'katex'),
+                sourcefiles=[
+                    'katex/LICENSE',
+                    'katex/dist/katex.mjs',
+                    'katex/dist/katex.min.css',
+                ]
+            ),
         ]
     ),
     ievvbuildstatic.config.App(

@@ -156,9 +156,6 @@ DEVILRY_ENABLE_REALTIME_ZIPFILE_CREATION = True
 #: of the Devilry user interface).
 DEVILRY_JAVASCRIPT_LOCALE_OVERRIDE_APPS = tuple()
 
-#: Enable MathJax?
-DEVILRY_ENABLE_MATHJAX = True
-
 #: The number of minutes to delay publishing an assignment after it is created.
 #: This is also the minimum amount of time between the current time and
 #: the first deadline.
