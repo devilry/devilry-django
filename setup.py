@@ -38,7 +38,7 @@ setup(
         'httplib2>=0.19.0<1.0.0',
         'dj-static==0.0.*',
         'dj-database-url==0.3.*',
-        'html5lib==0.9999999',
+        'html5lib==0.99999999',
         'psycopg2==2.8.*',
         'django_cradmin>=9.0.0,<10.0.0',
         'cradmin_legacy>=4.1.2,<5.0.0',
