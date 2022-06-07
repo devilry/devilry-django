@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-05-19 10:13+0200\n"
-"PO-Revision-Date: 2022-05-19 10:21+0200\n"
+"POT-Creation-Date: 2022-06-07 08:34+0200\n"
+"PO-Revision-Date: 2022-06-07 08:38+0200\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2\n"
+"X-Generator: Poedit 3.0.1\n"
 
 #: devilry/apps/core/admin.py:66
 msgid "Admins"
@@ -418,7 +418,7 @@ msgid "Can only contain numbers, lowercase letters, '_' and '-'. "
 msgstr "Kan kun bestå av nummer, små bokstaver, '_' og '-'. "
 
 #: devilry/apps/core/models/custom_db_fields.py:40
-#: devilry/devilry_account/models.py:888
+#: devilry/devilry_account/models.py:926
 #: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:28
 #: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:24
 #: devilry/devilry_cradmin/devilry_listfilter/assignment.py:17
@@ -735,12 +735,12 @@ msgstr "Studenter"
 msgid "Inactive"
 msgstr "Inaktiv"
 
-#: devilry/devilry_account/admin.py:24
+#: devilry/devilry_account/admin.py:26
 #: devilry/devilry_header/templates/devilry_header/about_me.django.html:35
 msgid "Password"
 msgstr "Passord"
 
-#: devilry/devilry_account/admin.py:25
+#: devilry/devilry_account/admin.py:27
 msgid ""
 "Raw passwords are not stored, so there is no way to see this user's "
 "password, but you can change the password using <a href=\"password/\">this "
@@ -750,7 +750,7 @@ msgstr ""
 "men du kan endre passordet ved å gå til <a href=\"password/\">dette "
 "skjemaet</a>."
 
-#: devilry/devilry_account/admin.py:154 devilry/devilry_account/models.py:470
+#: devilry/devilry_account/admin.py:209 devilry/devilry_account/models.py:470
 msgid "Users"
 msgstr "Brukere"
 
@@ -826,40 +826,40 @@ msgstr ""
 msgid "Short name is required."
 msgstr "Kort navn er påkrevd."
 
-#: devilry/devilry_account/models.py:645
+#: devilry/devilry_account/models.py:683
 #: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:70
 msgid "Email address"
 msgstr "E-postadresse"
 
-#: devilry/devilry_account/models.py:646
+#: devilry/devilry_account/models.py:684
 #: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:68
 msgid "Email addresses"
 msgstr "E-postadresser"
 
-#: devilry/devilry_account/models.py:654
+#: devilry/devilry_account/models.py:692
 #: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:14
 msgid "Email"
 msgstr "Epost"
 
-#: devilry/devilry_account/models.py:662
+#: devilry/devilry_account/models.py:700
 msgid "Send notifications to this email address?"
 msgstr "Send melding til denne e-postadressen?"
 
-#: devilry/devilry_account/models.py:669
+#: devilry/devilry_account/models.py:707
 msgid "Is this your primary email?"
 msgstr "Er dette din primære e-post?"
 
-#: devilry/devilry_account/models.py:671 devilry/devilry_account/models.py:730
+#: devilry/devilry_account/models.py:709 devilry/devilry_account/models.py:768
 #: devilry/devilry_student/cradminextensions/columntypes.py:79
 msgid "No"
 msgstr "Nei"
 
-#: devilry/devilry_account/models.py:672 devilry/devilry_account/models.py:731
+#: devilry/devilry_account/models.py:710 devilry/devilry_account/models.py:769
 #: devilry/devilry_student/cradminextensions/columntypes.py:78
 msgid "Yes"
 msgstr "Ja"
 
-#: devilry/devilry_account/models.py:674
+#: devilry/devilry_account/models.py:712
 msgid ""
 "Your primary email is the email address used when we need to display a "
 "single email address."
@@ -867,28 +867,28 @@ msgstr ""
 "Din primære e-post er e-postadressen som benyttes hvis vi trener å vise en "
 "enkel e-postadresse."
 
-#: devilry/devilry_account/models.py:694
+#: devilry/devilry_account/models.py:732
 #, python-format
 msgid "%(email)s - User%(userid)s#%(userhortname)s"
 msgstr "%(email)s - Bruker%(userid)s#%(userhortname)s"
 
-#: devilry/devilry_account/models.py:710 devilry/devilry_account/models.py:719
+#: devilry/devilry_account/models.py:748 devilry/devilry_account/models.py:757
 #: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:54
 #: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:17
 #: devilry/devilry_header/templates/devilry_header/about_me.django.html:29
 msgid "Username"
 msgstr "Brukernavn"
 
-#: devilry/devilry_account/models.py:711
+#: devilry/devilry_account/models.py:749
 #: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:52
 msgid "Usernames"
 msgstr "Brukernavn"
 
-#: devilry/devilry_account/models.py:728
+#: devilry/devilry_account/models.py:766
 msgid "Is this your primary username?"
 msgstr "Er dette ditt primære brukernavn?"
 
-#: devilry/devilry_account/models.py:733
+#: devilry/devilry_account/models.py:771
 msgid ""
 "Your primary username is shown alongside your full name to identify you to "
 "teachers, examiners and other students."
@@ -896,75 +896,75 @@ msgstr ""
 "Ditt primære brukernavn vises ved siden av ditt fulle navn for å "
 "identifisere deg for lærere, rettere og andre studenter."
 
-#: devilry/devilry_account/models.py:756
+#: devilry/devilry_account/models.py:794
 #, python-format
 msgid "%(username)s - User%(userid)s"
 msgstr "%(username)s - Bruker%(userid)s"
 
-#: devilry/devilry_account/models.py:769
+#: devilry/devilry_account/models.py:807
 msgid "Permission group user"
 msgstr "Tillatelsesgruppe bruker"
 
-#: devilry/devilry_account/models.py:770
+#: devilry/devilry_account/models.py:808
 msgid "Permission group users"
 msgstr "Tillatelsesgruppe brukere"
 
-#: devilry/devilry_account/models.py:782
+#: devilry/devilry_account/models.py:820
 #, python-format
 msgid "%(user)s in group %(permissiongroup)s"
 msgstr "%(user)s i gruppe %(permissiongroup)s"
 
-#: devilry/devilry_account/models.py:875
+#: devilry/devilry_account/models.py:913
 msgid "Department administrator group"
 msgstr "Avdelingadministratorgruppe"
 
-#: devilry/devilry_account/models.py:876
+#: devilry/devilry_account/models.py:914
 msgid "Course administrator group"
 msgstr "Kurseadministratorgruppe"
 
-#: devilry/devilry_account/models.py:877
+#: devilry/devilry_account/models.py:915
 msgid "Semester administrator group"
 msgstr "Semesteradministratorgruppe"
 
-#: devilry/devilry_account/models.py:881 devilry/devilry_account/models.py:882
+#: devilry/devilry_account/models.py:919 devilry/devilry_account/models.py:920
 msgid "Permission group"
 msgstr "Tillatelsesgruppe"
 
-#: devilry/devilry_account/models.py:889
+#: devilry/devilry_account/models.py:927
 msgid "A unique name for this group."
 msgstr "Et unikt navn for den gruppen."
 
-#: devilry/devilry_account/models.py:895
+#: devilry/devilry_account/models.py:933
 msgid "Created time"
 msgstr "Opprettet tidspunkt"
 
-#: devilry/devilry_account/models.py:896
+#: devilry/devilry_account/models.py:934
 msgid "The time when this group was created."
 msgstr "Tidspunktet for når gruppen ble opprettet."
 
-#: devilry/devilry_account/models.py:902
+#: devilry/devilry_account/models.py:940
 msgid "Last updated time"
 msgstr "Tidspunkt for siste oppdatering"
 
-#: devilry/devilry_account/models.py:903
+#: devilry/devilry_account/models.py:941
 msgid "The time when this group last updated."
 msgstr "Tidspunktet for når gruppen sist ble oppdatert."
 
-#: devilry/devilry_account/models.py:909
+#: devilry/devilry_account/models.py:947
 msgid "Last updated from syncsystem time"
 msgstr "Sist oppdater fra synkroniserings-systemet sin tid"
 
-#: devilry/devilry_account/models.py:910
+#: devilry/devilry_account/models.py:948
 msgid "The time when this group last updated from a third party sync system."
 msgstr ""
 "Tidspunktet for når gruppen sist ble oppdatert fra et tredjeparts-"
 "synkroniseringssystem."
 
-#: devilry/devilry_account/models.py:921
+#: devilry/devilry_account/models.py:959
 msgid "Permission group type"
 msgstr "Tillatelsesgruppe type"
 
-#: devilry/devilry_account/models.py:922
+#: devilry/devilry_account/models.py:960
 msgid ""
 "Course and semester administrator groups can only be assigned to a single "
 "course or semester. Department administrator groups can be assigned to "
@@ -974,11 +974,11 @@ msgstr ""
 "kurs eller semester. Grupper av avdelingsadministratorer kan tildeles flere "
 "kurs. Du kan ikke endre dette for eksisterende tillatelsesgrupper."
 
-#: devilry/devilry_account/models.py:938
+#: devilry/devilry_account/models.py:976
 msgid "Custom manageable?"
 msgstr "Tilpasset redigering?"
 
-#: devilry/devilry_account/models.py:939
+#: devilry/devilry_account/models.py:977
 msgid ""
 "Is this group mageable by non-superusers. Can not be enabled for department "
 "administrator groups."
@@ -986,55 +986,55 @@ msgstr ""
 "Er denne gruppen administrert av ikke-superbrukere? Kan ikke aktiveres for "
 "grupper av avdelingsadministratorer."
 
-#: devilry/devilry_account/models.py:947
+#: devilry/devilry_account/models.py:985
 msgid "Users in this group"
 msgstr "Brukere i denne gruppen"
 
-#: devilry/devilry_account/models.py:958
+#: devilry/devilry_account/models.py:996
 msgid "Department administrator groups can not be custom manageable."
 msgstr "Administratorgrupper for avdeling kan ikke tilpasses ytterlig."
 
-#: devilry/devilry_account/models.py:963
+#: devilry/devilry_account/models.py:1001
 msgid "Permission group type can not be changed."
 msgstr "Type tilgangsgruppe kan ikke endres."
 
-#: devilry/devilry_account/models.py:1054
+#: devilry/devilry_account/models.py:1092
 msgid "Semester permission group"
 msgstr "Tillatelsesgruppe for semester"
 
-#: devilry/devilry_account/models.py:1055
+#: devilry/devilry_account/models.py:1093
 msgid "Semester permission groups"
 msgstr "Tillatelsesgrupper for semester"
 
-#: devilry/devilry_account/models.py:1068
+#: devilry/devilry_account/models.py:1106
 #, python-format
 msgid "Semester administrators for %(period)s"
 msgstr "Semesteradministratorer for %(period)s"
 
-#: devilry/devilry_account/models.py:1077
+#: devilry/devilry_account/models.py:1115
 msgid ""
 "Only semesters can be added to semester administrator permission groups."
 msgstr ""
 "Kun semestre kan legges til i tillatelsesgruppen for semesteradministratorer."
 
-#: devilry/devilry_account/models.py:1084
+#: devilry/devilry_account/models.py:1122
 msgid "Only a single editable permission group is allowed for a semester."
 msgstr "Kun en redigerbar tillatelsesgruppe er tillat for et semster."
 
-#: devilry/devilry_account/models.py:1206
+#: devilry/devilry_account/models.py:1244
 msgid "Course permission group"
 msgstr "Tillatelsesgruppe for kurs"
 
-#: devilry/devilry_account/models.py:1207
+#: devilry/devilry_account/models.py:1245
 msgid "Course permission groups"
 msgstr "Tillatelsesgruppe for kurs"
 
-#: devilry/devilry_account/models.py:1220
+#: devilry/devilry_account/models.py:1258
 #, python-format
 msgid "Course administrators for %(subject)s"
 msgstr "Kursadministratorer for %(subject)s"
 
-#: devilry/devilry_account/models.py:1230
+#: devilry/devilry_account/models.py:1268
 msgid ""
 "Courses can only be added to course and department administrator permission "
 "groups."
@@ -1042,7 +1042,7 @@ msgstr ""
 "Kurs kan kun bli lagt til kurs og tillatelsesgrupper for "
 "avdelingsadministrator."
 
-#: devilry/devilry_account/models.py:1238
+#: devilry/devilry_account/models.py:1276
 msgid "Only a single editable permission group is allowed for a course."
 msgstr "Kun en redigerbar tillatelsesgruppe er tillat for et kurs."
 
@@ -1292,6 +1292,7 @@ msgstr ""
 
 #: devilry/devilry_admin/templates/devilry_admin/assignment/examiners/bulk_organize/manual-replace.django.html:30
 #: devilry/devilry_admin/templates/devilry_admin/assignment/examiners/bulk_organize/random.django.html:30
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:265
 msgid "Warning:"
 msgstr "Advarsel:"
 
@@ -1737,6 +1738,10 @@ msgid "Examiner self-assign"
 msgstr "Selv-tilordning for rettere"
 
 #: devilry/devilry_admin/templates/devilry_admin/assignment/include/settings.django.html:84
+msgid "Assignment is anonymized. Examiners will not be able to self-assign."
+msgstr "Oppgaven er anonymisert. Rettere kan ikke legge til seg selv."
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/include/settings.django.html:88
 #, python-format
 msgid ""
 "Examiners can assign themselves to project groups on this assignment. "
@@ -1747,17 +1752,13 @@ msgstr ""
 "for antall retter som kan legge til selv på prosjektgruppe er satt til "
 "%(examiner_selfassign_limit)s."
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/include/settings.django.html:89
+#: devilry/devilry_admin/templates/devilry_admin/assignment/include/settings.django.html:93
 msgid ""
 "Examiners can not assign themselves to project groups on this assignment."
 msgstr ""
 "Rettere kan ikke legge til seg selv på prosjektgrupper for denne oppgaven."
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/include/settings.django.html:96
-msgid "Assignment is anonymized. Examiners will not be able to self-assign."
-msgstr "Oppgaven er anonymisert. Rettere kan ikke legge til seg selv."
-
-#: devilry/devilry_admin/templates/devilry_admin/assignment/include/settings.django.html:104
+#: devilry/devilry_admin/templates/devilry_admin/assignment/include/settings.django.html:100
 msgid "Edit self-assign settings"
 msgstr "Rediger selv-tilordning"
 
@@ -4904,53 +4905,63 @@ msgid "Contents"
 msgstr "Innhold"
 
 #: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:22
-#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:68
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:78
 #: devilry/devilry_cradmin/templates/devilry_cradmin/devilry_acemarkdown.django.html:12
 #: devilry/devilry_gradingsystem/templates/devilry_gradingsystem/widgets/editmarkdown.django.html:47
 msgid "Heading"
 msgstr "Overskrift"
 
 #: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:27
-#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:93
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:103
 msgid "Styling text"
 msgstr "Tekstformatering"
 
 #: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:32
-#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:101
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:111
 #: devilry/devilry_cradmin/templates/devilry_cradmin/devilry_acemarkdown.django.html:17
 #: devilry/devilry_gradingsystem/templates/devilry_gradingsystem/widgets/editmarkdown.django.html:14
 msgid "Bold"
 msgstr "Fet"
 
 #: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:37
-#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:115
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:125
 #: devilry/devilry_cradmin/templates/devilry_cradmin/devilry_acemarkdown.django.html:22
 #: devilry/devilry_gradingsystem/templates/devilry_gradingsystem/widgets/editmarkdown.django.html:15
 msgid "Italic"
 msgstr "Kursiv"
 
 #: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:44
-#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:132
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:142
 #: devilry/devilry_cradmin/templates/devilry_cradmin/devilry_acemarkdown.django.html:29
 msgid "Link"
 msgstr "Lenke"
 
 #: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:49
-#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:151
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:161
 msgid "Code"
 msgstr "Kode"
 
 #: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:54
-#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:184
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:215
+msgid "Code diff"
+msgstr "Kode diff"
+
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:59
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:270
+msgid "Latex math"
+msgstr "Latex matte"
+
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:64
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:294
 msgid "Lists"
 msgstr "Lister"
 
-#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:59
-#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:216
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:69
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:326
 msgid "Nested lists"
 msgstr "Innrykket liste"
 
-#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:71
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:81
 msgid ""
 "To create a heading, add one or more # symbols before your heading text. The "
 "number of # symbols will determine the heading size. One # symbol is the "
@@ -4961,46 +4972,48 @@ msgstr ""
 "overskriften. Ett # symbol er den største overskriften, og seks # symboler "
 "er den minste overskriften."
 
-#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:78
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:88
 msgid "Example heading level 1"
 msgstr "Eksempel overskriftsnivå 1"
 
-#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:84
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:94
 msgid "Example heading level 3"
 msgstr "Eksempel overskriftsnivå 3"
 
-#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:96
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:106
 msgid ""
 "You can style simple words or sentences with inlined bold or italic styling."
 msgstr ""
 "Du kan formattere enkle ord eller setninger med innfelt fet eller kursiv "
 "formatering."
 
-#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:104
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:114
 msgid ""
 "Add two * symbols before and after the text you want bold formatting for."
 msgstr ""
 "Legg til to * symboler før og etter teksten du ønsker fet formatering for."
 
-#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:109
-#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:123
-#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:142
-#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:160
-#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:171
-#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:192
-#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:205
-#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:224
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:119
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:133
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:152
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:170
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:181
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:223
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:279
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:302
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:315
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:334
 #: devilry/devilry_gradingsystem/templates/devilry_gradingsystem/admin/setup_custom_table.django.html:40
 msgid "Example"
 msgstr "Eksempel"
 
-#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:118
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:128
 msgid ""
 "Add one _ symbol before and after the text you want italic formatting for."
 msgstr ""
 "Legg til ett _ symbol før og etter teksten du ønsker kursiv formattering for."
 
-#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:135
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:145
 msgid ""
 "To format links, add a starting bracket symbol and a closing bracket symbol "
 "encapsulating the link-text. Directly follow this with a starting "
@@ -5010,7 +5023,7 @@ msgstr ""
 "For å formatere lenker, legg til klammeparantes som omslutter lenke-teksten. "
 "Rett etter legges deretter paranteser til som omslutter selve lenkeadressen."
 
-#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:154
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:164
 msgid ""
 "Mark a short snippet of text to call it out as code with single backticks. "
 "The text encapsulated by the backticks will be formatted as a inline piece "
@@ -5019,26 +5032,61 @@ msgstr ""
 "Markér en kort tekst med enkle \"backticks\" for å markere tekst som kode. "
 "Teksten som omsluttes av enkle \"backticks\" blir formatert som kode."
 
-#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:166
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:176
 msgid ""
 "To format code or text into its own distinct block, use three backticks "
 "instead."
 msgstr ""
 "For å formatere kode eller tekst i en egen blokk, bruk tre \"backticks\"."
 
-#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:187
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:191
+msgid ""
+"To add syntax hilighting to the code block, add the language on the first "
+"line:"
+msgstr ""
+"For å legge til syntax hilighting på en kode-blokk, legg til språket på "
+"første linje:"
+
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:204
+msgid ""
+"The available languages are those supported by the pygments python library. "
+"For most languages, you simply use the name of the language. The full list "
+"is available here:"
+msgstr ""
+"De tilgjengelige språkene som støttes er de som støttes av pygments python "
+"biblioteket. For de fleste språk kan du bare bruke navnet på språket. Den "
+"fulle listen er tilgjengelig her:"
+
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:218
+msgid "Use the syntax shown in the example below to show code diffs."
+msgstr "Bruk syntaksen vist i eksemplet nedenfor for å vise kode differ."
+
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:265
+msgid "Switching diff styles does not work in markdown preview window/tab."
+msgstr ""
+"Bytting av diff stiler fungerer ikke i markdown forhåndvisning vindu/tab."
+
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:273
+msgid ""
+"You can add latex math using the <code>$math$ $/math$</code> or <code>"
+"$mathblock$ $/mathblock$</code> tags."
+msgstr ""
+"Du kan legge til latex matte ved å bruke <code>$math$ $/math$</code> eller "
+"<code>$mathblock$ $/mathblock$</code> taggene."
+
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:297
 msgid ""
 "Make an unordered list by preceding one or more lines of text with * symbol."
 msgstr ""
 "Lag en punktliste ved å starte en eller flere tekstlinjer med * symbol."
 
-#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:200
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:310
 msgid "If you want to order a list, precede each line with a number."
 msgstr ""
 "Hvis du ønsker en nummerert liste, start en eller flere linjer med et tall "
 "etterfulgt av punktum."
 
-#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:219
+#: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:329
 msgid ""
 "A nested list can be created by indenting one or more list items below "
 "another item with 4 spaces."
@@ -7253,6 +7301,18 @@ msgstr "Guider, forumer, sakssporer."
 msgid "Documentation provided by your organization."
 msgstr "Dokumentasjon gitt av din organisasjon."
 
+#: devilry/devilry_markup/templates/devilry_markup/code_diff.html:6
+msgid "Simple diff"
+msgstr "Enkel diff"
+
+#: devilry/devilry_markup/templates/devilry_markup/code_diff.html:9
+msgid "Compact diff"
+msgstr "Kompakt diff"
+
+#: devilry/devilry_markup/templates/devilry_markup/code_diff.html:12
+msgid "Side-by-side diff"
+msgstr "Side-ved-side diff"
+
 #: devilry/devilry_message/models/base.py:73
 msgid "Draft"
 msgstr "Utkast"
@@ -7863,7 +7923,7 @@ msgctxt "student period overview"
 msgid "No assignments."
 msgstr "Ingen oppgaver."
 
-#: devilry/project/common/projectspecific_settings.py:219
+#: devilry/project/common/projectspecific_settings.py:216
 msgid ""
 "This assignment uses hard deadlines. You will not be able to write comments "
 "or upload files after the deadline has expired."
@@ -7871,7 +7931,7 @@ msgstr ""
 "Denne oppgaven bruker harde frister. Du vil ikke kunne skrive kommentarer "
 "eller laste opp innleveringer etter fristen."
 
-#: devilry/project/common/projectspecific_settings.py:225
+#: devilry/project/common/projectspecific_settings.py:222
 msgid ""
 "This assignment uses hard deadlines. Students will not be able to write "
 "comments or upload files after the deadline has expired."
