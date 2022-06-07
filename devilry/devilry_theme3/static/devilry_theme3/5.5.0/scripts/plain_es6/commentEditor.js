@@ -1,5 +1,7 @@
 import { devilryParseDomString } from './webcomponent_utils.js';
 import { getCookie } from './cookie.js';
+import './latex_math.js';
+
 
 const TOOLBAR_KEYBOARD_MAP = {
     'ctrl': false,      // CTRL (Windows)

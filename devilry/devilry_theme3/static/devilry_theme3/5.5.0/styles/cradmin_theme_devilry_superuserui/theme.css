@@ -680,7 +680,7 @@ code,
 kbd,
 pre,
 samp {
-  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-family: monospace;
 }
 code {
   padding: 2px 4px;
@@ -4663,28 +4663,28 @@ button.close {
   font-style: italic;
   font-weight: 400;
   font-display: swap;
-  src: url(https://fonts.gstatic.com/s/firasans/v15/va9C4kDNxMZdWfMOD5VvkojO.ttf) format('truetype');
+  src: url(https://fonts.gstatic.com/s/firasans/v16/va9C4kDNxMZdWfMOD5VvkojO.ttf) format('truetype');
 }
 @font-face {
   font-family: 'Fira Sans';
   font-style: italic;
   font-weight: 700;
   font-display: swap;
-  src: url(https://fonts.gstatic.com/s/firasans/v15/va9f4kDNxMZdWfMOD5VvkrByRBf_.ttf) format('truetype');
+  src: url(https://fonts.gstatic.com/s/firasans/v16/va9f4kDNxMZdWfMOD5VvkrByRBf_.ttf) format('truetype');
 }
 @font-face {
   font-family: 'Fira Sans';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url(https://fonts.gstatic.com/s/firasans/v15/va9E4kDNxMZdWfMOD5VfkA.ttf) format('truetype');
+  src: url(https://fonts.gstatic.com/s/firasans/v16/va9E4kDNxMZdWfMOD5VfkA.ttf) format('truetype');
 }
 @font-face {
   font-family: 'Fira Sans';
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url(https://fonts.gstatic.com/s/firasans/v15/va9B4kDNxMZdWfMOD5VnLK3uQQ.ttf) format('truetype');
+  src: url(https://fonts.gstatic.com/s/firasans/v16/va9B4kDNxMZdWfMOD5VnLK3uQQ.ttf) format('truetype');
 }
 #cradmin_legacy_bodycontentwrapper {
   width: 100%;
@@ -7091,6 +7091,11 @@ a.plain-link {
 a.plain-link:hover {
   color: #262626;
 }
+.tab .tablinks:focus,
+.tab .tablinks:active {
+  outline: thin dotted;
+  outline: 5px auto -webkit-focus-ring-color;
+}
 @media (min-width: 992px) {
   nav#cradmin_legacy_mainmenu.cradmin-legacy-menu {
     position: absolute;
@@ -8056,6 +8061,18 @@ h3 {
 }
 .devilry-fileupload .devilry-fileupload-fileselect-wrapper .devilry-fileupload-fileselect-input {
   display: none;
+}
+.examiner-selfassign-button--assigned {
+  color: red;
+}
+.examiner-selfassign-button--unassigned {
+  color: yellow;
+}
+.examiner-selfassign-button--updating {
+  color: blue;
+}
+.examiner-selfassign-button--updating:hover {
+  pointer-events: none;
 }
 #cradmin_legacy_bodycontentwrapper {
   padding-bottom: 15px;
