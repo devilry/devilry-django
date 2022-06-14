@@ -1,0 +1,11 @@
+.. _5.5.1changelog:
+
+############################
+What is new in Devilry 5.5.1
+############################
+
+
+Fixes and new features
+######################
+
+- Fix things that was broken in the 5.5.0 release.
