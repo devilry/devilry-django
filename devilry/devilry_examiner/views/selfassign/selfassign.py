@@ -241,7 +241,7 @@ class App(crapp.App):
         crapp.Url(r'^$',
                   SelfAssignGroupListView.as_view(),
                   name=crapp.INDEXVIEW_NAME),
-        crapp.Url(r'^/filter/(?P<filters_string>.+)?$',
+        crapp.Url(r'^filter/(?P<filters_string>.+)?$',
                   SelfAssignGroupListView.as_view(),
                   name='filter')
     ]
