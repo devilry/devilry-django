@@ -160,6 +160,14 @@ class UserManager(BaseUserManager):
         from devilry.apps.core.models.assignment_group import AssignmentGroup
         return AssignmentGroup.objects.filter_examiner_has_access(user).exists()
 
+    def user_is_examiner_or_can_selfassign_as_examiner(self, user):
+        from devilry.devilry_examiner.views.selfassign import utils as selfassign_utils
+        if self.user_is_examiner(user):
+            return True
+        return selfassign_utils\
+            .selfassign_available_periods(user=user)\
+            .exists()
+
     def user_is_student(self, user):
         """
         Returns ``True`` if the given ``user`` is candidate on any AssignmentGroup.

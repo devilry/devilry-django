@@ -148,7 +148,7 @@ class RoleSelectList(listbuilder.lists.RowList):
     def __build_list(self):
         user_model = get_user_model()
         self.user_is_student = user_model.objects.user_is_student(self.user)
-        self.user_is_examiner = user_model.objects.user_is_examiner(self.user)
+        self.user_is_examiner = user_model.objects.user_is_examiner_or_can_selfassign_as_examiner(self.user)
         self.user_is_anyadmin = user_model.objects.user_is_admin_or_superuser(self.user)
         self.user_has_no_roles = True
         if self.user_is_student:
