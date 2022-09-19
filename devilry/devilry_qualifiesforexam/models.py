@@ -171,3 +171,22 @@ class QualifiesForFinalExam(models.Model):
 
     def __str__(self):
         return '{}-{}-{}'.format(self.relatedstudent, self.status, self.qualifies)
+
+    def smart_delete(self):
+        DeletedQualifiesForFinalExam.objects.create(
+            relatedstudent=self.relatedstudent,
+            status=self.status,
+            qualifies=self.qualifies
+        )
+        self.delete()
+
+
+class DeletedQualifiesForFinalExam(models.Model):
+    #: The related :obj:`~.devilry.apps.core.RelatedStudent` the qualification is for.
+    relatedstudent = models.ForeignKey(RelatedStudent, on_delete=models.CASCADE)
+
+    #: The related :obj:`~.Status` for this student.
+    status = models.ForeignKey(Status, related_name='+', on_delete=models.CASCADE)
+
+    #: ``True`` if the student qualifies for the exam, else ``False``.
+    qualifies = models.BooleanField(null=True)
