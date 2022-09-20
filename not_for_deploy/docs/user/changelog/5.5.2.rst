@@ -1,0 +1,13 @@
+.. _5.5.2changelog:
+
+############################
+What is new in Devilry 5.5.2
+############################
+
+
+Fixes and new features
+######################
+
+- Bugfix: Examiner can't self-assign unless a student is assign to them.
+- Bugfix: Semester admin can't access semester when they are course admin on another course.
+- Improvement: Username "merge into": Handle QualifiedForFinalExam collisions.
