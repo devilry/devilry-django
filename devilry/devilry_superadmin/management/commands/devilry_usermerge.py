@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand, CommandError
 
 from devilry.devilry_account.user_merger import UserMerger
+from devilry.devilry_superadmin.management.commands.devilry_qualifiedforfinalexam_delete_duplicates import get_qualifiesforfinalexam_collision_periods
 
 
 class Command(BaseCommand):
@@ -53,6 +54,12 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         source_user = self._get_user_from_identifier(options['source_user_identifier'])
         target_user = self._get_user_from_identifier(options['target_user_identifier'])
+        if get_qualifiesforfinalexam_collision_periods(source_user, target_user):
+            self.stderr.write(
+                f'[ERROR] There are collisions in qualifies for final exam between {source_user} and {target_user}. '
+                f'Please use ``python manage.py devilry_qualifiedforfinalexam_delete_duplicates`` to resolve the conflicts '
+                f'before attempting the merge.')
+            raise SystemExit()
         verbose = options['verbose']
         pretend_merger = UserMerger(source_user=source_user, target_user=target_user, pretend=True)
         pretend_merger.merge()
