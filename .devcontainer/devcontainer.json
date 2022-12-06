@@ -48,7 +48,7 @@
 		"importMagic.maxColumns": 120
 	},
 
-	"workspaceMount": "source=devilry_dockerdev_repo,destination=/workspace,type=volume",
+	"workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=delegated",
 	"workspaceFolder": "/workspace",
 
 	"mounts": [
