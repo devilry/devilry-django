@@ -59,6 +59,7 @@ class GroupCommentForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.group = kwargs.pop('group')
         self.feedback_set = kwargs.pop('feedback_set')
+        self.user = kwargs.pop('user')
         super(GroupCommentForm, self).__init__(*args, **kwargs)
         self.instance.feedback_set = self.feedback_set
 
@@ -75,7 +76,16 @@ class StandardGroupCommentForm(GroupCommentForm):
     """
     def clean(self):
         super(GroupCommentForm, self).clean()
-        if len(self.cleaned_data['text']) == 0 and self.cleaned_data['temporary_file_collection_id'] is None:
+        temporary_file_collection_id = self.cleaned_data['temporary_file_collection_id']
+        temporary_file_collection = None
+        if temporary_file_collection_id is not None:
+            temporary_file_collection = TemporaryFileCollection.objects \
+                .filter_for_user(self.user) \
+                .get(id=temporary_file_collection_id)
+            if temporary_file_collection.files.count() == 0:
+                temporary_file_collection = None
+
+        if len(self.cleaned_data['text']) == 0 and temporary_file_collection is None:
             raise ValidationError({
               'text': gettext_lazy('A comment must have either text or a file attached, or both.'
                                     ' An empty comment is not allowed.')
@@ -183,6 +193,7 @@ class FeedbackFeedBaseView(create.CreateView):
         kwargs = super(FeedbackFeedBaseView, self).get_form_kwargs()
         group = self.assignment_group
         kwargs['group'] = group
+        kwargs['user'] = self.request.user
         kwargs['feedback_set'] = group.cached_data.last_feedbackset
         return kwargs
 

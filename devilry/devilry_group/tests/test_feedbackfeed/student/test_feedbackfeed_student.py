@@ -9,6 +9,7 @@ from django.test import TestCase, override_settings
 from django.utils import timezone
 from cradmin_legacy import cradmin_testhelpers
 from model_bakery import baker
+from cradmin_legacy.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
 
 from devilry.apps.core import models as core_models
 from devilry.devilry_account.models import PeriodUserGuidelineAcceptance
@@ -1175,7 +1176,34 @@ class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMi
                 }
             })
         self.assertEqual(1, group_models.GroupComment.objects.count())
+        self.assertEqual(1, TemporaryFileCollection.objects.count())
         self.assertEqual(1, comment_models.CommentFile.objects.count())
+
+    def test_upload_has_temporary_file_collection_id_but_empty_collection(self):
+        # Test that a CommentFile is created on upload.
+        feedbackset = group_baker.feedbackset_first_attempt_unpublished(
+            group__parentnode__parentnode=baker.make_recipe('devilry.apps.core.period_active'))
+        candidate = baker.make('core.Candidate', assignment_group=feedbackset.group)
+        temporary_filecollection = baker.make(
+            'cradmin_temporaryfileuploadstore.TemporaryFileCollection',
+            user=candidate.relatedstudent.user)
+        mockresponse = self.mock_http200_postrequest_htmls(
+            cradmin_role=candidate.assignment_group,
+            requestuser=candidate.relatedstudent.user,
+            viewkwargs={'pk': feedbackset.group.id},
+            requestkwargs={
+                'data': {
+                    'text': '',
+                    'student_add_comment': 'unused value',
+                    'temporary_file_collection_id': temporary_filecollection.id
+                }
+            })
+        self.assertEqual(
+            'A comment must have either text or a file attached, or both. An empty comment is not allowed.',
+            mockresponse.selector.one('#error_1_id_text').alltext_normalized)
+        self.assertEqual(0, group_models.GroupComment.objects.count())
+        self.assertEqual(1, TemporaryFileCollection.objects.count())
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_upload_single_file_content(self):
         # Test the content of a CommentFile after upload.
