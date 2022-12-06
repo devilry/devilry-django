@@ -1,0 +1,11 @@
+.. _5.5.3changelog:
+
+############################
+What is new in Devilry 5.5.3
+############################
+
+
+Fixes and new features
+######################
+
+- Bugfix: Handle the case where users could upload files to the feedbackfeed, and remove them, and then submit an empty comment.
