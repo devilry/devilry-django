@@ -1,11 +1,10 @@
-
-
 import mock
 from django import test
 from django.conf import settings
 from django.contrib import messages
+from django.utils import timezone
 from cradmin_legacy import cradmin_testhelpers
-from model_bakery import baker, timezone
+from model_bakery import baker
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_admin.views.assignment.students import delete_groups
