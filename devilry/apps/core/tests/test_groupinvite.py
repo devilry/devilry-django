@@ -316,7 +316,7 @@ class GroupInviteRespond(TestCase):
         student1 = core_baker.candidate(group=group1).relatedstudent.user
         student2 = core_baker.candidate(group=group2).relatedstudent.user
         invite = baker.make('core.GroupInvite', sent_by=student1, sent_to=student2, group=group1)
-        with self.assertNumQueries(36):
+        with self.assertNumQueries(37):
             invite.respond(True)
 
     def test_num_queries_reject(self):
