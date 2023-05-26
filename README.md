@@ -96,16 +96,30 @@ $ ievv devrun
 ```
 
 ### Create or re-create a devdatabase
+You should always clear the database before recreating it. The easiest way is just to clear the docker resources (and volumes) and start it again.
+```
+$ docker-compose down -v
+$ docker-compose up
+```
 
+Run dev server (in a new terminal) 
 ```
 $ source .venv/bin/activate   # activate virtualenv
 $ ievv devrun
-... in a new terminal ...
-$ DOES NOT EXIST YET: python manage.py devilry_develop_generate_data
 ```
 
-> NOTE: Use `docker-compose down -v`, start up docker-compose again with `docker-compose up`,
-> and run the management script again to recreate the devdatabase.
+Load devdatabase SQL-file (in a new terminal)
+```
+$ source .venv/bin/activate   # activate virtualenv
+$ docker-compose exec -T postgres psql -U dbdev --dbname=dbdev -p 5432 -h localhost < devilry/project/develop/dumps/default.sql
+$ python manage.py migrate
+$ ievv customsql -i -r
+```
+
+If the dump should be updated for e.g new migrations, run the following and commit to repo:
+```
+$ docker-compose exec -T postgres pg_dump --clean --no-owner --no-acl --no-privileges -U dbdev -h localhost -p 5432 dbdev > devilry/project/develop/dumps/default.sql
+```
 
 ### Run tests
 
