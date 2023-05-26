@@ -9,9 +9,13 @@ urlpatterns = [
 
     path('allauth/login/',
         allauth_views.AllauthLoginView.as_view(),
-        name='account_login'),
+        # name='account_login'
+        name='dataporten_login'
+    ),
     path('allauth/logout/',
         allauth_views.AllauthLogoutView.as_view(),
-        name='account_logout'),
+        # name='account_logout'
+        name='dataporten_logout'
+    ),
     path('allauth/', include('allauth.urls')),
 ]
