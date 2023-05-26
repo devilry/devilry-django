@@ -128,6 +128,15 @@ $ source .venv/bin/activate   # enable virtualenv
 $ pytest devilry
 ```
 
+### Build css/javascript:
+```
+$ source .venv/bin/activate   # activate virtualenv
+$ nvm use 14    # May need to run "nvm install 14" first
+$ ievv buildstatic
+... or if you want to watch for changes ...:
+$ ievv buildstatic --watch
+```
+
 ### Destroy postgres and redis
 
 ```
