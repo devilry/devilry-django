@@ -137,6 +137,13 @@ $ ievv buildstatic
 $ ievv buildstatic --watch
 ```
 
+To remove and reinstall all node-packages:
+```
+$ source .venv/bin/activate   # activate virtualenv
+$ nvm use 14    # May need to run "nvm install 14" first
+$ ievv buildstatic --npm-clean-node-modules
+```
+
 ### Destroy postgres and redis
 
 ```
