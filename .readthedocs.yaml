@@ -27,6 +27,14 @@ build:
   os: ubuntu-22.04
   tools:
     python: "3.10"
+  apt_packages:
+    - libldap2-dev
+    - libsasl2-dev
+    # - slapd
+    # - ldap-utils
+    # - tox
+    # - lcov
+    # - valgrind
 
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
