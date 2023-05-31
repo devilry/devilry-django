@@ -158,10 +158,11 @@ http://ievv-opensource.readthedocs.org/
 
 First make sure you have NO UNCOMITTED CHANGES!
 
-Release (create changelog, increment version, commit and tag the change) with:
+Release (create changelog, increment version, build staticfiles, commit and tag the change) with:
 
-```
-$ cz bump
+```bash
+$ nvm use 14
+$ tools/release/prepare-release.py prepare --apply  # This will bump the version and then build and commit staticfiles.
 $ git push && git push --tags
 ```
 
@@ -186,7 +187,7 @@ See _How to revert a bump_ in the [commitizen FAQ](https://commitizen-tools.gith
 
 ### Release to pypi:
 
-```
+```bash
 $ hatch build -t sdist
 $ hatch publish
 $ rm dist/*              # optional cleanup
