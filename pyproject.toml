@@ -88,7 +88,8 @@ dev = [
     "doc2dash==3.0.0",
     "django-storages==1.1.5",
     "boto==2.32.1",
-    "django-auth-ldap"
+    "django-auth-ldap",
+    "pip-tools",
 ]
 test = [
     "htmls",
