@@ -156,22 +156,6 @@ http://ievv-opensource.readthedocs.org/
 
 ## How to release devilry
 
-
-### Pre-release update requirements.txt (if dependencies in pyproject.toml has been changed)
-
-Make sure you have NO UNCOMITTED CHANGES!
-
-If there are new or updated dependencies, update the requirements lockfile with:
-
-```
-$ .venv/bin/pip-compile --resolver=backtracking --verbose --allow-unsafe -o requirements.lock.txt pyproject.toml
-```
-
-> _NOTE:_ Look over the generated `requirements.lock.txt` and make sure the correct packages has been updated.
-
-Commit the changes to `requirements.lock.txt` with `build(requirements.lock.txt): update`.
-
-
 ### Set version and build staticfiles
 
 First make sure you have NO UNCOMITTED CHANGES!
