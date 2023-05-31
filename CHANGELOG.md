@@ -1,13 +1,8 @@
 ## 6.0.0rc1 (2023-05-31)
 
-### Feat
+### BREAKING CHANGE
 
-- Simplify release with script + updated release docs
-
-### Fix
-
-- Cleanup
-- Update to Django 4.2 supported cradmin_legacy version
+- Django 4.2 support
 
 ## 5.5.3 (2022-12-06)
 
