@@ -164,7 +164,7 @@ Make sure you have NO UNCOMITTED CHANGES!
 If there are new or updated dependencies, update the requirements lockfile with:
 
 ```
-$ .venv/bin/pip-compile --generate-hashes --resolver=backtracking --verbose --allow-unsafe -o requirements.lock.txt pyproject.toml
+$ .venv/bin/pip-compile --resolver=backtracking --verbose --allow-unsafe -o requirements.lock.txt pyproject.toml
 ```
 
 > _NOTE:_ Look over the generated `requirements.lock.txt` and make sure the correct packages has been updated.
