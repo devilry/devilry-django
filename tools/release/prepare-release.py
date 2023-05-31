@@ -38,17 +38,6 @@ def argument(*name_or_flags, **kwargs):
     )
 ])
 def prepare(args):
-    """
-    New release docs
-
-    $ nvm use 14
-    $ tools/release/prepare-release.py prepare --apply
-    $ git push && git push --tags
-
-    $ hatch build -t sdist
-    $ hatch publish
-    $ rm dist/*              # optional cleanup
-    """
     apply = args.apply
     version = args.version
 
