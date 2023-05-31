@@ -118,7 +118,7 @@ exclude = [
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "5.5.3"
+version = "6.0.0rc1"
 version_files = [
     "devilry/__init__.py:__version__"
 ]
