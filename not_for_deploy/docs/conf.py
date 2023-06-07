@@ -60,17 +60,29 @@ else:
 
 
 # Mapping to other docs
-django_version = '1.7'
+# django_version = '1.7'
+# intersphinx_mapping = {
+#     'django': ('http://docs.djangoproject.com/en/{0}/'.format(django_version), 'http://docs.djangoproject.com/en/{0}/_objects/'.format(django_version))
+# }
+
+# extlinks = {
+#     'djangodoc': ('https://docs.djangoproject.com/en/{0}/%s'.format(django_version), None),
+#     'devilrydeploy': ('https://devilry-deploy.readthedocs.org/en/{0}/%s'.format(linked_devilryrelease_docs), None),
+#     'devilryissue': ('https://github.com/devilry/devilry-django/issues/%s', 'issue '),
+#     'devilryrepo_dir': ('https://github.com/devilry/devilry-django/tree/{0}/%s'.format(linked_devilryrelease_repo), None),
+#     'devilryrepo_file': ('https://github.com/devilry/devilry-django/blob/{0}/%s'.format(linked_devilryrelease_repo), None),
+# }
+django_version = '4.2'
 intersphinx_mapping = {
-    'django': ('http://docs.djangoproject.com/en/{0}/'.format(django_version), 'http://docs.djangoproject.com/en/{0}/_objects/'.format(django_version))
+    'django': (f'http://docs.djangoproject.com/en/{django_version}/', 'http://docs.djangoproject.com/en/{django_version}/_objects/')
 }
 
 extlinks = {
-    'djangodoc': ('https://docs.djangoproject.com/en/{0}/%s'.format(django_version), None),
-    'devilrydeploy': ('https://devilry-deploy.readthedocs.org/en/{0}/%s'.format(linked_devilryrelease_docs), None),
-    'devilryissue': ('https://github.com/devilry/devilry-django/issues/%s', 'issue '),
-    'devilryrepo_dir': ('https://github.com/devilry/devilry-django/tree/{0}/%s'.format(linked_devilryrelease_repo), None),
-    'devilryrepo_file': ('https://github.com/devilry/devilry-django/blob/{0}/%s'.format(linked_devilryrelease_repo), None),
+    'djangodoc': (f'https://docs.djangoproject.com/en/{django_version}/%s', None),
+    'devilrydeploy': (f'https://devilry-deploy.readthedocs.org/en/{linked_devilryrelease_docs}/%s', None),
+    'devilryissue': (f'https://github.com/devilry/devilry-django/issues/%s', 'issue '),
+    'devilryrepo_dir': (f'https://github.com/devilry/devilry-django/tree/{linked_devilryrelease_repo}/%s', None),
+    'devilryrepo_file': (f'https://github.com/devilry/devilry-django/blob/{linked_devilryrelease_repo}/%s', None),
 }
 
 
