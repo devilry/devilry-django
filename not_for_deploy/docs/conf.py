@@ -80,7 +80,7 @@ intersphinx_mapping = {
 extlinks = {
     'djangodoc': (f'https://docs.djangoproject.com/en/{django_version}/%s', None),
     'devilrydeploy': (f'https://devilry-deploy.readthedocs.org/en/{linked_devilryrelease_docs}/%s', None),
-    'devilryissue': (f'https://github.com/devilry/devilry-django/issues/%s', 'issue '),
+    'devilryissue': (f'https://github.com/devilry/devilry-django/issues/%s', None),
     'devilryrepo_dir': (f'https://github.com/devilry/devilry-django/tree/{linked_devilryrelease_repo}/%s', None),
     'devilryrepo_file': (f'https://github.com/devilry/devilry-django/blob/{linked_devilryrelease_repo}/%s', None),
 }
