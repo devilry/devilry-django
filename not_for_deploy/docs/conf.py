@@ -32,7 +32,7 @@ extensions = [
     'sphinx.ext.doctest',
     'sphinx.ext.intersphinx',
     'sphinx.ext.extlinks',
-    'sphinxcontrib.napoleon',
+    'sphinx.ext.napoleon',
 ]
 
 
