@@ -83,9 +83,9 @@ dev = [
     # "sphinx==1.8.5",
     # "sphinx_rtd_theme==1.2.1",
 
-    "sphinx==1.7.0",
-    "sphinx_rtd_theme==0.2.4",
-    "sphinxcontrib-napoleon==0.6.1",
+    "sphinx==6.0.0",
+    "sphinx_rtd_theme==1.2.0",
+    "sphinxcontrib-napoleon==0.7.0",
 
     "flake8==2.2.2",
     "tox==1.7.2",
