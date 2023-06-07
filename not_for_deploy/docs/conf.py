@@ -74,7 +74,7 @@ else:
 # }
 django_version = '4.2'
 intersphinx_mapping = {
-    'django': (f'http://docs.djangoproject.com/en/{django_version}/', 'http://docs.djangoproject.com/en/{django_version}/_objects/')
+    'django': (f'http://docs.djangoproject.com/en/{django_version}/', f'http://docs.djangoproject.com/en/{django_version}/_objects/')
 }
 
 extlinks = {
