@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "devilry"
-requires-python = ">=3.10.0"
+requires-python = ">=3.9.0"
 dynamic = ["version"]
 description = "A system for handling electronic deliveries. See https://github.com/devilry/devilry-django."
 readme = "README.md"
