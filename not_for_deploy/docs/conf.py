@@ -59,11 +59,7 @@ else:
 
 
 
-# Mapping to other docs
-# django_version = '1.7'
-# intersphinx_mapping = {
-#     'django': ('http://docs.djangoproject.com/en/{0}/'.format(django_version), 'http://docs.djangoproject.com/en/{0}/_objects/'.format(django_version))
-# }
+# Mapping to other doc
 django_version = '4.2'
 intersphinx_mapping = {
     'django': (f'http://docs.djangoproject.com/en/{django_version}/', f'http://docs.djangoproject.com/en/{django_version}/_objects/')
