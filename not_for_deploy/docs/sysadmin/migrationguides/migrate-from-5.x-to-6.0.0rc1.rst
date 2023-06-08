@@ -18,7 +18,7 @@ What's new?
  - Python 3.10 support
 
 
-Update devilry to 5.0.0b1
+Update devilry to 6.0.0rc1
 #########################
 
-Update the devilry version to ``5.0.0b1`` as described in :doc:`../update`.
+Update the devilry version to ``6.0.0rc1`` as described in :doc:`../update`.
