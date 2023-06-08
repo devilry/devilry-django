@@ -152,7 +152,7 @@ $ docker-compose down -v
 
 ## Documentation
 
-http://ievv-opensource.readthedocs.org/
+https://devilry.readthedocs.io
 
 ## How to release devilry
 
