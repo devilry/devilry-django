@@ -187,6 +187,11 @@ $ git push && git push --tags
 
 See _How to revert a bump_ in the [commitizen FAQ](https://commitizen-tools.github.io/commitizen/faq/#how-to-revert-a-bump).
 
+
+### Migrationguide and changelog (for official readthedocs)
+- Add a migration guide to not_for_deploy/docs/sysadmin/migrationguides/
+- Add a changelog to not_for_deploy/docs/user/changelog/
+
 ### Release to pypi:
 
 ```bash
