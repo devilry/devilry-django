@@ -154,7 +154,16 @@ $ docker-compose down -v
 
 https://devilry.readthedocs.io
 
-## How to release devilry
+## Release
+
+### Translations
+
+To translate new texts, do the following:
+
+- ``ievv makemessages``
+- Translate the .po files. Poedit is a great tool for this.
+- ``ievv compilemessages``
+- Commit the changes
 
 ### Set version and build staticfiles
 
