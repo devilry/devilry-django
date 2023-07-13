@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-06-07 08:34+0200\n"
-"PO-Revision-Date: 2022-06-07 08:38+0200\n"
+"PO-Revision-Date: 2023-07-13 14:51+0200\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 3.2\n"
 
 #: devilry/apps/core/admin.py:66
 msgid "Admins"
@@ -7583,7 +7583,7 @@ msgstr "Manuelt velg studenter som kvalifiserer for eksamen."
 #: devilry/devilry_report/templates/devilry_report/download_report.django.html:11
 msgid ""
 "The download will start automatically as soon as the report is finished."
-msgstr "Nedlastingen vil starte så for rapporten er ferdig."
+msgstr "Nedlastingen vil starte så fort rapporten er ferdig."
 
 #: devilry/devilry_student/cradminextensions/columntypes.py:13
 #: devilry/devilry_student/templates/devilry_student/cradmin_group/deliveriesapp/delivery_details.django.html:8
@@ -7936,7 +7936,7 @@ msgid ""
 "This assignment uses hard deadlines. Students will not be able to write "
 "comments or upload files after the deadline has expired."
 msgstr ""
-"Denne oppdaven bruker harde frister. Studenter vil ikke kunne skrive "
+"Denne oppgaven bruker harde frister. Studenter vil ikke kunne skrive "
 "kommentarer eller laste opp innleveringer etter fristen."
 
 #: devilry/project/common/settings.py:174
