@@ -40,7 +40,7 @@ def assignment_groups_available_for_self_assign(period, user):
             models.Q(examiners__relatedexaminer__user=user)
             |
             models.Q(number_of_examiners__lt=models.F('parentnode__examiner_self_assign_limit'))
-        )
+        ).distinct()
     return assignmentgroup_queryset
 
 
