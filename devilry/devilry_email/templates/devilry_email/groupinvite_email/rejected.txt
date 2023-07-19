@@ -1,0 +1,5 @@
+{% load i18n %}
+
+{% blocktranslate trimmed context 'group invite' %}
+    {{ sent_to_displayname }} rejected the invite to join your project group for {{ subject }} {{ assignment }}
+{% endblocktranslate %}

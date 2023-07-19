@@ -20,7 +20,7 @@ from devilry.devilry_email.utils import activate_translation_for_user
 from devilry.utils.devilry_email import send_message
 
 
-class MessageReceiverQuerySet(models.QuerySet):
+class MessageQuerySet(models.QuerySet):
     def filter_message_with_no_message_receivers(self):
         """
         Filter all :obj:`.Message`s without any :class:`.MessageReceiver`s.
@@ -41,7 +41,7 @@ class Message(models.Model):
         foreignkey to this class. The reason for this being that we want to save the subject and content
         in the preferred language of the user.
     """
-    objects = MessageReceiverQuerySet.as_manager()
+    objects = MessageQuerySet.as_manager()
 
     #: When the message was created.
     created_datetime = models.DateTimeField(
@@ -120,7 +120,13 @@ class Message(models.Model):
         choices_with_meta.Choice(value='feedback',
                                  label='Feedback'),
         choices_with_meta.Choice(value='feedback_updated',
-                                 label='Grading updated')
+                                 label='Grading updated'),
+        choices_with_meta.Choice(value='group_invite_invitation',
+                                 label='Group invitation: invitation'),
+        choices_with_meta.Choice(value='group_invite_accepted',
+                                 label='Group invitation: accepted'),
+        choices_with_meta.Choice(value='group_invite_rejected',
+                                 label='Group invitation: rejected'),
     )
 
     #: The context type of the message.
@@ -289,7 +295,6 @@ class MessageReceiverQuerySet(models.QuerySet):
 
         Returns:
             :class:`.MessageRecveiver`: Unsaved instance.
-
         """
         current_language = translation.get_language()
         activate_translation_for_user(user=user)
