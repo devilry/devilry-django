@@ -261,7 +261,6 @@ class TestPointToGradeMapOldTests(TestCase):
         # https://github.com/devilry/devilry-django/issues/563
         matches = assignment2.pointtogrademap.pointrangetograde_set.filter_grades_matching_points(2)
         self.assertEqual({pointrange_to_grade2}, set(matches))
-        # self.assertEquals(set([pointrange_to_grade1, pointrange_to_grade2]), set(matches))
 
     def test_clean_no_entries(self):
         point_to_grade_map = PointToGradeMap.objects.create(assignment=self.assignment)

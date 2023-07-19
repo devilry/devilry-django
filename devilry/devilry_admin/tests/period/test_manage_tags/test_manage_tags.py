@@ -41,46 +41,6 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
             mockresponse.request.cradmin_instance.reverse_url.call_args_list[1]
         )
 
-    # def test_link_urls_with_period_tags_rendered(self):
-    #     testperiod = baker.make('core.Period')
-    #     testperiodtag = baker.make('core.PeriodTag', period=testperiod, tag='a')
-    #     testperiodtag.relatedexaminers.add(baker.make('core.RelatedExaminer', period=testperiod))
-    #     testperiodtag.relatedstudents.add(baker.make('core.RelatedStudent', period=testperiod))
-    #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
-    #     self.assertEquals(6, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
-    #     self.assertEquals(
-    #         mock.call(appname='overview', args=(), viewname='INDEX', kwargs={}),
-    #         mockresponse.request.cradmin_instance.reverse_url.call_args_list[0]
-    #     )
-    #     self.assertEquals(
-    #         mock.call(appname='manage_tags', args=(), viewname='add_tag', kwargs={}),
-    #         mockresponse.request.cradmin_instance.reverse_url.call_args_list[1]
-    #     )
-    #     self.assertEquals(
-    #         mock.call('edit', args=(testperiodtag.id,), kwargs={}),
-    #         mockresponse.request.cradmin_app.reverse_appurl.call_args_list[3]
-    #     )
-    #     self.assertEquals(
-    #         mock.call('delete', args=(testperiodtag.id,), kwargs={}),
-    #         mockresponse.request.cradmin_app.reverse_appurl.call_args_list[4]
-    #     )
-    #     self.assertEquals(
-    #         mock.call(appname='manage_tags', args=(), viewname='add_students', kwargs={'tag': 'a'}),
-    #         mockresponse.request.cradmin_instance.reverse_url.call_args_list[5]
-    #     )
-    #     self.assertEquals(
-    #         mock.call(appname='manage_tags', args=(), viewname='add_examiners', kwargs={'tag': 'a'}),
-    #         mockresponse.request.cradmin_instance.reverse_url.call_args_list[6]
-    #     )
-    #     self.assertEquals(
-    #         mock.call(appname='manage_tags', args=(), viewname='remove_students', kwargs={'tag': 'a'}),
-    #         mockresponse.request.cradmin_instance.reverse_url.call_args_list[7]
-    #     )
-    #     self.assertEquals(
-    #         mock.call(appname='manage_tags', args=(), viewname='remove_examiners', kwargs={'tag': 'a'}),
-    #         mockresponse.request.cradmin_instance.reverse_url.call_args_list[8]
-    #     )
-
     def test_num_item_values_rendered(self):
         testperiod = baker.make('core.Period')
         baker.make('core.PeriodTag', period=testperiod)
