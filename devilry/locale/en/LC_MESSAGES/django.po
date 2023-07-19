@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-19 12:59+0200\n"
+"POT-Creation-Date: 2023-07-19 14:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -509,28 +509,6 @@ msgstr ""
 #: devilry/apps/core/models/subject.py:123
 #: devilry/devilry_admin/views/dashboard/overview.py:61
 msgid "courses"
-msgstr ""
-
-#: devilry/apps/core/templates/devilry_core/groupinvite_accepted.django.txt:1
-#, python-format
-msgid ""
-"%(sent_to_displayname)s accepted the invite to join your project\n"
-"group for %(subject)s %(assignment)s"
-msgstr ""
-
-#: devilry/apps/core/templates/devilry_core/groupinvite_invite.django.txt:1
-#, python-format
-msgid ""
-"%(sent_by_displayname)s invited you to join their project\n"
-"group for %(subject)s %(assignment)s.\n"
-"Accept or reject the offer here:"
-msgstr ""
-
-#: devilry/apps/core/templates/devilry_core/groupinvite_rejected.django.txt:1
-#, python-format
-msgid ""
-"%(sent_to_displayname)s rejected the invite to join your project\n"
-"group for %(subject)s %(assignment)s"
 msgstr ""
 
 #: devilry/apps/core/templates/devilry_core/templatetags/comment-summary.django.html:6

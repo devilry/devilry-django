@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-19 12:59+0200\n"
+"POT-Creation-Date: 2023-07-19 14:06+0200\n"
 "PO-Revision-Date: 2023-07-19 13:23+0200\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
@@ -407,8 +407,8 @@ msgstr "Kort navn"
 
 #: devilry/apps/core/models/custom_db_fields.py:22
 msgid ""
-"Up to 20 letters of lowercase english letters (a-z), numbers, underscore (\"_"
-"\") and hyphen (\"-\"). Used when the name takes too much space."
+"Up to 20 letters of lowercase english letters (a-z), numbers, underscore "
+"(\"_\") and hyphen (\"-\"). Used when the name takes too much space."
 msgstr ""
 "Opp til 20 bokstaver med engelske bokstaver (a-z), tall, understrek(\"_\") "
 "og bindestrek(\"-\"). Benyttes når navn tar for mye plass."
@@ -586,35 +586,6 @@ msgstr "kurs"
 #: devilry/devilry_admin/views/dashboard/overview.py:61
 msgid "courses"
 msgstr "kurs"
-
-#: devilry/apps/core/templates/devilry_core/groupinvite_accepted.django.txt:1
-#, python-format
-msgid ""
-"%(sent_to_displayname)s accepted the invite to join your project\n"
-"group for %(subject)s %(assignment)s"
-msgstr ""
-"%(sent_to_displayname)s godtok invitasjonen til din prosjektgruppe\n"
-"for %(subject)s %(assignment)s"
-
-#: devilry/apps/core/templates/devilry_core/groupinvite_invite.django.txt:1
-#, python-format
-msgid ""
-"%(sent_by_displayname)s invited you to join their project\n"
-"group for %(subject)s %(assignment)s.\n"
-"Accept or reject the offer here:"
-msgstr ""
-"%(sent_by_displayname)s har invitert deg til sin prosjektgruppe\n"
-"for %(subject)s %(assignment)s.\n"
-"Godta eller avslå tilbudet her:"
-
-#: devilry/apps/core/templates/devilry_core/groupinvite_rejected.django.txt:1
-#, python-format
-msgid ""
-"%(sent_to_displayname)s rejected the invite to join your project\n"
-"group for %(subject)s %(assignment)s"
-msgstr ""
-"%(sent_to_displayname)s avslo invitasjonen til din prosjektgruppe\n"
-"for %(subject)s %(assignment)s"
 
 #: devilry/apps/core/templates/devilry_core/templatetags/comment-summary.django.html:6
 #, python-format
@@ -3400,8 +3371,8 @@ msgid ""
 "Changed deadline handling from \"%(old_deadline_handling_text)s\" to "
 "\"%(new_deadline_handling_text)s\"."
 msgstr ""
-"Endret håndtering av innleveringsfrist fra \"%(old_deadline_handling_text)s"
-"\" til \"%(new_deadline_handling_text)s\"."
+"Endret håndtering av innleveringsfrist fra "
+"\"%(old_deadline_handling_text)s\" til \"%(new_deadline_handling_text)s\"."
 
 #: devilry/devilry_admin/views/assignment/examiner_selfassign.py:16
 msgctxt "admin examiner selfassign setting"
@@ -4317,8 +4288,8 @@ msgstr "Skriv inn navnet for din oppgave."
 
 #: devilry/devilry_admin/views/period/createassignment.py:52
 msgid ""
-"Up to 20 letters of lowercase english letters (a-z), numbers, underscore (\"_"
-"\") and hyphen (\"-\")."
+"Up to 20 letters of lowercase english letters (a-z), numbers, underscore "
+"(\"_\") and hyphen (\"-\")."
 msgstr ""
 "Opp til 20 bokstaver med engelske bokstaver (a-z), tall, understrek(\"_\") "
 "og bindestrek(\"-\")."
@@ -5053,8 +5024,8 @@ msgstr ""
 
 #: devilry/devilry_comment/templates/devilry_comment/markdown_help.django.html:273
 msgid ""
-"You can add latex math using the <code>$math$ $/math$</code> or <code>"
-"$mathblock$ $/mathblock$</code> tags."
+"You can add latex math using the <code>$math$ $/math$</code> or "
+"<code>$mathblock$ $/mathblock$</code> tags."
 msgstr ""
 "Du kan legge til latex matte ved å bruke <code>$math$ $/math$</code> eller "
 "<code>$mathblock$ $/mathblock$</code> taggene."
@@ -7980,6 +7951,32 @@ msgstr "Engelsk"
 #: devilry/project/common/settings.py:175
 msgid "Norwegian Bokmal"
 msgstr "Norsk bokmål"
+
+#, python-format
+#~ msgid ""
+#~ "%(sent_to_displayname)s accepted the invite to join your project\n"
+#~ "group for %(subject)s %(assignment)s"
+#~ msgstr ""
+#~ "%(sent_to_displayname)s godtok invitasjonen til din prosjektgruppe\n"
+#~ "for %(subject)s %(assignment)s"
+
+#, python-format
+#~ msgid ""
+#~ "%(sent_by_displayname)s invited you to join their project\n"
+#~ "group for %(subject)s %(assignment)s.\n"
+#~ "Accept or reject the offer here:"
+#~ msgstr ""
+#~ "%(sent_by_displayname)s har invitert deg til sin prosjektgruppe\n"
+#~ "for %(subject)s %(assignment)s.\n"
+#~ "Godta eller avslå tilbudet her:"
+
+#, python-format
+#~ msgid ""
+#~ "%(sent_to_displayname)s rejected the invite to join your project\n"
+#~ "group for %(subject)s %(assignment)s"
+#~ msgstr ""
+#~ "%(sent_to_displayname)s avslo invitasjonen til din prosjektgruppe\n"
+#~ "for %(subject)s %(assignment)s"
 
 #~ msgctxt "examiner dashboard"
 #~ msgid "Self-assign available"
