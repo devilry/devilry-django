@@ -74,26 +74,6 @@ def get_comment(comment_id):
         logger.error('Mail: Something went wrong. GroupComment with ID#{} does not exist'.format(comment_id))
 
 
-def get_student_users_not_comment_poster(group, exclude_user=None):
-    """
-    Get all student users in assignment group, and exclude the user that created the comment.
-    """
-    queryset = get_student_users_in_group(group=group)
-    if not exclude_user:
-        return queryset
-    return queryset.exclude(id=exclude_user.id)
-
-
-def get_examiner_users_not_comment_poster(group, exclude_user=None):
-    """
-    Get all examiner users in assignment group, and exclude the user that created the comment.
-    """
-    queryset = get_examiner_users_in_group(group=group)
-    if not exclude_user:
-        return queryset
-    return queryset.exclude(id=exclude_user.id)
-
-
 def get_subject_and_period_admins_users(group):
     """
     Get all User objects where the user is :class:`~.devilry.devilry_core.models.Subject`
@@ -189,7 +169,7 @@ def send_examiner_comment_email(comment_id, domain_url_start):
 
     The email content will be the same for all examiners.
 
-    If no examiner users exists for the assignment, :class:`~.devilry.devilry_core.models.Subject`
+    If no examiner-users exists for the assignment group, :class:`~.devilry.devilry_core.models.Subject`
     and :class:`~.devilry.devilry_core.models.Period` admins connected to the assignemnt are sat
     as recipients of the email and extra info is added in the template.
 
@@ -214,17 +194,27 @@ def send_examiner_comment_email(comment_id, domain_url_start):
     comment = get_comment(comment_id=comment_id)
     absolute_url = build_feedbackfeed_absolute_url(
         domain_scheme=domain_url_start, group_id=comment.feedback_set.group.id, instance_id='devilry_group_examiner')
-    recipients = list(
-        get_examiner_users_not_comment_poster(group=comment.feedback_set.group, exclude_user=comment.user))
-    has_examiner = True
+
+    examiner_users_in_group_queryset = get_examiner_users_in_group(group=comment.feedback_set.group)
+    has_examiner = examiner_users_in_group_queryset.exists()
+    recipients = list(examiner_users_in_group_queryset.exclude(id=comment.user.id))
+
     if not recipients:
-        if comment.text.strip() == '':
-            # Do not spam admins with notifications for comments without any text.
+        if not has_examiner:
+            # No examiners assigned to the group. Set recipients to the subject- 
+            # and period-admin users so they receive an e-mail informing that the 
+            # group has no examiners assigned.
+            if comment.text.strip() == '':
+                # Do not spam admins with notifications for comments without any text.
+                return
+            absolute_url = build_feedbackfeed_absolute_url(
+                domain_scheme=domain_url_start, group_id=comment.feedback_set.group.id, instance_id='devilry_group_admin')
+            recipients = list(get_subject_and_period_admins_users(group=comment.feedback_set.group))
+        else:
+            # Group has an examiner, but no recipients.
+            # This happens when the group has one examiner and the user is also the comment-poster.
             return
-        absolute_url = build_feedbackfeed_absolute_url(
-            domain_scheme=domain_url_start, group_id=comment.feedback_set.group.id, instance_id='devilry_group_admin')
-        recipients = list(get_subject_and_period_admins_users(group=comment.feedback_set.group))
-        has_examiner = False
+
     send_comment_email(
         comment=comment,
         user_list=recipients,
@@ -275,11 +265,11 @@ def send_student_comment_email(comment_id, domain_url_start, from_student_poster
     comment = get_comment(comment_id=comment_id)
     absolute_url = build_feedbackfeed_absolute_url(
         domain_scheme=domain_url_start, group_id=comment.feedback_set.group.id)
-    student_users = list(get_student_users_not_comment_poster(group=comment.feedback_set.group, exclude_user=comment.user))
+    recipients = list(get_student_users_in_group(group=comment.feedback_set.group).exclude(id=comment.user.id))
 
     send_comment_email(
         comment=comment,
-        user_list=student_users,
+        user_list=recipients,
         feedbackfeed_url=absolute_url,
         domain_scheme=domain_url_start,
         crinstance_id='devilry_group_student'

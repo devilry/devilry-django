@@ -361,7 +361,7 @@ class TestExaminerNotAssignedCommentEmail(TestCommentEmailForUsersMixin, test.Te
         )
         if not admin_user:
             admin_user = baker.make(settings.AUTH_USER_MODEL)
-        baker.make('devilry_account.UserEmail', user=admin_user, email='period_admin@example.com')
+            baker.make('devilry_account.UserEmail', user=admin_user, email='period_admin@example.com')
         baker.make(
             'devilry_account.PermissionGroupUser',
             permissiongroup=permission_group,
@@ -507,6 +507,7 @@ class TestExaminerNotAssignedCommentEmail(TestCommentEmailForUsersMixin, test.Te
             group=testgroup, deadline_datetime=timezone.now() + timezone.timedelta(days=1))
 
         admin_user = baker.make(settings.AUTH_USER_MODEL)
+        baker.make('devilry_account.UserEmail', user=admin_user, email='adminuser@example.com')
         self._setup_period_admin(assignment=testassignment, admin_user=admin_user)
 
         # The user that posted the comment
@@ -529,7 +530,11 @@ class TestExaminerNotAssignedCommentEmail(TestCommentEmailForUsersMixin, test.Te
         self.assertEqual(Message.objects.filter(status='sent').count(), 1)
         self.assertEqual(MessageReceiver.objects.filter(status='sent').count(), 1)
 
-    def test_send_examiner_comment_no_examiner_subject_from_student_another_examiner(self):
+    def test_send_examiner_comment_single_examiner_as_examiner_comment_poster(self):
+        # Test that no e-mail is sent if the comment-poster is the only examiner in the group.
+        # This is because we exclude the comment-poster (examiners does not receive a receipt), 
+        # but since the comment-poster is also an examiner that means that the group has an 
+        # examiner and no e-mail should be sent to admins.
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            long_name='Assignment 1')
         testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
@@ -551,13 +556,36 @@ class TestExaminerNotAssignedCommentEmail(TestCommentEmailForUsersMixin, test.Te
             comment_id=test_groupcomment.id,
             domain_url_start='http://www.example.com/', )
 
-        self.assertEqual(len(mail.outbox), 2)
-        self.assertIn(mail.outbox[0].recipients()[0], ['period_admin@example.com', 'subject_admin@example.com'])
-        self.assertIn(mail.outbox[1].recipients()[0], ['period_admin@example.com', 'subject_admin@example.com'])
-        self.assertEqual(
-            mail.outbox[0].subject,
-            '[Devilry] An examiner added a new comment for {}'.format(
-                test_feedbackset.group.parentnode.long_name))
+        self.assertEqual(len(mail.outbox), 0)
+        self.assertEqual(Message.objects.count(), 0)
+
+    def test_send_examiner_comment_single_examiner_as_period_admin_comment_poster(self):
+        # Tests that no e-mail is sent if the comment is posted as a admin-comment and 
+        # the comment-poster is an examiner for the group and a period-admin.
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           long_name='Assignment 1')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        test_feedbackset = group_baker.feedbackset_first_attempt_unpublished(
+            group=testgroup, deadline_datetime=timezone.now() + timezone.timedelta(days=1))
+
+        self._setup_period_and_subject_admins(assignment=testassignment)
+
+        # The user that posted the comment
+        comment_user = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com')
+        baker.make('core.Examiner', assignmentgroup=test_feedbackset.group, relatedexaminer__user=comment_user)
+        self._setup_period_admin(assignment=testassignment, admin_user=comment_user)
+        test_groupcomment = baker.make('devilry_group.GroupComment',
+                                       feedback_set=test_feedbackset,
+                                       text='This is a test',
+                                       user_role=Comment.USER_ROLE_ADMIN,
+                                       user=comment_user)
+        baker.make('devilry_account.UserEmail', user=comment_user, email='testuser@example.com')
+        send_examiner_comment_email(
+            comment_id=test_groupcomment.id,
+            domain_url_start='http://www.example.com/', )
+
+        self.assertEqual(len(mail.outbox), 0)
+        self.assertEqual(Message.objects.count(), 0)
 
     def test_send_examiner_no_examiner_admin_comment(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
