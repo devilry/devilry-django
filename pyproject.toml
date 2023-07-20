@@ -31,7 +31,7 @@ classifiers = [
 ]
 dependencies = [
     "Django>=4.2.0,<4.3.0",
-    "pyyaml>=5.4.0,<5.5.0",
+    "pyyaml==6.0.1",
     "Markdown>=3.3.0,<3.4.0",
     "Pygments>=2.15.0,<2.16.0",
     "flup>=1.0.0,<1.1.0",
