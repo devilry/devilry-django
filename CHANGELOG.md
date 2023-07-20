@@ -1,3 +1,25 @@
+## 6.0.0rc2 (2023-07-20)
+
+### Feat
+
+- Add endpoints readiness and liveness probing
+
+### Fix
+
+- Use CSRF-middleware to ensure CSRF-cookie is set everywhere
+- If user is admin and examiner, the user should receive a notification as examiner if they post a comment as an admin.
+- E-mail sent to admins when comment-poster was the only examiner in the group
+- Group invite - email translations
+- Group invite - use devilry_message system
+- Use distinct to filter out duplicate rows from AssignmentGroup-query
+- translation errors
+- Contrast level adjustment for "danger"-box anchor-tag
+- Update sphinx and related packages
+- readthedocs testing
+- **.readthedocs.yml**: Python version 3.8
+- **.readthedocs.yml**: Python version 3.10
+- Add pip-tools
+
 ## 6.0.0rc1 (2023-05-31)
 
 ### BREAKING CHANGE
