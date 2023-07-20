@@ -197,7 +197,12 @@ def send_examiner_comment_email(comment_id, domain_url_start):
 
     examiner_users_in_group_queryset = get_examiner_users_in_group(group=comment.feedback_set.group)
     has_examiner = examiner_users_in_group_queryset.exists()
-    recipients = list(examiner_users_in_group_queryset.exclude(id=comment.user.id))
+    if comment.user_role == Comment.USER_ROLE_EXAMINER:
+        # Exclude the comment-user only if it's an examiner-comment. If the user is 
+        # the only examiner in the group and posts an examiner-comment, no e-mail should 
+        # be sent.
+        examiner_users_in_group_queryset = examiner_users_in_group_queryset.exclude(id=comment.user.id)
+    recipients = list(examiner_users_in_group_queryset)
 
     if not recipients:
         if not has_examiner:

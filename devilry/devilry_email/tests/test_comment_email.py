@@ -560,7 +560,7 @@ class TestExaminerNotAssignedCommentEmail(TestCommentEmailForUsersMixin, test.Te
         self.assertEqual(Message.objects.count(), 0)
 
     def test_send_examiner_comment_single_examiner_as_period_admin_comment_poster(self):
-        # Tests that no e-mail is sent if the comment is posted as a admin-comment and 
+        # Tests that e-mail is sent if the comment is posted as a admin-comment and 
         # the comment-poster is an examiner for the group and a period-admin.
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            long_name='Assignment 1')
@@ -571,7 +571,7 @@ class TestExaminerNotAssignedCommentEmail(TestCommentEmailForUsersMixin, test.Te
         self._setup_period_and_subject_admins(assignment=testassignment)
 
         # The user that posted the comment
-        comment_user = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com')
+        comment_user = baker.make(settings.AUTH_USER_MODEL, shortname='examiner@example.com')
         baker.make('core.Examiner', assignmentgroup=test_feedbackset.group, relatedexaminer__user=comment_user)
         self._setup_period_admin(assignment=testassignment, admin_user=comment_user)
         test_groupcomment = baker.make('devilry_group.GroupComment',
@@ -579,13 +579,14 @@ class TestExaminerNotAssignedCommentEmail(TestCommentEmailForUsersMixin, test.Te
                                        text='This is a test',
                                        user_role=Comment.USER_ROLE_ADMIN,
                                        user=comment_user)
-        baker.make('devilry_account.UserEmail', user=comment_user, email='testuser@example.com')
+        baker.make('devilry_account.UserEmail', user=comment_user, email='examiner@example.com')
         send_examiner_comment_email(
             comment_id=test_groupcomment.id,
             domain_url_start='http://www.example.com/', )
 
-        self.assertEqual(len(mail.outbox), 0)
-        self.assertEqual(Message.objects.count(), 0)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(Message.objects.count(), 1)
+        self.assertEqual(mail.outbox[0].recipients(), ['examiner@example.com'])
 
     def test_send_examiner_no_examiner_admin_comment(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
