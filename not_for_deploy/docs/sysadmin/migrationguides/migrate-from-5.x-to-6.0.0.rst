@@ -1,9 +1,9 @@
-===================================
-Migrating from 6.0.0rc1 to 6.0.0rc2
-===================================
+===========================
+Migrating from 5.x to 6.0.0
+===========================
 
 .. note::
-    Migrate from the latest 6.0.0rc1 release to 6.0.0rc2.
+    Migrate from the latest 5.x release to 6.0.0.
 
 
 Backup database and files
@@ -32,7 +32,7 @@ Fixed
 
 
 
-Update devilry to 6.0.0rc2
-#########################
+Update devilry to 6.0.0
+#######################
 
-Update the devilry version to ``6.0.0rc2`` as described in :doc:`../update`.
+Update the devilry version to ``6.0.0`` as described in :doc:`../update`.

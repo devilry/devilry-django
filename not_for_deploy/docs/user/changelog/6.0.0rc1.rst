@@ -1,8 +1,0 @@
-.. _6.0.0rc1changelog:
-
-###############################
-What is new in Devilry 6.0.0rc1
-###############################
-
-- Updated to Django 4.2
-- Python 3.10 support
