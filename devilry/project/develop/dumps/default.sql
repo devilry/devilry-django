@@ -5967,28 +5967,28 @@ COPY public.devilry_compressionutil_compressedarchivemeta (id, content_object_id
 --
 
 COPY public.devilry_dbcache_assignmentgroupcacheddata (id, new_attempt_count, public_total_comment_count, public_student_comment_count, public_examiner_comment_count, public_admin_comment_count, public_student_file_upload_count, first_feedbackset_id, group_id, last_feedbackset_id, last_published_feedbackset_id, last_public_comment_by_examiner_datetime, last_public_comment_by_student_datetime, candidate_count, examiner_count) FROM stdin;
-159	0	0	0	0	0	0	3	3	3	\N	\N	\N	1	1
-160	0	0	0	0	0	0	4	4	4	\N	\N	\N	1	1
-161	0	0	0	0	0	0	5	5	5	\N	\N	\N	1	1
-162	0	0	0	0	0	0	6	6	6	\N	\N	\N	1	1
-163	0	0	0	0	0	0	7	7	7	\N	\N	\N	1	1
-164	0	0	0	0	0	0	8	8	8	\N	\N	\N	1	1
-165	0	2	1	1	0	0	9	9	9	9	2016-02-08 10:27:11.75299+00	2016-02-08 10:25:23.021072+00	1	1
-166	0	0	0	0	0	0	10	10	10	\N	\N	\N	1	0
-167	0	0	0	0	0	0	11	11	11	\N	\N	\N	1	0
-168	0	0	0	0	0	0	12	12	12	12	\N	\N	1	1
-169	0	1	0	1	0	0	13	14	13	13	2018-10-15 09:54:11+00	\N	1	1
-170	0	1	0	1	0	0	14	15	14	14	2018-10-15 09:55:29+00	\N	1	1
-171	0	1	0	1	0	0	15	16	15	15	2018-10-15 09:55:03+00	\N	1	1
-172	0	1	0	1	0	0	16	17	16	16	2018-10-15 09:55:29+00	\N	1	1
-173	0	1	0	1	0	0	17	18	17	17	2018-10-15 09:54:31+00	\N	1	1
-174	0	1	0	1	0	0	18	19	18	18	2018-10-15 09:55:29+00	\N	1	1
-175	0	1	0	1	0	0	19	20	19	19	2018-10-15 09:55:29+00	\N	1	1
-176	0	1	0	1	0	0	20	21	20	20	2018-10-15 09:54:21+00	\N	1	1
-177	0	1	0	1	0	0	21	22	21	21	2018-10-15 09:55:03+00	\N	1	1
-178	0	1	0	1	0	0	22	23	22	22	2018-10-15 09:55:03+00	\N	1	1
-179	0	0	0	0	0	0	23	24	23	\N	\N	\N	1	0
-180	0	1	0	1	0	0	24	25	24	24	2018-10-15 09:54:00+00	\N	1	1
+181	0	0	0	0	0	0	3	3	3	\N	\N	\N	1	1
+182	0	0	0	0	0	0	4	4	4	\N	\N	\N	1	1
+183	0	0	0	0	0	0	5	5	5	\N	\N	\N	1	1
+184	0	0	0	0	0	0	6	6	6	\N	\N	\N	1	1
+185	0	0	0	0	0	0	7	7	7	\N	\N	\N	1	1
+186	0	0	0	0	0	0	8	8	8	\N	\N	\N	1	1
+187	0	2	1	1	0	0	9	9	9	9	2016-02-08 10:27:11.75299+00	2016-02-08 10:25:23.021072+00	1	1
+188	0	0	0	0	0	0	10	10	10	\N	\N	\N	1	0
+189	0	0	0	0	0	0	11	11	11	\N	\N	\N	1	0
+190	0	0	0	0	0	0	12	12	12	12	\N	\N	1	1
+191	0	1	0	1	0	0	13	14	13	13	2018-10-15 09:54:11+00	\N	1	1
+192	0	1	0	1	0	0	14	15	14	14	2018-10-15 09:55:29+00	\N	1	1
+193	0	1	0	1	0	0	15	16	15	15	2018-10-15 09:55:03+00	\N	1	1
+194	0	1	0	1	0	0	16	17	16	16	2018-10-15 09:55:29+00	\N	1	1
+195	0	1	0	1	0	0	17	18	17	17	2018-10-15 09:54:31+00	\N	1	1
+196	0	1	0	1	0	0	18	19	18	18	2018-10-15 09:55:29+00	\N	1	1
+197	0	1	0	1	0	0	19	20	19	19	2018-10-15 09:55:29+00	\N	1	1
+198	0	1	0	1	0	0	20	21	20	20	2018-10-15 09:54:21+00	\N	1	1
+199	0	1	0	1	0	0	21	22	21	21	2018-10-15 09:55:03+00	\N	1	1
+200	0	1	0	1	0	0	22	23	22	22	2018-10-15 09:55:03+00	\N	1	1
+201	0	0	0	0	0	0	23	24	23	\N	\N	\N	1	0
+202	0	1	0	1	0	0	24	25	24	24	2018-10-15 09:54:00+00	\N	1	1
 \.
 
 
@@ -6448,6 +6448,7 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 164	devilry_qualifiesforexam	0005_deletedqualifiesforfinalexam	2023-05-26 09:18:14.557758+00
 165	devilry_report	0001_initial	2023-05-26 09:18:14.618173+00
 166	devilry_report	0002_auto_20210427_1350	2023-05-26 09:18:14.682827+00
+167	devilry_message	0003_alter_message_context_type	2023-07-21 12:44:58.594865+00
 \.
 
 
@@ -6911,7 +6912,7 @@ SELECT pg_catalog.setval('public.devilry_compressionutil_compressedarchivemeta_i
 -- Name: devilry_dbcache_assignmentgroupcacheddata_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.devilry_dbcache_assignmentgroupcacheddata_id_seq', 180, true);
+SELECT pg_catalog.setval('public.devilry_dbcache_assignmentgroupcacheddata_id_seq', 202, true);
 
 
 --
@@ -7037,7 +7038,7 @@ SELECT pg_catalog.setval('public.django_content_type_id_seq', 81, true);
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.django_migrations_id_seq', 166, true);
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 167, true);
 
 
 --
