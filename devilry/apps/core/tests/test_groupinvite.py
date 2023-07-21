@@ -10,6 +10,7 @@ from devilry.apps.core import devilry_core_baker_factories as core_baker
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import GroupInvite
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
+from devilry.devilry_message.models import Message, MessageReceiver
 
 
 class TestGroupInviteErrors(TestCase):
@@ -316,7 +317,7 @@ class GroupInviteRespond(TestCase):
         student1 = core_baker.candidate(group=group1).relatedstudent.user
         student2 = core_baker.candidate(group=group2).relatedstudent.user
         invite = baker.make('core.GroupInvite', sent_by=student1, sent_to=student2, group=group1)
-        with self.assertNumQueries(36):
+        with self.assertNumQueries(45):
             invite.respond(True)
 
     def test_num_queries_reject(self):
@@ -325,7 +326,7 @@ class GroupInviteRespond(TestCase):
         student1 = core_baker.candidate(group=group1).relatedstudent.user
         student2 = core_baker.candidate(group=group2).relatedstudent.user
         invite = baker.make('core.GroupInvite', sent_by=student1, sent_to=student2, group=group1)
-        with self.assertNumQueries(9):
+        with self.assertNumQueries(17):
             invite.respond(False)
 
     def test_send_invite_mail(self):
@@ -354,6 +355,24 @@ class GroupInviteRespond(TestCase):
         url = request.build_absolute_uri(
             reverse('devilry_student_groupinvite_respond', kwargs={'invite_id': invite.id}))
         self.assertIn(url, mail.outbox[0].body)
+
+        message = Message.objects.get()
+        message_receiver = MessageReceiver.objects.get()
+        self.assertIsNone(message.created_by)
+        self.assertEqual(message.context_type, Message.CONTEXT_TYPE_CHOICES.GROUP_INVITE_INVITATION.value)
+        self.assertDictEqual(message.metadata, {
+            'groupinvite_id': invite.id,
+            'sent_by_user_id': invite.sent_by.id,
+            'sent_to_user_id': invite.sent_to.id
+        })
+        self.assertEqual(message_receiver.user, invite.sent_to)
+        self.assertEqual(message_receiver.subject, 'Project group invite for Duck1010.s17.assignment1')
+        self.assertIn(
+            f'{ invite.sent_by.get_displayname() } invited you to join their project group',
+            message_receiver.message_content_plain
+        )
+        self.assertIn(testgroup.parentnode.long_name, message_receiver.message_content_plain)
+        self.assertIn(testgroup.parentnode.parentnode.parentnode.long_name, message_receiver.message_content_plain.replace('\n', ' '))
 
     def test_send_reject_mail(self):
         assignment = baker.make(
@@ -384,6 +403,25 @@ class GroupInviteRespond(TestCase):
         self.assertEqual(len(mail.outbox), 2)
         self.assertEqual(mail.outbox[1].subject, '[Devilry] Dewey rejected your project group invite')
 
+        self.assertEqual(Message.objects.count(), 2)
+        self.assertEqual(MessageReceiver.objects.count(), 2)
+        message = Message.objects.get(context_type=Message.CONTEXT_TYPE_CHOICES.GROUP_INVITE_REJECTED.value)
+        message_receiver = MessageReceiver.objects.get(message=message)
+        self.assertIsNone(message.created_by)
+        self.assertDictEqual(message.metadata, {
+            'groupinvite_id': invite.id,
+            'sent_by_user_id': invite.sent_by.id,
+            'sent_to_user_id': invite.sent_to.id
+        })
+        self.assertEqual(message_receiver.user, invite.sent_by)
+        self.assertEqual(message_receiver.subject, f'{invite.sent_to.get_full_name()} rejected your project group invite')
+        self.assertIn(
+            f'{ invite.sent_to.get_displayname() } rejected the invite to join your project group',
+            message_receiver.message_content_plain
+        )
+        self.assertIn(testgroup.parentnode.long_name, message_receiver.message_content_plain)
+        self.assertIn(testgroup.parentnode.parentnode.parentnode.long_name, message_receiver.message_content_plain)
+
     def test_send_accept_mail(self):
         assignment = baker.make(
             'core.Assignment',
@@ -412,6 +450,25 @@ class GroupInviteRespond(TestCase):
         invite.respond(True)
         self.assertEqual(len(mail.outbox), 2)
         self.assertEqual(mail.outbox[1].subject, '[Devilry] Dewey accepted your project group invite')
+
+        self.assertEqual(Message.objects.count(), 2)
+        self.assertEqual(MessageReceiver.objects.count(), 2)
+        message = Message.objects.get(context_type=Message.CONTEXT_TYPE_CHOICES.GROUP_INVITE_ACCEPTED.value)
+        message_receiver = MessageReceiver.objects.get(message=message)
+        self.assertIsNone(message.created_by)
+        self.assertDictEqual(message.metadata, {
+            'groupinvite_id': invite.id,
+            'sent_by_user_id': invite.sent_by.id,
+            'sent_to_user_id': invite.sent_to.id
+        })
+        self.assertEqual(message_receiver.user, invite.sent_by)
+        self.assertEqual(message_receiver.subject, f'{invite.sent_to.get_full_name()} accepted your project group invite')
+        self.assertIn(
+            f'{ invite.sent_to.get_displayname() } accepted the invite to join your project group',
+            message_receiver.message_content_plain
+        )
+        self.assertIn(testgroup.parentnode.long_name, message_receiver.message_content_plain)
+        self.assertIn(testgroup.parentnode.parentnode.parentnode.long_name, message_receiver.message_content_plain)
 
     def test_send_invite_to_choices_queryset(self):
         group1 = baker.make('core.AssignmentGroup', parentnode__students_can_create_groups=True)

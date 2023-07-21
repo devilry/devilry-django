@@ -1,10 +1,10 @@
 from os.path import join
 from os.path import exists
-from django_dbdev.backends.postgres import DBSETTINGS
 from devilry.utils import rq_setup
 from model_bakery import baker
 
 from devilry.project.common.settings import *  # noqa
+import dj_database_url
 
 THIS_DIR = os.path.dirname(__file__)
 
@@ -23,27 +23,16 @@ if not exists(logdir):
 MEDIA_ROOT = join(developfilesdir, "filestore")
 DEVILRY_FSHIERDELIVERYSTORE_ROOT = join(developfilesdir, 'deliverystorehier')
 
-# DATABASES = {
-#     "default": {
-#         'ENGINE': 'django.db.backends.sqlite3',  # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-#         'NAME': join(developfilesdir, 'db.sqlite3'),    # Or path to database file if using sqlite3.
-#         'USER': '',             # Not used with sqlite3.
-#         'PASSWORD': '',         # Not used with sqlite3.
-#         'HOST': '',             # Set to empty string for localhost. Not used with sqlite3.
-#         'PORT': '',             # Set to empty string for default. Not used with sqlite3.
-#     }
-# }
-
 DATABASES = {
-    'default': DBSETTINGS
+    'default': dj_database_url.parse(
+        # The default should match postgres in docker-compose.yaml
+        os.environ.get('DATABASE_URL', 'postgres://dbdev:dbdev@localhost:23419/dbdev')
+    )
 }
-DATABASES['default']['PORT'] = 24376
-DBDEV_DATADIR = os.environ.get('DBDEV_DATADIR', 'dbdev_tempdata')
 
 ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS += [
-    'django_dbdev',
     # 'raven.contrib.django.raven_compat', # Sentry client (Raven)
     'devilry.devilry_sandbox',
 

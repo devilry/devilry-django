@@ -1,15 +1,11 @@
 import random
 from random import randint
 
-from allauth.socialaccount.models import SocialAccount, SocialToken, SocialApp
 from django.contrib.auth import get_user_model
-from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils import timezone
 
-from devilry.devilry_comment.models import Comment
-from devilry.utils import anonymize_database
 from devilry.apps.core import models as coremodels
 from devilry.devilry_group import models as group_models
 

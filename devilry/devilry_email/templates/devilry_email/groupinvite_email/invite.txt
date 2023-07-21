@@ -1,0 +1,6 @@
+{% load i18n %}
+
+{% blocktranslate trimmed context 'group invite' %}
+    {{ sent_by_displayname }} invited you to join their project group for {{ subject }} {{ assignment }}.
+    Accept or reject the offer here: 
+{% endblocktranslate %} {{ url }}

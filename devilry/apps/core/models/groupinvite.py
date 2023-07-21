@@ -1,3 +1,4 @@
+import django_rq
 from django.core.exceptions import ValidationError
 from django.urls import reverse
 from django.db import models
@@ -8,7 +9,8 @@ from django.utils.translation import gettext_lazy
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import Candidate
 from devilry.devilry_account.models import User
-from devilry.utils.devilry_email import send_templated_message
+from devilry.devilry_email.groupinvite_email import send_invite_email, \
+    send_accepted_email, send_rejected_email
 from .assignment_group import AssignmentGroup
 
 
@@ -217,19 +219,17 @@ class GroupInvite(models.Model):
             source.merge_into(self.group)
 
     def _send_response_notification(self):
-        sent_to_displayname = self.sent_to.get_full_name()
+        queue = django_rq.get_queue(name='email')
         if self.accepted:
-            subject = gettext_lazy('{user} accepted your project group invite').format(user=sent_to_displayname)
-            template_name = 'devilry_core/groupinvite_accepted.django.txt'
+            queue.enqueue(
+                send_accepted_email,
+                groupinvite_id=self.id
+            )
         else:
-            subject = gettext_lazy('{user} rejected your project group invite').format(user=sent_to_displayname)
-            template_name = 'devilry_core/groupinvite_rejected.django.txt'
-        assignment = self.group.assignment
-        send_templated_message(subject, template_name, {
-            'sent_to_displayname': sent_to_displayname,
-            'assignment': assignment.long_name,
-            'subject': assignment.subject.long_name
-        }, self.sent_by)
+            queue.enqueue(
+                send_rejected_email,
+                groupinvite_id=self.id
+            )
 
     def send_invite_notification(self, request):
         """
@@ -251,14 +251,10 @@ class GroupInvite(models.Model):
             raise ValueError(gettext_lazy('Can not send notification for an accepted GroupInvite.'))
         elif self.id is None:
             raise ValueError(gettext_lazy('Can not send notification for an unsaved GroupInvite.'))
-        sent_by_displayname = self.sent_by.get_displayname()
-        assignment = self.group.assignment
-        subject = gettext_lazy('Project group invite for {assignment}').format(assignment=assignment.get_path())
-        template_name = 'devilry_core/groupinvite_invite.django.txt'
-        url = request.build_absolute_uri(reverse('devilry_student_groupinvite_respond', kwargs={'invite_id': self.id}))
-        send_templated_message(subject, template_name, {
-            'sent_by_displayname': sent_by_displayname,
-            'assignment': assignment.long_name,
-            'subject': assignment.subject.long_name,
-            'url': url
-        }, self.sent_to)
+        queue = django_rq.get_queue(name='email')
+        queue.enqueue(
+            send_invite_email,
+            groupinvite_id=self.id,
+            url=request.build_absolute_uri(
+                reverse('devilry_student_groupinvite_respond', kwargs={'invite_id': self.id})
+            ))

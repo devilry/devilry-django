@@ -162,9 +162,7 @@ IEVVTASKS_BUILDSTATIC_APPS = ievvbuildstatic.config.Apps(
 
 IEVVTASKS_DEVRUN_RUNNABLES = {
     'default': ievvdevrun.config.RunnableThreadList(
-        ievvdevrun.runnables.dbdev_runserver.RunnableThread(),
         ievvdevrun.runnables.django_runserver.RunnableThread(port=8000),
-        ievvdevrun.runnables.redis_server.RunnableThread(),
         ievvdevrun.runnables.rq_worker.RunnableThread(),
         ievvdevrun.runnables.rq_worker.RunnableThread(queuename='email'),
     ),
@@ -172,23 +170,17 @@ IEVVTASKS_DEVRUN_RUNNABLES = {
     # Same as default, but Django serves staticfiles if DEBUG=False.
     # Should only be used if anything needs to be tested with DEBUG=False.
     'insecure': ievvdevrun.config.RunnableThreadList(
-        ievvdevrun.runnables.dbdev_runserver.RunnableThread(),
         ievvdevrun.runnables.django_runserver.RunnableThread(port=8000, insecure=True),
-        ievvdevrun.runnables.redis_server.RunnableThread(),
         ievvdevrun.runnables.rq_worker.RunnableThread(),
         ievvdevrun.runnables.rq_worker.RunnableThread(queuename='email'),
     ),
     'gunicorn_test': ievvdevrun.config.RunnableThreadList(
-        ievvdevrun.runnables.dbdev_runserver.RunnableThread(),
-        ievvdevrun.runnables.redis_server.RunnableThread(),
         ievvdevrun.runnables.rq_worker.RunnableThread(),
         ievvdevrun.runnables.rq_worker.RunnableThread(queuename='email'),
     ),
     'design': ievvdevrun.config.RunnableThreadList(
-        ievvdevrun.runnables.dbdev_runserver.RunnableThread(),
         ievvdevrun.runnables.django_runserver.RunnableThread(),
         ievvdevrun.runnables.ievv_buildstatic.RunnableThread(),
-        ievvdevrun.runnables.redis_server.RunnableThread(),
         ievvdevrun.runnables.rq_worker.RunnableThread(),
         ievvdevrun.runnables.rq_worker.RunnableThread(queuename='email'),
     ),

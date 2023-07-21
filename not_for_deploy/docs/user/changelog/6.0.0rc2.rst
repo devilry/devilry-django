@@ -1,0 +1,23 @@
+.. _6.0.0rc2changelog:
+
+###############################
+What is new in Devilry 6.0.0rc2
+###############################
+
+
+What's new
+##########
+
+- Updated Devilry to Django 4.2
+ - Python 3.10 support
+ - Add health-check endpoints.
+ - Group invitations: Store sent messages.
+
+
+Fixes
+#####
+- WCAG: Contrast-issue.
+- Translations: Various translation errors.
+- Self-assign: Issue with duplicate rows from query when examiner is self-assigning.
+- Self-assign: Missing CSRF-token.
+- Comment-notification to examiners: When examiner posts comments all admins are notified.

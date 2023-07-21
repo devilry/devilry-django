@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+  postgres:
+    restart: unless-stopped
+    container_name: 'devilry-django-dev-postgres'
+    image: 'postgres:14'
+    ports:
+      # Set on purpose to match django-dbdev setup in developsettings_common.py
+      - '23419:5432'
+    volumes:
+      - 'devilry-django-dev-pgdata-${DEVENV:-0}:/data/postgres'
+    environment:
+      # Set on purpose to match django-dbdev setup in developsettings_common.py
+      POSTGRES_DB: dbdev
+      POSTGRES_USER: dbdev
+      POSTGRES_PASSWORD: dbdev
+      PGDATA: /data/postgres
+    command: [
+      "postgres",
+      "-c", "shared_buffers=500MB",
+      "-c", "temp_buffers=8MB",
+      "-c", "work_mem=4MB",
+      "-c", "maintenance_work_mem=2GB",
+      "-c", "fsync=off",
+      "-c", "min_wal_size=2GB",
+      "-c", "max_wal_size=6GB",
+      "-c", "checkpoint_timeout=30min",
+      "-c", "archive_mode=off",
+      "-c", "autovacuum=off",
+      "-c", "synchronous_commit=off",
+      "-c", "full_page_writes=off",
+      "-c", "wal_buffers=16MB"
+    ]
+
+  redis:
+    restart: unless-stopped
+    container_name: 'devilry-django-dev-redis'
+    image: 'redis:7'
+    ports:
+      - '36314:6379'
+    volumes:
+      - 'devilry-django-dev-redisdata-${DEVENV:-0}:/data'
+
+volumes:
+  devilry-django-dev-pgdata-0: {}
+  devilry-django-dev-pgdata-1: {}
+  devilry-django-dev-pgdata-2: {}
+  devilry-django-dev-redisdata-0: {}
+  devilry-django-dev-redisdata-1: {}
+  devilry-django-dev-redisdata-2: {}

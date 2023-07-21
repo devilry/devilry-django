@@ -270,7 +270,6 @@ class ExaminerPublicDiscussView(ExaminerBaseFeedbackFeedView):
         comment = super(ExaminerPublicDiscussView, self).save_object(form=form)
         comment.visibility = group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
         comment.published_datetime = timezone.now()
-        # self.__send_comment_email(comment=comment)
         return super(ExaminerPublicDiscussView, self).save_object(form=form, commit=True)
 
     def perform_after_save(self, comment):

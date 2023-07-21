@@ -1,5 +1,0 @@
-# Production requirements
--r common.txt
-
-# PostgreSQL bindings
-psycopg2==2.8.*

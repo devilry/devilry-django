@@ -145,7 +145,8 @@ MIDDLEWARE = [
     'devilry.devilry_i18n.middleware.LocaleMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware',
-    'devilry.devilry_account.middleware.LocalMiddleware'
+    'devilry.devilry_account.middleware.LocalMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware'
 ]
 
 ##################################################################################

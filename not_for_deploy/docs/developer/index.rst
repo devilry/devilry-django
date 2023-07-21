@@ -94,4 +94,3 @@ Releases
     :maxdepth: 1
 
     releasenoteslisting
-    release

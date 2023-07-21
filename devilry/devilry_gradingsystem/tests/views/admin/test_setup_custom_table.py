@@ -29,19 +29,6 @@ class TestSetupCustomTableView(TestCase, AdminViewTestMixin):
             'assignmentid': self.assignmentbuilder.assignment.id,
         })
 
-    # def test_render(self):
-    #     myregistry = GradingSystemPluginRegistry()
-    #     myregistry.add(MockPointsPluginApi)
-    #     myregistry.add(MockApprovedPluginApi)
-    #     with patch('devilry.devilry_gradingsystem.views.admin.selectplugin.gradingsystempluginregistry', myregistry):
-    #         response = self.get_as(self.admin1)
-    #         self.assertEquals(response.status_code, 200)
-    #         html = response.content
-    #         self.assertEquals(cssGet(html, '.page-header h1').text.strip(),
-    #             'How would you like to configure the plugin?')
-    #         self.assertEquals(len(cssFind(html, '.devilry_gradingsystem_selectplugin_box')), 2)
-
-
     def test_post(self):
         with patch('devilry.apps.core.models.assignment.gradingsystempluginregistry', self.myregistry):
             response = self.post_as(self.admin1, {

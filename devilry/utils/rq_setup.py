@@ -10,7 +10,7 @@ def make_rq_queue_queue_setting(host='localhost', port=6379, db=0, password=None
     return config
 
 
-def make_simple_rq_queue_setting(host='localhost', port=6379, db=0, password=None, default_timeout=500):
+def make_simple_rq_queue_setting(host='localhost', port=36314, db=0, password=None, default_timeout=500):
     return {
         'default': make_rq_queue_queue_setting(
             host=host,

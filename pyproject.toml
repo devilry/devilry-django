@@ -1,0 +1,126 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "devilry"
+requires-python = ">=3.9.0"
+dynamic = ["version"]
+description = "A system for handling electronic deliveries. See https://github.com/devilry/devilry-django."
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    { name = "Espen Angell Kristiansen", email = "post@appresso.no" },
+    { name = "Tor Johansen" },
+    { name = "Bendik Opstad"},
+    { name = "Vegard Angell"},
+    { name = "Magne Westlie"},
+    { name = "Ilya Kostolomov"},
+    { name = "Christian Tryti"},
+    { name = "Rebekka M\u00F8rken"},
+    { name = "Stian Julseth"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Web Environment",
+    "Framework :: Django",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+]
+dependencies = [
+    "Django>=4.2.0,<4.3.0",
+    "pyyaml==6.0.1",
+    "Markdown>=3.3.0,<3.4.0",
+    "Pygments>=2.15.0,<2.16.0",
+    "flup>=1.0.0,<1.1.0",
+    "gunicorn>=19.9.0,<19.10.0",
+    "django-crispy-forms>=1.14.0,<1.15.0",
+    "openpyxl",
+    "URLObject>=2.4.0,<2.5.0",
+    "mimeparse>=0.1.0,<0.2.0",
+    "numpy",
+    "rq>=1.8.0,<1.9.0",
+    "django-rq>=2.4.0,<2.5.0",
+    "redis>=3.5.0,<3.6.0",
+    "python-dateutil>=2.8.0,<2.9.0",
+    "pytz>=2018.9.0,<2018.10.0",
+    "httplib2>=0.19.0,<0.20.0",
+    "dj-static>=0.0.0,<0.1.0",
+    "dj-database-url>=0.3.0,<0.4.0",
+    "html5lib",
+    "psycopg2",
+    "django_cradmin>=10.3.3,<11.0.0",
+    "cradmin_legacy>=5.0.0,<6.0.0",
+    "ievv_opensource>=9.2.2,<10.0.0",
+    "xlsxwriter>=1.1.0,<1.2.0",
+    "arrow>=0.12.0,<0.13.0",
+    "detektor==1.1.0-beta.012",
+    "html2text>=2018.1.0,<2018.2.0",
+    "djangorestframework",
+    "django-allauth>=0.54.0,<0.55.0",
+    "certifi>=2017.11.0,<2017.12.0",
+    "chardet>=3.0.0,<3.1.0",
+    "idna>=2.6.0,<2.7.0",
+    "oauthlib>=2.0.0,<2.1.0",
+    "python-openid>=2.2.0,<2.3.0",
+    "requests",
+    "requests-oauthlib>=0.8.0,<0.9.0",
+    "urllib3>=1.26.0",
+    "pycountry>=17.9.0,<17.10.0",
+    "six>=1.15.0,<1.16.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "django-debug-toolbar",
+    "model-bakery",
+    "BeautifulSoup4==4.7.1",
+    "htmls==1.0.0",
+    "sphinx==6.2.1",
+    "sphinx_rtd_theme==1.2.2",
+    "flake8==2.2.2",
+    "tox==1.7.2",
+    "pyflakes==0.8.1",
+    "Fabric3==1.14.post1",
+    "doc2dash==3.0.0",
+    "django-storages==1.1.5",
+    "boto==2.32.1",
+    "django-auth-ldap",
+    "pip-tools",
+]
+test = [
+    "htmls",
+    "pytest",
+    "pytest-django",
+    "pytest-env",
+    "model-bakery",
+    "coverage",
+    "mock==3.0.5"
+]
+
+[project.scripts]
+ievv = "ievv_opensource.ievvtasks_common.cli:cli"
+
+[tool.hatch.version]
+path = "devilry/__init__.py"
+
+[tool.hatch.build]
+packages = [
+    "/devilry"
+]
+exclude = [
+    "node_modules",
+    "/devilry/devilry_theme3/staticsources",
+    "/devilry/project/develop/dumps/default.sql"
+]
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+version = "6.0.0rc2"
+version_files = [
+    "devilry/__init__.py:__version__"
+]
+tag_format = "$version"
+update_changelog_on_bump = true

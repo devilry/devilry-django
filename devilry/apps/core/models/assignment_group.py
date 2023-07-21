@@ -1065,9 +1065,20 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
                 and self.id is None \
                 and self.parentnode.delivery_types == deliverytypes.NON_ELECTRONIC:
             create_dummy_deadline = True
-        if kwargs.pop('update_delivery_status', True):
+
+        # Save must be called before relation lookup, for instance by self._set_delivery_status(), that 
+        # tries to access the many-to-one relationship between Deadline and AssignmentGroup.
+        update_delivery_status = kwargs.pop('update_delivery_status', True)
+        super().save(*args, **kwargs)
+        if update_delivery_status:
             self._set_delivery_status()
-        super(AssignmentGroup, self).save(*args, **kwargs)
+            if 'force_insert' in kwargs:
+                # Since the instance is already saved, this ensures a 
+                # INSERT or UPDATE query instead of just INSERT (which will 
+                # cause a duplicate error).
+                kwargs['force_insert'] = False
+            super().save(*args, **kwargs)
+
         if create_dummy_deadline:
             self.deadlines.create(deadline=self.parentnode.parentnode.end_time)
 
