@@ -1,3 +1,13 @@
+## 6.0.0 (2023-07-21)
+
+### BREAKING CHANGE
+
+- This will be a major release
+
+### Feat
+
+- Django 4.2 and python 3.10 support     - Add health-check endpoints.     - Group invitations: Now using the devilry_message backend for storing messages.     - WCAG: Contrast-issue with link in "No access" warning-box.     - Translations: Various translation errors.     - Self-assign: Issue with duplicate rows from query when examiner is self-assigning.     - Self-assign: Missing CSRF-token.     - Comment-notification to examiners: When examiner posts comments all admins are notified.
+
 ## 6.0.0rc2 (2023-07-20)
 
 ### Feat
