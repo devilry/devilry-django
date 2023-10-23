@@ -1,5 +1,5 @@
 from allauth.account.views import LoginView, LogoutView
-from allauth.socialaccount import providers
+from allauth.socialaccount.adapter import get_adapter
 from allauth.socialaccount.models import SocialApp
 from allauth.socialaccount.providers.dataporten.provider import DataportenProvider
 from django.conf import settings
@@ -10,9 +10,21 @@ from django.http import HttpResponseRedirect
 class AllauthLoginView(LoginView):
     template_name = 'devilry_authenticate/allauth/login.django.html'
 
+    def _get_cradmin_auth_url(self):
+        next_param = self.request.GET.get('next', None)
+        url = reverse('cradmin-authenticate-login')
+        if next_param:
+            url += '?next=%s' % next_param
+
+        return url
+
     def get(self, *args, **kwargs):
         allauth_backend = 'allauth.account.auth_backends.AuthenticationBackend'
-        all_providers = providers.registry.get_list(request=self.request)
+        adapter = get_adapter(self.request)
+        all_providers = adapter.list_providers(self.request)
+        if len(all_providers) == 0:
+            return HttpResponseRedirect(self._get_cradmin_auth_url())
+
         if len(settings.AUTHENTICATION_BACKENDS) == 1:
             if allauth_backend in settings.AUTHENTICATION_BACKENDS \
                     and len(all_providers) == 1:
@@ -22,7 +34,7 @@ class AllauthLoginView(LoginView):
                         request=self.request,
                         process='login'))
             else:
-                return HttpResponseRedirect(reverse('cradmin-authenticate-login'))
+                return HttpResponseRedirect(self._get_cradmin_auth_url())
         return super(AllauthLoginView, self).get(*args, **kwargs)
 
 
