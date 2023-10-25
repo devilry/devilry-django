@@ -183,10 +183,16 @@ class AssignmentGradingConfigurationUpdateView(OnlySaveButtonMixin, formbase.For
 
     def form_valid(self, form):
         assignment = self.request.cradmin_role
-        assignment.grading_system_plugin_id = form.cleaned_data['grading_system_plugin_id']
-        assignment.points_to_grade_mapper = form.cleaned_data['points_to_grade_mapper']
-        assignment.passing_grade_min_points = form.cleaned_data['passing_grade_min_points']
-        assignment.max_points = form.cleaned_data['max_points']
+        grading_system_plugin_id = form.cleaned_data['grading_system_plugin_id']
+        points_to_grade_mapper = form.cleaned_data['points_to_grade_mapper']
+        passing_grade_min_points = form.cleaned_data['passing_grade_min_points']
+        max_points = form.cleaned_data['max_points']
+        assignment.setup_grading(
+            grading_system_plugin_id,
+            points_to_grade_mapper,
+            passing_grade_min_points,
+            max_points
+        )
         assignment.full_clean()
         with transaction.atomic():
             assignment.save()
