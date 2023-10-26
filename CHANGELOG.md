@@ -1,3 +1,9 @@
+## 6.0.1 (2023-10-26)
+
+### Fix
+
+- **AssignmentGradingConfigurationUpdateView**: corrected changing grading for assignments
+
 ## 6.0.0 (2023-07-21)
 
 ### BREAKING CHANGE
