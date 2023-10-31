@@ -1,3 +1,14 @@
+## 6.1.0rc0 (2023-10-31)
+
+### Feat
+
+- **PrintStatusView**: propper sorting and more data displayed
+
+### Fix
+
+- **pyproject.toml**: upped the version of gunicorn to 21
+- **devilry_authenticate**: changed allauthloginview to support allauth version > 0.55
+
 ## 6.0.1 (2023-10-26)
 
 ### Fix
