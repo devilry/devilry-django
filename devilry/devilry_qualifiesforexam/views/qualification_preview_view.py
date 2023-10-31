@@ -8,6 +8,9 @@ from django.views import generic
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
 from django.db import models
+from django.db.models import F
+from django.db.models.functions import NullIf
+from django.db.models import Value
 
 # CrAdmin imports
 from cradmin_legacy.crispylayouts import PrimarySubmit
@@ -250,12 +253,12 @@ class PrintStatusView(PrefetchStatusInfoMixin, generic.TemplateView):
     def get_order_by(self):
         order_by = self.get_order_by_queryparam()
         if order_by == 'fullname':
-            return 'relatedstudent__user__fullname'
+            return NullIf('relatedstudent__user__fullname', Value("")).asc(nulls_last=True)
         if order_by == 'username':
-            return 'relatedstudent__user__shortname'
+            return NullIf('relatedstudent__user__shortname', Value("")).asc(nulls_last=True)
         if order_by == 'candidateid':
             return 'relatedstudent__candidate_id'
-        return 'relatedstudent__user__lastname'
+        return NullIf('relatedstudent__user__lastname', Value("")).asc(nulls_last=True)
 
     def get_context_data(self, **kwargs):
         context_data = super(PrintStatusView, self).get_context_data(**kwargs)
@@ -272,6 +275,7 @@ class PrintStatusView(PrefetchStatusInfoMixin, generic.TemplateView):
                 nonqualifying_students.append(qualification.relatedstudent)
         context_data['order_by_queryparam'] = self.get_order_by_queryparam()
         context_data['period'] = '{} ({})'.format(status.period.long_name, status.period)
+        context_data['createtime'] = status.createtime
         context_data['qualifying_students'] = qualifying_students
         context_data['nonqualifying_students'] = nonqualifying_students
         return context_data

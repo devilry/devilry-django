@@ -5,18 +5,28 @@
     {{ period }}
 {% endblock %}
 
+
+
 {% block content %}
+
     {# Adds a simple css class does not show the button in the print version #}
     <style>
     @media print {
         .no-print, no-print * {
             display: none !important;
         }
+        thead
+        {
+            display: table-header-group;
+        }
+        tfoot
+        {
+            display: table-footer-group;
+        }
     }
     </style>
 
-    <h1>{{ period }}</h1>
-    <br>
+    <h2>{{ period }}, {{createtime}}</h2>
 
     <a id="devilry_qualifiesforexam_print_link" class="btn btn-primary no-print" onclick="window.print();">
         {% trans "print" %}
@@ -39,32 +49,57 @@
           </option>
         </select>
     </div>
+    <table class="table">
+        <caption>
+            {% trans "Qualified for final exams" %}
+        </caption>
+        <thead>
+            <tr>
+                <th>{% trans 'LASTNAME' %}</th>
+                <th>{% trans 'FULL NAME' %}</th>
+                <th>{% trans 'USERNAME' %}</th>
+                <th>{% trans 'CAN TAKE EXAM' %}</th>
+                <th>{% trans 'NOTE' %}</th>
+            </tr>
+        </thead>
+        {% for relatedstudent in qualifying_students %}
+        <tr>
+            
+            <td>{{ relatedstudent.user.lastname }}</td>
+            <td>{{ relatedstudent.user.fullname }}</td>
+            <td>{{ relatedstudent.user.shortname }}</td>
+            <td>{% trans 'Yes' %}</td>
+            <td>[ ]</td>
+            
+        </tr>
+        {% endfor %}
+    </table>
+    <table class="table">
+        <caption>
+            {% trans "NOT qualified for final exams" %}
+        </caption>
+        <thead>
+            <tr>
+                <th>{% trans 'LASTNAME' %}</th>
+                <th>{% trans 'FULL NAME' %}</th>
+                <th>{% trans 'USERNAME' %}</th>
+                <th>{% trans 'CAN TAKE EXAM' %}</th>
+                <th>{% trans 'NOTE' %}</th>
+            </tr>
+        </thead>
+        {% for relatedstudent in nonqualifying_students %}
+        <tr>
+            
+            <td>{{ relatedstudent.user.lastname }}</td>
+            <td>{{ relatedstudent.user.fullname }}</td>
+            <td>{{ relatedstudent.user.shortname }}</td>
+            <td>{% trans 'No' %}</td>
+            <td>[ ]</td>
+            
+        </tr>
+        {% endfor %}
+    </table>
 
-    <br>
-    <h1>
-        {% trans "Qualified for final exams" %}
-    </h1>
-    <br>
-    <ul>
-    {% for relatedstudent in qualifying_students %}
-        <li>
-            {{  relatedstudent.user.fullname }}({{ relatedstudent.user.shortname}})
-        </li>
-    {% endfor %}
-    </ul>
-    <br>
-    <br>
-    <h1>
-        {% trans "NOT qualified for final exams" %}
-    </h1>
-    <br>
-    <ul>
-    {% for relatedstudent in nonqualifying_students %}
-        <li>
-            {{  relatedstudent.user.fullname }}({{ relatedstudent.user.shortname}})
-        </li>
-    {% endfor %}
-    </ul>
 {% endblock %}
 
 {% block end-of-body %}

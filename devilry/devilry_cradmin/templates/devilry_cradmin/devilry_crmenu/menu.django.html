@@ -1,7 +1,17 @@
 {% extends "cradmin_legacy/menu.django.html" %}
 
+<style>
+    @media print {
+        .no-print, no-print * {
+            display: none !important;
+        }
+    }
+</style>
+
 {% block css-class %}
     {{ block.super }}
+    no-print
     devilry-cradmin-legacy-menu
     devilry-cradmin-legacy-menu-{{ devilry_crmenu_devilryrole }}
+    
 {% endblock css-class %}
