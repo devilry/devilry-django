@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-19 14:06+0200\n"
+"POT-Creation-Date: 2023-10-31 15:16+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -721,11 +721,13 @@ msgid "Is this your primary email?"
 msgstr ""
 
 #: devilry/devilry_account/models.py:717 devilry/devilry_account/models.py:776
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:96
 #: devilry/devilry_student/cradminextensions/columntypes.py:79
 msgid "No"
 msgstr ""
 
 #: devilry/devilry_account/models.py:718 devilry/devilry_account/models.py:777
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:71
 #: devilry/devilry_student/cradminextensions/columntypes.py:78
 msgid "Yes"
 msgstr ""
@@ -2069,6 +2071,8 @@ msgid ""
 msgstr ""
 
 #: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/grading_points_based/select-assignments.django.html:43
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:62
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:87
 msgid "NOTE"
 msgstr ""
 
@@ -2584,6 +2588,7 @@ msgid ""
 msgstr ""
 
 #: devilry/devilry_admin/templates/devilry_admin/period/all_results_overview/devilry_all_results_overview.django.html:71
+#: not_for_deploy/docs/_build/_sources/developer/devilry_report.rst.txt:112
 msgid "Download results"
 msgstr ""
 
@@ -2864,7 +2869,7 @@ msgstr ""
 #: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:115
 #: devilry/devilry_qualifiesforexam/tablebuilder/tablebuilder.py:33
 #: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/includes/qualification_table.django.html:9
-#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:45
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:54
 #: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:10
 msgid "Qualified for final exams"
 msgstr ""
@@ -3239,7 +3244,7 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/gradingconfiguration.py:196
+#: devilry/devilry_admin/views/assignment/gradingconfiguration.py:202
 msgid "Saved Grading configuration for assignment"
 msgstr ""
 
@@ -6784,42 +6789,62 @@ msgstr ""
 msgid "Not ready"
 msgstr ""
 
-#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:22
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:32
 #: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:46
 msgid "print"
 msgstr ""
 
-#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:26
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:36
 #: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:49
 msgctxt "qualifies-for-exam-order-by-lastname"
 msgid "Order by"
 msgstr ""
 
-#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:29
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:39
 #: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:52
 msgctxt "qualifies-for-exam-order-by-lastname"
 msgid "Last name"
 msgstr ""
 
-#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:32
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:42
 #: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:55
 msgctxt "qualifies-for-exam-order-by-fullname"
 msgid "Full name"
 msgstr ""
 
-#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:35
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:45
 #: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:58
 msgctxt "qualifies-for-exam-order-by-username"
 msgid "Username"
 msgstr ""
 
-#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:38
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:48
 #: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:61
 msgctxt "qualifies-for-exam-order-by-candidateid"
 msgid "Candidate ID"
 msgstr ""
 
 #: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:58
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:83
+msgid "LASTNAME"
+msgstr ""
+
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:59
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:84
+msgid "FULL NAME"
+msgstr ""
+
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:60
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:85
+msgid "USERNAME"
+msgstr ""
+
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:61
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:86
+msgid "CAN TAKE EXAM"
+msgstr ""
+
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:79
 msgid "NOT qualified for final exams"
 msgstr ""
 
@@ -6915,19 +6940,19 @@ msgid ""
 "ends with a preview of the results before you get the option to save"
 msgstr ""
 
-#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:288
+#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:292
 msgid "Provide a message as to why the Status needs to be retracted."
 msgstr ""
 
-#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:294
+#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:298
 msgid "Message"
 msgstr ""
 
-#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:311
+#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:315
 msgid "Why is the status retracted?"
 msgstr ""
 
-#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:354
+#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:358
 msgid "Cannot retract status without a message."
 msgstr ""
 
@@ -7303,10 +7328,10 @@ msgid ""
 "comments or upload files after the deadline has expired."
 msgstr ""
 
-#: devilry/project/common/settings.py:174
+#: devilry/project/common/settings.py:176
 msgid "English"
 msgstr ""
 
-#: devilry/project/common/settings.py:175
+#: devilry/project/common/settings.py:177
 msgid "Norwegian Bokmal"
 msgstr ""
