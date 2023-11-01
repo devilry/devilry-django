@@ -1,3 +1,11 @@
+## 6.1.0 (2023-11-01)
+
+### Fix
+
+- **Translation**: added missing translations
+- **PrintStatusView**: hide footer when printing
+- **pyproject.toml**: removed certifi requirement
+
 ## 6.1.0rc0 (2023-10-31)
 
 ### Feat
