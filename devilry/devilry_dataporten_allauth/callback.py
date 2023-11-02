@@ -35,7 +35,7 @@ class DevilryOAuth2CallbackView(OAuth2View):
                 request,
                 self.adapter.provider_id,
                 error=error)
-        app = self.adapter.get_provider().get_app(self.request)
+        app = self.adapter.get_provider().app
         client = self.get_client(request, app)
         try:
             access_token = client.get_access_token(request.GET['code'])
