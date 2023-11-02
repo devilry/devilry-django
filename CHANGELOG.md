@@ -1,3 +1,9 @@
+## 6.1.1 (2023-11-02)
+
+### Fix
+
+- **DevilryOAuth2CallbackView**: get_app() to .app
+
 ## 6.1.0 (2023-11-01)
 
 ### Fix
