@@ -211,3 +211,42 @@ DATAPORTEN_LOGOUT_URL = 'https://auth.dataporten.no/logout'
 
 # Bypasses built-in support for signup.
 SOCIALACCOUNT_LOGIN_ON_GET = True
+
+
+
+###################################################
+# HTML sanitizer settings
+###################################################
+from html_sanitizer.sanitizer import sanitize_href, tag_replacer, target_blank_noopener, bold_span_to_strong, italic_span_to_em
+HTML_SANITIZERS = {
+    'devilry': {
+        "tags": {
+            "a", "h1", "h2", "h3", "strong", "em", "p", "ul", "ol",
+            "li", "br", "sub", "sup", "hr", "img", "code"
+        },
+        "attributes": {
+            "a": ("href", "name", "target", "title", "id", "rel",),
+            "img": ("src",)
+        },
+        "empty": {"hr", "a", "br", "img"},
+        "separate": {"a", "p", "li"},
+        "whitespace": {"br"},
+        "keep_typographic_whitespace": True,
+        "add_nofollow": False,
+        "autolink": False,
+        "sanitize_href": sanitize_href,
+        "element_preprocessors": [
+            # convert span elements into em/strong if a matching style rule
+            # has been found. strong has precedence, strong & em at the same
+            # time is not supported
+            bold_span_to_strong,
+            italic_span_to_em,
+            tag_replacer("b", "strong"),
+            tag_replacer("i", "em"),
+            tag_replacer("form", "p"),
+            target_blank_noopener,
+        ],
+        "element_postprocessors": [],
+        "is_mergeable": lambda e1, e2: True,
+    }
+}

@@ -69,6 +69,7 @@ dependencies = [
     "urllib3>=1.26.0",
     "pycountry>=17.9.0,<17.10.0",
     "six>=1.15.0,<1.16.0",
+    "html-sanitizer",
 ]
 
 [project.optional-dependencies]
