@@ -226,7 +226,7 @@ HTML_SANITIZERS = {
         },
         "attributes": {
             "a": ("href", "name", "target", "title", "id", "rel",),
-            "img": ("src",)
+            "img": ("src", "alt", "title")
         },
         "empty": {"hr", "a", "br", "img"},
         "separate": {"a", "p", "li"},
