@@ -1,5 +1,6 @@
 from django.utils.translation import gettext_lazy
 from cradmin_legacy.viewhelpers import listfilter
+from django.utils.encoding import smart_str
 
 
 class Search(listfilter.django.single.textinput.Search):
@@ -20,3 +21,7 @@ class Search(listfilter.django.single.textinput.Search):
             'username__username',
             'useremail__email',
         ]
+
+    def get_cleaned_value(self):
+        out = super().get_cleaned_value()
+        return smart_str(out, strings_only=True)
