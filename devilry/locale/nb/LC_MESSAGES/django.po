@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-06 14:07+0100\n"
+"POT-Creation-Date: 2023-11-15 15:08+0100\n"
 "PO-Revision-Date: 2023-07-19 13:23+0200\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
@@ -422,7 +422,6 @@ msgstr "Kan kun bestå av nummer, små bokstaver, '_' og '-'. "
 #: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:28
 #: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:24
 #: devilry/devilry_cradmin/devilry_listfilter/assignment.py:17
-#: devilry/devilry_cradmin/devilry_listfilter/assignment.py:63
 #: devilry/devilry_header/templates/devilry_header/about_me.django.html:20
 #: devilry/devilry_student/templates/devilry_student/cradmin_group/projectgroupapp/projectgroup_overview.django.html:70
 msgid "Name"
@@ -1132,7 +1131,7 @@ msgstr "Er aktiv?"
 #: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:84
 #: devilry/devilry_admin/cradminextensions/listfilter/listfilter_tags.py:29
 #: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:17
-#: devilry/devilry_cradmin/devilry_listfilter/user.py:9
+#: devilry/devilry_cradmin/devilry_listfilter/user.py:10
 #: devilry/devilry_examiner/views/dashboard/assignmentlist.py:72
 #: devilry/devilry_header/templates/devilry_header/header2include.django.html:111
 #: devilry/devilry_student/views/dashboard/allperiods.py:46
@@ -1144,7 +1143,7 @@ msgstr "Søk"
 #: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:87
 #: devilry/devilry_admin/cradminextensions/listfilter/listfilter_tags.py:32
 #: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:25
-#: devilry/devilry_cradmin/devilry_listfilter/user.py:14
+#: devilry/devilry_cradmin/devilry_listfilter/user.py:15
 msgid "Search listed objects ..."
 msgstr "Søk i utlistede objekter ..."
 
@@ -5121,6 +5120,39 @@ msgstr "Publiseringstidspunkt (nyeste først)"
 msgid "Publishing time (oldest first)"
 msgstr "Publiseringstidspunkt (eldste først)"
 
+#: devilry/devilry_cradmin/devilry_listfilter/assignment.py:63
+#, fuzzy
+#| msgid "Name (descending)"
+msgid "Name (ascending)"
+msgstr "Navn (stigende)"
+
+#: devilry/devilry_cradmin/devilry_listfilter/assignment.py:90
+#, fuzzy
+#| msgctxt "orderby_deadline"
+#| msgid "Deadline (ascending)"
+msgid "Delivery Time (ascending)"
+msgstr "Innleveringstidspunkt (stigende)"
+
+#: devilry/devilry_cradmin/devilry_listfilter/assignment.py:98
+#, fuzzy
+#| msgctxt "orderby_deadline"
+#| msgid "Deadline (descending)"
+msgid "Delivery Time (descending)"
+msgstr "Innleveringstidspunkt (synkende)"
+
+#: devilry/devilry_cradmin/devilry_listfilter/assignment.py:116
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:622
+msgctxt "assignment filter"
+msgid "Assignments"
+msgstr "Oppgaver"
+
+#: devilry/devilry_cradmin/devilry_listfilter/assignment.py:120
+#, fuzzy
+#| msgid "delivery"
+msgctxt "assignment status"
+msgid "Has delivery"
+msgstr "Har innlevering"
+
 #: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:67
 msgctxt "orderby"
 msgid "By points"
@@ -5365,11 +5397,6 @@ msgstr "Fra administrator"
 msgctxt "group activity"
 msgid "Has comment(s) from administrator"
 msgstr "Har kommentar(er) fra administrator"
-
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:622
-msgctxt "assignment filter"
-msgid "Assignments"
-msgstr "Oppgaver"
 
 #: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:651
 msgctxt "group assigned status"
@@ -8452,9 +8479,6 @@ msgstr "Norsk bokmål"
 
 #~ msgid "Delivery 2"
 #~ msgstr "Innlevering 2"
-
-#~ msgid "delivery"
-#~ msgstr "innlevering"
 
 #~ msgid "Programming code similarity checks"
 #~ msgstr "Likhetsjekk for programkode"

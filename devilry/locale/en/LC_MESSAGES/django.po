@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-06 14:07+0100\n"
+"POT-Creation-Date: 2023-11-15 15:08+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -358,7 +358,6 @@ msgstr ""
 #: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:28
 #: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:24
 #: devilry/devilry_cradmin/devilry_listfilter/assignment.py:17
-#: devilry/devilry_cradmin/devilry_listfilter/assignment.py:63
 #: devilry/devilry_header/templates/devilry_header/about_me.django.html:20
 #: devilry/devilry_student/templates/devilry_student/cradmin_group/projectgroupapp/projectgroup_overview.django.html:70
 msgid "Name"
@@ -1029,7 +1028,7 @@ msgstr ""
 #: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:84
 #: devilry/devilry_admin/cradminextensions/listfilter/listfilter_tags.py:29
 #: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:17
-#: devilry/devilry_cradmin/devilry_listfilter/user.py:9
+#: devilry/devilry_cradmin/devilry_listfilter/user.py:10
 #: devilry/devilry_examiner/views/dashboard/assignmentlist.py:72
 #: devilry/devilry_header/templates/devilry_header/header2include.django.html:111
 #: devilry/devilry_student/views/dashboard/allperiods.py:46
@@ -1041,7 +1040,7 @@ msgstr ""
 #: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:87
 #: devilry/devilry_admin/cradminextensions/listfilter/listfilter_tags.py:32
 #: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:25
-#: devilry/devilry_cradmin/devilry_listfilter/user.py:14
+#: devilry/devilry_cradmin/devilry_listfilter/user.py:15
 msgid "Search listed objects ..."
 msgstr ""
 
@@ -4645,6 +4644,29 @@ msgstr ""
 msgid "Publishing time (oldest first)"
 msgstr ""
 
+#: devilry/devilry_cradmin/devilry_listfilter/assignment.py:63
+msgid "Name (ascending)"
+msgstr ""
+
+#: devilry/devilry_cradmin/devilry_listfilter/assignment.py:90
+msgid "Delivery Time (ascending)"
+msgstr ""
+
+#: devilry/devilry_cradmin/devilry_listfilter/assignment.py:98
+msgid "Delivery Time (descending)"
+msgstr ""
+
+#: devilry/devilry_cradmin/devilry_listfilter/assignment.py:116
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:622
+msgctxt "assignment filter"
+msgid "Assignments"
+msgstr ""
+
+#: devilry/devilry_cradmin/devilry_listfilter/assignment.py:120
+msgctxt "assignment status"
+msgid "Has delivery"
+msgstr ""
+
 #: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:67
 msgctxt "orderby"
 msgid "By points"
@@ -4888,11 +4910,6 @@ msgstr ""
 #: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:583
 msgctxt "group activity"
 msgid "Has comment(s) from administrator"
-msgstr ""
-
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:622
-msgctxt "assignment filter"
-msgid "Assignments"
 msgstr ""
 
 #: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:651
