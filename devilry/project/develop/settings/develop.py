@@ -17,7 +17,8 @@ if profiler_middleware:
     ]
 
 MIDDLEWARE = MIDDLEWARE + [
-    'debug_toolbar.middleware.DebugToolbarMiddleware'
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+#    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 # DELAY_MIDDLEWARE_TIME = (80, 120) # Wait for randint(*DELAY_MIDDLEWARE_TIME)/100.0 before responding to each request when using DelayMiddleware
@@ -100,7 +101,6 @@ EMAIL_BACKEND = 'devilry.devilry_email.rq_backend.RQEmailBackend'
 
 LANGUAGE_CODE = 'nb'
 
-
 IEVVTASKS_BUILDSTATIC_APPS = ievvbuildstatic.config.Apps(
     ievvbuildstatic.config.App(
         appname='devilry_theme3',
@@ -146,6 +146,18 @@ IEVVTASKS_BUILDSTATIC_APPS = ievvbuildstatic.config.Apps(
                     'katex/dist/katex.mjs',
                     'katex/dist/katex.min.css',
                 ]
+            ),
+            ievvbuildstatic.mediacopy.Plugin(
+                sourcefolder='node_modules/katex/dist/fonts',
+                destinationfolder=os.path.join('scripts', 'katex', 'fonts')
+            ),
+            ievvbuildstatic.mediacopy.Plugin(
+                sourcefolder='node_modules/katex/dist/contrib',
+                destinationfolder=os.path.join('scripts', 'katex', 'contrib')
+            ),
+            ievvbuildstatic.mediacopy.Plugin(
+                sourcefolder='bower_components/bootstrap/fonts',
+                destinationfolder=os.path.join('vendor', 'fonts', 'glyphicons')
             ),
         ]
     ),
@@ -268,3 +280,10 @@ DEVILRY_ASSIGNMENT_GUIDELINES = {
         })
     ]
 }
+
+# STORAGES = {
+#    # ...
+#    "staticfiles": {
+#        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+#    },
+# }
