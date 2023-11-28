@@ -14,6 +14,7 @@ from cradmin_legacy.viewhelpers import multiselect2view
 from devilry.devilry_qualifiesforexam import models as status_models
 from devilry.apps.core import models as core_models
 
+import json
 
 class QualifiedForExamPluginViewMixin(object):
     plugintypeid = None
@@ -293,4 +294,7 @@ class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForEx
         # Attach collected data to session.
         self.request.session['passing_relatedstudentids'] = passing_relatedstudentids
         self.request.session['plugintypeid'] = self.get_plugintypeid()
+        print(json.dumps(qualifying_assignmentids))
+        self.request.session['plugindata'] = json.dumps(qualifying_assignmentids)
+        
         return HttpResponseRedirect(str(self.request.cradmin_app.reverse_appurl('preview')))

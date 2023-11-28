@@ -30,10 +30,19 @@
             </div>
         {% endif %}
 
+        {% if required_assignments %}
+            <div>
+                <h3>{% trans "Required assignments" %}</h3>
+                {% cradmin_render_renderable required_assignments %}
+            </div>
+        {% endif %}
+
         <p class="devilry-buttonbar">
 
             {# Add back button #}
             {{ block.super }}
+
+            
 
             {# Adds template specific buttons #}
             {% if status.status == 'ready' %}
@@ -65,6 +74,7 @@
             {% endif %}
         </p>
         {% cradmin_render_renderable table %}
+        
     </div>
 {% endblock content %}
 

@@ -118,6 +118,9 @@ class Status(models.Model):
 
     #: The plugin used.
     plugin = models.CharField(max_length=500, null=True, blank=True)
+    
+    #: Plugin related data.
+    plugin_data = models.JSONField(null=True, blank=True)
 
     #: The datetime when the list was exported.
     #: If this is null, this is considered a draft for preview before it's saved.
