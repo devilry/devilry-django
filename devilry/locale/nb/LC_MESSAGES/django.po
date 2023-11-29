@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-15 15:08+0100\n"
+"POT-Creation-Date: 2023-11-29 13:12+0100\n"
 "PO-Revision-Date: 2023-07-19 13:23+0200\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
@@ -58,7 +58,7 @@ msgstr "oppgave"
 
 #: devilry/apps/core/models/assignment.py:321
 #: devilry/devilry_admin/views/dashboard/student_feedbackfeed_wizard/assignment_list.py:60
-#: devilry/devilry_qualifiesforexam/views/plugin_base_views/base_multiselect_view.py:96
+#: devilry/devilry_qualifiesforexam/views/plugin_base_views/base_multiselect_view.py:97
 msgid "assignments"
 msgstr "oppgaver"
 
@@ -4034,15 +4034,15 @@ msgid "A group with %(what)s has been created!"
 msgstr "En gruppe med %(what)s har blitt opprettet!"
 
 #: devilry/devilry_admin/views/assignment/students/overview.py:31
-#: devilry/devilry_admin/views/dashboard/student_feedbackfeed_wizard/student_list.py:35
-#: devilry/devilry_admin/views/period/manage_tags/manage_tags.py:551
-msgid "student"
-msgstr "student"
+#, fuzzy
+#| msgid "groups"
+msgid "group"
+msgstr "grupper"
 
 #: devilry/devilry_admin/views/assignment/students/overview.py:34
-#: devilry/devilry_admin/views/dashboard/student_feedbackfeed_wizard/student_list.py:38
-msgid "students"
-msgstr "studenter"
+#: devilry/devilry_deadlinemanagement/views/multiselect_groups_view.py:51
+msgid "groups"
+msgstr "grupper"
 
 #: devilry/devilry_admin/views/assignment/students/replace_groups.py:16
 msgctxt "admin replace_groups"
@@ -4209,6 +4209,15 @@ msgstr "Innleveringsfrist (stigende)"
 msgctxt "orderby_deadline"
 msgid "Deadline (descending)"
 msgstr "Innleveringsfrist (synkende)"
+
+#: devilry/devilry_admin/views/dashboard/student_feedbackfeed_wizard/student_list.py:35
+#: devilry/devilry_admin/views/period/manage_tags/manage_tags.py:551
+msgid "student"
+msgstr "student"
+
+#: devilry/devilry_admin/views/dashboard/student_feedbackfeed_wizard/student_list.py:38
+msgid "students"
+msgstr "studenter"
 
 #: devilry/devilry_admin/views/dashboard/student_feedbackfeed_wizard/student_list.py:70
 msgid "Select a student"
@@ -5613,10 +5622,6 @@ msgstr "Gi et nytt forsøk"
 #, python-format
 msgid "Deadline managed for %(group_names)s"
 msgstr "Innleveringsfrist endret for %(group_names)s"
-
-#: devilry/devilry_deadlinemanagement/views/multiselect_groups_view.py:51
-msgid "groups"
-msgstr "grupper"
 
 #: devilry/devilry_deadlinemanagement/views/multiselect_groups_view.py:56
 #, python-format
@@ -7410,11 +7415,11 @@ msgstr "De fleste studentene er klare for eksportering"
 msgid "Not ready for export (retracted)"
 msgstr "Ikke klar for eksportering (trukket tilbake)"
 
-#: devilry/devilry_qualifiesforexam/models.py:128
+#: devilry/devilry_qualifiesforexam/models.py:131
 msgid "Qualified for final exam status"
 msgstr "Kvalifisert til å se status for slutteksamen"
 
-#: devilry/devilry_qualifiesforexam/models.py:129
+#: devilry/devilry_qualifiesforexam/models.py:132
 msgid "Qualified for final exam statuses"
 msgstr "Kvalifisert til å se status for slutteksamener"
 
@@ -7445,36 +7450,36 @@ msgid "Not ready"
 msgstr "Ikke klar"
 
 #: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:39
-#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:46
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:55
 msgid "print"
 msgstr "skriv ut"
 
 #: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:43
-#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:49
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:58
 msgctxt "qualifies-for-exam-order-by-lastname"
 msgid "Order by"
 msgstr "Sorter på"
 
 #: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:46
-#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:52
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:61
 msgctxt "qualifies-for-exam-order-by-lastname"
 msgid "Last name"
 msgstr "Etternavn"
 
 #: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:49
-#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:55
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:64
 msgctxt "qualifies-for-exam-order-by-fullname"
 msgid "Full name"
 msgstr "Fullt navn"
 
 #: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:52
-#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:58
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:67
 msgctxt "qualifies-for-exam-order-by-username"
 msgid "Username"
 msgstr "Brukernavn"
 
 #: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:55
-#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:61
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:70
 msgctxt "qualifies-for-exam-order-by-candidateid"
 msgid "Candidate ID"
 msgstr "Kandidat nummer"
@@ -7539,7 +7544,13 @@ msgstr "studenter kvalifisert for avsluttende eksamen"
 msgid "Status retracted reason"
 msgstr "Status årsak for tilbaketrekking"
 
-#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:42
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:35
+#, fuzzy
+#| msgid "Your assignments"
+msgid "Required assignments"
+msgstr "Nødvendige oppgaver"
+
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:51
 msgid "Retract"
 msgstr "Trekk tilbake"
 
@@ -7568,21 +7579,21 @@ msgstr ""
 "Du kan enten velge en plugin for å lage en ny status, eller du kan velge en "
 "tilbaketrukket status."
 
-#: devilry/devilry_qualifiesforexam/views/plugin_base_views/base_multiselect_view.py:30
+#: devilry/devilry_qualifiesforexam/views/plugin_base_views/base_multiselect_view.py:31
 msgid "Invalid qualification items was selected."
 msgstr "Ugyldige kvalifiserings-elementer ble valgt."
 
-#: devilry/devilry_qualifiesforexam/views/plugin_base_views/base_multiselect_view.py:103
+#: devilry/devilry_qualifiesforexam/views/plugin_base_views/base_multiselect_view.py:104
 #, python-format
 msgid "Submit selected %(what)s"
 msgstr "Send inn valgte %(what)s"
 
-#: devilry/devilry_qualifiesforexam/views/plugin_base_views/base_multiselect_view.py:110
+#: devilry/devilry_qualifiesforexam/views/plugin_base_views/base_multiselect_view.py:111
 #, python-format
 msgid "Selected %(what)s"
 msgstr "Valgte %(what)s"
 
-#: devilry/devilry_qualifiesforexam/views/plugin_base_views/base_multiselect_view.py:117
+#: devilry/devilry_qualifiesforexam/views/plugin_base_views/base_multiselect_view.py:118
 #, python-format
 msgid "No %(what)s selected"
 msgstr "Ingen %(what)s valgt"
@@ -7599,19 +7610,19 @@ msgstr ""
 "Velg et av alternativene fra listen. Hvert alternativ starter som slutter "
 "med en forhåndsvisning av resultatene, før du får muligheten til å lagre"
 
-#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:292
+#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:307
 msgid "Provide a message as to why the Status needs to be retracted."
 msgstr "Gi en beskjed om hvorfor Statusen må trekkes tilbake."
 
-#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:298
+#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:313
 msgid "Message"
 msgstr "Beskjed"
 
-#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:315
+#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:330
 msgid "Why is the status retracted?"
 msgstr "Hvorfor er denne statusen trukket tilbake?"
 
-#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:358
+#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:373
 msgid "Cannot retract status without a message."
 msgstr "Kan ikke trekke tilbake en status uten en beskjed."
 

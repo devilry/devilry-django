@@ -1,3 +1,19 @@
+## 6.2.0rc0 (2023-11-29)
+
+### Feat
+
+- **devilry_qualifiesforexam**: added listing of required exams on status report
+- **devilry_examiner**: added sorting by delivery time and filter if assignment has an delivery with file attachment to examiner dashboard
+- **devilry-comment-editor**: added button for image markdown
+
+### Fix
+
+- **settings/develop.py**: Added mediacopy of files missing to work with whitenoise
+- **feedbackfeed_examiner.ExaminerPublicDiscussView**: set feedback to default open tab instead of discuss
+- **devilry_admin.asignment.student.overwiev**: changed to 'students' to 'groups' to better reflect actual content of view
+- **devilry_listfilter.user.Search**: force encoding of search input to hopefully fix #1077
+- **devilry_markup**: added sanitizer step after markdown conversion
+
 ## 6.1.1 (2023-11-02)
 
 ### Fix
