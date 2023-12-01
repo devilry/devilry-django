@@ -8,6 +8,7 @@ from cradmin_legacy.viewhelpers.listfilter.basefilters.single import abstractrad
 from cradmin_legacy.viewhelpers.listfilter.basefilters.single import abstractselect
 
 from devilry.apps.core.models import RelatedExaminer, Examiner
+from devilry.devilry_group.models import GroupComment
 
 
 class AbstractSearch(listfilter.django.single.textinput.Search):
@@ -93,6 +94,14 @@ class AbstractOrderBy(listfilter.django.single.select.AbstractOrderBy):
                     'label': pgettext_lazy('orderby', 'Least recently commented by examiner'),
                     'order_by': [],  # Handled with custom query in filter()
                 }),
+                ('delivery_descending', {
+                    'label': pgettext_lazy('orderby', 'Deliveries (newest first)'),
+                    'order_by': ['deadline'],
+                }),
+                ('delivery_ascending', {
+                    'label': pgettext_lazy('orderby', 'Deliveries (oldest first)'),
+                    'order_by': ['deadline'],
+                }),
             ))
         )
         return ordering_options_list
@@ -105,7 +114,23 @@ class AbstractOrderBy(listfilter.django.single.select.AbstractOrderBy):
         ordering_options.extend(self.get_common_ordering_options())
         return ordering_options
 
+
+    def __annotate_delivery_time(self, queryobject):
+        out = queryobject.annotate(
+            delivery_time=models.Case(
+                models.When(
+                    ~models.Q(feedbackset__groupcomment__visibility=GroupComment.VISIBILITY_PRIVATE) &
+                    models.Q(feedbackset__groupcomment__commentfile__isnull=False),
+                    then=models.F('feedbackset__created_datetime'),
+                ),
+                default=None,
+                output_field=models.DateTimeField()
+            )
+        )
+        return out
+
     def filter(self, queryobject):
+        
         cleaned_value = self.get_cleaned_value() or ''
         if cleaned_value == 'last_commented_by_student_ascending':
             return queryobject.order_by(
@@ -122,6 +147,14 @@ class AbstractOrderBy(listfilter.django.single.select.AbstractOrderBy):
         elif cleaned_value == 'last_commented_by_examiner_descending':
             return queryobject.order_by(
                 models.F('cached_data__last_public_comment_by_examiner_datetime').desc(nulls_last=True)
+            )
+        elif cleaned_value == 'delivery_descending':
+            return self.__annotate_delivery_time(queryobject).order_by(
+                 models.F('delivery_time').desc(nulls_last=True)
+            )
+        elif cleaned_value == 'delivery_ascending':
+            return self.__annotate_delivery_time(queryobject).order_by(
+                 models.F('delivery_time').asc(nulls_last=True)
             )
         return super(AbstractOrderBy, self).filter(queryobject=queryobject).distinct()
 
