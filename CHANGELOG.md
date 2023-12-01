@@ -1,3 +1,10 @@
+## 6.2.0rc1 (2023-12-01)
+
+### Fix
+
+- **devilry_examiner.assignment**: Added missing sorting on delivery time
+- **feedbackfeed_examiner.py**: fixed defaulting to feedback
+
 ## 6.2.0rc0 (2023-11-29)
 
 ### Feat
