@@ -1,3 +1,9 @@
+## 6.2.0rc2 (2023-12-04)
+
+### Fix
+
+- **devilry_examiner.selfassign.py**: fixed added sorting to wrong view
+
 ## 6.2.0rc1 (2023-12-01)
 
 ### Fix

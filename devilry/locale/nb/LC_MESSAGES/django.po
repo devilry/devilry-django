@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-01 13:11+0100\n"
+"POT-Creation-Date: 2023-12-04 13:56+0100\n"
 "PO-Revision-Date: 2023-07-19 13:23+0200\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
@@ -642,22 +642,22 @@ msgid "failed"
 msgstr "ikke bestått"
 
 #: devilry/apps/core/templates/devilry_core/templatetags/groupstatus.django.html:31
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:297
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:334
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:311
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:348
 msgctxt "group status"
 msgid "waiting for feedback"
 msgstr "venter på tilbakemelding"
 
 #: devilry/apps/core/templates/devilry_core/templatetags/groupstatus.django.html:33
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:303
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:335
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:317
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:349
 msgctxt "group status"
 msgid "waiting for deliveries"
 msgstr "venter på innleveringer"
 
 #: devilry/apps/core/templates/devilry_core/templatetags/groupstatus.django.html:35
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:308
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:336
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:322
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:350
 msgctxt "group status"
 msgid "corrected"
 msgstr "korrigert"
@@ -2701,8 +2701,8 @@ msgid "Subject"
 msgstr "Kurs"
 
 #: devilry/devilry_admin/templates/devilry_admin/dashboard/student_feedbackfeed_wizard/group_by_assignment.django.html:28
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:275
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:329
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:289
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:343
 #: devilry/devilry_cradmin/templates/devilry_cradmin/devilry_listbuilder/assignmentgroup/include/groupdetails.django.html:32
 #: devilry/devilry_cradmin/templates/devilry_cradmin/devilry_listbuilder/assignmentgroup/include/groupdetails.django.html:44
 msgctxt "group status"
@@ -5150,7 +5150,7 @@ msgid "Delivery Time (descending)"
 msgstr "Innleveringstidspunkt (synkende)"
 
 #: devilry/devilry_cradmin/devilry_listfilter/assignment.py:116
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:655
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:669
 msgctxt "assignment filter"
 msgid "Assignments"
 msgstr "Oppgaver"
@@ -5202,241 +5202,241 @@ msgctxt "orderby"
 msgid "Least recently commented by examiner"
 msgstr "Eldste kommentar av retter"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:98
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:103
+msgctxt "orderby"
+msgid "By student name"
+msgstr "Etter student navn"
+
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:137
+msgctxt "orderby"
+msgid "Email"
+msgstr "E-post"
+
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:138
+msgctxt "orderby"
+msgid "Email (descending)"
+msgstr "E-post (synkende)"
+
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:140
+msgctxt "orderby"
+msgid "Username"
+msgstr "Brukernavn"
+
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:141
+msgctxt "orderby"
+msgid "Username (descending)"
+msgstr "Brukernavn (synkende)"
+
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:144
+msgctxt "orderby"
+msgid "Name"
+msgstr "Navn"
+
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:148
+msgctxt "orderby"
+msgid "Name (descending)"
+msgstr "Navn (synkende)"
+
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:160
+msgctxt "orderby"
+msgid "Last name"
+msgstr "Etternavn"
+
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:164
+msgctxt "orderby"
+msgid "Last name (descending)"
+msgstr "Etternavn (synkende)"
+
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:191
+msgctxt "orderby"
+msgid "Anonymous ID"
+msgstr "Anonym ID"
+
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:195
+msgctxt "orderby"
+msgid "Anonymous ID (descending)"
+msgstr "Anonym ID (synkende)"
+
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:214
+msgctxt "orderby"
+msgid "Candidate ID"
+msgstr "Kandidat ID"
+
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:218
+msgctxt "orderby"
+msgid "Candidate ID (descending)"
+msgstr "Kandidat ID (synkende)"
+
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:252
 #, fuzzy
 #| msgid "First deadline (newest first)"
 msgctxt "orderby"
 msgid "Deliveries (newest first)"
 msgstr "Innleveringer (nyeste først)"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:102
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:256
 #, fuzzy
 #| msgid "First deadline (oldest first)"
 msgctxt "orderby"
 msgid "Deliveries (oldest first)"
 msgstr "Innleveringer (eldste først)"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:111
-msgctxt "orderby"
-msgid "By student name"
-msgstr "Etter student navn"
-
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:165
-msgctxt "orderby"
-msgid "Email"
-msgstr "E-post"
-
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:166
-msgctxt "orderby"
-msgid "Email (descending)"
-msgstr "E-post (synkende)"
-
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:168
-msgctxt "orderby"
-msgid "Username"
-msgstr "Brukernavn"
-
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:169
-msgctxt "orderby"
-msgid "Username (descending)"
-msgstr "Brukernavn (synkende)"
-
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:172
-msgctxt "orderby"
-msgid "Name"
-msgstr "Navn"
-
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:176
-msgctxt "orderby"
-msgid "Name (descending)"
-msgstr "Navn (synkende)"
-
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:188
-msgctxt "orderby"
-msgid "Last name"
-msgstr "Etternavn"
-
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:192
-msgctxt "orderby"
-msgid "Last name (descending)"
-msgstr "Etternavn (synkende)"
-
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:219
-msgctxt "orderby"
-msgid "Anonymous ID"
-msgstr "Anonym ID"
-
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:223
-msgctxt "orderby"
-msgid "Anonymous ID (descending)"
-msgstr "Anonym ID (synkende)"
-
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:242
-msgctxt "orderby"
-msgid "Candidate ID"
-msgstr "Kandidat ID"
-
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:246
-msgctxt "orderby"
-msgid "Candidate ID (descending)"
-msgstr "Kandidat ID (synkende)"
-
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:292
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:306
 msgctxt "group status"
 msgid "all students"
 msgstr "alle studenter"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:333
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:347
 msgctxt "group status"
 msgid "Any"
 msgstr "Alle"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:355
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:369
 msgctxt "group points filter"
 msgid "Points"
 msgstr "Poeng"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:361
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:375
 msgctxt "group points filter"
 msgid "Type a number ..."
 msgstr "Skriv inn et tall ..."
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:370
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:384
 msgctxt "group is passing grade filter"
 msgid "Passing grade?"
 msgstr "Ståkarakter?"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:373
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:387
 msgctxt "group is passing grade filter"
 msgid "Both"
 msgstr "Begge"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:401
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:415
 msgctxt "group examiner filter"
 msgid "Examiner"
 msgstr "Retter"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:418
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:432
 msgctxt "group examiner filter"
 msgid "Any"
 msgstr "Alle"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:517
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:531
 msgctxt "examiner candidate count any"
 msgid "Any"
 msgstr "Alle"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:518
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:532
 msgctxt "exact candidate num"
 msgid "Exactly"
 msgstr "Akkurat"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:519
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:533
 msgctxt "less than candidate num"
 msgid "Less than"
 msgstr "Mindre enn"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:520
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:534
 msgctxt "greater than candidate num"
 msgid "Greater than"
 msgstr "Mer enn"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:538
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:552
 msgctxt "group examiner filter"
 msgid "Number of examiners"
 msgstr "Antall rettere"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:558
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:572
 msgctxt "group student filter"
 msgid "Number of students"
 msgstr "Antall studenter"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:589
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:603
 msgctxt "group activity"
 msgid "Activity"
 msgstr "Aktivitet"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:593
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:607
 msgctxt "group activity"
 msgid "All"
 msgstr "Alle"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:594
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:608
 msgctxt "group activity"
 msgid "From student"
 msgstr "Fra student"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:596
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:610
 msgctxt "group activity"
 msgid "Has comment(s) from student"
 msgstr "Har kommentar(er) fra student"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:598
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:612
 msgctxt "group activity"
 msgid "Has file(s) from student"
 msgstr "Har fil(er) fra student"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:600
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:614
 msgctxt "group activity"
 msgid "No comments from student"
 msgstr "Ingen kommentar fra student"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:602
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:616
 msgctxt "group activity"
 msgid "No files from student"
 msgstr "Ingen filer fra student"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:604
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:618
 msgctxt "group activity"
 msgid "From examiner"
 msgstr "Fra retter"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:606
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:620
 msgctxt "group activity"
 msgid "Has comment(s) from examiner"
 msgstr "Har kommentar(er) fra retter"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:608
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:622
 msgctxt "group activity"
 msgid "Has unpublished feedback draft"
 msgstr "Har kladd av upublisert tilbakemelding"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:610
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:624
 msgctxt "group activity"
 msgid "Has unpublished comment(s) from YOU"
 msgstr "Har upubliserte kommentar(er) fra DEG"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:612
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:626
 msgctxt "group activity"
 msgid "No comments from examiner"
 msgstr "Ingen kommentar fra retter"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:614
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:628
 msgctxt "group activity"
 msgid "From administrator"
 msgstr "Fra administrator"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:616
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:630
 msgctxt "group activity"
 msgid "Has comment(s) from administrator"
 msgstr "Har kommentar(er) fra administrator"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:684
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:698
 msgctxt "group assigned status"
 msgid "Assign status"
 msgstr "Tildelingstatus"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:688
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:702
 msgctxt "group assigned status"
 msgid "All students"
 msgstr "Alle studenter"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:689
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:703
 msgctxt "group assigned status"
 msgid "Assigned"
 msgstr "Tildelt"
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:690
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:704
 msgctxt "group assigned status"
 msgid "Unassigned"
 msgstr "Ikke tildelt"
