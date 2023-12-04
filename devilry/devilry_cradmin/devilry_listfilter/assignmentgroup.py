@@ -234,7 +234,7 @@ class OrderByDelivery(AbstractOrderBy):
 
     def __annotate_delivery_time(self, queryobject):
         out = queryobject.annotate(
-            delivery_time=models.Case(
+            delivery_time=models.Max(models.Case(
                 models.When(
                     ~models.Q(feedbackset__groupcomment__visibility=GroupComment.VISIBILITY_PRIVATE) &
                     models.Q(feedbackset__groupcomment__commentfile__isnull=False),
@@ -242,7 +242,7 @@ class OrderByDelivery(AbstractOrderBy):
                 ),
                 default=None,
                 output_field=models.DateTimeField()
-            )
+            ))
         )
         return out
 
