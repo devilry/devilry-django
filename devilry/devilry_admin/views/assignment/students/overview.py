@@ -28,10 +28,10 @@ class NonAnonymousGroupItemFrame(devilry_listbuilder.common.GoForwardLinkItemFra
 
 class StudentGroupListMatchResultRenderable(WithResultValueRenderable):
     def get_object_name_singular(self, num_matches):
-        return gettext_lazy('student')
+        return gettext_lazy('group')
 
     def get_object_name_plural(self, num_matches):
-        return gettext_lazy('students')
+        return gettext_lazy('groups')
 
 
 class RowListWithMatchResults(RowList):

@@ -22,11 +22,12 @@ const TOOLBAR_CODE_INLINE = 'codeInline';
 const TOOLBAR_CODE_BLOCK = 'codeBlock';
 const TOOLBAR_UNORDERED_LIST = 'unorderedList';
 const TOOLBAR_ORDERED_LIST = 'orderedList';
+const TOOLBAR_IMAGE = 'image';
 const ORDERED_LIST_REGEX = '^(\\s*)([0-9]*\\.\\s)';
 const UNORDERED_LIST_REGEX = '^(\\s*)(\\*\\s)';
 
 class DevilryCommentEditor extends HTMLElement {
-    constructor () {
+    constructor() {
         super();
 
         this.attrLabelText = this.getAttribute('labelText');
@@ -42,35 +43,35 @@ class DevilryCommentEditor extends HTMLElement {
         this.activeTab = 'write';
     }
 
-    connectedCallback () {
+    connectedCallback() {
         this.renderEditor();
         this.addToolbarOptionEventListeners();
         this.addToolbarKeyboardShortcutEvents();
         this.addTabEventListener();
     }
 
-    get _elementId () {
+    get _elementId() {
         return `id_${this.attrTextareaName}`;
     }
 
-    get _textArea () {
+    get _textArea() {
         return document.getElementById(`${this._elementId}`);
     }
 
-    get _tooltipMetaKeyForPlatform () {
+    get _tooltipMetaKeyForPlatform() {
         return this._isMac ? 'Cmd' : 'Ctrl'
     }
 
-    get _isMac () {
+    get _isMac() {
         return window.navigator.platform.toUpperCase().startsWith('MAC');
     }
 
-    get _cursorLine () {
+    get _cursorLine() {
         const cursorStartIndex = this._textArea.value.substring(0, this._textArea.selectionStart).split('\n').length - 1;
         return this._textArea.value.split('\n')[cursorStartIndex];
     }
 
-    get _newPreviewSection () {
+    get _newPreviewSection() {
         if (!this.attrMarkdownPreviewConfig.enabled) {
             return '';
         }
@@ -79,7 +80,7 @@ class DevilryCommentEditor extends HTMLElement {
         `;
     }
 
-    get _buttonTab () {
+    get _buttonTab() {
         if (!this.attrMarkdownPreviewConfig.enabled) {
             return '';
         }
@@ -101,7 +102,7 @@ class DevilryCommentEditor extends HTMLElement {
         `
     }
 
-    renderEditor () {
+    renderEditor() {
         const commentEditor = devilryParseDomString(`
             <div aria-live="polite">
                 ${this._buttonTab}
@@ -156,6 +157,14 @@ class DevilryCommentEditor extends HTMLElement {
                             >
                                 <span class="fa fa-code"></span>
                             </button>
+                            <button
+                                id="${this._elementId}_toolbar_option_image"
+                                type="button"
+                                title="${this.attrToolbarConfig.image.tooltip}"
+                                class="btn btn-default devilry-comment-editor-toolbar__option"
+                            >
+                                <span class="fa fa-image"></span>
+                            </button>
                         </div>
                         <label for="${this._elementId}" class="screenreader-only" aria-hidden="true">${this.attrLabelText}</label>
                         <div class="devilry-comment-editor__textarea">
@@ -188,7 +197,7 @@ class DevilryCommentEditor extends HTMLElement {
         this.appendChild(commentEditor)
     }
 
-    _fetchAndInjectRenderedMarkdown () {
+    _fetchAndInjectRenderedMarkdown() {
         if (!this.attrMarkdownPreviewConfig.enabled) {
             return;
         }
@@ -209,21 +218,21 @@ class DevilryCommentEditor extends HTMLElement {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCookie('csrftoken')
             },
-            body: JSON.stringify({'markdown_text': textArea.value})
+            body: JSON.stringify({ 'markdown_text': textArea.value })
         })
-        .then(response => response.json())
-        .then((responseData) => {
-            previewArea.innerHTML = responseData['markdown_result'];
-        })
-        .catch((error) => {
-            previewArea.innerHTML = this.attrMarkdownPreviewConfig.previewApiErrorMessage
-        });
+            .then(response => response.json())
+            .then((responseData) => {
+                previewArea.innerHTML = responseData['markdown_result'];
+            })
+            .catch((error) => {
+                previewArea.innerHTML = this.attrMarkdownPreviewConfig.previewApiErrorMessage
+            });
     }
 
     /**
      * Add event-listeners for write/preview "tab" buttons.
      */
-    addTabEventListener () {
+    addTabEventListener() {
         if (!this.attrMarkdownPreviewConfig.enabled) {
             return;
         }
@@ -264,7 +273,7 @@ class DevilryCommentEditor extends HTMLElement {
     /**
      * Add event-listeners to toolbar buttons.
      */
-    addToolbarOptionEventListeners () {
+    addToolbarOptionEventListeners() {
         document.getElementById(`${this._elementId}_toolbar_option_heading`)
             .addEventListener('click', () => {
                 this.markdownActionHeading();
@@ -289,17 +298,21 @@ class DevilryCommentEditor extends HTMLElement {
             .addEventListener('click', () => {
                 this.markdownActionUnorderedList();
             }, false);
+        document.getElementById(`${this._elementId}_toolbar_option_image`)
+            .addEventListener('click', () => {
+                this.markdownActionImage();
+            }, false);
     }
 
     /**
      * Add keyboard-shortcuts for toolbar actions.
      */
-    addToolbarKeyboardShortcutEvents () {
+    addToolbarKeyboardShortcutEvents() {
         // Add key down event listener.
         document.onkeydown = (keyDownEvent) => {
             if (document.activeElement.id === `${this._elementId}`) {
                 TOOLBAR_KEYBOARD_MAP[keyDownEvent.key] = true;
-                
+
                 // Handle MacOS vs everything else.
                 let controlKey = 'Control';
                 if (this._isMac) {
@@ -332,7 +345,7 @@ class DevilryCommentEditor extends HTMLElement {
         // Add key up event listener.
         document.onkeyup = (keyUpEvent) => {
             if (document.activeElement.id === `${this._elementId}`) {
-                this.dispatchEvent(new CustomEvent('devilryCommentEditorHasContent', {detail: this._textArea.value ? true : false}));
+                this.dispatchEvent(new CustomEvent('devilryCommentEditorHasContent', { detail: this._textArea.value ? true : false }));
 
                 const textAreaContentCopy = document.getElementById(`${this._elementId}_textarea_content_copy`);
                 textAreaContentCopy.innerHTML = `${this._textArea.value}X`;
@@ -343,7 +356,7 @@ class DevilryCommentEditor extends HTMLElement {
         };
     }
 
-    _handleEventBehaviour (event = null, preventDefault = true) {
+    _handleEventBehaviour(event = null, preventDefault = true) {
         if (event === null) {
             return;
         }
@@ -353,44 +366,49 @@ class DevilryCommentEditor extends HTMLElement {
         event.stopPropagation();
     }
 
-    markdownActionHeading (event = null) {
+    markdownActionHeading(event = null) {
         this._handleEventBehaviour(event, true);
         this.insertBasicMarkdownAtCursor(TOOLBAR_HEADING, '### ', '', this.attrToolbarConfig.heading.placeholderText);
     }
 
-    markdownActionBold (event = null) {
+    markdownActionBold(event = null) {
         this._handleEventBehaviour(event, true);
         this.insertBasicMarkdownAtCursor(TOOLBAR_BOLD, '**', '**', this.attrToolbarConfig.bold.placeholderText);
     }
 
-    markdownActionItalic (event = null) {
+    markdownActionItalic(event = null) {
         this._handleEventBehaviour(event, true);
         this.insertBasicMarkdownAtCursor(TOOLBAR_ITALIC, '_', '_', this.attrToolbarConfig.italic.placeholderText);
     }
 
-    markdownActionLink (event = null) {
+    markdownActionLink(event = null) {
         this._handleEventBehaviour(event, true);
         this.insertBasicMarkdownAtCursor(TOOLBAR_LINK, '[', '](url)', this.attrToolbarConfig.link.placeholderText);
     }
 
-    markdownActionCodeInline (event = null) {
+    markdownActionCodeInline(event = null) {
         this._handleEventBehaviour(event, true);
         this.insertBasicMarkdownAtCursor(TOOLBAR_CODE_INLINE, '`', '`', this.attrToolbarConfig.codeInline.placeholderText);
     }
 
-    markdownActionCodeBlock (event = null) {
+    markdownActionCodeBlock(event = null) {
         this._handleEventBehaviour(event, true);
         this.insertBasicMarkdownAtCursor(TOOLBAR_CODE_BLOCK, '```', '\n\n```', this.attrToolbarConfig.codeBlock.placeholderText);
     }
 
-    markdownActionUnorderedList (event = null, preventDefault = true) {
+    markdownActionUnorderedList(event = null, preventDefault = true) {
         this._handleEventBehaviour(event, preventDefault);
         this.insertMarkdownListAtCursor(TOOLBAR_UNORDERED_LIST, event);
     }
 
-    markdownActionOrderedList (event = null, preventDefault = true) {
+    markdownActionOrderedList(event = null, preventDefault = true) {
         this._handleEventBehaviour(event, preventDefault);
         this.insertMarkdownListAtCursor(TOOLBAR_ORDERED_LIST, event);
+    }
+
+    markdownActionImage(event = null) {
+        this._handleEventBehaviour(event, true);
+        this.insertBasicMarkdownAtCursor(TOOLBAR_IMAGE, `![ ${this.attrToolbarConfig.image.placeholderTextDescription} ](`, ')', this.attrToolbarConfig.image.placeholderTextTitle);
     }
 
     /**
@@ -406,8 +424,8 @@ class DevilryCommentEditor extends HTMLElement {
      * @param {String} closingTag   The closing markdown-tag. E.g. for links where the full markdown tag is "[]()", the closing-tag whould be "]()".
      * @param {String} placeholder  This is the placeholder text inserted between the opening and closing markdown tags if no text is selected.
      */
-    insertBasicMarkdownAtCursor (type, openingTag, closingTag, placeholder) {
-        if (![TOOLBAR_HEADING, TOOLBAR_BOLD, TOOLBAR_ITALIC, TOOLBAR_LINK, TOOLBAR_CODE_INLINE, TOOLBAR_CODE_BLOCK].includes(type)) {
+    insertBasicMarkdownAtCursor(type, openingTag, closingTag, placeholder) {
+        if (![TOOLBAR_HEADING, TOOLBAR_BOLD, TOOLBAR_ITALIC, TOOLBAR_LINK, TOOLBAR_CODE_INLINE, TOOLBAR_CODE_BLOCK, TOOLBAR_IMAGE].includes(type)) {
             throw Error(`Type "${type}" not supported.`);
         }
 
@@ -437,7 +455,7 @@ class DevilryCommentEditor extends HTMLElement {
      *                                      If this is not null, then keypress is handled 
      *                                      by continuing the list on the current line.
      */
-    insertMarkdownListAtCursor (type, enterKeyPressEvent = null) {
+    insertMarkdownListAtCursor(type, enterKeyPressEvent = null) {
         if (![TOOLBAR_UNORDERED_LIST, TOOLBAR_ORDERED_LIST].includes(type)) {
             throw Error(`Type list-type "${type}" not supported.`);
         }
@@ -528,7 +546,7 @@ class DevilryCommentEditor extends HTMLElement {
                     listTag,
                     ...textAreaLineArray.slice(cursorStartIndex + 1)
                 ];
-                cursorPositionWithOffset = textArea.selectionStart - cursorLine.length; 
+                cursorPositionWithOffset = textArea.selectionStart - cursorLine.length;
             }
 
             // Set new cursor position.

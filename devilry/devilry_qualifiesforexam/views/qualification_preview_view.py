@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import json
 
 # Django imports
 from django import forms
@@ -20,6 +20,7 @@ from cradmin_legacy.viewhelpers import update
 from devilry.devilry_qualifiesforexam import models as status_models
 from devilry.apps.core import models as core_models
 from devilry.devilry_qualifiesforexam.tablebuilder import tablebuilder
+from devilry.devilry_qualifiesforexam.listbuilder.assignment_listbuilder_list import AssignmentListBuilderList
 
 
 class AbstractQualificationPreviewView(generic.FormView):
@@ -121,7 +122,7 @@ class QualificationPreviewView(AbstractQualificationPreviewView):
 
         return context_data
 
-    def _create_status(self, plugintypeid):
+    def _create_status(self, plugintypeid, plugindata=None):
         """
         Creates and saves a entry in the database for current examqualification-status for students.
 
@@ -132,7 +133,8 @@ class QualificationPreviewView(AbstractQualificationPreviewView):
                 status=status_models.Status.READY,
                 period=self.request.cradmin_role,
                 user=self.request.user,
-                plugin=plugintypeid
+                plugin=plugintypeid,
+                plugin_data=plugindata
         )
         return status
 
@@ -158,11 +160,17 @@ class QualificationPreviewView(AbstractQualificationPreviewView):
         # Get passing_relatedstudentids and plugintypeid and delete from session
         passing_relatedstudentids = set(self.request.session['passing_relatedstudentids'])
         plugintypeid = self.request.session['plugintypeid']
+        plugindata = None
+        if self.request.session['plugindata']:
+            plugindata = self.request.session['plugindata']
+            del self.request.session['plugindata']
+            print(plugindata)
+            
         del self.request.session['passing_relatedstudentids']
         del self.request.session['plugintypeid']
 
         if 'save' in self.request.POST:
-            status = self._create_status(plugintypeid)
+            status = self._create_status(plugintypeid, plugindata)
             self._bulk_create_relatedstudents(status, passing_relatedstudentids)
             return HttpResponseRedirect(str(self.request.cradmin_app.reverse_appurl(
                 viewname='show-status',
@@ -223,6 +231,13 @@ class QualificationStatusView(PrefetchStatusInfoMixin, AbstractQualificationPrev
         context_data = super(QualificationStatusView, self).get_context_data(**kwargs)
         current_status = self._get_status(statusid=self.kwargs['statusid'])
         context_data['status'] = current_status
+        context_data['required_assignments'] = None
+        print(current_status.plugin_data)
+        
+        if current_status.plugin == 'devilry_qualifiesforexam_plugin_approved.plugin_select_assignments' and current_status.plugin_data:
+            assignment_ids = json.loads(current_status.plugin_data)
+            context_data['required_assignments'] = AssignmentListBuilderList.from_assignment_id_list(assignment_ids)
+            
 
         # Add RelatedStudents to list and the IDs of the relatedstudents that qualify.
         qualifiesforexam = list(current_status.students.all())

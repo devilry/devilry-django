@@ -510,10 +510,8 @@ class ExaminerFeedbackfeedRedirectView(View):
     def dispatch(self, request, *args, **kwargs):
         group = self.request.cradmin_role
 
-        # if the last feedbackset of the group is not graded and the deadline has passed,
-        # redirect to feedback view.
-        if not group.cached_data.last_feedbackset.grading_published_datetime \
-                and group.cached_data.last_feedbackset.deadline_datetime < timezone.now():
+        # Default to feedback when available
+        if not group.cached_data.last_published_feedbackset_is_last_feedbackset:
             return redirect(str(self.request.cradmin_app.reverse_appurl(viewname='feedback')))
         return redirect(str(self.request.cradmin_app.reverse_appurl(viewname='public-discuss')))
 

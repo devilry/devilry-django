@@ -115,6 +115,17 @@ class DevilryMarkdownWidget(forms.widgets.Textarea):
                         'tooltip': pgettext(
                             'devilry markdown widget toolbar tooltip text',
                             'Numbered list')
+                    },
+                    'image': {
+                        'placeholderTextTitle': pgettext(
+                            'devilry markdown widget toolbar placeholder text',
+                            'Src \'Title\''),
+                        'placeholderTextDescription': pgettext(
+                            'devilry markdown widget toolbar placeholder text',
+                            'Add description here'),
+                        'tooltip': pgettext(
+                            'devilry markdown widget toolbar tooltip text',
+                            'Image')
                     }
                 })
             }.items()
