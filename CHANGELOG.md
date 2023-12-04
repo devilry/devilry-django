@@ -1,3 +1,9 @@
+## 6.2.0rc3 (2023-12-04)
+
+### Fix
+
+- **devilry_examiner.assignmentgroup**: fixed duplicate filters in OrderByDelivery
+
 ## 6.2.0rc2 (2023-12-04)
 
 ### Fix
