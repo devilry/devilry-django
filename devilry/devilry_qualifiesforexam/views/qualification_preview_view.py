@@ -161,10 +161,12 @@ class QualificationPreviewView(AbstractQualificationPreviewView):
         passing_relatedstudentids = set(self.request.session['passing_relatedstudentids'])
         plugintypeid = self.request.session['plugintypeid']
         plugindata = None
-        if self.request.session['plugindata']:
-            plugindata = self.request.session['plugindata']
-            del self.request.session['plugindata']
-            print(plugindata)
+        try:
+            if self.request.session['plugindata']:
+                plugindata = self.request.session['plugindata']
+                del self.request.session['plugindata']
+        except KeyError:
+            pass
             
         del self.request.session['passing_relatedstudentids']
         del self.request.session['plugintypeid']
