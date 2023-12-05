@@ -1,3 +1,9 @@
+## 6.2.1 (2023-12-05)
+
+### Fix
+
+- **devilry_qualifiesforexam.QualificationPreviewView**: fixed KeyError causing saving to fail
+
 ## 6.2.0 (2023-12-04)
 
 ## 6.2.0rc3 (2023-12-04)
