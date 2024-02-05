@@ -33,15 +33,17 @@ class DevilrySocialAccountAdapter(DefaultSocialAccountAdapter):
             # Debug log
             logger.debug(msg='User does not exist, setting sociallogin.user.shortname to {}'.format(shortname))
             sociallogin.user.shortname = shortname
+            connecting = False
         else:
             # Debug log
             logger.debug(msg='User exists, setting sociallogin.user to existing_user')
             sociallogin.user = existing_user
+            connecting = True
 
         sociallogin.user.set_unusable_password()
         sociallogin.user.full_clean()
         sociallogin.user.save()
-        sociallogin.save(request)
+        sociallogin.save(request, connecting)
         # Debug log
         logger.debug(msg='User saved')
         return sociallogin.user
