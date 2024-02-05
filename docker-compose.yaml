@@ -46,6 +46,8 @@ volumes:
   devilry-django-dev-pgdata-0: {}
   devilry-django-dev-pgdata-1: {}
   devilry-django-dev-pgdata-2: {}
+  devilry-django-dev-pgdata-master: {}
   devilry-django-dev-redisdata-0: {}
   devilry-django-dev-redisdata-1: {}
   devilry-django-dev-redisdata-2: {}
+  devilry-django-dev-redisdata-master: {}

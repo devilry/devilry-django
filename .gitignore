@@ -57,3 +57,4 @@ ievv_buildstatic.appconfig.json
 
 dump.rdb
 .venv/
+.acompose-local.json
