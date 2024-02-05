@@ -1,3 +1,9 @@
+## 6.2.2 (2024-02-05)
+
+### Fix
+
+- Set connecting argument when saving in allauth_adapter.
+
 ## 6.2.1 (2023-12-05)
 
 ### Fix
