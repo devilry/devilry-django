@@ -1,6 +1,6 @@
 import markdown
 from markdown.extensions.codehilite import CodeHiliteExtension
-# from markdown.extensions.fenced_code import 
+# from markdown.extensions.fenced_code import
 from html_sanitizer.django import get_sanitizer
 
 from devilry.devilry_markup.markdown_extensions.code_diff import CodeDiffExtension
@@ -15,19 +15,22 @@ def markdown_full(inputMarkdown):
         safe_mode="escape",
         extensions=[
             CodeDiffExtension(),
-            LatexMathExtension(),
-            LatexMathInlineExtension(),
             CodeHiliteExtension(
                 guess_lang=False,
                 linenums=False
-            ), # Syntax hilite code
-            'fenced_code', # Support github style code blocks
-            'nl2br', # Support github style newline handling
-            'sane_lists', # Break into new ul/ol tag when the next line starts with another class of list indicator
-            'def_list', # Support definition lists
-            'tables', # Support tables
+            ),
+            LatexMathInlineExtension(),
+            LatexMathExtension(),
+            'fenced_code',  # Support github style code blocks
+            'sane_lists',  # Break into new ul/ol tag when the next line starts with another class of list indicator
+            'def_list',  # Support definition lists
+            'tables',  # Support tables
+            'nl2br',  # Support github style newline handling
         ])
+
+
     html = md.convert(inputMarkdown)
     html = sanitizer.sanitize(html)
+
     html = html.replace('{{', '{ {').replace('}}', '} }')
     return html

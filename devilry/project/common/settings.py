@@ -70,7 +70,7 @@ INSTALLED_APPS = [
     'devilry.devilry_markup',
     'devilry.devilry_superadmin',
     'devilry.devilry_authenticate',
-    
+
     'devilry.devilry_errortemplates',
     'devilry.devilry_help',
     'devilry.devilry_theme3',
@@ -222,13 +222,17 @@ HTML_SANITIZERS = {
     'devilry': {
         "tags": {
             "a", "h1", "h2", "h3", "strong", "em", "p", "ul", "ol",
-            "li", "br", "sub", "sup", "hr", "img", "code"
+            "li", "br", "sub", "sup", "hr", "img", "code", "pre", "div",
+            "span", "devilry-latex-math", "script"
         },
         "attributes": {
             "a": ("href", "name", "target", "title", "id", "rel",),
-            "img": ("src", "alt", "title")
+            "img": ("src", "alt", "title"),
+            "code": ("class",),
+            "div": ("class",),
+            "devilry-latex-math": ("data-latex-code", "data-variant"),
         },
-        "empty": {"hr", "a", "br", "img"},
+        "empty": {"hr", "a", "br", "img", "span", "devilry-latex-math"},
         "separate": {"a", "p", "li"},
         "whitespace": {"br"},
         "keep_typographic_whitespace": True,
