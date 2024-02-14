@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-04 13:56+0100\n"
+"POT-Creation-Date: 2024-02-14 15:57+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -6989,19 +6989,19 @@ msgid ""
 "ends with a preview of the results before you get the option to save"
 msgstr ""
 
-#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:307
+#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:309
 msgid "Provide a message as to why the Status needs to be retracted."
 msgstr ""
 
-#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:313
+#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:315
 msgid "Message"
 msgstr ""
 
-#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:330
+#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:332
 msgid "Why is the status retracted?"
 msgstr ""
 
-#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:373
+#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:375
 msgid "Cannot retract status without a message."
 msgstr ""
 

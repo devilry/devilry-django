@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-04 13:56+0100\n"
+"POT-Creation-Date: 2024-02-14 15:57+0100\n"
 "PO-Revision-Date: 2023-07-19 13:23+0200\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
@@ -7624,19 +7624,19 @@ msgstr ""
 "Velg et av alternativene fra listen. Hvert alternativ starter som slutter "
 "med en forhåndsvisning av resultatene, før du får muligheten til å lagre"
 
-#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:307
+#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:309
 msgid "Provide a message as to why the Status needs to be retracted."
 msgstr "Gi en beskjed om hvorfor Statusen må trekkes tilbake."
 
-#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:313
+#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:315
 msgid "Message"
 msgstr "Beskjed"
 
-#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:330
+#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:332
 msgid "Why is the status retracted?"
 msgstr "Hvorfor er denne statusen trukket tilbake?"
 
-#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:373
+#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:375
 msgid "Cannot retract status without a message."
 msgstr "Kan ikke trekke tilbake en status uten en beskjed."
 
