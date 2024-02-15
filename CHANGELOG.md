@@ -1,3 +1,9 @@
+## 6.2.4 (2024-02-15)
+
+### Fix
+
+- Added settings to allow spans to have class attribute and to not merge spans when sanitizing input
+
 ## 6.2.3 (2024-02-14)
 
 ### Fix
