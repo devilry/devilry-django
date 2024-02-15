@@ -231,6 +231,7 @@ HTML_SANITIZERS = {
             "code": ("class",),
             "div": ("class",),
             "devilry-latex-math": ("data-latex-code", "data-variant"),
+            "span": ("class",),
         },
         "empty": {"hr", "a", "br", "img", "span", "devilry-latex-math"},
         "separate": {"a", "p", "li"},
@@ -251,6 +252,6 @@ HTML_SANITIZERS = {
             target_blank_noopener,
         ],
         "element_postprocessors": [],
-        "is_mergeable": lambda e1, e2: True,
+        "is_mergeable": lambda e1, e2: False,
     }
 }
