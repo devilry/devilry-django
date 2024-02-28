@@ -1,11 +1,17 @@
 # Python imports
 import os
+import io
 import zipfile
 import tarfile
 import shutil
+from stat import S_IFREG
+from stream_zip import ZIP_64, stream_zip
+from to_file_like_obj import to_file_like_obj
 
 # Django imports
 from django.conf import settings
+from django.utils import timezone
+
 
 
 class BaseArchiveBackend(object):
@@ -17,6 +23,7 @@ class BaseArchiveBackend(object):
 
     #: A unique string ID for the subclasses to use that describes what kind of backend it is.
     backend_id = None
+    save_to_disk = True
 
     class Meta:
         abstract = True
@@ -129,6 +136,15 @@ class BaseArchiveBackend(object):
         """
         raise NotImplementedError()
 
+    def get_chunk_size(self):
+        """
+        Get the archive chunk size.
+
+        Returns:
+            (int): result of archive_size if not implemented
+        """
+        return self.archive_size()
+
     @classmethod
     def delete_archive(cls, full_path):
         """
@@ -144,6 +160,115 @@ class BaseArchiveBackend(object):
             (boolean): ``True`` if deleted, else ``False``.
         """
         raise NotImplementedError()
+
+
+class StreamZipBackend(BaseArchiveBackend):
+    def __init__(self, save_to_disk=False, chunk_size=None, **kwargs):
+        super(StreamZipBackend, self).__init__(**kwargs)
+        self.files = []
+        self.zipped_chunks = None
+        self.save_to_disk = save_to_disk
+        self.__add_path_extension()
+        self._create_path_if_not_exists()
+        if chunk_size:
+            self.chunk_size = chunk_size
+        else:
+            # Default 200MB chunk size
+            self.chunk_size = 1024 * 1024 * 200
+
+    def __add_path_extension(self):
+        """
+        Sets :obj:`~.PythonZipFileBackend.archive_path` to full path by prepending the backend storage location
+        to the archive_path. Also adds .zip extension
+        """
+        self.archive_path = os.path.join(self.get_storage_location(), self.archive_path)
+        if not self.archive_path.endswith('.zip'):
+            self.archive_name += '.zip'
+            self.archive_path += '.zip'
+
+    def archive_size(self):
+        """
+        Get size of archive. Uses ``os.stat``.
+
+        Returns:
+            int: size of archive.
+
+        Raises:
+            ValueError: If not in ``readmode``.
+        """
+        if not self.readmode:
+            raise ValueError('Must be in readmode')
+        return 0
+
+    def add_file(self, path, filelike_obj):
+        """
+        Prep a file to be written to the archive on the given ``path``.
+
+        Args:
+            path: Path to file inside the archive.
+            filelike_obj: An object that behaves like a File(read, write..).
+
+        """
+        if self.readmode is True:
+            raise ValueError('readmode must be False to add files.')
+
+        self.files.append((path, filelike_obj))
+
+    def read_archive(self):
+        """
+        Get the zipped archive as :obj:`~ZipFile` in readmode.
+
+        Returns:
+            ZipFile: The zipped archive.
+        """
+        if not self.readmode:
+            raise ValueError('Must be in readmode')
+        if not self.zipped_chunks:
+            raise ValueError('Archive has not been created yet')
+        return zipfile.ZipFile(io.BytesIO(b''.join(self.zipped_chunks)))
+
+    def get_archive(self):
+        """
+        Get the filelike object of the archive for compressed files.
+
+        """
+        return to_file_like_obj(self.zipped_chunks)
+
+    def _prep_files(self):
+        """
+        Prepares the files for Zip creation
+        """
+        now = timezone.now()
+        mode = S_IFREG | 0o600
+
+        def contents(filelike_obj):
+            while chunk := filelike_obj.read(65536):
+                yield chunk
+
+        return (
+            (path, now, mode, ZIP_64, contents(filelike_obj))
+            for (path, filelike_obj) in self.files
+        )
+
+    def close(self):
+        """
+        Must be invoked in order to process the files into an iterable yielding the bytes of the ZIP file.
+
+        Readmode is set to True
+        """
+        prepped_files = self._prep_files()
+        self.zipped_chunks = stream_zip(prepped_files)
+        self.readmode = True
+
+        if self.save_to_disk:
+            self.archive = open(self.archive_path, 'wb')
+            for chunk in self.zipped_chunks:
+                self.archive.write(chunk)
+
+            super(StreamZipBackend, self).close()
+
+    def get_chunk_size(self):
+        return self.chunk_size
 
 
 class PythonZipFileBackend(BaseArchiveBackend):

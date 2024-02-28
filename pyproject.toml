@@ -70,6 +70,8 @@ dependencies = [
     "pycountry>=17.9.0,<17.10.0",
     "six>=1.15.0,<1.16.0",
     "html-sanitizer",
+    "stream-zip>=0.0.70",
+    "to-file-like-obj>=0.0.5",
 ]
 
 [project.optional-dependencies]
