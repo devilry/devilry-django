@@ -9,6 +9,18 @@ logger = logging.getLogger(__name__)
 
 
 class DevilrySocialAccountAdapter(DefaultSocialAccountAdapter):
+    extra_data_to_keep = ['userid_sec', 'userid', 'email', 'name']
+
+    def clean_extra_date(self, extra_data):
+        out = {}
+        for k, v in extra_data.items():
+            if k in self.extra_data_to_keep:
+                out[k] = v
+            else:
+                logger.error(msg='{} value {} was removed from socialacount extra_data of userid {}'
+                             .format(k, v, extra_data['userid']))
+        return out
+
     def save_user(self, request, sociallogin, form=None):
         # Debug log
         logger.debug(msg='DevilrySocialAccountAdapter.save_user:')
@@ -18,6 +30,8 @@ class DevilrySocialAccountAdapter(DefaultSocialAccountAdapter):
 
         # Debug log
         logger.debug(msg='Fetching updater (type): {}'.format(type(updater)))
+
+        sociallogin.account.extra_data = self.clean_extra_date(sociallogin.account.extra_data)
 
         shortname = updater.make_shortname(
             socialaccount=sociallogin.account)
