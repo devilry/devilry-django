@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-14 15:57+0100\n"
+"POT-Creation-Date: 2024-02-28 11:09+0100\n"
 "PO-Revision-Date: 2023-07-19 13:23+0200\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
@@ -805,13 +805,13 @@ msgid "Is this your primary email?"
 msgstr "Er dette din primære e-post?"
 
 #: devilry/devilry_account/models.py:717 devilry/devilry_account/models.py:776
-#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:103
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:100
 #: devilry/devilry_student/cradminextensions/columntypes.py:79
 msgid "No"
 msgstr "Nei"
 
 #: devilry/devilry_account/models.py:718 devilry/devilry_account/models.py:777
-#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:78
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:75
 #: devilry/devilry_student/cradminextensions/columntypes.py:78
 msgid "Yes"
 msgstr "Ja"
@@ -2272,8 +2272,8 @@ msgstr ""
 "på tvers av de valgte oppgavene."
 
 #: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/grading_points_based/select-assignments.django.html:43
-#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:69
-#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:94
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:66
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:91
 msgid "NOTE"
 msgstr "NOTAT"
 
@@ -3189,7 +3189,7 @@ msgstr "Oversikt av alle resultater"
 #: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:115
 #: devilry/devilry_qualifiesforexam/tablebuilder/tablebuilder.py:33
 #: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/includes/qualification_table.django.html:9
-#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:61
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:58
 #: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:10
 msgid "Qualified for final exams"
 msgstr "Kvalifisert til avsluttende eksamen"
@@ -7464,9 +7464,8 @@ msgid "Not ready"
 msgstr "Ikke klar"
 
 #: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:39
-#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:55
-msgid "print"
-msgstr "skriv ut"
+msgid "Print qualified list"
+msgstr "Skriv ut godkjentliste"
 
 #: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:43
 #: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:58
@@ -7492,33 +7491,27 @@ msgctxt "qualifies-for-exam-order-by-username"
 msgid "Username"
 msgstr "Brukernavn"
 
-#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:55
-#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:70
-msgctxt "qualifies-for-exam-order-by-candidateid"
-msgid "Candidate ID"
-msgstr "Kandidat nummer"
-
-#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:65
-#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:90
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:62
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:87
 msgid "LASTNAME"
 msgstr "ETTERNAVN"
 
-#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:66
-#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:91
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:63
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:88
 msgid "FULL NAME"
 msgstr "FULLT NAVN"
 
-#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:67
-#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:92
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:64
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:89
 msgid "USERNAME"
 msgstr "BRUKERNAVN"
 
-#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:68
-#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:93
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:65
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:90
 msgid "CAN TAKE EXAM"
 msgstr "KAN TA EKSAMEN"
 
-#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:86
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:83
 msgid "NOT qualified for final exams"
 msgstr "Kan IKKE gå opp til avsluttende eksamen"
 
@@ -7567,6 +7560,10 @@ msgstr "Nødvendige oppgaver"
 #: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:51
 msgid "Retract"
 msgstr "Trekk tilbake"
+
+#: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:55
+msgid "Show qualified list"
+msgstr "Vis godkjentliste"
 
 #: devilry/devilry_qualifiesforexam/views/list_statuses_view.py:51
 msgid "Status (ready)"
@@ -7624,19 +7621,19 @@ msgstr ""
 "Velg et av alternativene fra listen. Hvert alternativ starter som slutter "
 "med en forhåndsvisning av resultatene, før du får muligheten til å lagre"
 
-#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:309
+#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:305
 msgid "Provide a message as to why the Status needs to be retracted."
 msgstr "Gi en beskjed om hvorfor Statusen må trekkes tilbake."
 
-#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:315
+#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:311
 msgid "Message"
 msgstr "Beskjed"
 
-#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:332
+#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:328
 msgid "Why is the status retracted?"
 msgstr "Hvorfor er denne statusen trukket tilbake?"
 
-#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:375
+#: devilry/devilry_qualifiesforexam/views/qualification_preview_view.py:371
 msgid "Cannot retract status without a message."
 msgstr "Kan ikke trekke tilbake en status uten en beskjed."
 
@@ -8046,6 +8043,13 @@ msgstr "Engelsk"
 #: devilry/project/common/settings.py:177
 msgid "Norwegian Bokmal"
 msgstr "Norsk bokmål"
+
+#~ msgid "print"
+#~ msgstr "skriv ut"
+
+#~ msgctxt "qualifies-for-exam-order-by-candidateid"
+#~ msgid "Candidate ID"
+#~ msgstr "Kandidat nummer"
 
 #, python-format
 #~ msgid ""
