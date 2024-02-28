@@ -17,8 +17,8 @@ class DevilrySocialAccountAdapter(DefaultSocialAccountAdapter):
             if k in self.extra_data_to_keep:
                 out[k] = v
             else:
-                logger.error(msg='{} value {} was removed from socialacount extra_data of userid {}'
-                             .format(k, v, extra_data['userid']))
+                logger.error(msg='{} value was removed from socialacount extra_data of userid {}'
+                             .format(k, extra_data['userid']))
         return out
 
     def save_user(self, request, sociallogin, form=None):
