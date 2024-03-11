@@ -35,15 +35,24 @@ def argument(*name_or_flags, **kwargs):
         '--version',
         required=False,
         help='Override version'
+    ),
+    argument(
+        '--prerelease',
+        required=False,
+        help='Prerelease version'
     )
 ])
 def prepare(args):
     apply = args.apply
     version = args.version
+    prerelease = args.prerelease
 
     cz_bump_command = ['cz', 'bump']
     if version:
         cz_bump_command.append(version)
+    if prerelease:
+        cz_bump_command.append('--prerelease')
+        cz_bump_command.append(prerelease)
 
     commands = [
         cz_bump_command,

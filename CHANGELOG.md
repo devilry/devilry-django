@@ -1,3 +1,16 @@
+## 6.3.0rc0 (2024-03-11)
+
+### Feat
+
+- **devilry_compressionutil**: added the ability to stream the creation of zip files
+
+### Fix
+
+- **comment_email.py**: added check for if comment is empty and made before first deadline of assignment then it should not send email to examiner
+- **allauth_adapter.py**: removed logging of value, only logs key
+- **allauth_adapter.py**: added removal of unwanted extra_data
+- **qualification_preview_view.py**: re-labeled print buttons and removed order by candidate number
+
 ## 6.2.4 (2024-02-15)
 
 ### Fix
