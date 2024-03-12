@@ -1,3 +1,9 @@
+## 6.3.0rc1 (2024-03-12)
+
+### Fix
+
+- **StreamZipBackend**: Added missing if test to _create_path_if_not_exists
+
 ## 6.3.0rc0 (2024-03-11)
 
 ### Feat
