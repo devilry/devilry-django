@@ -2,7 +2,7 @@
 How to configure logging for Devilry
 ####################################
 
-There are many service levels of a production environment that can be of 
+There are many service levels of a production environment that can be of
 interest to monitor:
 
 - HTTP server (Gunicorn)
@@ -10,12 +10,16 @@ interest to monitor:
 - proxy server (Nginx or Apache)
 - file storage
 
+.. note::
+    Because of error logging of potentially sensitive data points in devilry_authenticate
+    these data points has to undergo proper data scrubbing if used in combination with a log service.
+
 ****************
 Gunicorn logging
 ****************
 
-Gunicorn's log level and log file destination are set by its service 
-configuration. For a traditional micro-service setup that would mean 
+Gunicorn's log level and log file destination are set by its service
+configuration. For a traditional micro-service setup that would mean
 either the Systemd or :doc:`Supervisord <supervisord>` configurations.
 
 Then configure Django's loggers in the ``devilry_settings.py`` file::
@@ -94,20 +98,20 @@ Then configure Django's loggers in the ``devilry_settings.py`` file::
         }
     }
 
-Django's logging is either emailed to the system administrator(s) or handled 
+Django's logging is either emailed to the system administrator(s) or handled
 by an error aggregator such as :doc:`Sentry <sentry>`.
 
 ********************************************
 Configuring Logrotate for Gunicorn and Nginx
 ********************************************
 
-For a traditional micro-service setup you might also have to add a custom 
+For a traditional micro-service setup you might also have to add a custom
 configuration for Logrotate.
 
 .. note::
 
     This assumes the full path to your ``~/devilrydeploy`` directory is
-    ``/devilry/devilrydeploy``, that the log files are placed in a 
+    ``/devilry/devilrydeploy``, that the log files are placed in a
     ``/logs`` directory inside of it, and that Nginx is used as a proxy
     server  --- adjust accordingly.
 
@@ -129,7 +133,7 @@ Create a Logrotate file (ie. ``/etc/logrotate.d/devilry``) containing the follow
             /usr/sbin/nginx -s reload
         endscript
     }
-    
+
     /devilry/devilrydeploy/logs/gunicorn*.log {
         create 0644 devilrydev devilrydev
         daily
@@ -145,4 +149,3 @@ Create a Logrotate file (ie. ``/etc/logrotate.d/devilry``) containing the follow
             /bin/pkill --signal USR1 --full /devilry/devilrydeploy/venv/bin/gunicorn
         endscript
     }
-

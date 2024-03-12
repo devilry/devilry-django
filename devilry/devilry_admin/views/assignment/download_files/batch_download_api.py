@@ -2,6 +2,7 @@
 
 
 from ievv_opensource.ievv_batchframework import batchregistry
+from django.http.response import JsonResponse
 
 from devilry.apps.core import models as core_models
 from devilry.devilry_compressionutil.models import CompressedArchiveMeta
@@ -16,11 +17,11 @@ class BatchCompressionAPIAssignmentView(AbstractBatchCompressionAPIView):
     """
     model_class = core_models.Assignment
     batchoperation_type = 'batchframework_admin_compress_assignment'
-    
+
     @property
     def created_by_role(self):
         return CompressedArchiveMeta.CREATED_BY_ROLE_ADMIN
-    
+
     def get_assignment_group_ids(self):
         assignment_group_ids = core_models.AssignmentGroup.objects \
             .filter(parentnode=self.content_object) \
@@ -57,6 +58,10 @@ class BatchCompressionAPIAssignmentView(AbstractBatchCompressionAPIView):
 
     def should_filter_by_created_by_user(self):
         return True
+
+    def get(self, request, *args, **kwargs):
+        content_object_id = kwargs.get('content_object_id')
+        return JsonResponse(self.get_ready_for_download_status(content_object_id=content_object_id))
 
     def start_compression_task(self, content_object_id):
         batchregistry.Registry.get_instance().run(

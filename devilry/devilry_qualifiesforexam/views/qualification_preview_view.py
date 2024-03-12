@@ -38,8 +38,6 @@ class AbstractQualificationPreviewView(generic.FormView):
             return 'user__fullname'
         if order_by == 'username':
             return 'user__shortname'
-        if order_by == 'candidateid':
-            return 'candidate_id'
         return 'user__lastname'
 
     def get_relatedstudents_queryset(self, period):
@@ -167,7 +165,7 @@ class QualificationPreviewView(AbstractQualificationPreviewView):
                 del self.request.session['plugindata']
         except KeyError:
             pass
-            
+
         del self.request.session['passing_relatedstudentids']
         del self.request.session['plugintypeid']
 
@@ -235,11 +233,11 @@ class QualificationStatusView(PrefetchStatusInfoMixin, AbstractQualificationPrev
         context_data['status'] = current_status
         context_data['required_assignments'] = None
         print(current_status.plugin_data)
-        
+
         if current_status.plugin == 'devilry_qualifiesforexam_plugin_approved.plugin_select_assignments' and current_status.plugin_data:
             assignment_ids = json.loads(current_status.plugin_data)
             context_data['required_assignments'] = AssignmentListBuilderList.from_assignment_id_list(assignment_ids)
-            
+
 
         # Add RelatedStudents to list and the IDs of the relatedstudents that qualify.
         qualifiesforexam = list(current_status.students.all())
@@ -273,8 +271,6 @@ class PrintStatusView(PrefetchStatusInfoMixin, generic.TemplateView):
             return NullIf('relatedstudent__user__fullname', Value("")).asc(nulls_last=True)
         if order_by == 'username':
             return NullIf('relatedstudent__user__shortname', Value("")).asc(nulls_last=True)
-        if order_by == 'candidateid':
-            return 'relatedstudent__candidate_id'
         return NullIf('relatedstudent__user__lastname', Value("")).asc(nulls_last=True)
 
     def get_context_data(self, **kwargs):

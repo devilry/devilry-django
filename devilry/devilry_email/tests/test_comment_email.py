@@ -532,8 +532,8 @@ class TestExaminerNotAssignedCommentEmail(TestCommentEmailForUsersMixin, test.Te
 
     def test_send_examiner_comment_single_examiner_as_examiner_comment_poster(self):
         # Test that no e-mail is sent if the comment-poster is the only examiner in the group.
-        # This is because we exclude the comment-poster (examiners does not receive a receipt), 
-        # but since the comment-poster is also an examiner that means that the group has an 
+        # This is because we exclude the comment-poster (examiners does not receive a receipt),
+        # but since the comment-poster is also an examiner that means that the group has an
         # examiner and no e-mail should be sent to admins.
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            long_name='Assignment 1')
@@ -560,7 +560,7 @@ class TestExaminerNotAssignedCommentEmail(TestCommentEmailForUsersMixin, test.Te
         self.assertEqual(Message.objects.count(), 0)
 
     def test_send_examiner_comment_single_examiner_as_period_admin_comment_poster(self):
-        # Tests that e-mail is not sent to the examiner-user when they also a period-admin 
+        # Tests that e-mail is not sent to the examiner-user when they also a period-admin
         # and posts a comment as admin.
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            long_name='Assignment 1')
@@ -867,6 +867,58 @@ class TestExaminerNotAssignedCommentEmail(TestCommentEmailForUsersMixin, test.Te
 class TestExaminerCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_send_examiner_empty_comment_before_deadline(self):
+        first_deadline = timezone.now() + timezone.timedelta(days=1)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           long_name='Assignment 1', first_deadline=first_deadline)
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        test_feedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
+
+        self._make_examineruser_with_email(group=testgroup, email='examiner@example.com')
+
+        comment_user = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com')
+        baker.make('core.Candidate', assignment_group=test_feedbackset.group, relatedstudent__user=comment_user)
+        test_groupcomment = baker.make('devilry_group.GroupComment',
+                                       feedback_set=test_feedbackset,
+                                       text='',
+                                       user_role=Comment.USER_ROLE_STUDENT,
+                                       user=comment_user)
+
+        baker.make('devilry_account.UserEmail', user=comment_user, email='testuser@example.com')
+        before_original_deadline = test_groupcomment.feedback_set.group.parentnode.first_deadline > timezone.now()
+        send_examiner_comment_email(
+            comment_id=test_groupcomment.id,
+            domain_url_start='http://www.example.com/',
+            before_original_deadline=before_original_deadline)
+
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_send_examiner_empty_comment_after_deadline(self):
+        first_deadline = timezone.now() - timezone.timedelta(days=1)
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           long_name='Assignment 1', first_deadline=first_deadline)
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        test_feedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
+
+        self._make_examineruser_with_email(group=testgroup, email='examiner@example.com')
+
+        comment_user = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com')
+        baker.make('core.Candidate', assignment_group=test_feedbackset.group, relatedstudent__user=comment_user)
+        test_groupcomment = baker.make('devilry_group.GroupComment',
+                                       feedback_set=test_feedbackset,
+                                       text='',
+                                       user_role=Comment.USER_ROLE_STUDENT,
+                                       user=comment_user)
+
+        baker.make('devilry_account.UserEmail', user=comment_user, email='testuser@example.com')
+        before_original_deadline = test_groupcomment.feedback_set.group.parentnode.first_deadline > timezone.now()
+        send_examiner_comment_email(
+            comment_id=test_groupcomment.id,
+            domain_url_start='http://www.example.com/',
+            before_original_deadline=before_original_deadline)
+
+        self.assertEqual(len(mail.outbox), 1)
 
     def test_send_examiner_comment_body(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
