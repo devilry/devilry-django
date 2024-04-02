@@ -5,7 +5,7 @@ import zipfile
 import tarfile
 import shutil
 from stat import S_IFREG
-from stream_zip import ZIP_64, stream_zip
+from stream_zip import ZIP_AUTO, stream_zip
 from to_file_like_obj import to_file_like_obj
 
 # Django imports
@@ -173,8 +173,7 @@ class StreamZipBackend(BaseArchiveBackend):
         if chunk_size:
             self.chunk_size = chunk_size
         else:
-            # Default 200MB chunk size
-            self.chunk_size = 1024 * 1024 * 200
+            self.chunk_size = int(0x8000)
 
     def __add_path_extension(self):
         """
@@ -241,12 +240,13 @@ class StreamZipBackend(BaseArchiveBackend):
         now = timezone.now()
         mode = S_IFREG | 0o600
 
-        def contents(filelike_obj):
-            while chunk := filelike_obj.read(65536):
+        def contents(file_object):
+            filelike_obj = file_object.file
+            while chunk := filelike_obj.read(self.chunk_size):
                 yield chunk
 
         return (
-            (path, now, mode, ZIP_64, contents(filelike_obj))
+            (path, now, mode, ZIP_AUTO(filelike_obj.file.size), contents(filelike_obj))
             for (path, filelike_obj) in self.files
         )
 
@@ -257,7 +257,7 @@ class StreamZipBackend(BaseArchiveBackend):
         Readmode is set to True
         """
         prepped_files = self._prep_files()
-        self.zipped_chunks = stream_zip(prepped_files)
+        self.zipped_chunks = stream_zip(prepped_files, chunk_size=self.chunk_size)
         self.readmode = True
 
         if self.save_to_disk:

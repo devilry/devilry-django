@@ -3,9 +3,10 @@
 {% load i18n %}
 
 <script type="module">
-    class CSRFToken {
+    class Cookies {
         constructor () {
             this.csrftoken = this._getCookie('csrftoken');
+            this.zipdownload = this._getCookie('zipdownload');
         }
 
         _getCookie(name) {
@@ -115,7 +116,7 @@
             this.appendChild(errorWarning);
         }
 
-        _handleArchiveNotCreated () {            
+        _handleArchiveNotCreated () {
             const button = new DOMParser().parseFromString(`
                 <button id=${this.rootElementId} class="btn btn-default" type="button" aria-label="${this.ariaLabelArchiveBuildStart}">
                     ${this.startDownloadText}
@@ -127,7 +128,7 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRFToken': new CSRFToken().csrftoken
+                        'X-CSRFToken': new Cookies().csrftoken
                     }
                 })
                 .then(response => response.json())
@@ -159,15 +160,36 @@
 
         _handleArchiveReadyForDownload (downloadUrl) {
             const downloadLink = new DOMParser().parseFromString(`
-                <a 
+                <a
                     id="${this.rootElementId}"
-                    href="${downloadUrl}"
                     aria-label="${this.finishedWithinSameSession ? this.ariaLabelArchiveBuildCompleted : this.ariaLabelArchiveBuildDownload}"
                     class="btn btn-default"
                 >
-                    ${this.downloadArchiveText}
+                    <span id="${this.rootElementId}_text">
+                        ${this.downloadArchiveText}
+                    </span>
+                    <span id="${this.rootElementId}_spinner" class="hidden fa fa-spinner fa-spin" aria-hidden="true"></span>
                 </a>
             `, 'text/html').body.firstChild;
+            downloadLink.addEventListener('click', (e) => {
+                const text = document.getElementById(this.rootElementId + "_text")
+                const spinner = document.getElementById(this.rootElementId + "_spinner")
+                text.classList.add('hidden');
+                spinner.classList.remove('hidden');
+                var downloadTimeout;
+                var checkDownloadCookie = function() {
+                    if (new Cookies().zipdownload) {
+                        text.classList.remove('hidden');
+                        spinner.classList.add('hidden');
+                    } else {
+                        downloadTimeout = window.setTimeout(checkDownloadCookie, 1000); //Re-run this function in 1 second.
+                    }
+                };
+                const dl = document.createElement('a');
+                dl.setAttribute('href', downloadUrl);
+                dl.click();
+                window.setTimeout(checkDownloadCookie, 1000);
+            });
             this._removeCurrentDownloadElementNode();
             this.appendChild(downloadLink);
         }

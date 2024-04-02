@@ -18,6 +18,7 @@ if profiler_middleware:
 
 MIDDLEWARE = MIDDLEWARE + [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'silk.middleware.SilkyMiddleware',
 #    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
@@ -35,7 +36,8 @@ MIDDLEWARE = MIDDLEWARE + [
 #
 ######################
 INSTALLED_APPS += [
-    'debug_toolbar'
+    'debug_toolbar',
+    'silk'
 ]
 
 
@@ -287,3 +289,9 @@ DEVILRY_ASSIGNMENT_GUIDELINES = {
 #        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
 #    },
 # }
+
+
+SILKY_PYTHON_PROFILER = True
+SILKY_PYTHON_PROFILER_BINARY = True
+SILKY_META = True
+SILKY_ANALYZE_QUERIES = True

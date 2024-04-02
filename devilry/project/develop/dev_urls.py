@@ -9,6 +9,7 @@ from devilry.project.common.http_error_handlers import *  # noqa
 urlpatterns = [
     # path('devilry_sandbox/', include('devilry.devilry_sandbox.urls')),
     path('devilry_theme/', include('devilry.devilry_theme3.urls')),
+    path('silk/', include('silk.urls', namespace='silk'))
 ]
 
 if settings.DEBUG:

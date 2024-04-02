@@ -91,6 +91,7 @@ dev = [
     "boto==2.32.1",
     "django-auth-ldap",
     "pip-tools",
+    "django-silk",
 ]
 test = [
     "htmls",

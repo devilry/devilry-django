@@ -3,6 +3,11 @@
 
 import os
 
+from django.db.models import Prefetch, F
+
+from devilry.devilry_group.models import GroupComment, FeedbackSet
+from devilry.devilry_comment.models import CommentFile
+
 
 class FeedbackSetBatchMixin(object):
     """
@@ -28,76 +33,72 @@ class FeedbackSetBatchMixin(object):
 
         zipfile_backend.add_file(
             os.path.join(sub_path, file_name),
-            comment_file.file.file)
+            comment_file.file)
 
-    def __build_zip_archive_from_comment_file_tree(self, zipfile_backend, sub_path, comment_file_tree):
-        for filename, value in comment_file_tree.items():
-            # Add files before deadline
-            if value['before_deadline']['last']:
-                comment_file = value['before_deadline']['last']
-                self.add_file(zipfile_backend=zipfile_backend,
-                              sub_path=sub_path,
-                              comment_file=comment_file)
-                for old_duplicate in value['before_deadline']['old_duplicates']:
-                    self.add_file(zipfile_backend=zipfile_backend,
-                                  sub_path=os.path.join(sub_path, 'old_duplicates'),
-                                  comment_file=old_duplicate,
-                                  is_duplicate=True)
+    def get_feedbackset_queryset(self):
+        commentfile_queryset = CommentFile.objects.all().order_by('-created_datetime') \
+            .only('filename', 'file', 'created_datetime', 'comment_id')
 
-            # Add files after deadline
-            if value['after_deadline']['last']:
-                comment_file = value['after_deadline']['last']
-                after_deadline_sub_path = os.path.join(sub_path, 'after_deadline_not_part_of_delivery')
-                self.add_file(zipfile_backend=zipfile_backend,
-                              sub_path=after_deadline_sub_path,
-                              comment_file=comment_file)
-                for old_duplicate in value['after_deadline']['old_duplicates']:
-                    self.add_file(zipfile_backend=zipfile_backend,
-                                  sub_path=os.path.join(after_deadline_sub_path, 'old_duplicates'),
-                                  comment_file=old_duplicate,
-                                  is_duplicate=True)
+        groupcomment_queryset = GroupComment.objects \
+            .filter(
+                visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                user_role=GroupComment.USER_ROLE_STUDENT
+            ) \
+            .only('comment_ptr_id', 'feedback_set_id', 'published_datetime') \
+            .order_by('-created_datetime') \
+            .prefetch_related(
+                Prefetch(
+                    'commentfile_set',
+                    queryset=commentfile_queryset,
+                )
+            )
+
+        return FeedbackSet.objects.all().only('deadline_datetime', 'group_id') \
+            .prefetch_related(
+                Prefetch(
+                    'groupcomment_set',
+                    queryset=groupcomment_queryset,
+                )
+        )
 
     def zipfile_add_feedbackset(self, zipfile_backend, feedback_set, sub_path=''):
-        from devilry.devilry_group import models as group_models
-
+        duplicates_sub_path = os.path.join(sub_path, 'old_duplicates')
+        after_deadline_sub_path = os.path.join(sub_path, 'after_deadline_not_part_of_delivery')
+        after_deadline_duplicates_sub_path = os.path.join(after_deadline_sub_path, 'old_duplicates')
         comment_file_tree = {}
-        for group_comment in feedback_set.groupcomment_set.all().order_by('-created_datetime'):
-            # Don't add files from comments that are not visible to everyone.
-            if group_comment.visibility == group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE and \
-                    group_comment.user_role == group_models.GroupComment.USER_ROLE_STUDENT:
-                for comment_file in group_comment.commentfile_set.all().order_by('-created_datetime'):
-                    filename = comment_file.filename.casefold()
-                    if comment_file.filename not in comment_file_tree:
-                        comment_file_tree[filename] = {
-                            'before_deadline': {
-                                'last': None,
-                                'old_duplicates': []
-                            },
-                            'after_deadline': {
-                                'last': None,
-                                'old_duplicates': []
-                            }
+        for group_comment in feedback_set.groupcomment_set.all():
+            for comment_file in group_comment.commentfile_set.all():
+                filename = comment_file.filename
+                if filename not in comment_file_tree:
+                    comment_file_tree[filename] = {
+                        'before_deadline': {
+                            'last': False,
+                        },
+                        'after_deadline': {
+                            'last': False,
                         }
-
-                    if group_comment.published_datetime <= feedback_set.deadline_datetime:
-                        # Before the deadline expired
-                        # Set initial last delivery before deadline, and duplicates.
-                        if comment_file_tree[filename]['before_deadline']['last'] is None:
-                            comment_file_tree[filename]['before_deadline']['last'] = comment_file
-                        else:
-                            comment_file_tree[filename]['before_deadline']['old_duplicates'].append(comment_file)
-
+                    }
+                # Before the deadline expired
+                # Set initial last delivery before deadline, and duplicates.
+                if group_comment.published_datetime <= feedback_set.deadline_datetime:
+                    if comment_file_tree[filename]['before_deadline']['last'] is False:
+                        comment_file_tree[filename]['before_deadline']['last'] = True
+                        self.add_file(zipfile_backend=zipfile_backend,
+                                      sub_path=sub_path,
+                                      comment_file=comment_file)
                     else:
-                        # After the deadline expired.
-                        # Set initial last delivery after deadline, and duplicates.
-                        if comment_file_tree[filename]['after_deadline']['last'] is None:
-                            comment_file_tree[filename]['after_deadline']['last'] = comment_file
-                        else:
-                            comment_file_tree[filename]['after_deadline']['old_duplicates'].append(comment_file)
-
-        # Start building the ZIP archive.
-        self.__build_zip_archive_from_comment_file_tree(
-            zipfile_backend=zipfile_backend,
-            sub_path=sub_path,
-            comment_file_tree=comment_file_tree,
-        )
+                        self.add_file(zipfile_backend=zipfile_backend,
+                                      sub_path=duplicates_sub_path,
+                                      comment_file=comment_file,
+                                      is_duplicate=True)
+                else:
+                    if comment_file_tree[filename]['after_deadline']['last'] is False:
+                        comment_file_tree[filename]['after_deadline']['last'] = True
+                        self.add_file(zipfile_backend=zipfile_backend,
+                                      sub_path=after_deadline_sub_path,
+                                      comment_file=comment_file)
+                    else:
+                        self.add_file(zipfile_backend=zipfile_backend,
+                                      sub_path=after_deadline_duplicates_sub_path,
+                                      comment_file=comment_file,
+                                      is_duplicate=True)

@@ -61,6 +61,8 @@ class CompressedAssignmentFileDownloadView(AssignmentBatchMixin, generic.Templat
             filewrapper,
             content_type=content_type
         )
+        response.set_cookie('zipdownload', 'start', max_age=10)
+
         response['content-disposition'] = 'attachment; filename={}'.format(
             archive_name.encode('ascii', 'replace').decode()
         )
