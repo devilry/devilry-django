@@ -119,7 +119,7 @@ exclude = [
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "6.3.0rc1"
+version = "6.3.0rc2"
 version_files = ["devilry/__init__.py:__version__"]
 tag_format = "$version"
 update_changelog_on_bump = true

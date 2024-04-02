@@ -1,3 +1,9 @@
+## 6.3.0rc2 (2024-04-02)
+
+### Perf
+
+- **devilry_compressionutil**: optimization of gathering of files of feedbacksets and assignments for zip generation
+
 ## 6.3.0rc1 (2024-03-12)
 
 ### Fix
