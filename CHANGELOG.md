@@ -1,3 +1,10 @@
+## 6.3.0rc3 (2024-04-03)
+
+### Fix
+
+- **StudentFeedbackFeedView**: changed from self.model.... to self.assignment_group.... in before_original_deadline check
+- **devilry_compressionutil**: added if check for save_to_disk if DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY should be used
+
 ## 6.3.0rc2 (2024-04-02)
 
 ### Perf
