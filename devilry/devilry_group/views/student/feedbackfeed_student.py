@@ -53,7 +53,7 @@ class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
         obj.published_datetime = timezone.now()
 
     def __send_comment_email(self, comment):
-        before_original_deadline = self.model.feedback_set.group.parentnode.first_deadline > timezone.now()
+        before_original_deadline = self.assignment_group.parentnode.first_deadline > timezone.now()
         comment_email.bulk_send_comment_email_to_students_and_examiners(
             domain_url_start=self.request.build_absolute_uri('/'),
             comment_id=comment.id,
