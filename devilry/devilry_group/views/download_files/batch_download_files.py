@@ -104,11 +104,9 @@ class CompressedFeedbackSetFileDownloadView(FeedbackSetBatchMixin, generic.Templ
         zip_backend.close()
 
         filewrapper = zip_backend.get_archive()
-        content_type = 'application/zip'
 
-        response = http.StreamingHttpResponse(
-            filewrapper,
-            content_type=content_type
+        response = http.FileResponse(
+            filewrapper
         )
         response.set_cookie('zipdownload', 'start', max_age=10)
 
