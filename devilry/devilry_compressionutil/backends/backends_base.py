@@ -242,14 +242,13 @@ class StreamZipBackend(BaseArchiveBackend):
         mode = S_IFREG | 0o600
 
         def contents(file_object):
-            filelike_obj = file_object.file
-            while chunk := filelike_obj.read(self.chunk_size):
-                yield chunk
+            with file_object.file.open('r') as f:
+                while chunk := f.read(self.chunk_size):
+                    yield chunk
 
-        return (
-            (path, now, mode, ZIP_AUTO(filelike_obj.file.size), contents(filelike_obj))
-            for (path, filelike_obj) in self.files
-        )
+        for (path, filelike_obj) in self.files:
+            yield (path, now, mode, ZIP_AUTO(filelike_obj.file.size), contents(filelike_obj))
+
 
     def close(self):
         """
