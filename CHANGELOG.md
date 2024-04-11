@@ -1,3 +1,9 @@
+## 6.3.0rc5 (2024-04-11)
+
+### Fix
+
+- **download_archive.py**: Change from StreamingHttpResponse to FileResponse
+
 ## 6.3.0rc4 (2024-04-11)
 
 ### Fix
