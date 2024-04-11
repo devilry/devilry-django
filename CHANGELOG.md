@@ -1,3 +1,9 @@
+## 6.3.0rc4 (2024-04-11)
+
+### Fix
+
+- **backend_base.py**: fixed not closing filedescriptors
+
 ## 6.3.0rc3 (2024-04-03)
 
 ### Fix
