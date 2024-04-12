@@ -5,7 +5,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.http.response import JsonResponse, Http404
 from django.utils import timezone
 from django.views.generic import View
-from ievv_opensource.ievv_batchframework import batchregistry
 from ievv_opensource.ievv_batchframework.models import BatchOperation
 
 from devilry.apps.core.models import ExaminerAssignmentGroupHistory, CandidateAssignmentGroupHistory
@@ -379,3 +378,7 @@ class BatchCompressionAPIFeedbackSetView(AbstractBatchCompressionAPIView):
             operationtype=self.batchoperation_type,
             started_by=self.request.user
         )
+
+    def get(self, request, *args, **kwargs):
+        content_object_id = kwargs.get('content_object_id')
+        return JsonResponse(self.get_ready_for_download_status(content_object_id=content_object_id))

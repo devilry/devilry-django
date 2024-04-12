@@ -4,6 +4,7 @@
 import os
 
 from django.template import defaultfilters
+from django.db.models import Prefetch
 
 from devilry.devilry_compressionutil.batchjob_mixins import feedbackset_mixin
 
@@ -32,10 +33,20 @@ class AssignmentBatchMixin(feedbackset_mixin.FeedbackSetBatchMixin):
         raise NotImplementedError()
 
     def add_assignment_groups(self, user, zipfile_backend, assignment):
-        for group in self.get_assignment_group_queryset(assignment=assignment, user=user):
+        group_queryset = self.get_assignment_group_queryset(assignment=assignment, user=user)
+        group_queryset = group_queryset.prefetch_related(
+            Prefetch(
+                'feedbackset_set',
+                queryset=self.get_feedbackset_queryset()
+            ),
+            'candidates__relatedstudent__user',
+        )
+
+        for group in group_queryset:
             group_path = '{}'.format(group.get_short_displayname())
             for feedback_set in group.feedbackset_set.all():
-                feedback_set_path = 'deadline-{}'.format(defaultfilters.date(feedback_set.current_deadline(), 'b.j.Y-H:i'))
+                feedback_set_path = 'deadline-{}' \
+                    .format(defaultfilters.date(feedback_set.deadline_datetime, 'Y-m-d-Hi'))
                 self.zipfile_add_feedbackset(
                     zipfile_backend=zipfile_backend,
                     feedback_set=feedback_set,

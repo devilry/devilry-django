@@ -163,7 +163,7 @@ def send_comment_email(comment, user_list, feedbackfeed_url, crinstance_id, doma
     )
 
 
-def send_examiner_comment_email(comment_id, domain_url_start):
+def send_examiner_comment_email(comment_id, domain_url_start, before_original_deadline=True):
     """
     Send email to examiner users.
 
@@ -192,6 +192,9 @@ def send_examiner_comment_email(comment_id, domain_url_start):
             ``An admin added a new comment for <assignment name>``
     """
     comment = get_comment(comment_id=comment_id)
+    if before_original_deadline and comment.text == '':
+        return
+
     absolute_url = build_feedbackfeed_absolute_url(
         domain_scheme=domain_url_start, group_id=comment.feedback_set.group.id, instance_id='devilry_group_examiner')
 
@@ -201,8 +204,8 @@ def send_examiner_comment_email(comment_id, domain_url_start):
 
     if not recipients:
         if not has_examiner:
-            # No examiners assigned to the group. Set recipients to the subject- 
-            # and period-admin users so they receive an e-mail informing that the 
+            # No examiners assigned to the group. Set recipients to the subject-
+            # and period-admin users so they receive an e-mail informing that the
             # group has no examiners assigned.
             if comment.text.strip() == '':
                 # Do not spam admins with notifications for comments without any text.

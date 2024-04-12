@@ -53,10 +53,13 @@ class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
         obj.published_datetime = timezone.now()
 
     def __send_comment_email(self, comment):
+        before_original_deadline = self.assignment_group.parentnode.first_deadline > timezone.now()
         comment_email.bulk_send_comment_email_to_students_and_examiners(
             domain_url_start=self.request.build_absolute_uri('/'),
             comment_id=comment.id,
-            from_student_poster=True)
+            from_student_poster=True,
+            before_original_deadline=before_original_deadline
+        )
 
     def save_object(self, form, commit=False):
         return super(StudentFeedbackFeedView, self).save_object(form, commit=True)

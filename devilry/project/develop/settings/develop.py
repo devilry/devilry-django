@@ -5,7 +5,9 @@ from .base import *
 # MIDDLEWARE = MIDDLEWARE + ['devilry.project.develop.middleware.FakeLoginMiddleware']
 
 #: Where to store compressed archives for filedownloads
-DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY = os.path.join(developfilesdir, 'devilry_compressed_archives')
+#DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY = os.path.join(developfilesdir, 'devilry_compressed_archives')
+
+DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY = None
 
 
 
@@ -18,6 +20,7 @@ if profiler_middleware:
 
 MIDDLEWARE = MIDDLEWARE + [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'silk.middleware.SilkyMiddleware',
 #    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
@@ -35,7 +38,8 @@ MIDDLEWARE = MIDDLEWARE + [
 #
 ######################
 INSTALLED_APPS += [
-    'debug_toolbar'
+    'debug_toolbar',
+    'silk'
 ]
 
 
@@ -287,3 +291,9 @@ DEVILRY_ASSIGNMENT_GUIDELINES = {
 #        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
 #    },
 # }
+
+
+SILKY_PYTHON_PROFILER = True
+SILKY_PYTHON_PROFILER_BINARY = True
+SILKY_META = True
+SILKY_ANALYZE_QUERIES = True

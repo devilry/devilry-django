@@ -44,6 +44,7 @@ class AbstractGroupCommentQuerySet(models.QuerySet):
     """
     Base class for QuerySets for :class:`.AbstractGroupComment`.
     """
+
     def exclude_private_comments_from_other_users(self, user):
         """
         Exclude all ``GroupComments`` with :obj:`.GroupComment.visibility` set to :obj:`.GroupComment.VISIBILITY_PRIVATE`
@@ -141,6 +142,19 @@ class AbstractGroupComment(comment_models.Comment):
 
     class Meta:
         abstract = True
+
+    def visible_to_user(self, user) -> bool:
+        if self.visibility == self.VISIBILITY_VISIBLE_TO_EVERYONE:
+            return True
+        if self.visibility == self.VISIBILITY_PRIVATE and user == self.user:
+            return True
+        if self.visibility == self.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS:
+            if assignment_group.AssignmentGroup.objects.filter(id=self.feedback_set.group.id).filter_user_is_examiner(user).exists():
+                return True
+            if assignment_group.AssignmentGroup.objects.filter(id=self.feedback_set.group.id).filter_user_is_admin(user).exists():
+                return True
+        return False
+
 
     def clean(self):
         """

@@ -23,11 +23,11 @@
         {
             display: table-footer-group;
         }
-        footer { 
+        footer {
             display: none
-        } 
-      
-        header { 
+        }
+
+        header {
             display: none
         }
     }
@@ -36,7 +36,7 @@
     <h2>{{ period }}, {{createtime}}</h2>
 
     <a id="devilry_qualifiesforexam_print_link" class="btn btn-primary no-print" onclick="window.print();">
-        {% trans "print" %}
+        {% trans "Print qualified list" %}
     </a>
 
     <div class="no-print">
@@ -50,9 +50,6 @@
           </option>
           <option value="username" {% if order_by_queryparam == "username" %}selected{% endif %}>
               {% trans 'Username' context 'qualifies-for-exam-order-by-username' %}
-          </option>
-          <option value="candidateid" {% if order_by_queryparam == "candidateid" %}selected{% endif %}>
-              {% trans 'Candidate ID' context 'qualifies-for-exam-order-by-candidateid' %}
           </option>
         </select>
     </div>
@@ -71,13 +68,13 @@
         </thead>
         {% for relatedstudent in qualifying_students %}
         <tr>
-            
+
             <td>{{ relatedstudent.user.lastname }}</td>
             <td>{{ relatedstudent.user.fullname }}</td>
             <td>{{ relatedstudent.user.shortname }}</td>
             <td>{% trans 'Yes' %}</td>
             <td>[ ]</td>
-            
+
         </tr>
         {% endfor %}
     </table>
@@ -96,13 +93,13 @@
         </thead>
         {% for relatedstudent in nonqualifying_students %}
         <tr>
-            
+
             <td>{{ relatedstudent.user.lastname }}</td>
             <td>{{ relatedstudent.user.fullname }}</td>
             <td>{{ relatedstudent.user.shortname }}</td>
             <td>{% trans 'No' %}</td>
             <td>[ ]</td>
-            
+
         </tr>
         {% endfor %}
     </table>

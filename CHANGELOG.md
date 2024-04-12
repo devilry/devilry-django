@@ -1,3 +1,59 @@
+## 6.3.0rc7 (2024-04-12)
+
+### Fix
+
+- **DevilrySocialAccountAdapter**: added 'profilephoto' to extra_data_to_keep
+
+## 6.3.0rc6 (2024-04-12)
+
+### Fix
+
+- **FileDownloadFeedbackfeedView**: change groupcomment visibility check to a more comprehensive check
+
+## 6.3.0rc5 (2024-04-11)
+
+### Fix
+
+- **download_archive.py**: Change from StreamingHttpResponse to FileResponse
+
+## 6.3.0rc4 (2024-04-11)
+
+### Fix
+
+- **backend_base.py**: fixed not closing filedescriptors
+
+## 6.3.0rc3 (2024-04-03)
+
+### Fix
+
+- **StudentFeedbackFeedView**: changed from self.model.... to self.assignment_group.... in before_original_deadline check
+- **devilry_compressionutil**: added if check for save_to_disk if DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY should be used
+
+## 6.3.0rc2 (2024-04-02)
+
+### Perf
+
+- **devilry_compressionutil**: optimization of gathering of files of feedbacksets and assignments for zip generation
+
+## 6.3.0rc1 (2024-03-12)
+
+### Fix
+
+- **StreamZipBackend**: Added missing if test to _create_path_if_not_exists
+
+## 6.3.0rc0 (2024-03-11)
+
+### Feat
+
+- **devilry_compressionutil**: added the ability to stream the creation of zip files
+
+### Fix
+
+- **comment_email.py**: added check for if comment is empty and made before first deadline of assignment then it should not send email to examiner
+- **allauth_adapter.py**: removed logging of value, only logs key
+- **allauth_adapter.py**: added removal of unwanted extra_data
+- **qualification_preview_view.py**: re-labeled print buttons and removed order by candidate number
+
 ## 6.2.4 (2024-02-15)
 
 ### Fix
