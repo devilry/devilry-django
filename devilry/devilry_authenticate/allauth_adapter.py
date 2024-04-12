@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 class DevilrySocialAccountAdapter(DefaultSocialAccountAdapter):
-    extra_data_to_keep = ['userid_sec', 'userid', 'email', 'name']
+    extra_data_to_keep = ['userid_sec', 'userid', 'email', 'name', 'profilephoto']
 
     def clean_extra_date(self, extra_data):
         out = {}
