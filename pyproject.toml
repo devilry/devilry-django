@@ -19,6 +19,7 @@ authors = [
     { name = "Christian Tryti" },
     { name = "Rebekka M\u00F8rken" },
     { name = "Stian Julseth" },
+    { name = "Åsmund J. Rosendahl" },
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -61,7 +62,7 @@ dependencies = [
     "djangorestframework",
     "django-allauth>=0.57.0",
     "chardet>=3.0.0,<3.1.0",
-    "idna>=2.6.0,<2.7.0",
+    "idna>=3.7.0",
     "oauthlib>=2.0.0,<2.1.0",
     "python-openid>=2.2.0,<2.3.0",
     "requests",
