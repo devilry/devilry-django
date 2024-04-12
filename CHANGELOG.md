@@ -1,3 +1,9 @@
+## 6.3.0rc7 (2024-04-12)
+
+### Fix
+
+- **DevilrySocialAccountAdapter**: added 'profilephoto' to extra_data_to_keep
+
 ## 6.3.0rc6 (2024-04-12)
 
 ### Fix
