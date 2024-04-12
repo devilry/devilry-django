@@ -1,3 +1,9 @@
+## 6.3.0rc6 (2024-04-12)
+
+### Fix
+
+- **FileDownloadFeedbackfeedView**: change groupcomment visibility check to a more comprehensive check
+
 ## 6.3.0rc5 (2024-04-11)
 
 ### Fix
