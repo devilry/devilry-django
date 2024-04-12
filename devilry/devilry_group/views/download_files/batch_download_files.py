@@ -39,10 +39,9 @@ class FileDownloadFeedbackfeedView(generic.TemplateView):
         if groupcomment.feedback_set.group.id != request.cradmin_role.id:
             raise Http404()
 
-        # If it's a private GroupComment, the request.user must be the one that created the comment.
-        if groupcomment.visibility != group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE:
-            if groupcomment.user != self.request.user:
-                raise Http404()
+        # Checks if comment is visible to user
+        if not groupcomment.visible_to_user(request.user):
+            raise Http404()
 
         # Load file as chunks rather than loading the whole file into memory
         filewrapper = FileWrapper(comment_file.file)
