@@ -1,3 +1,9 @@
+## 6.3.1 (2024-04-19)
+
+### Fix
+
+- **comment_email.py**: fixed send_student_comment_email getting unexpected keyword argument
+
 ## 6.3.0 (2024-04-12)
 
 ## 6.3.0rc7 (2024-04-12)
