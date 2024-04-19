@@ -50,6 +50,44 @@ class TestStudentCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
+
+    def test_send_student_comment_email_kwargs(self):
+        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           long_name='Assignment 1')
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        test_feedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
+
+        # Another user on the group
+        self._make_studentuser_with_email(group=test_feedbackset.group, email='student1@example.com')
+
+        mail_box_cnt = len(mail.outbox)
+
+        # The user that posted the comment
+        comment_user = baker.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com')
+        baker.make('core.Candidate', assignment_group=test_feedbackset.group, relatedstudent__user=comment_user)
+        test_groupcomment = baker.make('devilry_group.GroupComment',
+                                       feedback_set=test_feedbackset,
+                                       text='This is a test',
+                                       user_role=Comment.USER_ROLE_STUDENT,
+                                       user=comment_user)
+        baker.make('devilry_account.UserEmail', user=comment_user, email='testuser@example.com')
+
+        send_student_comment_email(
+            comment_id=test_groupcomment.id,
+            domain_url_start='http://www.example.com/',
+            from_student_poster=True)
+
+        self.assertEqual(len(mail.outbox), mail_box_cnt + 2)
+
+        send_student_comment_email(
+            comment_id=test_groupcomment.id,
+            domain_url_start='http://www.example.com/',
+            from_student_poster=True,
+            before_original_deadline=True)
+
+        self.assertEqual(len(mail.outbox), mail_box_cnt + 4)
+
+
     def test_send_student_comment_body(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            long_name='Assignment 1')

@@ -228,7 +228,7 @@ def send_examiner_comment_email(comment_id, domain_url_start, before_original_de
     )
 
 
-def send_student_comment_email(comment_id, domain_url_start, from_student_poster=False):
+def send_student_comment_email(comment_id, domain_url_start, from_student_poster=False, **kwargs):
     """
     Send email to student users.
 
