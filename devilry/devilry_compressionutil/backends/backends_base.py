@@ -270,15 +270,6 @@ class StreamZipBackend(BaseArchiveBackend):
     def get_chunk_size(self):
         return self.chunk_size
 
-    def _create_path_if_not_exists(self):
-        """
-        Create path if given path does not exist.
-        """
-        archivedirname = os.path.dirname(self.archive_path)
-        if self.save_to_disk:
-            if not os.path.exists(archivedirname):
-                os.makedirs(archivedirname)
-
 
 class PythonZipFileBackend(BaseArchiveBackend):
     """
