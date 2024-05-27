@@ -17,7 +17,7 @@ class DevilryGroupZipBackend(backends_base.StreamZipBackend):
 
     @classmethod
     def delete_archive(cls, full_path):
-        if cls.save_to_disk:
+        if self.save_to_disk:
             if not os.path.exists(full_path):
                 return False
             try:

@@ -180,8 +180,7 @@ class StreamZipBackend(BaseArchiveBackend):
         Sets :obj:`~.PythonZipFileBackend.archive_path` to full path by prepending the backend storage location
         to the archive_path. Also adds .zip extension
         """
-        if self.save_to_disk:
-            self.archive_path = os.path.join(self.get_storage_location(), self.archive_path)
+        self.archive_path = os.path.join(self.get_storage_location(), self.archive_path)
         if not self.archive_path.endswith('.zip'):
             self.archive_name += '.zip'
             self.archive_path += '.zip'
