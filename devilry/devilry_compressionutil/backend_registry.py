@@ -55,26 +55,6 @@ class Registry(Singleton):
             return None
         return backend_class
 
-    @classmethod
-    def get_backend_instance(cls, backend_id, zipfile_path, archive_name):
-        """
-        Get an instance of the backend to use.
-
-        Args:
-            backend_id: ID of backend class.
-            zipfile_path: Path to the archive.
-            archive_name: Name of the archive.
-
-        Returns:
-            PythonZipFileBackend: Backend for `self.backend_id`
-        """
-        zipfile_backend_class = cls.get_instance().get(backend_id)
-        return zipfile_backend_class(
-            archive_path=zipfile_path,
-            archive_name=archive_name,
-            readmode=False
-        )
-
 
 class MockableRegistry(Registry):
     """

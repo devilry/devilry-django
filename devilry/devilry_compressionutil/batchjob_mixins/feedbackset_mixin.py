@@ -11,25 +11,6 @@ class FeedbackSetBatchMixin(object):
     Must be included in class together with
     :class:`devilry.devilry_compressionutil.abstract_batch_action.AbstractBaseBatchAction`.
     """
-
-    def add_file(self, zipfile_backend, sub_path, comment_file, is_duplicate=False):
-        """
-        Add file to ZIP archive.
-
-        Args:
-            zipfile_backend: A subclass of ``PythonZipFileBackend``.
-            sub_path: The path to write to inside the archive.
-            comment_file: The `CommentFile` file to write.
-            is_duplicate: Is the file a duplicate? Defaults to ``False``.
-        """
-        file_name = comment_file.filename
-        if is_duplicate:
-            file_name = comment_file.get_filename_as_unique_string()
-
-        zipfile_backend.add_file(
-            os.path.join(sub_path, file_name),
-            comment_file.file.file)
-
     def __build_zip_archive_from_comment_file_tree(self, zipfile_backend, sub_path, comment_file_tree):
         for filename, value in comment_file_tree.items():
             # Add files before deadline
@@ -66,7 +47,7 @@ class FeedbackSetBatchMixin(object):
             if group_comment.visibility == group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE and \
                     group_comment.user_role == group_models.GroupComment.USER_ROLE_STUDENT:
                 for comment_file in group_comment.commentfile_set.all().order_by('-created_datetime'):
-                    filename = comment_file.filename.casefold()
+                    filename = comment_file.filename
                     if comment_file.filename not in comment_file_tree:
                         comment_file_tree[filename] = {
                             'before_deadline': {

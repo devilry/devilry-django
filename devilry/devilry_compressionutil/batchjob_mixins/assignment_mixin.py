@@ -35,7 +35,7 @@ class AssignmentBatchMixin(feedbackset_mixin.FeedbackSetBatchMixin):
         for group in self.get_assignment_group_queryset(assignment=assignment, user=user):
             group_path = '{}'.format(group.get_short_displayname())
             for feedback_set in group.feedbackset_set.all():
-                feedback_set_path = 'deadline-{}'.format(defaultfilters.date(feedback_set.current_deadline(), 'Y-m-d-Hi'))
+                feedback_set_path = 'deadline-{}'.format(defaultfilters.date(feedback_set.current_deadline(), 'b.j.Y-H:i'))
                 self.zipfile_add_feedbackset(
                     zipfile_backend=zipfile_backend,
                     feedback_set=feedback_set,

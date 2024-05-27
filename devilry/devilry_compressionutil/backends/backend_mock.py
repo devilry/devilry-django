@@ -1,16 +1,7 @@
 import os
 
-from devilry.devilry_compressionutil.backends.backends_base import PythonZipFileBackend, PythonTarFileBackend, StreamZipBackend
-
-
-class MockDevilryStreamZipBackend(StreamZipBackend):
-    """
-    Used for testing.
-    """
-    backend_id = 'stream'
-
-    def __init__(self, **kwargs):
-        super(MockDevilryStreamZipBackend, self).__init__(**kwargs)
+from devilry.devilry_compressionutil.backends.backends_base import PythonZipFileBackend
+from devilry.devilry_compressionutil.backends.backends_base import PythonTarFileBackend
 
 
 class MockDevilryZipBackend(PythonZipFileBackend):

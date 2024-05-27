@@ -2,7 +2,6 @@
 import io
 import os
 import shutil
-import zipfile
 
 # Django imports
 from unittest import skip
@@ -24,41 +23,6 @@ lorem_ipsum = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In facil
               'congue urna at, ornare risus. Quisque fringilla libero at metus interdum gravida. ' \
               'Quisque at pellentesque magna. Morbi sagittis magna in sollicitudin viverra. ' \
               'Donec quis velit suscipit, mollis leo ut.'
-
-class TestStreamZipBackend(TestCase):
-
-    def setUp(self):
-        # Set up a backend path for testing which can be removed after each test.
-        self.backend_path = os.path.join('devilry_testfiles', 'devilry_compressed_archives', '')
-
-    def tearDown(self):
-        shutil.rmtree(self.backend_path, ignore_errors=False)
-
-    def _create_test_file(self, content=b'testcontent'):
-        testfile = io.BytesIO()
-        testfile.write(content)
-        testfile.seek(0)
-
-        return testfile
-
-    def test_add_file(self):
-        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            mockregistry = backend_registry.MockableRegistry.make_mockregistry(
-                backend_mock.MockDevilryStreamZipBackend
-            )
-
-            backend_class = mockregistry.get('stream')
-            backend = backend_class(archive_path='testfile1', readmode=False)
-
-            file_1 = self._create_test_file()
-
-            backend.add_file('testfile.txt', file_1)
-            self.assertEqual(backend.files[0], ('testfile.txt', file_1))
-
-            backend.close()
-
-            archive = backend.read_archive()
-            self.assertEqual(b'testcontent', archive.read(archive.namelist()[0]))
 
 
 class TestZipBackend(TestCase):
