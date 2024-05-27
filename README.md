@@ -25,16 +25,16 @@ conventional commits for your commit messages
 
 First install pipx with:
 
-```
-$ brew install pipx
-$ pipx ensurepath
+```bash
+brew install pipx
+pipx ensurepath
 ```
 
 Then install hatch and commitizen:
 
-```
-$ pipx install hatch
-$ pipx install commitizen
+```bash
+pipx install hatch
+pipx install commitizen
 ```
 
 See https://github.com/pypa/pipx, https://hatch.pypa.io/latest/install/
@@ -45,21 +45,21 @@ needed, but we really recommend using pipx since that is isolated.
 
 #### Install a local python version with pyenv:
 
-```
-$ pyenv install 3.10
-$ pyenv local 3.10
+```bash
+pyenv install 3.10
+pyenv local 3.10
 ```
 
 #### Install dependencies in a virtualenv:
 
-```
-$ ./recreate-virtualenv.sh
+```bash
+./recreate-virtualenv.sh
 ```
 
 Alternatively, create virtualenv manually (this does the same as recreate-virtualenv.sh):
 
-```
-$ python -m venv .venv
+```bash
+python -m venv .venv
 ```
 
 the ./recreate-virtualenv.sh script is just here to make creating virtualenvs more uniform
@@ -68,9 +68,9 @@ for package authentication etc.
 
 #### Install dependencies in a virtualenv:
 
-```
-$ source .venv/bin/activate   # enable virtualenv
-$ pip install -e ".[dev,test]"
+```bash
+source .venv/bin/activate   # enable virtualenv
+.venv/bin/pip install -e ".[dev,test]"
 ```
 
 ### Upgrade your local packages
@@ -78,76 +78,76 @@ $ pip install -e ".[dev,test]"
 This will upgrade all local packages according to the constraints
 set in pyproject.toml:
 
-```
-$ pip install --upgrade --upgrade-strategy=eager ".[dev,test]"
+```bash
+.venv/bin/pip install --upgrade --upgrade-strategy=eager ".[dev,test]"
 ```
 
 ### Run postgres and redis
 
-```
-$ docker-compose up
+```bash
+docker compose up
 ```
 
 ### Run dev server
 
-```
-$ source .venv/bin/activate   # enable virtualenv
-$ ievv devrun
+```bash
+source .venv/bin/activate   # enable virtualenv
+ievv devrun
 ```
 
 ### Create or re-create a devdatabase
 You should always clear the database before recreating it. The easiest way is just to clear the docker resources (and volumes) and start it again.
-```
-$ docker-compose down -v
-$ docker-compose up
+```bash
+docker compose down -v
+docker compose up
 ```
 
 Run dev server (in a new terminal)
-```
-$ source .venv/bin/activate   # activate virtualenv
-$ ievv devrun
+```bash
+source .venv/bin/activate   # activate virtualenv
+ievv devrun
 ```
 
 Load devdatabase SQL-file (in a new terminal)
-```
-$ source .venv/bin/activate   # activate virtualenv
-$ docker-compose exec -T postgres psql -U dbdev --dbname=dbdev -p 5432 -h localhost < devilry/project/develop/dumps/default.sql
-$ python manage.py migrate
-$ ievv customsql -i -r
+```bash
+source .venv/bin/activate   # activate virtualenv
+docker compose exec -T postgres psql -U dbdev --dbname=dbdev -p 5432 -h localhost < devilry/project/develop/dumps/default.sql
+python manage.py migrate
+ievv customsql -i -r
 ```
 
 If the dump should be updated for e.g new migrations, run the following and commit to repo:
-```
-$ docker-compose exec -T postgres pg_dump --clean --no-owner --no-acl --no-privileges -U dbdev -h localhost -p 5432 dbdev > devilry/project/develop/dumps/default.sql
+```bash
+docker compose exec -T postgres pg_dump --clean --no-owner --no-acl --no-privileges -U dbdev -h localhost -p 5432 dbdev > devilry/project/develop/dumps/default.sql
 ```
 
 ### Run tests
 
-```
-$ source .venv/bin/activate   # enable virtualenv
-$ pytest devilry
+```bash
+source .venv/bin/activate   # enable virtualenv
+pytest devilry
 ```
 
 ### Build css/javascript:
-```
-$ source .venv/bin/activate   # activate virtualenv
-$ nvm use 14    # May need to run "nvm install 14" first
-$ ievv buildstatic
-... or if you want to watch for changes ...:
-$ ievv buildstatic --watch
+```bash
+source .venv/bin/activate   # activate virtualenv
+nvm use 14    # May need to run "nvm install 14" first
+ievv buildstatic
+# ... or if you want to watch for changes ...:
+ievv buildstatic --watch
 ```
 
 To remove and reinstall all node-packages:
-```
-$ source .venv/bin/activate   # activate virtualenv
-$ nvm use 14    # May need to run "nvm install 14" first
-$ ievv buildstatic --npm-clean-node-modules
+```bash
+source .venv/bin/activate   # activate virtualenv
+nvm use 14    # May need to run "nvm install 14" first
+ievv buildstatic --npm-clean-node-modules
 ```
 
 ### Destroy postgres and redis
 
-```
-$ docker-compose down -v
+```bash
+docker compose down -v
 ```
 
 ## Documentation
@@ -172,9 +172,9 @@ First make sure you have NO UNCOMITTED CHANGES!
 Release (create changelog, increment version, build staticfiles, commit and tag the change) with:
 
 ```bash
-$ nvm use 14
-$ tools/release/prepare-release.py prepare --apply  # This will bump the version and then build and commit staticfiles.
-$ git push && git push --tags
+nvm use 14
+tools/release/prepare-release.py prepare --apply  # This will bump the version and then build and commit staticfiles.
+git push && git push --tags
 ```
 
 ### NOTE (release):
@@ -204,7 +204,7 @@ See _How to revert a bump_ in the [commitizen FAQ](https://commitizen-tools.gith
 ### Release to pypi:
 
 ```bash
-$ hatch build -t sdist
-$ hatch publish
-$ rm dist/*              # optional cleanup
+hatch build -t sdist
+hatch publish
+rm dist/*              # optional cleanup
 ```
