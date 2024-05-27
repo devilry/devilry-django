@@ -54,14 +54,12 @@ class CompressedAssignmentFileDownloadView(AssignmentBatchMixin, generic.Templat
         zip_backend.close()
 
         filewrapper = zip_backend.get_archive()
-        content_type = 'application/zip'
+        content_type = 'application/octet-stream'
 
         response = http.StreamingHttpResponse(
             filewrapper,
             content_type=content_type
         )
-        response.set_cookie('zipdownload', 'start', max_age=10)
-
         response['content-disposition'] = 'attachment; filename={}'.format(
             archive_name.encode('ascii', 'replace').decode()
         )

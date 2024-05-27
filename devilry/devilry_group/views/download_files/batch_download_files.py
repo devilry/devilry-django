@@ -4,13 +4,16 @@ import re
 import os
 
 from django import http
-from django.http import Http404
+from django.contrib.contenttypes.models import ContentType
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.views import generic
 from cradmin_legacy import crapp
 
 from devilry.devilry_comment import models as comment_models
+from devilry.devilry_compressionutil import models as archivemodels
 from devilry.devilry_group import models as group_models
+from devilry.devilry_group.utils import download_response
 from devilry.devilry_group.views.download_files.batch_download_api import BatchCompressionAPIFeedbackSetView
 from devilry.devilry_compressionutil.backend_registry import Registry
 from devilry.devilry_compressionutil.batchjob_mixins.feedbackset_mixin import FeedbackSetBatchMixin
@@ -73,8 +76,7 @@ class CompressedFeedbackSetFileDownloadView(FeedbackSetBatchMixin, generic.Templ
                 returns the content, see `~devilry.devilry_group.utils.download_response`.
         """
         feedbackset_id = kwargs.get('feedbackset_id')
-
-        feedbackset = get_object_or_404(self.get_feedbackset_queryset(), id=feedbackset_id)
+        feedbackset = get_object_or_404(group_models.FeedbackSet, id=feedbackset_id)
 
         # Check that the cradmin role and the AssignmentGroup is the same.
         if feedbackset.group.id != request.cradmin_role.id:
@@ -103,14 +105,12 @@ class CompressedFeedbackSetFileDownloadView(FeedbackSetBatchMixin, generic.Templ
         zip_backend.close()
 
         filewrapper = zip_backend.get_archive()
-        content_type = 'application/zip'
+        content_type = 'application/octet-stream'
 
         response = http.StreamingHttpResponse(
             filewrapper,
             content_type=content_type
         )
-        response.set_cookie('zipdownload', 'start', max_age=10)
-
         response['content-disposition'] = 'attachment; filename={}'.format(
             archive_name.encode('ascii', 'replace').decode()
         )
