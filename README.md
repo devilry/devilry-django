@@ -121,6 +121,17 @@ If the dump should be updated for e.g new migrations, run the following and comm
 docker compose exec -T postgres pg_dump --clean --no-owner --no-acl --no-privileges -U dbdev -h localhost -p 5432 dbdev > devilry/project/develop/dumps/default.sql
 ```
 
+### Test users in the devdatabase
+All users have ``test`` as their password, and the most commonly needed users are:
+
+- Superuser: grandma@example.com
+- Admin (and examiner): odin@example.com
+- Examiner (and student): thor@example.com
+- Student: april@example.com
+
+You can find them all by logging in as grandma@example.com and going to http://localhost.test:8000/djangoadmin/devilry_account/user/
+
+
 ### Run tests
 
 ```bash
