@@ -161,7 +161,7 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
         group = self.request.cradmin_role
         # NOTE: `devilry.apps.core.models.AssignmentGroup.last_feedbackset_is_published` performs a query.
         if group.last_feedbackset_is_published:
-            raise Http404
+            return redirect(str(self.request.cradmin_app.reverse_appurl(viewname='public-discuss')))
         return super(ExaminerFeedbackView, self).dispatch(request, *args, **kwargs)
 
     def get_form_class(self):
