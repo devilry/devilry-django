@@ -5,6 +5,7 @@ import os
 
 from devilry.devilry_compressionutil.abstract_batch_action import AbstractBaseBatchAction
 from devilry.devilry_compressionutil.batchjob_mixins.feedbackset_mixin import FeedbackSetBatchMixin
+from devilry.utils.memorydebug import print_memory_usage
 
 
 class FeedbackSetCompressAction(AbstractBaseBatchAction, FeedbackSetBatchMixin):
@@ -14,6 +15,7 @@ class FeedbackSetCompressAction(AbstractBaseBatchAction, FeedbackSetBatchMixin):
     backend_id = 'devilry_group_local'
 
     def execute(self):
+        print_memory_usage('Start of RQ task')
         feedback_set = self.kwargs.get('context_object')
         started_by_user = self.kwargs.get('started_by')
 
@@ -38,12 +40,16 @@ class FeedbackSetCompressAction(AbstractBaseBatchAction, FeedbackSetBatchMixin):
             archive_name)
 
         # Get backend
+        print_memory_usage('Before initializing zip backend')
         zipfile_backend = self.get_backend(zipfile_path=zipfile_path, archive_name=archive_name)
 
         # Add FeedbackSet files to archive.
+        print_memory_usage('Before adding feedbackset files to zip backend')
         self.zipfile_add_feedbackset(zipfile_backend=zipfile_backend, feedback_set=feedback_set)
+        print_memory_usage('After adding feedbackset files to zip backend')
 
         zipfile_backend.close()
+        print_memory_usage('After closing ZIP file')
 
         # create archive meta entry
         from devilry.devilry_compressionutil.models import CompressedArchiveMeta
@@ -52,3 +58,5 @@ class FeedbackSetCompressAction(AbstractBaseBatchAction, FeedbackSetBatchMixin):
             zipfile_backend=zipfile_backend,
             user=started_by_user
         )
+
+        print_memory_usage('End of RQ task')

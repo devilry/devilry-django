@@ -7,6 +7,8 @@ import shutil
 # Django imports
 from django.conf import settings
 
+from devilry.utils.memorydebug import print_memory_usage
+
 
 class BaseArchiveBackend(object):
     """
@@ -184,7 +186,19 @@ class PythonZipFileBackend(BaseArchiveBackend):
         if self.archive is None or self.__closed:
             self.__closed = False
             self.archive = zipfile.ZipFile(self.archive_path, 'a', zipfile.ZIP_DEFLATED, allowZip64=True)
-        self.archive.writestr(path, filelike_obj.read())
+        print_memory_usage(f'Before adding {path} to zipfile')
+        CHUNK_SIZE = 1024 * 1024 * 8  # 8MB
+        with self.archive.open(path, 'w', force_zip64=True) as destinationfile:
+            while True:
+                # print_memory_usage(f'Before reading chunk from {path}')
+                chunk = filelike_obj.read(CHUNK_SIZE)
+                # print_memory_usage(f'After reading chunk from {path}')
+                if chunk:
+                    destinationfile.write(chunk)
+                    # print_memory_usage(f'After writing chunk from {path}')
+                else:
+                    break
+        print_memory_usage(f'After adding {path} to zipfile')
 
     def read_archive(self):
         """
