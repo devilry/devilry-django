@@ -1,0 +1,10 @@
+.. _6.1.1changelog:
+
+############################
+What is new in Devilry 6.1.1
+############################
+
+
+Fixes
+#####
+- **DevilryOAuth2CallbackView**: get_app() to .app

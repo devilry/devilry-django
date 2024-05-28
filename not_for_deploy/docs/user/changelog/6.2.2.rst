@@ -1,0 +1,10 @@
+.. _6.2.2changelog:
+
+############################
+What is new in Devilry 6.2.2
+############################
+
+
+Fixes
+#####
+- Set connecting argument when saving in allauth_adapter.

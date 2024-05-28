@@ -1,0 +1,10 @@
+.. _6.2.1changelog:
+
+############################
+What is new in Devilry 6.2.1
+############################
+
+
+Fixes
+#####
+- **devilry_qualifiesforexam.QualificationPreviewView**: fixed KeyError causing saving to fail

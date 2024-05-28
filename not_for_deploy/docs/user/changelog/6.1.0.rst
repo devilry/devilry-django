@@ -1,0 +1,20 @@
+.. _6.1.0changelog:
+
+############################
+What is new in Devilry 6.1.0
+############################
+
+
+What's new
+##########
+- **PrintStatusView**: better sorting and more data displayed
+
+Fixes
+#####
+
+- **Translation**: added missing translations
+- **PrintStatusView**: hide footer when printing
+- **pyproject.toml**: removed certifi requirement
+- **pyproject.toml**: upped the version of gunicorn to 21
+- **devilry_authenticate**: changed allauthloginview to support allauth version > 0.55
+- **AssignmentGradingConfigurationUpdateView**: corrected changing grading for assignments

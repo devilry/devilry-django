@@ -1,0 +1,10 @@
+.. _6.2.3changelog:
+
+############################
+What is new in Devilry 6.2.3
+############################
+
+
+Fixes
+#####
+- fix for "Latex math in feedback is broken"

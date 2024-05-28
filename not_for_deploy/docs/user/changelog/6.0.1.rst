@@ -1,0 +1,10 @@
+.. _6.0.1changelog:
+
+############################
+What is new in Devilry 6.0.1
+############################
+
+
+Fixes
+#####
+- **AssignmentGradingConfigurationUpdateView**: corrected changing grading for assignments
