@@ -187,6 +187,9 @@ DEVILRY_FEIDE_USERID_SEC_TO_USERNAME_SUFFIX = None
 #: If this is set to a value, we will use this as the favicon.
 DEVILRY_BRANDING_FAV_ICON_PATH = None
 
+#: If this is True, we will log memory usage statistics
+DEVILRY_MEMORY_DEBUG_ENABLED = False
+
 
 ############################################################################
 #

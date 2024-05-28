@@ -287,3 +287,4 @@ DEVILRY_ASSIGNMENT_GUIDELINES = {
 #        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
 #    },
 # }
+DEVILRY_MEMORY_DEBUG_ENABLED = True

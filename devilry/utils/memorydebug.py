@@ -1,7 +1,11 @@
 
+import logging
 import resource
+from django.conf import settings
 import humanize
 import psutil
+
+logger = logging.getLogger(__name__)
 
 
 def print_memory_usage(label: str):
@@ -13,7 +17,7 @@ def print_memory_usage(label: str):
 
         $ pip install humanize psutil
 
-    The numbers printed are:
+    The numbers logged are:
     - uss: This is the memory which is unique to a process and which would be freed if the process
       was terminated right now (ref: https://psutil.readthedocs.io/en/latest/#psutil.Process.memory_full_info)
     - rss: This is the non-swapped physical memory the process uses right now
@@ -24,6 +28,8 @@ def print_memory_usage(label: str):
       to know what they actually used if you print before and after them
       (ref: https://docs.python.org/3/library/resource.html#resource.getrusage)
     """
+    if not getattr(settings, 'DEVILRY_MEMORY_DEBUG_ENABLED', False):
+        return
     uss = humanize.naturalsize(psutil.Process().memory_full_info().uss)
     ru_maxrss = humanize.naturalsize(
         (
@@ -31,4 +37,4 @@ def print_memory_usage(label: str):
         ) * 1024
     )
     rss = humanize.naturalsize(psutil.Process().memory_info().rss)
-    print(f'{label}: uss={uss}, rss={rss}, ru_maxrss={ru_maxrss}', flush=True)
+    logger.info(f'{label}: uss={uss}, rss={rss}, ru_maxrss={ru_maxrss}')
