@@ -2,8 +2,6 @@
 import logging
 import resource
 from django.conf import settings
-import humanize
-import psutil
 
 logger = logging.getLogger(__name__)
 
@@ -30,6 +28,10 @@ def print_memory_usage(label: str):
     """
     if not getattr(settings, 'DEVILRY_MEMORY_DEBUG_ENABLED', False):
         return
+    # NOTE: These imports are here on purpuse - they are ONLY needed if DEVILRY_MEMORY_DEBUG_ENABLED is True,
+    #       so we do not need them as required packages.
+    import humanize
+    import psutil
     uss = humanize.naturalsize(psutil.Process().memory_full_info().uss)
     ru_maxrss = humanize.naturalsize(
         (
