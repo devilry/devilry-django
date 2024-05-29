@@ -10,7 +10,6 @@ from cradmin_legacy import crapp
 
 from devilry.apps.core import models as core_models
 from devilry.devilry_compressionutil import models as archivemodels
-from devilry.devilry_group.utils import download_response
 from devilry.devilry_examiner.views.assignment.download_files import batch_download_api
 
 
@@ -31,12 +30,7 @@ class CompressedAssignmentFileDownloadView(generic.TemplateView):
             .order_by('-created_datetime').first()
         if not archive_meta:
             raise Http404()
-        return download_response.download_response(
-                content_path=archive_meta.archive_path,
-                content_name=archive_meta.archive_name,
-                content_type='application/zip',
-                content_size=archive_meta.archive_size,
-                streaming_response=True)
+        return archive_meta.make_download_httpresponse()
 
 
 class App(crapp.App):

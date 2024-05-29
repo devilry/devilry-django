@@ -1,4 +1,8 @@
+import typing
 from ievv_opensource.utils.singleton import Singleton
+
+if typing.TYPE_CHECKING:
+    from devilry.devilry_compressionutil.backends.backends_base import BaseArchiveBackend
 
 
 class DuplicateBackendTypeError(Exception):
@@ -26,7 +30,7 @@ class Registry(Singleton):
         """
         return '{}.{}'.format(self.__module__, self.__class__.__name__)
 
-    def add(self, backend):
+    def add(self, backend: "BaseArchiveBackend"):
         """
         Add a backend class.
 
@@ -39,7 +43,7 @@ class Registry(Singleton):
             ))
         self._backendclasses[backend.backend_id] = backend
 
-    def get(self, backend_id):
+    def get(self, backend_id: str) -> typing.Type["BaseArchiveBackend"]:
         """
         Get backend class.
 
@@ -48,12 +52,11 @@ class Registry(Singleton):
 
         Returns:
             :class:`~devilry.devilry_ziputil.backends.backends_base.PythonZipFileBackend` subclass or ``None``.
+
+        Raises:
+            KeyError: if backend_id is not a valid backend id.
         """
-        try:
-            backend_class = self._backendclasses[backend_id]
-        except KeyError:
-            return None
-        return backend_class
+        return self._backendclasses[backend_id]
 
 
 class MockableRegistry(Registry):

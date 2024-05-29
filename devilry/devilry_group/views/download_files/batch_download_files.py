@@ -4,7 +4,7 @@ import re
 
 from django import http
 from django.contrib.contenttypes.models import ContentType
-from django.http import Http404, HttpResponse
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.views import generic
 from cradmin_legacy import crapp
@@ -12,7 +12,6 @@ from cradmin_legacy import crapp
 from devilry.devilry_comment import models as comment_models
 from devilry.devilry_compressionutil import models as archivemodels
 from devilry.devilry_group import models as group_models
-from devilry.devilry_group.utils import download_response
 from devilry.devilry_group.views.download_files.batch_download_api import BatchCompressionAPIFeedbackSetView
 
 
@@ -61,11 +60,6 @@ class CompressedFeedbackSetFileDownloadView(generic.TemplateView):
 
         Args:
             request (HttpRequest): Request from client.
-
-        Returns:
-            Response: redirects to wait-for-download view,
-                see :class:`~devilry.devilry_group.views.download_files.feedbackfeed_downloadviews.WaitForDownload`, or
-                returns the content, see `~devilry.devilry_group.utils.download_response`.
         """
         feedbackset_id = kwargs.get('feedbackset_id')
         feedbackset = get_object_or_404(group_models.FeedbackSet, id=feedbackset_id)
@@ -81,12 +75,7 @@ class CompressedFeedbackSetFileDownloadView(generic.TemplateView):
             .order_by('-created_datetime').first()
         if not archive_meta:
             raise Http404()
-        return download_response.download_response(
-                content_path=archive_meta.archive_path,
-                content_name=archive_meta.archive_name,
-                content_type='application/zip',
-                content_size=archive_meta.archive_size,
-                streaming_response=True)
+        return archive_meta.make_download_httpresponse()
 
 
 class App(crapp.App):

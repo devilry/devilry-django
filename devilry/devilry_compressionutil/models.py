@@ -1,4 +1,7 @@
 # Django imports
+import typing
+from wsgiref.util import FileWrapper
+from django import http
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -6,10 +9,14 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
+from django.http.response import HttpResponseBase
 from django.utils import timezone
 from django.utils.translation import gettext_lazy, pgettext_lazy
 
 from devilry.devilry_compressionutil import backend_registry
+
+if typing.TYPE_CHECKING:
+    from devilry.devilry_compressionutil.backends.backends_base import BaseArchiveBackend
 
 
 class GenericMeta(models.Model):
@@ -157,10 +164,29 @@ class CompressedArchiveMeta(GenericMeta):
     def __str__(self):
         return self.archive_path
 
+    def get_archive_backend(self, readmode=True) -> "BaseArchiveBackend":
+        from devilry.devilry_compressionutil import backend_registry
+        backend_class = backend_registry.Registry.get_instance().get(self.backend_id)
+        return backend_class(
+            archive_path=self.archive_path,
+            archive_name=self.archive_name,
+            readmode=readmode
+        )
+
+    def make_download_httpresponse(self) -> HttpResponseBase:
+        archive_backend = self.get_archive_backend()
+        filewrapper = FileWrapper(archive_backend.open_read_binary())
+        response = http.StreamingHttpResponse(
+            filewrapper, content_type=archive_backend.get_content_type())
+        response['content-disposition'] = 'attachment; filename={}'.format(
+            archive_backend.archive_name.encode('ascii', 'replace').decode()
+        )
+        response['content-length'] = str(archive_backend.archive_size())
+        return response
+
 
 @receiver(pre_delete, sender=CompressedArchiveMeta)
 def pre_compressed_archive_meta_delete(sender, instance, **kwargs):
     compressed_archive_meta = instance
     backend_class = backend_registry.Registry.get_instance().get(compressed_archive_meta.backend_id)
-    backend_class.delete_archive(full_path=compressed_archive_meta.archive_path)
-
+    backend_class.delete_archive(archive_path=compressed_archive_meta.archive_path)
