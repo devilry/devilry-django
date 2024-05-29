@@ -1,4 +1,4 @@
-from allauth.socialaccount.providers.dataporten.views import DataportenAdapter
+from allauth.socialaccount.providers.dataporten.views import DataportenOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.views import (
     OAuth2LoginView,
 )
@@ -7,7 +7,7 @@ from . callback import DevilryOAuth2CallbackView
 from .provider import DevilryDataportenProvider
 
 
-class DevilryDataportenAdapter(DataportenAdapter):
+class DevilryDataportenAdapter(DataportenOAuth2Adapter):
     provider_id = DevilryDataportenProvider.id
 
 
