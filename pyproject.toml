@@ -45,6 +45,10 @@ dependencies = [
     "html2text",
     "djangorestframework",
     "django-allauth[socialaccount]>=0.62.0",
+    "chardet>=3.0.0,<3.1.0",
+    "idna>=3.7.0",
+    "oauthlib>=2.0.0,<2.1.0",
+    "python-openid>=2.2.0,<2.3.0",
     "requests",
     "urllib3>=1.26.0",
     "pycountry>=18",
@@ -53,10 +57,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-s3storage = [
-    "boto3",
-    "django-storages",
-]
+s3storage = ["boto3", "django-storages"]
 dev = [
     "dj-database-url",
     "openpyxl",
@@ -71,8 +72,8 @@ dev = [
     "django-auth-ldap",
     "pip-tools",
     "django-debug-toolbar",
-    "humanize",  # DEVILRY_MEMORY_DEBUG_ENABLED=True
-    "psutil",   # Only used when DEVILRY_MEMORY_DEBUG_ENABLED=True
+    "humanize",             # DEVILRY_MEMORY_DEBUG_ENABLED=True
+    "psutil",               # Only used when DEVILRY_MEMORY_DEBUG_ENABLED=True
 ]
 test = [
     "htmls",
@@ -82,9 +83,7 @@ test = [
     "model-bakery",
     "coverage",
 ]
-docs = [
-    "sphinx",
-]
+docs = ["sphinx"]
 
 [project.scripts]
 ievv = "ievv_opensource.ievvtasks_common.cli:cli"
