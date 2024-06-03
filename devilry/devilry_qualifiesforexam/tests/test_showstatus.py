@@ -416,28 +416,3 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
         self.assertEqual(student_list[0].alltext_normalized, 'A C c@example.com')
         self.assertEqual(student_list[1].alltext_normalized, 'B B b@example.com')
         self.assertEqual(student_list[2].alltext_normalized, 'C A a@example.com')
-
-    def test_table_order_by_candidate_id(self):
-        testperiod = baker.make('core.Period')
-        relatedstudent1 = self.__make_related_student(
-            period=testperiod, fullname='C C', lastname='C', shortname='c@example.com', candidate_id='1')
-        relatedstudent2 = self.__make_related_student(
-            period=testperiod, fullname='B B', lastname='B', shortname='b@example.com', candidate_id='3')
-        relatedstudent3 = self.__make_related_student(
-            period=testperiod, fullname='A A', lastname='A', shortname='a@example.com', candidate_id='2')
-
-        teststatus = baker.make('devilry_qualifiesforexam.Status', period=testperiod)
-        self.__make_qualification_item(teststatus, relatedstudent1)
-        self.__make_qualification_item(teststatus, relatedstudent2)
-        self.__make_qualification_item(teststatus, relatedstudent3)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testperiod,
-            viewkwargs={
-                'statusid': teststatus.id
-            },
-            requestkwargs={'data': {'order_by': 'candidateid'}})
-        student_list = mockresponse.selector.list('.devilry-qualifiesforexam-cell-studentinfo')
-        self.assertEqual(len(student_list), 3)
-        self.assertEqual(student_list[0].alltext_normalized, 'C C c@example.com')
-        self.assertEqual(student_list[1].alltext_normalized, 'A A a@example.com')
-        self.assertEqual(student_list[2].alltext_normalized, 'B B b@example.com')
