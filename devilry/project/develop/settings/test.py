@@ -81,3 +81,16 @@ DEVILRY_INCLUDE_TEST_CSS_CLASSES = True
 RQ_QUEUES['default']['ASYNC'] = False
 RQ_QUEUES['email']['ASYNC'] = False
 RQ_QUEUES['highpriority']['ASYNC'] = False
+
+
+STORAGES = {
+    'default': {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "OPTIONS": {
+            "location": "devilry_testfiles",
+        },
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}

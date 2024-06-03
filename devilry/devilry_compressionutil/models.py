@@ -156,7 +156,9 @@ class CompressedArchiveMeta(GenericMeta):
     deleted_datetime = models.DateTimeField(null=True, default=None)
 
     def clean(self):
-        if backend_registry.Registry.get_instance().get(self.backend_id) is None:
+        try:
+            backend_registry.Registry.get_instance().get(self.backend_id)
+        except KeyError:
             raise ValidationError({
                 'backend_id': gettext_lazy('backend_id must refer to a valid backend')
             })

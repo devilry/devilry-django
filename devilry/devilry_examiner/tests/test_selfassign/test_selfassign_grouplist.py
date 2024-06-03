@@ -64,7 +64,7 @@ class TestSelfassignGrouplistView(test.TestCase, cradmin_testhelpers.TestCaseMix
         self.assertIn(
             'The Semester - self-assign',
             mockresponse.selector.one('h1').alltext_normalized)
-    
+
     def test_no_groups_sanity(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
         testperiod = baker.make_recipe('devilry.apps.core.period_active', short_name='thesemester', long_name='The Semester')
@@ -109,7 +109,7 @@ class TestSelfassignGrouplistView(test.TestCase, cradmin_testhelpers.TestCaseMix
         self.assertIn('student2@example.com', group_itemvalue_list[0].alltext_normalized)
         self.assertIn('student3@example.com', group_itemvalue_list[1].alltext_normalized)
         self.assertIn('student1@example.com', group_itemvalue_list[2].alltext_normalized)
-    
+
     def test_ordering_by_deadline_in_past_sanity(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
         testperiod = baker.make_recipe('devilry.apps.core.period_active', short_name='thesemester', long_name='The Semester')
@@ -137,6 +137,10 @@ class TestSelfassignGrouplistView(test.TestCase, cradmin_testhelpers.TestCaseMix
         )
         group_itemvalue_list = mockresponse.selector.list('.cradmin-legacy-listbuilder-itemvalue')
         self.assertEqual(len(group_itemvalue_list), 3)
+        from pprint import pprint
+        print("*" * 70)
+        pprint([x.alltext_normalized for x in group_itemvalue_list])
+        print("*" * 70)
         self.assertIn('student1@example.com', group_itemvalue_list[0].alltext_normalized)
         self.assertIn('student3@example.com', group_itemvalue_list[1].alltext_normalized)
         self.assertIn('student2@example.com', group_itemvalue_list[2].alltext_normalized)
@@ -277,7 +281,7 @@ class TestSelfassignGrouplistView(test.TestCase, cradmin_testhelpers.TestCaseMix
         group_itemvalue_list = mockresponse.selector.list('.cradmin-legacy-listbuilder-itemvalue-titledescription-title')
         self.assertEqual(len(group_itemvalue_list), 1)
         self.assertIn('student@example.com', group_itemvalue_list[0].alltext_normalized)
-    
+
     def test_multiple_groups_available_single_assignment_sanity(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
         testperiod = baker.make_recipe('devilry.apps.core.period_active', short_name='thesemester', long_name='The Semester')
@@ -391,7 +395,7 @@ class TestSelfassignGrouplistViewFilters(test.TestCase, cradmin_testhelpers.Test
         self.__make_group_with_student(assignment3, 'Assignment3 Student2', 'assignment3student2@example.com')
         self.__make_group_with_student(assignment3, 'Assignment3 Student3', 'assignment3student3@example.com')
         return assignment1, assignment2, assignment3
-    
+
     def test_assignment_filter_label_sanity(self):
         self.__make_single_assignment_with_multiple_groups()
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -401,7 +405,7 @@ class TestSelfassignGrouplistViewFilters(test.TestCase, cradmin_testhelpers.Test
         self.assertEqual(
             mockresponse.selector.one('#cradmin_legacy_listfilter_assignmentname_label').alltext_normalized,
             'Assignments'
-        )        
+        )
 
     def test_assignment_filter_name_single_assignment_sanity(self):
         assignment = self.__make_single_assignment_with_multiple_groups()
@@ -448,7 +452,7 @@ class TestSelfassignGrouplistViewFilters(test.TestCase, cradmin_testhelpers.Test
         self.assertIn('student2@example.com', group_itemvalue_list[1].alltext_normalized)
         self.assertIn(assignment.long_name, group_itemvalue_list[2].alltext_normalized)
         self.assertIn('student3@example.com', group_itemvalue_list[2].alltext_normalized)
-    
+
     def test_assignment_filter_sanity(self):
         assignment = self.__make_single_assignment_with_multiple_groups()
         mockresponse = self.mock_http200_getrequest_htmls(
