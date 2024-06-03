@@ -1,7 +1,4 @@
-import os
-
 from devilry.devilry_compressionutil.backends.backends_base import PythonZipFileBackend
-from devilry.devilry_compressionutil.backends.backends_base import PythonTarFileBackend
 
 
 class MockDevilryZipBackend(PythonZipFileBackend):
@@ -12,16 +9,6 @@ class MockDevilryZipBackend(PythonZipFileBackend):
 
     def __init__(self, **kwargs):
         super(MockDevilryZipBackend, self).__init__(**kwargs)
-
-
-class MockDevilryTarBackend(PythonTarFileBackend):
-    """
-    Used for testing.
-    """
-    backend_id = 'tar'
-
-    def __init__(self, **kwargs):
-        super(MockDevilryTarBackend, self).__init__(**kwargs)
 
 
 class MockDevilryZipBackendS3(MockDevilryZipBackend):

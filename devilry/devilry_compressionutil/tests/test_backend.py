@@ -4,7 +4,6 @@ import os
 import shutil
 
 # Django imports
-from unittest import skip
 
 from django.test import TestCase
 from django.conf import settings
@@ -12,7 +11,6 @@ from django.conf import settings
 # Devilry imports
 from devilry.devilry_compressionutil import backend_registry
 from devilry.devilry_compressionutil.backends import backend_mock
-from devilry.devilry_compressionutil.backends.backends_base import PythonTarFileBackend
 
 # Dummy text for compression tests
 lorem_ipsum = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In facilisis dignissim enim eu luctus. ' \
@@ -208,150 +206,3 @@ class TestZipBackend(TestCase):
             backend.readmode = True
             for item in backend.archive.namelist():
                 self.assertTrue(item in nesting_levels)
-
-
-@skip('Skip tarfile tests until tarfile is complete(possible goal 3.1)')
-class TestTarFileBackend(TestCase):
-
-    def setUp(self):
-        # Set up a backend path for testing which can be removed after each test.
-        self.backend_path = os.path.join('devilry_testfiles', 'devilry_compressed_archives', '')
-
-    def tearDown(self):
-        shutil.rmtree(self.backend_path, ignore_errors=False)
-
-    def test_add_file(self):
-        backend = PythonTarFileBackend(archive_path='test', archive_name='test', compression='')
-        backend.readmode = False
-
-        testfile = io.StringIO()
-        testfile.write('testcontent')
-        testfile.seek(0)
-
-        backend.add_file('testfile.txt', testfile)
-        backend.close()
-
-    def test_deep_nesting(self):
-        nesting_levels = [
-            os.path.join('test'),
-            os.path.join('test', 'dir1'),
-            os.path.join('test', 'dir2'),
-
-            os.path.join('test', 'dir1', 'dir1_dir1'),
-            os.path.join('test', 'dir1', 'dir1_dir2'),
-            os.path.join('test', 'dir1', 'dir1_dir1', 'testfile.txt'),
-            os.path.join('test', 'dir1', 'dir1_dir2', 'testfile.txt'),
-
-            os.path.join('test', 'dir2', 'dir2_dir1'),
-            os.path.join('test', 'dir2', 'dir2_dir1', 'testfile.txt'),
-        ]
-
-        backend = PythonTarFileBackend(archive_path='test', archive_name='test', compression='')
-        backend.readmode = False
-
-        testfile = io.StringIO()
-        testfile.write('testcontent')
-        testfile.seek(0)
-
-        backend.add_file(os.path.join('dir1', 'dir1_dir1', 'testfile.txt'), testfile)
-        testfile.seek(0)
-        backend.add_file(os.path.join('dir2', 'dir2_dir1', 'testfile.txt'), testfile)
-        testfile.seek(0)
-        backend.add_file(os.path.join('dir1', 'dir1_dir2', 'testfile.txt'), testfile)
-        backend.close()
-
-        backend.readmode = True
-        archive = backend.read_archive()
-
-        for member in archive.getmembers():
-            self.assertTrue(member.name in nesting_levels)
-
-    def test_uncompressed_size(self):
-        backend_uncompressed = PythonTarFileBackend(
-                archive_path='test_uncompressed',
-                archive_name='test_uncompressed',
-                compression='')
-        backend_uncompressed.readmode = False
-
-        backend_gz = PythonTarFileBackend(
-                archive_path='test_gz',
-                archive_name='test_gz',
-                compression='gz')
-        backend_gz.readmode = False
-
-        testfile = io.StringIO()
-        testfile.write(lorem_ipsum)
-        testfile.seek(0)
-
-        backend_uncompressed.add_file('testfile_uncompressed.txt', testfile)
-        backend_uncompressed.close()
-
-        testfile.seek(0)
-
-        backend_gz.add_file('testfile_gz_compressed.txt', testfile)
-        backend_gz.close()
-
-        backend_uncompressed.readmode = True
-        backend_gz.readmode = True
-
-        self.assertTrue(backend_uncompressed.archive_size() > backend_gz.archive_size())
-
-    def test_gzip_size(self):
-        backend_uncompressed = PythonTarFileBackend(
-                archive_path='test_uncompressed',
-                archive_name='test_uncompressed',
-                compression='')
-        backend_uncompressed.readmode = False
-
-        backend_gz = PythonTarFileBackend(
-                archive_path='test_gz',
-                archive_name='test_gz',
-                compression='gz')
-        backend_gz.readmode = False
-
-        testfile = io.StringIO()
-        testfile.write(lorem_ipsum)
-        testfile.seek(0)
-
-        backend_uncompressed.add_file('testfile_uncompressed', testfile)
-        backend_uncompressed.close()
-
-        testfile.seek(0)
-
-        backend_gz.add_file('testfile_gz_compressed.txt', testfile)
-        backend_gz.close()
-
-        backend_uncompressed.readmode = True
-        backend_gz.readmode = True
-
-        self.assertTrue(backend_gz.archive_size() < backend_uncompressed.archive_size())
-
-    def test_bzip2_size(self):
-        backend_uncompressed = PythonTarFileBackend(
-                archive_path='test_uncompressed',
-                archive_name='test_uncompressed',
-                compression='')
-        backend_uncompressed.readmode = False
-
-        backend_bz2 = PythonTarFileBackend(
-                archive_path='test_gz',
-                archive_name='test_gz',
-                compression='bz2')
-        backend_bz2.readmode = False
-
-        testfile = io.StringIO()
-        testfile.write(lorem_ipsum)
-        testfile.seek(0)
-
-        backend_uncompressed.add_file('testfile_uncompressed.txt', testfile)
-        backend_uncompressed.close()
-
-        testfile.seek(0)
-
-        backend_bz2.add_file('testfile_gz_compressed.txt', testfile)
-        backend_bz2.close()
-
-        backend_uncompressed.readmode = True
-        backend_bz2.readmode = True
-
-        self.assertTrue(backend_bz2.archive_size() < backend_uncompressed.archive_size())
