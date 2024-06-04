@@ -1,0 +1,10 @@
+.. _6.2.4changelog:
+
+############################
+What is new in Devilry 6.2.4
+############################
+
+
+Fixes
+#####
+- Added settings to allow spans to have class attribute and to not merge spans when sanitizing input

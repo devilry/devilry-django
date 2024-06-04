@@ -1,0 +1,10 @@
+.. _6.3.1changelog:
+
+############################
+What is new in Devilry 6.3.1
+############################
+
+
+Fixes
+#####
+- **comment_email.py**: fixed send_student_comment_email getting unexpected keyword argument

@@ -1,0 +1,24 @@
+.. _6.2.0changelog:
+
+############################
+What is new in Devilry 6.2.0
+############################
+
+
+What's new
+##########
+- **devilry_qualifiesforexam**: added listing of required exams on status report
+- **devilry_examiner**: added sorting by delivery time and filter if assignment has an delivery with file attachment to examiner dashboard
+- **devilry-comment-editor**: added button for image markdown
+
+Fixes
+#####
+- **devilry_examiner.assignmentgroup**: fixed duplicate filters in OrderByDelivery
+- **devilry_examiner.selfassign.py**: fixed added sorting to wrong view
+- **devilry_examiner.assignment**: Added missing sorting on delivery time
+- **feedbackfeed_examiner.py**: fixed defaulting to feedback
+- **settings/develop.py**: Added mediacopy of files missing to work with whitenoise
+- **feedbackfeed_examiner.ExaminerPublicDiscussView**: set feedback to default open tab instead of discuss
+- **devilry_admin.asignment.student.overwiev**: changed to 'students' to 'groups' to better reflect actual content of view
+- **devilry_listfilter.user.Search**: force encoding of search input to hopefully fix #1077
+- **devilry_markup**: added sanitizer step after markdown conversion
