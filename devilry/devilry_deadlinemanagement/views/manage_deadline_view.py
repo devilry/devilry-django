@@ -421,6 +421,11 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
                 else:
                     update_ids.append(feedback_set_id)
                 feedbackset_id_list.append(feedback_set_id)
+                self.__create_groupcomment(
+                    feedback_set_id=feedback_set_id,
+                    publishing_time=now_without_sec_and_micro + timezone.timedelta(microseconds=1),
+                    text=text
+                )
 
             group_models.FeedbackSet.objects.filter(id__in=update_ids).update(
                 last_updated_by=self.request.user,
