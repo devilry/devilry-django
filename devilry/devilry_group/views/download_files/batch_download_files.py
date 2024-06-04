@@ -1,21 +1,18 @@
 # -*- coding: utf-8 -*-
 from wsgiref.util import FileWrapper
 import re
-import os
 
 from django import http
+from django.contrib.contenttypes.models import ContentType
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.views import generic
 from cradmin_legacy import crapp
 
 from devilry.devilry_comment import models as comment_models
+from devilry.devilry_compressionutil import models as archivemodels
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.views.download_files.batch_download_api import BatchCompressionAPIFeedbackSetView
-from devilry.devilry_compressionutil.backend_registry import Registry
-from devilry.devilry_compressionutil.batchjob_mixins.feedbackset_mixin import FeedbackSetBatchMixin
-
-
 
 
 class FileDownloadFeedbackfeedView(generic.TemplateView):
@@ -53,69 +50,32 @@ class FileDownloadFeedbackfeedView(generic.TemplateView):
         return response
 
 
-class CompressedFeedbackSetFileDownloadView(FeedbackSetBatchMixin, generic.TemplateView):
+class CompressedFeedbackSetFileDownloadView(generic.TemplateView):
     """Compress all files from a specific FeedbackSet for an assignment into a zipped folder.
 
     Downloads only files from GroupComments that are visible to everyone.
     """
-
-    backend_id = 'devilry_group_local'
-
     def get(self, request, *args, **kwargs):
         """Download all files for a feedbackset into zipped folder.
 
         Args:
             request (HttpRequest): Request from client.
-
-        Returns:
-            Response: redirects to wait-for-download view,
-                see :class:`~devilry.devilry_group.views.download_files.feedbackfeed_downloadviews.WaitForDownload`, or
-                returns the content, see `~devilry.devilry_group.utils.download_response`.
         """
         feedbackset_id = kwargs.get('feedbackset_id')
-
-        feedbackset = get_object_or_404(self.get_feedbackset_queryset(), id=feedbackset_id)
+        feedbackset = get_object_or_404(group_models.FeedbackSet, id=feedbackset_id)
 
         # Check that the cradmin role and the AssignmentGroup is the same.
         if feedbackset.group.id != request.cradmin_role.id:
             raise Http404()
 
-        from django.utils import timezone
-        archive_name = 'feedbackset-{}-{}-delivery.zip'.format(
-            feedbackset.id,
-            timezone.now().strftime('%Y-%m-%d-%H%M'))
-
-        archive_path = os.path.join(
-            str(feedbackset.group.parentnode.parentnode_id),
-            str(feedbackset.group.parentnode.id),
-            str(feedbackset.group.id),
-            archive_name)
-
-        zip_backend = Registry.get_backend_instance(
-            backend_id=self.backend_id,
-            zipfile_path=archive_path,
-            archive_name=archive_name
-        )
-        if not zip_backend:
+        archive_meta = archivemodels.CompressedArchiveMeta.objects.exclude()\
+            .filter(content_object_id=feedbackset_id,
+                    content_type=ContentType.objects.get_for_model(model=feedbackset),
+                    deleted_datetime=None)\
+            .order_by('-created_datetime').first()
+        if not archive_meta:
             raise Http404()
-
-        self.zipfile_add_feedbackset(zipfile_backend=zip_backend, feedback_set=feedbackset)
-        zip_backend.close()
-
-        filewrapper = zip_backend.get_archive()
-
-        response = http.FileResponse(
-            filewrapper
-        )
-        response.set_cookie('zipdownload', 'start', max_age=10)
-
-        response['content-disposition'] = 'attachment; filename={}'.format(
-            archive_name.encode('ascii', 'replace').decode()
-        )
-        if zip_backend.archive_size() > 0:
-            response['content-length'] = zip_backend.archive_size()
-
-        return response
+        return archive_meta.make_download_httpresponse()
 
 
 class App(crapp.App):

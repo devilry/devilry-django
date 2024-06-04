@@ -1,16 +1,4 @@
-import os
-
-from devilry.devilry_compressionutil.backends.backends_base import PythonZipFileBackend, PythonTarFileBackend, StreamZipBackend
-
-
-class MockDevilryStreamZipBackend(StreamZipBackend):
-    """
-    Used for testing.
-    """
-    backend_id = 'stream'
-
-    def __init__(self, **kwargs):
-        super(MockDevilryStreamZipBackend, self).__init__(**kwargs)
+from devilry.devilry_compressionutil.backends.backends_base import PythonZipFileBackend
 
 
 class MockDevilryZipBackend(PythonZipFileBackend):
@@ -21,26 +9,6 @@ class MockDevilryZipBackend(PythonZipFileBackend):
 
     def __init__(self, **kwargs):
         super(MockDevilryZipBackend, self).__init__(**kwargs)
-
-    @classmethod
-    def delete_archive(cls, full_path):
-        if not os.path.exists(full_path):
-            return False
-        try:
-            os.remove(full_path)
-        except OSError:
-            return False
-        return True
-
-
-class MockDevilryTarBackend(PythonTarFileBackend):
-    """
-    Used for testing.
-    """
-    backend_id = 'tar'
-
-    def __init__(self, **kwargs):
-        super(MockDevilryTarBackend, self).__init__(**kwargs)
 
 
 class MockDevilryZipBackendS3(MockDevilryZipBackend):

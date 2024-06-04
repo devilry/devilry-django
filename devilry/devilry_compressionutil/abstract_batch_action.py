@@ -31,7 +31,23 @@ class AbstractBaseBatchAction(batchregistry.Action):
             readmode=False
         )
 
+    def add_file(self, zipfile_backend, sub_path, comment_file, is_duplicate=False):
+        """
+        Add file to ZIP archive.
 
+        Args:
+            zipfile_backend: A subclass of ``PythonZipFileBackend``.
+            sub_path: The path to write to inside the archive.
+            comment_file: The `CommentFile` file to write.
+            is_duplicate: Is the file a duplicate? Defaults to ``False``.
+        """
+        file_name = comment_file.filename
+        if is_duplicate:
+            file_name = comment_file.get_filename_as_unique_string()
+
+        zipfile_backend.add_file(
+            os.path.join(sub_path, file_name),
+            comment_file.file.file)
 
     def execute(self):
         raise NotImplementedError()

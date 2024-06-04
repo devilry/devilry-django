@@ -8,6 +8,7 @@ from importlib import import_module
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.core.files.storage import default_storage
+from django.core.files.storage import Storage, storages
 
 
 def load_deliverystore_backend():
@@ -61,7 +62,7 @@ class DeliveryStoreInterface(object):
     def read_open(self, filemeta_obj):
         """
         Return a file-like object opened for reading.
-        
+
         The returned object must have ``close()`` and ``read()`` methods
         as defined by the documentation of the standard python file-class.
 
@@ -72,7 +73,7 @@ class DeliveryStoreInterface(object):
     def write_open(self, filemeta_obj):
         """
         Return a file-like object opened for writing.
-        
+
         The returned object must have ``close()`` and ``write()`` methods as
         defined by the documentation of the standard python file-class.
 
@@ -100,7 +101,7 @@ class DeliveryStoreInterface(object):
     def exists(self, filemeta_obj):
         """
         Return ``True`` if the file exists, ``False`` if not.
-        
+
         :param filemeta_obj: A :class:`devilry.core.models.FileMeta`-object.
         """
         raise NotImplementedError()
@@ -268,7 +269,7 @@ class DjangoStorageDeliveryStore(DeliveryStoreInterface):
         if storage_backend:
             self.storage = storage_backend
         else:
-            self.storage = default_storage
+            self.storage = storages[settings.DELIVERY_STORAGE_BACKEND]
 
     def _get_filepath(self, filemeta_obj):
         return posixpath.join(self.root, str(filemeta_obj.pk))

@@ -2,7 +2,6 @@
 
 
 from ievv_opensource.ievv_batchframework import batchregistry
-from django.http.response import JsonResponse
 
 from devilry.apps.core import models as core_models
 from devilry.devilry_compressionutil.models import CompressedArchiveMeta
@@ -58,13 +57,6 @@ class BatchCompressionAPIAssignmentView(AbstractBatchCompressionAPIView):
 
     def should_filter_by_created_by_user(self):
         return True
-
-    def get_status_dict(self, context_object_id):
-        return {'status': 'finished', 'download_link': context_object_id}
-
-    def get(self, request, *args, **kwargs):
-        content_object_id = kwargs.get('content_object_id')
-        return JsonResponse(self.get_ready_for_download_status(content_object_id=content_object_id))
 
     def start_compression_task(self, content_object_id):
         batchregistry.Registry.get_instance().run(

@@ -1,7 +1,6 @@
 from os.path import join
 from os.path import exists
 from devilry.utils import rq_setup
-from model_bakery import baker
 
 from devilry.project.common.settings import *  # noqa
 import dj_database_url
@@ -127,30 +126,12 @@ RQ_QUEUES = rq_setup.make_simple_rq_queue_setting()
 # Model-bakery CUSTOM FIELDS
 #
 ############################
-class GenerateShortName(object):
-    counter = 0
 
-    def __call__(self):
-        GenerateShortName.counter += 1
-        return 'bakershort{}'.format(self.counter)
-
-
-def generate_long_name():
-    from model_bakery.recipe import seq as baker_seq
-    return baker_seq('Baker Long Name')
-
-
-class CustomBaker(baker.Baker):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        baker.generators.add('devilry.apps.core.models.custom_db_fields.ShortNameField', GenerateShortName())
-        baker.generators.add('devilry.apps.core.models.custom_db_fields.LongNameField', generate_long_name)
-
-BAKER_CUSTOM_CLASS = 'devilry.project.develop.settings.base.CustomBaker'
+BAKER_CUSTOM_CLASS = 'devilry.project.develop.custom_modelbakery.CustomBaker'
 
 IEVVTASKS_DUMPDATA_DIRECTORY = os.path.join(os.path.dirname(THIS_DIR), 'dumps')
 
-from devilry.project.log import create_logging_config
+from devilry.project.log import create_logging_config  # noqa
 LOGGING = create_logging_config(
     mail_admins=False,
     dangerous_actions_loglevel='DEBUG',

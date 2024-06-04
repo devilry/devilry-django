@@ -12,7 +12,7 @@ from ievv_opensource.ievv_batchframework import batchregistry
 
 # Django imports
 from django.conf import settings
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.core.files.base import ContentFile
 from django.utils import timezone
 from django.template import defaultfilters
@@ -57,9 +57,10 @@ class TestCompressed(TestCase):
 
 class TestAssignmentCompressActionAssignmentGroupPermissions(TestCase):
     def test_examiner_has_access_to_all_groups(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           short_name='learn-python-basics',
-                                           first_deadline=timezone.now() + timezone.timedelta(days=1))
+        testassignment = baker.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            short_name='learn-python-basics',
+            first_deadline=timezone.now() + timezone.timedelta(days=1))
         testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
         testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
         testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
@@ -78,9 +79,10 @@ class TestAssignmentCompressActionAssignmentGroupPermissions(TestCase):
         self.assertIn(testgroup4, group_queryset)
 
     def test_examiner_has_access_to_some_groups(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           short_name='learn-python-basics',
-                                           first_deadline=timezone.now() + timezone.timedelta(days=1))
+        testassignment = baker.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            short_name='learn-python-basics',
+            first_deadline=timezone.now() + timezone.timedelta(days=1))
         testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
         testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
         testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
@@ -98,10 +100,12 @@ class TestAssignmentCompressActionAssignmentGroupPermissions(TestCase):
 
     def test_examiner_does_not_have_access_to_groups_in_other_assignment(self):
         period = baker.make_recipe('devilry.apps.core.period_active')
-        testassignment1 = baker.make('core.Assignment', parentnode=period,
-                                     first_deadline=timezone.now() + timezone.timedelta(days=1))
-        testassignment2 = baker.make('core.Assignment', parentnode=period,
-                                     first_deadline=timezone.now() + timezone.timedelta(days=1))
+        testassignment1 = baker.make(
+            'core.Assignment', parentnode=period,
+            first_deadline=timezone.now() + timezone.timedelta(days=1))
+        testassignment2 = baker.make(
+            'core.Assignment', parentnode=period,
+            first_deadline=timezone.now() + timezone.timedelta(days=1))
         testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment1)
         testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment1)
         testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment2)
@@ -118,437 +122,475 @@ class TestAssignmentCompressActionAssignmentGroupPermissions(TestCase):
         self.assertNotIn(testgroup4, group_queryset)
 
 
+@override_settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY='devilry_compressed_archives')
 class TestAssignmentBatchTask(TestCompressed):
 
     def __make_comment_file(self, feedback_set, file_name, file_content, **comment_kwargs):
-        comment = baker.make('devilry_group.GroupComment',
-                                  feedback_set=feedback_set,
-                                  user_role='student', **comment_kwargs)
-        comment_file = baker.make('devilry_comment.CommentFile', comment=comment,
-                                  filename=file_name)
+        comment = baker.make(
+            'devilry_group.GroupComment',
+            feedback_set=feedback_set,
+            user_role='student', **comment_kwargs)
+        comment_file = baker.make(
+            'devilry_comment.CommentFile', comment=comment,
+            filename=file_name)
         comment_file.file.save(file_name, ContentFile(file_content))
         return comment_file
 
     def test_no_comment_files(self):
-        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                               short_name='learn-python-basics',
-                                               first_deadline=timezone.now() + timezone.timedelta(days=1))
-            testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-            testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            short_name='learn-python-basics',
+            first_deadline=timezone.now() + timezone.timedelta(days=1))
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
-            # Create examiner.
-            testuser = baker.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
-            related_examiner = baker.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
-            baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup1)
+        # Create examiner.
+        testuser = baker.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
+        related_examiner = baker.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
+        baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup1)
 
-            # Add feedbackset with commentfile to the group the examiner has access to.
-            testfeedbackset1 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup1)
-            baker.make('devilry_group.GroupComment',
-                       feedback_set=testfeedbackset1,
-                       user_role='student')
-            baker.make('core.Candidate', assignment_group=testgroup1, relatedstudent__user__shortname='april')
+        # Add feedbackset with commentfile to the group the examiner has access to.
+        testfeedbackset1 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup1)
+        baker.make(
+            'devilry_group.GroupComment',
+            feedback_set=testfeedbackset1,
+            user_role='student')
+        baker.make('core.Candidate', assignment_group=testgroup1, relatedstudent__user__shortname='april')
 
-            # Add feedbackset with commentfile to the group the examiner does not have access to.
-            testfeedbackset2 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup2)
-            baker.make('devilry_group.GroupComment',
-                       feedback_set=testfeedbackset2,
-                       user_role='student')
-            baker.make('core.Candidate', assignment_group=testgroup2, relatedstudent__user__shortname='dewey')
+        # Add feedbackset with commentfile to the group the examiner does not have access to.
+        testfeedbackset2 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup2)
+        baker.make(
+            'devilry_group.GroupComment',
+            feedback_set=testfeedbackset2,
+            user_role='student')
+        baker.make('core.Candidate', assignment_group=testgroup2, relatedstudent__user__shortname='dewey')
 
-            # run actiongroup
-            self._run_actiongroup(name='batchframework_assignment',
-                                  task=tasks.AssignmentCompressAction,
-                                  context_object=testassignment,
-                                  started_by=testuser)
+        # run actiongroup
+        self._run_actiongroup(
+            name='batchframework_assignment',
+            task=tasks.AssignmentCompressAction,
+            context_object=testassignment,
+            started_by=testuser)
 
-            self.assertEqual(archivemodels.CompressedArchiveMeta.objects.count(), 0)
+        self.assertEqual(archivemodels.CompressedArchiveMeta.objects.count(), 0)
 
     def test_only_groups_examiner_has_access_to(self):
-        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                               short_name='learn-python-basics',
-                                               first_deadline=timezone.now() + timezone.timedelta(days=1))
-            testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-            testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            short_name='learn-python-basics',
+            first_deadline=timezone.now() + timezone.timedelta(days=1))
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
-            # Create examiner.
-            testuser = baker.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
-            related_examiner = baker.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
-            baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup1)
+        # Create examiner.
+        testuser = baker.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
+        related_examiner = baker.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
+        baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup1)
 
-            # Add feedbackset with commentfile to the group the examiner has access to.
-            testfeedbackset1 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup1)
-            self.__make_comment_file(feedback_set=testfeedbackset1, file_name='testfile.txt',
-                                     file_content='testcontent')
-            baker.make('core.Candidate', assignment_group=testgroup1, relatedstudent__user__shortname='april')
+        # Add feedbackset with commentfile to the group the examiner has access to.
+        testfeedbackset1 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup1)
+        self.__make_comment_file(
+            feedback_set=testfeedbackset1, file_name='testfile.txt',
+            file_content='testcontent')
+        baker.make('core.Candidate', assignment_group=testgroup1, relatedstudent__user__shortname='april')
 
-            # Add feedbackset with commentfile to the group the examiner does not have access to.
-            testfeedbackset2 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup2)
-            self.__make_comment_file(feedback_set=testfeedbackset2, file_name='testfile.txt',
-                                     file_content='testcontent')
-            baker.make('core.Candidate', assignment_group=testgroup2, relatedstudent__user__shortname='dewey')
+        # Add feedbackset with commentfile to the group the examiner does not have access to.
+        testfeedbackset2 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup2)
+        self.__make_comment_file(
+            feedback_set=testfeedbackset2, file_name='testfile.txt',
+            file_content='testcontent')
+        baker.make('core.Candidate', assignment_group=testgroup2, relatedstudent__user__shortname='dewey')
 
-            # run actiongroup
-            self._run_actiongroup(name='batchframework_assignment',
-                                  task=tasks.AssignmentCompressAction,
-                                  context_object=testassignment,
-                                  started_by=testuser)
+        # run actiongroup
+        self._run_actiongroup(
+            name='batchframework_assignment',
+            task=tasks.AssignmentCompressAction,
+            context_object=testassignment,
+            started_by=testuser)
 
-            archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testassignment.id)
-            zipfileobject = ZipFile(archive_meta.archive_path)
-            self.assertEqual(1, len(zipfileobject.namelist()))
-            self.assertTrue(zipfileobject.namelist()[0].startswith('{}'.format('april')))
-            self.assertFalse(zipfileobject.namelist()[0].startswith('{}'.format('dewey')))
+        archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testassignment.id)
+        zipfileobject = archive_meta.get_archive_backend().read_archive()
+        self.assertEqual(1, len(zipfileobject.namelist()))
+        self.assertTrue(zipfileobject.namelist()[0].startswith('{}'.format('april')))
+        self.assertFalse(zipfileobject.namelist()[0].startswith('{}'.format('dewey')))
 
     def test_one_group_before_deadline(self):
-        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                               short_name='learn-python-basics',
-                                               first_deadline=timezone.now() + timezone.timedelta(days=1))
-            testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            short_name='learn-python-basics',
+            first_deadline=timezone.now() + timezone.timedelta(days=1))
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
-            # Create examiner.
-            testuser = baker.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
-            related_examiner = baker.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
-            baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup)
+        # Create examiner.
+        testuser = baker.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
+        related_examiner = baker.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
+        baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup)
 
-            # Add feedbackset with commentfile.
-            testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-            self.__make_comment_file(feedback_set=testfeedbackset, file_name='testfile.txt',
-                                     file_content='testcontent')
-            baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user__shortname='april')
+        # Add feedbackset with commentfile.
+        testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
+        self.__make_comment_file(
+            feedback_set=testfeedbackset, file_name='testfile.txt',
+            file_content='testcontent')
+        baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user__shortname='april')
 
-            # run actiongroup
-            self._run_actiongroup(name='batchframework_assignment',
-                                  task=tasks.AssignmentCompressAction,
-                                  context_object=testassignment,
-                                  started_by=testuser)
+        # run actiongroup
+        self._run_actiongroup(
+            name='batchframework_assignment',
+            task=tasks.AssignmentCompressAction,
+            context_object=testassignment,
+            started_by=testuser)
 
-            archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testassignment.id)
-            zipfileobject = ZipFile(archive_meta.archive_path)
-            path_to_file = os.path.join('april',
-                                        'deadline-{}'.format(defaultfilters.date(
-                                            testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
-                                        'testfile.txt')
-            self.assertEqual(b'testcontent', zipfileobject.read(path_to_file))
+        archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testassignment.id)
+        zipfileobject = archive_meta.get_archive_backend().read_archive()
+        path_to_file = os.path.join(
+            'april',
+            'deadline-{}'.format(defaultfilters.date(
+                testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
+            'testfile.txt')
+        self.assertEqual(b'testcontent', zipfileobject.read(path_to_file))
 
     def test_one_group_after_deadline(self):
-        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                               short_name='learn-python-basics',
-                                               first_deadline=timezone.now())
-            testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            short_name='learn-python-basics',
+            first_deadline=timezone.now())
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
-            # Create examiner.
-            testuser = baker.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
-            related_examiner = baker.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
-            baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup)
+        # Create examiner.
+        testuser = baker.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
+        related_examiner = baker.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
+        baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup)
 
-            # Add feedbackset with commentfile.
-            testfeedbackset = group_baker.feedbackset_first_attempt_published(group=testgroup)
-            self.__make_comment_file(feedback_set=testfeedbackset, file_name='testfile.txt',
-                                     file_content='testcontent')
-            baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user__shortname='april')
+        # Add feedbackset with commentfile.
+        testfeedbackset = group_baker.feedbackset_first_attempt_published(group=testgroup)
+        self.__make_comment_file(
+            feedback_set=testfeedbackset, file_name='testfile.txt',
+            file_content='testcontent')
+        baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user__shortname='april')
 
-            # run actiongroup
-            self._run_actiongroup(name='batchframework_assignment',
-                                  task=tasks.AssignmentCompressAction,
-                                  context_object=testassignment,
-                                  started_by=testuser)
+        # run actiongroup
+        self._run_actiongroup(
+            name='batchframework_assignment',
+            task=tasks.AssignmentCompressAction,
+            context_object=testassignment,
+            started_by=testuser)
 
-            archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testassignment.id)
-            zipfileobject = ZipFile(archive_meta.archive_path)
-            # Path inside the zipfile generated by the task.
-            path_to_file = os.path.join('april',
-                                        'deadline-{}'.format(defaultfilters.date(
-                                            testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
-                                        'after_deadline_not_part_of_delivery',
-                                        'testfile.txt')
-            self.assertEqual(b'testcontent', zipfileobject.read(path_to_file))
+        archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testassignment.id)
+        zipfileobject = archive_meta.get_archive_backend().read_archive()
+        # Path inside the zipfile generated by the task.
+        path_to_file = os.path.join(
+            'april',
+            'deadline-{}'.format(defaultfilters.date(
+                testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
+            'after_deadline_not_part_of_delivery',
+            'testfile.txt')
+        self.assertEqual(b'testcontent', zipfileobject.read(path_to_file))
 
     def test_three_groups_before_deadline(self):
-        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                               short_name='learn-python-basics',
-                                               first_deadline=timezone.now() + timezone.timedelta(days=1))
-            testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-            testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-            testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            short_name='learn-python-basics',
+            first_deadline=timezone.now() + timezone.timedelta(days=1))
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
-            # Create user as examiner on all groups.
-            testuser = baker.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
-            related_examiner = baker.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
-            baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup1)
-            baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup2)
-            baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup3)
+        # Create user as examiner on all groups.
+        testuser = baker.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
+        related_examiner = baker.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
+        baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup1)
+        baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup2)
+        baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup3)
 
-            # Create feedbackset for testgroup1 with commentfiles
-            testfeedbackset_group1 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup1)
-            self.__make_comment_file(feedback_set=testfeedbackset_group1, file_name='testfile.txt',
-                                     file_content='testcontent group 1')
-            baker.make('core.Candidate', assignment_group=testgroup1, relatedstudent__user__shortname='april')
+        # Create feedbackset for testgroup1 with commentfiles
+        testfeedbackset_group1 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup1)
+        self.__make_comment_file(
+            feedback_set=testfeedbackset_group1, file_name='testfile.txt',
+            file_content='testcontent group 1')
+        baker.make('core.Candidate', assignment_group=testgroup1, relatedstudent__user__shortname='april')
 
-            # Create feedbackset for testgroup2 with commentfiles
-            testfeedbackset_group2 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup2)
-            self.__make_comment_file(feedback_set=testfeedbackset_group2, file_name='testfile.txt',
-                                     file_content='testcontent group 2')
-            baker.make('core.Candidate', assignment_group=testgroup2, relatedstudent__user__shortname='dewey')
+        # Create feedbackset for testgroup2 with commentfiles
+        testfeedbackset_group2 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup2)
+        self.__make_comment_file(
+            feedback_set=testfeedbackset_group2, file_name='testfile.txt',
+            file_content='testcontent group 2')
+        baker.make('core.Candidate', assignment_group=testgroup2, relatedstudent__user__shortname='dewey')
 
-            # Create feedbackset for testgroup3 with commentfiles
-            testfeedbackset_group3 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup3)
-            self.__make_comment_file(feedback_set=testfeedbackset_group3, file_name='testfile.txt',
-                                     file_content='testcontent group 3')
-            baker.make('core.Candidate', assignment_group=testgroup3, relatedstudent__user__shortname='huey')
+        # Create feedbackset for testgroup3 with commentfiles
+        testfeedbackset_group3 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup3)
+        self.__make_comment_file(
+            feedback_set=testfeedbackset_group3, file_name='testfile.txt',
+            file_content='testcontent group 3')
+        baker.make('core.Candidate', assignment_group=testgroup3, relatedstudent__user__shortname='huey')
 
-            # run actiongroup
-            self._run_actiongroup(name='batchframework_assignment',
-                                  task=tasks.AssignmentCompressAction,
-                                  context_object=testassignment,
-                                  started_by=testuser)
+        # run actiongroup
+        self._run_actiongroup(
+            name='batchframework_assignment',
+            task=tasks.AssignmentCompressAction,
+            context_object=testassignment,
+            started_by=testuser)
 
-            archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testassignment.id)
-            zipfileobject = ZipFile(archive_meta.archive_path)
-            path_to_file_group1 = os.path.join('april',
-                                               'deadline-{}'.format(defaultfilters.date(
-                                                   testfeedbackset_group1.deadline_datetime, 'b.j.Y-H:i')),
-                                               'testfile.txt')
-            path_to_file_group2 = os.path.join('dewey',
-                                               'deadline-{}'.format(defaultfilters.date(
-                                                   testfeedbackset_group2.deadline_datetime, 'b.j.Y-H:i')),
-                                               'testfile.txt')
-            path_to_file_group3 = os.path.join('huey',
-                                               'deadline-{}'.format(defaultfilters.date(
-                                                   testfeedbackset_group3.deadline_datetime, 'b.j.Y-H:i')),
-                                               'testfile.txt')
-            self.assertEqual(b'testcontent group 1', zipfileobject.read(path_to_file_group1))
-            self.assertEqual(b'testcontent group 2', zipfileobject.read(path_to_file_group2))
-            self.assertEqual(b'testcontent group 3', zipfileobject.read(path_to_file_group3))
+        archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testassignment.id)
+        zipfileobject = archive_meta.get_archive_backend().read_archive()
+        path_to_file_group1 = os.path.join(
+            'april',
+            'deadline-{}'.format(defaultfilters.date(
+                testfeedbackset_group1.deadline_datetime, 'b.j.Y-H:i')),
+            'testfile.txt')
+        path_to_file_group2 = os.path.join(
+            'dewey',
+            'deadline-{}'.format(defaultfilters.date(
+                testfeedbackset_group2.deadline_datetime, 'b.j.Y-H:i')),
+            'testfile.txt')
+        path_to_file_group3 = os.path.join(
+            'huey',
+            'deadline-{}'.format(defaultfilters.date(
+                testfeedbackset_group3.deadline_datetime, 'b.j.Y-H:i')),
+            'testfile.txt')
+        self.assertEqual(b'testcontent group 1', zipfileobject.read(path_to_file_group1))
+        self.assertEqual(b'testcontent group 2', zipfileobject.read(path_to_file_group2))
+        self.assertEqual(b'testcontent group 3', zipfileobject.read(path_to_file_group3))
 
     def test_three_groups_after_deadline(self):
-        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                               short_name='learn-python-basics',
-                                               first_deadline=timezone.now() - timezone.timedelta(hours=1))
-            testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-            testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-            testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            short_name='learn-python-basics',
+            first_deadline=timezone.now() - timezone.timedelta(hours=1))
+        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
-            # Create user as examiner on all groups.
-            testuser = baker.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
-            related_examiner = baker.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
-            baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup1)
-            baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup2)
-            baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup3)
+        # Create user as examiner on all groups.
+        testuser = baker.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
+        related_examiner = baker.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
+        baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup1)
+        baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup2)
+        baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup3)
 
-            # Create feedbackset for testgroup1 with commentfiles
-            testfeedbackset_group1 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup1)
-            self.__make_comment_file(feedback_set=testfeedbackset_group1, file_name='testfile.txt',
-                                     file_content='testcontent group 1')
-            baker.make('core.Candidate', assignment_group=testgroup1, relatedstudent__user__shortname='april')
+        # Create feedbackset for testgroup1 with commentfiles
+        testfeedbackset_group1 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup1)
+        self.__make_comment_file(
+            feedback_set=testfeedbackset_group1, file_name='testfile.txt',
+            file_content='testcontent group 1')
+        baker.make('core.Candidate', assignment_group=testgroup1, relatedstudent__user__shortname='april')
 
-            # Create feedbackset for testgroup2 with commentfiles
-            testfeedbackset_group2 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup2)
-            self.__make_comment_file(feedback_set=testfeedbackset_group2, file_name='testfile.txt',
-                                     file_content='testcontent group 2')
-            baker.make('core.Candidate', assignment_group=testgroup2, relatedstudent__user__shortname='dewey')
+        # Create feedbackset for testgroup2 with commentfiles
+        testfeedbackset_group2 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup2)
+        self.__make_comment_file(
+            feedback_set=testfeedbackset_group2, file_name='testfile.txt',
+            file_content='testcontent group 2')
+        baker.make('core.Candidate', assignment_group=testgroup2, relatedstudent__user__shortname='dewey')
 
-            # Create feedbackset for testgroup3 with commentfiles
-            testfeedbackset_group3 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup3)
-            self.__make_comment_file(feedback_set=testfeedbackset_group3, file_name='testfile.txt',
-                                     file_content='testcontent group 3')
-            baker.make('core.Candidate', assignment_group=testgroup3, relatedstudent__user__shortname='huey')
+        # Create feedbackset for testgroup3 with commentfiles
+        testfeedbackset_group3 = group_baker.feedbackset_first_attempt_unpublished(group=testgroup3)
+        self.__make_comment_file(
+            feedback_set=testfeedbackset_group3, file_name='testfile.txt',
+            file_content='testcontent group 3')
+        baker.make('core.Candidate', assignment_group=testgroup3, relatedstudent__user__shortname='huey')
 
-            # run actiongroup
-            self._run_actiongroup(name='batchframework_assignment',
-                                  task=tasks.AssignmentCompressAction,
-                                  context_object=testassignment,
-                                  started_by=testuser)
+        # run actiongroup
+        self._run_actiongroup(
+            name='batchframework_assignment',
+            task=tasks.AssignmentCompressAction,
+            context_object=testassignment,
+            started_by=testuser)
 
-            archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testassignment.id)
-            zipfileobject = ZipFile(archive_meta.archive_path)
-            path_to_file_group1 = os.path.join('april',
-                                               'deadline-{}'.format(defaultfilters.date(
-                                                   testfeedbackset_group1.deadline_datetime, 'b.j.Y-H:i')),
-                                               'after_deadline_not_part_of_delivery',
-                                               'testfile.txt')
-            path_to_file_group2 = os.path.join('dewey',
-                                               'deadline-{}'.format(defaultfilters.date(
-                                                   testfeedbackset_group2.deadline_datetime, 'b.j.Y-H:i')),
-                                               'after_deadline_not_part_of_delivery',
-                                               'testfile.txt')
-            path_to_file_group3 = os.path.join('huey',
-                                               'deadline-{}'.format(defaultfilters.date(
-                                                   testfeedbackset_group3.deadline_datetime, 'b.j.Y-H:i')),
-                                               'after_deadline_not_part_of_delivery',
-                                               'testfile.txt')
-            self.assertEqual(b'testcontent group 1', zipfileobject.read(path_to_file_group1))
-            self.assertEqual(b'testcontent group 2', zipfileobject.read(path_to_file_group2))
-            self.assertEqual(b'testcontent group 3', zipfileobject.read(path_to_file_group3))
+        archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testassignment.id)
+        zipfileobject = archive_meta.get_archive_backend().read_archive()
+        path_to_file_group1 = os.path.join(
+            'april',
+            'deadline-{}'.format(defaultfilters.date(
+                testfeedbackset_group1.deadline_datetime, 'b.j.Y-H:i')),
+            'after_deadline_not_part_of_delivery',
+            'testfile.txt')
+        path_to_file_group2 = os.path.join(
+            'dewey',
+            'deadline-{}'.format(defaultfilters.date(
+                testfeedbackset_group2.deadline_datetime, 'b.j.Y-H:i')),
+            'after_deadline_not_part_of_delivery',
+            'testfile.txt')
+        path_to_file_group3 = os.path.join(
+            'huey',
+            'deadline-{}'.format(defaultfilters.date(
+                testfeedbackset_group3.deadline_datetime, 'b.j.Y-H:i')),
+            'after_deadline_not_part_of_delivery',
+            'testfile.txt')
+        self.assertEqual(b'testcontent group 1', zipfileobject.read(path_to_file_group1))
+        self.assertEqual(b'testcontent group 2', zipfileobject.read(path_to_file_group2))
+        self.assertEqual(b'testcontent group 3', zipfileobject.read(path_to_file_group3))
 
     def test_duplicates(self):
-        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                               short_name='learn-python-basics',
-                                               first_deadline=timezone.now() + timezone.timedelta(hours=1))
-            testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            short_name='learn-python-basics',
+            first_deadline=timezone.now() + timezone.timedelta(hours=1))
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
-            testuser = baker.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
-            related_examiner = baker.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
-            baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup)
+        testuser = baker.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
+        related_examiner = baker.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
+        baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup)
 
-            # Create feedbackset for testgroup1 with commentfiles
-            testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-            comment_file_first = self.__make_comment_file(feedback_set=testfeedbackset,
-                                                          file_name='testfile.txt',
-                                                          file_content='first upload')
-            comment_file_last = self.__make_comment_file(feedback_set=testfeedbackset,
-                                                         file_name='testfile.txt',
-                                                         file_content='last upload')
+        # Create feedbackset for testgroup1 with commentfiles
+        testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
+        comment_file_first = self.__make_comment_file(
+            feedback_set=testfeedbackset,
+            file_name='testfile.txt',
+            file_content='first upload')
+        self.__make_comment_file(
+            feedback_set=testfeedbackset,
+            file_name='testfile.txt',
+            file_content='last upload')
 
-            student_user = baker.make(settings.AUTH_USER_MODEL, shortname='april')
-            baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=student_user)
+        student_user = baker.make(settings.AUTH_USER_MODEL, shortname='april')
+        baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=student_user)
 
-            # run actiongroup
-            self._run_actiongroup(name='batchframework_assignment',
-                                  task=tasks.AssignmentCompressAction,
-                                  context_object=testassignment,
-                                  started_by=testuser)
+        # run actiongroup
+        self._run_actiongroup(
+            name='batchframework_assignment',
+            task=tasks.AssignmentCompressAction,
+            context_object=testassignment,
+            started_by=testuser)
 
-            archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testassignment.id)
-            zipfileobject = ZipFile(archive_meta.archive_path)
+        archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testassignment.id)
+        zipfileobject = archive_meta.get_archive_backend().read_archive()
 
-            path_to_last_file = os.path.join(
-                'april',
-                'deadline-{}'.format(defaultfilters.date(
-                    testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
-                'testfile.txt')
-            path_to_old_duplicate_file = os.path.join(
-                'april',
-                'deadline-{}'.format(defaultfilters.date(
-                    testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
-                'old_duplicates',
-                comment_file_first.get_filename_as_unique_string())
-            self.assertEqual(b'last upload', zipfileobject.read(path_to_last_file))
-            self.assertEqual(b'first upload', zipfileobject.read(path_to_old_duplicate_file))
+        path_to_last_file = os.path.join(
+            'april',
+            'deadline-{}'.format(defaultfilters.date(
+                testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
+            'testfile.txt')
+        path_to_old_duplicate_file = os.path.join(
+            'april',
+            'deadline-{}'.format(defaultfilters.date(
+                testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
+            'old_duplicates',
+            comment_file_first.get_filename_as_unique_string())
+        self.assertEqual(b'last upload', zipfileobject.read(path_to_last_file))
+        self.assertEqual(b'first upload', zipfileobject.read(path_to_old_duplicate_file))
 
     def test_duplicates_from_different_students(self):
-        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                               short_name='learn-python-basics',
-                                               first_deadline=timezone.now() + timezone.timedelta(hours=1))
-            testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            short_name='learn-python-basics',
+            first_deadline=timezone.now() + timezone.timedelta(hours=1))
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
-            testuser = baker.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
-            related_examiner = baker.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
-            baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup)
-            student_user_april = baker.make(settings.AUTH_USER_MODEL, shortname='april')
-            baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=student_user_april)
-            student_user_dewey = baker.make(settings.AUTH_USER_MODEL, shortname='dewey')
-            baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=student_user_dewey)
+        testuser = baker.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
+        related_examiner = baker.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
+        baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup)
+        student_user_april = baker.make(settings.AUTH_USER_MODEL, shortname='april')
+        baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=student_user_april)
+        student_user_dewey = baker.make(settings.AUTH_USER_MODEL, shortname='dewey')
+        baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=student_user_dewey)
 
-            # Create feedbackset for testgroup1 with commentfiles
-            testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-            comment_file_april = self.__make_comment_file(feedback_set=testfeedbackset,
-                                                          file_name='testfile.txt',
-                                                          file_content='by april',
-                                                          user=student_user_april)
-            comment_file_dewey = self.__make_comment_file(feedback_set=testfeedbackset,
-                                                          file_name='testfile.txt',
-                                                          file_content='by dewey',
-                                                          user=student_user_dewey)
+        # Create feedbackset for testgroup1 with commentfiles
+        testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
+        comment_file_april = self.__make_comment_file(
+            feedback_set=testfeedbackset,
+            file_name='testfile.txt',
+            file_content='by april',
+            user=student_user_april)
+        self.__make_comment_file(
+            feedback_set=testfeedbackset,
+            file_name='testfile.txt',
+            file_content='by dewey',
+            user=student_user_dewey)
 
-            # run actiongroup
-            self._run_actiongroup(name='batchframework_assignment',
-                                  task=tasks.AssignmentCompressAction,
-                                  context_object=testassignment,
-                                  started_by=testuser)
+        # run actiongroup
+        self._run_actiongroup(
+            name='batchframework_assignment',
+            task=tasks.AssignmentCompressAction,
+            context_object=testassignment,
+            started_by=testuser)
 
-            archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testassignment.id)
-            zipfileobject = ZipFile(archive_meta.archive_path)
+        archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testassignment.id)
+        zipfileobject = archive_meta.get_archive_backend().read_archive()
 
-            path_to_last_file = os.path.join(
-                'april, dewey',
-                'deadline-{}'.format(defaultfilters.date(
-                    testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
-                'testfile.txt')
-            path_to_old_duplicate_file = os.path.join(
-                'april, dewey',
-                'deadline-{}'.format(defaultfilters.date(
-                    testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
-                'old_duplicates',
-                comment_file_april.get_filename_as_unique_string())
-            self.assertEqual(b'by dewey', zipfileobject.read(path_to_last_file))
-            self.assertEqual(b'by april', zipfileobject.read(path_to_old_duplicate_file))
+        path_to_last_file = os.path.join(
+            'april, dewey',
+            'deadline-{}'.format(defaultfilters.date(
+                testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
+            'testfile.txt')
+        path_to_old_duplicate_file = os.path.join(
+            'april, dewey',
+            'deadline-{}'.format(defaultfilters.date(
+                testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
+            'old_duplicates',
+            comment_file_april.get_filename_as_unique_string())
+        self.assertEqual(b'by dewey', zipfileobject.read(path_to_last_file))
+        self.assertEqual(b'by april', zipfileobject.read(path_to_old_duplicate_file))
 
     def test_duplicates_before_and_after_deadline(self):
-        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            first_deadline = timezone.now() + timezone.timedelta(hours=1)
-            testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                               short_name='learn-python-basics',
-                                               first_deadline=first_deadline)
-            testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        first_deadline = timezone.now() + timezone.timedelta(hours=1)
+        testassignment = baker.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            short_name='learn-python-basics',
+            first_deadline=first_deadline)
+        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
 
-            testuser = baker.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
-            related_examiner = baker.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
-            baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup)
+        testuser = baker.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
+        related_examiner = baker.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
+        baker.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup)
 
-            # Create feedbackset for testgroup with commentfiles
-            testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-            comment_file_first_upload = self.__make_comment_file(feedback_set=testfeedbackset,
-                                                                 file_name='testfile.txt',
-                                                                 file_content='first upload')
-            self.__make_comment_file(feedback_set=testfeedbackset,
-                                     file_name='testfile.txt',
-                                     file_content='last upload')
-            comment_file_first_upload_after_deadline = self.__make_comment_file(
-                feedback_set=testfeedbackset,
-                file_name='testfile.txt',
-                file_content='first upload after deadline',
-                published_datetime=timezone.now() + timezone.timedelta(hours=2))
-            self.__make_comment_file(
-                feedback_set=testfeedbackset,
-                file_name='testfile.txt',
-                file_content='last upload after deadline',
-                published_datetime=timezone.now() + timezone.timedelta(hours=2))
+        # Create feedbackset for testgroup with commentfiles
+        testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
+        comment_file_first_upload = self.__make_comment_file(
+            feedback_set=testfeedbackset,
+            file_name='testfile.txt',
+            file_content='first upload')
+        self.__make_comment_file(
+            feedback_set=testfeedbackset,
+            file_name='testfile.txt',
+            file_content='last upload')
+        comment_file_first_upload_after_deadline = self.__make_comment_file(
+            feedback_set=testfeedbackset,
+            file_name='testfile.txt',
+            file_content='first upload after deadline',
+            published_datetime=timezone.now() + timezone.timedelta(hours=2))
+        self.__make_comment_file(
+            feedback_set=testfeedbackset,
+            file_name='testfile.txt',
+            file_content='last upload after deadline',
+            published_datetime=timezone.now() + timezone.timedelta(hours=2))
 
-            student_user = baker.make(settings.AUTH_USER_MODEL, shortname='april')
-            baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=student_user)
+        student_user = baker.make(settings.AUTH_USER_MODEL, shortname='april')
+        baker.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=student_user)
 
-            # run actiongroup
-            self._run_actiongroup(name='batchframework_assignment',
-                                  task=tasks.AssignmentCompressAction,
-                                  context_object=testassignment,
-                                  started_by=testuser)
+        # run actiongroup
+        self._run_actiongroup(
+            name='batchframework_assignment',
+            task=tasks.AssignmentCompressAction,
+            context_object=testassignment,
+            started_by=testuser)
 
-            archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testassignment.id)
-            zipfileobject = ZipFile(archive_meta.archive_path)
+        archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testassignment.id)
+        zipfileobject = archive_meta.get_archive_backend().read_archive()
 
-            path_to_last_file = os.path.join(
-                'april',
-                'deadline-{}'.format(defaultfilters.date(
-                    testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
-                'testfile.txt')
-            path_to_old_duplicate_file = os.path.join(
-                'april',
-                'deadline-{}'.format(defaultfilters.date(
-                    testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
-                'old_duplicates',
-                comment_file_first_upload.get_filename_as_unique_string())
-            path_to_last_file_after_deadline = os.path.join(
-                'april',
-                'deadline-{}'.format(defaultfilters.date(
-                    testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
-                'after_deadline_not_part_of_delivery',
-                'testfile.txt')
-            path_to_old_duplicate_file_after_deadline = os.path.join(
-                'april',
-                'deadline-{}'.format(defaultfilters.date(
-                    testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
-                'after_deadline_not_part_of_delivery',
-                'old_duplicates',
-                comment_file_first_upload_after_deadline.get_filename_as_unique_string())
-            self.assertEqual(b'last upload', zipfileobject.read(path_to_last_file))
-            self.assertEqual(b'first upload', zipfileobject.read(path_to_old_duplicate_file))
-            self.assertEqual(b'last upload after deadline', zipfileobject.read(path_to_last_file_after_deadline))
-            self.assertEqual(b'first upload after deadline', zipfileobject.read(path_to_old_duplicate_file_after_deadline))
+        path_to_last_file = os.path.join(
+            'april',
+            'deadline-{}'.format(defaultfilters.date(
+                testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
+            'testfile.txt')
+        path_to_old_duplicate_file = os.path.join(
+            'april',
+            'deadline-{}'.format(defaultfilters.date(
+                testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
+            'old_duplicates',
+            comment_file_first_upload.get_filename_as_unique_string())
+        path_to_last_file_after_deadline = os.path.join(
+            'april',
+            'deadline-{}'.format(defaultfilters.date(
+                testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
+            'after_deadline_not_part_of_delivery',
+            'testfile.txt')
+        path_to_old_duplicate_file_after_deadline = os.path.join(
+            'april',
+            'deadline-{}'.format(defaultfilters.date(
+                testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
+            'after_deadline_not_part_of_delivery',
+            'old_duplicates',
+            comment_file_first_upload_after_deadline.get_filename_as_unique_string())
+        self.assertEqual(b'last upload', zipfileobject.read(path_to_last_file))
+        self.assertEqual(b'first upload', zipfileobject.read(path_to_old_duplicate_file))
+        self.assertEqual(b'last upload after deadline', zipfileobject.read(path_to_last_file_after_deadline))
+        self.assertEqual(b'first upload after deadline', zipfileobject.read(path_to_old_duplicate_file_after_deadline))

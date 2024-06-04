@@ -11,10 +11,6 @@ DEVILRY_URLPATH_PREFIX = ''
 # The default grade-plugin:
 DEVILRY_DEFAULT_GRADEEDITOR = 'approved'
 
-#: The directory where compressed archives are stored. Archives are compressed when examiners or students
-#: downloads files from an assignment or a feedbackset.
-DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY = None
-
 DEVILRY_STATIC_URL = '/static'  # Must not end in / (this means that '' is the server root)
 DEVILRY_MATHJAX_URL = 'https://cdn.mathjax.org/mathjax/latest/MathJax.js'
 DEVILRY_LOGOUT_URL = '/authenticate/logout'
@@ -32,8 +28,6 @@ DEVILRY_EMAIL_SIGNATURE = \
     "Please do not respond to this email."
 
 
-DEVILRY_DELIVERY_STORE_BACKEND = 'devilry.apps.core.deliverystore.FsHierDeliveryStore'
-DEVILRY_FSHIERDELIVERYSTORE_INTERVAL = 1000
 DEVILRY_EMAIL_DEFAULT_FROM = 'devilry-support@example.com'
 DEVILRY_SYSTEM_ADMIN_EMAIL = 'devilry-admin@example.com'
 DEVILRY_SCHEME_AND_DOMAIN = 'https://devilry.example.com'
@@ -187,6 +181,9 @@ DEVILRY_FEIDE_USERID_SEC_TO_USERNAME_SUFFIX = None
 #: If this is set to a value, we will use this as the favicon.
 DEVILRY_BRANDING_FAV_ICON_PATH = None
 
+#: If this is True, we will log memory usage statistics
+DEVILRY_MEMORY_DEBUG_ENABLED = False
+
 
 ############################################################################
 #
@@ -246,3 +243,36 @@ DEVILRY_COMMENT_STUDENTS_CAN_EDIT = os.environ.get(
 #: edit history entry was created.
 DEVILRY_COMMENT_STUDENTS_CAN_SEE_OTHER_USERS_COMMENT_HISTORY = os.environ.get(
     'DEVILRY_COMMENT_STUDENTS_CAN_SEE_OTHER_USERS_COMMENT_HISTORY', 'True') == 'True'
+
+
+###########################################################
+#
+# Storage settings
+#
+###########################################################
+DEVILRY_DELIVERY_STORE_BACKEND = 'devilry.apps.core.deliverystore.FsHierDeliveryStore'
+DEVILRY_FSHIERDELIVERYSTORE_INTERVAL = 1000
+DELIVERY_STORAGE_BACKEND = 'default'
+
+#: The django storage backend where devilry stores compressed archives.
+DEVILRY_COMPRESSED_ARCHIVES_STORAGE_BACKEND = 'default'
+
+#: The directory where compressed archives are stored within the storage backend
+#: configured via ``DEVILRY_COMPRESSED_ARCHIVES_STORAGE_BACKEND``.
+#: Archives are compressed when examiners or students
+#: downloads files from an assignment or a feedbackset.
+DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY = 'devilry_temp_storage'
+
+#: Storages - defaults to local file storage in.
+#: Should always be overridden in production to select
+STORAGES = {
+    'default': {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "OPTIONS": {
+            "location": "devilry_filestorage",
+        },
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}

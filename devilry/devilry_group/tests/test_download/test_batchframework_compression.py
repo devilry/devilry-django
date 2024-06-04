@@ -9,7 +9,7 @@ from ievv_opensource.ievv_batchframework import batchregistry
 
 # Django imports
 from django.conf import settings
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.core.files.base import ContentFile
 from django.utils import timezone
 
@@ -51,138 +51,151 @@ class TestCompressed(TestCase):
             test='test')
 
 
+@override_settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY='devilry_compressed_archives')
 class TestFeedbackSetBatchTask(TestCompressed):
     def __make_comment_file(self, feedback_set, file_name, file_content, user_role='student', **comment_kwargs):
-        comment = baker.make('devilry_group.GroupComment',
-                                  feedback_set=feedback_set,
-                                  user_role=user_role, **comment_kwargs)
-        comment_file = baker.make('devilry_comment.CommentFile', comment=comment,
-                                  filename=file_name)
+        comment = baker.make(
+            'devilry_group.GroupComment',
+            feedback_set=feedback_set,
+            user_role=user_role, **comment_kwargs)
+        comment_file = baker.make(
+            'devilry_comment.CommentFile', comment=comment,
+            filename=file_name)
         comment_file.file.save(file_name, ContentFile(file_content))
         return comment_file
 
     def test_batchframework_no_files(self):
-        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testfeedbackset = group_baker.feedbackset_first_attempt_unpublished()
-            baker.make('devilry_group.GroupComment',
-                       feedback_set=testfeedbackset,
-                       user_role='student',
-                       user__shortname='testuser@example.com')
+        testfeedbackset = group_baker.feedbackset_first_attempt_unpublished()
+        baker.make(
+            'devilry_group.GroupComment',
+            feedback_set=testfeedbackset,
+            user_role='student',
+            user__shortname='testuser@example.com')
 
-            # Run batch operation
-            self._run_actiongroup(name='batchframework_feedbackset',
-                                  task=tasks.FeedbackSetCompressAction,
-                                  context_object=testfeedbackset,
-                                  started_by=None)
-            self.assertEqual(archivemodels.CompressedArchiveMeta.objects.count(), 0)
+        # Run batch operation
+        self._run_actiongroup(
+            name='batchframework_feedbackset',
+            task=tasks.FeedbackSetCompressAction,
+            context_object=testfeedbackset,
+            started_by=None)
+        self.assertEqual(archivemodels.CompressedArchiveMeta.objects.count(), 0)
 
     def test_batchframework(self):
         # Tests that the archive has been created.
-        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testfeedbackset = group_baker.feedbackset_first_attempt_unpublished()
-            testcomment = baker.make('devilry_group.GroupComment',
-                                     feedback_set=testfeedbackset,
-                                     user_role='student',
-                                     user__shortname='testuser@example.com')
-            commentfile = baker.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
-            commentfile.file.save('testfile.txt', ContentFile('testcontent'))
+        testfeedbackset = group_baker.feedbackset_first_attempt_unpublished()
+        testcomment = baker.make(
+            'devilry_group.GroupComment',
+            feedback_set=testfeedbackset,
+            user_role='student',
+            user__shortname='testuser@example.com')
+        commentfile = baker.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        commentfile.file.save('testfile.txt', ContentFile('testcontent'))
 
-            # Run batch operation
-            self._run_actiongroup(name='batchframework_feedbackset',
-                                  task=tasks.FeedbackSetCompressAction,
-                                  context_object=testfeedbackset,
-                                  started_by=None)
+        # Run batch operation
+        self._run_actiongroup(
+            name='batchframework_feedbackset',
+            task=tasks.FeedbackSetCompressAction,
+            context_object=testfeedbackset,
+            started_by=None)
 
-            archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testfeedbackset.id)
-            self.assertIsNotNone(archive_meta)
-            self.assertTrue(os.path.exists(archive_meta.archive_path))
+        archive_meta = archivemodels.CompressedArchiveMeta.objects.get(
+            content_object_id=testfeedbackset.id)
+        self.assertIsNotNone(archive_meta)
+        self.assertTrue(archive_meta.get_archive_backend().archive_exists())
 
     def test_batchframework_delete_meta(self):
         # Tests that the metaclass deletes the actual archive.
-        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testfeedbackset = group_baker.feedbackset_first_attempt_unpublished()
-            testcomment = baker.make('devilry_group.GroupComment',
-                                     feedback_set=testfeedbackset,
-                                     user_role='student',
-                                     user__shortname='testuser@example.com')
-            commentfile = baker.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
-            commentfile.file.save('testfile.txt', ContentFile('testcontent'))
+        testfeedbackset = group_baker.feedbackset_first_attempt_unpublished()
+        testcomment = baker.make(
+            'devilry_group.GroupComment',
+            feedback_set=testfeedbackset,
+            user_role='student',
+            user__shortname='testuser@example.com')
+        commentfile = baker.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        commentfile.file.save('testfile.txt', ContentFile('testcontent'))
 
-            # Run batch operation
-            self._run_actiongroup(name='batchframework_feedbackset',
-                                  task=tasks.FeedbackSetCompressAction,
-                                  context_object=testfeedbackset,
-                                  started_by=None)
+        # Run batch operation
+        self._run_actiongroup(
+            name='batchframework_feedbackset',
+            task=tasks.FeedbackSetCompressAction,
+            context_object=testfeedbackset,
+            started_by=None)
 
-            archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testfeedbackset.id)
-            archive_path = archive_meta.archive_path
-            archive_meta_id = archive_meta.id
-            self.assertIsNotNone(archive_meta)
-            self.assertTrue(os.path.exists(archive_path))
+        archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testfeedbackset.id)
+        archive_meta_id = archive_meta.id
+        self.assertIsNotNone(archive_meta)
+        self.assertTrue(archive_meta.get_archive_backend().archive_exists())
 
-            # after delete
-            archive_meta.delete()
-            with self.assertRaises(archivemodels.CompressedArchiveMeta.DoesNotExist):
-                archivemodels.CompressedArchiveMeta.objects.get(id=archive_meta_id)
-            self.assertFalse(os.path.exists(archive_path))
+        # after delete
+        archive_meta.delete()
+        with self.assertRaises(archivemodels.CompressedArchiveMeta.DoesNotExist):
+            archivemodels.CompressedArchiveMeta.objects.get(id=archive_meta_id)
+        self.assertFalse(archive_meta.get_archive_backend().archive_exists())
 
     def test_batchframework_feedbackset_student_after_deadline(self):
         # Tests that files added after the deadline returned from FeedbackSet.get_current_deadline() is added under
         # 'uploaded_after_deadline'.
-        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(
-                group__parentnode__first_deadline=timezone.now() - timezone.timedelta(days=1)
-            )
-            studentuser = baker.make(settings.AUTH_USER_MODEL, shortname='april')
-            baker.make('core.Candidate', assignment_group=testfeedbackset.group,
-                       relatedstudent__user=studentuser)
-            self.__make_comment_file(feedback_set=testfeedbackset, file_name='testfile.txt',
-                                     file_content='testcontent', user=studentuser)
+        testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(
+            group__parentnode__first_deadline=timezone.now() - timezone.timedelta(days=1)
+        )
+        studentuser = baker.make(settings.AUTH_USER_MODEL, shortname='april')
+        baker.make(
+            'core.Candidate', assignment_group=testfeedbackset.group,
+            relatedstudent__user=studentuser)
+        self.__make_comment_file(
+            feedback_set=testfeedbackset, file_name='testfile.txt',
+            file_content='testcontent', user=studentuser)
 
-            # Run batch operation
-            self._run_actiongroup(name='batchframework_feedbackset',
-                                  task=tasks.FeedbackSetCompressAction,
-                                  context_object=testfeedbackset,
-                                  started_by=None)
+        # Run batch operation
+        self._run_actiongroup(
+            name='batchframework_feedbackset',
+            task=tasks.FeedbackSetCompressAction,
+            context_object=testfeedbackset,
+            started_by=None)
 
-            archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testfeedbackset.id)
-            zipfileobject = ZipFile(archive_meta.archive_path)
-            self.assertEqual(zipfileobject.read('after_deadline_not_part_of_delivery/testfile.txt'),
-                              b'testcontent')
+        archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testfeedbackset.id)
+        zipfileobject = archive_meta.get_archive_backend().read_archive()
+        self.assertEqual(
+            zipfileobject.read('after_deadline_not_part_of_delivery/testfile.txt'),
+            b'testcontent')
 
     def test_batchframework_examiner_files_not_uploaded(self):
         # Tests that the file is added under 'uploaded_by_examiner'.
-        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testfeedbackset = group_baker.feedbackset_first_attempt_unpublished()
-            self.__make_comment_file(feedback_set=testfeedbackset, file_name='testfile.txt',
-                                     file_content='testcontent', user_role='examiner')
+        testfeedbackset = group_baker.feedbackset_first_attempt_unpublished()
+        self.__make_comment_file(
+            feedback_set=testfeedbackset, file_name='testfile.txt',
+            file_content='testcontent', user_role='examiner')
 
-            # Run batch operation
-            self._run_actiongroup(name='batchframework_feedbackset',
-                                  task=tasks.FeedbackSetCompressAction,
-                                  context_object=testfeedbackset,
-                                  started_by=None)
-            self.assertEqual(archivemodels.CompressedArchiveMeta.objects.count(), 0)
+        # Run batch operation
+        self._run_actiongroup(
+            name='batchframework_feedbackset',
+            task=tasks.FeedbackSetCompressAction,
+            context_object=testfeedbackset,
+            started_by=None)
+        self.assertEqual(archivemodels.CompressedArchiveMeta.objects.count(), 0)
 
     def test_batchframework_files_from_examiner_and_student(self):
         # Tests that the file uploaded by examiner is added to 'uploaded_by_examiner' subfolder,
         # and that file from student is added under 'delivery'.
-        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                               first_deadline=timezone.now() + timezone.timedelta(days=1))
-            testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group__parentnode=testassignment)
-            self.__make_comment_file(feedback_set=testfeedbackset, file_name='testfile_examiner.txt',
-                                     file_content='examiner testcontent', user_role='examiner')
-            self.__make_comment_file(feedback_set=testfeedbackset, file_name='testfile_student.txt',
-                                     file_content='student testcontent', user_role='student')
+        testassignment = baker.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            first_deadline=timezone.now() + timezone.timedelta(days=1))
+        testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group__parentnode=testassignment)
+        self.__make_comment_file(
+            feedback_set=testfeedbackset, file_name='testfile_examiner.txt',
+            file_content='examiner testcontent', user_role='examiner')
+        self.__make_comment_file(
+            feedback_set=testfeedbackset, file_name='testfile_student.txt',
+            file_content='student testcontent', user_role='student')
 
-            # Run batch operation
-            self._run_actiongroup(name='batchframework_feedbackset',
-                                  task=tasks.FeedbackSetCompressAction,
-                                  context_object=testfeedbackset,
-                                  started_by=None)
+        # Run batch operation
+        self._run_actiongroup(
+            name='batchframework_feedbackset',
+            task=tasks.FeedbackSetCompressAction,
+            context_object=testfeedbackset,
+            started_by=None)
 
-            archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testfeedbackset.id)
-            zipfileobject = ZipFile(archive_meta.archive_path)
-            self.assertEqual(1, len(zipfileobject.namelist()))
-            self.assertEqual(zipfileobject.read('testfile_student.txt'), b'student testcontent')
+        archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testfeedbackset.id)
+        zipfileobject = archive_meta.get_archive_backend().read_archive()
+        self.assertEqual(1, len(zipfileobject.namelist()))
+        self.assertEqual(zipfileobject.read('testfile_student.txt'), b'student testcontent')

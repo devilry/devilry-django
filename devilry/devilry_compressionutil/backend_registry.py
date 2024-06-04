@@ -1,4 +1,8 @@
+import typing
 from ievv_opensource.utils.singleton import Singleton
+
+if typing.TYPE_CHECKING:
+    from devilry.devilry_compressionutil.backends.backends_base import BaseArchiveBackend
 
 
 class DuplicateBackendTypeError(Exception):
@@ -26,7 +30,7 @@ class Registry(Singleton):
         """
         return '{}.{}'.format(self.__module__, self.__class__.__name__)
 
-    def add(self, backend):
+    def add(self, backend: "BaseArchiveBackend"):
         """
         Add a backend class.
 
@@ -39,7 +43,7 @@ class Registry(Singleton):
             ))
         self._backendclasses[backend.backend_id] = backend
 
-    def get(self, backend_id):
+    def get(self, backend_id: str) -> typing.Type["BaseArchiveBackend"]:
         """
         Get backend class.
 
@@ -48,32 +52,11 @@ class Registry(Singleton):
 
         Returns:
             :class:`~devilry.devilry_ziputil.backends.backends_base.PythonZipFileBackend` subclass or ``None``.
-        """
-        try:
-            backend_class = self._backendclasses[backend_id]
-        except KeyError:
-            return None
-        return backend_class
 
-    @classmethod
-    def get_backend_instance(cls, backend_id, zipfile_path, archive_name):
+        Raises:
+            KeyError: if backend_id is not a valid backend id.
         """
-        Get an instance of the backend to use.
-
-        Args:
-            backend_id: ID of backend class.
-            zipfile_path: Path to the archive.
-            archive_name: Name of the archive.
-
-        Returns:
-            PythonZipFileBackend: Backend for `self.backend_id`
-        """
-        zipfile_backend_class = cls.get_instance().get(backend_id)
-        return zipfile_backend_class(
-            archive_path=zipfile_path,
-            archive_name=archive_name,
-            readmode=False
-        )
+        return self._backendclasses[backend_id]
 
 
 class MockableRegistry(Registry):

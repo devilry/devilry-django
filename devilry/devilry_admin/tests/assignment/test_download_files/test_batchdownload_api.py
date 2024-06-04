@@ -518,7 +518,7 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
         archive_meta = CompressedArchiveMeta.objects.get()
         self.assertEqual(archive_meta.created_by_role, CompressedArchiveMeta.CREATED_BY_ROLE_ADMIN)
         self.assertTrue(
-            archive_meta.archive_path.startswith('devilry_testfiles/devilry_compressed_archives/admin/'))
+            archive_meta.archive_path.startswith('admin/'))
 
     def test_post_status_finished_when_compressed_archive_exists(self):
         # Tests that post returns status finished with download-link if
