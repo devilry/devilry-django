@@ -60,3 +60,5 @@ dump.rdb
 .acompose-local.json
 
 /devilry_filestorage/
+/devilry_temp_storage/
+/devilry_delivery_storage/

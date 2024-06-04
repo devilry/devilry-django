@@ -6,6 +6,7 @@ from django.db import models
 from devilry.apps.core.models import Deadline
 from devilry.apps.core.models import Delivery
 from devilry.devilry_account.models import User
+from devilry.utils.storageutils import get_temporary_storage
 
 
 def uploaded_deliveryfile_path(uploaded_deliveryfile, filename):
@@ -57,7 +58,7 @@ class UploadedDeliveryFileManager(models.Manager):
 
 
         :return:
-            A (delivery, queryset) tuple where the ``delivery`` is the created Delivery,    
+            A (delivery, queryset) tuple where the ``delivery`` is the created Delivery,
             the ``queryset` is a :class:`.UploadedDeliveryFileQuerySet` with the
             files that was made into a delivery.
         """
@@ -131,7 +132,9 @@ class UploadedDeliveryFile(models.Model):
     uploaded_datetime = models.DateTimeField(auto_now_add=True)
 
     #: The uploaded file
-    uploaded_file = models.FileField(upload_to=uploaded_deliveryfile_path)
+    uploaded_file = models.FileField(
+        upload_to=uploaded_deliveryfile_path,
+        storage=get_temporary_storage)
 
     #: Filename. Max 255 chars (just like FileMeta).
     filename = models.CharField(max_length=255)

@@ -252,24 +252,45 @@ DEVILRY_COMMENT_STUDENTS_CAN_SEE_OTHER_USERS_COMMENT_HISTORY = os.environ.get(
 ###########################################################
 DEVILRY_DELIVERY_STORE_BACKEND = 'devilry.apps.core.deliverystore.FsHierDeliveryStore'
 DEVILRY_FSHIERDELIVERYSTORE_INTERVAL = 1000
-DELIVERY_STORAGE_BACKEND = 'default'
 
-#: The django storage backend where devilry stores compressed archives.
-DEVILRY_COMPRESSED_ARCHIVES_STORAGE_BACKEND = 'default'
+#: The storage backend where deliveries are stored (whould be some sort of high redundancy storage)
+DELIVERY_STORAGE_BACKEND = 'devilry_delivery_storage'
+
+#: The storage backend where temp files are stored
+DELIVERY_TEMPORARY_STORAGE_BACKEND = 'devilry_temp_storage'
+
+#: The django storage backend where devilry stores temporary files during delivery uploads
+CRADMIN_LEGACY_TEMPORARY_FILE_STORAGE_BACKEND = 'devilry_temp_storage'
 
 #: The directory where compressed archives are stored within the storage backend
-#: configured via ``DEVILRY_COMPRESSED_ARCHIVES_STORAGE_BACKEND``.
+#: configured via ``DELIVERY_TEMPORARY_STORAGE_BACKEND``.
 #: Archives are compressed when examiners or students
 #: downloads files from an assignment or a feedbackset.
-DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY = 'devilry_temp_storage'
+DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY = 'compressed_archives'
 
-#: Storages - defaults to local file storage in.
-#: Should always be overridden in production to select
+#: Storages - defaults to local file storage in:
+#:
+#: - ``devilry_delivery_storage`` directory relative to the CWD where devilry is run.
+#: - ``devilry_temp_storage`` directory relative to the CWD where devilry is run.
+#:
+#: Should always be overridden in production and setup one of:
+#:
+#: - Some high redundancy filesystem storage (raid + backup) for delivery storage
+#:   (tempstorage does not require high redundancy).
+#: - Some high redundancy blob storage (S3 etc.) via the ``django-storages`` python
+#:   library or similar for delivery storage (tempstorage does not require high redundancy).
+#:
 STORAGES = {
-    'default': {
+    'devilry_delivery_storage': {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
         "OPTIONS": {
-            "location": "devilry_filestorage",
+            "location": "devilry_delivery_storage",
+        },
+    },
+    'devilry_temp_storage': {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "OPTIONS": {
+            "location": "devilry_temp_storage",
         },
     },
     "staticfiles": {

@@ -9,6 +9,8 @@ from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.translation import pgettext_lazy
 
+from devilry.utils.storageutils import get_delivery_storage
+
 
 class Comment(models.Model):
     """Main class for a comment.
@@ -228,7 +230,8 @@ class CommentFile(models.Model):
     #: for :meth:`.commentfile_directory_path`, then updated with
     #: a file set to something.
     file = models.FileField(upload_to=commentfile_directory_path, max_length=512,
-                            null=False, blank=True, default='', db_index=True)
+                            null=False, blank=True, default='', db_index=True,
+                            storage=get_delivery_storage)
 
     #: The name of the file - this is the name of the file that was uploaded.
     filename = models.CharField(max_length=MAX_FILENAME_LENGTH)
@@ -362,14 +365,16 @@ class CommentFileImage(models.Model):
 
     image = models.FileField(upload_to=commentfileimage_directory_path,
                              max_length=512,
-                             null=False, blank=True, default='', db_index=True)
+                             null=False, blank=True, default='', db_index=True,
+                             storage=get_delivery_storage)
 
     image_width = models.PositiveIntegerField()
     image_height = models.PositiveIntegerField()
 
     thumbnail = models.FileField(upload_to=commentfileimage_thumbnail_directory_path,
                                  max_length=512,
-                                 null=False, blank=True, default='', db_index=True)
+                                 null=False, blank=True, default='', db_index=True,
+                                 storage=get_delivery_storage)
     thumbnail_width = models.PositiveIntegerField()
     thumbnail_height = models.PositiveIntegerField()
 

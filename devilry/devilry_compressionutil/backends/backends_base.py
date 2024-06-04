@@ -9,6 +9,7 @@ from django.core.files import File
 from django.core.files.storage import FileSystemStorage, Storage, storages
 
 from devilry.utils.memorydebug import print_memory_usage
+from devilry.utils.storageutils import get_temporary_storage
 
 
 class BaseArchiveBackend(object):
@@ -44,7 +45,7 @@ class BaseArchiveBackend(object):
 
     @classmethod
     def get_storage_backend(cls) -> Storage:
-        return storages[settings.DEVILRY_COMPRESSED_ARCHIVES_STORAGE_BACKEND]
+        return get_temporary_storage()
 
     @property
     def storage_backend(self) -> Storage:

@@ -17,8 +17,9 @@ Setup environment variable
 Add the following to ``~/devilrydeploy/devilry_settings.py``::
 
     #: The directory where compressed archives are stored. Archives are compressed when examiners or students
-    #: downloads files from an assignment or a feedbackset.
-    DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY = '/path/to/directory/for/compressedarchives/'
+    #: downloads files from an assignment or a feedbackset. Directory is relative
+    #: to the root directory of the storage backend configured in ``DELIVERY_TEMPORARY_STORAGE_BACKEND``.
+    DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY = 'compressed_archives'
 
 
 ****************************

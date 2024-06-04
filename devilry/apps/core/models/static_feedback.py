@@ -8,6 +8,8 @@ from django.db.models import Q
 from django.utils.translation import gettext_lazy
 from django.utils import timezone
 
+from devilry.utils.storageutils import get_delivery_storage
+
 from .abstract_is_admin import AbstractIsAdmin
 from .abstract_is_candidate import AbstractIsCandidate
 from .abstract_is_examiner import AbstractIsExaminer
@@ -253,7 +255,8 @@ class StaticFeedbackFileAttachment(models.Model):
 
     #: The uploaded file.
     file = models.FileField(
-        upload_to=staticfeedback_fileattachment_upload_to
+        upload_to=staticfeedback_fileattachment_upload_to,
+        storage=get_delivery_storage
     )
 
     class Meta:

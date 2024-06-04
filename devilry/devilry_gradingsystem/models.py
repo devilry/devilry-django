@@ -12,6 +12,7 @@ from devilry.apps.core.models import Delivery
 from devilry.apps.core.models import StaticFeedback
 from devilry.apps.core.models import StaticFeedbackFileAttachment
 from devilry.devilry_account.models import User
+from devilry.utils.storageutils import get_delivery_storage
 
 
 class FeedbackDraft(models.Model):
@@ -147,7 +148,8 @@ class FeedbackDraftFile(models.Model):
 
     #: The uploaded file.
     file = models.FileField(
-        upload_to=feedback_draft_file_upload_to
+        upload_to=feedback_draft_file_upload_to,
+        storage=get_delivery_storage
     )
 
     objects = FeedbackDraftFileManager()
