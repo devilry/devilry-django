@@ -42,16 +42,16 @@ class TestFeedbackfeedExaminerFeedback(TestCase, mixin_feedbackfeed_examiner.Mix
                                             requestuser=examiner.relatedexaminer.user)
         self.assertEqual(mockresponse.response.status_code, 200)
 
-    def test_404_on_last_feedbackset_published(self):
+    def test_redirect_on_last_feedbackset_published(self):
         testgroup = baker.make('core.AssignmentGroup')
         examiner = baker.make('core.Examiner',
                               assignmentgroup=testgroup,
                               relatedexaminer=baker.make('core.RelatedExaminer'))
         group_baker.feedbackset_first_attempt_published(group=testgroup)
-        with self.assertRaises(Http404):
-            self.mock_getrequest(
+        mockresponse = self.mock_getrequest(
                 cradmin_role=examiner.assignmentgroup,
                 requestuser=examiner.relatedexaminer.user)
+        self.assertEqual(mockresponse.response.status_code, 302)
 
     def test_get_feedbackfeed_examiner_can_see_feedback_and_discuss_in_comment_tab(self):
         assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
