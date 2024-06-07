@@ -212,6 +212,7 @@ class TestAssignmentGradingConfigurationUpdateView(TestCase, cradmin_testhelpers
             cradmin_role=assignment,
             viewkwargs={'pk': assignment.id},
             requestkwargs={'data': self.__make_postdata(
+                grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS,
                 max_points=100,
                 points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE,
                 point_to_grade_map_json=json.dumps([
