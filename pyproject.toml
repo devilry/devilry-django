@@ -34,7 +34,6 @@ dependencies = [
     "Django>=4.2.0,<4.3.0",
     "gunicorn>=21.2.0,<22",
     "Markdown>=3.3.0,<3.4.0",
-    "Pygments>=2.15.0,<2.16.0",
     "django-crispy-forms>=1.14.0,<1.15.0",
     "openpyxl",
     "URLObject>=2.4.0,<2.5.0",
