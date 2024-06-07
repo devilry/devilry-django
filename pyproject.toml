@@ -32,23 +32,32 @@ classifiers = [
 ]
 dependencies = [
     "Django>=4.2.0,<4.3.0",
-    "gunicorn>=21.2.0",
+    "gunicorn>=21.2.0,<22",
     "Markdown>=3.3.0,<3.4.0",
     "Pygments>=2.15.0,<2.16.0",
     "django-crispy-forms>=1.14.0,<1.15.0",
-    "django-rq",
-    "psycopg",
-    "cradmin_legacy>=5.0.1,<6.0.0",
+    "openpyxl",
+    "URLObject>=2.4.0,<2.5.0",
+    "mimeparse>=0.1.0,<0.2.0",
+    "numpy",
+    "rq>=1.8.0,<1.9.0",
+    "django-rq>=2.4.0,<2.5.0",
+    "redis>=3.5.0,<3.6.0",
+    "python-dateutil>=2.8.0,<2.9.0",
+    "pytz>=2018.9.0,<2018.10.0",
+    "httplib2>=0.19.0,<0.20.0",
+    "dj-static>=0.0.0,<0.1.0",
+    "dj-database-url>=0.3.0,<0.4.0",
+    "html5lib",
+    "psycopg2",
+    "django_cradmin>=10.3.3,<11.0.0",
+    "cradmin_legacy>=5.0.0,<6.0.0",
     "ievv_opensource>=9.2.2,<10.0.0",
     "xlsxwriter",
     "arrow>=0.12.0,<0.13.0",
     "html2text",
     "djangorestframework",
     "django-allauth[socialaccount]>=0.62.0",
-    "chardet>=3.0.0,<3.1.0",
-    "idna>=3.7.0",
-    "oauthlib>=2.0.0,<2.1.0",
-    "python-openid>=2.2.0,<2.3.0",
     "requests",
     "urllib3>=1.26.0",
     "pycountry>=18",
@@ -57,6 +66,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+prod = ["dj-static>=0.0.0,<0.1.0"]
 s3storage = ["boto3", "django-storages"]
 dev = [
     "dj-database-url",
@@ -71,9 +81,9 @@ dev = [
     "django-storages",
     "django-auth-ldap",
     "pip-tools",
-    "django-debug-toolbar",
-    "humanize",             # DEVILRY_MEMORY_DEBUG_ENABLED=True
-    "psutil",               # Only used when DEVILRY_MEMORY_DEBUG_ENABLED=True
+    "django-silk",
+    "humanize",         # DEVILRY_MEMORY_DEBUG_ENABLED=True
+    "psutil",           # Only used when DEVILRY_MEMORY_DEBUG_ENABLED=True
 ]
 test = [
     "htmls",
