@@ -38,11 +38,6 @@ def formatted_delivery_count(count):
     return gettext_lazy("{0} deliveries received").format(count)
 
 
-@register.filter
-def get_feedback_url(assignment):
-    return assignment.get_gradingsystem_plugin_api().get_bulkedit_feedback_url(assignment.id)
-
-
 @register.filter(name='status_to_buttontext')
 @stringfilter
 def status_to_buttontext(value):

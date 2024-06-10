@@ -6,7 +6,6 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('devilry_gradingsystem', '0004_remove_feedbackdraftfile_delivery_and_more'),
         ('devilry_student', '0003_delete_uploadeddeliveryfile'),
         ('core', '0047_alter_staticfeedbackfileattachment_file'),
     ]

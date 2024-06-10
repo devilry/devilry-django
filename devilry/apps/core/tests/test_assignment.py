@@ -13,8 +13,6 @@ from devilry.apps.core.models import PointToGradeMap
 from devilry.apps.core.models.assignment import AssignmentHasGroupsError
 from devilry.apps.core.baker_recipes import ACTIVE_PERIOD_START, ACTIVE_PERIOD_END
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
-from devilry.devilry_gradingsystem.pluginregistry import GradingSystemPluginInterface
-from devilry.devilry_gradingsystem.pluginregistry import GradingSystemPluginRegistry
 from devilry.devilry_group import devilry_group_baker_factories
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
@@ -61,20 +59,6 @@ class TestAssignment(TestCase):
                    grade='Ok')
         prefetched_assignment = Assignment.objects.prefetch_point_to_grade_map().get(id=testassignment.id)
         self.assertEqual(prefetched_assignment.points_to_grade(5), 'Ok')
-
-    def test_has_valid_grading_setup_valid_by_default(self):
-        assignment1 = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1').assignment
-
-        # Mock the gradingsystempluginregistry
-        myregistry = GradingSystemPluginRegistry()
-
-        class MockApprovedPluginApi(GradingSystemPluginInterface):
-            id = 'devilry_gradingsystemplugin_approved'
-        myregistry.add(MockApprovedPluginApi)
-
-        with patch('devilry.apps.core.models.assignment.gradingsystempluginregistry', myregistry):
-            self.assertTrue(assignment1.has_valid_grading_setup())
 
     def test_set_max_points(self):
         assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
