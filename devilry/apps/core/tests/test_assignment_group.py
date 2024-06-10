@@ -15,7 +15,6 @@ from model_bakery import baker
 from devilry.apps.core import devilry_core_baker_factories as core_baker
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import Candidate
-from devilry.apps.core.models import Delivery
 from devilry.apps.core.models import Examiner
 from devilry.apps.core.models import deliverytypes, Assignment, RelatedStudent
 from devilry.apps.core.models.assignment_group import GroupPopNotCandidateError, AssignmentGroupTag
@@ -175,18 +174,6 @@ class TestAssignmentGroup(TestCase):
         self.assertEqual(group1builder.group.delivery_status, 'closed-without-feedback')
         self.assertEqual(group2builder.group.delivery_status, 'closed-without-feedback')
 
-    def test_add_nonelectronic_delivery(self):
-        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')
-        group1builder = assignmentbuilder.add_group()
-        group1builder.add_deadline_in_x_weeks(weeks=1)
-        AssignmentGroup.objects.filter(id=group1builder.group.id).add_nonelectronic_delivery()
-        group1builder.reload_from_db()
-
-        last_delivery = Delivery.objects.get(deadline__assignment_group=group1builder.group)
-        self.assertEqual(last_delivery.delivery_type, deliverytypes.NON_ELECTRONIC)
-        self.assertTrue(last_delivery.successful)
-
     def test_last_feedbackset_is_published(self):
         testassignment = baker.make('core.Assignment', passing_grade_min_points=1)
         testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
@@ -235,41 +222,6 @@ class TestAssignmentGroup(TestCase):
 
         self.assertFalse(group1builder.group.should_ask_if_examiner_want_to_give_another_chance)
         self.assertTrue(group2builder.group.should_ask_if_examiner_want_to_give_another_chance)
-
-    def test_not_missing_expected_delivery_nonelectronic(self):
-        group = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1', delivery_types=deliverytypes.NON_ELECTRONIC)\
-            .add_group().group
-        self.assertFalse(group.missing_expected_delivery)
-
-    def test_not_missing_expected_delivery_not_waiting_for_feedback(self):
-        group = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')\
-            .add_group().group
-        self.assertFalse(group.missing_expected_delivery)
-
-    def test_missing_expected_delivery_no_deliveries(self):
-        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')\
-            .add_group()
-        groupbuilder.add_deadline_x_weeks_ago(weeks=1)
-        self.assertTrue(groupbuilder.group.missing_expected_delivery)
-
-    def test_missing_expected_delivery_delivery_not_on_last_deadline(self):
-        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')\
-            .add_group()
-        groupbuilder.add_deadline_x_weeks_ago(weeks=2).add_delivery()
-        groupbuilder.add_deadline_x_weeks_ago(weeks=1)
-        self.assertTrue(groupbuilder.group.missing_expected_delivery)
-
-    def test_not_missing_expected_delivery_delivery_on_last_deadline(self):
-        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')\
-            .add_group()
-        groupbuilder.add_deadline_x_weeks_ago(weeks=2)
-        groupbuilder.add_deadline_x_weeks_ago(weeks=1).add_delivery()
-        self.assertFalse(groupbuilder.group.missing_expected_delivery)
 
     def test_annotate_with_last_deadline_default_timezone_datetime(self):
         assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
@@ -1311,7 +1263,7 @@ class TestAssignmentGroupQuerySetPeriodTagFiltering(TestCase):
         testtag = baker.make('core.PeriodTag', period=testperiod)
         testtag.relatedstudents.add(teststudent.relatedstudent)
         self.assertNotIn(testgroup, AssignmentGroup.objects.filter_no_periodtag_for_students())
-    
+
     def test_filter_no_periodtag_for_students_multistudent_group_no_tags(self):
         testperiod = baker.make('core.Period')
         testassignment = baker.make('core.Assignment', parentnode=testperiod)
@@ -1327,7 +1279,7 @@ class TestAssignmentGroupQuerySetPeriodTagFiltering(TestCase):
             relatedstudent=baker.make('core.RelatedStudent', period=testperiod)
         )
         self.assertIn(testgroup, AssignmentGroup.objects.filter_no_periodtag_for_students())
-    
+
     def test_filter_no_periodtag_for_students_multistudent_group_one_student_missing_tags(self):
         testperiod = baker.make('core.Period')
         testassignment = baker.make('core.Assignment', parentnode=testperiod)
@@ -1345,7 +1297,7 @@ class TestAssignmentGroupQuerySetPeriodTagFiltering(TestCase):
         testtag = baker.make('core.PeriodTag', period=testperiod)
         testtag.relatedstudents.add(teststudent.relatedstudent)
         self.assertIn(testgroup, AssignmentGroup.objects.filter_no_periodtag_for_students())
-    
+
     def test_filter_no_periodtag_for_students_multistudent_group_all_students_has_tag(self):
         testperiod = baker.make('core.Period')
         testassignment = baker.make('core.Assignment', parentnode=testperiod)
@@ -1364,7 +1316,7 @@ class TestAssignmentGroupQuerySetPeriodTagFiltering(TestCase):
         testtag.relatedstudents.add(teststudent1.relatedstudent)
         testtag.relatedstudents.add(teststudent2.relatedstudent)
         self.assertNotIn(testgroup, AssignmentGroup.objects.filter_no_periodtag_for_students())
-    
+
     #
     # filter_periodtag_for_students
     #
@@ -1382,7 +1334,7 @@ class TestAssignmentGroupQuerySetPeriodTagFiltering(TestCase):
             testgroup,
             AssignmentGroup.objects.filter_periodtag_for_students(periodtag_id=testtag.id)
         )
-    
+
     def test_filter_periodtag_for_students_has_tag_sanity(self):
         testperiod = baker.make('core.Period')
         testassignment = baker.make('core.Assignment', parentnode=testperiod)
@@ -1415,7 +1367,7 @@ class TestAssignmentGroupQuerySetPeriodTagFiltering(TestCase):
             testgroup,
             AssignmentGroup.objects.filter_periodtag_for_students(periodtag_id=testtag1.id)
         )
-    
+
     def test_filter_periodtag_for_students_multistudent_group_all_students_missing_tag(self):
         testperiod = baker.make('core.Period')
         testassignment = baker.make('core.Assignment', parentnode=testperiod)
@@ -1456,7 +1408,7 @@ class TestAssignmentGroupQuerySetPeriodTagFiltering(TestCase):
             testgroup,
             AssignmentGroup.objects.filter_periodtag_for_students(periodtag_id=testtag.id)
         )
-    
+
     def test_filter_periodtag_for_students_multistudent_group_all_students_has_tag(self):
         testperiod = baker.make('core.Period')
         testassignment = baker.make('core.Assignment', parentnode=testperiod)
@@ -1478,7 +1430,7 @@ class TestAssignmentGroupQuerySetPeriodTagFiltering(TestCase):
             testgroup,
             AssignmentGroup.objects.filter_periodtag_for_students(periodtag_id=testtag.id)
         )
-    
+
 
     #
     # filter_no_periodtag_for_examiners
@@ -1506,7 +1458,7 @@ class TestAssignmentGroupQuerySetPeriodTagFiltering(TestCase):
         testtag = baker.make('core.PeriodTag', period=testperiod)
         testtag.relatedexaminers.add(testexaminer.relatedexaminer)
         self.assertNotIn(testgroup, AssignmentGroup.objects.filter_no_periodtag_for_examiners())
-    
+
     def test_filter_no_periodtag_for_examiners_multiexaminer_group_no_tags(self):
         testperiod = baker.make('core.Period')
         testassignment = baker.make('core.Assignment', parentnode=testperiod)
@@ -1522,7 +1474,7 @@ class TestAssignmentGroupQuerySetPeriodTagFiltering(TestCase):
             relatedexaminer=baker.make('core.RelatedExaminer', period=testperiod)
         )
         self.assertIn(testgroup, AssignmentGroup.objects.filter_no_periodtag_for_examiners())
-    
+
     def test_filter_no_periodtag_for_examiners_multiexaminer_group_one_examiner_missing_tags(self):
         testperiod = baker.make('core.Period')
         testassignment = baker.make('core.Assignment', parentnode=testperiod)
@@ -1540,7 +1492,7 @@ class TestAssignmentGroupQuerySetPeriodTagFiltering(TestCase):
         testtag = baker.make('core.PeriodTag', period=testperiod)
         testtag.relatedexaminers.add(testexaminer.relatedexaminer)
         self.assertIn(testgroup, AssignmentGroup.objects.filter_no_periodtag_for_examiners())
-    
+
     def test_filter_no_periodtag_for_examiners_multiexaminer_group_all_examiners_has_tag(self):
         testperiod = baker.make('core.Period')
         testassignment = baker.make('core.Assignment', parentnode=testperiod)
@@ -1577,7 +1529,7 @@ class TestAssignmentGroupQuerySetPeriodTagFiltering(TestCase):
             testgroup,
             AssignmentGroup.objects.filter_periodtag_for_examiners(periodtag_id=testtag.id)
         )
-    
+
     def test_filter_periodtag_for_examiners_has_tag_sanity(self):
         testperiod = baker.make('core.Period')
         testassignment = baker.make('core.Assignment', parentnode=testperiod)
@@ -1610,7 +1562,7 @@ class TestAssignmentGroupQuerySetPeriodTagFiltering(TestCase):
             testgroup,
             AssignmentGroup.objects.filter_periodtag_for_examiners(periodtag_id=testtag1.id)
         )
-    
+
     def test_filter_periodtag_for_examiners_multiexaminer_group_all_examiners_missing_tag(self):
         testperiod = baker.make('core.Period')
         testassignment = baker.make('core.Assignment', parentnode=testperiod)
@@ -1651,7 +1603,7 @@ class TestAssignmentGroupQuerySetPeriodTagFiltering(TestCase):
             testgroup,
             AssignmentGroup.objects.filter_periodtag_for_examiners(periodtag_id=testtag.id)
         )
-    
+
     def test_filter_periodtag_for_examiners_multiexaminer_group_all_examiners_has_tag(self):
         testperiod = baker.make('core.Period')
         testassignment = baker.make('core.Assignment', parentnode=testperiod)

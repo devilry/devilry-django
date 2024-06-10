@@ -7,17 +7,11 @@ from django.core.files.base import ContentFile
 from django.utils import timezone
 from model_bakery import baker
 
-from devilry.apps.core.deliverystore import MemoryDeliveryStore
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import AssignmentGroup
-from devilry.apps.core.models import Deadline
-from devilry.apps.core.models import Delivery
-from devilry.apps.core.models import FileMeta
 from devilry.apps.core.models import Period
 from devilry.apps.core.models import RelatedExaminer
 from devilry.apps.core.models import RelatedStudent
-from devilry.apps.core.models import StaticFeedback
-from devilry.apps.core.models import StaticFeedbackFileAttachment
 from devilry.apps.core.models import Subject
 from devilry.devilry_comment.models import CommentFile
 
@@ -160,124 +154,6 @@ class BaseNodeBuilderBase(CoreBuilderBase):
             obj = getattr(self, self.object_attribute_name)
             obj.admins.add(user)
         return self
-
-
-class FileMetaBuilder(CoreBuilderBase):
-    object_attribute_name = 'filemeta'
-
-    def __init__(self, delivery, filename, data):
-        self.filemeta = FileMeta.objects.create(delivery=delivery, filename=filename, size=0)
-        f = FileMeta.deliverystore.write_open(self.filemeta)
-        f.write(data)
-        f.close()
-        self.filemeta.size = len(data)
-        self.filemeta.save()
-
-
-class StaticFeedbackFileAttachmentBuilder(CoreBuilderBase):
-    object_attribute_name = 'fileattachment'
-
-    def __init__(self, staticfeedback, filename='test.txt', filedata='Testdata'):
-        self.fileattachment = StaticFeedbackFileAttachment(staticfeedback=staticfeedback, filename=filename)
-        self.fileattachment.file.save(filename, ContentFile(filedata))
-
-
-class StaticFeedbackBuilder(CoreBuilderBase):
-    object_attribute_name = 'feedback'
-
-    def __init__(self, **kwargs):
-        self.feedback = StaticFeedback.objects.create(**kwargs)
-
-    def add_fileattachment(self, **kwargs):
-        kwargs['staticfeedback'] = self.feedback
-        return StaticFeedbackFileAttachmentBuilder(**kwargs)
-
-
-class DeliveryBuilder(CoreBuilderBase):
-    object_attribute_name = 'delivery'
-
-    @classmethod
-    def set_memory_deliverystore(cls):
-        FileMeta.deliverystore = MemoryDeliveryStore()
-
-    def __init__(self, **kwargs):
-        if 'time_of_delivery' not in kwargs:
-            kwargs['time_of_delivery'] = timezone.now()
-        self.delivery = Delivery(**kwargs)
-        if 'number' not in kwargs:
-            self.delivery.set_number()
-        self.delivery.save()
-
-    def _save(self):
-        self.delivery.save()
-
-    def add_filemeta(self, **kwargs):
-        kwargs['delivery'] = self.delivery
-        return FileMetaBuilder(**kwargs)
-
-    def add_feedback(self, **kwargs):
-        kwargs['delivery'] = self.delivery
-        return StaticFeedbackBuilder(**kwargs)
-
-    def add_passed_feedback(self, **kwargs):
-        kwargs['points'] = 1
-        kwargs['grade'] = 'Passed'
-        kwargs['is_passing_grade'] = True
-        kwargs['delivery'] = self.delivery
-        return StaticFeedbackBuilder(**kwargs)
-
-    def add_failed_feedback(self, **kwargs):
-        kwargs['points'] = 0
-        kwargs['grade'] = 'Failed'
-        kwargs['is_passing_grade'] = False
-        kwargs['delivery'] = self.delivery
-        return StaticFeedbackBuilder(**kwargs)
-
-    def add_passed_A_feedback(self, **kwargs):
-        kwargs['points'] = 100
-        kwargs['grade'] = 'A'
-        kwargs['is_passing_grade'] = True
-        kwargs['delivery'] = self.delivery
-        return StaticFeedbackBuilder(**kwargs)
-
-    def add_failed_F_feedback(self, **kwargs):
-        kwargs['points'] = 0
-        kwargs['grade'] = 'F'
-        kwargs['is_passing_grade'] = False
-        kwargs['delivery'] = self.delivery
-        return StaticFeedbackBuilder(**kwargs)
-
-
-class DeadlineBuilder(CoreBuilderBase):
-    object_attribute_name = 'deadline'
-
-    def __init__(self, **kwargs):
-        self.deadline = Deadline.objects.create(**kwargs)
-
-    def add_delivery(self, **kwargs):
-        kwargs['deadline'] = self.deadline
-        kwargs['successful'] = kwargs.get('successful', True)
-        return DeliveryBuilder(**kwargs)
-
-    def add_delivery_after_deadline(self, timedeltaobject, **kwargs):
-        if 'time_of_delivery' in kwargs:
-            raise ValueError(
-                'add_delivery_after_deadline does not accept ``time_of_delivery`` as kwarg, it sets it automatically.')
-        kwargs['time_of_delivery'] = self.deadline.deadline + timedeltaobject
-        return self.add_delivery(**kwargs)
-
-    def add_delivery_before_deadline(self, timedeltaobject, **kwargs):
-        if 'time_of_delivery' in kwargs:
-            raise ValueError(
-                'add_delivery_before_deadline does not accept ``time_of_delivery`` as kwarg, it sets it automatically.')
-        kwargs['time_of_delivery'] = self.deadline.deadline - timedeltaobject
-        return self.add_delivery(**kwargs)
-
-    def add_delivery_x_hours_after_deadline(self, hours, **kwargs):
-        return self.add_delivery_after_deadline(timedelta(hours=hours), **kwargs)
-
-    def add_delivery_x_hours_before_deadline(self, hours, **kwargs):
-        return self.add_delivery_before_deadline(timedelta(hours=hours), **kwargs)
 
 
 class CommentFileBuilder(CoreBuilderBase):

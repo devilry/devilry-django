@@ -149,7 +149,6 @@ class AssignmentGroupHistoryInline(admin.StackedInline):
         )
 
 
-
 class AssignmentGroupAdmin(admin.ModelAdmin):
     list_display = [
         'id',
@@ -170,13 +169,11 @@ class AssignmentGroupAdmin(admin.ModelAdmin):
     ]
     readonly_fields = [
         'parentnode',
-        'feedback',
     ]
     list_filter = [
         'created_datetime',
     ]
     raw_id_fields = [
-        'last_deadline',
         'batchoperation',
         'copied_from'
     ]

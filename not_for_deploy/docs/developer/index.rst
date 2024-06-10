@@ -35,7 +35,6 @@ API and utilities
 
     core.models
     devilry_core_tags
-    core.deliverystore
     devilry.utils
 
 
@@ -83,7 +82,6 @@ Deprecated APIs and frameworks
     :maxdepth: 1
 
     devilry.project.develop.teshelpers.corebuilder
-    testhelper
 
 
 ********

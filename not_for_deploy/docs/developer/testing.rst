@@ -51,9 +51,6 @@ building the devilry data structures:
 - :doc:`devilry.project.develop.teshelpers.corebuilder <devilry.project.develop.teshelpers.corebuilder>`.
   Used in a large percentage of our tests.
   *Should not be used for new tests*.
-- :doc:`devilry.apps.core.testhelper <testhelper>`.
-  Used for some very old tests in ``devilry.apps.core``.
-  *Should not be used for new tests*.
 
 
 .. _modelbakeryrecipes:
