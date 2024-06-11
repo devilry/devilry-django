@@ -63,16 +63,6 @@ def feedback_to_bootstrapclass(feedback):
 
 
 @register.filter
-def group_delivery_status_to_bootstrapclass(group):
-    if group.delivery_status == 'waiting-for-something':
-        return "muted"
-    elif group.delivery_status == 'corrected':
-        return feedback_to_bootstrapclass(group.feedback)
-    else:
-        return "danger"
-
-
-@register.filter
 def group_form(value, groupid):
     return value.get_form_by_groupid(groupid)
 

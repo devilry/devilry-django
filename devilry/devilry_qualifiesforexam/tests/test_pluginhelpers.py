@@ -158,7 +158,6 @@ class TestGroupFeedbackSetList(test.TestCase, TestPluginHelper):
         serialized_group = groupfeedbacksetlist._serialize_group(testgroup, feedbackset)
         self.assertEqual(serialized_group['id'], testgroup.id)
         self.assertEqual(type(serialized_group['feedbackset']), dict)
-        self.assertEqual(serialized_group['status'], testgroup.get_status())
 
     def test_serialize(self):
         # Test serialization of the entire GroupFeedbackSetList.
@@ -234,7 +233,6 @@ class TestAggregatedRelatedStudentInfoSerializers(test.TestCase, TestPluginHelpe
         serialized_group = serialized_groups_by_assignment[0]['group_feedbackset_list'][0]
         self.assertEqual(len(serialized_groups_by_assignment[0]['group_feedbackset_list']), 1)
         self.assertEqual(serialized_group['id'], dataset_dict['testgroups'][0].id)
-        self.assertEqual(serialized_group['status'], dataset_dict['testgroups'][0].get_status())
 
         # Test the serialized feedbackset part
         serialized_feedbackset = serialized_group['feedbackset']

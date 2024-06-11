@@ -208,7 +208,7 @@ class TestAssignmentGroupCachedDataCandidateCount(test.TestCase):
         group = baker.make('core.AssignmentGroup')
         core_baker.candidate(group=group)
         core_baker.examiner(group=group)
-        with self.assertNumQueries(24):
+        with self.assertNumQueries(19):
             group.delete()
 
     def test_candidate_count_when_candidate_moved(self):
@@ -1536,5 +1536,5 @@ class TestAssignmentGroupDelete(test.TestCase):
         group_baker.feedbackset_first_attempt_published(group=testgroup)
         group_baker.feedbackset_new_attempt_published(group=testgroup)
         group_baker.feedbackset_new_attempt_unpublished(group=testgroup)
-        with self.assertNumQueries(24):
+        with self.assertNumQueries(19):
             testgroup.delete()

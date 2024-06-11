@@ -92,7 +92,7 @@ STORAGES = {
     'devilry_temp_storage': {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
         "OPTIONS": {
-            "location": "devilry_delivery_storage",
+            "location": "devilry_testfiles",
         },
     },
     "staticfiles": {

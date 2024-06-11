@@ -1,65 +1,7 @@
 from devilry.utils import OrderedDict
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_group.models import FeedbackSet
-import json
 
-
-# class GroupList(list):
-#     """
-#     Represents a list of :class:`devilry.apps.core.models.AssignmentGroup` objects,
-#     with utility functions for commonly needed actions. The list is ment to hold
-#     groups where the same student in candidate on a single assignment, and the
-#     utilities is ment to make it easier to work with the added complexity of
-#     supporting the same user in multiple groups on a single assignment.
-#     """
-#     def get_feedback_with_most_points(self):
-#         """
-#         Get the :class:`devilry.apps.core.models.StaticFeedback` with the most points in the list.
-#         """
-#         best = None
-#         for group in self:
-#             feedback = None
-#             if group.get_status() == 'corrected':
-#                 feedback = group.feedback
-#             if best:
-#                 if feedback and feedback.points > best.points:
-#                     best = group
-#             else:
-#                 best = feedback
-#         return best
-#
-#     def get_best_gradestring(self):
-#         """
-#         Uses :meth:`.get_feedback_with_most_points` to get the feedback with most points,
-#         and returns the ``grade``-attribute of that feedback.
-#
-#         :return: The grade or ``None``.
-#         """
-#         best = self.get_feedback_with_most_points()
-#         if best:
-#             return best.grade
-#         else:
-#             return None
-#
-#     def _serialize_feedback(self, feedback):
-#         if feedback:
-#             return {'id': feedback.id,
-#                     'grade': feedback.grade,
-#                     'points': feedback.points,
-#                     'is_passing_grade': feedback.is_passing_grade,
-#                     'save_timestamp': feedback.save_timestamp}
-#         else:
-#             return None
-#
-#     def _serialize_group(self, group):
-#         return {
-#             'id': group.id,
-#             'feedback': self._serialize_feedback(group.feedback),
-#             'status': group.get_status()
-#         }
-#
-#     def serialize(self):
-#         return [self._serialize_group(group) for group in self]
 
 
 class FeedbackSetList(list):
@@ -166,8 +108,7 @@ class GroupFeedbackSetList(list):
 
         """
         return {'id': group.id,
-                'feedbackset': self._serialize_feedbackset(feedbackset),
-                'status': group.get_status()}
+                'feedbackset': self._serialize_feedbackset(feedbackset)}
 
     def serialize(self):
         return [self._serialize_group(group, feedbackset) for group, feedbackset in self]
