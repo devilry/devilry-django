@@ -135,14 +135,18 @@ TEMPLATES = [
 
 
 MIDDLEWARE = [
-    'django.middleware.common.CommonMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
     'devilry.devilry_i18n.middleware.LocaleMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware',
     'devilry.devilry_account.middleware.LocalMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'allauth.account.middleware.AccountMiddleware',
 ]
 
