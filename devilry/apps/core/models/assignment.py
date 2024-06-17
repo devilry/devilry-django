@@ -16,7 +16,6 @@ from .basenode import BaseNode
 from .custom_db_fields import ShortNameField, LongNameField
 from devilry.apps.core.models import RelatedStudent
 from devilry.devilry_account.models import User, PeriodPermissionGroup
-from devilry.devilry_gradingsystem.pluginregistry import gradingsystempluginregistry
 from .period import Period
 from .subject import Subject
 from . import deliverytypes
@@ -779,42 +778,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         if self.passing_grade_min_points > self.max_points:
             self.passing_grade_min_points = self.max_points
 
-    def get_gradingsystem_plugin_api(self):
-        """
-        Shortcut for::
-
-            devilry.devilry_gradingsystem.pluginregistry.gradingsystempluginregistry.get(
-                self.grading_system_plugin_id)(self)
-
-        See: :meth:`devilry.devilry_gradingsystem.pluginregistry.GradingSystemPluginRegistry.get`.
-        """
-        apiclass = gradingsystempluginregistry.get(self.grading_system_plugin_id)
-        return apiclass(self)
-
-    def has_valid_grading_setup(self):
-        """
-        Checks if this assignment is configured correctly for grading.
-        """
-        if self.max_points is None \
-                or self.passing_grade_min_points is None \
-                or self.points_to_grade_mapper is None \
-                or self.grading_system_plugin_id is None \
-                or self.grading_system_plugin_id not in gradingsystempluginregistry:
-            return False
-        else:
-            pluginapi = self.get_gradingsystem_plugin_api()
-            if pluginapi.requires_configuration and not pluginapi.is_configured():
-                return False
-            if self.points_to_grade_mapper == 'custom-table':
-                try:
-                    pointtogrademap = self.pointtogrademap
-                except ObjectDoesNotExist:
-                    return False
-                else:
-                    return not pointtogrademap.invalid
-            else:
-                return True
-
     def setup_grading(
             self, grading_system_plugin_id, points_to_grade_mapper,
             passing_grade_min_points=None, max_points=None):
@@ -833,11 +796,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         """
         self.grading_system_plugin_id = grading_system_plugin_id
         self.points_to_grade_mapper = points_to_grade_mapper
-        pluginapi = self.get_gradingsystem_plugin_api()
-        if pluginapi.sets_passing_grade_min_points_automatically:
-            passing_grade_min_points = pluginapi.get_passing_grade_min_points()
-        if pluginapi.sets_max_points_automatically:
-            max_points = pluginapi.get_max_points()
         self.passing_grade_min_points = passing_grade_min_points
         self.max_points = max_points
 
@@ -968,8 +926,8 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         Returns ``True`` if this Assignment does not contain any deliveries.
         """
         warnings.warn("deprecated", DeprecationWarning)
-        from .delivery import Delivery
-        return Delivery.objects.filter(deadline__assignment_group__parentnode=self).count() == 0
+        from devilry.devilry_group.models import FeedbackSet
+        return not FeedbackSet.objects.filter(group__parentnode=self).exists()
 
     def is_active(self):
         """

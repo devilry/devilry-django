@@ -9,7 +9,6 @@
     :maxdepth: 2
 
     utils.devilry_email
-    utils.groups_groupedby_relatedstudent_and_assignment
     utils.datetimeutils
 
 

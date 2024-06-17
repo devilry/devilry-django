@@ -35,7 +35,6 @@ API and utilities
 
     core.models
     devilry_core_tags
-    core.deliverystore
     devilry.utils
 
 
@@ -63,7 +62,6 @@ Apps
     devilry_subjectadmin
     devilry_qualifiesforexam
     devilry_qualifiesforexam2
-    devilry_gradingsystem
     devilry_search
     devilry_dbcache
     devilry_account
@@ -83,7 +81,6 @@ Deprecated APIs and frameworks
     :maxdepth: 1
 
     devilry.project.develop.teshelpers.corebuilder
-    testhelper
 
 
 ********

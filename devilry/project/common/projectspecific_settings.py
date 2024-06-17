@@ -250,9 +250,6 @@ DEVILRY_COMMENT_STUDENTS_CAN_SEE_OTHER_USERS_COMMENT_HISTORY = os.environ.get(
 # Storage settings
 #
 ###########################################################
-DEVILRY_DELIVERY_STORE_BACKEND = 'devilry.apps.core.deliverystore.FsHierDeliveryStore'
-DEVILRY_FSHIERDELIVERYSTORE_INTERVAL = 1000
-
 #: The storage backend where deliveries are stored (whould be some sort of high redundancy storage)
 DELIVERY_STORAGE_BACKEND = 'devilry_delivery_storage'
 

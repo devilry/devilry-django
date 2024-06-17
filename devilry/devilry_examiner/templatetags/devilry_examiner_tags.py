@@ -1,7 +1,6 @@
 from django import template
 from django.utils.translation import gettext_lazy
 from django.template.defaultfilters import stringfilter
-from devilry.devilry_gradingsystem.models import FeedbackDraft
 
 register = template.Library()
 
@@ -39,11 +38,6 @@ def formatted_delivery_count(count):
     return gettext_lazy("{0} deliveries received").format(count)
 
 
-@register.filter
-def get_feedback_url(assignment):
-    return assignment.get_gradingsystem_plugin_api().get_bulkedit_feedback_url(assignment.id)
-
-
 @register.filter(name='status_to_buttontext')
 @stringfilter
 def status_to_buttontext(value):
@@ -69,34 +63,9 @@ def feedback_to_bootstrapclass(feedback):
 
 
 @register.filter
-def group_delivery_status_to_bootstrapclass(group):
-    if group.delivery_status == 'waiting-for-something':
-        return "muted"
-    elif group.delivery_status == 'corrected':
-        return feedback_to_bootstrapclass(group.feedback)
-    else:
-        return "danger"
-
-
-@register.filter
 def group_form(value, groupid):
     return value.get_form_by_groupid(groupid)
 
 # @register.simple_tag
 # def get_quickmodeform_by_groupid(formcollection, groupid):
 #     return formcollection.get_form_by_groupid(groupid)
-
-
-@register.simple_tag(takes_context=True)
-def get_last_feedback_draft_for_group(context, group):
-    """
-    Very inefficient method of getting last feedback draft for a group.
-
-    Should be removed when we implement :issue:`769`.
-    """
-    request = context['request']
-    return FeedbackDraft.get_last_feedbackdraft_for_group(
-        assignment=group.assignment,
-        group=group,
-        user=request.user
-    )

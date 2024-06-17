@@ -43,141 +43,6 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
     """
     QuerySet for :class:`.AssignmentGroup`
     """
-
-    def annotate_with_last_deadline_pk(self):
-        warnings.warn("deprecated", DeprecationWarning)
-        return self.extra(
-            select={
-                'last_deadline_pk': """
-                    SELECT core_deadline.id
-                    FROM core_deadline
-                    WHERE core_deadline.assignment_group_id = core_assignmentgroup.id
-                    ORDER BY core_deadline.deadline DESC
-                    LIMIT 1
-                """
-            },
-        )
-
-    def annotate_with_last_deadline_datetime(self):
-        warnings.warn("deprecated", DeprecationWarning)
-        return self.extra(
-            select={
-                'last_deadline_datetime': """
-                    SELECT core_deadline.deadline
-                    FROM core_deadline
-                    WHERE core_deadline.assignment_group_id = core_assignmentgroup.id
-                    ORDER BY core_deadline.deadline DESC
-                    LIMIT 1
-                """
-            },
-        )
-
-    def annotate_with_last_delivery_id(self):
-        warnings.warn("deprecated", DeprecationWarning)
-        return self.extra(
-            select={
-                'last_delivery_id': """
-                    SELECT core_delivery.id
-                    FROM core_delivery
-                    INNER JOIN core_deadline ON core_deadline.id = core_delivery.deadline_id
-                    WHERE core_deadline.assignment_group_id = core_assignmentgroup.id
-                    ORDER BY core_delivery.time_of_delivery DESC
-                    LIMIT 1
-                """
-            },
-        )
-
-    def annotate_with_last_delivery_time_of_delivery(self):
-        warnings.warn("deprecated", DeprecationWarning)
-        return self.extra(
-            select={
-                'last_delivery_time_of_delivery': """
-                    SELECT core_delivery.time_of_delivery
-                    FROM core_delivery
-                    INNER JOIN core_deadline ON core_deadline.id = core_delivery.deadline_id
-                    WHERE core_deadline.assignment_group_id = core_assignmentgroup.id
-                    ORDER BY core_delivery.time_of_delivery DESC
-                    LIMIT 1
-                """
-            },
-        )
-
-    def annotate_with_number_of_deliveries(self):
-        warnings.warn("deprecated", DeprecationWarning)
-        return self.annotate(number_of_deliveries=models.Count('deadlines__deliveries'))
-
-    def exclude_groups_with_deliveries(self):
-        warnings.warn("deprecated", DeprecationWarning)
-        return self\
-            .annotate(deliverycount_for_no_deliveries_exclude=models.Count('deadlines__deliveries'))\
-            .filter(deliverycount_for_no_deliveries_exclude=0)
-
-    def filter_by_status(self, status):
-        warnings.warn("deprecated", DeprecationWarning)
-        return self.filter(delivery_status=status)
-
-    def filter_waiting_for_feedback(self):
-        warnings.warn("deprecated", DeprecationWarning)
-        now = timezone.now()
-        return self.filter(
-            Q(parentnode__delivery_types=deliverytypes.NON_ELECTRONIC,
-              delivery_status="waiting-for-something") |
-            Q(parentnode__delivery_types=deliverytypes.ELECTRONIC,
-              delivery_status="waiting-for-something",
-              last_deadline__deadline__lte=now))
-
-    def filter_waiting_for_deliveries(self):
-        warnings.warn("deprecated", DeprecationWarning)
-        now = timezone.now()
-        return self.filter(
-            parentnode__delivery_types=deliverytypes.ELECTRONIC,
-            delivery_status="waiting-for-something",
-            last_deadline__deadline__gt=now)
-
-    def filter_can_add_deliveries(self):
-        warnings.warn("deprecated", DeprecationWarning)
-        now = timezone.now()
-        return self\
-            .filter(parentnode__delivery_types=deliverytypes.ELECTRONIC,
-                    delivery_status="waiting-for-something")\
-            .extra(
-                where=[
-                    """
-                    core_assignment.deadline_handling = %s
-                    OR
-                    (SELECT core_deadline.deadline
-                     FROM core_deadline
-                     WHERE core_deadline.assignment_group_id = core_assignmentgroup.id
-                     ORDER BY core_deadline.deadline DESC
-                     LIMIT 1) > %s
-                    """
-                ],
-                params=[
-                    Assignment.DEADLINEHANDLING_SOFT,
-                    now
-                ]
-            )
-
-    def close_groups(self):
-        warnings.warn("deprecated", DeprecationWarning)
-        return self.update(
-            is_open=False,
-            delivery_status='closed-without-feedback'
-        )
-
-    def add_nonelectronic_delivery(self):
-        warnings.warn("deprecated", DeprecationWarning)
-        from devilry.apps.core.models import Delivery
-        for group in self.all():
-            deadline = group.last_deadline
-            delivery = Delivery(
-                deadline=deadline,
-                delivery_type=deliverytypes.NON_ELECTRONIC,
-                time_of_delivery=timezone.now())
-            delivery.set_number()
-            delivery.full_clean()
-            delivery.save()
-
     def filter_user_is_admin(self, user):
         """
         Filter the queryset to only include :class:`.Assignment` objects where the
@@ -312,7 +177,7 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
 
     def filter_no_periodtag_for_students(self):
         """
-        Filter :class:`.AssignmentGroup` where student has NO 
+        Filter :class:`.AssignmentGroup` where student has NO
         :class:`~.devilry.apps.core.models.period_tag.PeriodTag`s.
         """
         return self.filter(candidates__relatedstudent__periodtag__isnull=True)
@@ -329,7 +194,7 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
 
     def filter_no_periodtag_for_examiners(self):
         """
-        Filter :class:`.AssignmentGroup` where examiner has NO 
+        Filter :class:`.AssignmentGroup` where examiner has NO
         :class:`~.devilry.apps.core.models.period_tag.PeriodTag`s.
         """
         return self.filter(examiners__relatedexaminer__periodtag__isnull=True)
@@ -942,33 +807,14 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         A django.db.models.BooleanField_ that tells you if the group can add
         deliveries or not.
 
-    .. attribute:: deadlines
-
-        A django ``RelatedManager`` that holds the :class:`deadlines <devilry.apps.core.models.Deadline>`
-        on this group.
-
     .. attribute:: tags
 
         A django ``RelatedManager`` that holds the :class:`tags <devilry.apps.core.models.AssignmentGroupTag>`
         on this group.
 
-    .. attribute:: last_deadline
-
-       The last :class:`devilry.apps.core.models.Deadline` for this assignmentgroup.
-
     .. attribute:: etag
 
        A DateTimeField containing the etag for this object.
-
-    .. attribute:: delivery_status
-
-       A CharField containing the status of the group.
-       Valid status values:
-
-           * "no-deadlines"
-           * "corrected"
-           * "closed-without-feedback"
-           * "waiting-for-something"
 
     .. attribute:: cached_data
 
@@ -993,21 +839,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     is_open = models.BooleanField(
         blank=True, default=True,
         help_text='If this is checked, the group can add deliveries.')
-    feedback = models.OneToOneField("StaticFeedback", blank=True, null=True,
-                                    on_delete=models.SET_NULL)
-    last_deadline = models.OneToOneField(
-        "Deadline", blank=True, null=True,
-        related_name='last_deadline_for_group', on_delete=models.SET_NULL)
     etag = models.DateTimeField(auto_now_add=True)
-    delivery_status = models.CharField(
-        max_length=30, blank=True, null=True,
-        help_text='The delivery_status of a group',
-        choices=(
-            ("no-deadlines", gettext_lazy("No deadlines")),
-            ("corrected", gettext_lazy("Corrected")),
-            ("closed-without-feedback", gettext_lazy("Closed without feedback")),
-            ("waiting-for-something", gettext_lazy("Waiting for something")),
-        ))
 
     #: Foreignkey to :class:`ievv_opensource.ievv_batchframework.models.BatchOperation`.
     #: When we perform batch operations on the assignmentgroup, this is used to reference
@@ -1048,39 +880,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     class Meta:
         app_label = 'core'
         ordering = ['id']
-
-    def save(self, *args, **kwargs):
-        """
-        :param update_delivery_status:
-            Update the ``delivery_status``? This is a somewhat expensive
-            operation, so we provide the option to avoid it if needed.
-            Defaults to ``True``.
-        :param autocreate_first_deadline_for_nonelectronic:
-            Autocreate the first deadline if non-electronic assignment?
-            Defaults to ``True``.
-        """
-        autocreate_first_deadline_for_nonelectronic = kwargs.pop('autocreate_first_deadline_for_nonelectronic', True)
-        create_dummy_deadline = False
-        if autocreate_first_deadline_for_nonelectronic \
-                and self.id is None \
-                and self.parentnode.delivery_types == deliverytypes.NON_ELECTRONIC:
-            create_dummy_deadline = True
-
-        # Save must be called before relation lookup, for instance by self._set_delivery_status(), that 
-        # tries to access the many-to-one relationship between Deadline and AssignmentGroup.
-        update_delivery_status = kwargs.pop('update_delivery_status', True)
-        super().save(*args, **kwargs)
-        if update_delivery_status:
-            self._set_delivery_status()
-            if 'force_insert' in kwargs:
-                # Since the instance is already saved, this ensures a 
-                # INSERT or UPDATE query instead of just INSERT (which will 
-                # cause a duplicate error).
-                kwargs['force_insert'] = False
-            super().save(*args, **kwargs)
-
-        if create_dummy_deadline:
-            self.deadlines.create(deadline=self.parentnode.parentnode.end_time)
 
     @classmethod
     def q_is_candidate(cls, user_obj):
@@ -1152,35 +951,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     @property
     def last_feedbackset_is_published(self):
         return self.cached_data.last_feedbackset.grading_published_datetime is not None
-
-    @property
-    def should_ask_if_examiner_want_to_give_another_chance(self):
-        """
-        ``True`` if the current state of the group is such that the examiner should
-        be asked if they want to give them another chance.
-
-        ``True`` if corrected with failing grade or closed without feedback.
-        """
-        if self.assignment.is_electronic:
-            return (self.delivery_status == "corrected" and not self.feedback.is_passing_grade) \
-                or self.delivery_status == 'closed-without-feedback'
-        else:
-            return False
-
-    @property
-    def missing_expected_delivery(self):
-        """
-        Return ``True`` if the group has no deliveries, and we are expecting
-        them to have made at least one delivery on the last deadline.
-        """
-        from devilry.apps.core.models import Delivery
-        from devilry.apps.core.models import Deadline
-        if self.assignment.is_electronic and self.get_status() == "waiting-for-feedback":
-            return not Delivery.objects.filter(
-                deadline__assignment_group=self,
-                deadline=Deadline.objects.filter(assignment_group=self).order_by('-deadline')[0]
-            ).exists()
-        return False
 
     @property
     def subject(self):
@@ -1369,18 +1139,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         """
         Returns ``True`` if this AssignmentGroup does not contain any deliveries.
         """
-        from .delivery import Delivery
-        return Delivery.objects.filter(deadline__assignment_group=self).count() == 0
-
-    def get_active_deadline(self):
-        """ Get the active :class:`Deadline`.
-
-        This is always the last deadline on this group.
-
-        :return:
-            The latest deadline or ``None``.
-        """
-        return self.deadlines.all().order_by('-deadline').first()
+        from devilry.devilry_group.models import FeedbackSet
+        return not FeedbackSet.objects.filter(assignment_group=self).exists()
 
     def can_save(self, user_obj):
         """ Check if the user has permission to save this AssignmentGroup. """
@@ -1410,8 +1170,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         """
         groupcopy = AssignmentGroup(parentnode=self.parentnode,
                                     name=self.name,
-                                    is_open=self.is_open,
-                                    delivery_status=self.delivery_status)
+                                    is_open=self.is_open)
         groupcopy.full_clean()
         groupcopy.save()
         for examiner in self.examiners.all():
@@ -1419,60 +1178,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         for tagobj in self.tags.all():
             groupcopy.tags.create(tag=tagobj.tag)
         return groupcopy
-
-    def recalculate_delivery_numbers(self):
-        """
-        Query all ``successful`` deliveries on this AssignmentGroup, ordered by
-        ``time_of_delivery`` ascending, and number them with the oldest delivery
-        as number 1.
-        """
-        from .delivery import Delivery
-        qry = Delivery.objects.filter(deadline__assignment_group=self,
-                                      successful=True)
-        qry = qry.order_by('time_of_delivery')
-        for number, delivery in enumerate(qry, 1):
-            delivery.number = number
-            delivery.save()
-
-    @property
-    def successful_delivery_count(self):
-        warnings.warn("deprecated", DeprecationWarning)
-        from .delivery import Delivery
-        return Delivery.objects.filter(
-            successful=True,
-            deadline__assignment_group=self).count()
-
-    def _set_delivery_status(self):
-        """
-        Set the ``delivery_status``. Calculated with this algorithm:
-
-        - If open:
-            - If no deadlines
-                - ``no-deadlines``
-            - Else:
-                - ``waiting-for-something``
-        - If closed:
-            - If feedback:
-                - ``corrected``
-            - If not:
-                - ``closed-without-feedback``
-
-        .. warning:: Only sets ``delivery_status``, does not save.
-
-        :return:
-            One of ``waiting-for-deliveries``, ``waiting-for-feedback``,
-            ``no-deadlines``, ``corrected`` or ``closed-without-feedback``.
-        """
-        if self.is_open:
-            if self.deadlines.exists():
-                self.delivery_status = 'waiting-for-something'
-            else:
-                self.delivery_status = 'no-deadlines'
-        else:
-            if self.feedback:
-                self.delivery_status = 'corrected'
-            else:
-                self.delivery_status = 'closed-without-feedback'
 
     def _merge_tags_into(self, target):
         """
@@ -1722,33 +1427,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             'feedbacksets': feedbacksets,
             'parentnode': self.parentnode.id
         }
-
-    def get_status(self):
-        """
-        Get the status of the group. Calculated with this algorithm::
-
-            if ``delivery_status == 'waiting-for-something'``
-                if assignment.delivery_types==NON_ELECTRONIC:
-                    "waiting-for-feedback"
-                else
-                    if before deadline
-                        "waiting-for-deliveries"
-                    if after deadline:
-                        "waiting-for-feedback"
-            else
-                delivery_status
-        """
-        if self.delivery_status == 'waiting-for-something':
-            if self.assignment.delivery_types == deliverytypes.NON_ELECTRONIC:
-                return 'waiting-for-feedback'
-            else:
-                now = timezone.now()
-                if self.last_deadline.deadline > now:
-                    return 'waiting-for-deliveries'
-                else:
-                    return 'waiting-for-feedback'
-        else:
-            return self.delivery_status
 
     def get_all_admin_ids(self):
         warnings.warn("deprecated", DeprecationWarning)

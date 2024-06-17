@@ -15,7 +15,6 @@ from model_bakery import baker
 from devilry.apps.core import devilry_core_baker_factories as core_baker
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import Candidate
-from devilry.apps.core.models import Delivery
 from devilry.apps.core.models import Examiner
 from devilry.apps.core.models import deliverytypes, Assignment, RelatedStudent
 from devilry.apps.core.models.assignment_group import GroupPopNotCandidateError, AssignmentGroupTag
@@ -138,55 +137,6 @@ class TestAssignmentGroup(TestCase):
             'My group (group#{} - no students in group)'.format(testgroup.id),
             testgroup.long_displayname)
 
-    def test_close_groups(self):
-        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')
-        group1builder = assignmentbuilder.add_group()
-        group2builder = assignmentbuilder.add_group()
-        group3builder = assignmentbuilder.add_group()
-        for groupbuilder in (group1builder, group2builder, group3builder):
-            self.assertTrue(groupbuilder.group.is_open)
-            self.assertEqual(groupbuilder.group.delivery_status, 'no-deadlines')
-        AssignmentGroup.objects.filter(id__in=(group1builder.group.id, group2builder.group.id))\
-            .close_groups()
-        group1builder.reload_from_db()
-        group2builder.reload_from_db()
-        group3builder.reload_from_db()
-        self.assertFalse(group1builder.group.is_open)
-        self.assertFalse(group2builder.group.is_open)
-        self.assertTrue(group3builder.group.is_open)
-        self.assertEqual(group1builder.group.delivery_status, 'closed-without-feedback')
-        self.assertEqual(group2builder.group.delivery_status, 'closed-without-feedback')
-        self.assertEqual(group3builder.group.delivery_status, 'no-deadlines')
-
-    def test_close_groups_queryset_vs_manual(self):
-        # Checks that AssignmentGroup.objects.close_groups() works the same as closing and calling save()
-        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')
-        group1builder = assignmentbuilder.add_group()
-        group2builder = assignmentbuilder.add_group()
-        AssignmentGroup.objects.filter(id=group1builder.group.id).close_groups()
-        group2builder.group.is_open = False
-        group2builder.group.save()
-        group1builder.reload_from_db()
-        group2builder.reload_from_db()
-        self.assertFalse(group1builder.group.is_open)
-        self.assertFalse(group2builder.group.is_open)
-        self.assertEqual(group1builder.group.delivery_status, 'closed-without-feedback')
-        self.assertEqual(group2builder.group.delivery_status, 'closed-without-feedback')
-
-    def test_add_nonelectronic_delivery(self):
-        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')
-        group1builder = assignmentbuilder.add_group()
-        group1builder.add_deadline_in_x_weeks(weeks=1)
-        AssignmentGroup.objects.filter(id=group1builder.group.id).add_nonelectronic_delivery()
-        group1builder.reload_from_db()
-
-        last_delivery = Delivery.objects.get(deadline__assignment_group=group1builder.group)
-        self.assertEqual(last_delivery.delivery_type, deliverytypes.NON_ELECTRONIC)
-        self.assertTrue(last_delivery.successful)
-
     def test_last_feedbackset_is_published(self):
         testassignment = baker.make('core.Assignment', passing_grade_min_points=1)
         testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
@@ -205,271 +155,6 @@ class TestAssignmentGroup(TestCase):
 
         testgroup.cached_data.refresh_from_db()  # Update cached data from database
         self.assertFalse(testgroup.last_feedbackset_is_published)
-
-    def test_should_ask_if_examiner_want_to_give_another_chance_nonelectronic(self):
-        group = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1', delivery_types=deliverytypes.NON_ELECTRONIC)\
-            .add_group().group
-        self.assertFalse(group.should_ask_if_examiner_want_to_give_another_chance)
-
-    def test_should_ask_if_examiner_want_to_give_another_chance_closed_without_feedback(self):
-        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1', delivery_types=deliverytypes.ELECTRONIC)\
-            .add_group()
-        self.assertFalse(groupbuilder.group.should_ask_if_examiner_want_to_give_another_chance)
-        groupbuilder.update(is_open=False)
-        self.assertTrue(groupbuilder.group.should_ask_if_examiner_want_to_give_another_chance)
-
-    def test_should_ask_if_examiner_want_to_give_another_chance_failed_grade(self):
-        testuser = UserBuilder('testuser').user
-        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1', delivery_types=deliverytypes.ELECTRONIC)
-        group1builder = assignmentbuilder.add_group()
-        group2builder = assignmentbuilder.add_group()
-        group1builder.add_deadline_in_x_weeks(weeks=1)\
-            .add_delivery()\
-            .add_passed_feedback(saved_by=testuser)
-        group2builder.add_deadline_in_x_weeks(weeks=1)\
-            .add_delivery()\
-            .add_failed_feedback(saved_by=testuser)
-
-        self.assertFalse(group1builder.group.should_ask_if_examiner_want_to_give_another_chance)
-        self.assertTrue(group2builder.group.should_ask_if_examiner_want_to_give_another_chance)
-
-    def test_not_missing_expected_delivery_nonelectronic(self):
-        group = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1', delivery_types=deliverytypes.NON_ELECTRONIC)\
-            .add_group().group
-        self.assertFalse(group.missing_expected_delivery)
-
-    def test_not_missing_expected_delivery_not_waiting_for_feedback(self):
-        group = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')\
-            .add_group().group
-        self.assertFalse(group.missing_expected_delivery)
-
-    def test_missing_expected_delivery_no_deliveries(self):
-        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')\
-            .add_group()
-        groupbuilder.add_deadline_x_weeks_ago(weeks=1)
-        self.assertTrue(groupbuilder.group.missing_expected_delivery)
-
-    def test_missing_expected_delivery_delivery_not_on_last_deadline(self):
-        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')\
-            .add_group()
-        groupbuilder.add_deadline_x_weeks_ago(weeks=2).add_delivery()
-        groupbuilder.add_deadline_x_weeks_ago(weeks=1)
-        self.assertTrue(groupbuilder.group.missing_expected_delivery)
-
-    def test_not_missing_expected_delivery_delivery_on_last_deadline(self):
-        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')\
-            .add_group()
-        groupbuilder.add_deadline_x_weeks_ago(weeks=2)
-        groupbuilder.add_deadline_x_weeks_ago(weeks=1).add_delivery()
-        self.assertFalse(groupbuilder.group.missing_expected_delivery)
-
-    def test_annotate_with_last_deadline_default_timezone_datetime(self):
-        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')
-
-        group1builder = assignmentbuilder.add_group()
-        group1builder.add_deadline_in_x_weeks(weeks=10)
-        group1builder.add_deadline_in_x_weeks(weeks=2)
-        group1_last_deadline = group1builder.add_deadline_in_x_weeks(weeks=20).deadline
-        group1builder.add_deadline_x_weeks_ago(weeks=2)
-
-        group2builder = assignmentbuilder.add_group()
-        group2builder.add_deadline_in_x_weeks(weeks=30)
-
-        annotated_group1 = AssignmentGroup.objects.filter()\
-            .annotate_with_last_deadline_datetime().first()
-        self.assertEqual(annotated_group1.last_deadline_datetime, group1_last_deadline.deadline)
-
-    def test_annotate_with_last_deadline_pk(self):
-        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')
-
-        group1builder = assignmentbuilder.add_group()
-        group1builder.add_deadline_in_x_weeks(weeks=10)
-        group1builder.add_deadline_in_x_weeks(weeks=2)
-        group1_last_deadline = group1builder.add_deadline_in_x_weeks(weeks=20).deadline
-        group1builder.add_deadline_x_weeks_ago(weeks=2)
-
-        group2builder = assignmentbuilder.add_group()
-        group2builder.add_deadline_in_x_weeks(weeks=30)
-
-        annotated_group1 = AssignmentGroup.objects.filter()\
-            .annotate_with_last_deadline_pk().first()
-        self.assertEqual(annotated_group1.last_deadline_pk, group1_last_deadline.id)
-
-    def test_annotate_with_last_deadline_datetime_no_deadlines(self):
-        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')\
-            .add_group()
-        group = AssignmentGroup.objects.filter(id=groupbuilder.group.id)\
-            .annotate_with_last_deadline_datetime().first()
-        self.assertEqual(group.last_deadline_datetime, None)
-
-    def test_annotate_with_last_delivery_time_of_delivery(self):
-        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')
-
-        groupbuilder1 = assignmentbuilder.add_group(name='A')
-        group1deadlinebuilder = groupbuilder1.add_deadline_in_x_weeks(weeks=1)
-        group1deadlinebuilder.add_delivery_x_hours_before_deadline(hours=10)
-        group1last_delivery = group1deadlinebuilder.add_delivery_x_hours_before_deadline(hours=2).delivery
-        group1deadlinebuilder.add_delivery_x_hours_before_deadline(hours=3)
-
-        groupbuilder2 = assignmentbuilder.add_group(name='B')
-        group2deadlinebuilder = groupbuilder2.add_deadline_in_x_weeks(weeks=1)
-        group2deadlinebuilder.add_delivery_x_hours_before_deadline(hours=10)
-        group2last_delivery = group2deadlinebuilder.add_delivery_x_hours_before_deadline(hours=1).delivery
-
-        group1, group2 = AssignmentGroup.objects.order_by('name')\
-            .annotate_with_last_delivery_time_of_delivery()
-        self.assertEqual(group1.last_delivery_time_of_delivery, group1last_delivery.time_of_delivery)
-        self.assertEqual(group2.last_delivery_time_of_delivery, group2last_delivery.time_of_delivery)
-
-    def test_annotate_with_last_delivery_time_of_delivery_no_deliveries(self):
-        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')\
-            .add_group()
-        groupbuilder.add_deadline_in_x_weeks(weeks=1)
-        group = AssignmentGroup.objects.filter(id=groupbuilder.group.id)\
-            .annotate_with_last_delivery_time_of_delivery().first()
-        self.assertEqual(group.last_delivery_time_of_delivery, None)
-
-    def test_annotate_with_last_delivery_id(self):
-        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')
-
-        groupbuilder1 = assignmentbuilder.add_group(name='A')
-        group1deadlinebuilder = groupbuilder1.add_deadline_in_x_weeks(weeks=1)
-        group1deadlinebuilder.add_delivery_x_hours_before_deadline(hours=10)
-        group1last_delivery = group1deadlinebuilder.add_delivery_x_hours_before_deadline(hours=2).delivery
-        group1deadlinebuilder.add_delivery_x_hours_before_deadline(hours=3)
-
-        groupbuilder2 = assignmentbuilder.add_group(name='B')
-        group2deadlinebuilder = groupbuilder2.add_deadline_in_x_weeks(weeks=1)
-        group2deadlinebuilder.add_delivery_x_hours_before_deadline(hours=10)
-        group2last_delivery = group2deadlinebuilder.add_delivery_x_hours_before_deadline(hours=1).delivery
-
-        group1, group2 = AssignmentGroup.objects.order_by('name')\
-            .annotate_with_last_delivery_id()
-        self.assertEqual(group1.last_delivery_id, group1last_delivery.id)
-        self.assertEqual(group2.last_delivery_id, group2last_delivery.id)
-
-    def test_annotate_with_last_delivery_id_no_deliveries(self):
-        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')\
-            .add_group()
-        groupbuilder.add_deadline_in_x_weeks(weeks=1)
-        group = AssignmentGroup.objects.filter(id=groupbuilder.group.id)\
-            .annotate_with_last_delivery_id().first()
-        self.assertEqual(group.last_delivery_id, None)
-
-    def test_exclude_groups_with_deliveries_all_groups_has_deliveries(self):
-        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')\
-            .add_group()
-        deadlinebuilder = groupbuilder.add_deadline_in_x_weeks(weeks=1)
-        deadlinebuilder.add_delivery_x_hours_before_deadline(hours=10)
-        groups = AssignmentGroup.objects.filter(id=groupbuilder.group.id)\
-            .exclude_groups_with_deliveries()
-        self.assertEqual(groups.count(), 0)
-
-    def test_exclude_groups_with_deliveries(self):
-        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')\
-            .add_group()
-        groups = AssignmentGroup.objects.filter(id=groupbuilder.group.id)\
-            .exclude_groups_with_deliveries()
-        self.assertEqual(groups.count(), 1)
-
-    def test_annotate_with_number_of_deliveries(self):
-        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')\
-            .add_group()
-        deadline1builder = groupbuilder.add_deadline_x_weeks_ago(weeks=1)
-        deadline2builder = groupbuilder.add_deadline_in_x_weeks(weeks=1)
-
-        deadline1builder.add_delivery_x_hours_before_deadline(hours=10)
-        deadline1builder.add_delivery_x_hours_before_deadline(hours=3)
-        deadline2builder.add_delivery_x_hours_before_deadline(hours=2)
-        group = AssignmentGroup.objects.filter(id=groupbuilder.group.id)\
-            .annotate_with_number_of_deliveries().first()
-        self.assertEqual(group.number_of_deliveries, 3)
-
-    def test_annotate_with_number_of_deliveries_no_deliveries(self):
-        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')\
-            .add_group()
-        group = AssignmentGroup.objects.filter(id=groupbuilder.group.id)\
-            .annotate_with_number_of_deliveries().first()
-        self.assertEqual(group.number_of_deliveries, 0)
-
-    def test_filter_can_add_deliveries_before_hard_deadline(self):
-        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1',
-                            deadline_handling=Assignment.DEADLINEHANDLING_HARD)\
-            .add_group()
-        groupbuilder.add_deadline_in_x_weeks(weeks=1)
-        self.assertEqual(AssignmentGroup.objects.filter_can_add_deliveries().count(), 1)
-
-    def test_filter_can_add_deliveries_after_hard_deadline(self):
-        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1',
-                            deadline_handling=Assignment.DEADLINEHANDLING_HARD)\
-            .add_group()
-        groupbuilder.add_deadline_x_weeks_ago(weeks=1)
-        self.assertEqual(AssignmentGroup.objects.filter_can_add_deliveries().count(), 0)
-
-    def test_filter_can_add_deliveries_not_on_nonelectronic(self):
-        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1',
-                            delivery_types=deliverytypes.NON_ELECTRONIC)\
-            .add_group()
-        groupbuilder.add_deadline_x_weeks_ago(weeks=1)
-        self.assertEqual(AssignmentGroup.objects.filter_can_add_deliveries().count(), 0)
-
-    def test_filter_can_add_deliveries_before_soft_deadline(self):
-        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1',
-                            deadline_handling=Assignment.DEADLINEHANDLING_SOFT)\
-            .add_group()
-        groupbuilder.add_deadline_in_x_weeks(weeks=1)
-        self.assertEqual(AssignmentGroup.objects.filter_can_add_deliveries().count(), 1)
-        self.assertEqual(
-            AssignmentGroup.objects.filter_can_add_deliveries().first(),
-            groupbuilder.group)
-
-    def test_filter_can_add_deliveries_after_soft_deadline(self):
-        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1',
-                            deadline_handling=Assignment.DEADLINEHANDLING_SOFT)\
-            .add_group()
-        groupbuilder.add_deadline_x_weeks_ago(weeks=1)
-        self.assertEqual(AssignmentGroup.objects.filter_can_add_deliveries().count(), 1)
-
-    def test_filter_can_add_deliveries_has_delivery(self):
-        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')\
-            .add_group()
-        groupbuilder.add_deadline_in_x_weeks(weeks=1)\
-            .add_delivery_x_hours_before_deadline(hours=1)
-        self.assertEqual(AssignmentGroup.objects.filter_can_add_deliveries().count(), 1)
-
-    def test_filter_can_add_deliveries_not_on_corrected(self):
-        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')\
-            .add_group()
-        groupbuilder.add_deadline_in_x_weeks(weeks=1)\
-            .add_delivery_x_hours_before_deadline(hours=1)\
-            .add_passed_A_feedback(saved_by=UserBuilder('testexaminer').user)
-        self.assertEqual(AssignmentGroup.objects.filter_can_add_deliveries().count(), 0)
 
     def test_delete_copied_from_does_not_delete_group(self):
         group1 = baker.make('core.AssignmentGroup')
@@ -1119,118 +804,7 @@ class TestAssignmentGroupGetCurrentState(TestCase):
         json.dumps(state)
 
 
-class TestAssignmentGroupStatus(TestCase):
-    def setUp(self):
-        self.assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')
-        self.group1builder = self.assignmentbuilder.add_group()
-
-    def test_no_deadlines(self):
-        self.assertEqual(self.group1builder.group.delivery_status, 'no-deadlines')
-        self.assertEqual(self.group1builder.group.get_status(), 'no-deadlines')
-
-    def test_waiting_for_deliveries(self):
-        self.group1builder.add_deadline_in_x_weeks(weeks=1)
-        self.assertEqual(self.group1builder.group.delivery_status, 'waiting-for-something')
-        self.assertEqual(self.group1builder.group.get_status(), 'waiting-for-deliveries')
-
-    def test_waiting_for_feedback(self):
-        self.group1builder.add_deadline_x_weeks_ago(weeks=1)
-        self.assertEqual(self.group1builder.group.get_status(), 'waiting-for-feedback')
-
-    def test_corrected(self):
-        self.group1builder.add_deadline_in_x_weeks(weeks=1)\
-            .add_delivery()\
-            .add_passed_feedback(saved_by=UserBuilder('testuser').user)
-        self.assertEqual(self.group1builder.group.delivery_status, 'corrected')
-        self.assertEqual(self.group1builder.group.get_status(), 'corrected')
-
-    def test_closed_without_feedback(self):
-        self.group1builder.update(is_open=False)
-        self.assertEqual(self.group1builder.group.delivery_status, 'closed-without-feedback')
-        self.assertEqual(self.group1builder.group.get_status(), 'closed-without-feedback')
-
-    def test_non_electronic_always_waiting_for_feedback_before_deadline(self):
-        self.assignmentbuilder.update(
-            delivery_types=deliverytypes.NON_ELECTRONIC
-        )
-        self.group1builder.add_deadline_in_x_weeks(weeks=1)
-        self.group1builder.reload_from_db()
-        self.assertEqual(self.group1builder.group.get_status(), 'waiting-for-feedback')
-
-    def test_non_electronic_always_waiting_for_feedback_after_deadline(self):
-        self.assignmentbuilder.update(
-            delivery_types=deliverytypes.NON_ELECTRONIC
-        )
-        self.group1builder.add_deadline_x_weeks_ago(weeks=1)
-        self.group1builder.reload_from_db()
-        self.assertEqual(self.group1builder.group.get_status(), 'waiting-for-feedback')
-
-
 class TestAssignmentGroupManager(TestCase):
-    def test_filter_waiting_for_deliveries(self):
-        examiner1 = UserBuilder('examiner1').user
-        week1 = PeriodBuilder.quickadd_ducku_duck1010_active().add_assignment('week1')
-        group1builder = week1.add_group().add_examiners(examiner1)
-        group2builder = week1.add_group().add_examiners(examiner1)
-        group1builder.add_deadline_in_x_weeks(weeks=1)
-        group2builder.add_deadline_x_weeks_ago(weeks=1)
-        qry = AssignmentGroup.objects.filter_waiting_for_deliveries()
-        self.assertEqual(qry.count(), 1)
-        self.assertEqual(qry[0], group1builder.group)
-
-    def test_filter_waiting_for_deliveries_nonelectronic(self):
-        examiner1 = UserBuilder('examiner1').user
-        week1 = PeriodBuilder.quickadd_ducku_duck1010_active().add_assignment(
-            'week1',
-            delivery_types=deliverytypes.NON_ELECTRONIC)
-        group1builder = week1.add_group().add_examiners(examiner1)
-        group2builder = week1.add_group().add_examiners(examiner1)
-        group1builder.add_deadline_in_x_weeks(weeks=1)
-        group2builder.add_deadline_x_weeks_ago(weeks=1)
-        qry = AssignmentGroup.objects.filter_waiting_for_deliveries()
-        self.assertEqual(qry.count(), 0)
-
-    def test_filter_waiting_for_feedback(self):
-        examiner1 = UserBuilder('examiner1').user
-        week1 = PeriodBuilder.quickadd_ducku_duck1010_active().add_assignment('week1')
-        group1builder = week1.add_group().add_examiners(examiner1)
-        group2builder = week1.add_group().add_examiners(examiner1)
-        group1builder.add_deadline_in_x_weeks(weeks=1)
-        group2builder.add_deadline_x_weeks_ago(weeks=1)
-        qry = AssignmentGroup.objects.filter_waiting_for_feedback()
-        self.assertEqual(qry.count(), 1)
-        self.assertEqual(qry[0], group2builder.group)
-
-    def test_filter_waiting_for_feedback_nonelectronic(self):
-        examiner1 = UserBuilder('examiner1').user
-        week1 = PeriodBuilder.quickadd_ducku_duck1010_active().add_assignment(
-            'week1',
-            delivery_types=deliverytypes.NON_ELECTRONIC)
-        group1builder = week1.add_group().add_examiners(examiner1)
-        group2builder = week1.add_group().add_examiners(examiner1)
-        group1builder.add_deadline_in_x_weeks(weeks=1)
-        group2builder.add_deadline_x_weeks_ago(weeks=1)
-        qry = AssignmentGroup.objects.filter_waiting_for_feedback()
-        self.assertEqual(qry.count(), 2)
-
-    def test_filter_waiting_for_feedback_nesting(self):
-        examiner1 = UserBuilder('examiner1').user
-        week1 = PeriodBuilder.quickadd_ducku_duck1010_active().add_assignment('week1')
-        group1builder = week1.add_group().add_examiners(examiner1)
-        group2builder = week1.add_group().add_examiners(examiner1)
-        group3builder = week1.add_group()
-
-        group1builder.add_deadline_x_weeks_ago(weeks=1)
-        group2builder.add_deadline_in_x_weeks(weeks=1)
-        group3builder.add_deadline_x_weeks_ago(weeks=1)
-
-        self.assertEqual(AssignmentGroup.objects.filter_waiting_for_feedback().count(), 2)
-        self.assertEqual(AssignmentGroup.objects.filter_examiner_has_access(examiner1).count(), 2)
-        qry = AssignmentGroup.objects.filter_examiner_has_access(examiner1).filter_waiting_for_feedback()
-        self.assertEqual(qry.count(), 1)
-        self.assertEqual(qry[0], group1builder.group)
-
     def test_filter_is_published(self):
         periodbuilder = SubjectBuilder.quickadd_ducku_duck1010()\
             .add_period('period1',
@@ -1311,7 +885,7 @@ class TestAssignmentGroupQuerySetPeriodTagFiltering(TestCase):
         testtag = baker.make('core.PeriodTag', period=testperiod)
         testtag.relatedstudents.add(teststudent.relatedstudent)
         self.assertNotIn(testgroup, AssignmentGroup.objects.filter_no_periodtag_for_students())
-    
+
     def test_filter_no_periodtag_for_students_multistudent_group_no_tags(self):
         testperiod = baker.make('core.Period')
         testassignment = baker.make('core.Assignment', parentnode=testperiod)
@@ -1327,7 +901,7 @@ class TestAssignmentGroupQuerySetPeriodTagFiltering(TestCase):
             relatedstudent=baker.make('core.RelatedStudent', period=testperiod)
         )
         self.assertIn(testgroup, AssignmentGroup.objects.filter_no_periodtag_for_students())
-    
+
     def test_filter_no_periodtag_for_students_multistudent_group_one_student_missing_tags(self):
         testperiod = baker.make('core.Period')
         testassignment = baker.make('core.Assignment', parentnode=testperiod)
@@ -1345,7 +919,7 @@ class TestAssignmentGroupQuerySetPeriodTagFiltering(TestCase):
         testtag = baker.make('core.PeriodTag', period=testperiod)
         testtag.relatedstudents.add(teststudent.relatedstudent)
         self.assertIn(testgroup, AssignmentGroup.objects.filter_no_periodtag_for_students())
-    
+
     def test_filter_no_periodtag_for_students_multistudent_group_all_students_has_tag(self):
         testperiod = baker.make('core.Period')
         testassignment = baker.make('core.Assignment', parentnode=testperiod)
@@ -1364,7 +938,7 @@ class TestAssignmentGroupQuerySetPeriodTagFiltering(TestCase):
         testtag.relatedstudents.add(teststudent1.relatedstudent)
         testtag.relatedstudents.add(teststudent2.relatedstudent)
         self.assertNotIn(testgroup, AssignmentGroup.objects.filter_no_periodtag_for_students())
-    
+
     #
     # filter_periodtag_for_students
     #
@@ -1382,7 +956,7 @@ class TestAssignmentGroupQuerySetPeriodTagFiltering(TestCase):
             testgroup,
             AssignmentGroup.objects.filter_periodtag_for_students(periodtag_id=testtag.id)
         )
-    
+
     def test_filter_periodtag_for_students_has_tag_sanity(self):
         testperiod = baker.make('core.Period')
         testassignment = baker.make('core.Assignment', parentnode=testperiod)
@@ -1415,7 +989,7 @@ class TestAssignmentGroupQuerySetPeriodTagFiltering(TestCase):
             testgroup,
             AssignmentGroup.objects.filter_periodtag_for_students(periodtag_id=testtag1.id)
         )
-    
+
     def test_filter_periodtag_for_students_multistudent_group_all_students_missing_tag(self):
         testperiod = baker.make('core.Period')
         testassignment = baker.make('core.Assignment', parentnode=testperiod)
@@ -1456,7 +1030,7 @@ class TestAssignmentGroupQuerySetPeriodTagFiltering(TestCase):
             testgroup,
             AssignmentGroup.objects.filter_periodtag_for_students(periodtag_id=testtag.id)
         )
-    
+
     def test_filter_periodtag_for_students_multistudent_group_all_students_has_tag(self):
         testperiod = baker.make('core.Period')
         testassignment = baker.make('core.Assignment', parentnode=testperiod)
@@ -1478,7 +1052,7 @@ class TestAssignmentGroupQuerySetPeriodTagFiltering(TestCase):
             testgroup,
             AssignmentGroup.objects.filter_periodtag_for_students(periodtag_id=testtag.id)
         )
-    
+
 
     #
     # filter_no_periodtag_for_examiners
@@ -1506,7 +1080,7 @@ class TestAssignmentGroupQuerySetPeriodTagFiltering(TestCase):
         testtag = baker.make('core.PeriodTag', period=testperiod)
         testtag.relatedexaminers.add(testexaminer.relatedexaminer)
         self.assertNotIn(testgroup, AssignmentGroup.objects.filter_no_periodtag_for_examiners())
-    
+
     def test_filter_no_periodtag_for_examiners_multiexaminer_group_no_tags(self):
         testperiod = baker.make('core.Period')
         testassignment = baker.make('core.Assignment', parentnode=testperiod)
@@ -1522,7 +1096,7 @@ class TestAssignmentGroupQuerySetPeriodTagFiltering(TestCase):
             relatedexaminer=baker.make('core.RelatedExaminer', period=testperiod)
         )
         self.assertIn(testgroup, AssignmentGroup.objects.filter_no_periodtag_for_examiners())
-    
+
     def test_filter_no_periodtag_for_examiners_multiexaminer_group_one_examiner_missing_tags(self):
         testperiod = baker.make('core.Period')
         testassignment = baker.make('core.Assignment', parentnode=testperiod)
@@ -1540,7 +1114,7 @@ class TestAssignmentGroupQuerySetPeriodTagFiltering(TestCase):
         testtag = baker.make('core.PeriodTag', period=testperiod)
         testtag.relatedexaminers.add(testexaminer.relatedexaminer)
         self.assertIn(testgroup, AssignmentGroup.objects.filter_no_periodtag_for_examiners())
-    
+
     def test_filter_no_periodtag_for_examiners_multiexaminer_group_all_examiners_has_tag(self):
         testperiod = baker.make('core.Period')
         testassignment = baker.make('core.Assignment', parentnode=testperiod)
@@ -1577,7 +1151,7 @@ class TestAssignmentGroupQuerySetPeriodTagFiltering(TestCase):
             testgroup,
             AssignmentGroup.objects.filter_periodtag_for_examiners(periodtag_id=testtag.id)
         )
-    
+
     def test_filter_periodtag_for_examiners_has_tag_sanity(self):
         testperiod = baker.make('core.Period')
         testassignment = baker.make('core.Assignment', parentnode=testperiod)
@@ -1610,7 +1184,7 @@ class TestAssignmentGroupQuerySetPeriodTagFiltering(TestCase):
             testgroup,
             AssignmentGroup.objects.filter_periodtag_for_examiners(periodtag_id=testtag1.id)
         )
-    
+
     def test_filter_periodtag_for_examiners_multiexaminer_group_all_examiners_missing_tag(self):
         testperiod = baker.make('core.Period')
         testassignment = baker.make('core.Assignment', parentnode=testperiod)
@@ -1651,7 +1225,7 @@ class TestAssignmentGroupQuerySetPeriodTagFiltering(TestCase):
             testgroup,
             AssignmentGroup.objects.filter_periodtag_for_examiners(periodtag_id=testtag.id)
         )
-    
+
     def test_filter_periodtag_for_examiners_multiexaminer_group_all_examiners_has_tag(self):
         testperiod = baker.make('core.Period')
         testassignment = baker.make('core.Assignment', parentnode=testperiod)

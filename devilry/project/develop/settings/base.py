@@ -20,7 +20,6 @@ logdir = join(developfilesdir, 'log')
 if not exists(logdir):
     os.mkdir(logdir)
 MEDIA_ROOT = join(developfilesdir, "filestore")
-DEVILRY_FSHIERDELIVERYSTORE_ROOT = join(developfilesdir, 'deliverystorehier')
 
 DATABASES = {
     'default': dj_database_url.parse(
@@ -61,8 +60,6 @@ ROOT_URLCONF = 'devilry.project.develop.dev_urls'
 
 DEVILRY_SCHEME_AND_DOMAIN = 'https://devilry.example.com'
 
-DEVILRY_DELIVERY_STORE_BACKEND = 'devilry.apps.core.deliverystore.FsHierDeliveryStore'
-DEVILRY_FSHIERDELIVERYSTORE_INTERVAL = 10
 DEVILRY_SYNCSYSTEM = 'FS (Felles Studentsystem)'
 
 PASSWORD_HASHERS = (

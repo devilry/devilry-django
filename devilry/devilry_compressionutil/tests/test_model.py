@@ -6,7 +6,6 @@ import io
 import mock
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.core.files.base import ContentFile
 from django.db import IntegrityError
 from django.test import TestCase, override_settings
 from django.utils import timezone

@@ -11,7 +11,6 @@ logdir = join(testfilesdir, 'log')
 if not exists(logdir):
     os.mkdir(logdir)
 MEDIA_ROOT = join(testfilesdir, "filestore")
-DEVILRY_FSHIERDELIVERYSTORE_ROOT = join(testfilesdir, 'deliverystorehier')
 
 #: Where to store compressed archives for download.
 DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY = os.path.join(testfilesdir, 'devilry_compressed_archives', '')
@@ -84,7 +83,13 @@ RQ_QUEUES['highpriority']['ASYNC'] = False
 
 
 STORAGES = {
-    'default': {
+    'devilry_delivery_storage': {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "OPTIONS": {
+            "location": "devilry_testfiles",
+        },
+    },
+    'devilry_temp_storage': {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
         "OPTIONS": {
             "location": "devilry_testfiles",

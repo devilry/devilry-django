@@ -106,9 +106,8 @@ Write tests
 ===========
 If you want your plugin to be considered for inclusion in Devilry you will have to write good
 tests. These plugins handle very sensitive data, so it would be madness to deploy them in production
-without proper tests. We provide a helper-mixin for tests,
-:class:`devilry_qualifiesforexam.pluginhelpers.QualifiesForExamPluginTestMixin`, which you should
-use. See the ``tests``-module in ``devilry_qualifiesforexam_approved`` for examples.
+without proper tests.
+See the ``tests``-module in ``devilry_qualifiesforexam_approved`` for examples.
 
 
 
@@ -193,13 +192,6 @@ period to find out who qualifies::
         :return: Does the student qualify for exam?
         :rtype: bool
 
-    .. py:method:: get_relatedstudents_that_qualify_for_exam
-
-        Uses :ref:`utils_groups_groupedby_relatedstudent_and_assignment` to aggregate all data
-        for all students in the period. Loops through the resulting
-        :class:`~devilry.utils.groups_groupedby_relatedstudent_and_assignment.AggreatedRelatedStudentInfo`-objects
-        and sends them to :meth:`.student_qualifies_for_exam`.
-
         :return:
             A list with the ids of all relatedstudents for which
             :meth:`.student_qualifies_for_exam` returned ``True``.
@@ -260,111 +252,6 @@ period to find out who qualifies::
 
 Helper for unit tests
 =====================
-
-.. py:class:: QualifiesForExamPluginTestMixin
-
-    Mixin-class for test-cases for plugin-views (the views that typically inherit from
-    :class:`.QualifiesForExamPluginViewMixin`). This class has a couple of helpers that
-    simplifies writing tests, and some unimplemented methods that ensure you do not forget
-    to write permission tests.
-
-    .. note::
-        If you use this class as base for your tests, your chances of getting a plugin approved
-        for inclusion as part of Devilry is greatly increased. You have to include at least one
-        test in addition to the unimplemented tests, a test that uses a realistic dataset
-        to make sure your plugin behaves as intended (E.g.: Approves/disapproves the expected
-        students). You may need more than one extra test if your plugin is complex.
-
-    .. py:attribute:: testhelper
-
-        A :class:`devilry.apps.core.testhelper.TestHelper`-object which is required for
-        :meth:`.create_feedbacks` and :meth:`.create_relatedstudent` to work.
-
-        Typcally created with something like this in ``setUp``::
-
-            from django.test import TestCase
-            from devilry.apps.core.testhelper import TestHelper
-
-            class TestMyPluginView(TestCase, QualifiesForExamPluginTestMixin):
-                def setUp(self):
-                    self.testhelper = TestHelper()
-
-                    # Create:
-                    # - the uni-node with ``uniadmin`` as admin
-                    # - the uni.sub.p1 period with ``periodadmin`` as admin.
-                    # - the a1 and a2 assignments within ``p1``, with separate groups on each
-                    #   assignment for student1 and student2, and with examiner1 as examiner.
-                    # - a deadline on each group
-                    self.testhelper.add(nodes='uni:admin(uniadmin)',
-                        subjects=['sub'],
-                        periods=['p1:admin(periodadmin):begins(-3):ends(6)'],
-                        assignments=['a1', 'a2'],
-                        assignmentgroups=[
-                            'gstudent1:candidate(student1):examiner(examiner1)',
-                            'gstudent2:candidate(student2):examiner(examiner1)'],
-                        deadlines=['d1:ends(10)']
-                    )
-
-    .. py:attribute:: period
-
-        The period you use in your tests. Needs to be set in the ``setUp``-method for
-        :meth:`.create_relatedstudent` to work. Typically defined with the following code
-        after the core in the example in :attr:`.testhelper`::
-
-            self.period = self.testhelper.sub_p1
-
-    .. py:method:: create_relatedstudent(username)
-
-        Create and return a related student on the :attr:`.period`. A user with the given
-        username is created if it does not exist.
-
-    .. py:method:: create_feedbacks(*feedbacks):
-
-        Create feedbacks on groups from the given list of ``feedbacks``.
-
-        :param feedbacks:
-            Each item in the arguments list is a ``(group, feedback)`` tuple where ``group``
-            is the :class:`devilry.apps.core.models.AssignmentGroup`-object that it to be given
-            feedback, and ``feedbacks`` is a dict with attributes for the
-            :class:`devilry.apps.core.models.StaticFeedback` with the following keys:
-
-                ``grade``
-                    See :attr:`devilry.apps.core.models.StaticFeedback.grade`.
-                ``points``
-                    See :attr:`devilry.apps.core.models.StaticFeedback.points`.
-                ``is_passing_grade``
-                    See :attr:`devilry.apps.core.models.StaticFeedback.is_passing_grade`.
-
-        A delivery to save the feedback on is created automatically, so all that is needed
-        of the groups is an examiner, a candidate and a deadline.
-
-        Example::
-
-            self.create_feedbacks(
-                (self.testhelper.sub_p1_a1_gstudent2, {'grade': 'B', 'points': 86, 'is_passing_grade': True}),
-                (self.testhelper.sub_p1_a2_gstudent2, {'grade': 'A', 'points': 97, 'is_passing_grade': True})
-            )
-
-
-    .. py:method:: test_perms_as_periodadmin
-
-        Must be implemented in subclasses.
-
-    .. py:method:: test_perms_as_nodeadmin
-
-        Must be implemented in subclasses.
-
-    .. py:attribute:: test_perms_as_superuser
-
-        Must be implemented in subclasses.
-
-    .. py:attribute:: test_perms_as_nobody
-
-        Must be implemented in subclasses.
-
-    .. py:attribute:: test_invalid_period
-
-        Must be implemented in subclasses.
 
 
 Other helpers
