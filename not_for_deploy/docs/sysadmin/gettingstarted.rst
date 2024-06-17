@@ -43,15 +43,12 @@ party devilry addons. We could just install these, but that would be
 messy to maintain. Instead, we use a PIP requirements-file. Create
 ``~/devilrydeploy/requirements.txt`` with the following contents::
 
-    # PostgreSQL python bindings
-    psycopg2
-
     # Supervisord process manager
     supervisor
 
     # The devilry library/djangoproject
     # - See http://devilry.org for the latest devilry version
-    devilry==VERSION
+    devilry[prod]==VERSION
 
 Where ``VERSION`` should be set to the latest version of Devilry.
 
@@ -112,10 +109,6 @@ Start by copying the following into ``~/devilrydeploy/devilry_settings.py``::
     #: The URL that is used to link back to devilry from emails
     DEVILRY_SCHEME_AND_DOMAIN = 'https://devilry.example.com'
 
-    #: Where should Devilry store files delivered by students.
-    #: This directory should be backed up.
-    DEVILRY_FSHIERDELIVERYSTORE_ROOT = '/path/to/directory/for/deliveryfiles/'
-
     #: The directory where user uploaded files such as attachments to feedback is uploaded.
     #: This directory should be backed up.
     MEDIA_ROOT = '/path/to/directory/for/uploadedfiles/'
@@ -173,6 +166,65 @@ Start by copying the following into ``~/devilrydeploy/devilry_settings.py``::
         db=0,
         password='secret'
     )
+
+    #: The storage backend (configured in STORAGES below) where deliveries are
+    #: stored. Should be some sort of high redundancy storage. Should normally be
+    #: a high read/write performance storage, but the requirements depend of the
+    #: number of students and worst case delivery upload/download requests per second.
+    DELIVERY_STORAGE_BACKEND = 'devilry_delivery_storage'
+
+    #: The storage backend (configured in STORAGES below) where temp files are stored.
+    #: Does not have to be high redundancy storage but just like with ``DELIVERY_STORAGE_BACKEND``,
+    #: it may need high read/write performance.
+    DELIVERY_TEMPORARY_STORAGE_BACKEND = 'devilry_temp_storage'
+
+    #: The django storage backend (configured in STORAGES below) where devilry stores
+    #: temporary files during delivery uploads.
+    #: Does not have to be high redundancy storage but just like with ``DELIVERY_STORAGE_BACKEND``,
+    #: it may need high read/write performance. If you use low redundancy storage,
+    #: you MAY get cases where files are lost during the delivery process because this
+    #: storage is where files is stored when uploaded, but the "comment" is not
+    #: submitted/saved, but for that to be a problem, it must be really low redundancy
+    #: storage.
+    CRADMIN_LEGACY_TEMPORARY_FILE_STORAGE_BACKEND = 'devilry_temp_storage'
+
+    #: The directory where compressed archives are stored within the storage backend
+    #: configured via ``DELIVERY_TEMPORARY_STORAGE_BACKEND``. Must be a relative
+    #: path, and it is normally just a simple directory name without any hierarchy.
+    #: Archives are compressed when examiners or students downloads files from an
+    #: assignment or a feedbackset.
+    DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY = 'compressed_archives'
+
+    #: Storages - defaults to local file storage in:
+    #:
+    #: - ``devilry_delivery_storage`` directory relative to the CWD where devilry is run.
+    #: - ``devilry_temp_storage`` directory relative to the CWD where devilry is run.
+    #:
+    #: Should always be overridden in production and setup one of:
+    #:
+    #: - Some high redundancy filesystem storage (raid + backup) for delivery storage
+    #:   (tempstorage does not require high redundancy).
+    #: - Some high redundancy blob storage (S3 etc.) via the ``django-storages`` python
+    #:   library or similar for delivery storage (tempstorage does not require high redundancy).
+    #:
+    ## Local storage example
+    # STORAGES = {
+    #     'devilry_delivery_storage': {
+    #         "BACKEND": "django.core.files.storage.FileSystemStorage",
+    #         "OPTIONS": {
+    #             "location": "/some/local/directory/devilry_delivery_storage",
+    #         },
+    #     },
+    #     'devilry_temp_storage': {
+    #         "BACKEND": "django.core.files.storage.FileSystemStorage",
+    #         "OPTIONS": {
+    #             "location": "/some/local/directory/devilry_temp_storage",
+    #         },
+    #     },
+    #     "staticfiles": {
+    #         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    #     },
+    # }
 
 
 If you have a ``devilry_prod_settings.py`` file from an older version of Devilry, you should be

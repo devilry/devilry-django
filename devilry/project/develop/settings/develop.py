@@ -277,10 +277,27 @@ DEVILRY_ASSIGNMENT_GUIDELINES = {
     ]
 }
 
+# DELIVERY_STORAGE_BACKEND = 'devilry_delivery_storage'
+# DELIVERY_TEMPORARY_STORAGE_BACKEND = 'devilry_temp_storage'
+# CRADMIN_LEGACY_TEMPORARY_FILE_STORAGE_BACKEND = 'devilry_temp_storage'
+
 # STORAGES = {
-#    # ...
-#    "staticfiles": {
-#        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-#    },
+#     'devilry_delivery_storage': {
+#         "BACKEND": "django.core.files.storage.FileSystemStorage",
+#         "OPTIONS": {
+#             "location": "/some/local/directory/devilry_delivery_storage",
+#         },
+#     },
+#     'devilry_temp_storage': {
+#         "BACKEND": "django.core.files.storage.FileSystemStorage",
+#         "OPTIONS": {
+#             "location": "/some/local/directory/devilry_temp_storage",
+#         },
+#     },
+#     "staticfiles": {
+#         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+#     },
 # }
+
+
 DEVILRY_MEMORY_DEBUG_ENABLED = False

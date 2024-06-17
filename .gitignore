@@ -62,3 +62,4 @@ dump.rdb
 /devilry_filestorage/
 /devilry_temp_storage/
 /devilry_delivery_storage/
+/minio_devdata/
