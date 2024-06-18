@@ -200,20 +200,21 @@ class PythonZipFileBackend(BaseArchiveBackend):
             raise ValueError('readmode must be False to add files.')
         if self._archive is None or self._closed:
             self._closed = False
+            self._archivefile = self.open_write_binary()
             self._archive = zipfile.ZipFile(
-                self.open_write_binary(), 'a', zipfile.ZIP_DEFLATED, allowZip64=True)
+                self._archivefile, 'w', zipfile.ZIP_DEFLATED, allowZip64=True)
         print_memory_usage(f'Before adding {path} to zipfile')
         CHUNK_SIZE = 1024 * 1024 * 8  # 8MB
-        with self._archive.open(path, 'w', force_zip64=True) as destinationfile:
-            while True:
-                # print_memory_usage(f'Before reading chunk from {path}')
-                chunk = filelike_obj.read(CHUNK_SIZE)
-                # print_memory_usage(f'After reading chunk from {path}')
-                if chunk:
+        with filelike_obj.open() as inputfile:
+            with self._archive.open(
+                zipfile.ZipInfo(path, date_time=(2000, 1, 1, 0, 0, 0)),
+                'w', force_zip64=True
+            ) as destinationfile:
+                for chunk in inputfile.chunks(CHUNK_SIZE):
+                    # print_memory_usage(f'After reading chunk from {path}')
                     destinationfile.write(chunk)
+                    destinationfile.flush()
                     # print_memory_usage(f'After writing chunk from {path}')
-                else:
-                    break
         print_memory_usage(f'After adding {path} to zipfile')
 
     def read_archive(self):
@@ -234,4 +235,6 @@ class PythonZipFileBackend(BaseArchiveBackend):
         super().close()
         if self._archive:
             self._archive.close()
+            self._archivefile.close()
             self._archive = None
+            self._archivefile = None

@@ -10,7 +10,8 @@ def create_logging_config(
         django_loglevel='INFO',
         db_loglevel='WARNING',
         sh_loglevel='WARNING',
-        request_loglevel='ERROR'):
+        request_loglevel='ERROR',
+        storages_loglevel='WARNING'):
     """
     Returns a logging config that can be used for ``settings.LOGGING``.
 
@@ -112,6 +113,26 @@ def create_logging_config(
             'chardet.charsetprober': {
                 'handlers': ['stderr'],
                 'level': 'INFO',
+                'propagate': False
+            },
+            's3transfer': {
+                'handlers': ['stderr'],
+                'level': storages_loglevel,
+                'propagate': False
+            },
+            'botocore': {
+                'handlers': ['stderr'],
+                'level': storages_loglevel,
+                'propagate': False
+            },
+            'urllib3': {
+                'handlers': ['stderr'],
+                'level': storages_loglevel,
+                'propagate': False
+            },
+            'boto3': {
+                'handlers': ['stderr'],
+                'level': storages_loglevel,
                 'propagate': False
             },
             '': {

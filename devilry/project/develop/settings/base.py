@@ -69,11 +69,11 @@ PASSWORD_HASHERS = (
 )
 
 
-#DEVILRY_USERADMIN_USER_READONLY_FIELDS = ['email', 'is_superuser', 'is_staff', 'is_active']
-#DEVILRY_USERADMIN_DEVILRYUSERPROFILE_READONLY_FIELDS = ['languagecode', 'full_name']
-#DEVILRY_USERADMIN_USER_CHANGE_VIEW_MESSAGE = 'This is a test.'
-#DEVILRY_USERADMIN_USER_ADD_VIEW_MESSAGE = 'This is a add test.'
-#DEVILRY_USERADMIN_PASSWORD_HELPMESSAGE = 'Passwords are handled by Our Awesome External User Management System. Follow <a href="https://awesome.example.com">this link</a> to reset passwords.'
+# DEVILRY_USERADMIN_USER_READONLY_FIELDS = ['email', 'is_superuser', 'is_staff', 'is_active']
+# DEVILRY_USERADMIN_DEVILRYUSERPROFILE_READONLY_FIELDS = ['languagecode', 'full_name']
+# DEVILRY_USERADMIN_USER_CHANGE_VIEW_MESSAGE = 'This is a test.'
+# DEVILRY_USERADMIN_USER_ADD_VIEW_MESSAGE = 'This is a add test.'
+# DEVILRY_USERADMIN_PASSWORD_HELPMESSAGE = 'Passwords are handled by Our Awesome External User Management System. Follow <a href="https://awesome.example.com">this link</a> to reset passwords.'
 
 
 ##################################################################################
@@ -93,7 +93,7 @@ if 'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware' not in MID
     MIDDLEWARE.append('devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware')
 
 # MIDDLEWARE += [
-    #'devilry.utils.profile.ProfilerMiddleware' # Enable profiling. Just add ?prof=yes to any url to see a profile report
+#'devilry.utils.profile.ProfilerMiddleware' # Enable profiling. Just add ?prof=yes to any url to see a profile report
 # ]
 
 
@@ -131,7 +131,8 @@ IEVVTASKS_DUMPDATA_DIRECTORY = os.path.join(os.path.dirname(THIS_DIR), 'dumps')
 from devilry.project.log import create_logging_config  # noqa
 LOGGING = create_logging_config(
     mail_admins=False,
-    dangerous_actions_loglevel='DEBUG',
-    django_loglevel='DEBUG',
-    request_loglevel='DEBUG'
+    dangerous_actions_loglevel="DEBUG",
+    django_loglevel="DEBUG",
+    request_loglevel="DEBUG",
+    storages_loglevel="WARNING",  # Set to DEBUG to debug S3 stuff
 )

@@ -53,7 +53,8 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-prod = [
+s3storage = [
+    "boto3",
     "django-storages",
 ]
 dev = [
@@ -67,10 +68,13 @@ dev = [
     "pyflakes==0.8.1",
     "Fabric3==1.14.post1",
     "boto==2.32.1",
+    "boto3",
     "django-storages",
     "django-auth-ldap",
     "pip-tools",
     "django-debug-toolbar",
+    "humanize",  # DEVILRY_MEMORY_DEBUG_ENABLED=True
+    "psutil",   # Only used when DEVILRY_MEMORY_DEBUG_ENABLED=True
 ]
 test = [
     "htmls",

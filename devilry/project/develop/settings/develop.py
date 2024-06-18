@@ -277,27 +277,37 @@ DEVILRY_ASSIGNMENT_GUIDELINES = {
     ]
 }
 
-# DELIVERY_STORAGE_BACKEND = 'devilry_delivery_storage'
-# DELIVERY_TEMPORARY_STORAGE_BACKEND = 'devilry_temp_storage'
-# CRADMIN_LEGACY_TEMPORARY_FILE_STORAGE_BACKEND = 'devilry_temp_storage'
+DELIVERY_STORAGE_BACKEND = 'devilry_delivery_storage'
+DELIVERY_TEMPORARY_STORAGE_BACKEND = 'devilry_temp_storage'
+CRADMIN_LEGACY_TEMPORARY_FILE_STORAGE_BACKEND = 'devilry_temp_storage'
+STORAGES = {
+    'devilry_delivery_storage': {
+        'BACKEND': 'storages.backends.s3.S3Storage',
+        'OPTIONS': {
+            # region_name: ''  # Needed for AWS, but not for all S3 compatible storages
+            'endpoint_url': 'http://localhost:9000',
+            'bucket_name': 'devilrydeliverystorage',
+            'access_key': 'testuser',
+            'secret_key': 'testpassword',
+        },
+    },
+    'devilry_temp_storage': {
+        'BACKEND': 'storages.backends.s3.S3Storage',
+        'OPTIONS': {
+            # region_name: ''  # Needed for AWS, but not for all S3 compatible storages
+            'endpoint_url': 'http://localhost:9000',
+            'bucket_name': 'devilrytempstorage',
+            'access_key': 'testuser',
+            'secret_key': 'testpassword',
+        },
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+        'OPTIONS': {
+            'location': "staticfiles"
+        },
+    },
+}
 
-# STORAGES = {
-#     'devilry_delivery_storage': {
-#         "BACKEND": "django.core.files.storage.FileSystemStorage",
-#         "OPTIONS": {
-#             "location": "/some/local/directory/devilry_delivery_storage",
-#         },
-#     },
-#     'devilry_temp_storage': {
-#         "BACKEND": "django.core.files.storage.FileSystemStorage",
-#         "OPTIONS": {
-#             "location": "/some/local/directory/devilry_temp_storage",
-#         },
-#     },
-#     "staticfiles": {
-#         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
-#     },
-# }
 
-
-DEVILRY_MEMORY_DEBUG_ENABLED = False
+DEVILRY_MEMORY_DEBUG_ENABLED = True
