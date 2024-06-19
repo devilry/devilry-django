@@ -37,6 +37,25 @@ match the password in the redis.conf file) and set the correct config parameters
     )
 
 
+For more complex setup, like redis-sentinel etc., you need to setup
+RQ_QUEUES manually with ``default``, ``email``, and ``highpriority``
+queues. Skeleton::
+
+    RQ_QUEUES = {
+        'default': {
+            # options
+        },
+        'email': {
+            # options
+        },
+        'highpriority': {
+            # options
+        },
+    }
+
+Refer to the README for https://github.com/rq/django-rq for details about the
+available options.
+
 
 Run RQ workers
 ==============
