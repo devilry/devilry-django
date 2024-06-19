@@ -20,6 +20,7 @@ What's new?
 - Various fixes related to using blob storage and memory usage, including settings cleanup,
   blob storage based zip file creation with stable memory usage.
 - Separate optional dependencies specifier for s3 storage (see requirements.txt changes section below).
+- Switch from ZIP to ``.tar.gz`` format for feedbackset downloads.
 
 
 Settings changes
