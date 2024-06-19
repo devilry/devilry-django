@@ -143,16 +143,13 @@ class BaseArchiveBackend(object):
         """
         return self.storage_backend.size(self.archive_full_path)
 
-    def add_file(self, path, filelike_obj):
+    def add_file(self, path, djangofile: DjangoFile):
         """
-        Add file to archive.
+        Add files to archive.
 
         Args:
-            path (str): Path to the file inside the archive.
-            filelike_obj: An object which implements function ``read()``.
-
-        Raises:
-            NotImplementedError: If not implemented by subclass.
+            path (str): Path to the file inside the Zip-archive.
+            djangofile: An django.core.files.File object.
         """
         raise NotImplementedError()
 
@@ -187,16 +184,6 @@ class PythonZipFileBackend(BaseArchiveBackend):
         return '.tar.gz'
 
     def add_file(self, path, djangofile: DjangoFile):
-        """
-        Add files to archive.
-
-        Args:
-            path (str): Path to the file inside the Zip-archive.
-            djangofile: An django.core.files.File object.
-
-        Raises:
-            ValueError: If ``readmode`` is set to ``True``, must be ``False`` to add files.
-        """
         if self.readmode is True:
             raise ValueError('readmode must be False to add files.')
         if self._archive is None or self._closed:
