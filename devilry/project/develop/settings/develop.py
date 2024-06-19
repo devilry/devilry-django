@@ -217,7 +217,6 @@ IEVVTASKS_MAKEMESSAGES_JAVASCRIPT_IGNORE = [
 IEVVTASKS_MAKEMESSAGES_JAVASCRIPT_EXTENSIONS = ['.js']
 
 
-
 # ievv_batchframework task mode.
 # IEVV_BATCHFRAMEWORK_ALWAYS_SYNCRONOUS = True
 
@@ -280,6 +279,25 @@ DEVILRY_ASSIGNMENT_GUIDELINES = {
 DELIVERY_STORAGE_BACKEND = 'devilry_delivery_storage'
 DELIVERY_TEMPORARY_STORAGE_BACKEND = 'devilry_temp_storage'
 CRADMIN_LEGACY_TEMPORARY_FILE_STORAGE_BACKEND = 'devilry_temp_storage'
+
+# Without this setting, django-storages uses a lot of memory. With this setting,
+# files over this size (in bytes) will be written to a temporary file on disk
+# during transfer to/from S3
+AWS_S3_MAX_MEMORY_SIZE = 1024 * 1024 * 8  # 8MB
+
+# Tune transfer config for stable memory usage and for gevent
+from boto3.s3.transfer import TransferConfig
+AWS_S3_TRANSFER_CONFIG = TransferConfig(
+    use_threads=False,  # MUST be False when using gevent worker
+    io_chunksize=1024 * 1024 * 8,  # 8MB
+    max_io_queue=4,
+    multipart_chunksize=1024 * 1024 * 8,  # 8MB
+    multipart_threshold=1024 * 1024 * 8,  # 8MB
+)
+
+# This defaults to True, and it MUST be True for devilry to work correctly
+AWS_S3_FILE_OVERWRITE = True
+
 STORAGES = {
     'devilry_delivery_storage': {
         'BACKEND': 'storages.backends.s3.S3Storage',

@@ -48,7 +48,9 @@ messy to maintain. Instead, we use a PIP requirements-file. Create
 
     # The devilry library/djangoproject
     # - See http://devilry.org for the latest devilry version
-    devilry[prod]==VERSION
+    # - For now we only have first class support for S3 (compatible) storage for production file storage
+    # - If using filesystem storage, just remove ``[s3storage]``.
+    devilry[s3storage]==VERSION
 
 Where ``VERSION`` should be set to the latest version of Devilry.
 
@@ -223,6 +225,57 @@ Start by copying the following into ``~/devilrydeploy/devilry_settings.py``::
     #     },
     #     "staticfiles": {
     #         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    #         'OPTIONS': {
+    #             'location': "/path/to/store/staticfiles/on/disk"
+    #         },
+    #     },
+    # }
+    #
+    ## S3 storage example
+    # # Without this setting, django-storages uses a lot of memory. With this setting,
+    # # files over this size (in bytes) will be written to a temporary file on disk
+    # # during transfer to/from S3
+    # AWS_S3_MAX_MEMORY_SIZE = 1024 * 1024 * 8  # 8MB
+    #
+    # # Tune transfer config for stable memory usage and for gevent
+    # from boto3.s3.transfer import TransferConfig
+    # AWS_S3_TRANSFER_CONFIG = TransferConfig(
+    #     use_threads=False,  # MUST be False when using gevent worker
+    #     io_chunksize=1024 * 1024,  # 1MB
+    #     max_io_queue=4,
+    #     multipart_chunksize=1024 * 1024 * 8,  # 8MB
+    #     multipart_threshold=1024 * 1024 * 8,  # 8MB
+    # )
+    #
+    # # This defaults to True, and it MUST be True for devilry to work correctly
+    # AWS_S3_FILE_OVERWRITE = True
+    #
+    # STORAGES = {
+    #     'devilry_delivery_storage': {
+    #         'BACKEND': 'storages.backends.s3.S3Storage',
+    #         'OPTIONS': {
+    #             # region_name: ''  # Needed for AWS, but not for all S3 compatible storages
+    #             'endpoint_url': 'http://localhost:9000',
+    #             'bucket_name': 'devilrydeliverystorage',
+    #             'access_key': 'testuser',
+    #             'secret_key': 'testpassword',
+    #         },
+    #     },
+    #     'devilry_temp_storage': {
+    #         'BACKEND': 'storages.backends.s3.S3Storage',
+    #         'OPTIONS': {
+    #             # region_name: ''  # Needed for AWS, but not for all S3 compatible storages
+    #             'endpoint_url': 'http://localhost:9000',
+    #             'bucket_name': 'devilrytempstorage',
+    #             'access_key': 'testuser',
+    #             'secret_key': 'testpassword',
+    #         },
+    #     },
+    #     "staticfiles": {
+    #         "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+    #         'OPTIONS': {
+    #             'location': "/path/to/store/staticfiles/on/disk"
+    #         },
     #     },
     # }
 

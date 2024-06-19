@@ -132,6 +132,21 @@ All users have ``test`` as their password, and the most commonly needed users ar
 You can find them all by logging in as grandma@example.com and going to http://localhost.test:8000/djangoadmin/devilry_account/user/
 
 
+### Browse uploaded files
+Files are stored in MinIO (S3 compatible storage that is run via docker-compose).
+To browse files:
+
+- Go to http://localhost:9001/
+- Login with:
+  - username: ``testuser``
+  - password: ``testpassword``
+- Select _Object browser_ in the sidebar.
+
+The MinIO files is stored on disk in the ``minio_devdata`` directory in the root
+of the repo, and you can stop docker compose, and just run ``rm -rf minio_devdata``
+to remove all the files.
+
+
 ### Run tests
 
 ```bash
