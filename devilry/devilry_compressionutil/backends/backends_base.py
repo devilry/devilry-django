@@ -1,12 +1,13 @@
 # Python imports
 import os
 import posixpath
-import zipfile
+import tarfile
+from django.core.files import File as DjangoFile
 
 # Django imports
 from django.conf import settings
 from django.core.files import File
-from django.core.files.storage import FileSystemStorage, Storage, storages
+from django.core.files.storage import FileSystemStorage, Storage
 
 from devilry.utils.memorydebug import print_memory_usage
 from devilry.utils.storageutils import get_temporary_storage
@@ -183,15 +184,15 @@ class PythonZipFileBackend(BaseArchiveBackend):
         self._archive = None
 
     def get_archive_file_extension(self) -> str:
-        return '.zip'
+        return '.tar.gz'
 
-    def add_file(self, path, filelike_obj):
+    def add_file(self, path, djangofile: DjangoFile):
         """
         Add files to archive.
 
         Args:
             path (str): Path to the file inside the Zip-archive.
-            filelike_obj: An object with method ``read()``
+            djangofile: An django.core.files.File object.
 
         Raises:
             ValueError: If ``readmode`` is set to ``True``, must be ``False`` to add files.
@@ -201,35 +202,31 @@ class PythonZipFileBackend(BaseArchiveBackend):
         if self._archive is None or self._closed:
             self._closed = False
             self._archivefile = self.open_write_binary()
-            self._archive = zipfile.ZipFile(
-                self._archivefile, 'w', zipfile.ZIP_DEFLATED, allowZip64=True)
-        print_memory_usage(f'Before adding {path} to zipfile')
-        CHUNK_SIZE = 1024 * 1024 * 8  # 8MB
-        with filelike_obj.open() as inputfile:
-            with self._archive.open(
-                zipfile.ZipInfo(path, date_time=(2000, 1, 1, 0, 0, 0)),
-                'w', force_zip64=True
-            ) as destinationfile:
-                for chunk in inputfile.chunks(CHUNK_SIZE):
-                    # print_memory_usage(f'After reading chunk from {path}')
-                    destinationfile.write(chunk)
-                    destinationfile.flush()
-                    # print_memory_usage(f'After writing chunk from {path}')
-        print_memory_usage(f'After adding {path} to zipfile')
+            self._archive = tarfile.open(mode='w:gz', fileobj=self._archivefile)
+        print_memory_usage(f'Before adding {path} to tarfile')
+        # CHUNK_SIZE = 1024 * 1024 * 8  # 8MB
+        with djangofile.open('rb') as inputfile:
+            tarinfo = tarfile.TarInfo(name=path)
+            tarinfo.size = djangofile.size
+            self._archive.addfile(
+                tarinfo=tarinfo,
+                fileobj=inputfile
+            )
+        print_memory_usage(f'After adding {path} to tarfile')
 
     def read_archive(self):
         """
-        Get the zipped archive as :obj:`~ZipFile` in readmode.
+        Get the zipped archive as :obj:`~TarFile` in readmode.
 
         Returns:
-            ZipFile: The zipped archive.
+            TarFile: The zipped archive.
         """
         if not self.readmode:
             raise ValueError('Must be in readmode')
-        return zipfile.ZipFile(self.open_read_binary(), 'r', allowZip64=True)
+        return tarfile.open(mode='r:gz', fileobj=self.open_read_binary())
 
     def get_content_type(self) -> str:
-        return 'application/zip'
+        return 'application/x-gzip'
 
     def close(self):
         super().close()

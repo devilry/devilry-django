@@ -32,7 +32,7 @@ class FeedbackSetCompressAction(AbstractBaseBatchAction, FeedbackSetBatchMixin):
 
             # Create the name for the actual archive.
             from django.utils import timezone
-            archive_name = 'feedbackset-{}-{}-delivery.zip'.format(
+            archive_name = 'feedbackset-{}-{}-delivery'.format(
                 feedback_set.id,
                 timezone.now().strftime('%Y-%m-%d_%H-%M-%S.%f'))
 

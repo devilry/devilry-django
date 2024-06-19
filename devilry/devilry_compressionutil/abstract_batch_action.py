@@ -47,7 +47,7 @@ class AbstractBaseBatchAction(batchregistry.Action):
 
         zipfile_backend.add_file(
             os.path.join(sub_path, file_name),
-            comment_file.file.file)
+            comment_file.file)
 
     def execute(self):
         raise NotImplementedError()
