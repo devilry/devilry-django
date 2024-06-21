@@ -9,6 +9,7 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.test import TestCase, override_settings
 from django.utils import timezone
+from django.core.files.base import ContentFile
 from model_bakery import baker
 
 from devilry.devilry_compressionutil import backend_registry
@@ -40,9 +41,7 @@ class TestCompressedFileMeta(TestCase):
             shutil.rmtree(self.backend_path.absolute(), ignore_errors=False)
 
     def __create_testfile(self):
-        testfile = io.BytesIO()
-        testfile.write(lorem_ipsum.encode('utf-8'))
-        testfile.seek(0)
+        testfile = ContentFile(lorem_ipsum.encode('utf-8'))
         return testfile
 
     def __setup_mock_backend(self, archive_path, file_size):
@@ -62,7 +61,7 @@ class TestCompressedFileMeta(TestCase):
         with mock.patch('devilry.devilry_compressionutil.models.backend_registry.Registry._instance',
                         self.mock_registry):
             testcomment = baker.make('devilry_group.GroupComment', user__shortname='user@example.com')
-            archivepath = 'test.zip'
+            archivepath = 'test.tar.gz'
             mock_backend = self.mock_registry.get_instance().get(
                 backend_mock.MockDevilryZipBackend.backend_id)(archive_path=archivepath)
             mock_backend.archive_size = mock.MagicMock(return_value=1)
@@ -109,8 +108,8 @@ class TestCompressedFileMeta(TestCase):
     def test_compressed_archive_meta_delete_older_than_num_days(self):
         with mock.patch('devilry.devilry_compressionutil.models.backend_registry.Registry._instance',
                         self.mock_registry):
-            archivepath1 = 'test1.zip'
-            archivepath2 = 'test2.zip'
+            archivepath1 = 'test1.tar.gz'
+            archivepath2 = 'test2.tar.gz'
 
             # Create a testfile
             testfile_name = 'testfile.txt'
@@ -152,8 +151,8 @@ class TestCompressedFileMeta(TestCase):
     def test_compressed_archive_meta_delete_older_than_num_seconds(self):
         with mock.patch('devilry.devilry_compressionutil.models.backend_registry.Registry._instance',
                         self.mock_registry):
-            archivepath1 = 'test1.zip'
-            archivepath2 = 'test2.zip'
+            archivepath1 = 'test1.tar.gz'
+            archivepath2 = 'test2.tar.gz'
 
             # Create a testfile
             testfile_name = 'testfile.txt'
@@ -195,8 +194,8 @@ class TestCompressedFileMeta(TestCase):
     def test_compressed_archive_meta_delete_archives_marked_as_deleted(self):
         with mock.patch('devilry.devilry_compressionutil.models.backend_registry.Registry._instance',
                         self.mock_registry):
-            archivepath1 = 'test1.zip'
-            archivepath2 = 'test2.zip'
+            archivepath1 = 'test1.tar.gz'
+            archivepath2 = 'test2.tar.gz'
 
             # Create a testfile
             testfile_name = 'testfile.txt'

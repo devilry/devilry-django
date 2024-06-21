@@ -9,6 +9,7 @@ import shutil
 
 from django.test import TestCase, override_settings
 from django.conf import settings
+from django.core.files.base import ContentFile
 
 # Devilry imports
 from devilry.devilry_compressionutil import backend_registry
@@ -36,16 +37,16 @@ class TestZipBackend(TestCase):
         if self.backend_path.exists():
             shutil.rmtree(self.backend_path.absolute(), ignore_errors=False)
 
-    def test_path_without_zip_extension(self):
+    def test_path_without_tar_extension(self):
         backend = backend_mock.MockDevilryZipBackend(archive_path='testpath')
-        self.assertEqual('testpath.zip', backend.archive_path)
+        self.assertEqual('testpath.tar.gz', backend.archive_path)
         self.assertEqual(
-            posixpath.join(settings.DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY, 'testpath.zip'),
+            posixpath.join(settings.DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY, 'testpath.tar.gz'),
             backend.archive_full_path)
 
-    def test_path_with_zip_extension(self):
-        backend = backend_mock.MockDevilryZipBackend(archive_path='testpath.zip')
-        self.assertEqual('testpath.zip', backend.archive_path)
+    def test_path_with_tar_extension(self):
+        backend = backend_mock.MockDevilryZipBackend(archive_path='testpath.tar.gz')
+        self.assertEqual('testpath.tar.gz', backend.archive_path)
 
     def test_open_archive_is_none(self):
         backend = backend_mock.MockDevilryZipBackend(archive_path='testpath')
@@ -85,9 +86,7 @@ class TestZipBackend(TestCase):
 
         # Create testfile
         filename = 'testfile.txt'
-        testfile = io.BytesIO()
-        testfile.write(lorem_ipsum.encode('utf-8'))
-        testfile.seek(0)
+        testfile = ContentFile(lorem_ipsum.encode('utf-8'))
 
         # Write to backend
         backend.add_file(filename, testfile)
@@ -107,9 +106,7 @@ class TestZipBackend(TestCase):
         backend = backend_class(archive_path='testfile1', readmode=False)
 
         # Create testfile
-        testfile = io.BytesIO()
-        testfile.write(b'testcontent')
-        testfile.seek(0)
+        testfile = ContentFile(b'testcontent')
 
         # Write to backend
         backend.add_file('testfile.txt', testfile)
@@ -118,7 +115,7 @@ class TestZipBackend(TestCase):
         # Read from created archive
         backend.readmode = True
         archive = backend.read_archive()
-        self.assertEqual(b'testcontent', archive.read(archive.namelist()[0]))
+        self.assertEqual(b'testcontent', archive.extractfile(archive.getmembers()[0]).read())
 
     def test_read_archive(self):
         # Reads archive and checks that content is as expected.
@@ -130,9 +127,7 @@ class TestZipBackend(TestCase):
         backend = backend_class(archive_path='testfile', readmode=False)
 
         # Create testfile
-        testfile = io.BytesIO()
-        testfile.write(b'testcontent')
-        testfile.seek(0)
+        testfile = ContentFile(b'testcontent')
 
         # Write to backend
         backend.add_file('{}'.format('testfile1.txt'), testfile)
@@ -143,8 +138,8 @@ class TestZipBackend(TestCase):
         # Read from created archive
         backend.readmode = True
         archive = backend.read_archive()
-        self.assertEqual(b'testcontent', archive.read(archive.namelist()[0]))
-        self.assertEqual(b'testcontent', archive.read(archive.namelist()[1]))
+        self.assertEqual(b'testcontent', archive.extractfile(archive.getmembers()[0]).read())
+        self.assertEqual(b'testcontent', archive.extractfile(archive.getmembers()[1]).read())
 
     def test_deep_nesting(self):
         # Tests deep nesting of folders.
@@ -163,9 +158,7 @@ class TestZipBackend(TestCase):
         backend = backend_class(archive_path='testfile1', readmode=False)
 
         # Create testfile
-        testfile = io.BytesIO()
-        testfile.write(b'testcontent')
-        testfile.seek(0)
+        testfile = ContentFile(b'testcontent')
 
         # Write to backend
         backend.add_file(os.path.join('dir1', 'testfile.txt'), testfile)
@@ -179,5 +172,5 @@ class TestZipBackend(TestCase):
 
         backend.readmode = True
         archive = backend_class(archive_path='testfile1', readmode=True).read_archive()
-        for item in archive.namelist():
+        for item in archive.getnames():
             self.assertTrue(item in nesting_levels)
