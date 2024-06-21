@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-
-
-import json
 from xml.sax.saxutils import quoteattr
 
 from crispy_forms import layout
@@ -329,6 +326,7 @@ class FeedbackFeedBaseView(create.CreateView):
                 devilryrole=self.get_devilryrole(),
                 assignment=context['assignment']
             )
+            messages.info(self.request, render_to_string('devilry_deploy/archive_download_message.django.html'))
         else:
             context['sidebarbuilder_list'] = None
 
@@ -478,7 +476,7 @@ class FeedbackFeedBaseView(create.CreateView):
                 css_class='comment-form-container'
             )
         ]
-    
+
     def get_markdown_widget_class(self):
         return DevilryMarkdownWidget
 

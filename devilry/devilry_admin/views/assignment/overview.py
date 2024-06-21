@@ -1,10 +1,15 @@
 
 
+from typing import Any
 from cradmin_legacy import crapp
 from cradmin_legacy.viewhelpers.detail import DetailRoleView
+from django.http import HttpRequest
+from django.http.response import HttpResponse as HttpResponse
+from django.template.loader import render_to_string
+from django.contrib import messages
 
 from devilry.apps.core import models as coremodels
-from devilry.apps.core.models import Assignment, Candidate, AssignmentGroup
+from devilry.apps.core.models import Assignment, AssignmentGroup
 from devilry.apps.core.models import Examiner
 from devilry.apps.core.models import RelatedExaminer
 from devilry.apps.core.models import RelatedStudent
@@ -15,6 +20,7 @@ from devilry.devilry_admin.views.assignment.gradingconfiguration import Assignme
 from devilry.devilry_admin.views.assignment.long_and_shortname import AssignmentLongAndShortNameUpdateView
 from devilry.devilry_admin.views.assignment.projectgroups import AssignmentProjectGroupUpdateView
 from devilry.devilry_admin.views.assignment.examiner_selfassign import AssignmentExaminerSelfAssignUpdateView
+from devilry.devilry_group.models import FeedbackSet
 from .first_deadline import AssignmentFirstDeadlineUpdateView
 from .publishing_time import AssignmentPublishingTimeUpdateView, PublishNowRedirectView
 
@@ -22,6 +28,11 @@ from .publishing_time import AssignmentPublishingTimeUpdateView, PublishNowRedir
 class Overview(DetailRoleView):
     model = coremodels.Assignment
     template_name = 'devilry_admin/assignment/overview.django.html'
+
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        if self.has_files():
+            messages.info(self.request, render_to_string('devilry_deploy/archive_download_message.django.html'))
+        return super().dispatch(request, *args, **kwargs)
 
     def get_candidates_count(self):
         return coremodels.Candidate.objects\
@@ -49,6 +60,12 @@ class Overview(DetailRoleView):
         return RelatedExaminer.objects\
             .filter(period=self.assignment.period, active=True)\
             .distinct('user').count()
+
+    def has_files(self):
+        return FeedbackSet.objects\
+            .filter_public_comment_files_from_students()\
+            .filter(group__parentnode=self.assignment)\
+            .exists()
 
     @property
     def assignment(self):

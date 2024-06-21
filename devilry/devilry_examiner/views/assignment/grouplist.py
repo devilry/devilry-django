@@ -6,6 +6,8 @@ from cradmin_legacy import crapp
 from cradmin_legacy.crinstance import reverse_cradmin_url
 from cradmin_legacy.viewhelpers import listbuilderview
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.template.loader import render_to_string
+from django.contrib import messages
 
 from devilry.apps.core import models as coremodels
 from devilry.apps.core.models import Candidate, Examiner, RelatedExaminer
@@ -15,6 +17,7 @@ from devilry.devilry_examiner.views.assignment.bulkoperations import bulk_feedba
 from devilry.devilry_examiner.views.assignment.bulkoperations import bulk_feedback_simple
 from devilry.apps.core.models import period_tag
 from devilry.devilry_admin.cradminextensions.listfilter import listfilter_assignmentgroup
+from devilry.devilry_group.models import FeedbackSet
 
 
 class GroupItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
@@ -38,6 +41,8 @@ class GroupListView(listbuilderview.FilterListMixin,
 
     def dispatch(self, request, *args, **kwargs):
         self.assignment = self.request.cradmin_role
+        if self.has_files():
+            messages.info(self.request, render_to_string('devilry_deploy/archive_download_message.django.html'))
         return super(GroupListView, self).dispatch(request, *args, **kwargs)
 
     def get_filterlist_template_name(self):
@@ -85,7 +90,7 @@ class GroupListView(listbuilderview.FilterListMixin,
         if self.__has_multiple_examiners():
             filterlist.append(devilry_listfilter.assignmentgroup.ExaminerFilter(view=self))
         filterlist.append(devilry_listfilter.assignmentgroup.ActivityFilter())
-        
+
         period = self.get_period()
         if period_tag.PeriodTag.objects.filter(period=period).exists():
             filterlist.append(listfilter_assignmentgroup.AssignmentGroupRelatedStudentTagSelectFilter(period=period))
@@ -218,6 +223,12 @@ class GroupListView(listbuilderview.FilterListMixin,
 
     def use_pagination_load_all(self):
         return True
+
+    def has_files(self):
+        return FeedbackSet.objects\
+            .filter_public_comment_files_from_students()\
+            .filter(group__parentnode=self.assignment)\
+            .exists()
 
     def get_context_data(self, **kwargs):
         context = super(GroupListView, self).get_context_data(**kwargs)
