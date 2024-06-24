@@ -377,7 +377,7 @@ class RelatedStudentQuerySet(models.QuerySet):
 
     def annotate_with_total_grading_points(self, assignment_ids):
         return self.annotate(
-            grade_points_total=RawSQL("""
+            grade_points_total=RawSQL(r"""
                 SELECT COALESCE(SUM(grading_points), 0)
                 FROM devilry_group_feedbackset
                 INNER JOIN devilry_dbcache_assignmentgroupcacheddata
@@ -391,8 +391,8 @@ class RelatedStudentQuerySet(models.QuerySet):
                 WHERE
                   core_candidate.relatedstudent_id = core_relatedstudent.id
                   AND
-                  core_assignment.id IN %s
-            """, [tuple(assignment_ids)], output_field=models.PositiveIntegerField()))
+                  core_assignment.id = ANY(%s)
+            """, [list(assignment_ids)], output_field=models.PositiveIntegerField()))
 
 
 class RelatedStudentManager(AbstractRelatedUserManager):

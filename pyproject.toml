@@ -58,7 +58,7 @@ s3storage = [
     "django-storages",
 ]
 dev = [
-    "dj-database-url>=0.3.0,<0.4.0",
+    "dj-database-url",
     "openpyxl",
     "model-bakery",
     "BeautifulSoup4==4.7.1",
@@ -67,7 +67,6 @@ dev = [
     "tox==1.7.2",
     "pyflakes==0.8.1",
     "Fabric3==1.14.post1",
-    "boto==2.32.1",
     "boto3",
     "django-storages",
     "django-auth-ldap",
