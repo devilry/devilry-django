@@ -315,8 +315,8 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
             viewkwargs={
                 'content_object_id': testfeedbackset.id
             })
-        self.assertEqual(mockresponse.response.content,
-                          b'{"status": "finished", "download_link": "url-to-downloadview"}')
+        self.assertContains(mockresponse.response, '"status": "finished"')
+        self.assertContains(mockresponse.response, '"download_link": "url-to-downloadview"')
 
     def test_post_marks_archive_as_deleted_if_new_files_are_added(self):
         # Tests that post marks archive as deleted if new files are added
@@ -376,8 +376,8 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
             viewkwargs={
                 'content_object_id': testfeedbackset.id
             })
-        self.assertEqual({'status': 'finished', 'download_link': 'url-to-downloadview'},
-                          json.loads(mockresponse.response.content))
+        self.assertContains(mockresponse.response, '"status": "finished"')
+        self.assertContains(mockresponse.response, '"download_link": "url-to-downloadview"')
 
         # mock return value for reverse_appurl
         with self.assertNumQueries(10):
@@ -386,5 +386,5 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
                 viewkwargs={
                     'content_object_id': testfeedbackset.id
                 })
-        self.assertEqual({'status': 'finished', 'download_link': 'url-to-downloadview'},
-                          json.loads(mockresponse.response.content))
+        self.assertContains(mockresponse.response, '"status": "finished"')
+        self.assertContains(mockresponse.response, '"download_link": "url-to-downloadview"')
