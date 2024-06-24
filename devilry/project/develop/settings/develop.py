@@ -216,6 +216,11 @@ IEVVTASKS_MAKEMESSAGES_JAVASCRIPT_IGNORE = [
 ]
 IEVVTASKS_MAKEMESSAGES_JAVASCRIPT_EXTENSIONS = ['.js']
 
+IEVVTASKS_MAKEMESSAGES_DIRECTORIES = [
+    {'directory': 'devilry',
+     'python': True, 'javascript': True},
+]
+
 
 # ievv_batchframework task mode.
 # IEVV_BATCHFRAMEWORK_ALWAYS_SYNCRONOUS = True
