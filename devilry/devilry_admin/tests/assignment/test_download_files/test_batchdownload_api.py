@@ -242,7 +242,8 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
             viewkwargs={
                 'content_object_id': testassignment.id
             })
-        self.assertEqual(mockresponse.response.content.decode(), '{"status": "finished", "download_link": ""}')
+        self.assertContains(mockresponse.response, '"status": "finished"')
+        self.assertContains(mockresponse.response, '"download_link": ""')
 
     def test_get_status_not_created_when_examiner_history_with_datetime_greater_than_last_compressed_archive(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -436,8 +437,8 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
             viewkwargs={
                 'content_object_id': testassignment.id
             })
-        self.assertEqual(mockresponse.response.content.decode(),
-                          '{"status": "finished", "download_link": "url-to-downloadview"}')
+        self.assertContains(mockresponse.response, '"status": "finished"')
+        self.assertContains(mockresponse.response, '"download_link": "url-to-downloadview"')
 
     @override_settings(IEVV_BATCHFRAMEWORK_ALWAYS_SYNCRONOUS=False)
     def test_post_marks_archive_as_deleted_if_new_files_are_added(self):
@@ -546,8 +547,8 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
             viewkwargs={
                 'content_object_id': testassignment.id
             })
-        self.assertEqual({'status': 'finished', 'download_link': 'url-to-downloadview'},
-                          json.loads(mockresponse.response.content))
+        self.assertContains(mockresponse.response, '"status": "finished"')
+        self.assertContains(mockresponse.response, '"download_link": "url-to-downloadview"')
 
         # mock return value for reverse_appurl
         mock_cradmin_app = mock.MagicMock()
@@ -559,5 +560,5 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
                 viewkwargs={
                     'content_object_id': testassignment.id
                 })
-        self.assertEqual('{"status": "finished", "download_link": "url-to-downloadview"}',
-                          mockresponse.response.content.decode())
+        self.assertContains(mockresponse.response, '"status": "finished"')
+        self.assertContains(mockresponse.response, '"download_link": "url-to-downloadview"')

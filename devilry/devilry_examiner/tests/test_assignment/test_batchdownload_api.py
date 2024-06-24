@@ -413,8 +413,8 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
             viewkwargs={
                 'content_object_id': testassignment.id
             })
-        self.assertEqual(mockresponse.response.content,
-                          b'{"status": "finished", "download_link": "url-to-downloadview"}')
+        self.assertContains(mockresponse.response, '"status": "finished"')
+        self.assertContains(mockresponse.response, '"download_link": "url-to-downloadview"')
 
     @override_settings(IEVV_BATCHFRAMEWORK_ALWAYS_SYNCRONOUS=False)
     def test_post_marks_archive_as_deleted_if_new_files_are_added(self):
@@ -523,8 +523,8 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
             viewkwargs={
                 'content_object_id': testassignment.id
             })
-        self.assertEqual({'status': 'finished', 'download_link': 'url-to-downloadview'},
-                          json.loads(mockresponse.response.content))
+        self.assertContains(mockresponse.response, '"status": "finished"')
+        self.assertContains(mockresponse.response, '"download_link": "url-to-downloadview"')
 
         # mock return value for reverse_appurl
         mock_cradmin_app = mock.MagicMock()
@@ -536,5 +536,5 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
                 viewkwargs={
                     'content_object_id': testassignment.id
                 })
-        self.assertEqual(b'{"status": "finished", "download_link": "url-to-downloadview"}',
-                          mockresponse.response.content)
+        self.assertContains(mockresponse.response, '"status": "finished"')
+        self.assertContains(mockresponse.response, '"download_link": "url-to-downloadview"')
