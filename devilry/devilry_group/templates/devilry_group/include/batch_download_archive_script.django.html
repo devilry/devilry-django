@@ -94,7 +94,7 @@
                     this._requestStatusUpdate();
                 }, this._pollDelayMilliseconds);
             } else if (status === API_STATUS_FINISHED) {
-                this._handleArchiveReadyForDownload(responseData['download_link'])
+                this._handleArchiveReadyForDownload(responseData['download_link'], responseData['download_instructions'])
             }
         }
 
@@ -115,7 +115,7 @@
             this.appendChild(errorWarning);
         }
 
-        _handleArchiveNotCreated () {            
+        _handleArchiveNotCreated () {
             const button = new DOMParser().parseFromString(`
                 <button id=${this.rootElementId} class="btn btn-default" type="button" aria-label="${this.ariaLabelArchiveBuildStart}">
                     ${this.startDownloadText}
@@ -157,16 +157,21 @@
             this.appendChild(progressNodeElement);
         }
 
-        _handleArchiveReadyForDownload (downloadUrl) {
+        _handleArchiveReadyForDownload (downloadUrl, downloadInstructions) {
             const downloadLink = new DOMParser().parseFromString(`
-                <a 
-                    id="${this.rootElementId}"
-                    href="${downloadUrl}"
-                    aria-label="${this.finishedWithinSameSession ? this.ariaLabelArchiveBuildCompleted : this.ariaLabelArchiveBuildDownload}"
-                    class="btn btn-default"
-                >
-                    ${this.downloadArchiveText}
-                </a>
+                <div>
+                    <p>
+                        <a
+                            id="${this.rootElementId}"
+                            href="${downloadUrl}"
+                            aria-label="${this.finishedWithinSameSession ? this.ariaLabelArchiveBuildCompleted : this.ariaLabelArchiveBuildDownload}"
+                            class="btn btn-default"
+                        >
+                            ${this.downloadArchiveText}
+                        </a>
+                    </p>
+                    ${downloadInstructions}
+                </div>
             `, 'text/html').body.firstChild;
             this._removeCurrentDownloadElementNode();
             this.appendChild(downloadLink);

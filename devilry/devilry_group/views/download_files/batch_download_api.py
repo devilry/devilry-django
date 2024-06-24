@@ -3,6 +3,7 @@
 
 from django.contrib.contenttypes.models import ContentType
 from django.http.response import JsonResponse, Http404
+from django.template.loader import render_to_string
 from django.utils import timezone
 from django.views.generic import View
 from ievv_opensource.ievv_batchframework import batchregistry
@@ -199,7 +200,16 @@ class AbstractBatchCompressionAPIView(View):
         Returns:
             (dict): A dictionary with the entries ``status`` and ``download_link``
         """
-        return {'status': 'finished', 'download_link': content_object_id}
+        return {
+            'status': 'finished',
+            'download_link': content_object_id,
+            'download_instructions': render_to_string(
+                template_name=[
+                    'devilry_deploy/custom_archive_download_instructions.django.html',
+                    'devilry_group/include/archive_download_instructions.django.html'
+                ]
+            )
+        }
 
     def _compressed_archive_created(self, content_object_id):
         """

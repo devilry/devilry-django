@@ -129,6 +129,43 @@ speaking, you should mostly use this to add css classes that
 you use in custom templates, such as the footer documented above.
 
 
+Add custom archive download instructions
+========================================
+To set a custom archive download instructions template, you need to create
+``~/devilrydeploy/custom_devilry_templates/devilry_deploy/custom_archive_download_instructions.django.html``
+
+Example:
+
+.. code-block:: django
+
+    {% load i18n %}
+    {% get_current_language as LANGUAGE_CODE %}
+
+    {% if LANGUAGE_CODE == "nb" %}
+        <p>
+            Filarkiv for oppgave klar for nedlasting. Klikk på knappen ovenfor for å laste det ned.
+        </p>
+        <p><em>
+            Vi bruker 'tar.gz' formatet for filarkiv-nedlastinger. De fleste moderne operativsystemene, inkludert Windows 11, Apple macOS og Linux støtter dette formatet. Hvis du ikke har noen mulighet for å åpne tar.gz filer, kan du bruke
+            <a href="https://www.7-zip.org/" target="blank">7-zip</a>
+            eller noe lignende.
+        </em></p>
+    {% else %}
+        <p>
+            Assignment file-archive ready for download. Click the button above to download it.
+        </p>
+        <p><em>
+            We use the 'tar.gz' format for archive downloads. Most modern operating systems including Windows 11, Apple macOS and Linux support this format. If you do not have a way to open 'tar.gz' files you can use
+            <a href="https://www.7-zip.org/" target="blank">7-zip</a>
+            or something similar.
+        </em></p>
+    {% endif %}
+
+
+See ``devilry/devilry_group/templates/devilry_group/include/archive_download_instructions.django.html``
+in the devilry repo for the default content of this template.
+
+
 ****************************
 Available template variables
 ****************************

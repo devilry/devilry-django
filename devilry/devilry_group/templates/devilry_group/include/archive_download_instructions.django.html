@@ -1,0 +1,10 @@
+{% load i18n %}
+
+<p>
+    {% trans "Assignment file-archive ready for download. Click the button above to download it." context "archive download" %}
+</p>
+<p><em>
+    {% trans "We use the 'tar.gz' format for archive downloads. Most modern operating systems including Windows 11, Apple macOS and Linux support this format. If you do not have a way to open 'tar.gz' files you can use " context "archive download" %}
+    <a href="https://www.7-zip.org/" target="blank">7-zip</a>
+    {% trans "or something similar." context "archive download" %}
+</em></p>
