@@ -83,10 +83,7 @@ test = [
     "coverage",
 ]
 docs = [
-    "doc2dash==3.0.0",
-    "Fabric3==1.14.post1",
-    "sphinx==6.2.1",
-    "sphinx_rtd_theme==1.2.2",
+    "sphinx",
 ]
 
 [project.scripts]
