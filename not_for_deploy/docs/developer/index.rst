@@ -16,7 +16,6 @@ Essentials
 .. toctree::
     :maxdepth: 1
 
-    gettingstarted
     testing
 
 
@@ -48,7 +47,6 @@ Most developers will not need to bother with these topics.
 
     plugins
     i18n
-    javascript
     developing_for_anonymous_assignments
 
 

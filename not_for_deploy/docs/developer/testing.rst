@@ -11,10 +11,14 @@ Running tests
 
 Run **all** test::
 
+    $ pytest devilry
+    ... or ...:
     $ DJANGOENV=test python manage.py test devilry
 
 Run only some tests::
 
+    $ pytest devilry/devilry_examiner/tests/
+    ... or ...:
     $ DJANGOENV=test python manange.py test devilry.devilry_examiner.tests
 
 
