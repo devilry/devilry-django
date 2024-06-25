@@ -17,9 +17,10 @@ What's new?
 - Dependency cleanup and updates.
     - ``dj-static`` has been replaced by ``whitenoise``.
     - RQ and related dependencies has been updated to newer versions that are redis 5+ compatible.
+- Separate optional dependencies specifier for s3 storage (see requirements.txt changes section below).
+- First class S3 compatible storage support with setup examples and local development environment.
 - Various fixes related to using blob storage and memory usage, including settings cleanup,
   blob storage based zip file creation with stable memory usage.
-- Separate optional dependencies specifier for s3 storage (see requirements.txt changes section below).
 - Switch from ZIP to ``.tar.gz`` format for feedbackset downloads.
 
 
