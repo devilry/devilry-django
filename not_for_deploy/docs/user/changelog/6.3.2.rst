@@ -1,0 +1,16 @@
+.. _6.3.2changelog:
+
+###################################
+What is new in Devilry 6.3.2
+###################################
+
+
+Updates/changes
+###############
+- Changed from ``.zip`` to ``.tar.gz`` for feedback feed archives. This change is done because:
+    - Available ``.tar.gz`` support in the underlying systems is better in terms of memory
+      usage, integration with large scale file storage (blob storage) and local storage usage.
+      In short, this makes it easier to host Devilry on modern server infrastructure.
+    - Windows 11, macOS and Linux all support this format.
+- First class support for blob storage (large scale redundant file storage).
+- Lots of cleanup in the devilry codebase.

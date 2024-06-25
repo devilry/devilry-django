@@ -10,6 +10,12 @@ BACKUP. YOUR. DATABASE. AND. FILES.
 
 
 
+Warning
+#######
+This is a fairly large update which should probably have been a minor release
+instead of a patch release.
+
+
 What's new?
 ###########
 - Removed old delivery models which has not been in use for a long time.
@@ -87,14 +93,14 @@ the following change to the ``ENGINE`` option within the ``DATABASES`` setting::
 
 requirements.txt changes
 ########################
-You need to change:
-```
-devilry==VERSION
-```
-to
-```
-devilry[s3storage]==VERSION
-```
+You need to change::
+
+    devilry==VERSION
+
+to::
+
+    devilry[s3storage]==VERSION
+
 in your ``requirements.txt`` IF you want to use s3 compatible storage. This will
 add S3 storage dependencies locked to known working versions (django-storages and boto3)
 
