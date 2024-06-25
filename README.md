@@ -170,6 +170,18 @@ nvm use 14    # May need to run "nvm install 14" first
 ievv buildstatic --npm-clean-node-modules
 ```
 
+### Build docs
+Docs are built on https://readthedocs.org/projects/devilry/ each time a branch is pushed,
+but if you are making larger changes or need to debug build issues, you can build it
+locally using:
+
+```bash
+sphinx-build not_for_deploy/docs/ built-docs/
+```
+
+and when the build is complete, you can open ``built-docs/index.html`` in a browser.
+
+
 ### Destroy postgres and redis
 
 ```bash

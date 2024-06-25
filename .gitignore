@@ -63,3 +63,4 @@ dump.rdb
 /devilry_temp_storage/
 /devilry_delivery_storage/
 /minio_devdata/
+/built-docs/
