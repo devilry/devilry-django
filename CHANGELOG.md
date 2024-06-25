@@ -1,3 +1,26 @@
+## 6.3.2 (2024-06-25)
+
+### Feat
+
+- **archive_download_message.django.html**: added an informational message about the use of tar.gz files
+
+### Fix
+
+- psycopg3 update for RawSQL query
+- Show configurable message when archive download is complete.
+- Change zip backend to TAR format. Because of issues with S3 and zipfile.
+- More S3 tuning, including docs.
+- **compressionutil**: Make zip file creation work with S3 storage.
+- Move whitenoise into hard dependencies since we have it in MIDDLEWARE.
+- **settings.py**: fix to allow migrations from allauth to run
+- **devilry_dataporten_allauth.views**: fixed imports
+- Further dependency and releasenotes cleanup
+- Replace dj-static with whitenoise.
+- Remove old unused delivery and gradingsystem models.
+- Make storage for all the models.FileField fields configurabe via settings.
+- Update cradmin_legacy to 5.0.1,<6.0.0
+- Change ZIP backend so it uses storage (which can be blob storage) instead of streaming.
+
 ## 6.3.1 (2024-04-19)
 
 ### Fix
