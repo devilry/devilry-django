@@ -191,6 +191,59 @@ To translate new texts, do the following:
 - ``ievv compilemessages``
 - Commit the changes
 
+
+### Update docs
+Create a ``not_for_deploy/docs/sysadmin/migrationguides/migrate-from-<OLDVERSION>-to-<NEWVERSION>.rst``
+with update instructions for sysadmins. See the previous version for example. Skeleton:
+
+```rst
+===========================================
+Migrating from <OLDVERSION> to <NEWVERSION>
+===========================================
+
+
+Backup database and files
+#########################
+
+BACKUP. YOUR. DATABASE. AND. FILES.
+
+
+What's new?
+###########
+
+- Change 1
+- Change 2
+
+
+Update devilry to <NEWVERSION>
+##############################
+
+Update the devilry version to ``<NEWVERSION>`` as described in :doc:`../update`.
+```
+
+Create a ``not_for_deploy/docs/user/changelog/<NEWVERSION>.rst`` with changelog for end-users.
+This is supposed to be readable/understandable by normal users. Skeleton:
+
+```rst
+.. _<NEWVERSION>changelog:
+
+###################################
+What is new in Devilry <NEWVERSION>
+###################################
+
+
+Fixes
+#####
+- Fix 1
+- Fix 2
+
+Updates/changes
+###############
+- Change 1
+- Change 2
+```
+
+
 ### Set version and build staticfiles
 
 First make sure you have NO UNCOMITTED CHANGES!
