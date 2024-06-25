@@ -70,7 +70,7 @@ for package authentication etc.
 
 ```bash
 source .venv/bin/activate   # enable virtualenv
-.venv/bin/pip install -e ".[dev,test]"
+.venv/bin/pip install -e ".[dev,test,docs]"
 ```
 
 ### Upgrade your local packages
