@@ -1,5 +1,5 @@
 from django.core.management import call_command
-import mock
+from unittest import mock
 from devilry.devilry_qualifiesforexam.models import QualifiesForFinalExam
 from devilry.apps.core.models import Subject, Period, RelatedStudent
 from django import test
@@ -46,7 +46,7 @@ class TestQualifiedForFinalExamMerge(test.TestCase):
         self.assertTrue(QualifiesForFinalExam.objects.filter(id=qualifiesforfinalexam_a_1.id).exists())
         self.assertFalse(QualifiesForFinalExam.objects.filter(id=qualifiesforfinalexam_a_2.id).exists())
         self.assertTrue(QualifiesForFinalExam.objects.filter(id=qualifiesforfinalexam_a_3.id).exists())
-        
+
         self.assertTrue(QualifiesForFinalExam.objects.filter(id=qualifiesforfinalexam_b_2.id).exists())
         self.assertFalse(QualifiesForFinalExam.objects.filter(id=qualifiesforfinalexam_b_3.id).exists())
         self.assertTrue(QualifiesForFinalExam.objects.filter(id=qualifiesforfinalexam_b_4.id).exists())

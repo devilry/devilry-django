@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-import mock
+from unittest import mock
 from django.contrib import messages
 from django.core import mail
 from django.http import Http404

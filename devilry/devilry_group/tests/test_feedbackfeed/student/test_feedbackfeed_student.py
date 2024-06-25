@@ -1,4 +1,4 @@
-import mock
+from unittest import mock
 from django.conf import settings
 from django.contrib import messages
 from django.core import mail
@@ -209,7 +209,7 @@ class TestFeedbackfeedStudent(TestCase, mixin_feedbackfeed_common.MixinTestFeedb
             devilryrole='student'
         )
         self.assertTrue(queryset.exists())
-        # if 
+        # if
 
     def test_assignment_soft_deadline_info_box_not_rendered(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)

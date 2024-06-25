@@ -1,5 +1,5 @@
 # 3rd party imports
-import mock
+from unittest import mock
 from model_bakery import baker
 
 # Django imports

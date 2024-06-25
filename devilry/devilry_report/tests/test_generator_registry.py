@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-import mock
+from unittest import mock
 from django import test
 
 from devilry.devilry_report import abstract_generator

@@ -2,7 +2,7 @@
 
 
 # 3rd party imports
-import mock
+from unittest import mock
 from django.utils import timezone
 from model_bakery import baker
 

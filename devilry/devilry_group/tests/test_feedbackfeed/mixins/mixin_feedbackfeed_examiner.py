@@ -1,4 +1,4 @@
-import mock
+from unittest import mock
 from django.conf import settings
 from django.test import override_settings
 from model_bakery import baker

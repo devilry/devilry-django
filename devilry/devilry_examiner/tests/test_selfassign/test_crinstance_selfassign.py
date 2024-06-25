@@ -1,4 +1,4 @@
-import mock
+from unittest import mock
 from django import test
 from django.conf import settings
 from model_bakery import baker
@@ -24,7 +24,7 @@ class TestCradminInstanceAssignment(test.TestCase):
         mockrequest.user = examiner_user
         crinstance = crinstance_selfassign.CrAdminInstance(request=mockrequest)
         self.assertEqual(crinstance.get_rolequeryset().count(), 0)
-    
+
     def test_period_not_active_ended(self):
         examiner_user = baker.make(settings.AUTH_USER_MODEL)
         assignment = baker.make_recipe(
@@ -52,7 +52,7 @@ class TestCradminInstanceAssignment(test.TestCase):
         mockrequest.user = examiner_user
         crinstance = crinstance_selfassign.CrAdminInstance(request=mockrequest)
         self.assertEqual(crinstance.get_rolequeryset().count(), 0)
-    
+
     def test_single_period_accessible_sanity(self):
         examiner_user = baker.make(settings.AUTH_USER_MODEL)
         assignment = baker.make_recipe(
@@ -66,7 +66,7 @@ class TestCradminInstanceAssignment(test.TestCase):
         mockrequest.user = examiner_user
         crinstance = crinstance_selfassign.CrAdminInstance(request=mockrequest)
         self.assertEqual(crinstance.get_rolequeryset().count(), 1)
-    
+
     def test_multiple_periods_accessible_sanity(self):
         examiner_user = baker.make(settings.AUTH_USER_MODEL)
         assignment1 = baker.make_recipe(

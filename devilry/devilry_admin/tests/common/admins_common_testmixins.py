@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.http import Http404
 from django.test import RequestFactory
 import htmls
-import mock
+from unittest import mock
 
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder2
 

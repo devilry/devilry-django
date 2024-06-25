@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import mock
+from unittest import mock
 import openpyxl
 from django import test
 from django.conf import settings

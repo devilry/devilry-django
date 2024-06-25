@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-import mock
+from unittest import mock
 from django import http
 from django import test
 from cradmin_legacy import cradmin_testhelpers

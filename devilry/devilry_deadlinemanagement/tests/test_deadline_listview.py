@@ -5,7 +5,7 @@ from django.template import defaultfilters
 from django.test import override_settings
 from django.utils import timezone
 from model_bakery import baker
-import mock
+from unittest import mock
 
 from django import test
 from django.conf import settings

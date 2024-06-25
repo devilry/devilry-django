@@ -1,5 +1,5 @@
 
-import mock
+from unittest import mock
 from django.conf import settings
 from django.test import TestCase
 from cradmin_legacy import cradmin_testhelpers

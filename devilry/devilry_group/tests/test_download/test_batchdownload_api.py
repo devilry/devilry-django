@@ -2,7 +2,7 @@ import json
 import shutil
 import unittest
 
-import mock
+from unittest import mock
 from django import test
 from django.conf import settings
 

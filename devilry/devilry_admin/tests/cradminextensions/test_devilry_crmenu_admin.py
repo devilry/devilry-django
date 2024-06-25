@@ -1,4 +1,4 @@
-import mock
+from unittest import mock
 from django import test
 from model_bakery import baker
 

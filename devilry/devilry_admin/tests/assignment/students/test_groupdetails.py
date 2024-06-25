@@ -1,7 +1,7 @@
 from datetime import timedelta
 
 import htmls
-import mock
+from unittest import mock
 from django import test
 from django.http import Http404
 from django.utils import timezone

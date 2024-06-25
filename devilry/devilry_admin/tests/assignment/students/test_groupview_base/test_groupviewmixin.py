@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-import mock
+from unittest import mock
 from django import test
 from django.conf import settings
 from django.utils import timezone

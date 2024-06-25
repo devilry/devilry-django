@@ -1,6 +1,6 @@
 
 
-import mock
+from unittest import mock
 from django.test import TestCase
 from cradmin_legacy import cradmin_testhelpers
 from cradmin_legacy import crinstance

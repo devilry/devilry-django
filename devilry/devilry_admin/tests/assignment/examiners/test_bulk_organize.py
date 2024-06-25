@@ -1,4 +1,4 @@
-import mock
+from unittest import mock
 import time
 from django import test
 from django.conf import settings

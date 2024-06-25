@@ -3,7 +3,7 @@ from datetime import timedelta
 from django.conf import settings
 from django.test import TestCase
 from django.utils import timezone
-from mock import patch
+from unittest.mock import patch
 from model_bakery import baker
 
 from devilry.apps.core.models import Assignment

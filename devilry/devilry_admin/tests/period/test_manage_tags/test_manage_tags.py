@@ -8,7 +8,7 @@ from django.http import Http404
 
 from cradmin_legacy import cradmin_testhelpers
 
-import mock
+from unittest import mock
 from model_bakery import baker
 
 from devilry.apps.core.models import RelatedExaminer

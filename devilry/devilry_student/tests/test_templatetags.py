@@ -1,4 +1,4 @@
-from mock import Mock
+from unittest.mock import Mock
 from django.test import TestCase
 from bs4 import BeautifulSoup
 
@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 # from develop.testhelpers.soupselect import cssExists
 from devilry.project.develop.testhelpers.soupselect import normalize_whitespace
 from devilry.devilry_student.templatetags.devilry_student_tags import devilry_student_shortgrade
+
 
 class TestDevilryStudentFeedbackTags(TestCase):
     def setUp(self):

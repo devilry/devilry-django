@@ -2,7 +2,7 @@ from django import test
 from django.http import HttpResponse
 from django.test import override_settings
 from django.utils import translation
-from mock import mock
+from unittest import mock
 from model_bakery import baker
 
 from devilry.devilry_account import middleware

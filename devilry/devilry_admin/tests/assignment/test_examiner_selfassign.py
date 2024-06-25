@@ -1,6 +1,6 @@
 import unittest
 
-import mock
+from unittest import mock
 from django.conf import settings
 from django.contrib import messages
 from django.http import Http404
@@ -48,7 +48,7 @@ class TestAssignmentExaminerSelfAssignUpdateView(TestCase, cradmin_testhelpers.T
         )
         testassignment.refresh_from_db()
         self.assertTrue(testassignment.examiners_can_self_assign)
-    
+
     def test_post_enable_examiner_self_assign_with_nondefault_limit(self):
         testuser = baker.make(settings.AUTH_USER_MODEL, is_superuser=True)
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -72,7 +72,7 @@ class TestAssignmentExaminerSelfAssignUpdateView(TestCase, cradmin_testhelpers.T
         )
         testassignment.refresh_from_db()
         self.assertTrue(testassignment.examiners_can_self_assign)
-    
+
     def test_post_update_limit_only(self):
         testuser = baker.make(settings.AUTH_USER_MODEL, is_superuser=True)
         testassignment = baker.make_recipe(
@@ -101,7 +101,7 @@ class TestAssignmentExaminerSelfAssignUpdateView(TestCase, cradmin_testhelpers.T
         testassignment.refresh_from_db()
         self.assertTrue(testassignment.examiners_can_self_assign)
         self.assertEqual(testassignment.examiner_self_assign_limit, 12)
-    
+
     def test_post_disable_selfassign(self):
         testuser = baker.make(settings.AUTH_USER_MODEL, is_superuser=True)
         testassignment = baker.make_recipe(

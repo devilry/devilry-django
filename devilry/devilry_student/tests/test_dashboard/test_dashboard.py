@@ -3,7 +3,7 @@
 from datetime import timedelta, datetime
 
 import htmls
-import mock
+from unittest import mock
 from django import test
 from django.conf import settings
 from django.utils import timezone

@@ -1,7 +1,7 @@
 import unittest
 from datetime import timedelta
 
-import mock
+from unittest import mock
 from django.conf import settings
 from django.test import TestCase, override_settings
 from django.utils import timezone
@@ -348,7 +348,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
             ).alltext_normalized,
             'Edit project group settings'
         )
-    
+
     def test_settings_project_groups_turned_on(self):
         assignment = baker.make('core.Assignment', students_can_create_groups=True)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
@@ -393,7 +393,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
             ).alltext_normalized,
             'Edit anonymization mode'
         )
-    
+
     def test_settings_anonymization_semi_anonymous(self):
         assignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
@@ -445,7 +445,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
             ).alltext_normalized,
             'Edit anonymization mode'
         )
-    
+
     @override_settings(DEFAULT_DEADLINE_HANDLING_METHOD=0)
     def test_settings_deadline_handling_no_access_sanity(self):
         assignment = baker.make('core.Assignment')
@@ -527,7 +527,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
             ).alltext_normalized,
             'Edit deadline handling'
         )
-    
+
     @override_settings(DEFAULT_DEADLINE_HANDLING_METHOD=0)
     def test_settings_deadline_handling_hard_subjectadmin_has_access_sanity(self):
         assignment = baker.make('core.Assignment', deadline_handling=1)
@@ -578,7 +578,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
             ).alltext_normalized,
             'Edit self-assign settings'
         )
-    
+
     def test_settings_examiner_selfassign_turned_on(self):
         assignment = baker.make('core.Assignment', examiners_can_self_assign=True, examiner_self_assign_limit=2)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)

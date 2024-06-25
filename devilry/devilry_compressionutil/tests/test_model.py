@@ -3,7 +3,7 @@ import pathlib
 import shutil
 import io
 
-import mock
+from unittest import mock
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError

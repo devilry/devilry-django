@@ -1,4 +1,4 @@
-import mock
+from unittest import mock
 from django import test
 from cradmin_legacy import cradmin_testhelpers
 from model_bakery import baker

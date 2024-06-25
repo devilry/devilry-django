@@ -1,4 +1,4 @@
-import mock
+from unittest import mock
 from django.contrib import messages
 from django.http import Http404
 from django.test import TestCase

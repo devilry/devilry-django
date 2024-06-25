@@ -4,7 +4,7 @@
 from datetime import timedelta
 
 import arrow
-import mock
+from unittest import mock
 from django import http
 from django import test
 from django.conf import settings
@@ -1124,8 +1124,8 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
         feedbackset_current_deadline = arrow.get(testfeedbackset.deadline_datetime).to(settings.TIME_ZONE).replace(
             hour=23, minute=59, second=59, microsecond=0)
         for element in mockresponse.selector.list('.devilry-deadlinemanagement-suggested-deadline'):
-            # Replacing seconds simply ensures that the seconds correspond, since 
-            # the given isoformat does not contain seconds but the compared deadline 
+            # Replacing seconds simply ensures that the seconds correspond, since
+            # the given isoformat does not contain seconds but the compared deadline
             # datetime does.
             suggested_date = from_isoformat_noseconds(element.get('cradmin-legacy-setfieldvalue')).replace(second=59)
             suggested_deadline_from_current_deadline = feedbackset_current_deadline.shift(days=+added_days).datetime
@@ -1158,8 +1158,8 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
         earliest_date = mockresponse.selector.list('.devilry-deadlinemanagement-suggested-deadline')[0] \
             .get('cradmin-legacy-setfieldvalue')
 
-        # Replacing seconds simply ensures that the seconds correspond, since 
-        # the given isoformat does not contain seconds but the compared deadline 
+        # Replacing seconds simply ensures that the seconds correspond, since
+        # the given isoformat does not contain seconds but the compared deadline
         # datetime does.
         converted_datetime = from_isoformat_noseconds(earliest_date).replace(second=59)
         now_with_same_time_as_deadline = arrow.get(last_feedbackset_last_deadline).to(settings.TIME_ZONE).replace(
@@ -1196,8 +1196,8 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
         earliest_date = mockresponse.selector.list('.devilry-deadlinemanagement-suggested-deadline')[0] \
             .get('cradmin-legacy-setfieldvalue')
 
-        # Replacing seconds simply ensures that the seconds correspond, since 
-        # the given isoformat does not contain seconds but the compared deadline 
+        # Replacing seconds simply ensures that the seconds correspond, since
+        # the given isoformat does not contain seconds but the compared deadline
         # datetime does.
         converted_datetime = from_isoformat_noseconds(earliest_date).replace(second=59)
         now_with_same_time_as_deadline = arrow.get(last_feedbackset_last_deadline).to(settings.TIME_ZONE).replace(
@@ -1423,8 +1423,8 @@ class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
         feedbackset_current_deadline = arrow.get(testfeedbackset.deadline_datetime).to(settings.TIME_ZONE).replace(
             hour=23, minute=59, second=59, microsecond=0)
         for element in mockresponse.selector.list('.devilry-deadlinemanagement-suggested-deadline'):
-            # Replacing seconds simply ensures that the seconds correspond, since 
-            # the given isoformat does not contain seconds but the compared deadline 
+            # Replacing seconds simply ensures that the seconds correspond, since
+            # the given isoformat does not contain seconds but the compared deadline
             # datetime does.
             suggested_date = from_isoformat_noseconds(element.get('cradmin-legacy-setfieldvalue')).replace(second=59)
             suggested_deadline_from_current_deadline = feedbackset_current_deadline.shift(days=+added_days).datetime
@@ -1466,9 +1466,9 @@ class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
         )
         earliest_date = mockresponse.selector.list('.devilry-deadlinemanagement-suggested-deadline')[0]\
             .get('cradmin-legacy-setfieldvalue')
-        
-        # Replacing seconds simply ensures that the seconds correspond, since 
-        # the given isoformat does not contain seconds but the compared deadline 
+
+        # Replacing seconds simply ensures that the seconds correspond, since
+        # the given isoformat does not contain seconds but the compared deadline
         # datetime does.
         converted_datetime = from_isoformat_noseconds(earliest_date).replace(second=59)
         now_with_same_time_as_deadline = arrow.get(testfeedbackset2.deadline_datetime).to(settings.TIME_ZONE).replace(

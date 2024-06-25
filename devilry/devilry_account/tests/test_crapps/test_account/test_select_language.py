@@ -1,6 +1,6 @@
 from django import test
 from cradmin_legacy import cradmin_testhelpers
-from mock import mock
+from unittest import mock
 from model_bakery import baker
 
 from devilry.devilry_account.crapps.account import select_language

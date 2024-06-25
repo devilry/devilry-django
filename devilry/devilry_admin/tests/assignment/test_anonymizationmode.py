@@ -1,4 +1,4 @@
-import mock
+from unittest import mock
 from django.contrib import messages
 from django.test import TestCase
 from cradmin_legacy import cradmin_testhelpers

@@ -81,7 +81,6 @@ test = [
     "pytest-env",
     "model-bakery",
     "coverage",
-    "mock==3.0.5",
 ]
 docs = [
     "doc2dash==3.0.0",

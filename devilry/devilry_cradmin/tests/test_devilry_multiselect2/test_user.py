@@ -1,5 +1,5 @@
 import htmls
-import mock
+from unittest import mock
 from django import test
 from django import forms
 from django.conf import settings

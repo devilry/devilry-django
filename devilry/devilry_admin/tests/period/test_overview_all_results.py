@@ -6,7 +6,7 @@ from django.http import Http404
 from django.utils import timezone
 
 from model_bakery import baker
-import mock
+from unittest import mock
 
 from cradmin_legacy import cradmin_testhelpers
 

@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-import mock
+from unittest import mock
 from django import test
 from django.utils import timezone
 from model_bakery import baker
