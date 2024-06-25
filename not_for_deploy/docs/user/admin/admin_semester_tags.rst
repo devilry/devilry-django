@@ -24,7 +24,7 @@ Tags you create:
 
 
 What is a typical use case for tags?
-===================================
+====================================
 A typical use case would be for courses for both bachelors and masters students. The course has two sets of assignments,
 one for bachelors and one for masters. You can create a "bachelors" tag, and a "masters" tag and assign students and
 examiners to them. You can then filter by these tags when configuring an assignment later on. MISSING LINK!

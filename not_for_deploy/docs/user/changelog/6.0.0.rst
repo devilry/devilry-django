@@ -9,9 +9,9 @@ What's new
 ##########
 
 - Updated Devilry to Django 4.2
- - Python 3.10 support
- - Add health-check endpoints.
- - Group invitations: Store sent messages.
+    - Python 3.10 support
+    - Add health-check endpoints.
+    - Group invitations: Store sent messages.
 
 
 Fixes

@@ -16,6 +16,7 @@ Essentials
 .. toctree::
     :maxdepth: 1
 
+    gettingstarted
     testing
 
 

@@ -59,9 +59,9 @@ building the devilry data structures:
 
 .. _modelbakeryrecipes:
 
-*******************
+********************
 Model bakery recipes
-*******************
+********************
 
 .. currentmodule:: devilry.apps.core.baker_recipes
 
@@ -142,9 +142,9 @@ when we just need to use a datetime within the bounds a time period:
 
 
 
-***************
+****************
 Bakery factories
-***************
+****************
 We also provide some factory functions for very common cases. These factory functions
 are just thin wrappers around ``baker.make``.
 
@@ -172,9 +172,9 @@ if the code just needs an Assignment object, and the period, publishing time,
 and first deadline does not matter, simpy use ``baker.make('core.Assignment')``.
 
 
-***********************************
+************************************
 Bakery recipes and factories apidocs
-***********************************
+************************************
 
 .. automodule:: devilry.apps.core.baker_recipes
     :members:
@@ -295,4 +295,4 @@ Adding admins::
     )
 
 
-.. _`Model baker`: http://model-bakery.readthedocs.org
+.. _`Model bakery`: http://model-bakery.readthedocs.org
