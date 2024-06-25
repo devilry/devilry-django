@@ -33,6 +33,7 @@ Removed settings
 - ``DEVILRY_DELIVERY_STORE_BACKEND``
 - ``DEVILRY_FSHIERDELIVERYSTORE_INTERVAL``
 
+
 Changed settings
 ================
 
