@@ -9,13 +9,6 @@ Backup database and files
 BACKUP. YOUR. DATABASE. AND. FILES.
 
 
-
-Warning
-#######
-This is a fairly large update which should probably have been a minor release
-instead of a patch release.
-
-
 Fixes
 #####
 - dataporten_allauth: Fix get_client call.
