@@ -1,3 +1,10 @@
+## 6.3.3 (2024-06-29)
+
+### Fix
+
+- **dataporten_allauth**: Fix get_client call.
+- Remove .zip from archive download filenames for admins and examiners.
+
 ## 6.3.2 (2024-06-25)
 
 ### Feat
