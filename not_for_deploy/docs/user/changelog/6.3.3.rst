@@ -1,0 +1,11 @@
+.. _6.3.3changelog:
+
+###################################
+What is new in Devilry 6.3.3
+###################################
+
+
+Updates/changes
+###############
+- Bugfix where .zip was part of the filename for tar.gz files.
+- Dataporten login fixes.
