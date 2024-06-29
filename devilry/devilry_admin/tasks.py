@@ -27,7 +27,7 @@ class AssignmentCompressAction(AbstractBaseBatchAction, AssignmentBatchMixin):
 
         # Create name for the actual archive
         from django.utils import timezone
-        archive_name = '{}.{}.{}.{}.zip'.format(
+        archive_name = '{}.{}.{}.{}'.format(
             assignment.subject.short_name,
             assignment.period.short_name,
             assignment.short_name,
