@@ -137,16 +137,14 @@ class AssignmentGroupCachedData(models.Model):
         suitable for display in a UI.
         """
         if self.new_attempt_count == 0:
-            return pgettext_lazy('devilry attempt number', 'first attempt')
+            return pgettext_lazy('devilry attempt number', '1st attempt')
         elif self.new_attempt_count == 1:
-            return pgettext_lazy('devilry attempt number', 'second attempt')
+            return pgettext_lazy('devilry attempt number', '2nd attempt')
         elif self.new_attempt_count == 2:
-            return pgettext_lazy('devilry attempt number', 'third attempt')
-        elif self.new_attempt_count == 4:
-            return pgettext_lazy('devilry attempt number', 'fourth attempt')
+            return pgettext_lazy('devilry attempt number', '3rd attempt')
         else:
             return pgettext_lazy(
                 'devilry attempt number',
-                '%(attempt_number)sst attempt') % {
+                '%(attempt_number)sth attempt') % {
                 'attempt_number': self.new_attempt_count + 1
             }

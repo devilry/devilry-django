@@ -5449,28 +5449,23 @@ msgstr "Ingen brukere tillatelsesgruppen"
 
 #: devilry/devilry_dbcache/models.py:140
 msgctxt "devilry attempt number"
-msgid "first attempt"
-msgstr "første forsøk"
+msgid "1st attempt"
+msgstr "1. forsøk"
 
 #: devilry/devilry_dbcache/models.py:142
 msgctxt "devilry attempt number"
-msgid "second attempt"
-msgstr "andre forsøk"
+msgid "2nd attempt"
+msgstr "2. forsøk"
 
 #: devilry/devilry_dbcache/models.py:144
 msgctxt "devilry attempt number"
-msgid "third attempt"
-msgstr "tredje forsøk"
+msgid "3rd attempt"
+msgstr "3. forsøk"
 
-#: devilry/devilry_dbcache/models.py:146
-msgctxt "devilry attempt number"
-msgid "fourth attempt"
-msgstr "fjerde forsøk"
-
-#: devilry/devilry_dbcache/models.py:150
+#: devilry/devilry_dbcache/models.py:148
 #, python-format
 msgctxt "devilry attempt number"
-msgid "%(attempt_number)sst attempt"
+msgid "%(attempt_number)sth attempt"
 msgstr "%(attempt_number)s. forsøk"
 
 #: devilry/devilry_deadlinemanagement/templates/devilry_deadlinemanagement/deadline-bulk-multiselect-filterlistview.django.html:15
