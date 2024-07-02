@@ -426,7 +426,7 @@ class TestAssignmentBatchTask(TestCompressed):
         path_to_file = os.path.join(
             'april',
             'deadline-{}'.format(defaultfilters.date(
-                testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
+                testfeedbackset.deadline_datetime, 'Y-m-d-Hi')),
             'testfile.txt')
         self.assertEqual('testcontent', tarfileobject.extractfile(path_to_file).read().decode())
 
@@ -465,7 +465,7 @@ class TestAssignmentBatchTask(TestCompressed):
         path_to_file = os.path.join(
             'april',
             'deadline-{}'.format(defaultfilters.date(
-                testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
+                testfeedbackset.deadline_datetime, 'Y-m-d-Hi')),
             'after_deadline_not_part_of_delivery',
             'testfile.txt')
         self.assertEqual('testcontent', tarfileobject.extractfile(path_to_file).read().decode())
@@ -521,17 +521,17 @@ class TestAssignmentBatchTask(TestCompressed):
         path_to_file_group1 = os.path.join(
             'april',
             'deadline-{}'.format(defaultfilters.date(
-                testfeedbackset_group1.deadline_datetime, 'b.j.Y-H:i')),
+                testfeedbackset_group1.deadline_datetime, 'Y-m-d-Hi')),
             'testfile.txt')
         path_to_file_group2 = os.path.join(
             'dewey',
             'deadline-{}'.format(defaultfilters.date(
-                testfeedbackset_group2.deadline_datetime, 'b.j.Y-H:i')),
+                testfeedbackset_group2.deadline_datetime, 'Y-m-d-Hi')),
             'testfile.txt')
         path_to_file_group3 = os.path.join(
             'huey',
             'deadline-{}'.format(defaultfilters.date(
-                testfeedbackset_group3.deadline_datetime, 'b.j.Y-H:i')),
+                testfeedbackset_group3.deadline_datetime, 'Y-m-d-Hi')),
             'testfile.txt')
         self.assertEqual('testcontent group 1', tarfileobject.extractfile(path_to_file_group1).read().decode())
         self.assertEqual('testcontent group 2', tarfileobject.extractfile(path_to_file_group2).read().decode())
@@ -588,19 +588,19 @@ class TestAssignmentBatchTask(TestCompressed):
         path_to_file_group1 = os.path.join(
             'april',
             'deadline-{}'.format(defaultfilters.date(
-                testfeedbackset_group1.deadline_datetime, 'b.j.Y-H:i')),
+                testfeedbackset_group1.deadline_datetime, 'Y-m-d-Hi')),
             'after_deadline_not_part_of_delivery',
             'testfile.txt')
         path_to_file_group2 = os.path.join(
             'dewey',
             'deadline-{}'.format(defaultfilters.date(
-                testfeedbackset_group2.deadline_datetime, 'b.j.Y-H:i')),
+                testfeedbackset_group2.deadline_datetime, 'Y-m-d-Hi')),
             'after_deadline_not_part_of_delivery',
             'testfile.txt')
         path_to_file_group3 = os.path.join(
             'huey',
             'deadline-{}'.format(defaultfilters.date(
-                testfeedbackset_group3.deadline_datetime, 'b.j.Y-H:i')),
+                testfeedbackset_group3.deadline_datetime, 'Y-m-d-Hi')),
             'after_deadline_not_part_of_delivery',
             'testfile.txt')
         self.assertEqual('testcontent group 1', tarfileobject.extractfile(path_to_file_group1).read().decode())
@@ -650,12 +650,12 @@ class TestAssignmentBatchTask(TestCompressed):
         path_to_last_file = os.path.join(
             'april',
             'deadline-{}'.format(defaultfilters.date(
-                testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
+                testfeedbackset.deadline_datetime, 'Y-m-d-Hi')),
             'testfile.txt')
         path_to_old_duplicate_file = os.path.join(
             'april',
             'deadline-{}'.format(defaultfilters.date(
-                testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
+                testfeedbackset.deadline_datetime, 'Y-m-d-Hi')),
             'old_duplicates',
             comment_file_first.get_filename_as_unique_string())
         self.assertEqual('last upload', tarfileobject.extractfile(path_to_last_file).read().decode())
@@ -709,12 +709,12 @@ class TestAssignmentBatchTask(TestCompressed):
         path_to_last_file = os.path.join(
             'april, dewey',
             'deadline-{}'.format(defaultfilters.date(
-                testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
+                testfeedbackset.deadline_datetime, 'Y-m-d-Hi')),
             'testfile.txt')
         path_to_old_duplicate_file = os.path.join(
             'april, dewey',
             'deadline-{}'.format(defaultfilters.date(
-                testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
+                testfeedbackset.deadline_datetime, 'Y-m-d-Hi')),
             'old_duplicates',
             comment_file_april.get_filename_as_unique_string())
         self.assertEqual('by dewey', tarfileobject.extractfile(path_to_last_file).read().decode())
@@ -774,24 +774,24 @@ class TestAssignmentBatchTask(TestCompressed):
         path_to_last_file = os.path.join(
             'april',
             'deadline-{}'.format(defaultfilters.date(
-                testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
+                testfeedbackset.deadline_datetime, 'Y-m-d-Hi')),
             'testfile.txt')
         path_to_old_duplicate_file = os.path.join(
             'april',
             'deadline-{}'.format(defaultfilters.date(
-                testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
+                testfeedbackset.deadline_datetime, 'Y-m-d-Hi')),
             'old_duplicates',
             comment_file_first_upload.get_filename_as_unique_string())
         path_to_last_file_after_deadline = os.path.join(
             'april',
             'deadline-{}'.format(defaultfilters.date(
-                testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
+                testfeedbackset.deadline_datetime, 'Y-m-d-Hi')),
             'after_deadline_not_part_of_delivery',
             'testfile.txt')
         path_to_old_duplicate_file_after_deadline = os.path.join(
             'april',
             'deadline-{}'.format(defaultfilters.date(
-                testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
+                testfeedbackset.deadline_datetime, 'Y-m-d-Hi')),
             'after_deadline_not_part_of_delivery',
             'old_duplicates',
             comment_file_first_upload_after_deadline.get_filename_as_unique_string())
