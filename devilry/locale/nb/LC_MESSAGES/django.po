@@ -5471,7 +5471,7 @@ msgstr "fjerde forsøk"
 #, python-format
 msgctxt "devilry attempt number"
 msgid "%(attempt_number)sst attempt"
-msgstr "%(attempt_number)sst forsøk"
+msgstr "%(attempt_number)s. forsøk"
 
 #: devilry/devilry_deadlinemanagement/templates/devilry_deadlinemanagement/deadline-bulk-multiselect-filterlistview.django.html:15
 msgid "Back to deadline-overview"
