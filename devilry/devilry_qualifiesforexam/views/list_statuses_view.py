@@ -16,6 +16,7 @@ from cradmin_legacy.viewhelpers import listfilter
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_qualifiesforexam import models as status_models
 from devilry.apps.core import models as core_models
+from devilry.devilry_cradmin.devilry_listfilter.lists import DevilryVertical
 
 
 class StatusItemValue(listbuilder.itemvalue.TitleDescription):
@@ -69,6 +70,7 @@ class ListStatusesView(listbuilderview.FilterListMixin, listbuilderview.View):
     model = status_models.Status
     frame_renderer_class = StatusItemFrame
     value_renderer_class = StatusItemValue
+    filterlist_class = DevilryVertical
 
     def add_filterlist_items(self, filterlist):
         filterlist.append(OrderStatusFilter(

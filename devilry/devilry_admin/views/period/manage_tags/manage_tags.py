@@ -30,6 +30,7 @@ from cradmin_legacy.viewhelpers import multiselect2
 from devilry.apps.core.models import PeriodTag
 from devilry.apps.core.models import RelatedStudent, RelatedExaminer
 from devilry.devilry_admin.cradminextensions.listfilter import listfilter_tags, listfilter_relateduser
+from devilry.devilry_cradmin.devilry_listfilter.lists import DevilryVertical
 
 
 class TagItemValue(itemvalue.EditDelete):
@@ -68,6 +69,7 @@ class HideShowPeriodTag(TemplateView):
 class TagListBuilderListView(listbuilderview.FilterListMixin, listbuilderview.View):
     """
     """
+    filterlist_class = DevilryVertical
     template_name = 'devilry_admin/period/manage_tags/manage-tags-list-view.django.html'
     model = PeriodTag
     value_renderer_class = TagItemValue
@@ -251,7 +253,7 @@ class EditPeriodTagForm(forms.ModelForm):
             'Rename the tag here. Up to 15 characters. '
             'Can contain any character except comma(,)'
         )
-    
+
     def clean(self):
         cleaned_data = super(EditPeriodTagForm, self).clean()
         if 'tag' not in self.cleaned_data or len(self.cleaned_data['tag']) == 0:
@@ -440,12 +442,12 @@ class BaseRelatedUserMultiSelectView(multiselect2view.ListbuilderFilterView):
         kwargs = super(BaseRelatedUserMultiSelectView, self).get_form_kwargs()
         kwargs['relatedusers_queryset'] = self.get_queryset_for_role(role=period)
         return kwargs
-    
+
     def get_target_renderer_kwargs(self):
         kwargs = super(BaseRelatedUserMultiSelectView, self).get_target_renderer_kwargs()
         kwargs['relateduser_type'] = self.relateduser_string
         return kwargs
-    
+
     def add_success_message(self, message):
         messages.success(self.request, message=message)
 
@@ -460,6 +462,7 @@ class AddRelatedUserToTagMultiSelectView(BaseRelatedUserMultiSelectView):
     """
     Add related users to a :class:`~.devilry.apps.core.models.period_tag.PeriodTag`.
     """
+
     def get_pagetitle(self):
         tag_displayname = self.get_period_tag().displayname
         return gettext_lazy(
@@ -498,6 +501,7 @@ class RemoveRelatedUserFromTagMultiSelectView(BaseRelatedUserMultiSelectView):
     """
     Remove related users from a :class:`~.devilry.apps.core.models.period_tag.PeriodTag`.
     """
+
     def get_pagetitle(self):
         tag_displayname = self.get_period_tag().displayname
         return gettext_lazy(
@@ -556,6 +560,7 @@ class RelatedExaminerAddView(ExaminerMultiSelectViewMixin, AddRelatedUserToTagMu
     """
     Multi-select add view for :class:`~.devilry.apps.core.models.relateduser.RelatedExaminer`.
     """
+
     def get_filterlist_url(self, filters_string):
         return self.request.cradmin_app.reverse_appurl(
             'add_examiners_filter', kwargs={
@@ -568,6 +573,7 @@ class RelatedExaminerRemoveView(ExaminerMultiSelectViewMixin, RemoveRelatedUserF
     """
     Multi-select remove view for :class:`~.devilry.apps.core.models.relateduser.RelatedExaminer`.
     """
+
     def get_filterlist_url(self, filters_string):
         return self.request.cradmin_app.reverse_appurl(
             'remove_examiners_filter', kwargs={
@@ -580,6 +586,7 @@ class RelatedStudentAddView(StudentMultiSelectViewMixin, AddRelatedUserToTagMult
     """
     Multi-select add view for :class:`~.devilry.apps.core.models.relateduser.RelatedStudent`.
     """
+
     def get_filterlist_url(self, filters_string):
         return self.request.cradmin_app.reverse_appurl(
             'add_students_filter', kwargs={
@@ -592,6 +599,7 @@ class RelatedStudentRemoveView(StudentMultiSelectViewMixin, RemoveRelatedUserFro
     """
     Multi-select remove view for :class:`~.devilry.apps.core.models.relateduser.RelatedStudent`.
     """
+
     def get_filterlist_url(self, filters_string):
         return self.request.cradmin_app.reverse_appurl(
             'remove_students_filter', kwargs={

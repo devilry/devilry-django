@@ -2,10 +2,8 @@
 
 
 from django import forms
-from django.contrib import messages
 from django.db import models
 from django.db.models.functions import Lower, Concat
-from django.shortcuts import redirect
 from django.utils.translation import pgettext_lazy
 from cradmin_legacy.viewhelpers import listbuilderview
 from cradmin_legacy.viewhelpers import multiselect2view
@@ -15,17 +13,17 @@ from cradmin_legacy.viewhelpers.listbuilder.lists import RowList
 
 from devilry.apps.core import models as coremodels
 from devilry.apps.core.models import Candidate, Examiner, RelatedExaminer, Assignment, AssignmentGroup
-from devilry.apps.core.models import RelatedStudent
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin import devilry_listfilter
 import devilry.apps.core.models.period_tag as period_tag
-from devilry.devilry_admin.cradminextensions.listfilter import listfilter_relateduser, listfilter_assignmentgroup
-from devilry.devilry_cradmin.devilry_listfilter.utils import WithResultValueRenderable
+from devilry.devilry_admin.cradminextensions.listfilter import listfilter_assignmentgroup
+from devilry.devilry_cradmin.devilry_listfilter.lists import DevilryVertical
 
 
 class GroupViewMixin(object):
     model = coremodels.AssignmentGroup
     filterview_name = None
+    filterlist_class = DevilryVertical
     paginate_by = 20
 
     def dispatch(self, request, *args, **kwargs):
@@ -161,6 +159,7 @@ class GroupViewMixin(object):
 
 class BaseInfoView(GroupViewMixin, listbuilderview.FilterListMixin, listbuilderview.View):
     template_name = 'devilry_admin/assignment/students/groupview_base/base-info-view.django.html'
+    filterlist_class = DevilryVertical
     paginate_by = 20
 
     def use_pagination_load_all(self):
@@ -215,7 +214,9 @@ class SelectedGroupsForm(forms.Form):
 
 
 class BaseMultiselectView(GroupViewMixin, multiselect2view.ListbuilderFilterView):
+
     template_name = 'devilry_admin/assignment/students/groupview_base/base-multiselect-view.django.html'
+    filterlist_class = DevilryVertical
 
     def get_value_renderer_class(self):
         devilryrole = self.request.cradmin_instance.get_devilryrole_for_requestuser()

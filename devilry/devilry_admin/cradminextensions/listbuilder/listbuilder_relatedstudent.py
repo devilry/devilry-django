@@ -6,6 +6,7 @@ from devilry.apps.core.models import RelatedStudent
 # from devilry.apps.core.models.relateduser import RelatedStudentTag
 from devilry.devilry_admin.cradminextensions.listfilter import listfilter_relateduser
 import devilry.apps.core.models.period_tag as period_tag
+from devilry.devilry_cradmin.devilry_listfilter.lists import DevilryVertical
 
 
 class AddFilterListItemsMixin(object):
@@ -30,6 +31,8 @@ class VerticalFilterListView(ListViewBase):
     List view for :class:`devilry.apps.core.models.relateduser.RelatedStudent`
     with filters in a vertical layout.
     """
+    filterlist_class = DevilryVertical
+
     def get_filterlist_position(self):
         return 'right'
 

@@ -13,6 +13,7 @@ from devilry.apps.core import models as coremodels
 from devilry.apps.core.models import Assignment
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin import devilry_listfilter
+from devilry.devilry_cradmin.devilry_listfilter.lists import DevilryVertical
 
 
 class GroupItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
@@ -35,6 +36,7 @@ class DashboardView(listbuilderview.FilterListMixin,
     model = coremodels.AssignmentGroup
     value_renderer_class = devilry_listbuilder.assignmentgroup.StudentItemValue
     frame_renderer_class = GroupItemFrame
+    filterlist_class = DevilryVertical
     paginate_by = 15
     template_name = 'devilry_student/dashboard/dashboard.django.html'
 

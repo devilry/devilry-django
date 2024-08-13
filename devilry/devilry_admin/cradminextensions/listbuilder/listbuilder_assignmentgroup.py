@@ -4,6 +4,7 @@ from cradmin_legacy.viewhelpers import listbuilderview
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_cradmin.devilry_listfilter import assignmentgroup as assignmentgroup_filters
+from devilry.devilry_cradmin.devilry_listfilter.lists import DevilryVertical
 
 
 class AddFilterListItemsMixin(object):
@@ -17,6 +18,9 @@ class ListViewBase(AddFilterListItemsMixin, listbuilderview.FilterListMixin, lis
 
 
 class VerticalFilterListView(ListViewBase):
+
+    filterlist_class = DevilryVertical
+
     def get_filterlist_position(self):
         return 'right'
 

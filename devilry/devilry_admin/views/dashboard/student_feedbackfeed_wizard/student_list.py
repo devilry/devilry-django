@@ -14,6 +14,7 @@ from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin.devilry_listbuilder import user
 from devilry.devilry_admin.views.dashboard.student_feedbackfeed_wizard import filters
 from devilry.devilry_cradmin.devilry_listfilter.utils import WithResultValueRenderable
+from devilry.devilry_cradmin.devilry_listfilter.lists import DevilryVertical
 
 
 class UserItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
@@ -61,6 +62,7 @@ class UserListView(listbuilderview.FilterListMixin, listbuilderview.View):
     template_name = 'devilry_admin/dashboard/student_feedbackfeed_wizard/student_feedbackfeed_list_users.django.html'
     model = get_user_model()
     listbuilder_class = RowListWithMatchResults
+    filterlist_class = DevilryVertical
     frame_renderer_class = UserItemFrame
     filterview_name = 'user_filter'
     value_renderer_class = user.ItemValue

@@ -15,6 +15,7 @@ from devilry.devilry_admin.views.period import overview_all_results_collector
 from devilry.devilry_cradmin.devilry_tablebuilder import base_new
 from devilry.devilry_report.models import DevilryReport
 from devilry.devilry_report.views.download_report import DownloadReportView
+from devilry.devilry_cradmin.devilry_listfilter.lists import DevilryVertical
 
 
 class RelatedStudentItemValue(base_new.AbstractCellRenderer):
@@ -147,6 +148,7 @@ class ListAsTable(base_new.AbstractListAsTable):
 
 
 class RelatedStudentsAllResultsOverview(FilterListMixin, listbuilderview.View):
+    filterlist_class = DevilryVertical
     model = core_models.RelatedStudent
     template_name = "devilry_admin/period/all_results_overview/devilry_all_results_overview.django.html"
 

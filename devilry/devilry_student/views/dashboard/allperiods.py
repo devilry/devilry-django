@@ -8,6 +8,7 @@ from cradmin_legacy.viewhelpers import listfilter
 
 from devilry.apps.core import models as coremodels
 from devilry.devilry_cradmin import devilry_listbuilder
+from devilry.devilry_cradmin.devilry_listfilter.lists import DevilryVertical
 
 
 class PeriodItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
@@ -31,6 +32,7 @@ class AllPeriodsView(listbuilderview.FilterListMixin, listbuilderview.View):
     template_name = 'devilry_student/cradmin_student/allperiods/allperiods.django.html'
     value_renderer_class = devilry_listbuilder.period.StudentItemValue
     frame_renderer_class = PeriodItemFrame
+    filterlist_class = DevilryVertical
 
     def get_pagetitle(self):
         return pgettext_lazy('student allperiods', 'Your courses')
