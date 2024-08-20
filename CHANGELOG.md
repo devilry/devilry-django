@@ -1,3 +1,9 @@
+## 6.3.5 (2024-08-20)
+
+### Fix
+
+- Support downloading archives via S3 presigned URL
+
 ## 6.3.4 (2024-08-20)
 
 ### Fix
