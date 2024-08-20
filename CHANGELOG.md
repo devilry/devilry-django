@@ -1,3 +1,9 @@
+## 6.3.4 (2024-08-20)
+
+### Fix
+
+- **compressionutil**: Add logging to file downloads (loglevel DEBUG, no not visible by default)
+
 ## 6.3.3 (2024-06-29)
 
 ### Fix
