@@ -15,7 +15,6 @@ What's new?
 Add logging for file downloads to enable debugging of issues with downloading large files from S3.
 Has to be enabled in settings using::
 
-    python
     LOGGING["loggers"]["devilry.devilry_compressionutil.models"] = {
         'handlers': ['stderr'],
         'level': "DEBUG",
