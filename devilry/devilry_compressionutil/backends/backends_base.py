@@ -8,6 +8,8 @@ from django.core.files import File as DjangoFile
 from django.conf import settings
 from django.core.files import File
 from django.core.files.storage import FileSystemStorage, Storage
+from django.utils.functional import cached_property
+from storages.backends.s3 import S3Storage
 
 from devilry.utils.memorydebug import print_memory_usage
 from devilry.utils.storageutils import get_temporary_storage
@@ -51,6 +53,16 @@ class BaseArchiveBackend(object):
     @property
     def storage_backend(self) -> Storage:
         return self.__class__.get_storage_backend()
+
+    @cached_property
+    def storage_backend_url_is_secure(self) -> bool:
+        """
+        Check if storage backend can produce secure (private) urls that only the requesting user
+        can gain access to.
+        """
+        if isinstance(self.storage_backend, S3Storage):
+            return True
+        return False
 
     @classmethod
     def get_storage_directory(cls) -> str:
@@ -100,6 +112,13 @@ class BaseArchiveBackend(object):
         if not self.readmode:
             raise ValueError('Must be in readmode')
         return self.storage_backend.open(self.archive_full_path, 'rb')
+
+    def get_secure_url(self) -> str:
+        if self.storage_backend_url_is_secure:
+            return self.storage_backend.url(self.archive_full_path)
+        else:
+            storage_class = self.__class__.get_storage_backend()
+            raise ValueError(f"Storage backend, {storage_class.__module__}.{storage_class.__name__} can not produce safe download URLs")
 
     def open_write_binary(self) -> File:
         """

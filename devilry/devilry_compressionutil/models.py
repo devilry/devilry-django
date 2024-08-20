@@ -178,7 +178,7 @@ class CompressedArchiveMeta(GenericMeta):
             readmode=readmode
         )
 
-    def make_download_httpresponse(self) -> HttpResponseBase:
+    def _make_download_httpresponse_through_django(self) -> HttpResponseBase:
         archive_backend = self.get_archive_backend()
         archive_name = archive_backend.archive_name
 
@@ -211,6 +211,18 @@ class CompressedArchiveMeta(GenericMeta):
         response["content-length"] = str(archive_backend.archive_size())
         logger.debug("Archive %s: returning response", archive_name)
         return response
+
+    def _make_archive_download_httpresponse_through_storage_url(self):
+        archive_backend = self.get_archive_backend()
+        url = archive_backend.get_secure_url()
+        return http.HttpResponseRedirect(url)
+
+    def make_download_httpresponse(self) -> HttpResponseBase:
+        if getattr(settings, "DEVILRY_USE_STORAGE_BACKEND_URL_FOR_ARCHIVE_DOWNLOADS", False):
+            archive_backend = self.get_archive_backend()
+            if archive_backend.storage_backend_url_is_secure:
+                return self._make_archive_download_httpresponse_through_storage_url()
+        return self._make_download_httpresponse_through_django()
 
 
 @receiver(pre_delete, sender=CompressedArchiveMeta)
