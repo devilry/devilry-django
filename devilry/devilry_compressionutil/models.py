@@ -1,4 +1,5 @@
 # Django imports
+import logging
 import typing
 from wsgiref.util import FileWrapper
 from django import http
@@ -17,6 +18,8 @@ from devilry.devilry_compressionutil import backend_registry
 
 if typing.TYPE_CHECKING:
     from devilry.devilry_compressionutil.backends.backends_base import BaseArchiveBackend
+
+logger = logging.getLogger(__name__)
 
 
 class GenericMeta(models.Model):
@@ -177,13 +180,36 @@ class CompressedArchiveMeta(GenericMeta):
 
     def make_download_httpresponse(self) -> HttpResponseBase:
         archive_backend = self.get_archive_backend()
-        filewrapper = FileWrapper(archive_backend.open_read_binary())
-        response = http.StreamingHttpResponse(
-            filewrapper, content_type=archive_backend.get_content_type())
-        response['content-disposition'] = 'attachment; filename={}'.format(
-            archive_backend.archive_name.encode('ascii', 'replace').decode()
+        archive_name = archive_backend.archive_name
+
+        class LoggingFileWrapper(FileWrapper):
+            def __next__(self):
+                logger.debug("Archive %s: Reading chunk %d (blksize=%s)", archive_name, self._devilry_chunk_number, self.blksize)
+                self._devilry_chunk_number += 1
+                return super().__next__()
+
+            def __iter__(self):
+                self._devilry_chunk_number = 0
+                return super().__iter__()
+
+        class LoggingStreamingHttpResponse(http.StreamingHttpResponse):
+            def __iter__(self):
+                chunk_number = 0
+                for chunk in super().__iter__():
+                    logger.debug("Archive %s: Writing chunk %d", archive_name, chunk_number)
+                    chunk_number += 1
+                    yield chunk
+
+
+        logger.debug("Archive %s: initializing", archive_name)
+        filewrapper = LoggingFileWrapper(archive_backend.open_read_binary())
+        response = LoggingStreamingHttpResponse(filewrapper, content_type=archive_backend.get_content_type())
+        response["content-disposition"] = "attachment; filename={}".format(
+            archive_name.encode("ascii", "replace").decode()
         )
-        response['content-length'] = str(archive_backend.archive_size())
+        logger.debug("Archive %s: getting archive size", archive_name)
+        response["content-length"] = str(archive_backend.archive_size())
+        logger.debug("Archive %s: returning response", archive_name)
         return response
 
 

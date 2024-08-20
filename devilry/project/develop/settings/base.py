@@ -136,3 +136,8 @@ LOGGING = create_logging_config(
     request_loglevel="DEBUG",
     storages_loglevel="WARNING",  # Set to DEBUG to debug S3 stuff
 )
+# LOGGING["loggers"]["devilry.devilry_compressionutil.models"] = {
+#     'handlers': ['stderr'],
+#     'level': "DEBUG",
+#     'propagate': False
+# }
