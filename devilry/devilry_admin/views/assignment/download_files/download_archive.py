@@ -11,6 +11,7 @@ from cradmin_legacy import crapp
 from devilry.apps.core import models as core_models
 from devilry.devilry_compressionutil import models as archivemodels
 from devilry.devilry_admin.views.assignment.download_files import batch_download_api
+from devilry.utils.csrfutils import csrf_exempt_if_configured
 
 
 class CompressedAssignmentFileDownloadView(generic.TemplateView):
@@ -41,7 +42,7 @@ class App(crapp.App):
             name='assignment-file-download'),
         crapp.Url(
             r'assignment-download-api/(?P<content_object_id>[0-9]+)$',
-            batch_download_api.BatchCompressionAPIAssignmentView.as_view(),
+            csrf_exempt_if_configured(batch_download_api.BatchCompressionAPIAssignmentView.as_view()),
             name='assignment-file-download-api'
         )
     ]

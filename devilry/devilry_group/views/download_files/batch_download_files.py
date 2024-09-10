@@ -13,6 +13,7 @@ from devilry.devilry_comment import models as comment_models
 from devilry.devilry_compressionutil import models as archivemodels
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.views.download_files.batch_download_api import BatchCompressionAPIFeedbackSetView
+from devilry.utils.csrfutils import csrf_exempt_if_configured
 
 
 class FileDownloadFeedbackfeedView(generic.TemplateView):
@@ -90,7 +91,7 @@ class App(crapp.App):
             name='feedbackset-file-download'),
         crapp.Url(
             r'feedbackset-download-api/(?P<content_object_id>[0-9]+)$',
-            BatchCompressionAPIFeedbackSetView.as_view(),
+            csrf_exempt_if_configured(BatchCompressionAPIFeedbackSetView.as_view()),
             name='feedbackset-file-download-api'
         )
     ]
