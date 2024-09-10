@@ -1,3 +1,9 @@
+## 6.3.6 (2024-09-10)
+
+### Fix
+
+- Add setting to optionally disable CSRF for certain API views.
+
 ## 6.3.5 (2024-08-20)
 
 ### Fix
