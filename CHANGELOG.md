@@ -1,3 +1,10 @@
+## 6.3.7 (2024-09-30)
+
+### Fix
+
+- Make it possible to configure separate storage backend for single file download URLs.
+- Make it possible to configure separate storage backend for archive download URLs.
+
 ## 6.3.6 (2024-09-10)
 
 ### Fix
