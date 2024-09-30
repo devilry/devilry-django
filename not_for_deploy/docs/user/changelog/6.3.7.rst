@@ -1,0 +1,10 @@
+.. _6.3.7changelog:
+
+###################################
+What is new in Devilry 6.3.7
+###################################
+
+
+Fixes
+#####
+- Security enchancement: Make it possible to use separate server credentials to generate secure/signed URLs for file downloads.
