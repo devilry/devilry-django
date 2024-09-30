@@ -1,5 +1,5 @@
 ===========================================
-Migrating from 3.6.4 to 3.6.5
+Migrating from 3.3.4 to 3.6.5
 ===========================================
 
 
@@ -21,4 +21,4 @@ Support using S3 presigned URLs for archive downloads. Requires:
 Update devilry to 3.6.5
 ##############################
 
-Update the devilry version to ``3.6.5`` as described in :doc:`../update`.
+Update the devilry version to ``3.3.5`` as described in :doc:`../update`.

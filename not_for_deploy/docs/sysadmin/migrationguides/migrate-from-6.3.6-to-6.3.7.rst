@@ -1,5 +1,5 @@
 ===========================================
-Migrating from 3.6.6 to 6.3.7
+Migrating from 3.3.6 to 6.3.7
 ===========================================
 
 
@@ -19,5 +19,5 @@ Support using separate IAM user for signing presigned URLs. See https://github.c
 Update devilry to 6.3.7
 ##############################
 
-Update the devilry version to ``3.6.7`` as described in :doc:`../update`.
+Update the devilry version to ``6.3.7`` as described in :doc:`../update`.
 
