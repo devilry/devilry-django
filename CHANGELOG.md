@@ -1,3 +1,9 @@
+## 6.3.8 (2024-10-14)
+
+### Fix
+
+- Use local version of Fira Sans instead of googlefonts.
+
 ## 6.3.7 (2024-09-30)
 
 ### Fix
