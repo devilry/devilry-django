@@ -166,6 +166,59 @@ See ``devilry/devilry_group/templates/devilry_group/include/archive_download_ins
 in the devilry repo for the default content of this template.
 
 
+Add system messages
+========================================
+To set a custom archive download instructions template, you need to create
+``~/devilrydeploy/custom_devilry_templates/devilry_deploy/system_messages.django.html``
+
+Example:
+
+.. code-block:: django
+
+    {% load i18n %}
+    {% get_current_language as LANGUAGE_CODE %}
+
+    <div class="container">
+        {% if LANGUAGE_CODE == "nb" %}
+            <div class="devilry-systemmessage alert alert-info">
+                System <strong>info</strong> melding.
+            </div>
+            <div class="devilry-systemmessage alert alert-warning">
+                System <strong>warning</strong> melding.
+            </div>
+            <div class="devilry-systemmessage alert alert-info">
+                <h2>System melding med mer innhold</h2>
+                <p>System <strong>info</strong> melding.</p>
+                <p>Kan ha <a href="#" target="_blank">linker</a> o.l.</p>
+            </div>
+            <div class="devilry-systemmessage alert alert-warning">
+                <h2>System melding med mer innhold</h2>
+                <p>System <strong>warning</strong> melding.</p>
+                <p>Kan ha <a href="#" target="_blank">linker</a> o.l.</p>
+            </div>
+        {% else %}
+            <div class="devilry-systemmessage alert alert-info">
+                System <strong>info</strong> message.
+            </div>
+            <div class="devilry-systemmessage alert alert-warning">
+                System <strong>warning</strong> message.
+            </div>
+            <div class="devilry-systemmessage alert alert-info">
+                <h2>System message with more content</h2>
+                <p>System <strong>info</strong> message.</p>
+                <p>Can have <a href="#" target="_blank">links</a> etc.</p>
+            </div>
+            <div class="devilry-systemmessage alert alert-warning">
+                <h2>System message with more content</h2>
+                <p>System <strong>warning</strong> message.</p>
+                <p>Can have <a href="#" target="_blank">links</a> etc.</p>
+            </div>
+        {% endif %}
+    </div>
+
+This template has no default content (the default template is just empty).
+
+
 ****************************
 Available template variables
 ****************************

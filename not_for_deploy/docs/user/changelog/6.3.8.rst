@@ -1,0 +1,11 @@
+.. _6.3.8changelog:
+
+###################################
+What is new in Devilry 6.3.8
+###################################
+
+
+Updates/changes
+###############
+- Host fonts internally instead of via googlefonts.
+

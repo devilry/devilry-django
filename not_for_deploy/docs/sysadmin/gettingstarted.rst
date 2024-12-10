@@ -250,6 +250,17 @@ Start by copying the following into ``~/devilrydeploy/devilry_settings.py``::
     # # This defaults to True, and it MUST be True for devilry to work correctly
     # AWS_S3_FILE_OVERWRITE = True
     #
+    #
+    # ## If you want to use presigned URLs for downloads, set these settings:
+    # # DEVILRY_USE_STORAGE_BACKEND_URL_FOR_ARCHIVE_DOWNLOADS = True
+    # # DEVILRY_USE_STORAGE_BACKEND_URL_FOR_FILE_DOWNLOADS = True
+    # #
+    # ## .. and if you want to use a separate IAM user to generate the presigned URLs,
+    # ##    add extra entries (with other credentials) in STORAGES and refer to them here:
+    # # DELIVERY_TEMPORARY_STORAGE_BACKEND_GENERATE_URLS = "devilry_temp_storage_generate_urls"
+    # # DELIVERY_STORAGE_BACKEND_GENERATE_URLS = "devilry_delivery_storage_generate_urls"
+    #
+    #
     # STORAGES = {
     #     'devilry_delivery_storage': {
     #         'BACKEND': 'storages.backends.s3.S3Storage',

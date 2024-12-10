@@ -1,15 +1,21 @@
 # -*- coding: utf-8 -*-
 
 
+import re
+from wsgiref.util import FileWrapper
+
+from cradmin_legacy.apps.cradmin_temporaryfileuploadstore.views.temporary_file_upload_api import HttpResponse
 from django.conf import settings
 from django.core import files
 from django.db import models
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
+from django.http import HttpResponseRedirect
 from django.utils import timezone
 from django.utils.translation import pgettext_lazy
+from storages.backends.s3 import S3Storage
 
-from devilry.utils.storageutils import get_delivery_storage
+from devilry.utils.storageutils import get_delivery_storage, get_delivery_storage_generate_urls, make_storage_url
 
 
 class Comment(models.Model):
@@ -17,21 +23,20 @@ class Comment(models.Model):
 
     A comment made by an user.
     """
+
     #: the text of the comment
-    text = models.TextField(null=False, blank=True, default='')
+    text = models.TextField(null=False, blank=True, default="")
 
     #: This is used for autosave. We do not change :obj:`~.Comment.text` on autosave,
     #: instead we store the changes here, and restore them when the user returns
     #: We may then ask them if they want to restore the draft or the old text.
-    draft_text = models.TextField(null=False, blank=True, default='')
+    draft_text = models.TextField(null=False, blank=True, default="")
 
     #: the user who posted the comment
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             null=True, blank=True,
-                             on_delete=models.SET_NULL)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)
 
     #: if this comment is a reply to another comment, that comment will be parent
-    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
+    parent = models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE)
 
     #: when was the comment created
     created_datetime = models.DateTimeField(null=False, blank=False, default=timezone.now)
@@ -41,21 +46,21 @@ class Comment(models.Model):
 
     #: Use this as value for :obj:`~.Comment.user_role` if the user
     #: is commenting as a student.
-    USER_ROLE_STUDENT = 'student'
+    USER_ROLE_STUDENT = "student"
 
     #: Use this as value for :obj:`~.Comment.user_role` if the user
     #: is commenting as an examiner.
-    USER_ROLE_EXAMINER = 'examiner'
+    USER_ROLE_EXAMINER = "examiner"
 
     #: Use this as value for :obj:`~.Comment.user_role` if the user
     #: is commenting as an admin.
-    USER_ROLE_ADMIN = 'admin'
+    USER_ROLE_ADMIN = "admin"
 
     #: Choices for the :obj:`~.Comment.user_role` field.
     USER_ROLE_CHOICES = (
-        (USER_ROLE_STUDENT, pgettext_lazy('comment user_role_choices','Student')),
-        (USER_ROLE_EXAMINER, pgettext_lazy('comment user_role_choices','Examiner')),
-        (USER_ROLE_ADMIN, pgettext_lazy('comment user_role_choices','Admin')),
+        (USER_ROLE_STUDENT, pgettext_lazy("comment user_role_choices", "Student")),
+        (USER_ROLE_EXAMINER, pgettext_lazy("comment user_role_choices", "Examiner")),
+        (USER_ROLE_ADMIN, pgettext_lazy("comment user_role_choices", "Admin")),
     )
 
     #: What role did the user publish as? This determines the style of the comment
@@ -63,23 +68,23 @@ class Comment(models.Model):
 
     #: Use this as value for :obj:`~.Comment.comment_type` if the comment
     #: is an :class:`devilry.devilry_group.models.ImageAnnotationComment`.
-    COMMENT_TYPE_IMAGEANNOTATION = 'imageannotationcomment'
+    COMMENT_TYPE_IMAGEANNOTATION = "imageannotationcomment"
 
     #: Use this as value for :obj:`~.Comment.comment_type` if the comment
     #: is a :class:`devilry.devilry_group.models.GroupComment`.
-    COMMENT_TYPE_GROUPCOMMENT = 'groupcomment'
+    COMMENT_TYPE_GROUPCOMMENT = "groupcomment"
 
     #: Choices for the :obj:`~.Comment.comment_type` field.
     COMMENT_TYPE_CHOICES = (
-        (COMMENT_TYPE_IMAGEANNOTATION, 'ImageAnnotationComment'),
-        (COMMENT_TYPE_GROUPCOMMENT, 'GroupComment'),
+        (COMMENT_TYPE_IMAGEANNOTATION, "ImageAnnotationComment"),
+        (COMMENT_TYPE_GROUPCOMMENT, "GroupComment"),
     )
 
     #: What type of comment is this. Used for reverse mapping to subclasses.
     comment_type = models.CharField(choices=COMMENT_TYPE_CHOICES, max_length=42)
 
     def __str__(self):
-        return '{}'.format(self.user)
+        return "{}".format(self.user)
 
     def add_commentfile_from_temporary_file(self, tempfile):
         """
@@ -88,10 +93,12 @@ class Comment(models.Model):
         Args:
             tempfile (TemporaryFile): Temporary file to convert.
         """
-        commentfile = CommentFile.objects.create(filename=tempfile.filename,
-                                                 mimetype=tempfile.mimetype,
-                                                 filesize=tempfile.file.size,
-                                                 comment=self)
+        commentfile = CommentFile.objects.create(
+            filename=tempfile.filename,
+            mimetype=tempfile.mimetype,
+            filesize=tempfile.file.size,
+            comment=self,
+        )
 
         commentfile.file = files.File(tempfile.file, tempfile.filename)
         commentfile.clean()
@@ -136,55 +143,40 @@ class CommentEditHistory(models.Model):
     """
 
     #: The comment this history entry is for.
-    comment = models.ForeignKey(
-        to=Comment,
-        on_delete=models.CASCADE
-    )
+    comment = models.ForeignKey(to=Comment, on_delete=models.CASCADE)
 
     #: Who edited the comment.
     #: Currently, this will always be the user that created the comment.
-    edited_by = models.ForeignKey(
-        to=settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        null=True, blank=True
-    )
+    edited_by = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
 
     #: When the comment was edited.
-    edited_datetime = models.DateTimeField(
-        default=timezone.now,
-        null=False, blank=False
-    )
+    edited_datetime = models.DateTimeField(default=timezone.now, null=False, blank=False)
 
     #: The result of the edited comment text.
-    post_edit_text = models.TextField(
-        null=False, blank=True, default=''
-    )
+    post_edit_text = models.TextField(null=False, blank=True, default="")
 
     #: The comment text before it was edited.
-    pre_edit_text = models.TextField(
-        null=False, blank=True, default=''
-    )
+    pre_edit_text = models.TextField(null=False, blank=True, default="")
 
     def __str__(self):
-        return 'Comment: {} - {}'.format(self.comment.user_role, self.comment.user)
+        return "Comment: {} - {}".format(self.comment.user_role, self.comment.user)
 
 
 def get_comment_directory_path_unlimited_files_per_directory(comment_id):
-    return 'devilry_comment/{}'.format(comment_id)
+    return "devilry_comment/{}".format(comment_id)
 
 
 def get_comment_directory_path_restrict_files_per_directory(comment_id):
     interval = 1000
     toplevel = comment_id / (interval * interval)
     sublevel = (comment_id - (toplevel * interval * interval)) / interval
-    return 'devilry_comment/{toplevel}/{sublevel}/{comment_id}'.format(
-        toplevel=toplevel,
-        sublevel=sublevel,
-        comment_id=comment_id)
+    return "devilry_comment/{toplevel}/{sublevel}/{comment_id}".format(
+        toplevel=toplevel, sublevel=sublevel, comment_id=comment_id
+    )
 
 
 def get_comment_directory_path(comment_id):
-    if getattr(settings, 'DEVILRY_RESTRICT_NUMBER_OF_FILES_PER_DIRECTORY', False):
+    if getattr(settings, "DEVILRY_RESTRICT_NUMBER_OF_FILES_PER_DIRECTORY", False):
         return get_comment_directory_path_restrict_files_per_directory(comment_id=comment_id)
     else:
         return get_comment_directory_path_unlimited_files_per_directory(comment_id=comment_id)
@@ -201,17 +193,17 @@ def commentfile_directory_path(instance, filename):
         ValidationError: If ``instance.id`` is ``None``.
     """
     if instance.id is None:
-        raise ValueError('Can not save a CommentFile.file on a CommentFile without an id.')
+        raise ValueError("Can not save a CommentFile.file on a CommentFile without an id.")
     comment_directory = get_comment_directory_path(comment_id=instance.comment_id)
-    return '{}/file/{}'.format(comment_directory, instance.id)
+    return "{}/file/{}".format(comment_directory, instance.id)
 
 
 class CommentFileQuerySet(models.QuerySet):
     def delete(self):
         raise NotImplementedError(
-            'Bulk deletion not supported. Delete each CommentFile instead. This is because '
-            'multiple CommentFiles can point to the same FileField.path, and this check is '
-            'handled in a pre_delete signal.'
+            "Bulk deletion not supported. Delete each CommentFile instead. This is because "
+            "multiple CommentFiles can point to the same FileField.path, and this check is "
+            "handled in a pre_delete signal."
         )
 
 
@@ -219,6 +211,7 @@ class CommentFile(models.Model):
     """
     Main class for a file uploaded to a :class:`Comment`
     """
+
     objects = CommentFileQuerySet.as_manager()
 
     MAX_FILENAME_LENGTH = 255
@@ -229,9 +222,15 @@ class CommentFile(models.Model):
     #: comment must first be created with this field set to ``''`` to get an ID
     #: for :meth:`.commentfile_directory_path`, then updated with
     #: a file set to something.
-    file = models.FileField(upload_to=commentfile_directory_path, max_length=512,
-                            null=False, blank=True, default='', db_index=True,
-                            storage=get_delivery_storage)
+    file = models.FileField(
+        upload_to=commentfile_directory_path,
+        max_length=512,
+        null=False,
+        blank=True,
+        default="",
+        db_index=True,
+        storage=get_delivery_storage,
+    )
 
     #: The name of the file - this is the name of the file that was uploaded.
     filename = models.CharField(max_length=MAX_FILENAME_LENGTH)
@@ -258,12 +257,10 @@ class CommentFile(models.Model):
     #:
     #: For CommentFiles imported from FileMeta, the format of the string
     #: is ``filemeta__<FileMeta.id>``.
-    v2_id = models.CharField(
-        max_length=255,
-        null=False, blank=True, default="")
+    v2_id = models.CharField(max_length=255, null=False, blank=True, default="")
 
     def __str__(self):
-        return '{} - {}'.format(self.comment.user, self.filename)
+        return "{} - {}".format(self.comment.user, self.filename)
 
     def copy_into_comment(self, target):
         """
@@ -282,7 +279,7 @@ class CommentFile(models.Model):
             processing_started_datetime=self.processing_started_datetime,
             processing_completed_datetime=self.processing_completed_datetime,
             processing_successful=self.processing_successful,
-            created_datetime=self.created_datetime
+            created_datetime=self.created_datetime,
         )
         commentfilecopy.save()
 
@@ -307,11 +304,32 @@ class CommentFile(models.Model):
         Returns:
             str: Unique version of the filename.
         """
-        return '{}-{}-{}'.format(
-            self.id,
-            self.created_datetime.strftime('%b.%m.%Y-%X.%f'),
-            self.filename
-        )
+        return "{}-{}-{}".format(self.id, self.created_datetime.strftime("%b.%m.%Y-%X.%f"), self.filename)
+
+    def make_download_httpresponse(self) -> HttpResponse:
+        filename = re.subn(
+            r"[^a-zA-Z0-9._ -]",
+            "",
+            self.filename.encode("ascii", "replace").decode("utf-8"),
+        )[0]
+        if getattr(settings, "DEVILRY_USE_STORAGE_BACKEND_URL_FOR_FILE_DOWNLOADS", False):
+            storage = get_delivery_storage_generate_urls()
+            if isinstance(storage, S3Storage):
+                url = make_storage_url(storage=storage, stored_name=self.file.name, preferred_filename=filename)
+                return HttpResponseRedirect(url)
+            else:
+                raise ValueError(
+                    f"Storage backend, {storage.__module__}.{storage.__class__.__name__} can "
+                    f"not produce safe download URLs"
+                )
+        else:
+            # Load file as chunks rather than loading the whole file into memory
+            filewrapper = FileWrapper(self.file)
+            response = HttpResponse(filewrapper, content_type=self.mimetype)
+            response["content-disposition"] = "attachment; filename={}".format(filename)
+            response["content-length"] = self.filesize
+
+            return response
 
 
 def commentfileimage_directory_path(instance, filename):
@@ -325,9 +343,9 @@ def commentfileimage_directory_path(instance, filename):
         ValidationError: If ``instance.id`` is ``None``.
     """
     if instance.id is None:
-        raise ValueError('Can not save a CommentFileImage.image on a CommentFileImage without an id.')
+        raise ValueError("Can not save a CommentFileImage.image on a CommentFileImage without an id.")
     comment_directory = get_comment_directory_path(comment_id=instance.comment_file.comment_id)
-    return '{}/image/{}_{}'.format(comment_directory, instance.comment_file.id, instance.id)
+    return "{}/image/{}_{}".format(comment_directory, instance.comment_file.id, instance.id)
 
 
 def commentfileimage_thumbnail_directory_path(instance, filename):
@@ -341,17 +359,17 @@ def commentfileimage_thumbnail_directory_path(instance, filename):
         ValidationError: If ``instance.id`` is ``None``.
     """
     if instance.id is None:
-        raise ValueError('Can not save a CommentFileImage.thumbnail on a CommentFile without an id.')
+        raise ValueError("Can not save a CommentFileImage.thumbnail on a CommentFile without an id.")
     comment_directory = get_comment_directory_path(comment_id=instance.comment_file.comment_id)
-    return '{}/thumbnail/{}_{}'.format(comment_directory, instance.comment_file.id, instance.id)
+    return "{}/thumbnail/{}_{}".format(comment_directory, instance.comment_file.id, instance.id)
 
 
 class CommentFileImageQuerySet(models.QuerySet):
     def delete(self):
         raise NotImplementedError(
-            'Bulk deletion not supported. Delete each CommentFileImage instead. This is because '
-            'multiple CommentFileImages can point to the same FileField.path, and this check is '
-            'handled in a pre_delete signal.'
+            "Bulk deletion not supported. Delete each CommentFileImage instead. This is because "
+            "multiple CommentFileImages can point to the same FileField.path, and this check is "
+            "handled in a pre_delete signal."
         )
 
 
@@ -359,22 +377,33 @@ class CommentFileImage(models.Model):
     """
     An image representing a single page of a :class:`CommentFile`.
     """
+
     objects = CommentFileImageQuerySet.as_manager()
 
     comment_file = models.ForeignKey(CommentFile, on_delete=models.CASCADE)
 
-    image = models.FileField(upload_to=commentfileimage_directory_path,
-                             max_length=512,
-                             null=False, blank=True, default='', db_index=True,
-                             storage=get_delivery_storage)
+    image = models.FileField(
+        upload_to=commentfileimage_directory_path,
+        max_length=512,
+        null=False,
+        blank=True,
+        default="",
+        db_index=True,
+        storage=get_delivery_storage,
+    )
 
     image_width = models.PositiveIntegerField()
     image_height = models.PositiveIntegerField()
 
-    thumbnail = models.FileField(upload_to=commentfileimage_thumbnail_directory_path,
-                                 max_length=512,
-                                 null=False, blank=True, default='', db_index=True,
-                                 storage=get_delivery_storage)
+    thumbnail = models.FileField(
+        upload_to=commentfileimage_thumbnail_directory_path,
+        max_length=512,
+        null=False,
+        blank=True,
+        default="",
+        db_index=True,
+        storage=get_delivery_storage,
+    )
     thumbnail_width = models.PositiveIntegerField()
     thumbnail_height = models.PositiveIntegerField()
 

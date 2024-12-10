@@ -110,7 +110,42 @@ exclude = [
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "6.3.3"
+version = "6.3.8"
 version_files = ["devilry/__init__.py:__version__"]
 tag_format = "$version"
 update_changelog_on_bump = true
+
+
+[tool.black]
+line-length = 120
+
+[tool.isort]
+profile = "black"
+line_length = 120
+
+
+[tool.basedpyright]
+typeCheckingMode = "standard"
+# typeCheckingMode = "basic"
+
+reportMissingImports = true
+reportMissingTypeStubs = false
+reportMissingTypeArgument = false
+reportAny = false
+reportImplicitOverride = false
+reportUnknownParameterType = false
+reportUnknownArgumentType = false
+reportUnknownVariableType = false
+reportUnknownMemberType = false
+reportMissingParameterType = false
+reportUnusedCallResult = false
+reportOperatorIssue = "warning"
+reportDeprecated = "warning"
+reportImplicitStringConcatenation = false
+reportIndexIssue = "warning"
+reportInvalidCast = "warning"
+reportAttributeAccessIssue = "warning"
+reportIncompatibleVariableOverride = "warning"
+
+pythonVersion = "3.10"
+pythonPlatform = "Linux"

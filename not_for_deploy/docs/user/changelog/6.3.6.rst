@@ -1,0 +1,10 @@
+.. _6.3.6changelog:
+
+###################################
+What is new in Devilry 6.3.6
+###################################
+
+
+Fixes
+#####
+- Fix that potentially fixes issues uploading and downloading files.

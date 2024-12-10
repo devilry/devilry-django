@@ -1,3 +1,34 @@
+## 6.3.8 (2024-10-14)
+
+### Fix
+
+- Use local version of Fira Sans instead of googlefonts.
+
+## 6.3.7 (2024-09-30)
+
+### Fix
+
+- Make it possible to configure separate storage backend for single file download URLs.
+- Make it possible to configure separate storage backend for archive download URLs.
+
+## 6.3.6 (2024-09-10)
+
+### Fix
+
+- Add setting to optionally disable CSRF for certain API views.
+
+## 6.3.5 (2024-08-20)
+
+### Fix
+
+- Support downloading archives via S3 presigned URL
+
+## 6.3.4 (2024-08-20)
+
+### Fix
+
+- **compressionutil**: Add logging to file downloads (loglevel DEBUG, no not visible by default)
+
 ## 6.3.3 (2024-06-29)
 
 ### Fix

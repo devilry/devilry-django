@@ -1,0 +1,10 @@
+.. _6.3.4changelog:
+
+###################################
+What is new in Devilry 6.3.4
+###################################
+
+Updates/changes
+###############
+- Internal changes related to logging only. No changes for regular use.
+
