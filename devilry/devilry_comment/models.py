@@ -4,9 +4,7 @@
 import re
 from wsgiref.util import FileWrapper
 
-from cradmin_legacy.apps.cradmin_temporaryfileuploadstore.views.temporary_file_upload_api import (
-    HttpResponse,
-)
+from cradmin_legacy.apps.cradmin_temporaryfileuploadstore.views.temporary_file_upload_api import HttpResponse
 from django.conf import settings
 from django.core import files
 from django.db import models
@@ -17,10 +15,7 @@ from django.utils import timezone
 from django.utils.translation import pgettext_lazy
 from storages.backends.s3 import S3Storage
 
-from devilry.utils.storageutils import (
-    get_delivery_storage,
-    get_delivery_storage_generate_urls,
-)
+from devilry.utils.storageutils import get_delivery_storage, get_delivery_storage_generate_urls, make_storage_url
 
 
 class Comment(models.Model):
@@ -312,10 +307,15 @@ class CommentFile(models.Model):
         return "{}-{}-{}".format(self.id, self.created_datetime.strftime("%b.%m.%Y-%X.%f"), self.filename)
 
     def make_download_httpresponse(self) -> HttpResponse:
+        filename = re.subn(
+            r"[^a-zA-Z0-9._ -]",
+            "",
+            self.filename.encode("ascii", "replace").decode("utf-8"),
+        )[0]
         if getattr(settings, "DEVILRY_USE_STORAGE_BACKEND_URL_FOR_FILE_DOWNLOADS", False):
             storage = get_delivery_storage_generate_urls()
             if isinstance(storage, S3Storage):
-                url = storage.url(self.file.name)
+                url = make_storage_url(storage=storage, stored_name=self.file.name, preferred_filename=filename)
                 return HttpResponseRedirect(url)
             else:
                 raise ValueError(
@@ -326,11 +326,6 @@ class CommentFile(models.Model):
             # Load file as chunks rather than loading the whole file into memory
             filewrapper = FileWrapper(self.file)
             response = HttpResponse(filewrapper, content_type=self.mimetype)
-            filename = re.subn(
-                r"[^a-zA-Z0-9._ -]",
-                "",
-                self.filename.encode("ascii", "replace").decode(),
-            )[0]
             response["content-disposition"] = "attachment; filename={}".format(filename)
             response["content-length"] = self.filesize
 

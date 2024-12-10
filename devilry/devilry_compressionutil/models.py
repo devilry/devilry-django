@@ -2,6 +2,7 @@
 import logging
 import typing
 from wsgiref.util import FileWrapper
+
 from django import http
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -26,14 +27,17 @@ class GenericMeta(models.Model):
     """
     Abstract class that implements usage of GenericForeignKey.
     """
+
     #: Foreignkey to Djangos ContentType.
-    content_type = models.ForeignKey(ContentType, related_name='content_type_compressed_file_meta', on_delete=models.CASCADE)
+    content_type = models.ForeignKey(
+        ContentType, related_name="content_type_compressed_file_meta", on_delete=models.CASCADE
+    )
 
     #: ID of model to store.
     content_object_id = models.PositiveIntegerField(null=False)
 
     #: An arbitrary model to store.
-    content_object = GenericForeignKey('content_type', 'content_object_id')
+    content_object = GenericForeignKey("content_type", "content_object_id")
 
     class Meta:
         abstract = True
@@ -47,7 +51,8 @@ class CompressedArchiveMetaQueryset(models.QuerySet):
     """
     Manager for class :class:`.CompressedArchiveMeta`.
     """
-    def create_meta(self, instance, zipfile_backend, user, user_role=''):
+
+    def create_meta(self, instance, zipfile_backend, user, user_role=""):
         """
         Manager provides a way to create a meta entry for a archive.
         See :class:`~devilry.devilry_ziputil.models.CompressedArchiveMeta`.
@@ -59,13 +64,13 @@ class CompressedArchiveMetaQueryset(models.QuerySet):
         """
         zipfile_backend.readmode = True
         archive_meta = CompressedArchiveMeta(
-                content_object=instance,
-                archive_name=zipfile_backend.archive_name,
-                archive_path=zipfile_backend.archive_path,
-                archive_size=zipfile_backend.archive_size(),
-                backend_id=zipfile_backend.backend_id,
-                created_by=user,
-                created_by_role=user_role
+            content_object=instance,
+            archive_name=zipfile_backend.archive_name,
+            archive_path=zipfile_backend.archive_path,
+            archive_size=zipfile_backend.archive_size(),
+            backend_id=zipfile_backend.backend_id,
+            created_by=user,
+            created_by_role=user_role,
         )
         archive_meta.clean()
         archive_meta.save()
@@ -102,40 +107,35 @@ class CompressedArchiveMeta(GenericMeta):
     """
     Metadata about a compressed archive. Name of the archive, path to it and it's size.
     """
+
     objects = CompressedArchiveMetaQueryset.as_manager()
 
     #: Who created the archive.
     created_by = models.ForeignKey(
-        to=settings.AUTH_USER_MODEL,
-        null=True, blank=True, default=None,
-        on_delete=models.SET_NULL
+        to=settings.AUTH_USER_MODEL, null=True, blank=True, default=None, on_delete=models.SET_NULL
     )
 
     #: Use this as value for :obj:`~.Comment.user_role` if the user
     #: is commenting as a student.
-    CREATED_BY_ROLE_STUDENT = 'student'
+    CREATED_BY_ROLE_STUDENT = "student"
 
     #: Use this as value for :obj:`~.Comment.user_role` if the user
     #: is commenting as an examiner.
-    CREATED_BY_ROLE_EXAMINER = 'examiner'
+    CREATED_BY_ROLE_EXAMINER = "examiner"
 
     #: Use this as value for :obj:`~.Comment.user_role` if the user
     #: is commenting as an admin.
-    CREATED_BY_ROLE_ADMIN = 'admin'
+    CREATED_BY_ROLE_ADMIN = "admin"
 
     #: Choices for the :obj:`~.Comment.user_role` field.
     CREATED_BY_ROLE_CHOICES = (
-        (CREATED_BY_ROLE_STUDENT, pgettext_lazy('compressed archive meta role', 'Student')),
-        (CREATED_BY_ROLE_EXAMINER, pgettext_lazy('compressed archive meta role', 'Examiner')),
-        (CREATED_BY_ROLE_ADMIN, pgettext_lazy('compressed archive meta role', 'Admin')),
+        (CREATED_BY_ROLE_STUDENT, pgettext_lazy("compressed archive meta role", "Student")),
+        (CREATED_BY_ROLE_EXAMINER, pgettext_lazy("compressed archive meta role", "Examiner")),
+        (CREATED_BY_ROLE_ADMIN, pgettext_lazy("compressed archive meta role", "Admin")),
     )
 
     #: What role did the user create the archive with?
-    created_by_role = models.CharField(
-        choices=CREATED_BY_ROLE_CHOICES,
-        max_length=255,
-        default=''
-    )
+    created_by_role = models.CharField(choices=CREATED_BY_ROLE_CHOICES, max_length=255, default="")
 
     #: When the archive was created.
     created_datetime = models.DateTimeField(auto_now_add=True)
@@ -153,7 +153,7 @@ class CompressedArchiveMeta(GenericMeta):
     #: The ID of the backend used.
     #: This is the ID attribute
     #: :attr:`~.devilry.devilry_compressionutil.backends.backends_base.BaseArchiveBackend.backend_id`.
-    backend_id = models.CharField(max_length=100, blank=True, null=False, default='')
+    backend_id = models.CharField(max_length=100, blank=True, null=False, default="")
 
     #: When the entry was marked for deletion.
     deleted_datetime = models.DateTimeField(null=True, default=None)
@@ -162,21 +162,16 @@ class CompressedArchiveMeta(GenericMeta):
         try:
             backend_registry.Registry.get_instance().get(self.backend_id)
         except KeyError:
-            raise ValidationError({
-                'backend_id': gettext_lazy('backend_id must refer to a valid backend')
-            })
+            raise ValidationError({"backend_id": gettext_lazy("backend_id must refer to a valid backend")})
 
     def __str__(self):
         return self.archive_path
 
     def get_archive_backend(self, readmode=True) -> "BaseArchiveBackend":
         from devilry.devilry_compressionutil import backend_registry
+
         backend_class = backend_registry.Registry.get_instance().get(self.backend_id)
-        return backend_class(
-            archive_path=self.archive_path,
-            archive_name=self.archive_name,
-            readmode=readmode
-        )
+        return backend_class(archive_path=self.archive_path, archive_name=self.archive_name, readmode=readmode)
 
     def _make_download_httpresponse_through_django(self) -> HttpResponseBase:
         archive_backend = self.get_archive_backend()
@@ -184,7 +179,9 @@ class CompressedArchiveMeta(GenericMeta):
 
         class LoggingFileWrapper(FileWrapper):
             def __next__(self):
-                logger.debug("Archive %s: Reading chunk %d (blksize=%s)", archive_name, self._devilry_chunk_number, self.blksize)
+                logger.debug(
+                    "Archive %s: Reading chunk %d (blksize=%s)", archive_name, self._devilry_chunk_number, self.blksize
+                )
                 self._devilry_chunk_number += 1
                 return super().__next__()
 
@@ -199,7 +196,6 @@ class CompressedArchiveMeta(GenericMeta):
                     logger.debug("Archive %s: Writing chunk %d", archive_name, chunk_number)
                     chunk_number += 1
                     yield chunk
-
 
         logger.debug("Archive %s: initializing", archive_name)
         filewrapper = LoggingFileWrapper(archive_backend.open_read_binary())
