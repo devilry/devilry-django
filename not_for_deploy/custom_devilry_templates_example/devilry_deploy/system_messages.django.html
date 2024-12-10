@@ -1,0 +1,40 @@
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+<div class="container">
+    {% if LANGUAGE_CODE == "nb" %}
+        <div class="devilry-systemmessage alert alert-info">
+            System <strong>info</strong> melding.
+        </div>
+        <div class="devilry-systemmessage alert alert-warning">
+            System <strong>warning</strong> melding.
+        </div>
+        <div class="devilry-systemmessage alert alert-info">
+            <h2>System melding med mer innhold</h2>
+            <p>System <strong>info</strong> melding.</p>
+            <p>Kan ha <a href="#" target="_blank">linker</a> o.l.</p>
+        </div>
+        <div class="devilry-systemmessage alert alert-warning">
+            <h2>System melding med mer innhold</h2>
+            <p>System <strong>warning</strong> melding.</p>
+            <p>Kan ha <a href="#" target="_blank">linker</a> o.l.</p>
+        </div>
+    {% else %}
+        <div class="devilry-systemmessage alert alert-info">
+            System <strong>info</strong> message.
+        </div>
+        <div class="devilry-systemmessage alert alert-warning">
+            System <strong>warning</strong> message.
+        </div>
+        <div class="devilry-systemmessage alert alert-info">
+            <h2>System message with more content</h2>
+            <p>System <strong>info</strong> message.</p>
+            <p>Can have <a href="#" target="_blank">links</a> etc.</p>
+        </div>
+        <div class="devilry-systemmessage alert alert-warning">
+            <h2>System message with more content</h2>
+            <p>System <strong>warning</strong> message.</p>
+            <p>Can have <a href="#" target="_blank">links</a> etc.</p>
+        </div>
+    {% endif %}
+</div>

@@ -1,0 +1,5 @@
+{% extends "cradmin_legacy/base-internal.django.html" %}
+{% block menu %}
+    {{ block.super }}
+    {% include "devilry_deploy/system_messages.django.html" %}
+{% endblock menu %}

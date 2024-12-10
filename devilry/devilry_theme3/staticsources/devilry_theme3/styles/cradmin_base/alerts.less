@@ -21,8 +21,27 @@
   .cradmin-legacy-alert-loadspinner {
     position: absolute;
     top: @cradmin-alert-dismissable-icon-top;
-    right: (@grid-gutter-width/2);
+    right: (@grid-gutter-width / 2);
     color: inherit;
     font-size: 24px;
+  }
+
+  a {
+    color: #fff !important;
+    text-decoration: underline !important;
+
+    &:hover {
+      color: rgba(255, 255, 255, 0.9) !important;
+    }
+  }
+
+  *:first-child {
+    margin-top: 0;
+  }
+
+  &.devilry-systemmessage {
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
   }
 }
