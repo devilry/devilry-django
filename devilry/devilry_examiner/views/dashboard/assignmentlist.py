@@ -11,7 +11,6 @@ from devilry.apps.core import models as coremodels
 from devilry.devilry_cradmin import devilry_listfilter
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_examiner.views.selfassign import utils as selfassign_utils
-from devilry.devilry_cradmin.devilry_listfilter.lists import DevilryVertical
 
 
 class AssignmentItemValue(listbuilder.itemvalue.TitleDescription):
@@ -54,7 +53,6 @@ class AssignmentListView(listbuilderview.FilterListMixin,
     model = coremodels.Assignment
     value_renderer_class = AssignmentItemValue
     frame_renderer_class = AssignmentItemFrame
-    filterlist_class = DevilryVertical
 
     def get_filterlist_template_name(self):
         return 'devilry_examiner/dashboard/assignmentlist.django.html'
@@ -96,7 +94,6 @@ class AssignmentListView(listbuilderview.FilterListMixin,
             user=self.request.user
         )
         return context
-
 
 class App(crapp.App):
     appurls = [

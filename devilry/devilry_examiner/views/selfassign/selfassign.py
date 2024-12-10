@@ -13,7 +13,6 @@ from devilry.apps.core.models import Candidate, Examiner
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin import devilry_listfilter
 from devilry.devilry_examiner.views.selfassign.utils import assignment_groups_available_for_self_assign
-from devilry.devilry_cradmin.devilry_listfilter.lists import DevilryVertical
 
 
 class ExaminerSelfAssignGroupItemValue(devilry_listbuilder.assignmentgroup.ExaminerItemValue):
@@ -74,7 +73,6 @@ class SelfAssignGroupListView(listbuilderview.FilterListMixin, listbuilderview.V
     value_renderer_class = ExaminerSelfAssignGroupItemValue
     frame_renderer_class = listbuilder.itemframe.DefaultSpacingItemFrame
     paginate_by = 20
-    filterlist_class = DevilryVertical
 
     def dispatch(self, request, *args, **kwargs):
         self.period = self.request.cradmin_role
@@ -162,7 +160,7 @@ class SelfAssignGroupListView(listbuilderview.FilterListMixin, listbuilderview.V
                         assignmentgroup_id=models.OuterRef('id')
                     )
                 )
-        ) \
+            ) \
             .annotate_with_is_waiting_for_feedback_count() \
             .annotate_with_is_waiting_for_deliveries_count() \
             .annotate_with_is_corrected_count() \
@@ -173,7 +171,7 @@ class SelfAssignGroupListView(listbuilderview.FilterListMixin, listbuilderview.V
                             'parentnode') \
             .order_by(
                 'cached_data__last_feedbackset__deadline_datetime'
-        )
+            )
         return queryset
 
     def __get_unfiltered_queryset_for_role(self):
@@ -214,7 +212,7 @@ class SelfAssignGroupListView(listbuilderview.FilterListMixin, listbuilderview.V
                     exclude={'status'})\
             .filter(annotated_is_corrected__gt=0)\
             .count()
-
+    
     def get_distinct_assignments_queryset(self):
         if not hasattr(self, '_distinct_assignment_ids'):
             self._distinct_assignment_ids = self.__get_unfiltered_queryset_for_role() \

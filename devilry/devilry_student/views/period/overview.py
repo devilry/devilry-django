@@ -9,7 +9,6 @@ from cradmin_legacy.viewhelpers import listfilter
 from devilry.apps.core import models as coremodels
 from devilry.apps.core.models import Assignment
 from devilry.devilry_cradmin import devilry_listbuilder
-from devilry.devilry_cradmin.devilry_listfilter.lists import DevilryVertical
 
 
 class GroupItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
@@ -34,7 +33,6 @@ class PeriodOverviewView(listbuilderview.FilterListMixin,
     frame_renderer_class = GroupItemFrame
     paginate_by = 15
     template_name = 'devilry_student/period/overview.django.html'
-    filterlist_class = DevilryVertical
 
     def __get_assignment_id_to_assignment_map(self):
         assignmentqueryset = Assignment.objects\

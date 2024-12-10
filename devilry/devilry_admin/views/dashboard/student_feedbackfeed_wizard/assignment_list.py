@@ -16,7 +16,6 @@ from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin import devilry_listfilter
 from devilry.devilry_admin.views.dashboard.student_feedbackfeed_wizard import filters
 from devilry.devilry_cradmin.devilry_listfilter.utils import WithResultValueRenderable
-from devilry.devilry_cradmin.devilry_listfilter.lists import DevilryVertical
 
 
 class NonAnonymousGroupItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
@@ -86,7 +85,6 @@ class StudentAssignmentGroupListView(listbuilderview.FilterListMixin, listbuilde
     template_name = 'devilry_admin/dashboard/student_feedbackfeed_wizard/student_feedbackfeed_list_groups.django.html'
     model = core_models.AssignmentGroup
     listbuilder_class = RowListWithMatchResults
-    filterlist_class = DevilryVertical
     frame_renderer_class = NonAnonymousGroupItemFrame
     filterview_name = 'student_group_filter'
     value_renderer_class = DepartmentAdminItemValueByAssignment
@@ -136,11 +134,11 @@ class StudentAssignmentGroupListView(listbuilderview.FilterListMixin, listbuilde
                 'relatedstudent__user__fullname',
             ) \
             .order_by(
-                Lower(
-                    Concat(
-                        'relatedstudent__user__fullname',
-                        'relatedstudent__user__shortname',
-                        output_field=models.CharField())))
+            Lower(
+                Concat(
+                    'relatedstudent__user__fullname',
+                    'relatedstudent__user__shortname',
+                    output_field=models.CharField())))
         examinerqueryset = core_models.Examiner.objects \
             .select_related('relatedexaminer__user') \
             .only(
@@ -152,11 +150,11 @@ class StudentAssignmentGroupListView(listbuilderview.FilterListMixin, listbuilde
                 'relatedexaminer__user__fullname',
             ) \
             .order_by(
-                Lower(
-                    Concat(
-                        'relatedexaminer__user__fullname',
-                        'relatedexaminer__user__shortname',
-                        output_field=models.CharField())))
+            Lower(
+                Concat(
+                    'relatedexaminer__user__fullname',
+                    'relatedexaminer__user__shortname',
+                    output_field=models.CharField())))
         candidates_ids_for_user = candidatequeryset.filter(
             relatedstudent__user_id=self.user_id)\
             .values_list('assignment_group_id', flat=True)
@@ -168,11 +166,11 @@ class StudentAssignmentGroupListView(listbuilderview.FilterListMixin, listbuilde
             .filter_user_is_admin(user=self.request.user)\
             .filter(id__in=candidates_ids_for_user) \
             .prefetch_related(
-                models.Prefetch('candidates',
-                                queryset=candidatequeryset)) \
+            models.Prefetch('candidates',
+                            queryset=candidatequeryset)) \
             .prefetch_related(
-                models.Prefetch('examiners',
-                                queryset=examinerqueryset)) \
+            models.Prefetch('examiners',
+                            queryset=examinerqueryset)) \
             .annotate_with_is_waiting_for_feedback_count() \
             .annotate_with_is_waiting_for_deliveries_count() \
             .annotate_with_is_corrected_count() \

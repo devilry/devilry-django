@@ -6,7 +6,6 @@ from cradmin_legacy.viewhelpers import multiselect2view
 from devilry.devilry_account.models import User
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin import devilry_listfilter
-from devilry.devilry_cradmin.devilry_listfilter.lists import DevilryVertical
 
 
 class SelectedItem(devilry_listbuilder.user.UserTitleDescriptionMixin,
@@ -42,7 +41,6 @@ class SelectUsersForm(forms.Form):
 
 
 class BaseMultiselectUsersView(multiselect2view.ListbuilderFilterView):
-    filterlist_class = DevilryVertical
     value_renderer_class = ItemValue
     model = User
     paginate_by = 70

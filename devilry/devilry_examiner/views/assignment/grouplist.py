@@ -15,7 +15,6 @@ from devilry.devilry_examiner.views.assignment.bulkoperations import bulk_feedba
 from devilry.devilry_examiner.views.assignment.bulkoperations import bulk_feedback_simple
 from devilry.apps.core.models import period_tag
 from devilry.devilry_admin.cradminextensions.listfilter import listfilter_assignmentgroup
-from devilry.devilry_cradmin.devilry_listfilter.lists import DevilryVertical
 
 
 class GroupItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
@@ -36,7 +35,6 @@ class GroupListView(listbuilderview.FilterListMixin,
     value_renderer_class = devilry_listbuilder.assignmentgroup.ExaminerItemValue
     frame_renderer_class = GroupItemFrame
     paginate_by = 20
-    filterlist_class = DevilryVertical
 
     def dispatch(self, request, *args, **kwargs):
         self.assignment = self.request.cradmin_role
@@ -87,7 +85,7 @@ class GroupListView(listbuilderview.FilterListMixin,
         if self.__has_multiple_examiners():
             filterlist.append(devilry_listfilter.assignmentgroup.ExaminerFilter(view=self))
         filterlist.append(devilry_listfilter.assignmentgroup.ActivityFilter())
-
+        
         period = self.get_period()
         if period_tag.PeriodTag.objects.filter(period=period).exists():
             filterlist.append(listfilter_assignmentgroup.AssignmentGroupRelatedStudentTagSelectFilter(period=period))

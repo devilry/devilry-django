@@ -19,7 +19,6 @@ from devilry.apps.core import models as coremodels
 from devilry.apps.core.models import Period, Subject
 from devilry.devilry_account.models import SubjectPermissionGroup, PeriodPermissionGroup
 from devilry.devilry_cradmin.devilry_listfilter.utils import WithResultValueRenderable, RowListWithMatchResults
-from devilry.devilry_cradmin.devilry_listfilter.lists import DevilryVertical
 
 
 class SubjectItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
@@ -70,7 +69,6 @@ class OverviewSubjectListView(listbuilderview.FilterListMixin, listbuilderview.V
     model = coremodels.Subject
     template_name = 'devilry_admin/dashboard/overview.django.html'
     listbuilder_class = RowListBuilder
-    filterlist_class = DevilryVertical
     frame_renderer_class = SubjectItemFrame
     value_renderer_class = devilry_listbuilder.subject.AdminItemValue
     paginate_by = 50
@@ -152,7 +150,6 @@ class OverviewSubjectListView(listbuilderview.FilterListMixin, listbuilderview.V
         # Set filtered count on self.
         self.num_matches = queryset.count()
         return queryset
-
 
 class App(crapp.App):
     appurls = [

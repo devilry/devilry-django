@@ -5,7 +5,6 @@ from cradmin_legacy.viewhelpers import listbuilderview
 from devilry.apps.core.models import RelatedExaminer
 from devilry.devilry_admin.cradminextensions.listfilter import listfilter_relateduser
 from devilry.apps.core.models import period_tag
-from devilry.devilry_cradmin.devilry_listfilter.lists import DevilryVertical
 
 
 class ListViewBase(listbuilderview.FilterListMixin, listbuilderview.View):
@@ -31,8 +30,6 @@ class VerticalFilterListView(ListViewBase):
     List view for :class:`devilry.apps.core.models.relateduser.RelatedExaminer`
     with filters in a vertical layout.
     """
-    filterlist_class = DevilryVertical
-
     def get_filterlist_position(self):
         return 'right'
 

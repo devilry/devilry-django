@@ -7,7 +7,7 @@ from cradmin_legacy.viewhelpers import listfilter
 
 from devilry.apps.core.models import Period
 from devilry.devilry_cradmin import devilry_listbuilder
-from devilry.devilry_cradmin.devilry_listfilter.lists import DevilryVertical
+
 
 
 class PeriodItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
@@ -30,7 +30,6 @@ class Overview(listbuilderview.FilterListMixin, listbuilderview.View):
     model = Period
     frame_renderer_class = PeriodItemFrame
     value_renderer_class = devilry_listbuilder.period.AdminItemValue
-    filterlist_class = DevilryVertical
 
     def add_filterlist_items(self, filterlist):
         filterlist.append(listfilter.django.single.textinput.Search(

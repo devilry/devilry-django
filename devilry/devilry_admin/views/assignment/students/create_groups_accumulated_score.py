@@ -12,14 +12,12 @@ from django.utils.translation import pgettext_lazy
 from cradmin_legacy.viewhelpers import multiselect2view, multiselect2, listbuilder, listbuilderview
 
 from devilry.apps.core.models import Assignment, AssignmentGroup, RelatedStudent, Candidate
-from devilry.devilry_cradmin.devilry_listfilter.lists import DevilryVertical
 
 
 class SelectAssignmentItemValuePreMixin(object):
     """
     A mixin that defines the title and description for the renderer.
     """
-
     def get_title(self):
         if self.assignment.long_name:
             return self.assignment.long_name
@@ -107,7 +105,6 @@ class SelectAssignmentsView(multiselect2view.ListbuilderView):
     """
     template_name = 'devilry_admin/assignment/students/create_groups/grading_points_based/select-assignments.django.html'
     value_renderer_class = SelectableAssignmentItem
-    filterlist_class = DevilryVertical
     model = Assignment
     paginate_by = 15
 
@@ -296,7 +293,7 @@ class PreviewRelatedstudentsListView(listbuilderview.View):
         selected_assignments_max_score = selected_assignments.aggregate(Sum('max_points'))['max_points__sum']
         context['points_threshold'] = points_threshold
         context['selected_assignments_total_max_score'] = selected_assignments_max_score
-        context['threshold_percentage'] = ((float(points_threshold) / float(selected_assignments_max_score)) * 100.0)
+        context['threshold_percentage'] = ((float(points_threshold)/float(selected_assignments_max_score)) * 100.0)
         context['selected_assignments'] = selected_assignments
         context['relatedstudent_total_count'] = self._cached_relatedstudent_total_count
         context['relatedstudent_add_count'] = self._cached_relatedstudent_add_count

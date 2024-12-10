@@ -9,7 +9,6 @@ from cradmin_legacy.viewhelpers import listfilter
 from devilry.apps.core.models import Assignment, RelatedStudent, RelatedExaminer
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin import devilry_listfilter
-from devilry.devilry_cradmin.devilry_listfilter.lists import DevilryVertical
 
 
 class AssignmentItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
@@ -30,7 +29,6 @@ class AssignmentItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
 class Overview(listbuilderview.FilterListMixin, listbuilderview.View):
     template_name = 'devilry_admin/period/overview.django.html'
     model = Assignment
-    filterlist_class = DevilryVertical
     frame_renderer_class = AssignmentItemFrame
     value_renderer_class = devilry_listbuilder.assignment.ItemValue
     paginate_by = 5
