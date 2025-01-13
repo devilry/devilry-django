@@ -1,25 +1,26 @@
 # -*- coding: utf-8 -*-
 import logging
-import django_rq
 
+import django_rq
+from cradmin_legacy.crinstance import reverse_cradmin_url
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import gettext, gettext_lazy
 
 from devilry.devilry_account.models import (
     PeriodPermissionGroup,
     PermissionGroup,
     PermissionGroupUser,
-    SubjectPermissionGroup
+    SubjectPermissionGroup,
 )
 from devilry.devilry_comment.models import Comment
 from devilry.devilry_email.utils import (
-    build_feedbackfeed_absolute_url,
+    build_absolute_url_for_email,
     get_examiner_users_in_group,
-    get_student_users_in_group
+    get_student_users_in_group,
 )
-from devilry.devilry_message.utils.subject_generator import \
-    SubjectTextGenerator
+from devilry.devilry_message.utils.subject_generator import SubjectTextGenerator
 
 logger = logging.getLogger(__name__)
 
@@ -195,9 +196,6 @@ def send_examiner_comment_email(comment_id, domain_url_start, before_original_de
     if before_original_deadline and comment.text == '':
         return
 
-    absolute_url = build_feedbackfeed_absolute_url(
-        domain_scheme=domain_url_start, group_id=comment.feedback_set.group.id, instance_id='devilry_group_examiner')
-
     examiner_users_in_group_queryset = get_examiner_users_in_group(group=comment.feedback_set.group)
     has_examiner = examiner_users_in_group_queryset.exists()
     recipients = list(examiner_users_in_group_queryset.exclude(id=comment.user.id))
@@ -210,13 +208,19 @@ def send_examiner_comment_email(comment_id, domain_url_start, before_original_de
             if comment.text.strip() == '':
                 # Do not spam admins with notifications for comments without any text.
                 return
-            absolute_url = build_feedbackfeed_absolute_url(
-                domain_scheme=domain_url_start, group_id=comment.feedback_set.group.id, instance_id='devilry_group_admin')
             recipients = list(get_subject_and_period_admins_users(group=comment.feedback_set.group))
         else:
             # Group has an examiner, but no recipients.
             # This happens when the group has one examiner and the user is also the comment-poster.
             return
+
+    absolute_url = build_absolute_url_for_email(
+        domain_url_start=domain_url_start,
+        urlpath=reverse(
+            "devilry_group_redirect_to_feedback_as_admin_or_examiner",
+            kwargs={"assignment_group_id": comment.feedback_set.group.id},
+        )
+    )
 
     send_comment_email(
         comment=comment,
@@ -266,8 +270,14 @@ def send_student_comment_email(comment_id, domain_url_start, from_student_poster
             ``An admin added a new comment for <assignment name>``
     """
     comment = get_comment(comment_id=comment_id)
-    absolute_url = build_feedbackfeed_absolute_url(
-        domain_scheme=domain_url_start, group_id=comment.feedback_set.group.id)
+    absolute_url = build_absolute_url_for_email(
+        domain_url_start=domain_url_start,
+        urlpath=reverse_cradmin_url(
+            instanceid="devilry_group_student",
+            appname='feedbackfeed',
+            roleid=comment.feedback_set.group.id)
+    )
+
     recipients = list(get_student_users_in_group(group=comment.feedback_set.group).exclude(id=comment.user.id))
 
     send_comment_email(
