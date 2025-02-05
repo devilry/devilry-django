@@ -13,7 +13,7 @@ if profiler_middleware:
     ]
 
 MIDDLEWARE = MIDDLEWARE + [
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
+    # "debug_toolbar.middleware.DebugToolbarMiddleware",
     #    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
@@ -27,7 +27,7 @@ MIDDLEWARE = MIDDLEWARE + [
 
 ######################
 #
-# Django Debug Toolbar
+# Django Silk
 #
 ######################
 INSTALLED_APPS += [
