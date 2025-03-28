@@ -1,5 +1,5 @@
 from django.db import models
-from django.utils.translation import pgettext_lazy
+from django.utils.translation import pgettext_lazy, get_language
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_group.models import FeedbackSet
@@ -133,18 +133,51 @@ class AssignmentGroupCachedData(models.Model):
     @property
     def prettyformat_current_attempt_number(self):
         """
-        Format the current attempt number as a human readable string
-        suitable for display in a UI.
+        Format the current attempt number as a human readable string,
+        supporting Norwegian ordinal translations based on session language.
         """
-        if self.new_attempt_count == 0:
-            return pgettext_lazy('devilry attempt number', '1st attempt')
-        elif self.new_attempt_count == 1:
-            return pgettext_lazy('devilry attempt number', '2nd attempt')
-        elif self.new_attempt_count == 2:
-            return pgettext_lazy('devilry attempt number', '3rd attempt')
+        attempt_number = self.new_attempt_count + 1
+        selected_language = get_language()
+
+        if selected_language.startswith('nb'):
+            if attempt_number == 1:
+                ordinal = 'første'
+            elif attempt_number == 2:
+                ordinal = 'andre'
+            elif attempt_number == 3:
+                ordinal = 'tredje'
+            elif attempt_number == 4:
+                ordinal = 'fjerde'
+            elif attempt_number == 5:
+                ordinal = 'femte'
+            elif attempt_number == 6:
+                ordinal = 'sjette'
+            elif attempt_number == 7:
+                ordinal = 'sjuende'
+            elif attempt_number == 8:
+                ordinal = 'åttende'
+            elif attempt_number == 9:
+                ordinal = 'niende'
+            elif attempt_number == 10:
+                ordinal = 'tiende'
+            else:
+                ordinal = '%sende' % attempt_number
+
         else:
-            return pgettext_lazy(
-                'devilry attempt number',
-                '%(attempt_number)sth attempt') % {
-                'attempt_number': self.new_attempt_count + 1
-            }
+            if 10 <= attempt_number % 100 <= 20:
+                ordinal = 'th'
+            else:
+                remainder = attempt_number % 10
+                if remainder == 1:
+                    ordinal = 'st'
+                elif remainder == 2:
+                    ordinal = 'nd'
+                elif remainder == 3:
+                    ordinal = 'rd'
+                else:
+                    ordinal = 'th'
+
+        return ('%(attempt_number)s%(ordinal)s attempt' if selected_language.startswith('en') else '%(ordinal)s forsøk') % {
+            'attempt_number': attempt_number,
+            'ordinal': ordinal,
+        }
