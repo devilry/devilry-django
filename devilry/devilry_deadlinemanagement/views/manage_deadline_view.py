@@ -96,7 +96,7 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
         """
         Check if the deadline can be moved.
 
-        Returns ``False`` is the type is `move-deadline` and the
+        Returns ``False`` is the type is `move-deadline` and the 
         last feedbackset is published (graded).
         """
         if self.request.cradmin_role.__class__ == core_models.AssignmentGroup:
@@ -240,11 +240,11 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
             previous_deadline = arrow.get(previous_feedbackset_deadline).to(settings.TIME_ZONE)
             first_suggested_deadline = None
             if previous_deadline > timezone.now():
-                # Since the previous deadline is in the future, get suggested
+                # Since the previous deadline is in the future, get suggested 
                 # deadlines relative to the previous deadline.
                 first_suggested_deadline = previous_deadline
             else:
-                # The previous deadline is in the past, so get the suggested
+                # The previous deadline is in the past, so get the suggested 
                 # deadline relative to the current datetime.
                 first_suggested_deadline = arrow.utcnow().to(settings.TIME_ZONE)
 
@@ -388,7 +388,7 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
                 feedbackset_id_list=feedback_set_ids,
                 domain_url_start=self.request.build_absolute_uri('/'))
 
-    def __give_new_attempt(self, deadline, text, form):
+    def __give_new_attempt(self, deadline, text, assignment_group_ids):
         """
         Give a new attempt to the selected ``AssignmentGroups``. This will create new ``FeedbackSet``s with
         the new deadline, and an attached ``GroupComment``.
@@ -398,44 +398,25 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
             text: comment text.
             assignment_group_ids: groups that gets a new attempt.
         """
-        group_ids = self.__get_selected_group_ids(form=form)
         now_without_sec_and_micro = timezone.now().replace(microsecond=0)
         with transaction.atomic():
-
-            assignment_group_query = core_models.AssignmentGroup.objects\
-                .filter(id__in=group_ids)\
-                .values_list(
-                    'id',
-                    'cached_data__last_feedbackset__grading_published_datetime',
-                    'cached_data__last_feedbackset_id'
-                )
             feedbackset_id_list = []
-            update_ids = []
-            for group_id, grading_published_datetime, feedback_set_id in assignment_group_query:
-                if grading_published_datetime is not None:
-                    feedback_set_id = self.__create_feedbackset(
-                        group_id=group_id,
-                        deadline=deadline,
-                        created_datetime=now_without_sec_and_micro
-                    )
-                else:
-                    update_ids.append(feedback_set_id)
-                feedbackset_id_list.append(feedback_set_id)
+            for group_id in assignment_group_ids:
+                feedbackset_id = self.__create_feedbackset(
+                    group_id=group_id,
+                    deadline=deadline,
+                    created_datetime=now_without_sec_and_micro
+                )
                 self.__create_groupcomment(
-                    feedback_set_id=feedback_set_id,
+                    feedback_set_id=feedbackset_id,
                     publishing_time=now_without_sec_and_micro + timezone.timedelta(microseconds=1),
                     text=text
                 )
-
-            group_models.FeedbackSet.objects.filter(id__in=update_ids).update(
-                last_updated_by=self.request.user,
-                deadline_datetime=deadline
-            )
+                feedbackset_id_list.append(feedbackset_id)
             deadline_email.bulk_send_new_attempt_email(
                 assignment_id=self.assignment.id,
                 feedbackset_id_list=feedbackset_id_list,
-                domain_url_start=self.request.build_absolute_uri('/')
-            )
+                domain_url_start=self.request.build_absolute_uri('/'))
 
     def get_groups_display_names(self, form):
         groups = form.cleaned_data['selected_items']
@@ -458,7 +439,7 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
             self.__give_new_attempt(
                 deadline=new_deadline,
                 text=comment_text,
-                form=form
+                assignment_group_ids=self.__get_selected_group_ids(form=form)
             )
         self.add_success_message(anonymous_display_names)
         return super(ManageDeadlineView, self).form_valid(form)
