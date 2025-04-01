@@ -1,3 +1,9 @@
+## 6.4.0rc2 (2025-04-01)
+
+### Fix
+
+- **command**: Empty commit to proceed 6.4.0rc2
+
 ## 6.4.0rc1 (2025-04-01)
 
 ### Fix
