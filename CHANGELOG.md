@@ -1,3 +1,29 @@
+## 6.4.0rc1 (2025-04-01)
+
+### Fix
+
+- **deadline_management**: Refactor __give_new_attempt method to simplify feedback set creation and improve variable naming
+- **devilry_dbcache**: Simplify attempt number formatting and support Norwegian translations
+- **devilry_dbcache**: Update admin display to use readonly_fields and adjust list_display for AssignmentGroupCachedData
+- Enhance attempt number formatting to support Norwegian ordinals based on session language
+- **devilry_group**: Raise exception when feedbackset compress action fails to execute.
+- Add redirect view for the email notification URL sent when students add a comment (sent to examiners/admins)
+- Add system messages support just like the other "branding" templating.
+- Add content-disposition for file downloads.
+- **devilry.devilry_cradmin.devilry_listfilter.lists**: created DevilryVertical listfilter list that useses the custom FiltersHandler DevilryFiltersHandler
+- **AssignmentBatchMixin**: changed feedback_set_path to correct formating
+- **AssignmentGroupCacheData**: fixed weird 4st try problem
+- **nb/LC_MESSAGES/django.po**: fixed 4st error
+- **ManageDeadlineView**: added missing __create_groupcomment to __give_new_attempt
+- **devilry_account.crapps.account.utils**: small fix to make codebase compatible with pycountry > 17
+- **develop-settings**: moved out model bakery class to own file
+- **devilry_deadlinemanagement.views.manage_deadline_view.ManageDeadlineView**: changed __give_new_attempt to update deadline if there is no published feedback in feedbackset instead of always creating a new feedbackset
+- **devilry_dbcache.customsql_sqlcode.groupcomment.triggers**: added ON CONFLICT clause to on_group_comment_text_update
+- **StreamZipBackend**: removed specified file mode from opening files when creating zip
+- **devilry_dataporten_allauth.views**: fixed imports
+- **GroupCommentDeleteView**: moved custom delete logic from delete to form_valid
+- **devilry_group/views/examiner/feedbackfeed_examiner.py**: change from 404 to redirect when last_feedback has been published
+
 ## 6.3.8 (2024-10-14)
 
 ### Fix

@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-28 11:52+0100\n"
-"PO-Revision-Date: 2025-03-28 11:57+0100\n"
+"POT-Creation-Date: 2025-03-31 15:59+0200\n"
+"PO-Revision-Date: 2025-03-31 15:59+0200\n"
 "Last-Translator: Tor Ivar Johansen <tor@appresso.no>\n"
 "Language-Team: Norwegian\n"
 "Language: nb\n"
@@ -604,7 +604,7 @@ msgstr "venter på innleveringer"
 #: devilry_cradmin/devilry_listfilter/assignmentgroup.py:350
 msgctxt "group status"
 msgid "corrected"
-msgstr "korrigert"
+msgstr "rettet"
 
 #: apps/core/templates/devilry_core/templatetags/multiple-examiners-long-displayname.django.html:8
 #: apps/core/templates/devilry_core/templatetags/multiple-examiners-short-displayname.django.html:8
@@ -5437,6 +5437,12 @@ msgstr "Kan IKKE gå opp til avsluttende eksamen"
 msgid "No users in permission group"
 msgstr "Ingen brukere tillatelsesgruppen"
 
+#: devilry_dbcache/models.py:140
+#, python-brace-format
+msgctxt "Attempt"
+msgid "Attempt {attempt_number}"
+msgstr "Forsøk {attempt_number}"
+
 #: devilry_deadlinemanagement/templates/devilry_deadlinemanagement/deadline-bulk-multiselect-filterlistview.django.html:15
 msgid "Back to deadline-overview"
 msgstr "Tilbake til oversikt for frist"
@@ -5523,7 +5529,7 @@ msgstr "test placeholder"
 msgid "Give new attempt"
 msgstr "Gi et nytt forsøk"
 
-#: devilry_deadlinemanagement/views/manage_deadline_view.py:467
+#: devilry_deadlinemanagement/views/manage_deadline_view.py:448
 #, python-format
 msgid "Deadline managed for %(group_names)s"
 msgstr "Innleveringsfrist endret for %(group_names)s"
@@ -5979,7 +5985,7 @@ msgstr "Legg til en general kommentar i tilbakemeldingen"
 
 #: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:40
 msgid "Delivery has been corrected."
-msgstr "Denne oppgaven er korrigert."
+msgstr "Denne oppgaven er rettet."
 
 #: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:58
 msgid "assignment group"

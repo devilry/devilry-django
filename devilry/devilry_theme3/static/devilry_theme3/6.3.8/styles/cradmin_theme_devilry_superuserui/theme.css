@@ -4766,6 +4766,21 @@ a {
   color: inherit;
   font-size: 24px;
 }
+.alert a {
+  color: #fff !important;
+  text-decoration: underline !important;
+}
+.alert a:hover {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+.alert *:first-child {
+  margin-top: 0;
+}
+.alert.devilry-systemmessage {
+  margin: 10px 0;
+  border: none;
+  border-radius: 5px;
+}
 ul#cradmin_legacy_messages {
   margin: 0 0 10px 0;
 }
