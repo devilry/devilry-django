@@ -1,7 +1,8 @@
-===========================================
-Migrating from 6.3.8 to 6.4.0rc2
-===========================================
+=============================
+Migrating from 6.3.8 to 6.4.0
+=============================
 
+.. warning:: 6.4 is not released yet and is undergoing testing - the lastest RC release is 6.4.0rc3.
 
 Backup database and files
 #########################
@@ -22,8 +23,8 @@ What's new?
 - Feedbackfeed raising Http404 for examiners. #1287
 
 
-Update devilry to 6.3.8
-##############################
+Update devilry to 6.4.0
+#######################
 
-Update the devilry version to ``6.4.0rc2`` as described in :doc:`../update`.
+Update the devilry version to ``6.4.0`` as described in :doc:`../update`.
 
