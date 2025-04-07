@@ -80,7 +80,7 @@ class TestSelfassignGrouplistView(test.TestCase, cradmin_testhelpers.TestCaseMix
             0
         )
 
-    @skip()
+    @skip("May want to rewrite after logical changes")
     def test_ordering_by_deadline_in_future_sanity(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
         testperiod = baker.make_recipe('devilry.apps.core.period_active', short_name='thesemester', long_name='The Semester')
@@ -112,7 +112,7 @@ class TestSelfassignGrouplistView(test.TestCase, cradmin_testhelpers.TestCaseMix
         self.assertIn('student3@example.com', group_itemvalue_list[1].alltext_normalized)
         self.assertIn('student1@example.com', group_itemvalue_list[2].alltext_normalized)
 
-    @skip()
+    @skip("May want to rewrite after logical changes")
     def test_ordering_by_deadline_in_past_sanity(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
         testperiod = baker.make_recipe('devilry.apps.core.period_active', short_name='thesemester', long_name='The Semester')

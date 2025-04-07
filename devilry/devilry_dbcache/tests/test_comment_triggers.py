@@ -2,7 +2,7 @@ from django import test
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core.files.base import ContentFile
-from django.db import InternalError, ProgrammingError
+from django.db import ProgrammingError
 from model_bakery import baker
 
 from devilry.devilry_comment.models import Comment, CommentEditHistory
@@ -33,7 +33,7 @@ class TestCommentEditTriggers(test.TestCase):
 
     def test_id_update_raise_internal_error(self):
         comment = baker.make('devilry_comment.Comment', text='Test')
-        with self.assertRaisesMessage(InternalError, f'OLD.id #{comment.id} != NEW.id #2'):
+        with self.assertRaisesMessage(ProgrammingError, f'OLD.id #{comment.id} != NEW.id #2'):
             Comment.objects.filter(id=comment.id).update(id=2)
 
     def test_not_create_when_comment_is_created(self):
