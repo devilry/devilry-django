@@ -32,25 +32,13 @@ classifiers = [
 ]
 dependencies = [
     "Django>=4.2.0,<4.3.0",
-    "gunicorn>=21.2.0,<22",
+    "gunicorn>=23.0.0",
     "Markdown>=3.3.0,<3.4.0",
+    "Pygments>=2.15.0,<2.16.0",
     "django-crispy-forms>=1.14.0,<1.15.0",
-    "openpyxl",
-    "URLObject>=2.4.0,<2.5.0",
-    "mimeparse>=0.1.0,<0.2.0",
-    "numpy",
-    "rq>=1.8.0,<1.9.0",
-    "django-rq>=2.4.0,<2.5.0",
-    "redis>=3.5.0,<3.6.0",
-    "python-dateutil>=2.8.0,<2.9.0",
-    "pytz>=2018.9.0,<2018.10.0",
-    "httplib2>=0.19.0,<0.20.0",
-    "dj-static>=0.0.0,<0.1.0",
-    "dj-database-url>=0.3.0,<0.4.0",
-    "html5lib",
-    "psycopg2",
-    "django_cradmin>=10.3.3,<11.0.0",
-    "cradmin_legacy>=5.0.0,<6.0.0",
+    "django-rq",
+    "psycopg",
+    "cradmin_legacy>=5.0.1,<6.0.0",
     "ievv_opensource>=9.2.2,<10.0.0",
     "xlsxwriter",
     "arrow>=0.12.0,<0.13.0",
@@ -65,8 +53,10 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-prod = ["dj-static>=0.0.0,<0.1.0"]
-s3storage = ["boto3", "django-storages"]
+s3storage = [
+    "boto3",
+    "django-storages",
+]
 dev = [
     "dj-database-url",
     "openpyxl",
@@ -81,8 +71,8 @@ dev = [
     "django-auth-ldap",
     "pip-tools",
     "django-silk",
-    "humanize",         # DEVILRY_MEMORY_DEBUG_ENABLED=True
-    "psutil",           # Only used when DEVILRY_MEMORY_DEBUG_ENABLED=True
+    "humanize",  # DEVILRY_MEMORY_DEBUG_ENABLED=True
+    "psutil",   # Only used when DEVILRY_MEMORY_DEBUG_ENABLED=True
 ]
 test = [
     "htmls",
@@ -92,7 +82,9 @@ test = [
     "model-bakery",
     "coverage",
 ]
-docs = ["sphinx"]
+docs = [
+    "sphinx",
+]
 
 [project.scripts]
 ievv = "ievv_opensource.ievvtasks_common.cli:cli"
@@ -123,29 +115,3 @@ line-length = 120
 profile = "black"
 line_length = 120
 
-
-[tool.basedpyright]
-typeCheckingMode = "standard"
-# typeCheckingMode = "basic"
-
-reportMissingImports = true
-reportMissingTypeStubs = false
-reportMissingTypeArgument = false
-reportAny = false
-reportImplicitOverride = false
-reportUnknownParameterType = false
-reportUnknownArgumentType = false
-reportUnknownVariableType = false
-reportUnknownMemberType = false
-reportMissingParameterType = false
-reportUnusedCallResult = false
-reportOperatorIssue = "warning"
-reportDeprecated = "warning"
-reportImplicitStringConcatenation = false
-reportIndexIssue = "warning"
-reportInvalidCast = "warning"
-reportAttributeAccessIssue = "warning"
-reportIncompatibleVariableOverride = "warning"
-
-pythonVersion = "3.10"
-pythonPlatform = "Linux"
