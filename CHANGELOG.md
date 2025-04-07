@@ -1,3 +1,9 @@
+## 6.4.0rc3 (2025-04-07)
+
+### Fix
+
+- Correct dependencies broken by 6.4 branch merge.
+
 ## 6.4.0rc2 (2025-04-01)
 
 ### Fix
