@@ -148,6 +148,7 @@ class AssignmentGroupCachedData(models.Model):
                 ordinal = norwegian_ordinals[attempt_number]
             except IndexError:
                 ordinal = f'{attempt_number}.'
+            return f'{ordinal} forsøk'
         else:
             if 10 <= attempt_number % 100 <= 20:
                 ordinal = 'th'
@@ -161,8 +162,4 @@ class AssignmentGroupCachedData(models.Model):
                     ordinal = 'rd'
                 else:
                     ordinal = 'th'
-
-        if selected_language.startswith('en'):
             return f'{attempt_number}{ordinal} attempt'
-        else:
-            return f'{ordinal} forsøk'
