@@ -156,7 +156,7 @@ class TestStudentItemValue(test.TestCase):
             group=testgroup)
         selector = self.__render_studentitemvalue(group=testgroup)
         self.assertEqual(
-            '(Attempt 2)',
+            '(1st attempt)',
             selector.one(
                     '.devilry-cradmin-groupitemvalue-deadline__attemptnumber').alltext_normalized)
 
@@ -171,7 +171,7 @@ class TestStudentItemValue(test.TestCase):
             group=testgroup)
         selector = self.__render_studentitemvalue(group=testgroup)
         self.assertEqual(
-            '(Attempt 3)',
+            '(2nd attempt)',
             selector.one(
                     '.devilry-cradmin-groupitemvalue-deadline__attemptnumber').alltext_normalized)
 
