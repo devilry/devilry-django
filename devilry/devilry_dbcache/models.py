@@ -134,7 +134,35 @@ class AssignmentGroupCachedData(models.Model):
     def prettyformat_current_attempt_number(self):
         """
         Format the current attempt number as a human readable string,
-        producing "Forsøk 1", "Forsøk 2" in Norwegian, and "1 attempt", "2 attempt" in English.
+        supporting Norwegian ordinal translations based on session language.
         """
-        attempt_number = self.new_attempt_count + 1
-        return pgettext_lazy('Attempt', f'Attempt {attempt_number}')
+        attempt_number = self.new_attempt_count
+        selected_language = get_language()
+
+        if selected_language.startswith('nb'):
+            norwegian_ordinals = [
+                "første", "andre", "tredje", "fjerde", "femte",
+                "sjette", "sjuende", "åttende", "niende", "tiende"
+            ]
+            try:
+                ordinal = norwegian_ordinals[attempt_number]
+            except IndexError:
+                ordinal = f'{attempt_number}.'
+        else:
+            if 10 <= attempt_number % 100 <= 20:
+                ordinal = 'th'
+            else:
+                remainder = attempt_number % 10
+                if remainder == 1:
+                    ordinal = 'st'
+                elif remainder == 2:
+                    ordinal = 'nd'
+                elif remainder == 3:
+                    ordinal = 'rd'
+                else:
+                    ordinal = 'th'
+
+        if selected_language.startswith('en'):
+            return f'{attempt_number}{ordinal} attempt'
+        else:
+            return f'{ordinal} forsøk'
