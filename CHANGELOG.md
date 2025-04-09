@@ -1,3 +1,11 @@
+## 6.4.0rc4 (2025-04-09)
+
+### Fix
+
+- Update attempt number formatting to use ordinal representation
+- Simplify attempt number formatting for Norwegian and English languages #1305
+- Enhance attempt number formatting with Norwegian ordinals and English support #1305
+
 ## 6.4.0rc3 (2025-04-07)
 
 ### Fix
