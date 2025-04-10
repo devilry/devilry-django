@@ -136,7 +136,7 @@ class AssignmentGroupCachedData(models.Model):
         Format the current attempt number as a human readable string,
         supporting Norwegian ordinal translations based on session language.
         """
-        attempt_number = self.new_attempt_count
+        attempt_number = self.new_attempt_count + 1
         selected_language = get_language()
 
         if selected_language.startswith('nb'):
@@ -145,7 +145,7 @@ class AssignmentGroupCachedData(models.Model):
                 "sjette", "sjuende", "åttende", "niende", "tiende"
             ]
             try:
-                ordinal = norwegian_ordinals[attempt_number]
+                ordinal = norwegian_ordinals[attempt_number-1]
             except IndexError:
                 ordinal = f'{attempt_number}.'
             return f'{ordinal} forsøk'
