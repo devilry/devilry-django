@@ -1,3 +1,10 @@
+## 6.4.0rc5 (2025-04-10)
+
+### Fix
+
+- Update attempt number assertions in student item value tests
+- Correct attempt number calculation for Norwegian ordinal formatting
+
 ## 6.4.0rc4 (2025-04-09)
 
 ### Fix
