@@ -268,6 +268,13 @@ tools/release/prepare-release.py prepare --apply  # This will bump the version a
 git push && git push --tags
 ```
 
+To do a prerelease (RC, beta, etc.), use `--prelease` with `prepare-release.py`. The argument is just
+forwarded to the `cz bump` command, so to do an RC release use:
+
+```bash
+tools/release/prepare-release.py prepare --prerelease rc --apply
+```
+
 ### NOTE (release):
 
 - `cz bump` automatically updates CHANGELOG.md, updates version file(s), commits the change and tags the release commit.
@@ -299,3 +306,4 @@ hatch build -t sdist
 hatch publish
 rm dist/*              # optional cleanup
 ```
+

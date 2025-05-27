@@ -2,11 +2,12 @@ import pycountry
 
 
 def get_language_name(languagecode):
-    try:
-        if len(languagecode) == 2:
-            return pycountry.languages.get(alpha_2=languagecode).name
-        elif len(languagecode) == 3:
-            return pycountry.languages.get(alpha_3=languagecode).name
-        return languagecode
-    except Exception:
+    out = None
+    if len(languagecode) == 2:
+        out = pycountry.languages.get(alpha_2=languagecode)
+    elif len(languagecode) == 3:
+        out = pycountry.languages.get(alpha_3=languagecode)
+    if out:
+        return out.name
+    else:
         return languagecode

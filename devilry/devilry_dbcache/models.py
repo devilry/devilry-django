@@ -1,5 +1,5 @@
 from django.db import models
-from django.utils.translation import pgettext_lazy
+from django.utils.translation import pgettext_lazy, get_language
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_group.models import FeedbackSet
@@ -133,20 +133,33 @@ class AssignmentGroupCachedData(models.Model):
     @property
     def prettyformat_current_attempt_number(self):
         """
-        Format the current attempt number as a human readable string
-        suitable for display in a UI.
+        Format the current attempt number as a human readable string,
+        supporting Norwegian ordinal translations based on session language.
         """
-        if self.new_attempt_count == 0:
-            return pgettext_lazy('devilry attempt number', 'first attempt')
-        elif self.new_attempt_count == 1:
-            return pgettext_lazy('devilry attempt number', 'second attempt')
-        elif self.new_attempt_count == 2:
-            return pgettext_lazy('devilry attempt number', 'third attempt')
-        elif self.new_attempt_count == 4:
-            return pgettext_lazy('devilry attempt number', 'fourth attempt')
+        attempt_number = self.new_attempt_count + 1
+        selected_language = get_language()
+
+        if selected_language.startswith('nb'):
+            norwegian_ordinals = [
+                "første", "andre", "tredje", "fjerde", "femte",
+                "sjette", "sjuende", "åttende", "niende", "tiende"
+            ]
+            try:
+                ordinal = norwegian_ordinals[attempt_number-1]
+            except IndexError:
+                ordinal = f'{attempt_number}.'
+            return f'{ordinal} forsøk'
         else:
-            return pgettext_lazy(
-                'devilry attempt number',
-                '%(attempt_number)sst attempt') % {
-                'attempt_number': self.new_attempt_count + 1
-            }
+            if 10 <= attempt_number % 100 <= 20:
+                ordinal = 'th'
+            else:
+                remainder = attempt_number % 10
+                if remainder == 1:
+                    ordinal = 'st'
+                elif remainder == 2:
+                    ordinal = 'nd'
+                elif remainder == 3:
+                    ordinal = 'rd'
+                else:
+                    ordinal = 'th'
+            return f'{attempt_number}{ordinal} attempt'

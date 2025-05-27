@@ -61,7 +61,9 @@ BEGIN
         VALUES (
             var_comment_edit_history_id,
             OLD.comment_ptr_id,
-            OLD.VISIBILITY);
+            OLD.VISIBILITY)
+        ON CONFLICT (commentedithistory_ptr_id)
+        DO UPDATE SET visibility = OLD.VISIBILITY;
     END IF;
     RETURN NEW;
 END

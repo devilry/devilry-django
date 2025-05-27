@@ -1,15 +1,15 @@
 {
   "dependencies": {
+    "brace-expansion": "^1.1.11",
+    "decode-uri-component": "^0.2.2",
     "extend": "^3.0.2",
     "ievv_jsbase": "^1.0.4",
     "ini": "^1.3.8",
     "katex": "^0.15.6",
+    "loader-utils": "^1.4.2",
     "lodash": "^4.17.19",
     "qs": "^6.10.3",
-    "tough-cookie": "^2.3.4",
-    "brace-expansion": "^1.1.11",
-    "loader-utils": "^1.4.2",
-    "decode-uri-component": "^0.2.2"
+    "tough-cookie": "^2.3.4"
   },
   "devDependencies": {
     "babel-core": "^6.20.0",
@@ -18,7 +18,7 @@
     "babel-preset-es2015": "^6.18.0",
     "bower": "^1.8.14",
     "json-loader": "^0.5.4",
-    "less": "^4.2.0",
+    "less": "^4.3.0",
     "webpack": "^1.13.3"
   },
   "private": true,

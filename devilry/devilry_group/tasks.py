@@ -65,6 +65,7 @@ class FeedbackSetCompressAction(AbstractBaseBatchAction, FeedbackSetBatchMixin):
 
             print_memory_usage('End of RQ task')
         except Exception:
-            logger.exception(
+            logger.error(
                 'Failed to generate zip archive from feedbackset %s',
                 feedback_set.pk)
+            raise

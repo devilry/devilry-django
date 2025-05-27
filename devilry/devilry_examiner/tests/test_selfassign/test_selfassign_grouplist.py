@@ -1,4 +1,5 @@
 from datetime import timedelta
+from unittest import skip
 
 from django import test
 from django.conf import settings
@@ -78,6 +79,70 @@ class TestSelfassignGrouplistView(test.TestCase, cradmin_testhelpers.TestCaseMix
             mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'),
             0
         )
+
+    @skip("May want to rewrite after logical changes")
+    def test_ordering_by_deadline_in_future_sanity(self):
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make_recipe('devilry.apps.core.period_active', short_name='thesemester', long_name='The Semester')
+        testassignment1 = self.__make_assignment_selfassign_enabled(
+            parentnode=testperiod, first_deadline=timezone.now() + timedelta(days=16))
+        testassignment2 = self.__make_assignment_selfassign_enabled(
+            parentnode=testperiod, first_deadline=timezone.now() + timedelta(days=5))
+        testassignment3 = self.__make_assignment_selfassign_enabled(
+            parentnode=testperiod, first_deadline=timezone.now() + timedelta(days=10))
+
+        self.__make_group(
+            student_user=baker.make(settings.AUTH_USER_MODEL, shortname='student1@example.com'),
+            parentnode=testassignment1)
+        self.__make_group(
+            student_user=baker.make(settings.AUTH_USER_MODEL, shortname='student2@example.com'),
+            parentnode=testassignment2)
+        self.__make_group(
+            student_user=baker.make(settings.AUTH_USER_MODEL, shortname='student3@example.com'),
+            parentnode=testassignment3)
+
+        baker.make('core.RelatedExaminer', period=testperiod, user=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod,
+            requestuser=testuser
+        )
+        group_itemvalue_list = mockresponse.selector.list('.cradmin-legacy-listbuilder-itemvalue')
+        self.assertEqual(len(group_itemvalue_list), 3)
+        self.assertIn('student2@example.com', group_itemvalue_list[0].alltext_normalized)
+        self.assertIn('student3@example.com', group_itemvalue_list[1].alltext_normalized)
+        self.assertIn('student1@example.com', group_itemvalue_list[2].alltext_normalized)
+
+    @skip("May want to rewrite after logical changes")
+    def test_ordering_by_deadline_in_past_sanity(self):
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testperiod = baker.make_recipe('devilry.apps.core.period_active', short_name='thesemester', long_name='The Semester')
+        testassignment1 = self.__make_assignment_selfassign_enabled(
+            parentnode=testperiod, first_deadline=timezone.now() - timedelta(days=16))
+        testassignment2 = self.__make_assignment_selfassign_enabled(
+            parentnode=testperiod, first_deadline=timezone.now() - timedelta(days=5))
+        testassignment3 = self.__make_assignment_selfassign_enabled(
+            parentnode=testperiod, first_deadline=timezone.now() - timedelta(days=10))
+
+        self.__make_group(
+            student_user=baker.make(settings.AUTH_USER_MODEL, shortname='student1@example.com'),
+            parentnode=testassignment1)
+        self.__make_group(
+            student_user=baker.make(settings.AUTH_USER_MODEL, shortname='student2@example.com'),
+            parentnode=testassignment2)
+        self.__make_group(
+            student_user=baker.make(settings.AUTH_USER_MODEL, shortname='student3@example.com'),
+            parentnode=testassignment3)
+
+        baker.make('core.RelatedExaminer', period=testperiod, user=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod,
+            requestuser=testuser
+        )
+        group_itemvalue_list = mockresponse.selector.list('.cradmin-legacy-listbuilder-itemvalue')
+        self.assertEqual(len(group_itemvalue_list), 3)
+        self.assertIn('student1@example.com', group_itemvalue_list[0].alltext_normalized)
+        self.assertIn('student3@example.com', group_itemvalue_list[1].alltext_normalized)
+        self.assertIn('student2@example.com', group_itemvalue_list[2].alltext_normalized)
 
     def test_selfassign_limit_one_group_available(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)

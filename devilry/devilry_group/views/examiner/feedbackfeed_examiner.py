@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 
 
+from typing import Any
 from crispy_forms import layout
 from django import forms
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
-from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.utils import timezone
 from django.utils.translation import gettext_lazy, pgettext_lazy
 from django.views.decorators.csrf import ensure_csrf_cookie
-from django.views.generic import View
+from django.views.generic import View, DeleteView
 from cradmin_legacy import crapp
 from cradmin_legacy.crispylayouts import PrimarySubmit, DefaultSubmit
 from cradmin_legacy.viewhelpers import update, delete
@@ -161,7 +161,7 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
         group = self.request.cradmin_role
         # NOTE: `devilry.apps.core.models.AssignmentGroup.last_feedbackset_is_published` performs a query.
         if group.last_feedbackset_is_published:
-            raise Http404
+            return redirect(str(self.request.cradmin_app.reverse_appurl(viewname='public-discuss')))
         return super(ExaminerFeedbackView, self).dispatch(request, *args, **kwargs)
 
     def get_form_class(self):
@@ -470,6 +470,11 @@ class GroupCommentDeleteView(GroupCommentEditDeleteMixin, delete.DeleteView):
     When a groupcomment has visibility set to private, this means it's a feedbackdraft.
     """
     template_name = 'devilry_group/feedbackfeed_examiner/feedbackfeed_examiner_delete_groupcomment.html'
+    #Hack to overwrite delete from cradmin.DeleteView with delete from django.Deleteview. To stop DeleteViewCustomDeleteWarning
+    delete = DeleteView.delete
+    def __init__(self, **kwargs: Any) -> None:
+        self.delete = None
+        super().__init__(**kwargs)
 
     def dispatch(self, request, *args, **kwargs):
         """
@@ -488,6 +493,12 @@ class GroupCommentDeleteView(GroupCommentEditDeleteMixin, delete.DeleteView):
         if len(self.get_queryset_for_role(request.cradmin_role)) == 0:
             raise PermissionDenied
         return super(GroupCommentDeleteView, self).dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        object_preview = self.get_object_preview()
+        response = super().form_valid(form)
+        self.add_success_messages(object_preview)
+        return response
 
     def get_object_preview(self):
         return gettext_lazy('Groupcomment')

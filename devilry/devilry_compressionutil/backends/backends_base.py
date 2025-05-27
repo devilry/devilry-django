@@ -200,6 +200,124 @@ class BaseArchiveBackend(object):
         raise NotImplementedError()
 
 
+class StreamZipBackend(BaseArchiveBackend):
+    def __init__(self, save_to_disk=False, chunk_size=None, **kwargs):
+        super(StreamZipBackend, self).__init__(**kwargs)
+        self.files = []
+        self.zipped_chunks = None
+        self.save_to_disk = save_to_disk
+        self.__add_path_extension()
+        self._create_path_if_not_exists()
+        if chunk_size:
+            self.chunk_size = chunk_size
+        else:
+            self.chunk_size = int(0x8000)
+
+    def __add_path_extension(self):
+        """
+        Sets :obj:`~.PythonZipFileBackend.archive_path` to full path by prepending the backend storage location
+        to the archive_path. Also adds .zip extension
+        """
+        if self.save_to_disk:
+            self.archive_path = os.path.join(self.get_storage_location(), self.archive_path)
+        if not self.archive_path.endswith('.zip'):
+            self.archive_name += '.zip'
+            self.archive_path += '.zip'
+
+    def archive_size(self):
+        """
+        Get size of archive. Uses ``os.stat``.
+
+        Returns:
+            int: size of archive.
+
+        Raises:
+            ValueError: If not in ``readmode``.
+        """
+        if not self.readmode:
+            raise ValueError('Must be in readmode')
+        return 0
+
+    def add_file(self, path, filelike_obj):
+        """
+        Prep a file to be written to the archive on the given ``path``.
+
+        Args:
+            path: Path to file inside the archive.
+            filelike_obj: An object that behaves like a File(read, write..).
+
+        """
+        if self.readmode is True:
+            raise ValueError('readmode must be False to add files.')
+
+        self.files.append((path, filelike_obj))
+
+    def read_archive(self):
+        """
+        Get the zipped archive as :obj:`~ZipFile` in readmode.
+
+        Returns:
+            ZipFile: The zipped archive.
+        """
+        if not self.readmode:
+            raise ValueError('Must be in readmode')
+        if not self.zipped_chunks:
+            raise ValueError('Archive has not been created yet')
+        return zipfile.ZipFile(io.BytesIO(b''.join(self.zipped_chunks)))
+
+    def get_archive(self):
+        """
+        Get the filelike object of the archive for compressed files.
+
+        """
+        return to_file_like_obj(self.zipped_chunks)
+
+    def _prep_files(self):
+        """
+        Prepares the files for Zip creation
+        """
+        now = timezone.now()
+        mode = S_IFREG | 0o600
+
+        def contents(file_object):
+            with file_object.file.open() as f:
+                while chunk := f.read(self.chunk_size):
+                    yield chunk
+
+        for (path, filelike_obj) in self.files:
+            yield (path, now, mode, ZIP_AUTO(filelike_obj.file.size), contents(filelike_obj))
+
+
+    def close(self):
+        """
+        Must be invoked in order to process the files into an iterable yielding the bytes of the ZIP file.
+
+        Readmode is set to True
+        """
+        prepped_files = self._prep_files()
+        self.zipped_chunks = stream_zip(prepped_files, chunk_size=self.chunk_size)
+        self.readmode = True
+
+        if self.save_to_disk:
+            self.archive = open(self.archive_path, 'wb')
+            for chunk in self.zipped_chunks:
+                self.archive.write(chunk)
+
+            super(StreamZipBackend, self).close()
+
+    def get_chunk_size(self):
+        return self.chunk_size
+
+    def _create_path_if_not_exists(self):
+        """
+        Create path if given path does not exist.
+        """
+        archivedirname = os.path.dirname(self.archive_path)
+        if self.save_to_disk:
+            if not os.path.exists(archivedirname):
+                os.makedirs(archivedirname)
+
+
 class PythonZipFileBackend(BaseArchiveBackend):
     """
     Defines a baseclass backend using :class:`~ZipFile`

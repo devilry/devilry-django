@@ -124,7 +124,7 @@ RQ_QUEUES = rq_setup.make_simple_rq_queue_setting()
 #
 ############################
 
-BAKER_CUSTOM_CLASS = 'devilry.project.develop.custom_modelbakery.CustomBaker'
+BAKER_CUSTOM_CLASS = 'devilry.utils.custom_baker.CustomBaker'
 
 IEVVTASKS_DUMPDATA_DIRECTORY = os.path.join(os.path.dirname(THIS_DIR), 'dumps')
 

@@ -1,3 +1,4 @@
+from django.urls import reverse
 import htmls
 
 from django import test
@@ -854,8 +855,7 @@ class TestExaminerNotAssignedCommentEmail(TestCommentEmailForUsersMixin, test.Te
                 htmls.S(outbox.message().as_string()).one('.devilry_email_comment_detail_text').alltext_normalized,
                 'See the delivery feed for more details:'
             )
-            url = reverse_cradmin_url(instanceid='devilry_group_admin', appname='feedbackfeed',
-                                      roleid=testgroup.id)
+            url = reverse("devilry_group_redirect_to_feedback_as_admin_or_examiner", kwargs={'assignment_group_id': testgroup.id})
             link_url = 'http://www.example.com' + url
             self.assertEqual(
                 link_url,
@@ -996,8 +996,7 @@ class TestExaminerCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
                 htmls.S(outbox.message().as_string()).one('.devilry_email_comment_detail_text').alltext_normalized,
                 'See the delivery feed for more details:'
             )
-            url = reverse_cradmin_url(instanceid='devilry_group_examiner', appname='feedbackfeed',
-                                      roleid=testgroup.id)
+            url = reverse("devilry_group_redirect_to_feedback_as_admin_or_examiner", kwargs={'assignment_group_id': testgroup.id})
             link_url = 'http://www.example.com' + url
             self.assertEqual(
                 link_url,

@@ -5,7 +5,7 @@ from devilry.devilry_dbcache.models import AssignmentGroupCachedData
 
 @admin.register(AssignmentGroupCachedData)
 class AssignmentGroupCachedDataAdmin(admin.ModelAdmin):
-    list_display = [
+    readonly_fields = [
         'id',
         'group',
         'first_feedbackset',
@@ -19,6 +19,10 @@ class AssignmentGroupCachedDataAdmin(admin.ModelAdmin):
         'public_student_file_upload_count',
         'examiner_count',
         'candidate_count'
+    ]
+    list_display = [
+        'id',
+        'group',
     ]
     search_fields = [
         'id',

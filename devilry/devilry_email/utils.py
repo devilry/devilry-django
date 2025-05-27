@@ -30,23 +30,21 @@ def get_examiner_users_in_group(group):
     return user_queryset
 
 
-def build_feedbackfeed_absolute_url(domain_scheme, group_id, instance_id='devilry_group_student'):
+def build_absolute_url_for_email(domain_url_start: str, urlpath: str):
     """
-    Build the absolute url to a feedbackfeed.
+    Build the absolute url for an email.
 
     Args:
-        domain_scheme: The scheme and host. E.g http://www.example.com/.
-        group_id: AssignmentGroup id.
-        crinstance_id: Cradmin instance id.
+        domain_url_start: The scheme and host. E.g http://www.example.com/.
+        urlpath: (relative) URL path.
 
     Returns:
         str: Absolute url to feedbackfeed.
     """
-    from cradmin_legacy.crinstance import reverse_cradmin_url
-    domain_url_start = domain_scheme.rstrip('/')
+    domain_url_start = domain_url_start.rstrip('/')
     absolute_url = '{}{}'.format(
         domain_url_start,
-        reverse_cradmin_url(instanceid=instance_id, appname='feedbackfeed', roleid=group_id)
+        urlpath
     )
     return absolute_url
 
