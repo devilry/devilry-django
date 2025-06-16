@@ -1,16 +1,14 @@
-
 from unittest import mock
+
+from cradmin_legacy import cradmin_testhelpers, crinstance
 from django.conf import settings
 from django.test import TestCase
-from cradmin_legacy import cradmin_testhelpers
-from cradmin_legacy import crinstance
 from model_bakery import baker
 
+from devilry.apps.core.baker_recipes import ACTIVE_PERIOD_START, ASSIGNMENT_ACTIVEPERIOD_START_FIRST_DEADLINE
 from devilry.apps.core.models import Assignment
-from devilry.apps.core.baker_recipes import ASSIGNMENT_ACTIVEPERIOD_START_FIRST_DEADLINE, ACTIVE_PERIOD_START
-from devilry.devilry_account.models import PermissionGroup
-from devilry.devilry_admin.views.period import overview
 from devilry.devilry_account import models as account_models
+from devilry.devilry_admin.views.period import overview
 from devilry.utils import datetimeutils
 
 
@@ -178,7 +176,7 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
         testperiod = baker.make_recipe('devilry.apps.core.period_active')
         periodadmin_user = self.__make_period_admin_user(period=testperiod)
         baker.make_recipe('devilry.apps.core.assignment_activeperiod_start', parentnode=testperiod)
-        with self.settings(DATETIME_FORMAT=datetimeutils.ISODATETIME_DJANGOFORMAT, USE_L10N=False):
+        with self.settings(DATETIME_FORMAT=datetimeutils.ISODATETIME_DJANGOFORMAT):
             mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod, requestuser=periodadmin_user)
         self.assertEqual(datetimeutils.isoformat_noseconds(ASSIGNMENT_ACTIVEPERIOD_START_FIRST_DEADLINE),
                          mockresponse.selector.one(
@@ -189,7 +187,7 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
         periodadmin_user = self.__make_period_admin_user(period=testperiod)
         baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                           parentnode=testperiod)
-        with self.settings(DATETIME_FORMAT=datetimeutils.ISODATETIME_DJANGOFORMAT, USE_L10N=False):
+        with self.settings(DATETIME_FORMAT=datetimeutils.ISODATETIME_DJANGOFORMAT):
             mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod, requestuser=periodadmin_user)
         self.assertEqual(datetimeutils.isoformat_noseconds(ACTIVE_PERIOD_START),
                          mockresponse.selector.one(

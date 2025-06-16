@@ -1,11 +1,11 @@
-from datetime import timedelta, datetime
+from datetime import datetime, timedelta
 
 import htmls
 from django import test
 from django.utils import timezone
 from model_bakery import baker
 
-from devilry.apps.core.models import Assignment, AssignmentGroup
+from devilry.apps.core.models import Assignment
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_baker_factories
@@ -114,7 +114,7 @@ class TestStudentItemValue(test.TestCase):
             parentnode=baker.make_recipe(
                 'devilry.apps.core.assignment_activeperiod_start',
                 first_deadline=datetime(2000, 1, 15, 12, 0)))
-        with self.settings(DATETIME_FORMAT='Y-m-d H:i', USE_L10N=False):
+        with self.settings(DATETIME_FORMAT="Y-m-d H:i"):
             selector = self.__render_studentitemvalue(group=testgroup)
         self.assertEqual(
             '2000-01-15 12:00',
@@ -130,7 +130,7 @@ class TestStudentItemValue(test.TestCase):
         devilry_group_baker_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
             deadline_datetime=datetime(2200, 1, 2, 12, 30))
-        with self.settings(DATETIME_FORMAT='Y-m-d H:i', USE_L10N=False):
+        with self.settings(DATETIME_FORMAT="Y-m-d H:i"):
             selector = self.__render_studentitemvalue(group=testgroup)
         self.assertEqual(
             '2200-01-02 12:30',
@@ -1009,7 +1009,9 @@ class TestSubjectAdminMultiselectItemValue(test.TestCase):
         testgroup = baker.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
         with self.assertRaisesRegex(ValueError, '^.*for fully anonymous assignments.*$'):
-            devilry_listbuilder.assignmentgroup.SubjectAdminMultiselectItemValue(value=testgroup, assignment=testgroup.assignment)
+            devilry_listbuilder.assignmentgroup.SubjectAdminMultiselectItemValue(
+                value=testgroup, assignment=testgroup.assignment
+            )
 
     def test_name(self):
         testgroup = baker.make('core.AssignmentGroup')

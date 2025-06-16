@@ -1,12 +1,10 @@
-
-
 from unittest import mock
+
+from cradmin_legacy import cradmin_testhelpers, crinstance
 from django.test import TestCase
-from cradmin_legacy import cradmin_testhelpers
-from cradmin_legacy import crinstance
 from model_bakery import baker
 
-from devilry.apps.core.baker_recipes import ACTIVE_PERIOD_START, ACTIVE_PERIOD_END
+from devilry.apps.core.baker_recipes import ACTIVE_PERIOD_END, ACTIVE_PERIOD_START
 from devilry.devilry_admin.views.subject import overview
 from devilry.utils import datetimeutils
 
@@ -79,21 +77,23 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_periodlist_itemrendering_start_time(self):
         testsubject = baker.make('core.Subject')
         baker.make_recipe('devilry.apps.core.period_active', parentnode=testsubject)
-        with self.settings(DATETIME_FORMAT=datetimeutils.ISODATETIME_DJANGOFORMAT, USE_L10N=False):
+        with self.settings(DATETIME_FORMAT=datetimeutils.ISODATETIME_DJANGOFORMAT):
             mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
-        self.assertEqual(datetimeutils.isoformat_noseconds(ACTIVE_PERIOD_START),
-                         mockresponse.selector.one(
-                             '.devilry-cradmin-perioditemvalue-start-time-value').alltext_normalized)
+        self.assertEqual(
+            datetimeutils.isoformat_noseconds(ACTIVE_PERIOD_START),
+            mockresponse.selector.one(".devilry-cradmin-perioditemvalue-start-time-value").alltext_normalized,
+        )
 
     def test_periodlist_itemrendering_end_time(self):
         testsubject = baker.make('core.Subject')
         baker.make_recipe('devilry.apps.core.period_active',
                           parentnode=testsubject)
-        with self.settings(DATETIME_FORMAT=datetimeutils.ISODATETIME_DJANGOFORMAT, USE_L10N=False):
+        with self.settings(DATETIME_FORMAT=datetimeutils.ISODATETIME_DJANGOFORMAT):
             mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
-        self.assertEqual(datetimeutils.isoformat_noseconds(ACTIVE_PERIOD_END),
-                         mockresponse.selector.one(
-                             '.devilry-cradmin-perioditemvalue-end-time-value').alltext_normalized)
+        self.assertEqual(
+            datetimeutils.isoformat_noseconds(ACTIVE_PERIOD_END),
+            mockresponse.selector.one(".devilry-cradmin-perioditemvalue-end-time-value").alltext_normalized,
+        )
 
     def test_periodlist_ordering(self):
         testsubject = baker.make('core.Subject')
