@@ -1,9 +1,9 @@
-from os.path import join
-from os.path import exists
-from devilry.utils import rq_setup
+from os.path import exists, join
+
+import dj_database_url
 
 from devilry.project.common.settings import *  # noqa
-import dj_database_url
+from devilry.utils import rq_setup
 
 THIS_DIR = os.path.dirname(__file__)
 
@@ -62,11 +62,7 @@ DEVILRY_SCHEME_AND_DOMAIN = 'https://devilry.example.com'
 
 DEVILRY_SYNCSYSTEM = 'FS (Felles Studentsystem)'
 
-PASSWORD_HASHERS = (
-    #    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
-    'django.contrib.auth.hashers.MD5PasswordHasher',
-    'django.contrib.auth.hashers.SHA1PasswordHasher',
-)
+PASSWORD_HASHERS = ("django.contrib.auth.hashers.MD5PasswordHasher",)
 
 
 # DEVILRY_USERADMIN_USER_READONLY_FIELDS = ['email', 'is_superuser', 'is_staff', 'is_active']
@@ -129,6 +125,7 @@ BAKER_CUSTOM_CLASS = 'devilry.utils.custom_baker.CustomBaker'
 IEVVTASKS_DUMPDATA_DIRECTORY = os.path.join(os.path.dirname(THIS_DIR), 'dumps')
 
 from devilry.project.log import create_logging_config  # noqa
+
 LOGGING = create_logging_config(
     mail_admins=False,
     dangerous_actions_loglevel="DEBUG",

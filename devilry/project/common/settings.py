@@ -5,17 +5,17 @@
 #
 ########################################################################
 import os
+
 import devilry
 
-from .projectspecific_settings import *  # noqa
 from .cradmin_legacy_settings import *  # noqa
+from .projectspecific_settings import *  # noqa
 
 DEBUG = False
 
 TIME_ZONE = 'Europe/Oslo'
 SITE_ID = 1  # Warning: required by django allauth
 USE_I18N = True
-USE_L10N = True
 USE_TZ = True
 FORMAT_MODULE_PATH = 'devilry.project.common.formats'
 # LOGIN_URL = '/authenticate/login'
@@ -196,8 +196,8 @@ RQ_QUEUES = {}
 # Setup logging using the defaults - logs to stderr
 ###################################################
 from devilry.project.log import create_logging_config
-LOGGING = create_logging_config()
 
+LOGGING = create_logging_config()
 
 
 ###################################################
@@ -216,11 +216,17 @@ DATAPORTEN_LOGOUT_URL = 'https://auth.dataporten.no/logout'
 SOCIALACCOUNT_LOGIN_ON_GET = True
 
 
-
 ###################################################
 # HTML sanitizer settings
 ###################################################
-from html_sanitizer.sanitizer import sanitize_href, tag_replacer, target_blank_noopener, bold_span_to_strong, italic_span_to_em
+from html_sanitizer.sanitizer import (
+    bold_span_to_strong,
+    italic_span_to_em,
+    sanitize_href,
+    tag_replacer,
+    target_blank_noopener,
+)
+
 HTML_SANITIZERS = {
     'devilry': {
         "tags": {
