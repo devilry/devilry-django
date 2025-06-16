@@ -1,4 +1,7 @@
 from unittest import mock
+
+from cradmin_legacy import cradmin_testhelpers
+from cradmin_legacy.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
 from django.conf import settings
 from django.contrib import messages
 from django.core import mail
@@ -7,27 +10,26 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import Http404
 from django.test import TestCase, override_settings
 from django.utils import timezone
-from cradmin_legacy import cradmin_testhelpers
 from model_bakery import baker
-from cradmin_legacy.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
 
 from devilry.apps.core import models as core_models
 from devilry.devilry_account.models import PeriodUserGuidelineAcceptance
 from devilry.devilry_comment import models as comment_models
+from devilry.devilry_compressionutil import backend_registry
+from devilry.devilry_compressionutil.backends import backend_mock
 from devilry.devilry_compressionutil.models import CompressedArchiveMeta
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_baker_factories as group_baker
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.tests.test_feedbackfeed.mixins import mixin_feedbackfeed_common
 from devilry.devilry_group.views.student import feedbackfeed_student
-from devilry.devilry_compressionutil import backend_registry
-from devilry.devilry_compressionutil.backends import backend_mock
 
 
 class TestFeedbackfeedStudent(TestCase, mixin_feedbackfeed_common.MixinTestFeedbackFeed):
     """
     General testing of what gets rendered to student view.
     """
+
     viewclass = feedbackfeed_student.StudentFeedbackFeedView
 
     def setUp(self):
@@ -35,178 +37,203 @@ class TestFeedbackfeedStudent(TestCase, mixin_feedbackfeed_common.MixinTestFeedb
 
     def __mock_cradmin_instance(self):
         mockinstance = mock.MagicMock()
-        mockinstance.get_devilryrole_for_requestuser.return_value = 'student'
+        mockinstance.get_devilryrole_for_requestuser.return_value = "student"
         return mockinstance
 
     def test_get(self):
-        candidate = baker.make('core.Candidate',
-                               relatedstudent=baker.make('core.RelatedStudent'))
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
-                                                          requestuser=candidate.relatedstudent.user)
-        self.assertEqual(mockresponse.selector.one('title').alltext_normalized,
-                          candidate.assignment_group.assignment.get_path())
+        candidate = baker.make("core.Candidate", relatedstudent=baker.make("core.RelatedStudent"))
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=candidate.assignment_group, requestuser=candidate.relatedstudent.user
+        )
+        self.assertEqual(
+            mockresponse.selector.one("title").alltext_normalized, candidate.assignment_group.assignment.get_path()
+        )
         self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     @override_settings(
-        DEVILRY_ASSIGNMENT_GUIDELINES = {
-            'student': [
-                (r'subject11.+', {
-                    '__version__': '1',
-                    '__default__': {
-                        'htmltext': 'This is the assignment guidelines for inf10xx courses.',
-                        'url': 'http://example.com'
+        DEVILRY_ASSIGNMENT_GUIDELINES={
+            "student": [
+                (
+                    r"subject11.+",
+                    {
+                        "__version__": "1",
+                        "__default__": {
+                            "htmltext": "This is the assignment guidelines for inf10xx courses.",
+                            "url": "http://example.com",
+                        },
                     },
-                }),
+                ),
             ]
         }
     )
     def test_get_assignment_guidelines_not_accepted(self):
-        candidate = baker.make('core.Candidate',
-                               assignment_group__parentnode=baker.make(
-                                    'core.Assignment',
-                                    parentnode__short_name='period0001',
-                                    parentnode__parentnode__short_name='subject1100'
-                               ),
-                               relatedstudent=baker.make('core.RelatedStudent'))
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
-                                                          requestuser=candidate.relatedstudent.user)
-        self.assertEqual(mockresponse.selector.one('title').alltext_normalized,
-                          candidate.assignment_group.assignment.get_path())
-        self.assertTrue(mockresponse.selector.exists('#id_assignment_guidelines_text'))
-        self.assertIn(
-            'This is the assignment guidelines for inf10xx courses.',
-            mockresponse.selector.one('#id_assignment_guidelines_text').alltext_normalized)
+        candidate = baker.make(
+            "core.Candidate",
+            assignment_group__parentnode=baker.make(
+                "core.Assignment", parentnode__short_name="period0001", parentnode__parentnode__short_name="subject1100"
+            ),
+            relatedstudent=baker.make("core.RelatedStudent"),
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=candidate.assignment_group, requestuser=candidate.relatedstudent.user
+        )
         self.assertEqual(
-            mockresponse.selector.one('#id_assignment_guidelines_link').get('href'),
-            'http://example.com')
+            mockresponse.selector.one("title").alltext_normalized, candidate.assignment_group.assignment.get_path()
+        )
+        self.assertTrue(mockresponse.selector.exists("#id_assignment_guidelines_text"))
+        self.assertIn(
+            "This is the assignment guidelines for inf10xx courses.",
+            mockresponse.selector.one("#id_assignment_guidelines_text").alltext_normalized,
+        )
+        self.assertEqual(mockresponse.selector.one("#id_assignment_guidelines_link").get("href"), "http://example.com")
 
     @override_settings(
-        DEVILRY_ASSIGNMENT_GUIDELINES = {
-            'student': [
-                (r'subject11.+', {
-                    '__version__': '1',
-                    '__default__': {
-                        'htmltext': 'This is the assignment guidelines for inf10xx courses.',
-                        'url': 'http://example.com'
+        DEVILRY_ASSIGNMENT_GUIDELINES={
+            "student": [
+                (
+                    r"subject11.+",
+                    {
+                        "__version__": "1",
+                        "__default__": {
+                            "htmltext": "This is the assignment guidelines for inf10xx courses.",
+                            "url": "http://example.com",
+                        },
                     },
-                }),
+                ),
             ]
         }
     )
     def test_get_assignment_guidelines_already_accepted(self):
-        candidate = baker.make('core.Candidate',
-                               assignment_group__parentnode=baker.make(
-                                    'core.Assignment',
-                                    parentnode__short_name='period0001',
-                                    parentnode__parentnode__short_name='subject1100'
-                               ),
-                               relatedstudent=baker.make('core.RelatedStudent'))
+        candidate = baker.make(
+            "core.Candidate",
+            assignment_group__parentnode=baker.make(
+                "core.Assignment", parentnode__short_name="period0001", parentnode__parentnode__short_name="subject1100"
+            ),
+            relatedstudent=baker.make("core.RelatedStudent"),
+        )
         baker.make(
-            'devilry_account.PeriodUserGuidelineAcceptance',
+            "devilry_account.PeriodUserGuidelineAcceptance",
             user=candidate.relatedstudent.user,
             period=candidate.assignment_group.parentnode.period,
-            devilryrole='student',
-            guidelines_version='1')
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
-                                                          requestuser=candidate.relatedstudent.user)
-        self.assertFalse(mockresponse.selector.exists('#id_assignment_guidelines_text'))
+            devilryrole="student",
+            guidelines_version="1",
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=candidate.assignment_group, requestuser=candidate.relatedstudent.user
+        )
+        self.assertFalse(mockresponse.selector.exists("#id_assignment_guidelines_text"))
 
     @override_settings(
-        DEVILRY_ASSIGNMENT_GUIDELINES = {
-            'student': [
-                (r'subject11.+', {
-                    '__version__': '2',
-                    '__default__': {
-                        'htmltext': 'This is the assignment guidelines for inf10xx courses.',
-                        'url': 'http://example.com'
+        DEVILRY_ASSIGNMENT_GUIDELINES={
+            "student": [
+                (
+                    r"subject11.+",
+                    {
+                        "__version__": "2",
+                        "__default__": {
+                            "htmltext": "This is the assignment guidelines for inf10xx courses.",
+                            "url": "http://example.com",
+                        },
                     },
-                }),
+                ),
             ]
         }
     )
     def test_get_assignment_guidelines_already_accepted_wrong_version(self):
-        candidate = baker.make('core.Candidate',
-                               assignment_group__parentnode=baker.make(
-                                    'core.Assignment',
-                                    parentnode__short_name='period0001',
-                                    parentnode__parentnode__short_name='subject1100'
-                               ),
-                               relatedstudent=baker.make('core.RelatedStudent'))
+        candidate = baker.make(
+            "core.Candidate",
+            assignment_group__parentnode=baker.make(
+                "core.Assignment", parentnode__short_name="period0001", parentnode__parentnode__short_name="subject1100"
+            ),
+            relatedstudent=baker.make("core.RelatedStudent"),
+        )
         baker.make(
-            'devilry_account.PeriodUserGuidelineAcceptance',
+            "devilry_account.PeriodUserGuidelineAcceptance",
             user=candidate.relatedstudent.user,
             period=candidate.assignment_group.parentnode.period,
-            devilryrole='student',
-            guidelines_version='1')
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
-                                                          requestuser=candidate.relatedstudent.user)
-        self.assertTrue(mockresponse.selector.exists('#id_assignment_guidelines_text'))
+            devilryrole="student",
+            guidelines_version="1",
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=candidate.assignment_group, requestuser=candidate.relatedstudent.user
+        )
+        self.assertTrue(mockresponse.selector.exists("#id_assignment_guidelines_text"))
 
     @override_settings(
-        DEVILRY_ASSIGNMENT_GUIDELINES = {
-            'student': [
-                (r'subject11.+', {
-                    '__version__': '1',
-                    '__default__': {
-                        'htmltext': 'This is the assignment guidelines for inf10xx courses.',
-                        'url': 'http://example.com'
+        DEVILRY_ASSIGNMENT_GUIDELINES={
+            "student": [
+                (
+                    r"subject11.+",
+                    {
+                        "__version__": "1",
+                        "__default__": {
+                            "htmltext": "This is the assignment guidelines for inf10xx courses.",
+                            "url": "http://example.com",
+                        },
                     },
-                }),
+                ),
             ]
         }
     )
     def test_get_assignment_guidelines_not_accepted_no_match(self):
-        candidate = baker.make('core.Candidate',
-                               assignment_group__parentnode=baker.make(
-                                    'core.Assignment',
-                                    parentnode__short_name='period0001',
-                                    parentnode__parentnode__short_name='subject1000'
-                               ),
-                               relatedstudent=baker.make('core.RelatedStudent'))
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
-                                                          requestuser=candidate.relatedstudent.user)
-        self.assertFalse(mockresponse.selector.exists('#id_assignment_guidelines_text'))
+        candidate = baker.make(
+            "core.Candidate",
+            assignment_group__parentnode=baker.make(
+                "core.Assignment", parentnode__short_name="period0001", parentnode__parentnode__short_name="subject1000"
+            ),
+            relatedstudent=baker.make("core.RelatedStudent"),
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=candidate.assignment_group, requestuser=candidate.relatedstudent.user
+        )
+        self.assertFalse(mockresponse.selector.exists("#id_assignment_guidelines_text"))
 
     @override_settings(
-        DEVILRY_ASSIGNMENT_GUIDELINES = {
-            'student': [
-                (r'subject11.+', {
-                    '__version__': '1',
-                    '__default__': {
-                        'htmltext': 'This is the assignment guidelines for inf10xx courses.',
-                        'url': 'http://example.com'
+        DEVILRY_ASSIGNMENT_GUIDELINES={
+            "student": [
+                (
+                    r"subject11.+",
+                    {
+                        "__version__": "1",
+                        "__default__": {
+                            "htmltext": "This is the assignment guidelines for inf10xx courses.",
+                            "url": "http://example.com",
+                        },
                     },
-                }),
+                ),
             ]
         }
     )
     def test_post_assignment_guidelines_accepted(self):
-        candidate = baker.make('core.Candidate',
-                               assignment_group__parentnode=baker.make(
-                                    'core.Assignment',
-                                    parentnode__short_name='period0001',
-                                    parentnode__parentnode__short_name='subject1100'
-                               ),
-                               relatedstudent=baker.make('core.RelatedStudent'))
-        self.assertFalse(PeriodUserGuidelineAcceptance.objects.filter(
-            user=candidate.relatedstudent.user,
-            period=candidate.assignment_group.parentnode.period,
-            devilryrole='student'
-        ).exists())
+        candidate = baker.make(
+            "core.Candidate",
+            assignment_group__parentnode=baker.make(
+                "core.Assignment", parentnode__short_name="period0001", parentnode__parentnode__short_name="subject1100"
+            ),
+            relatedstudent=baker.make("core.RelatedStudent"),
+        )
+        self.assertFalse(
+            PeriodUserGuidelineAcceptance.objects.filter(
+                user=candidate.relatedstudent.user,
+                period=candidate.assignment_group.parentnode.period,
+                devilryrole="student",
+            ).exists()
+        )
         self.mock_http302_postrequest(
             cradmin_role=candidate.assignment_group,
             requestuser=candidate.relatedstudent.user,
-            viewkwargs={'pk': candidate.assignment_group},
+            viewkwargs={"pk": candidate.assignment_group},
             cradmin_instance=self.__mock_cradmin_instance(),
             requestkwargs={
-                'data': {
-                    'has_read_assignment_guidelines': 'on',
+                "data": {
+                    "has_read_assignment_guidelines": "on",
                 }
-            })
+            },
+        )
         queryset = PeriodUserGuidelineAcceptance.objects.filter(
             user=candidate.relatedstudent.user,
             period=candidate.assignment_group.parentnode.period,
-            devilryrole='student'
+            devilryrole="student",
         )
         self.assertTrue(queryset.exists())
         # if
@@ -214,608 +241,666 @@ class TestFeedbackfeedStudent(TestCase, mixin_feedbackfeed_common.MixinTestFeedb
     def test_assignment_soft_deadline_info_box_not_rendered(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
         deadline_datetime = timezone.now() - timezone.timedelta(days=1)
-        test_feedbackset = baker.make('devilry_group.FeedbackSet',
-                                      deadline_datetime=deadline_datetime,
-                                      group__parentnode__deadline_handling=core_models.Assignment.DEADLINEHANDLING_SOFT)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=test_feedbackset.group,
-            requestuser=testuser,
-            cradmin_instance=self.__mock_cradmin_instance()
+        test_feedbackset = baker.make(
+            "devilry_group.FeedbackSet",
+            deadline_datetime=deadline_datetime,
+            group__parentnode__deadline_handling=core_models.Assignment.DEADLINEHANDLING_SOFT,
         )
-        self.assertFalse(mockresponse.selector.exists('.devilry-feedbackfeed-hard-deadline-info-box'))
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=test_feedbackset.group, requestuser=testuser, cradmin_instance=self.__mock_cradmin_instance()
+        )
+        self.assertFalse(mockresponse.selector.exists(".devilry-feedbackfeed-hard-deadline-info-box"))
 
     def test_assignment_hard_deadline_info_box_rendered(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
         deadline_datetime = timezone.now() - timezone.timedelta(days=1)
-        test_feedbackset = baker.make('devilry_group.FeedbackSet',
-                                      deadline_datetime=deadline_datetime,
-                                      group__parentnode__deadline_handling=core_models.Assignment.DEADLINEHANDLING_HARD)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=test_feedbackset.group,
-            requestuser=testuser,
-            cradmin_instance=self.__mock_cradmin_instance()
+        test_feedbackset = baker.make(
+            "devilry_group.FeedbackSet",
+            deadline_datetime=deadline_datetime,
+            group__parentnode__deadline_handling=core_models.Assignment.DEADLINEHANDLING_HARD,
         )
-        self.assertTrue(mockresponse.selector.exists('.devilry-feedbackfeed-hard-deadline-info-box'))
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=test_feedbackset.group, requestuser=testuser, cradmin_instance=self.__mock_cradmin_instance()
+        )
+        self.assertTrue(mockresponse.selector.exists(".devilry-feedbackfeed-hard-deadline-info-box"))
 
-    @override_settings(DEVILRY_HARD_DEADLINE_INFO_FOR_STUDENTS={
-            '__default': 'Hard deadline info'
-    })
+    @override_settings(DEVILRY_HARD_DEADLINE_INFO_FOR_STUDENTS={"__default": "Hard deadline info"})
     def test_assignment_hard_deadline_info_box_rendered_info_text_default(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
         deadline_datetime = timezone.now() - timezone.timedelta(days=1)
-        test_feedbackset = baker.make('devilry_group.FeedbackSet',
-                                      deadline_datetime=deadline_datetime,
-                                      group__parentnode__deadline_handling=core_models.Assignment.DEADLINEHANDLING_HARD)
+        test_feedbackset = baker.make(
+            "devilry_group.FeedbackSet",
+            deadline_datetime=deadline_datetime,
+            group__parentnode__deadline_handling=core_models.Assignment.DEADLINEHANDLING_HARD,
+        )
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=test_feedbackset.group,
-            requestuser=testuser,
-            cradmin_instance=self.__mock_cradmin_instance()
+            cradmin_role=test_feedbackset.group, requestuser=testuser, cradmin_instance=self.__mock_cradmin_instance()
         )
         self.assertEqual(
-            mockresponse.selector.one('.devilry-feedbackfeed-hard-deadline-info-box').alltext_normalized,
-            'Hard deadline info')
+            mockresponse.selector.one(".devilry-feedbackfeed-hard-deadline-info-box").alltext_normalized,
+            "Hard deadline info",
+        )
 
     def test_assignment_deadline_hard_comment_form_not_rendered(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
         deadline_datetime = timezone.now() - timezone.timedelta(days=1)
-        test_feedbackset = baker.make('devilry_group.FeedbackSet',
-                                      deadline_datetime=deadline_datetime,
-                                      group__parentnode__deadline_handling=core_models.Assignment.DEADLINEHANDLING_HARD,
-                                      group__parentnode__parentnode=baker.make_recipe(
-                                          'devilry.apps.core.period_active'))
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=test_feedbackset.group,
-            requestuser=testuser,
-            cradmin_instance=self.__mock_cradmin_instance()
+        test_feedbackset = baker.make(
+            "devilry_group.FeedbackSet",
+            deadline_datetime=deadline_datetime,
+            group__parentnode__deadline_handling=core_models.Assignment.DEADLINEHANDLING_HARD,
+            group__parentnode__parentnode=baker.make_recipe("devilry.apps.core.period_active"),
         )
-        self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-form-wrapper'))
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=test_feedbackset.group, requestuser=testuser, cradmin_instance=self.__mock_cradmin_instance()
+        )
+        self.assertFalse(mockresponse.selector.exists(".cradmin-legacy-form-wrapper"))
 
     def test_assignment_deadline_hard_info_box(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
         deadline_datetime = timezone.now() - timezone.timedelta(days=1)
-        test_feedbackset = baker.make('devilry_group.FeedbackSet',
-                                      deadline_datetime=deadline_datetime,
-                                      group__parentnode__deadline_handling=core_models.Assignment.DEADLINEHANDLING_HARD,
-                                      group__parentnode__parentnode=baker.make_recipe(
-                                          'devilry.apps.core.period_active'))
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=test_feedbackset.group,
-            requestuser=testuser,
-            cradmin_instance=self.__mock_cradmin_instance()
+        test_feedbackset = baker.make(
+            "devilry_group.FeedbackSet",
+            deadline_datetime=deadline_datetime,
+            group__parentnode__deadline_handling=core_models.Assignment.DEADLINEHANDLING_HARD,
+            group__parentnode__parentnode=baker.make_recipe("devilry.apps.core.period_active"),
         )
-        self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-form-wrapper'))
-        self.assertEqual(mockresponse.selector.one('.devilry-feedbackfeed-form-disabled').alltext_normalized,
-                         'File uploads and comments disabled Hard deadlines are enabled for this assignment. '
-                         'File upload and commenting is disabled.')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=test_feedbackset.group, requestuser=testuser, cradmin_instance=self.__mock_cradmin_instance()
+        )
+        self.assertFalse(mockresponse.selector.exists(".cradmin-legacy-form-wrapper"))
+        self.assertEqual(
+            mockresponse.selector.one(".devilry-feedbackfeed-form-disabled").alltext_normalized,
+            "File uploads and comments disabled Hard deadlines are enabled for this assignment. "
+            "File upload and commenting is disabled.",
+        )
 
     def test_post_student_assignment_deadline_hard_expired_django_message(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
         deadline_datetime = timezone.now() - timezone.timedelta(days=1)
-        test_feedbackset = baker.make('devilry_group.FeedbackSet',
-                                      deadline_datetime=deadline_datetime,
-                                      group__parentnode__deadline_handling=core_models.Assignment.DEADLINEHANDLING_HARD,
-                                      group__parentnode__parentnode=baker.make_recipe(
-                                          'devilry.apps.core.period_active'))
+        test_feedbackset = baker.make(
+            "devilry_group.FeedbackSet",
+            deadline_datetime=deadline_datetime,
+            group__parentnode__deadline_handling=core_models.Assignment.DEADLINEHANDLING_HARD,
+            group__parentnode__parentnode=baker.make_recipe("devilry.apps.core.period_active"),
+        )
         messagesmock = mock.MagicMock()
         self.mock_http302_postrequest(
             cradmin_role=test_feedbackset.group,
             requestuser=testuser,
-            viewkwargs={'pk': test_feedbackset.group.id},
+            viewkwargs={"pk": test_feedbackset.group.id},
             cradmin_instance=self.__mock_cradmin_instance(),
             messagesmock=messagesmock,
             requestkwargs={
-                'data': {
-                    'text': 'test',
-                    'student_add_comment': 'unused value',
+                "data": {
+                    "text": "test",
+                    "student_add_comment": "unused value",
                 }
-            })
+            },
+        )
         messagesmock.add.assert_called_once_with(
             messages.WARNING,
-            'Hard deadlines are enabled for this assignment. File upload and commenting is disabled.',
-            ''
+            "Hard deadlines are enabled for this assignment. File upload and commenting is disabled.",
+            "",
         )
         self.assertEqual(group_models.GroupComment.objects.count(), 0)
 
     def test_feedbackfeed_project_group_button_visible_if_only_one_student_student_can_create_group(self):
-        testassignment = baker.make('core.Assignment', students_can_create_groups=True)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make("core.Assignment", students_can_create_groups=True)
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        candidate = baker.make('core.Candidate', assignment_group=testgroup)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup,
-            requestuser=testuser
-        )
-        self.assertTrue(mockresponse.selector.exists('.devilry-feedbackfeed-student-projectgroup-detauils-link'))
+        group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
+        baker.make("core.Candidate", assignment_group=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup, requestuser=testuser)
+        self.assertTrue(mockresponse.selector.exists(".devilry-feedbackfeed-student-projectgroup-detauils-link"))
 
     def test_feedbackfeed_project_group_button_visible_if_student_can_create_groups_and_before_datetime(self):
-        testassignment = baker.make('core.Assignment', students_can_create_groups=True,
-                                    students_can_not_create_groups_after=timezone.now() + timezone.timedelta(hours=1))
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testuser = baker.make(settings.AUTH_USER_MODEL)
-        testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        candidate = baker.make('core.Candidate', assignment_group=testgroup)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup,
-            requestuser=testuser
+        testassignment = baker.make(
+            "core.Assignment",
+            students_can_create_groups=True,
+            students_can_not_create_groups_after=timezone.now() + timezone.timedelta(hours=1),
         )
-        self.assertTrue(mockresponse.selector.exists('.devilry-feedbackfeed-student-projectgroup-detauils-link'))
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
+        baker.make("core.Candidate", assignment_group=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup, requestuser=testuser)
+        self.assertTrue(mockresponse.selector.exists(".devilry-feedbackfeed-student-projectgroup-detauils-link"))
 
     def test_feedbackfeed_project_group_button_not_visible_if_student_can_create_groups_and_after_datetime(self):
-        testassignment = baker.make('core.Assignment', students_can_create_groups=True,
-                                    students_can_not_create_groups_after=timezone.now() - timezone.timedelta(hours=1))
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testuser = baker.make(settings.AUTH_USER_MODEL)
-        testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        candidate = baker.make('core.Candidate', assignment_group=testgroup)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup,
-            requestuser=testuser
+        testassignment = baker.make(
+            "core.Assignment",
+            students_can_create_groups=True,
+            students_can_not_create_groups_after=timezone.now() - timezone.timedelta(hours=1),
         )
-        self.assertFalse(mockresponse.selector.exists('.devilry-feedbackfeed-project-group-button'))
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
+        baker.make("core.Candidate", assignment_group=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup, requestuser=testuser)
+        self.assertFalse(mockresponse.selector.exists(".devilry-feedbackfeed-project-group-button"))
 
     def test_feedbackfeed_project_group_button_visible_if_multiple_students_in_group(self):
-        testassignment = baker.make('core.Assignment')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make("core.Assignment")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        candidate = baker.make('core.Candidate', assignment_group=testgroup, _quantity=2)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup,
-            requestuser=testuser
-        )
-        self.assertTrue(mockresponse.selector.exists('.devilry-feedbackfeed-student-projectgroup-detauils-link'))
+        group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
+        baker.make("core.Candidate", assignment_group=testgroup, _quantity=2)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup, requestuser=testuser)
+        self.assertTrue(mockresponse.selector.exists(".devilry-feedbackfeed-student-projectgroup-detauils-link"))
 
     def test_feedbackfeed_project_group_button_not_visible_with_only_one_student(self):
-        testassignment = baker.make('core.Assignment')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make("core.Assignment")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        candidate = baker.make('core.Candidate', assignment_group=testgroup)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup,
-            requestuser=testuser
-        )
-        self.assertFalse(mockresponse.selector.exists('.devilry-feedbackfeed-project-group-button'))
+        group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
+        baker.make("core.Candidate", assignment_group=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup, requestuser=testuser)
+        self.assertFalse(mockresponse.selector.exists(".devilry-feedbackfeed-project-group-button"))
 
     def test_get_feedbackfeed_anonymous_examiner_semi(self):
-        testassignment = baker.make('core.Assignment',
-                                    anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make(
+            "core.Assignment", anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS
+        )
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        candidate = baker.make('core.Examiner',
-                               assignmentgroup=testgroup,
-                               relatedexaminer__automatic_anonymous_id='AnonymousExaminer',
-                               relatedexaminer__user__shortname='testexaminer',
-                               relatedexaminer__period=testassignment.parentnode)
-        baker.make('devilry_group.GroupComment',
-                   user_role='examiner',
-                   user=candidate.relatedexaminer.user,
-                   feedback_set=testfeedbackset)
+        candidate = baker.make(
+            "core.Examiner",
+            assignmentgroup=testgroup,
+            relatedexaminer__automatic_anonymous_id="AnonymousExaminer",
+            relatedexaminer__user__shortname="testexaminer",
+            relatedexaminer__period=testassignment.parentnode,
+        )
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role="examiner",
+            user=candidate.relatedexaminer.user,
+            feedback_set=testfeedbackset,
+        )
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
-        self.assertFalse(mockresponse.selector.exists('.devilry-user-verbose-inline'))
-        self.assertTrue(mockresponse.selector.exists('.devilry-core-examiner-anonymous-name'))
-        self.assertEqual('AnonymousExaminer',
-                         mockresponse.selector.one('.devilry-core-examiner-anonymous-name').alltext_normalized)
+        self.assertFalse(mockresponse.selector.exists(".devilry-user-verbose-inline"))
+        self.assertTrue(mockresponse.selector.exists(".devilry-core-examiner-anonymous-name"))
+        self.assertEqual(
+            "AnonymousExaminer", mockresponse.selector.one(".devilry-core-examiner-anonymous-name").alltext_normalized
+        )
         self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackfeed_anonymous_examiner_fully(self):
-        testassignment = baker.make('core.Assignment',
-                                    anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make(
+            "core.Assignment", anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS
+        )
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        examiner = baker.make('core.Examiner',
-                              assignmentgroup=testgroup,
-                              relatedexaminer__automatic_anonymous_id='AnonymousExaminer',
-                              relatedexaminer__user__shortname='testexaminer',
-                              relatedexaminer__period=testassignment.parentnode)
-        baker.make('devilry_group.GroupComment',
-                   user_role='examiner',
-                   user=examiner.relatedexaminer.user,
-                   feedback_set=testfeedbackset)
+        examiner = baker.make(
+            "core.Examiner",
+            assignmentgroup=testgroup,
+            relatedexaminer__automatic_anonymous_id="AnonymousExaminer",
+            relatedexaminer__user__shortname="testexaminer",
+            relatedexaminer__period=testassignment.parentnode,
+        )
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role="examiner",
+            user=examiner.relatedexaminer.user,
+            feedback_set=testfeedbackset,
+        )
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
-        self.assertFalse(mockresponse.selector.exists('.devilry-user-verbose-inline'))
-        self.assertTrue(mockresponse.selector.exists('.devilry-core-examiner-anonymous-name'))
-        self.assertEqual('AnonymousExaminer',
-                         mockresponse.selector.one('.devilry-core-examiner-anonymous-name').alltext_normalized)
+        self.assertFalse(mockresponse.selector.exists(".devilry-user-verbose-inline"))
+        self.assertTrue(mockresponse.selector.exists(".devilry-core-examiner-anonymous-name"))
+        self.assertEqual(
+            "AnonymousExaminer", mockresponse.selector.one(".devilry-core-examiner-anonymous-name").alltext_normalized
+        )
         self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackfeed_download_not_visible_no_commentfiles_exists(self):
-        testassignment = baker.make('core.Assignment')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make("core.Assignment")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
-        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-buttonbar__title'))
+        self.assertFalse(mockresponse.selector.exists(".devilry-group-feedbackfeed-buttonbar__title"))
 
     def test_get_feedbackfeed_download_visible_public_commentfiles_exist(self):
-        testassignment = baker.make('core.Assignment')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make("core.Assignment")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         testuser = baker.make(settings.AUTH_USER_MODEL)
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        candidate = baker.make('core.Candidate', assignment_group=testgroup)
-        group_comment = baker.make('devilry_group.GroupComment',
-                                   user=candidate.relatedstudent.user,
-                                   feedback_set=testfeedbackset)
-        baker.make('devilry_comment.CommentFile', comment=group_comment)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup,
-            requestuser=testuser
+        candidate = baker.make("core.Candidate", assignment_group=testgroup)
+        group_comment = baker.make(
+            "devilry_group.GroupComment", user=candidate.relatedstudent.user, feedback_set=testfeedbackset
         )
-        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-buttonbar'))
+        baker.make("devilry_comment.CommentFile", comment=group_comment)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup, requestuser=testuser)
+        self.assertTrue(mockresponse.selector.exists(".devilry-group-feedbackfeed-buttonbar"))
 
     def test_get_feedbackfeed_download_not_visible_private_commentfile_exist(self):
-        testassignment = baker.make('core.Assignment')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make("core.Assignment")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        group_comment = baker.make('devilry_group.GroupComment',
-                                   feedback_set=testfeedbackset,
-                                   visibility=group_models.GroupComment.VISIBILITY_PRIVATE)
-        baker.make('devilry_comment.CommentFile', comment=group_comment)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup,
-            requestuser=testuser
+        group_comment = baker.make(
+            "devilry_group.GroupComment",
+            feedback_set=testfeedbackset,
+            visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
         )
-        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-buttonbar__title'))
+        baker.make("devilry_comment.CommentFile", comment=group_comment)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup, requestuser=testuser)
+        self.assertFalse(mockresponse.selector.exists(".devilry-group-feedbackfeed-buttonbar__title"))
 
     def test_get_feedbackfeed_download_not_visible_part_of_grading_not_published(self):
-        testassignment = baker.make('core.Assignment')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make("core.Assignment")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        group_comment = baker.make('devilry_group.GroupComment',
-                                   feedback_set=testfeedbackset,
-                                   part_of_grading=True)
-        baker.make('devilry_comment.CommentFile', comment=group_comment)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup,
-            requestuser=testuser
-        )
-        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-buttonbar__title'))
+        group_comment = baker.make("devilry_group.GroupComment", feedback_set=testfeedbackset, part_of_grading=True)
+        baker.make("devilry_comment.CommentFile", comment=group_comment)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup, requestuser=testuser)
+        self.assertFalse(mockresponse.selector.exists(".devilry-group-feedbackfeed-buttonbar__title"))
 
     def test_get_feedbackfeed_download_not_visible_comment_visible_to_examiners_and_admins(self):
-        testassignment = baker.make('core.Assignment')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make("core.Assignment")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        group_comment = baker.make('devilry_group.GroupComment',
-                                   feedback_set=testfeedbackset,
-                                   visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
-        baker.make('devilry_comment.CommentFile', comment=group_comment)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup,
-            requestuser=testuser
+        group_comment = baker.make(
+            "devilry_group.GroupComment",
+            feedback_set=testfeedbackset,
+            visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
         )
-        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-buttonbar__title'))
+        baker.make("devilry_comment.CommentFile", comment=group_comment)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup, requestuser=testuser)
+        self.assertFalse(mockresponse.selector.exists(".devilry-group-feedbackfeed-buttonbar__title"))
 
     def test_get_feedbackfeed_student_cannot_see_feedback_or_discuss_in_header(self):
-        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
-        candidate = baker.make('core.Candidate',
-                               assignment_group=testgroup,
-                               relatedstudent=baker.make('core.RelatedStudent'))
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
-                                                          requestuser=candidate.relatedstudent.user)
-        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-feedback-button'))
-        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-discuss-button'))
+        assignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=assignment)
+        candidate = baker.make(
+            "core.Candidate", assignment_group=testgroup, relatedstudent=baker.make("core.RelatedStudent")
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=candidate.assignment_group, requestuser=candidate.relatedstudent.user
+        )
+        self.assertFalse(mockresponse.selector.exists(".devilry-group-feedbackfeed-feedback-button"))
+        self.assertFalse(mockresponse.selector.exists(".devilry-group-feedbackfeed-discuss-button"))
         self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackfeed_student_add_comment_to_feedbackset_without_deadline(self):
-        testgroup = baker.make('core.AssignmentGroup')
-        candidate = baker.make('core.Candidate',
-                               relatedstudent=baker.make('core.RelatedStudent'),
-                               assignment_group=testgroup)
+        testgroup = baker.make("core.AssignmentGroup")
+        candidate = baker.make(
+            "core.Candidate", relatedstudent=baker.make("core.RelatedStudent"), assignment_group=testgroup
+        )
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        comment = baker.make('devilry_group.GroupComment',
-                             user_role='student',
-                             user=candidate.relatedstudent.user,
-                             published_datetime=timezone.now(),
-                             feedback_set=testfeedbackset)
+        comment = baker.make(
+            "devilry_group.GroupComment",
+            user_role="student",
+            user=candidate.relatedstudent.user,
+            published_datetime=timezone.now(),
+            feedback_set=testfeedbackset,
+        )
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
-        self.assertTrue(mockresponse.selector.one('.devilry-group-feedbackfeed-comment-student'))
+        self.assertTrue(mockresponse.selector.one(".devilry-group-feedbackfeed-comment-student"))
         self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackset_student_comment_after_deadline(self):
-        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=assignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        candidate = baker.make('core.Candidate',
-                               assignment_group=testgroup,
-                               relatedstudent=baker.make('core.RelatedStudent'))
-        comment = baker.make('devilry_group.GroupComment',
-                             user=candidate.relatedstudent.user,
-                             user_role='student',
-                             published_datetime=timezone.now() + timezone.timedelta(days=1),
-                             feedback_set=testfeedbackset)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group,
-                                                          requestuser=candidate.relatedstudent.user)
-        self.assertTrue(mockresponse.selector.exists('.after-deadline-badge'))
+        candidate = baker.make(
+            "core.Candidate", assignment_group=testgroup, relatedstudent=baker.make("core.RelatedStudent")
+        )
+        comment = baker.make(
+            "devilry_group.GroupComment",
+            user=candidate.relatedstudent.user,
+            user_role="student",
+            published_datetime=timezone.now() + timezone.timedelta(days=1),
+            feedback_set=testfeedbackset,
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=comment.feedback_set.group, requestuser=candidate.relatedstudent.user
+        )
+        self.assertTrue(mockresponse.selector.exists(".after-deadline-badge"))
         self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackset_student_comment_after_deadline_with_new_feedbackset(self):
-        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
-        candidate = baker.make('core.Candidate',
-                               assignment_group=testgroup,
-                               relatedstudent=baker.make('core.RelatedStudent'))
+        assignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=assignment)
+        candidate = baker.make(
+            "core.Candidate", assignment_group=testgroup, relatedstudent=baker.make("core.RelatedStudent")
+        )
         feedbackset1 = group_baker.feedbackset_first_attempt_published(group=testgroup)
         feedbackset2 = group_baker.feedbackset_new_attempt_unpublished(
-                group=testgroup,
-                deadline_datetime=timezone.now() - timezone.timedelta(days=1))
-        baker.make('devilry_group.GroupComment',
-                   user=candidate.relatedstudent.user,
-                   user_role='student',
-                   published_datetime=timezone.now(),
-                   feedback_set=feedbackset1)
-        baker.make('devilry_group.GroupComment',
-                   user=candidate.relatedstudent.user,
-                   user_role='student',
-                   published_datetime=timezone.now(),
-                   feedback_set=feedbackset2)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
-                                                          requestuser=candidate.relatedstudent.user)
-        self.assertTrue(mockresponse.selector.exists('.after-deadline-badge'))
+            group=testgroup, deadline_datetime=timezone.now() - timezone.timedelta(days=1)
+        )
+        baker.make(
+            "devilry_group.GroupComment",
+            user=candidate.relatedstudent.user,
+            user_role="student",
+            published_datetime=timezone.now(),
+            feedback_set=feedbackset1,
+        )
+        baker.make(
+            "devilry_group.GroupComment",
+            user=candidate.relatedstudent.user,
+            user_role="student",
+            published_datetime=timezone.now(),
+            feedback_set=feedbackset2,
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup, requestuser=candidate.relatedstudent.user
+        )
+        self.assertTrue(mockresponse.selector.exists(".after-deadline-badge"))
         self.assertEqual(2, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackset_comment_student_before_deadline(self):
-        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_end')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_end")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=assignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        candidate = baker.make('core.Candidate',
-                               assignment_group=testgroup,
-                               relatedstudent=baker.make('core.RelatedStudent'))
-        comment = baker.make('devilry_group.GroupComment',
-                             user=candidate.relatedstudent.user,
-                             user_role='student',
-                             visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                             published_datetime=timezone.now(),
-                             feedback_set=testfeedbackset)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group,
-                                                          requestuser=candidate.relatedstudent.user)
-        self.assertFalse(mockresponse.selector.exists('.after-deadline-badge'))
+        candidate = baker.make(
+            "core.Candidate", assignment_group=testgroup, relatedstudent=baker.make("core.RelatedStudent")
+        )
+        comment = baker.make(
+            "devilry_group.GroupComment",
+            user=candidate.relatedstudent.user,
+            user_role="student",
+            visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            published_datetime=timezone.now(),
+            feedback_set=testfeedbackset,
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=comment.feedback_set.group, requestuser=candidate.relatedstudent.user
+        )
+        self.assertFalse(mockresponse.selector.exists(".after-deadline-badge"))
         self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackfeed_student_can_see_other_student_comments(self):
-        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_end')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_end")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=assignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        janedoe = baker.make('core.Candidate',
-                             assignment_group=testgroup,
-                             relatedstudent=baker.make('core.RelatedStudent'))
-        johndoe = baker.make('core.Candidate',
-                             assignment_group=testgroup,
-                             relatedstudent=baker.make('core.RelatedStudent', user__fullname='John Doe'))
-        baker.make('devilry_group.GroupComment',
-                   user=johndoe.relatedstudent.user,
-                   user_role='student',
-                   visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   published_datetime=timezone.now(),
-                   feedback_set=testfeedbackset)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=janedoe.assignment_group,
-                                                          requestuser=janedoe.relatedstudent.user)
-        name = mockresponse.selector.one('.devilry-user-verbose-inline-fullname').alltext_normalized
+        janedoe = baker.make(
+            "core.Candidate", assignment_group=testgroup, relatedstudent=baker.make("core.RelatedStudent")
+        )
+        johndoe = baker.make(
+            "core.Candidate",
+            assignment_group=testgroup,
+            relatedstudent=baker.make("core.RelatedStudent", user__fullname="John Doe"),
+        )
+        baker.make(
+            "devilry_group.GroupComment",
+            user=johndoe.relatedstudent.user,
+            user_role="student",
+            visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            published_datetime=timezone.now(),
+            feedback_set=testfeedbackset,
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=janedoe.assignment_group, requestuser=janedoe.relatedstudent.user
+        )
+        name = mockresponse.selector.one(".devilry-user-verbose-inline-fullname").alltext_normalized
         self.assertEqual(johndoe.relatedstudent.user.fullname, name)
         self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackfeed_student_can_see_other_student_comments_after_deadline(self):
-        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=assignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        janedoe = baker.make('core.Candidate',
-                             assignment_group=testgroup,
-                             relatedstudent=baker.make('core.RelatedStudent'),)
-        johndoe = baker.make('core.Candidate',
-                             assignment_group=testgroup,
-                             relatedstudent=baker.make('core.RelatedStudent', user__fullname='John Doe'))
-        baker.make('devilry_group.GroupComment',
-                   user=johndoe.relatedstudent.user,
-                   user_role='student',
-                   visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   published_datetime=timezone.now(),
-                   feedback_set=testfeedbackset)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=janedoe.assignment_group,
-                                                          requestuser=janedoe.relatedstudent.user)
-        name = mockresponse.selector.one('.devilry-user-verbose-inline-fullname').alltext_normalized
-        self.assertTrue(mockresponse.selector.one('.after-deadline-badge'))
+        janedoe = baker.make(
+            "core.Candidate",
+            assignment_group=testgroup,
+            relatedstudent=baker.make("core.RelatedStudent"),
+        )
+        johndoe = baker.make(
+            "core.Candidate",
+            assignment_group=testgroup,
+            relatedstudent=baker.make("core.RelatedStudent", user__fullname="John Doe"),
+        )
+        baker.make(
+            "devilry_group.GroupComment",
+            user=johndoe.relatedstudent.user,
+            user_role="student",
+            visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            published_datetime=timezone.now(),
+            feedback_set=testfeedbackset,
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=janedoe.assignment_group, requestuser=janedoe.relatedstudent.user
+        )
+        name = mockresponse.selector.one(".devilry-user-verbose-inline-fullname").alltext_normalized
+        self.assertTrue(mockresponse.selector.one(".after-deadline-badge"))
         self.assertEqual(johndoe.relatedstudent.user.fullname, name)
         self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackfeed_student_can_see_examiner_visibility_visible_to_everyone(self):
-        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_end')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_end")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=assignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        candidate = baker.make('core.Candidate',
-                               assignment_group=testgroup,
-                               relatedstudent=baker.make('core.RelatedStudent'))
-        examiner = baker.make('core.Examiner',
-                              assignmentgroup=testgroup,
-                              relatedexaminer=baker.make('core.RelatedExaminer', user__fullname='John Doe'))
-        baker.make('devilry_group.GroupComment',
-                   user=examiner.relatedexaminer.user,
-                   user_role='examiner',
-                   visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   published_datetime=timezone.now(),
-                   feedback_set=testfeedbackset)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
-                                                          requestuser=candidate.relatedstudent.user)
-        name = mockresponse.selector.one('.devilry-user-verbose-inline-fullname').alltext_normalized
+        candidate = baker.make(
+            "core.Candidate", assignment_group=testgroup, relatedstudent=baker.make("core.RelatedStudent")
+        )
+        examiner = baker.make(
+            "core.Examiner",
+            assignmentgroup=testgroup,
+            relatedexaminer=baker.make("core.RelatedExaminer", user__fullname="John Doe"),
+        )
+        baker.make(
+            "devilry_group.GroupComment",
+            user=examiner.relatedexaminer.user,
+            user_role="examiner",
+            visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            published_datetime=timezone.now(),
+            feedback_set=testfeedbackset,
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=candidate.assignment_group, requestuser=candidate.relatedstudent.user
+        )
+        name = mockresponse.selector.one(".devilry-user-verbose-inline-fullname").alltext_normalized
         self.assertEqual(examiner.relatedexaminer.user.fullname, name)
         self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackfeed_student_can_see_examiner_visibility_visible_to_everyone_after_deadline(self):
-        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=assignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        candidate = baker.make('core.Candidate',
-                               assignment_group=testgroup,
-                               relatedstudent=baker.make('core.RelatedStudent'))
-        examiner = baker.make('core.Examiner',
-                              assignmentgroup=candidate.assignment_group,
-                              relatedexaminer=baker.make('core.RelatedExaminer', user__fullname='John Doe'),)
-        baker.make('devilry_group.GroupComment',
-                   user=examiner.relatedexaminer.user,
-                   user_role='examiner',
-                   visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   published_datetime=timezone.now(),
-                   feedback_set=testfeedbackset)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
-                                                          requestuser=candidate.relatedstudent.user)
-        name = mockresponse.selector.one('.devilry-user-verbose-inline-fullname').alltext_normalized
+        candidate = baker.make(
+            "core.Candidate", assignment_group=testgroup, relatedstudent=baker.make("core.RelatedStudent")
+        )
+        examiner = baker.make(
+            "core.Examiner",
+            assignmentgroup=candidate.assignment_group,
+            relatedexaminer=baker.make("core.RelatedExaminer", user__fullname="John Doe"),
+        )
+        baker.make(
+            "devilry_group.GroupComment",
+            user=examiner.relatedexaminer.user,
+            user_role="examiner",
+            visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            published_datetime=timezone.now(),
+            feedback_set=testfeedbackset,
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=candidate.assignment_group, requestuser=candidate.relatedstudent.user
+        )
+        name = mockresponse.selector.one(".devilry-user-verbose-inline-fullname").alltext_normalized
         self.assertEqual(examiner.relatedexaminer.user.fullname, name)
         self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackfeed_student_can_not_see_examiner_comment_visibility_visible_to_examiner_and_admins(self):
         requestuser = baker.make(settings.AUTH_USER_MODEL)
-        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=assignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        candidate = baker.make('core.Candidate',
-                               assignment_group=testgroup,
-                               relatedstudent__user=requestuser)
-        examiner = baker.make('core.Examiner',
-                              assignmentgroup=testgroup,
-                              relatedexaminer__user=baker.make(settings.AUTH_USER_MODEL))
-        baker.make('devilry_group.GroupComment',
-                   user=examiner.relatedexaminer.user,
-                   user_role='examiner',
-                   visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
-                   published_datetime=timezone.now() - timezone.timedelta(days=1),
-                   feedback_set=testfeedbackset)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
-                                                          requestuser=requestuser)
-        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
+        candidate = baker.make("core.Candidate", assignment_group=testgroup, relatedstudent__user=requestuser)
+        examiner = baker.make(
+            "core.Examiner", assignmentgroup=testgroup, relatedexaminer__user=baker.make(settings.AUTH_USER_MODEL)
+        )
+        baker.make(
+            "devilry_group.GroupComment",
+            user=examiner.relatedexaminer.user,
+            user_role="examiner",
+            visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+            published_datetime=timezone.now() - timezone.timedelta(days=1),
+            feedback_set=testfeedbackset,
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=candidate.assignment_group, requestuser=requestuser
+        )
+        self.assertFalse(mockresponse.selector.exists(".devilry-group-feedbackfeed-comment"))
         self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackfeed_student_can_not_see_admin_comment_visibility_visible_to_examiner_and_admins(self):
         requestuser = baker.make(settings.AUTH_USER_MODEL)
-        admin = baker.make('devilry_account.User', shortname='subjectadmin')
-        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start', parentnode__admins=[admin])
-        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
+        admin = baker.make("devilry_account.User", shortname="subjectadmin")
+        assignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start", parentnode__admins=[admin])
+        testgroup = baker.make("core.AssignmentGroup", parentnode=assignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        candidate = baker.make('core.Candidate',
-                               assignment_group=testgroup,
-                               relatedstudent__user=requestuser)
-        baker.make('devilry_group.GroupComment',
-                   user=admin,
-                   user_role='admin',
-                   visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
-                   feedback_set=testfeedbackset)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
-                                                          requestuser=requestuser)
-        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment-admin'))
+        candidate = baker.make("core.Candidate", assignment_group=testgroup, relatedstudent__user=requestuser)
+        baker.make(
+            "devilry_group.GroupComment",
+            user=admin,
+            user_role="admin",
+            visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+            feedback_set=testfeedbackset,
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=candidate.assignment_group, requestuser=requestuser
+        )
+        self.assertFalse(mockresponse.selector.exists(".devilry-group-feedbackfeed-comment-admin"))
         self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_student_cannot_see_comment_visibility_private(self):
-        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=assignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        candidate = baker.make('core.Candidate',
-                               assignment_group=testgroup,
-                               relatedstudent=baker.make('core.RelatedStudent'))
-        examiner = baker.make('core.Examiner', assignmentgroup=testgroup,
-                              relatedexaminer=baker.make('core.RelatedExaminer', user__fullname='John Doe'),)
-        baker.make('devilry_group.GroupComment',
-                   user=examiner.relatedexaminer.user,
-                   user_role='examiner',
-                   visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
-                   published_datetime=timezone.now(),
-                   feedback_set=testfeedbackset)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
-                                                          requestuser=candidate.relatedstudent.user)
-        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
+        candidate = baker.make(
+            "core.Candidate", assignment_group=testgroup, relatedstudent=baker.make("core.RelatedStudent")
+        )
+        examiner = baker.make(
+            "core.Examiner",
+            assignmentgroup=testgroup,
+            relatedexaminer=baker.make("core.RelatedExaminer", user__fullname="John Doe"),
+        )
+        baker.make(
+            "devilry_group.GroupComment",
+            user=examiner.relatedexaminer.user,
+            user_role="examiner",
+            visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
+            published_datetime=timezone.now(),
+            feedback_set=testfeedbackset,
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=candidate.assignment_group, requestuser=candidate.relatedstudent.user
+        )
+        self.assertFalse(mockresponse.selector.exists(".devilry-group-feedbackfeed-comment"))
         self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_post_feedbackset_comment_with_text(self):
         feedbackset = group_baker.feedbackset_first_attempt_unpublished(
-            group__parentnode__parentnode=baker.make_recipe('devilry.apps.core.period_active'))
-        candidate = baker.make('core.Candidate', assignment_group=feedbackset.group,
-                               # NOTE: The line below can be removed when relatedstudent field is migrated to null=False
-                               relatedstudent=baker.make('core.RelatedStudent'))
+            group__parentnode__parentnode=baker.make_recipe("devilry.apps.core.period_active")
+        )
+        candidate = baker.make(
+            "core.Candidate",
+            assignment_group=feedbackset.group,
+            # NOTE: The line below can be removed when relatedstudent field is migrated to null=False
+            relatedstudent=baker.make("core.RelatedStudent"),
+        )
         self.mock_http302_postrequest(
             cradmin_role=candidate.assignment_group,
             requestuser=candidate.relatedstudent.user,
-            viewkwargs={'pk': feedbackset.group.id},
+            viewkwargs={"pk": feedbackset.group.id},
             requestkwargs={
-                'data': {
-                    'text': 'test',
-                    'student_add_comment': 'unused value',
+                "data": {
+                    "text": "test",
+                    "student_add_comment": "unused value",
                 }
-            })
+            },
+        )
         self.assertEqual(1, len(group_models.GroupComment.objects.all()))
         self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_post_feedbackset_comment_with_text_published_datetime_is_set(self):
         feedbackset = group_baker.feedbackset_first_attempt_unpublished(
-            group__parentnode__parentnode=baker.make_recipe('devilry.apps.core.period_active'))
-        candidate = baker.make('core.Candidate', assignment_group=feedbackset.group,
-                               # NOTE: The line below can be removed when relatedstudent field is migrated to null=False
-                               relatedstudent=baker.make('core.RelatedStudent'))
+            group__parentnode__parentnode=baker.make_recipe("devilry.apps.core.period_active")
+        )
+        candidate = baker.make(
+            "core.Candidate",
+            assignment_group=feedbackset.group,
+            # NOTE: The line below can be removed when relatedstudent field is migrated to null=False
+            relatedstudent=baker.make("core.RelatedStudent"),
+        )
         self.mock_http302_postrequest(
             cradmin_role=candidate.assignment_group,
             requestuser=candidate.relatedstudent.user,
-            viewkwargs={'pk': feedbackset.group.id},
+            viewkwargs={"pk": feedbackset.group.id},
             requestkwargs={
-                'data': {
-                    'text': 'test',
-                    'student_add_comment': 'unused value',
+                "data": {
+                    "text": "test",
+                    "student_add_comment": "unused value",
                 }
-            })
+            },
+        )
         self.assertEqual(1, group_models.FeedbackSet.objects.count())
         self.assertEqual(1, group_models.GroupComment.objects.count())
         self.assertIsNotNone(group_models.GroupComment.objects.all()[0].published_datetime)
-        self.assertEqual('test', group_models.GroupComment.objects.all()[0].text)
+        self.assertEqual("test", group_models.GroupComment.objects.all()[0].text)
 
     def test_post_feedbackset_post_comment_without_text(self):
         feedbackset = group_baker.feedbackset_first_attempt_unpublished(
-            group__parentnode__parentnode=baker.make_recipe('devilry.apps.core.period_active'))
-        candidate = baker.make('core.Candidate', assignment_group=feedbackset.group)
+            group__parentnode__parentnode=baker.make_recipe("devilry.apps.core.period_active")
+        )
+        candidate = baker.make("core.Candidate", assignment_group=feedbackset.group)
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=candidate.assignment_group,
             requestuser=candidate.relatedstudent.user,
-            viewkwargs={'pk': feedbackset.group.id},
+            viewkwargs={"pk": feedbackset.group.id},
             requestkwargs={
-                'data': {
-                    'text': '',
-                    'student_add_comment': 'unused value',
+                "data": {
+                    "text": "",
+                    "student_add_comment": "unused value",
                 }
-            })
+            },
+        )
         self.assertEqual(
-            'A comment must have either text or a file attached, or both. An empty comment is not allowed.',
-            mockresponse.selector.one('#error_1_id_text').alltext_normalized)
+            "A comment must have either text or a file attached, or both. An empty comment is not allowed.",
+            mockresponse.selector.one("#error_1_id_text").alltext_normalized,
+        )
         self.assertEqual(0, group_models.GroupComment.objects.count())
         self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_post_feedbackset_comment_email_sent_sanity(self):
         feedbackset = group_baker.feedbackset_first_attempt_unpublished(
-            group__parentnode__parentnode=baker.make_recipe('devilry.apps.core.period_active'))
+            group__parentnode__parentnode=baker.make_recipe("devilry.apps.core.period_active")
+        )
 
         # Create two examiners with mails
-        examiner1 = baker.make('core.Examiner', assignmentgroup=feedbackset.group)
-        examiner1_email = baker.make('devilry_account.UserEmail', user=examiner1.relatedexaminer.user,
-                                email='examiner1@example.com')
-        examiner2 = baker.make('core.Examiner', assignmentgroup=feedbackset.group)
-        examiner2_email = baker.make('devilry_account.UserEmail', user=examiner2.relatedexaminer.user,
-                                     email='examiner2@example.com')
+        examiner1 = baker.make("core.Examiner", assignmentgroup=feedbackset.group)
+        examiner1_email = baker.make(
+            "devilry_account.UserEmail", user=examiner1.relatedexaminer.user, email="examiner1@example.com"
+        )
+        examiner2 = baker.make("core.Examiner", assignmentgroup=feedbackset.group)
+        examiner2_email = baker.make(
+            "devilry_account.UserEmail", user=examiner2.relatedexaminer.user, email="examiner2@example.com"
+        )
 
         # Create two students with mails
-        student1 = baker.make('core.Candidate', assignment_group=feedbackset.group)
-        student1_email = baker.make('devilry_account.UserEmail', user=student1.relatedstudent.user,
-                                    email='student1@example.com')
-        student2 = baker.make('core.Candidate', assignment_group=feedbackset.group)
-        student2_email = baker.make('devilry_account.UserEmail', user=student2.relatedstudent.user,
-                                    email='student2@example.com')
-        candidate = baker.make('core.Candidate', assignment_group=feedbackset.group)
-        candidate_email = baker.make('devilry_account.UserEmail', user=candidate.relatedstudent.user,
-                                     email='candidate@example.com')
+        student1 = baker.make("core.Candidate", assignment_group=feedbackset.group)
+        student1_email = baker.make(
+            "devilry_account.UserEmail", user=student1.relatedstudent.user, email="student1@example.com"
+        )
+        student2 = baker.make("core.Candidate", assignment_group=feedbackset.group)
+        student2_email = baker.make(
+            "devilry_account.UserEmail", user=student2.relatedstudent.user, email="student2@example.com"
+        )
+        candidate = baker.make("core.Candidate", assignment_group=feedbackset.group)
+        candidate_email = baker.make(
+            "devilry_account.UserEmail", user=candidate.relatedstudent.user, email="candidate@example.com"
+        )
         self.mock_http302_postrequest(
             cradmin_role=candidate.assignment_group,
             requestuser=candidate.relatedstudent.user,
-            viewkwargs={'pk': feedbackset.group.id},
+            viewkwargs={"pk": feedbackset.group.id},
             requestkwargs={
-                'data': {
-                    'text': 'test',
-                    'student_add_comment': 'unused value',
+                "data": {
+                    "text": "test",
+                    "student_add_comment": "unused value",
                 }
-            })
+            },
+        )
         self.assertEqual(len(mail.outbox), 5)
         recipient_list = []
         for outbox in mail.outbox:
@@ -827,55 +912,77 @@ class TestFeedbackfeedStudent(TestCase, mixin_feedbackfeed_common.MixinTestFeedb
         self.assertIn(candidate_email.email, recipient_list)
 
     def test_get_feedbackset_deadline_history_semi_anonymous_username_not_rendered(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        testuser = baker.make(settings.AUTH_USER_MODEL, shortname='test@example.com', fullname='Test User')
-        baker.make('devilry_group.FeedbackSetDeadlineHistory', feedback_set=testgroup.cached_data.first_feedbackset,
-                   changed_by=testuser)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start",
+            anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS,
         )
-        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message__user_display_name'))
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
+        testuser = baker.make(settings.AUTH_USER_MODEL, shortname="test@example.com", fullname="Test User")
+        baker.make(
+            "devilry_group.FeedbackSetDeadlineHistory",
+            feedback_set=testgroup.cached_data.first_feedbackset,
+            changed_by=testuser,
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
+        self.assertFalse(mockresponse.selector.exists(".devilry-group-feedbackfeed-event-message__user_display_name"))
 
     def test_get_feedbackset_deadline_history_fully_anonymous_username_not_rendered(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        testuser = baker.make(settings.AUTH_USER_MODEL, shortname='test@example.com', fullname='Test User')
-        baker.make('devilry_group.FeedbackSetDeadlineHistory', feedback_set=testgroup.cached_data.first_feedbackset,
-                   changed_by=testuser)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start",
+            anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS,
         )
-        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message__user_display_name'))
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
+        testuser = baker.make(settings.AUTH_USER_MODEL, shortname="test@example.com", fullname="Test User")
+        baker.make(
+            "devilry_group.FeedbackSetDeadlineHistory",
+            feedback_set=testgroup.cached_data.first_feedbackset,
+            changed_by=testuser,
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
+        self.assertFalse(mockresponse.selector.exists(".devilry-group-feedbackfeed-event-message__user_display_name"))
 
     def test_get_feedbackset_grading_updated_multiple_events_rendered(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testuser = baker.make(settings.AUTH_USER_MODEL, shortname='test@example.com', fullname='Test User')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testuser = baker.make(settings.AUTH_USER_MODEL, shortname="test@example.com", fullname="Test User")
         test_feedbackset = group_baker.feedbackset_first_attempt_published(group=testgroup, grading_points=1)
-        baker.make('devilry_group.FeedbackSetGradingUpdateHistory', feedback_set=test_feedbackset, old_grading_points=1,
-                   updated_by=testuser)
-        baker.make('devilry_group.FeedbackSetGradingUpdateHistory', feedback_set=test_feedbackset, old_grading_points=0,
-                   updated_by=testuser)
-        baker.make('devilry_group.FeedbackSetGradingUpdateHistory', feedback_set=test_feedbackset, old_grading_points=1,
-                   updated_by=testuser)
-        baker.make('devilry_group.FeedbackSetGradingUpdateHistory', feedback_set=test_feedbackset, old_grading_points=0,
-                   updated_by=testuser)
-
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup
+        baker.make(
+            "devilry_group.FeedbackSetGradingUpdateHistory",
+            feedback_set=test_feedbackset,
+            old_grading_points=1,
+            updated_by=testuser,
         )
-        event_text_list = [element.alltext_normalized for element in
-                           mockresponse.selector.list('.devilry-group-event__grading_updated')]
+        baker.make(
+            "devilry_group.FeedbackSetGradingUpdateHistory",
+            feedback_set=test_feedbackset,
+            old_grading_points=0,
+            updated_by=testuser,
+        )
+        baker.make(
+            "devilry_group.FeedbackSetGradingUpdateHistory",
+            feedback_set=test_feedbackset,
+            old_grading_points=1,
+            updated_by=testuser,
+        )
+        baker.make(
+            "devilry_group.FeedbackSetGradingUpdateHistory",
+            feedback_set=test_feedbackset,
+            old_grading_points=0,
+            updated_by=testuser,
+        )
+
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
+        event_text_list = [
+            element.alltext_normalized
+            for element in mockresponse.selector.list(".devilry-group-event__grading_updated")
+        ]
         self.assertEqual(len(event_text_list), 4)
-        self.assertIn('The grade was changed from passed to failed by Test User(test@example.com)', event_text_list[0])
-        self.assertIn('The grade was changed from failed to passed by Test User(test@example.com)', event_text_list[1])
-        self.assertIn('The grade was changed from passed to failed by Test User(test@example.com)', event_text_list[2])
-        self.assertIn('The grade was changed from failed to passed by Test User(test@example.com)', event_text_list[3])
+        self.assertIn("The grade was changed from passed to failed by Test User(test@example.com)", event_text_list[0])
+        self.assertIn("The grade was changed from failed to passed by Test User(test@example.com)", event_text_list[1])
+        self.assertIn("The grade was changed from passed to failed by Test User(test@example.com)", event_text_list[2])
+        self.assertIn("The grade was changed from failed to passed by Test User(test@example.com)", event_text_list[3])
 
     #####
     # Tests making sure that event buttons are not rendered for
@@ -883,42 +990,36 @@ class TestFeedbackfeedStudent(TestCase, mixin_feedbackfeed_common.MixinTestFeedb
     ######
 
     def test_get_feedbackset_unpublished_header_buttons_not_rendered(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        examiner = baker.make('core.Examiner', assignmentgroup=testgroup)
+        examiner = baker.make("core.Examiner", assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testgroup,
             requestuser=examiner.relatedexaminer.user,
         )
-        self.assertFalse(
-            mockresponse.selector.exists('.devilry-group-event__grade-move-deadline-button'))
-        self.assertFalse(
-            mockresponse.selector.exists('.devilry-group-event__grade-last-edit-button'))
-        self.assertFalse(
-            mockresponse.selector.exists('.devilry-group-event__grade-last-new-attempt-button'))
-        self.assertNotIn(b'Move deadline', mockresponse.response.content)
-        self.assertNotIn(b'Edit grade', mockresponse.response.content)
-        self.assertNotIn(b'Give new attempt', mockresponse.response.content)
+        self.assertFalse(mockresponse.selector.exists(".devilry-group-event__grade-move-deadline-button"))
+        self.assertFalse(mockresponse.selector.exists(".devilry-group-event__grade-last-edit-button"))
+        self.assertFalse(mockresponse.selector.exists(".devilry-group-event__grade-last-new-attempt-button"))
+        self.assertNotIn(b"Move deadline", mockresponse.response.content)
+        self.assertNotIn(b"Edit grade", mockresponse.response.content)
+        self.assertNotIn(b"Give new attempt", mockresponse.response.content)
 
     def test_get_feedbackset_published_header_buttons_not_rendered(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         group_baker.feedbackset_first_attempt_published(group=testgroup)
-        examiner = baker.make('core.Examiner', assignmentgroup=testgroup)
+        examiner = baker.make("core.Examiner", assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testgroup,
             requestuser=examiner.relatedexaminer.user,
         )
-        self.assertFalse(
-            mockresponse.selector.exists('.devilry-group-event__grade-move-deadline-button'))
-        self.assertFalse(
-            mockresponse.selector.exists('.devilry-group-event__grade-last-edit-button'))
-        self.assertFalse(
-            mockresponse.selector.exists('.devilry-group-event__grade-last-new-attempt-button'))
-        self.assertNotIn(b'Move deadline', mockresponse.response.content)
-        self.assertNotIn(b'Edit grade', mockresponse.response.content)
-        self.assertNotIn(b'Give new attempt', mockresponse.response.content)
+        self.assertFalse(mockresponse.selector.exists(".devilry-group-event__grade-move-deadline-button"))
+        self.assertFalse(mockresponse.selector.exists(".devilry-group-event__grade-last-edit-button"))
+        self.assertFalse(mockresponse.selector.exists(".devilry-group-event__grade-last-new-attempt-button"))
+        self.assertNotIn(b"Move deadline", mockresponse.response.content)
+        self.assertNotIn(b"Edit grade", mockresponse.response.content)
+        self.assertNotIn(b"Give new attempt", mockresponse.response.content)
 
 
 class TestFeedbackfeedGradeMappingStudent(TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -928,166 +1029,276 @@ class TestFeedbackfeedGradeMappingStudent(TestCase, cradmin_testhelpers.TestCase
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_get_event_grading_passed_failed_result_passed(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         group_baker.feedbackset_first_attempt_published(group=testgroup, grading_points=1)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup
-        )
-        grade_result = mockresponse.selector.list('.devilry-core-grade')[0].alltext_normalized
-        self.assertEqual(grade_result, 'passed')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
+        grade_result = mockresponse.selector.list(".devilry-core-grade")[0].alltext_normalized
+        self.assertEqual(grade_result, "passed")
 
     def test_get_event_grading_passed_failed_result_failed(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         group_baker.feedbackset_first_attempt_published(group=testgroup, grading_points=0)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup
-        )
-        grade_result = mockresponse.selector.list('.devilry-core-grade')[0].alltext_normalized
-        self.assertEqual(grade_result, 'failed')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
+        grade_result = mockresponse.selector.list(".devilry-core-grade")[0].alltext_normalized
+        self.assertEqual(grade_result, "failed")
 
     def test_get_event_grading_points_result_passed(self):
         testassignment = baker.make_recipe(
-            'devilry.apps.core.assignment_activeperiod_start',
+            "devilry.apps.core.assignment_activeperiod_start",
             students_can_see_points=True,
             points_to_grade_mapper=core_models.Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS,
             grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS,
             passing_grade_min_points=50,
-            max_points=100)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        group_baker.feedbackset_first_attempt_published(group=testgroup, grading_points=75)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup
+            max_points=100,
         )
-        grade_result = mockresponse.selector.list('.devilry-core-grade')[0].alltext_normalized
-        self.assertEqual(grade_result, '75/100 (passed)')
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        group_baker.feedbackset_first_attempt_published(group=testgroup, grading_points=75)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
+        grade_result = mockresponse.selector.list(".devilry-core-grade")[0].alltext_normalized
+        self.assertEqual(grade_result, "75/100 (passed)")
 
     def test_get_event_grading_points_result_failed(self):
         testassignment = baker.make_recipe(
-            'devilry.apps.core.assignment_activeperiod_start',
+            "devilry.apps.core.assignment_activeperiod_start",
             students_can_see_points=True,
             points_to_grade_mapper=core_models.Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS,
             grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS,
             passing_grade_min_points=50,
-            max_points=100)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        group_baker.feedbackset_first_attempt_published(group=testgroup, grading_points=25)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup
+            max_points=100,
         )
-        grade_result = mockresponse.selector.list('.devilry-core-grade')[0].alltext_normalized
-        self.assertEqual(grade_result, '25/100 (failed)')
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        group_baker.feedbackset_first_attempt_published(group=testgroup, grading_points=25)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
+        grade_result = mockresponse.selector.list(".devilry-core-grade")[0].alltext_normalized
+        self.assertEqual(grade_result, "25/100 (failed)")
 
     def test_get_event_grading_grade_mapper_failed(self):
         testassignment = baker.make_recipe(
-            'devilry.apps.core.assignment_activeperiod_start',
+            "devilry.apps.core.assignment_activeperiod_start",
             points_to_grade_mapper=core_models.Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE,
             passing_grade_min_points=10,
-            max_points=35)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        group_baker.feedbackset_first_attempt_published(group=testgroup, grading_points=5)
-        point_to_grade_map = baker.make('core.PointToGradeMap', assignment=testassignment)
-        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=5,
-                   maximum_points=9, grade='F')
-        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=10,
-                   maximum_points=14, grade='E')
-        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=15,
-                   maximum_points=19, grade='D')
-        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=20,
-                   maximum_points=24, grade='C')
-        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=25,
-                   maximum_points=29, grade='B')
-        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=30,
-                   maximum_points=35, grade='A')
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup
+            max_points=35,
         )
-        grade_result = mockresponse.selector.list('.devilry-core-grade')[0].alltext_normalized
-        self.assertEqual(grade_result, 'F (failed)')
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        group_baker.feedbackset_first_attempt_published(group=testgroup, grading_points=5)
+        point_to_grade_map = baker.make("core.PointToGradeMap", assignment=testassignment)
+        baker.make(
+            "core.PointRangeToGrade",
+            point_to_grade_map=point_to_grade_map,
+            minimum_points=5,
+            maximum_points=9,
+            grade="F",
+        )
+        baker.make(
+            "core.PointRangeToGrade",
+            point_to_grade_map=point_to_grade_map,
+            minimum_points=10,
+            maximum_points=14,
+            grade="E",
+        )
+        baker.make(
+            "core.PointRangeToGrade",
+            point_to_grade_map=point_to_grade_map,
+            minimum_points=15,
+            maximum_points=19,
+            grade="D",
+        )
+        baker.make(
+            "core.PointRangeToGrade",
+            point_to_grade_map=point_to_grade_map,
+            minimum_points=20,
+            maximum_points=24,
+            grade="C",
+        )
+        baker.make(
+            "core.PointRangeToGrade",
+            point_to_grade_map=point_to_grade_map,
+            minimum_points=25,
+            maximum_points=29,
+            grade="B",
+        )
+        baker.make(
+            "core.PointRangeToGrade",
+            point_to_grade_map=point_to_grade_map,
+            minimum_points=30,
+            maximum_points=35,
+            grade="A",
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
+        grade_result = mockresponse.selector.list(".devilry-core-grade")[0].alltext_normalized
+        self.assertEqual(grade_result, "F (failed)")
 
     def test_get_event_grading_grade_mapper_passed(self):
         testassignment = baker.make_recipe(
-            'devilry.apps.core.assignment_activeperiod_start',
+            "devilry.apps.core.assignment_activeperiod_start",
             points_to_grade_mapper=core_models.Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE,
             passing_grade_min_points=10,
-            max_points=35)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        group_baker.feedbackset_first_attempt_published(group=testgroup, grading_points=10)
-        point_to_grade_map = baker.make('core.PointToGradeMap', assignment=testassignment)
-        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=5,
-                   maximum_points=9, grade='F')
-        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=10,
-                   maximum_points=14, grade='E')
-        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=15,
-                   maximum_points=19, grade='D')
-        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=20,
-                   maximum_points=24, grade='C')
-        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=25,
-                   maximum_points=29, grade='B')
-        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=30,
-                   maximum_points=35, grade='A')
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup
+            max_points=35,
         )
-        grade_result = mockresponse.selector.list('.devilry-core-grade')[0].alltext_normalized
-        self.assertEqual(grade_result, 'E (passed)')
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        group_baker.feedbackset_first_attempt_published(group=testgroup, grading_points=10)
+        point_to_grade_map = baker.make("core.PointToGradeMap", assignment=testassignment)
+        baker.make(
+            "core.PointRangeToGrade",
+            point_to_grade_map=point_to_grade_map,
+            minimum_points=5,
+            maximum_points=9,
+            grade="F",
+        )
+        baker.make(
+            "core.PointRangeToGrade",
+            point_to_grade_map=point_to_grade_map,
+            minimum_points=10,
+            maximum_points=14,
+            grade="E",
+        )
+        baker.make(
+            "core.PointRangeToGrade",
+            point_to_grade_map=point_to_grade_map,
+            minimum_points=15,
+            maximum_points=19,
+            grade="D",
+        )
+        baker.make(
+            "core.PointRangeToGrade",
+            point_to_grade_map=point_to_grade_map,
+            minimum_points=20,
+            maximum_points=24,
+            grade="C",
+        )
+        baker.make(
+            "core.PointRangeToGrade",
+            point_to_grade_map=point_to_grade_map,
+            minimum_points=25,
+            maximum_points=29,
+            grade="B",
+        )
+        baker.make(
+            "core.PointRangeToGrade",
+            point_to_grade_map=point_to_grade_map,
+            minimum_points=30,
+            maximum_points=35,
+            grade="A",
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
+        grade_result = mockresponse.selector.list(".devilry-core-grade")[0].alltext_normalized
+        self.assertEqual(grade_result, "E (passed)")
 
     def test_get_event_grading_grade_mapper_failed_can_see_points(self):
         testassignment = baker.make_recipe(
-            'devilry.apps.core.assignment_activeperiod_start',
+            "devilry.apps.core.assignment_activeperiod_start",
             points_to_grade_mapper=core_models.Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE,
             students_can_see_points=True,
             passing_grade_min_points=10,
-            max_points=35)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        group_baker.feedbackset_first_attempt_published(group=testgroup, grading_points=5)
-        point_to_grade_map = baker.make('core.PointToGradeMap', assignment=testassignment)
-        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=5,
-                   maximum_points=9, grade='F')
-        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=10,
-                   maximum_points=14, grade='E')
-        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=15,
-                   maximum_points=19, grade='D')
-        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=20,
-                   maximum_points=24, grade='C')
-        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=25,
-                   maximum_points=29, grade='B')
-        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=30,
-                   maximum_points=35, grade='A')
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup
+            max_points=35,
         )
-        grade_result = mockresponse.selector.list('.devilry-core-grade')[0].alltext_normalized
-        self.assertEqual(grade_result, 'F (failed - 5/35)')
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        group_baker.feedbackset_first_attempt_published(group=testgroup, grading_points=5)
+        point_to_grade_map = baker.make("core.PointToGradeMap", assignment=testassignment)
+        baker.make(
+            "core.PointRangeToGrade",
+            point_to_grade_map=point_to_grade_map,
+            minimum_points=5,
+            maximum_points=9,
+            grade="F",
+        )
+        baker.make(
+            "core.PointRangeToGrade",
+            point_to_grade_map=point_to_grade_map,
+            minimum_points=10,
+            maximum_points=14,
+            grade="E",
+        )
+        baker.make(
+            "core.PointRangeToGrade",
+            point_to_grade_map=point_to_grade_map,
+            minimum_points=15,
+            maximum_points=19,
+            grade="D",
+        )
+        baker.make(
+            "core.PointRangeToGrade",
+            point_to_grade_map=point_to_grade_map,
+            minimum_points=20,
+            maximum_points=24,
+            grade="C",
+        )
+        baker.make(
+            "core.PointRangeToGrade",
+            point_to_grade_map=point_to_grade_map,
+            minimum_points=25,
+            maximum_points=29,
+            grade="B",
+        )
+        baker.make(
+            "core.PointRangeToGrade",
+            point_to_grade_map=point_to_grade_map,
+            minimum_points=30,
+            maximum_points=35,
+            grade="A",
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
+        grade_result = mockresponse.selector.list(".devilry-core-grade")[0].alltext_normalized
+        self.assertEqual(grade_result, "F (failed - 5/35)")
 
     def test_get_event_grading_grade_mapper_passed_can_see_points(self):
         testassignment = baker.make_recipe(
-            'devilry.apps.core.assignment_activeperiod_start',
+            "devilry.apps.core.assignment_activeperiod_start",
             points_to_grade_mapper=core_models.Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE,
             students_can_see_points=True,
             passing_grade_min_points=10,
-            max_points=35)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        group_baker.feedbackset_first_attempt_published(group=testgroup, grading_points=10)
-        point_to_grade_map = baker.make('core.PointToGradeMap', assignment=testassignment)
-        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=5,
-                   maximum_points=9, grade='F')
-        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=10,
-                   maximum_points=14, grade='E')
-        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=15,
-                   maximum_points=19, grade='D')
-        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=20,
-                   maximum_points=24, grade='C')
-        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=25,
-                   maximum_points=29, grade='B')
-        baker.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=30,
-                   maximum_points=35, grade='A')
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup
+            max_points=35,
         )
-        grade_result = mockresponse.selector.list('.devilry-core-grade')[0].alltext_normalized
-        self.assertEqual(grade_result, 'E (passed - 10/35)')
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        group_baker.feedbackset_first_attempt_published(group=testgroup, grading_points=10)
+        point_to_grade_map = baker.make("core.PointToGradeMap", assignment=testassignment)
+        baker.make(
+            "core.PointRangeToGrade",
+            point_to_grade_map=point_to_grade_map,
+            minimum_points=5,
+            maximum_points=9,
+            grade="F",
+        )
+        baker.make(
+            "core.PointRangeToGrade",
+            point_to_grade_map=point_to_grade_map,
+            minimum_points=10,
+            maximum_points=14,
+            grade="E",
+        )
+        baker.make(
+            "core.PointRangeToGrade",
+            point_to_grade_map=point_to_grade_map,
+            minimum_points=15,
+            maximum_points=19,
+            grade="D",
+        )
+        baker.make(
+            "core.PointRangeToGrade",
+            point_to_grade_map=point_to_grade_map,
+            minimum_points=20,
+            maximum_points=24,
+            grade="C",
+        )
+        baker.make(
+            "core.PointRangeToGrade",
+            point_to_grade_map=point_to_grade_map,
+            minimum_points=25,
+            maximum_points=29,
+            grade="B",
+        )
+        baker.make(
+            "core.PointRangeToGrade",
+            point_to_grade_map=point_to_grade_map,
+            minimum_points=30,
+            maximum_points=35,
+            grade="A",
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
+        grade_result = mockresponse.selector.list(".devilry-core-grade")[0].alltext_normalized
+        self.assertEqual(grade_result, "E (passed - 10/35)")
 
 
 class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -1100,59 +1311,60 @@ class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMi
     def test_add_comment_without_text_or_file(self):
         # Tests that error message pops up if trying to post a comment without either text or file.
         feedbackset = group_baker.feedbackset_first_attempt_unpublished(
-            group__parentnode__parentnode=baker.make_recipe('devilry.apps.core.period_active'))
-        candidate = baker.make('core.Candidate', assignment_group=feedbackset.group)
+            group__parentnode__parentnode=baker.make_recipe("devilry.apps.core.period_active")
+        )
+        candidate = baker.make("core.Candidate", assignment_group=feedbackset.group)
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=candidate.assignment_group,
             requestuser=candidate.relatedstudent.user,
-            viewkwargs={'pk': feedbackset.group.id},
-            requestkwargs={
-                'data': {
-                    'text': '',
-                    'student_add_comment': 'unused value'
-                }
-            })
+            viewkwargs={"pk": feedbackset.group.id},
+            requestkwargs={"data": {"text": "", "student_add_comment": "unused value"}},
+        )
         self.assertEqual(0, group_models.GroupComment.objects.count())
         self.assertEqual(
-            'A comment must have either text or a file attached, or both. An empty comment is not allowed.',
-            mockresponse.selector.one('#error_1_id_text').alltext_normalized)
+            "A comment must have either text or a file attached, or both. An empty comment is not allowed.",
+            mockresponse.selector.one("#error_1_id_text").alltext_normalized,
+        )
 
     def test_upload_file_with_existing_archive_meta_for_feedbackset(self):
         # Tests that FeedbackFeedBaseViews _set_archive_meta_ready_for_delete function
         # marks the existing CompressedArchiveMeta for the FeedbackSet as ready for delete.
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(
-            group__parentnode__parentnode=baker.make_recipe('devilry.apps.core.period_active'))
-        candidate = baker.make('core.Candidate', assignment_group=testfeedbackset.group)
-        testcomment = baker.make('devilry_group.GroupComment', feedback_set=testfeedbackset)
-        commentfile = baker.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
-        commentfile.file.save('testfile.txt', ContentFile('testcontent'))
+            group__parentnode__parentnode=baker.make_recipe("devilry.apps.core.period_active")
+        )
+        candidate = baker.make("core.Candidate", assignment_group=testfeedbackset.group)
+        testcomment = baker.make("devilry_group.GroupComment", feedback_set=testfeedbackset)
+        commentfile = baker.make("devilry_comment.CommentFile", comment=testcomment, filename="testfile.txt")
+        commentfile.file.save("testfile.txt", ContentFile("testcontent"))
 
         # Create existing archive meta
         # To make sure this does not fail(the model is cleaned and saved in the function)
         # self.mock_registry.add(backend_mock.MockDevilryZipBackend)
-        test_archive_meta = baker.make('devilry_compressionutil.CompressedArchiveMeta',
-                                       content_object=testfeedbackset,
-                                       backend_id=backend_mock.MockDevilryZipBackend.backend_id)
+        test_archive_meta = baker.make(
+            "devilry_compressionutil.CompressedArchiveMeta",
+            content_object=testfeedbackset,
+            backend_id=backend_mock.MockDevilryZipBackend.backend_id,
+        )
         temporary_filecollection = group_baker.temporary_file_collection_with_tempfiles(
-            file_list=[
-                SimpleUploadedFile(name='testfile.txt', content=b'Test content', content_type='text/txt')
-            ],
-            user=candidate.relatedstudent.user
+            file_list=[SimpleUploadedFile(name="testfile.txt", content=b"Test content", content_type="text/txt")],
+            user=candidate.relatedstudent.user,
         )
 
-        with mock.patch('devilry.devilry_compressionutil.models.backend_registry.Registry._instance',
-                        self.mock_registry):
+        with mock.patch(
+            "devilry.devilry_compressionutil.models.backend_registry.Registry._instance", self.mock_registry
+        ):
             self.mock_http302_postrequest(
                 cradmin_role=candidate.assignment_group,
                 requestuser=candidate.relatedstudent.user,
-                viewkwargs={'pk': testfeedbackset.group.id},
+                viewkwargs={"pk": testfeedbackset.group.id},
                 requestkwargs={
-                    'data': {
-                        'text': '',
-                        'student_add_comment': 'unused value',
-                        'temporary_file_collection_id': temporary_filecollection.id
+                    "data": {
+                        "text": "",
+                        "student_add_comment": "unused value",
+                        "temporary_file_collection_id": temporary_filecollection.id,
                     }
-                })
+                },
+            )
         # we have to add a backend to the backendregistry.
         self.assertEqual(1, CompressedArchiveMeta.objects.filter(content_object_id=testfeedbackset.id).count())
         self.assertTrue(CompressedArchiveMeta.objects.get(id=test_archive_meta.id).delete)
@@ -1160,21 +1372,24 @@ class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMi
     def test_upload_single_file(self):
         # Test that a CommentFile is created on upload.
         feedbackset = group_baker.feedbackset_first_attempt_unpublished(
-            group__parentnode__parentnode=baker.make_recipe('devilry.apps.core.period_active'))
-        candidate = baker.make('core.Candidate', assignment_group=feedbackset.group)
+            group__parentnode__parentnode=baker.make_recipe("devilry.apps.core.period_active")
+        )
+        candidate = baker.make("core.Candidate", assignment_group=feedbackset.group)
         temporary_filecollection = group_baker.temporary_file_collection_with_tempfile(
-            user=candidate.relatedstudent.user)
+            user=candidate.relatedstudent.user
+        )
         self.mock_http302_postrequest(
             cradmin_role=candidate.assignment_group,
             requestuser=candidate.relatedstudent.user,
-            viewkwargs={'pk': feedbackset.group.id},
+            viewkwargs={"pk": feedbackset.group.id},
             requestkwargs={
-                'data': {
-                    'text': '',
-                    'student_add_comment': 'unused value',
-                    'temporary_file_collection_id': temporary_filecollection.id
+                "data": {
+                    "text": "",
+                    "student_add_comment": "unused value",
+                    "temporary_file_collection_id": temporary_filecollection.id,
                 }
-            })
+            },
+        )
         self.assertEqual(1, group_models.GroupComment.objects.count())
         self.assertEqual(1, TemporaryFileCollection.objects.count())
         self.assertEqual(1, comment_models.CommentFile.objects.count())
@@ -1182,25 +1397,28 @@ class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMi
     def test_upload_has_temporary_file_collection_id_but_empty_collection(self):
         # Test that a CommentFile is created on upload.
         feedbackset = group_baker.feedbackset_first_attempt_unpublished(
-            group__parentnode__parentnode=baker.make_recipe('devilry.apps.core.period_active'))
-        candidate = baker.make('core.Candidate', assignment_group=feedbackset.group)
+            group__parentnode__parentnode=baker.make_recipe("devilry.apps.core.period_active")
+        )
+        candidate = baker.make("core.Candidate", assignment_group=feedbackset.group)
         temporary_filecollection = baker.make(
-            'cradmin_temporaryfileuploadstore.TemporaryFileCollection',
-            user=candidate.relatedstudent.user)
+            "cradmin_temporaryfileuploadstore.TemporaryFileCollection", user=candidate.relatedstudent.user
+        )
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=candidate.assignment_group,
             requestuser=candidate.relatedstudent.user,
-            viewkwargs={'pk': feedbackset.group.id},
+            viewkwargs={"pk": feedbackset.group.id},
             requestkwargs={
-                'data': {
-                    'text': '',
-                    'student_add_comment': 'unused value',
-                    'temporary_file_collection_id': temporary_filecollection.id
+                "data": {
+                    "text": "",
+                    "student_add_comment": "unused value",
+                    "temporary_file_collection_id": temporary_filecollection.id,
                 }
-            })
+            },
+        )
         self.assertEqual(
-            'A comment must have either text or a file attached, or both. An empty comment is not allowed.',
-            mockresponse.selector.one('#error_1_id_text').alltext_normalized)
+            "A comment must have either text or a file attached, or both. An empty comment is not allowed.",
+            mockresponse.selector.one("#error_1_id_text").alltext_normalized,
+        )
         self.assertEqual(0, group_models.GroupComment.objects.count())
         self.assertEqual(1, TemporaryFileCollection.objects.count())
         self.assertEqual(1, group_models.FeedbackSet.objects.count())
@@ -1208,191 +1426,201 @@ class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMi
     def test_upload_single_file_content(self):
         # Test the content of a CommentFile after upload.
         feedbackset = group_baker.feedbackset_first_attempt_unpublished(
-            group__parentnode__parentnode=baker.make_recipe('devilry.apps.core.period_active'))
-        candidate = baker.make('core.Candidate', assignment_group=feedbackset.group)
+            group__parentnode__parentnode=baker.make_recipe("devilry.apps.core.period_active")
+        )
+        candidate = baker.make("core.Candidate", assignment_group=feedbackset.group)
         temporary_filecollection = group_baker.temporary_file_collection_with_tempfiles(
-            file_list=[
-                SimpleUploadedFile(name='testfile.txt', content=b'Test content', content_type='text/txt')
-            ],
-            user=candidate.relatedstudent.user
+            file_list=[SimpleUploadedFile(name="testfile.txt", content=b"Test content", content_type="text/txt")],
+            user=candidate.relatedstudent.user,
         )
         self.mock_http302_postrequest(
             cradmin_role=candidate.assignment_group,
             requestuser=candidate.relatedstudent.user,
-            viewkwargs={'pk': feedbackset.group.id},
+            viewkwargs={"pk": feedbackset.group.id},
             requestkwargs={
-                'data': {
-                    'text': '',
-                    'student_add_comment': 'unused value',
-                    'temporary_file_collection_id': temporary_filecollection.id
+                "data": {
+                    "text": "",
+                    "student_add_comment": "unused value",
+                    "temporary_file_collection_id": temporary_filecollection.id,
                 }
-            })
+            },
+        )
         self.assertEqual(1, comment_models.CommentFile.objects.count())
         comment_file = comment_models.CommentFile.objects.all()[0]
-        self.assertEqual('testfile.txt', comment_file.filename)
-        self.assertEqual(b'Test content', comment_file.file.file.read())
-        self.assertEqual(len('Test content'), comment_file.filesize)
-        self.assertEqual('text/txt', comment_file.mimetype)
+        self.assertEqual("testfile.txt", comment_file.filename)
+        self.assertEqual(b"Test content", comment_file.file.file.read())
+        self.assertEqual(len("Test content"), comment_file.filesize)
+        self.assertEqual("text/txt", comment_file.mimetype)
 
     def test_upload_multiple_files(self):
         # Test the content of a CommentFile after upload.
         feedbackset = group_baker.feedbackset_first_attempt_unpublished(
-            group__parentnode__parentnode=baker.make_recipe('devilry.apps.core.period_active'))
-        candidate = baker.make('core.Candidate', assignment_group=feedbackset.group)
+            group__parentnode__parentnode=baker.make_recipe("devilry.apps.core.period_active")
+        )
+        candidate = baker.make("core.Candidate", assignment_group=feedbackset.group)
         temporary_filecollection = group_baker.temporary_file_collection_with_tempfiles(
             file_list=[
-                SimpleUploadedFile(name='testfile1.txt', content=b'Test content1', content_type='text/txt'),
-                SimpleUploadedFile(name='testfile2.txt', content=b'Test content2', content_type='text/txt'),
-                SimpleUploadedFile(name='testfile3.txt', content=b'Test content3', content_type='text/txt')
+                SimpleUploadedFile(name="testfile1.txt", content=b"Test content1", content_type="text/txt"),
+                SimpleUploadedFile(name="testfile2.txt", content=b"Test content2", content_type="text/txt"),
+                SimpleUploadedFile(name="testfile3.txt", content=b"Test content3", content_type="text/txt"),
             ],
-            user=candidate.relatedstudent.user
+            user=candidate.relatedstudent.user,
         )
         self.mock_http302_postrequest(
             cradmin_role=candidate.assignment_group,
             requestuser=candidate.relatedstudent.user,
-            viewkwargs={'pk': feedbackset.group.id},
+            viewkwargs={"pk": feedbackset.group.id},
             requestkwargs={
-                'data': {
-                    'text': '',
-                    'student_add_comment': 'unused value',
-                    'temporary_file_collection_id': temporary_filecollection.id
+                "data": {
+                    "text": "",
+                    "student_add_comment": "unused value",
+                    "temporary_file_collection_id": temporary_filecollection.id,
                 }
-            })
+            },
+        )
         self.assertEqual(3, comment_models.CommentFile.objects.count())
 
     def test_upload_multiple_files_contents(self):
         # Test the content of a CommentFile after upload.
         feedbackset = group_baker.feedbackset_first_attempt_unpublished(
-            group__parentnode__parentnode=baker.make_recipe('devilry.apps.core.period_active'))
-        candidate = baker.make('core.Candidate', assignment_group=feedbackset.group)
+            group__parentnode__parentnode=baker.make_recipe("devilry.apps.core.period_active")
+        )
+        candidate = baker.make("core.Candidate", assignment_group=feedbackset.group)
         temporary_filecollection = group_baker.temporary_file_collection_with_tempfiles(
             file_list=[
-                SimpleUploadedFile(name='testfile1.txt', content=b'Test content1', content_type='text/txt'),
-                SimpleUploadedFile(name='testfile2.txt', content=b'Test content2', content_type='text/txt'),
-                SimpleUploadedFile(name='testfile3.txt', content=b'Test content3', content_type='text/txt')
+                SimpleUploadedFile(name="testfile1.txt", content=b"Test content1", content_type="text/txt"),
+                SimpleUploadedFile(name="testfile2.txt", content=b"Test content2", content_type="text/txt"),
+                SimpleUploadedFile(name="testfile3.txt", content=b"Test content3", content_type="text/txt"),
             ],
-            user=candidate.relatedstudent.user
+            user=candidate.relatedstudent.user,
         )
         self.mock_http302_postrequest(
             cradmin_role=candidate.assignment_group,
             requestuser=candidate.relatedstudent.user,
-            viewkwargs={'pk': feedbackset.group.id},
+            viewkwargs={"pk": feedbackset.group.id},
             requestkwargs={
-                'data': {
-                    'text': '',
-                    'student_add_comment': 'unused value',
-                    'temporary_file_collection_id': temporary_filecollection.id
+                "data": {
+                    "text": "",
+                    "student_add_comment": "unused value",
+                    "temporary_file_collection_id": temporary_filecollection.id,
                 }
-            })
+            },
+        )
         self.assertEqual(3, comment_models.CommentFile.objects.count())
-        comment_file1 = comment_models.CommentFile.objects.get(filename='testfile1.txt')
-        comment_file2 = comment_models.CommentFile.objects.get(filename='testfile2.txt')
-        comment_file3 = comment_models.CommentFile.objects.get(filename='testfile3.txt')
+        comment_file1 = comment_models.CommentFile.objects.get(filename="testfile1.txt")
+        comment_file2 = comment_models.CommentFile.objects.get(filename="testfile2.txt")
+        comment_file3 = comment_models.CommentFile.objects.get(filename="testfile3.txt")
 
         # Check content of testfile 1.
-        self.assertEqual(b'Test content1', comment_file1.file.file.read())
-        self.assertEqual(len('Test content1'), comment_file1.filesize)
-        self.assertEqual('text/txt', comment_file1.mimetype)
+        self.assertEqual(b"Test content1", comment_file1.file.file.read())
+        self.assertEqual(len("Test content1"), comment_file1.filesize)
+        self.assertEqual("text/txt", comment_file1.mimetype)
 
         # Check content of testfile 2.
-        self.assertEqual(b'Test content2', comment_file2.file.file.read())
-        self.assertEqual(len(b'Test content2'), comment_file2.filesize)
-        self.assertEqual('text/txt', comment_file2.mimetype)
+        self.assertEqual(b"Test content2", comment_file2.file.file.read())
+        self.assertEqual(len(b"Test content2"), comment_file2.filesize)
+        self.assertEqual("text/txt", comment_file2.mimetype)
 
         # Check content of testfile 3.
-        self.assertEqual(b'Test content3', comment_file3.file.file.read())
-        self.assertEqual(len(b'Test content3'), comment_file3.filesize)
-        self.assertEqual('text/txt', comment_file3.mimetype)
+        self.assertEqual(b"Test content3", comment_file3.file.file.read())
+        self.assertEqual(len(b"Test content3"), comment_file3.filesize)
+        self.assertEqual("text/txt", comment_file3.mimetype)
 
     def test_upload_files_with_comment_text(self):
         # Test the content of a CommentFile after upload.
         feedbackset = group_baker.feedbackset_first_attempt_unpublished(
-            group__parentnode__parentnode=baker.make_recipe('devilry.apps.core.period_active'))
-        candidate = baker.make('core.Candidate', assignment_group=feedbackset.group)
+            group__parentnode__parentnode=baker.make_recipe("devilry.apps.core.period_active")
+        )
+        candidate = baker.make("core.Candidate", assignment_group=feedbackset.group)
         temporary_filecollection = group_baker.temporary_file_collection_with_tempfiles(
             file_list=[
-                SimpleUploadedFile(name='testfile1.txt', content=b'Test content1', content_type='text/txt'),
-                SimpleUploadedFile(name='testfile2.txt', content=b'Test content2', content_type='text/txt'),
+                SimpleUploadedFile(name="testfile1.txt", content=b"Test content1", content_type="text/txt"),
+                SimpleUploadedFile(name="testfile2.txt", content=b"Test content2", content_type="text/txt"),
             ],
-            user=candidate.relatedstudent.user
+            user=candidate.relatedstudent.user,
         )
         self.mock_http302_postrequest(
             cradmin_role=candidate.assignment_group,
             requestuser=candidate.relatedstudent.user,
-            viewkwargs={'pk': feedbackset.group.id},
+            viewkwargs={"pk": feedbackset.group.id},
             requestkwargs={
-                'data': {
-                    'text': 'Test comment',
-                    'student_add_comment': 'unused value',
-                    'temporary_file_collection_id': temporary_filecollection.id
+                "data": {
+                    "text": "Test comment",
+                    "student_add_comment": "unused value",
+                    "temporary_file_collection_id": temporary_filecollection.id,
                 }
-            })
+            },
+        )
         self.assertEqual(2, comment_models.CommentFile.objects.count())
         self.assertEqual(1, group_models.GroupComment.objects.count())
-        self.assertEqual('Test comment', group_models.GroupComment.objects.all()[0].text)
+        self.assertEqual("Test comment", group_models.GroupComment.objects.all()[0].text)
 
     @override_settings(DEVILRY_STUDENT_DELIVERY_FEED_FILEUPLOADS_SEND_CONFIRMATION_EMAIL=True)
     def test_upload_file_email_confirmation_sent(self):
         feedbackset = group_baker.feedbackset_first_attempt_unpublished(
-            group__parentnode__parentnode=baker.make_recipe('devilry.apps.core.period_active'))
-        candidate = baker.make('core.Candidate', assignment_group=feedbackset.group)
-        baker.make('devilry_account.UserEmail', user=candidate.relatedstudent.user, email='testuser@example.com')
+            group__parentnode__parentnode=baker.make_recipe("devilry.apps.core.period_active")
+        )
+        candidate = baker.make("core.Candidate", assignment_group=feedbackset.group)
+        baker.make("devilry_account.UserEmail", user=candidate.relatedstudent.user, email="testuser@example.com")
         temporary_filecollection = group_baker.temporary_file_collection_with_tempfiles(
             file_list=[
-                SimpleUploadedFile(name='testfile1.txt', content=b'Test content1', content_type='text/txt'),
+                SimpleUploadedFile(name="testfile1.txt", content=b"Test content1", content_type="text/txt"),
             ],
-            user=candidate.relatedstudent.user
+            user=candidate.relatedstudent.user,
         )
         self.mock_http302_postrequest(
             cradmin_role=candidate.assignment_group,
             requestuser=candidate.relatedstudent.user,
-            viewkwargs={'pk': feedbackset.group.id},
+            viewkwargs={"pk": feedbackset.group.id},
             requestkwargs={
-                'data': {
-                    'text': 'Test comment',
-                    'student_add_comment': 'unused value',
-                    'temporary_file_collection_id': temporary_filecollection.id
+                "data": {
+                    "text": "Test comment",
+                    "student_add_comment": "unused value",
+                    "temporary_file_collection_id": temporary_filecollection.id,
                 }
-            })
+            },
+        )
         self.assertEqual(len(mail.outbox), 1)
-        self.assertEqual(mail.outbox[0].recipients(), ['testuser@example.com'])
+        self.assertEqual(mail.outbox[0].recipients(), ["testuser@example.com"])
 
     @override_settings(DEVILRY_STUDENT_DELIVERY_FEED_FILEUPLOADS_SEND_CONFIRMATION_EMAIL=True)
     def test_no_uploaded_files_email_confirmation_not_sent(self):
         feedbackset = group_baker.feedbackset_first_attempt_unpublished(
-            group__parentnode__parentnode=baker.make_recipe('devilry.apps.core.period_active'))
-        candidate = baker.make('core.Candidate', assignment_group=feedbackset.group)
+            group__parentnode__parentnode=baker.make_recipe("devilry.apps.core.period_active")
+        )
+        candidate = baker.make("core.Candidate", assignment_group=feedbackset.group)
         self.mock_http302_postrequest(
             cradmin_role=candidate.assignment_group,
             requestuser=candidate.relatedstudent.user,
-            viewkwargs={'pk': feedbackset.group.id},
-            requestkwargs={
-                'data': {
-                    'text': 'Test comment',
-                    'student_add_comment': 'unused value'
-                }
-            })
+            viewkwargs={"pk": feedbackset.group.id},
+            requestkwargs={"data": {"text": "Test comment", "student_add_comment": "unused value"}},
+        )
         self.assertEqual(len(mail.outbox), 0)
 
     def test_comment_only_with_text(self):
         feedbackset = group_baker.feedbackset_first_attempt_unpublished(
-            group__parentnode__parentnode=baker.make_recipe('devilry.apps.core.period_active'))
-        candidate = baker.make('core.Candidate', assignment_group=feedbackset.group,
-                               # NOTE: The line below can be removed when relatedstudent field is migrated to null=False
-                               relatedstudent=baker.make('core.RelatedStudent'))
+            group__parentnode__parentnode=baker.make_recipe("devilry.apps.core.period_active")
+        )
+        candidate = baker.make(
+            "core.Candidate",
+            assignment_group=feedbackset.group,
+            # NOTE: The line below can be removed when relatedstudent field is migrated to null=False
+            relatedstudent=baker.make("core.RelatedStudent"),
+        )
         self.mock_http302_postrequest(
             cradmin_role=candidate.assignment_group,
             requestuser=candidate.relatedstudent.user,
-            viewkwargs={'pk': feedbackset.group.id},
+            viewkwargs={"pk": feedbackset.group.id},
             requestkwargs={
-                'data': {
-                    'text': 'test',
-                    'student_add_comment': 'unused value',
+                "data": {
+                    "text": "test",
+                    "student_add_comment": "unused value",
                 }
-            })
+            },
+        )
 
         self.assertEqual(1, group_models.GroupComment.objects.count())
-        self.assertEqual('test', group_models.GroupComment.objects.all()[0].text)
+        self.assertEqual("test", group_models.GroupComment.objects.all()[0].text)
         self.assertEqual(0, comment_models.CommentFile.objects.count())
 
 
@@ -1401,156 +1629,179 @@ class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin)
     Test what gets rendered and not rendered to student view of elements
     that belongs to publishing of feedbacksets.
     """
+
     viewclass = feedbackfeed_student.StudentFeedbackFeedView
 
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_get_feedbackfeed_event_delivery_passed(self):
-        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                       max_points=10,
-                                       passing_grade_min_points=5)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start", max_points=10, passing_grade_min_points=5
+        )
+        testgroup = baker.make("core.AssignmentGroup", parentnode=assignment)
         group_baker.feedbackset_first_attempt_published(group=testgroup, grading_points=7)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
-        self.assertTrue(mockresponse.selector.exists('.devilry-core-grade-passed'))
+        self.assertTrue(mockresponse.selector.exists(".devilry-core-grade-passed"))
         self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackfeed_event_delivery_failed(self):
-        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                       max_points=10,
-                                       passing_grade_min_points=5)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start", max_points=10, passing_grade_min_points=5
+        )
+        testgroup = baker.make("core.AssignmentGroup", parentnode=assignment)
         group_baker.feedbackset_first_attempt_published(group=testgroup, grading_points=3)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
-        self.assertTrue(mockresponse.selector.exists('.devilry-core-grade-failed'))
+        self.assertTrue(mockresponse.selector.exists(".devilry-core-grade-failed"))
         self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_student_can_not_see_comments_part_of_grading_before_publish_first_attempt(self):
-        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=assignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
         requestuser = baker.make(settings.AUTH_USER_MODEL)
-        candidate = baker.make('core.Candidate',
-                               assignment_group=testgroup,
-                               relatedstudent__user=requestuser)
-        examiner = baker.make('core.Examiner',
-                              assignmentgroup=testgroup,
-                              relatedexaminer__user=baker.make(settings.AUTH_USER_MODEL))
-        baker.make('devilry_group.GroupComment',
-                   text='asd',
-                   part_of_grading=True,
-                   user=examiner.relatedexaminer.user,
-                   user_role='examiner',
-                   feedback_set=testfeedbackset)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
-                                                          requestuser=requestuser)
-        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
+        candidate = baker.make("core.Candidate", assignment_group=testgroup, relatedstudent__user=requestuser)
+        examiner = baker.make(
+            "core.Examiner", assignmentgroup=testgroup, relatedexaminer__user=baker.make(settings.AUTH_USER_MODEL)
+        )
+        baker.make(
+            "devilry_group.GroupComment",
+            text="asd",
+            part_of_grading=True,
+            user=examiner.relatedexaminer.user,
+            user_role="examiner",
+            feedback_set=testfeedbackset,
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=candidate.assignment_group, requestuser=requestuser
+        )
+        self.assertFalse(mockresponse.selector.exists(".devilry-group-feedbackfeed-comment"))
         self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_student_can_not_see_comments_part_of_grading_before_publish_new_attempt(self):
-        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                       max_points=10,
-                                       passing_grade_min_points=5)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start", max_points=10, passing_grade_min_points=5
+        )
+        testgroup = baker.make("core.AssignmentGroup", parentnode=assignment)
         group_baker.feedbackset_first_attempt_published(group=testgroup)
         feedbackset_last = group_baker.feedbackset_new_attempt_unpublished(
-                group=testgroup,
-                deadline_datetime=timezone.now()+timezone.timedelta(days=1))
-        candidate = baker.make('core.Candidate',
-                               assignment_group=testgroup,
-                               relatedstudent=baker.make('core.RelatedStudent'))
-        examiner = baker.make('core.Examiner',
-                              assignmentgroup=testgroup,
-                              relatedexaminer=baker.make('core.RelatedExaminer', user__fullname='John Doe'),)
-        baker.make('devilry_group.GroupComment',
-                   text='asd',
-                   part_of_grading=True,
-                   user=examiner.relatedexaminer.user,
-                   user_role='examiner',
-                   feedback_set=feedbackset_last)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
-                                                          requestuser=candidate.relatedstudent.user)
-        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
+            group=testgroup, deadline_datetime=timezone.now() + timezone.timedelta(days=1)
+        )
+        candidate = baker.make(
+            "core.Candidate", assignment_group=testgroup, relatedstudent=baker.make("core.RelatedStudent")
+        )
+        examiner = baker.make(
+            "core.Examiner",
+            assignmentgroup=testgroup,
+            relatedexaminer=baker.make("core.RelatedExaminer", user__fullname="John Doe"),
+        )
+        baker.make(
+            "devilry_group.GroupComment",
+            text="asd",
+            part_of_grading=True,
+            user=examiner.relatedexaminer.user,
+            user_role="examiner",
+            feedback_set=feedbackset_last,
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=candidate.assignment_group, requestuser=candidate.relatedstudent.user
+        )
+        self.assertFalse(mockresponse.selector.exists(".devilry-group-feedbackfeed-comment"))
         self.assertEqual(2, group_models.FeedbackSet.objects.count())
 
     def test_get_student_can_see_comments_part_of_grading_after_publish_first_attempt(self):
-        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=assignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_published(group=testgroup)
-        candidate = baker.make('core.Candidate',
-                               assignment_group=testgroup,
-                               relatedstudent=baker.make('core.RelatedStudent'))
-        examiner = baker.make('core.Examiner',
-                              assignmentgroup=testgroup,
-                              relatedexaminer=baker.make('core.RelatedExaminer', user__fullname='John Doe'),)
-        baker.make('devilry_group.GroupComment',
-                   text='asd',
-                   part_of_grading=True,
-                   user=examiner.relatedexaminer.user,
-                   user_role='examiner',
-                   feedback_set=testfeedbackset)
-        baker.make('devilry_group.GroupComment',
-                   text='asd',
-                   part_of_grading=True,
-                   user=examiner.relatedexaminer.user,
-                   user_role='examiner',
-                   feedback_set=testfeedbackset)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
-                                                          requestuser=candidate.relatedstudent.user)
-        feedback_comments = mockresponse.selector.list('.devilry-group-feedbackfeed-comment')
+        candidate = baker.make(
+            "core.Candidate", assignment_group=testgroup, relatedstudent=baker.make("core.RelatedStudent")
+        )
+        examiner = baker.make(
+            "core.Examiner",
+            assignmentgroup=testgroup,
+            relatedexaminer=baker.make("core.RelatedExaminer", user__fullname="John Doe"),
+        )
+        baker.make(
+            "devilry_group.GroupComment",
+            text="asd",
+            part_of_grading=True,
+            user=examiner.relatedexaminer.user,
+            user_role="examiner",
+            feedback_set=testfeedbackset,
+        )
+        baker.make(
+            "devilry_group.GroupComment",
+            text="asd",
+            part_of_grading=True,
+            user=examiner.relatedexaminer.user,
+            user_role="examiner",
+            feedback_set=testfeedbackset,
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=candidate.assignment_group, requestuser=candidate.relatedstudent.user
+        )
+        feedback_comments = mockresponse.selector.list(".devilry-group-feedbackfeed-comment")
         self.assertEqual(2, len(feedback_comments))
         self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_student_can_see_comments_part_of_grading_before_publish_new_attempt(self):
-        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                       max_points=10,
-                                       passing_grade_min_points=5)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start", max_points=10, passing_grade_min_points=5
+        )
+        testgroup = baker.make("core.AssignmentGroup", parentnode=assignment)
         group_baker.feedbackset_first_attempt_published(group=testgroup)
         feedbackset_last = group_baker.feedbackset_new_attempt_published(
-                group=testgroup,
-                deadline_datetime=timezone.now()+timezone.timedelta(days=1))
-        candidate = baker.make('core.Candidate',
-                               assignment_group=testgroup,
-                               relatedstudent=baker.make('core.RelatedStudent'))
-        examiner = baker.make('core.Examiner',
-                              assignmentgroup=testgroup,
-                              relatedexaminer=baker.make('core.RelatedExaminer', user__fullname='John Doe'))
-        baker.make('devilry_group.GroupComment',
-                   text='asd',
-                   part_of_grading=True,
-                   user=examiner.relatedexaminer.user,
-                   user_role='examiner',
-                   feedback_set=feedbackset_last)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
-                                                          requestuser=candidate.relatedstudent.user)
-        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
+            group=testgroup, deadline_datetime=timezone.now() + timezone.timedelta(days=1)
+        )
+        candidate = baker.make(
+            "core.Candidate", assignment_group=testgroup, relatedstudent=baker.make("core.RelatedStudent")
+        )
+        examiner = baker.make(
+            "core.Examiner",
+            assignmentgroup=testgroup,
+            relatedexaminer=baker.make("core.RelatedExaminer", user__fullname="John Doe"),
+        )
+        baker.make(
+            "devilry_group.GroupComment",
+            text="asd",
+            part_of_grading=True,
+            user=examiner.relatedexaminer.user,
+            user_role="examiner",
+            feedback_set=feedbackset_last,
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=candidate.assignment_group, requestuser=candidate.relatedstudent.user
+        )
+        self.assertTrue(mockresponse.selector.exists(".devilry-group-feedbackfeed-comment"))
         self.assertEqual(2, group_models.FeedbackSet.objects.count())
 
     def test_get_num_queries(self):
-        testgroup = baker.make('core.AssignmentGroup')
-        baker.make('core.Candidate', assignment_group=testgroup, _quantity=50)
-        examiner = baker.make('core.Examiner', assignmentgroup=testgroup)
-        baker.make('core.Examiner', assignmentgroup=testgroup, _quantity=50)
-        candidate = baker.make('core.Candidate', assignment_group=testgroup)
+        testgroup = baker.make("core.AssignmentGroup")
+        baker.make("core.Candidate", assignment_group=testgroup, _quantity=50)
+        examiner = baker.make("core.Examiner", assignmentgroup=testgroup)
+        baker.make("core.Examiner", assignmentgroup=testgroup, _quantity=50)
+        candidate = baker.make("core.Candidate", assignment_group=testgroup)
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        baker.make('devilry_group.GroupComment',
-                   user=candidate.relatedstudent.user,
-                   user_role='student',
-                   feedback_set=testfeedbackset,
-                   _quantity=20)
-        baker.make('devilry_group.GroupComment',
-                   user=examiner.relatedexaminer.user,
-                   user_role='examiner',
-                   feedback_set=testfeedbackset,
-                   _quantity=20)
+        baker.make(
+            "devilry_group.GroupComment",
+            user=candidate.relatedstudent.user,
+            user_role="student",
+            feedback_set=testfeedbackset,
+            _quantity=20,
+        )
+        baker.make(
+            "devilry_group.GroupComment",
+            user=examiner.relatedexaminer.user,
+            user_role="examiner",
+            feedback_set=testfeedbackset,
+            _quantity=20,
+        )
         mock_cradmininstance = mock.MagicMock()
-        mock_cradmininstance.get_devilryrole_for_requestuser.return_value = 'student'
+        mock_cradmininstance.get_devilryrole_for_requestuser.return_value = "student"
         with self.assertNumQueries(18):
-            self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
-                                               requestuser=candidate.relatedstudent.user,
-                                               cradmin_instance=mock_cradmininstance)
+            self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup, requestuser=candidate.relatedstudent.user, cradmin_instance=mock_cradmininstance
+            )
         self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
     def test_get_num_queries_with_commentfiles(self):
@@ -1560,31 +1811,28 @@ class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin)
         :func:`devilry.devilry_group.feedbackfeed_builder.FeedbackFeedTimelineBuilder.__get_feedbackset_queryset`
         duplicates comment_file query.
         """
-        testgroup = baker.make('core.AssignmentGroup')
-        candidate = baker.make('core.Candidate', assignment_group=testgroup)
-        baker.make('core.Candidate', assignment_group=testgroup, _quantity=50)
-        examiner = baker.make('core.Examiner', assignmentgroup=testgroup)
-        baker.make('core.Examiner', assignmentgroup=testgroup, _quantity=50)
+        testgroup = baker.make("core.AssignmentGroup")
+        candidate = baker.make("core.Candidate", assignment_group=testgroup)
+        baker.make("core.Candidate", assignment_group=testgroup, _quantity=50)
+        examiner = baker.make("core.Examiner", assignmentgroup=testgroup)
+        baker.make("core.Examiner", assignmentgroup=testgroup, _quantity=50)
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        comment = baker.make('devilry_group.GroupComment',
-                             user=candidate.relatedstudent.user,
-                             user_role='student',
-                             feedback_set=testfeedbackset)
-        comment2 = baker.make('devilry_group.GroupComment',
-                              user=examiner.relatedexaminer.user,
-                              user_role='examiner',
-                              feedback_set=testfeedbackset)
-        baker.make('devilry_comment.CommentFile',
-                   filename='test.py',
-                   comment=comment,
-                   _quantity=20)
-        baker.make('devilry_comment.CommentFile',
-                   filename='test2.py',
-                   comment=comment2,
-                   _quantity=20)
+        comment = baker.make(
+            "devilry_group.GroupComment",
+            user=candidate.relatedstudent.user,
+            user_role="student",
+            feedback_set=testfeedbackset,
+        )
+        comment2 = baker.make(
+            "devilry_group.GroupComment",
+            user=examiner.relatedexaminer.user,
+            user_role="examiner",
+            feedback_set=testfeedbackset,
+        )
+        baker.make("devilry_comment.CommentFile", filename="test.py", comment=comment, _quantity=20)
+        baker.make("devilry_comment.CommentFile", filename="test2.py", comment=comment2, _quantity=20)
         with self.assertNumQueries(18):
-            self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
-                                               requestuser=candidate.relatedstudent.user)
+            self.mock_http200_getrequest_htmls(cradmin_role=testgroup, requestuser=candidate.relatedstudent.user)
         self.assertEqual(1, group_models.FeedbackSet.objects.count())
 
 
@@ -1592,6 +1840,7 @@ class TestStudentEditGroupCommentView(TestCase, cradmin_testhelpers.TestCaseMixi
     """
     Comment edit history related tests.
     """
+
     viewclass = feedbackfeed_student.StudentEditGroupComment
 
     def setUp(self):
@@ -1600,161 +1849,156 @@ class TestStudentEditGroupCommentView(TestCase, cradmin_testhelpers.TestCaseMixi
     def __make_student_comment(self, feedback_set, user=None):
         if not user:
             user = baker.make(settings.AUTH_USER_MODEL)
-        return baker.make('devilry_group.GroupComment',
-                          text='Test',
-                          user=user,
-                          user_role=group_models.GroupComment.USER_ROLE_STUDENT,
-                          published_datetime=timezone.now(),
-                          feedback_set=feedback_set)
+        return baker.make(
+            "devilry_group.GroupComment",
+            text="Test",
+            user=user,
+            user_role=group_models.GroupComment.USER_ROLE_STUDENT,
+            published_datetime=timezone.now(),
+            feedback_set=feedback_set,
+        )
 
     @override_settings(DEVILRY_COMMENT_STUDENTS_CAN_EDIT=False)
     def test_raise_404_student_can_not_edit_their_comments(self):
-        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=assignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        candidate = baker.make('core.Candidate',
-                               assignment_group=testgroup,
-                               relatedstudent=baker.make('core.RelatedStudent'))
+        candidate = baker.make(
+            "core.Candidate", assignment_group=testgroup, relatedstudent=baker.make("core.RelatedStudent")
+        )
         groupcomment = self.__make_student_comment(user=candidate.relatedstudent.user, feedback_set=testfeedbackset)
         with self.assertRaises(Http404):
             self.mock_http200_getrequest_htmls(
-                cradmin_role=testgroup,
-                requestuser=candidate.relatedstudent.user,
-                viewkwargs={'pk': groupcomment.id})
+                cradmin_role=testgroup, requestuser=candidate.relatedstudent.user, viewkwargs={"pk": groupcomment.id}
+            )
 
     @override_settings(DEVILRY_COMMENT_STUDENTS_CAN_EDIT=True)
     def test_raise_404_student_has_not_comments(self):
-        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
-        candidate = baker.make('core.Candidate',
-                               assignment_group=testgroup,
-                               relatedstudent=baker.make('core.RelatedStudent'))
+        assignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=assignment)
+        candidate = baker.make(
+            "core.Candidate", assignment_group=testgroup, relatedstudent=baker.make("core.RelatedStudent")
+        )
         with self.assertRaises(Http404):
             self.mock_http200_getrequest_htmls(
-                cradmin_role=testgroup,
-                requestuser=candidate.relatedstudent.user,
-                viewkwargs={'pk': 1})
+                cradmin_role=testgroup, requestuser=candidate.relatedstudent.user, viewkwargs={"pk": 1}
+            )
 
     @override_settings(DEVILRY_COMMENT_STUDENTS_CAN_EDIT=True)
     def test_raise_404_student_can_not_edit_other_student_comments_sanity(self):
-        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=assignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        candidate = baker.make('core.Candidate',
-                               assignment_group=testgroup,
-                               relatedstudent=baker.make('core.RelatedStudent'))
+        candidate = baker.make(
+            "core.Candidate", assignment_group=testgroup, relatedstudent=baker.make("core.RelatedStudent")
+        )
         groupcomment = self.__make_student_comment(feedback_set=testfeedbackset)
         with self.assertRaises(Http404):
             self.mock_http200_getrequest_htmls(
-                cradmin_role=testgroup,
-                requestuser=candidate.relatedstudent.user,
-                viewkwargs={'pk': groupcomment.id})
+                cradmin_role=testgroup, requestuser=candidate.relatedstudent.user, viewkwargs={"pk": groupcomment.id}
+            )
 
     @override_settings(DEVILRY_COMMENT_STUDENTS_CAN_EDIT=True)
     def test_raise_404_student_can_not_edit_examiner_comments_sanity(self):
-        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=assignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        candidate = baker.make('core.Candidate',
-                               assignment_group=testgroup,
-                               relatedstudent=baker.make('core.RelatedStudent'))
-        groupcomment = baker.make('devilry_group.GroupComment',
-                                  user_role=group_models.GroupComment.USER_ROLE_EXAMINER,
-                                  published_datetime=timezone.now(),
-                                  feedback_set=testfeedbackset)
+        candidate = baker.make(
+            "core.Candidate", assignment_group=testgroup, relatedstudent=baker.make("core.RelatedStudent")
+        )
+        groupcomment = baker.make(
+            "devilry_group.GroupComment",
+            user_role=group_models.GroupComment.USER_ROLE_EXAMINER,
+            published_datetime=timezone.now(),
+            feedback_set=testfeedbackset,
+        )
         with self.assertRaises(Http404):
             self.mock_http200_getrequest_htmls(
-                cradmin_role=testgroup,
-                requestuser=candidate.relatedstudent.user,
-                viewkwargs={'pk': groupcomment.id})
+                cradmin_role=testgroup, requestuser=candidate.relatedstudent.user, viewkwargs={"pk": groupcomment.id}
+            )
 
     @override_settings(DEVILRY_COMMENT_STUDENTS_CAN_EDIT=True)
     def test_raise_404_student_can_not_edit_admin_comments_sanity(self):
-        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=assignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        candidate = baker.make('core.Candidate',
-                               assignment_group=testgroup,
-                               relatedstudent=baker.make('core.RelatedStudent'))
-        groupcomment = baker.make('devilry_group.GroupComment',
-                                  user_role=group_models.GroupComment.USER_ROLE_ADMIN,
-                                  published_datetime=timezone.now(),
-                                  feedback_set=testfeedbackset)
+        candidate = baker.make(
+            "core.Candidate", assignment_group=testgroup, relatedstudent=baker.make("core.RelatedStudent")
+        )
+        groupcomment = baker.make(
+            "devilry_group.GroupComment",
+            user_role=group_models.GroupComment.USER_ROLE_ADMIN,
+            published_datetime=timezone.now(),
+            feedback_set=testfeedbackset,
+        )
         with self.assertRaises(Http404):
             self.mock_http200_getrequest_htmls(
-                cradmin_role=testgroup,
-                requestuser=candidate.relatedstudent.user,
-                viewkwargs={'pk': groupcomment.id})
+                cradmin_role=testgroup, requestuser=candidate.relatedstudent.user, viewkwargs={"pk": groupcomment.id}
+            )
 
     @override_settings(DEVILRY_COMMENT_STUDENTS_CAN_EDIT=True)
     def test_get_student_can_edit_own_comment_ok(self):
-        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=assignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        candidate = baker.make('core.Candidate',
-                               assignment_group=testgroup,
-                               relatedstudent=baker.make('core.RelatedStudent'))
+        candidate = baker.make(
+            "core.Candidate", assignment_group=testgroup, relatedstudent=baker.make("core.RelatedStudent")
+        )
         groupcomment = self.__make_student_comment(feedback_set=testfeedbackset, user=candidate.relatedstudent.user)
         self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup,
-            requestuser=candidate.relatedstudent.user,
-            viewkwargs={'pk': groupcomment.id})
+            cradmin_role=testgroup, requestuser=candidate.relatedstudent.user, viewkwargs={"pk": groupcomment.id}
+        )
 
     @override_settings(DEVILRY_COMMENT_STUDENTS_CAN_EDIT=True)
     def test_post_ok(self):
-        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=assignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        candidate = baker.make('core.Candidate',
-                               assignment_group=testgroup,
-                               relatedstudent=baker.make('core.RelatedStudent'))
+        candidate = baker.make(
+            "core.Candidate", assignment_group=testgroup, relatedstudent=baker.make("core.RelatedStudent")
+        )
         groupcomment = self.__make_student_comment(feedback_set=testfeedbackset, user=candidate.relatedstudent.user)
         messagesmock = mock.MagicMock()
         self.mock_http302_postrequest(
             cradmin_role=testgroup,
             requestuser=candidate.relatedstudent.user,
-            viewkwargs={'pk': groupcomment.id},
+            viewkwargs={"pk": groupcomment.id},
             messagesmock=messagesmock,
-            requestkwargs={
-                'data': {
-                    'text': 'Test edited'
-                }
-            })
+            requestkwargs={"data": {"text": "Test edited"}},
+        )
         db_comment = group_models.GroupComment.objects.get(id=groupcomment.id)
-        messagesmock.add.assert_called_once_with(messages.SUCCESS, 'Comment updated!', '')
-        self.assertEqual(db_comment.text, 'Test edited')
+        messagesmock.add.assert_called_once_with(messages.SUCCESS, "Comment updated!", "")
+        self.assertEqual(db_comment.text, "Test edited")
         self.assertEqual(group_models.GroupCommentEditHistory.objects.count(), 1)
 
     @override_settings(DEVILRY_COMMENT_STUDENTS_CAN_EDIT=True)
     def test_post_messages_text_do_not_differ(self):
-        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=assignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        candidate = baker.make('core.Candidate',
-                               assignment_group=testgroup,
-                               relatedstudent=baker.make('core.RelatedStudent'))
+        candidate = baker.make(
+            "core.Candidate", assignment_group=testgroup, relatedstudent=baker.make("core.RelatedStudent")
+        )
         groupcomment = self.__make_student_comment(feedback_set=testfeedbackset, user=candidate.relatedstudent.user)
         messagesmock = mock.MagicMock()
         self.mock_http302_postrequest(
             cradmin_role=testgroup,
             requestuser=candidate.relatedstudent.user,
-            viewkwargs={'pk': groupcomment.id},
+            viewkwargs={"pk": groupcomment.id},
             messagesmock=messagesmock,
-            requestkwargs={
-                'data': {
-                    'text': 'Test'
-                }
-            })
+            requestkwargs={"data": {"text": "Test"}},
+        )
         db_comment = group_models.GroupComment.objects.get(id=groupcomment.id)
-        messagesmock.add.assert_called_once_with(messages.SUCCESS, 'No changes, comment not updated', '')
+        messagesmock.add.assert_called_once_with(messages.SUCCESS, "No changes, comment not updated", "")
         self.assertEqual(group_models.GroupCommentEditHistory.objects.count(), 0)
-        self.assertEqual(db_comment.text, 'Test')
+        self.assertEqual(db_comment.text, "Test")
 
 
 class TestFeedbackFeedGroupCommentHistoryStudent(TestCase, cradmin_testhelpers.TestCaseMixin):
     """
     Comment edit history related tests.
     """
+
     viewclass = feedbackfeed_student.StudentFeedbackFeedView
 
     def setUp(self):
@@ -1762,96 +2006,115 @@ class TestFeedbackFeedGroupCommentHistoryStudent(TestCase, cradmin_testhelpers.T
 
     @override_settings(DEVILRY_COMMENT_STUDENTS_CAN_EDIT=False)
     def test_no_edit_link_rendered(self):
-        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=assignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        candidate = baker.make('core.Candidate',
-                               assignment_group=testgroup,
-                               relatedstudent=baker.make('core.RelatedStudent'))
-        baker.make('devilry_group.GroupComment',
-                   user=candidate.relatedstudent.user,
-                   user_role='student',
-                   published_datetime=timezone.now(),
-                   feedback_set=testfeedbackset)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
-                                                          requestuser=candidate.relatedstudent.user)
-        self.assertFalse(mockresponse.selector.exists('.devilry-group-comment-edit-link'))
-        self.assertFalse(mockresponse.selector.exists('.devilry-group-comment-edit-link__student'))
+        candidate = baker.make(
+            "core.Candidate", assignment_group=testgroup, relatedstudent=baker.make("core.RelatedStudent")
+        )
+        baker.make(
+            "devilry_group.GroupComment",
+            user=candidate.relatedstudent.user,
+            user_role="student",
+            published_datetime=timezone.now(),
+            feedback_set=testfeedbackset,
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup, requestuser=candidate.relatedstudent.user
+        )
+        self.assertFalse(mockresponse.selector.exists(".devilry-group-comment-edit-link"))
+        self.assertFalse(mockresponse.selector.exists(".devilry-group-comment-edit-link__student"))
 
     @override_settings(DEVILRY_COMMENT_STUDENTS_CAN_EDIT=True)
     def test_edit_link_rendered(self):
-        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=assignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        candidate = baker.make('core.Candidate',
-                               assignment_group=testgroup,
-                               relatedstudent=baker.make('core.RelatedStudent'))
-        baker.make('devilry_group.GroupComment',
-                   user=candidate.relatedstudent.user,
-                   user_role='student',
-                   published_datetime=timezone.now(),
-                   feedback_set=testfeedbackset)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
-                                                          requestuser=candidate.relatedstudent.user)
-        self.assertTrue(mockresponse.selector.exists('.devilry-group-comment-edit-link'))
-        self.assertTrue(mockresponse.selector.exists('.devilry-group-comment-edit-link__student'))
+        candidate = baker.make(
+            "core.Candidate", assignment_group=testgroup, relatedstudent=baker.make("core.RelatedStudent")
+        )
+        baker.make(
+            "devilry_group.GroupComment",
+            user=candidate.relatedstudent.user,
+            user_role="student",
+            published_datetime=timezone.now(),
+            feedback_set=testfeedbackset,
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup, requestuser=candidate.relatedstudent.user
+        )
+        self.assertTrue(mockresponse.selector.exists(".devilry-group-comment-edit-link"))
+        self.assertTrue(mockresponse.selector.exists(".devilry-group-comment-edit-link__student"))
 
     @override_settings(DEVILRY_COMMENT_STUDENTS_CAN_EDIT=True)
     def test_edit_link_url(self):
-        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=assignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        candidate = baker.make('core.Candidate',
-                               assignment_group=testgroup,
-                               relatedstudent=baker.make('core.RelatedStudent'))
-        comment = baker.make('devilry_group.GroupComment',
-                             user=candidate.relatedstudent.user,
-                             user_role='student',
-                             published_datetime=timezone.now(),
-                             feedback_set=testfeedbackset)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
-                                                          requestuser=candidate.relatedstudent.user)
-        self.assertTrue(mockresponse.selector.exists('.devilry-group-comment-edit-link'))
-        self.assertTrue(mockresponse.selector.exists('.devilry-group-comment-edit-link__student'))
-        self.assertEqual(mockresponse.selector.one('.devilry-group-comment-edit-link__student').get('href'),
-                         '/devilry_group/student/{}/feedbackfeed/groupcomment-edit/{}'.format(testgroup.id, comment.id))
+        candidate = baker.make(
+            "core.Candidate", assignment_group=testgroup, relatedstudent=baker.make("core.RelatedStudent")
+        )
+        comment = baker.make(
+            "devilry_group.GroupComment",
+            user=candidate.relatedstudent.user,
+            user_role="student",
+            published_datetime=timezone.now(),
+            feedback_set=testfeedbackset,
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup, requestuser=candidate.relatedstudent.user
+        )
+        self.assertTrue(mockresponse.selector.exists(".devilry-group-comment-edit-link"))
+        self.assertTrue(mockresponse.selector.exists(".devilry-group-comment-edit-link__student"))
+        self.assertEqual(
+            mockresponse.selector.one(".devilry-group-comment-edit-link__student").get("href"),
+            "/devilry_group/student/{}/feedbackfeed/groupcomment-edit/{}".format(testgroup.id, comment.id),
+        )
 
     @override_settings(DEVILRY_COMMENT_STUDENTS_CAN_EDIT=False)
     def test_last_edited_date_not_rendered(self):
-        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=assignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        candidate = baker.make('core.Candidate',
-                               assignment_group=testgroup,
-                               relatedstudent=baker.make('core.RelatedStudent'))
-        baker.make('devilry_group.GroupComment',
-                   user=candidate.relatedstudent.user,
-                   user_role='student',
-                   published_datetime=timezone.now(),
-                   feedback_set=testfeedbackset)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
-                                                          requestuser=candidate.relatedstudent.user)
-        self.assertFalse(mockresponse.selector.exists('.devilry-group-comment-last-edited-date'))
-        self.assertTrue(mockresponse.selector.exists('.devilry-group-comment-published-date'))
+        candidate = baker.make(
+            "core.Candidate", assignment_group=testgroup, relatedstudent=baker.make("core.RelatedStudent")
+        )
+        baker.make(
+            "devilry_group.GroupComment",
+            user=candidate.relatedstudent.user,
+            user_role="student",
+            published_datetime=timezone.now(),
+            feedback_set=testfeedbackset,
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup, requestuser=candidate.relatedstudent.user
+        )
+        self.assertFalse(mockresponse.selector.exists(".devilry-group-comment-last-edited-date"))
+        self.assertTrue(mockresponse.selector.exists(".devilry-group-comment-published-date"))
 
     @override_settings(DEVILRY_COMMENT_STUDENTS_CAN_EDIT=True)
     def test_edit_link_for_other_users_not_rendered(self):
-        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=assignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        candidate = baker.make('core.Candidate',
-                               assignment_group=testgroup,
-                               relatedstudent=baker.make('core.RelatedStudent'))
-        baker.make('devilry_group.GroupComment',
-                   user_role='admin',
-                   published_datetime=timezone.now(),
-                   feedback_set=testfeedbackset)
-        baker.make('devilry_group.GroupComment',
-                   user_role='examiner',
-                   published_datetime=timezone.now(),
-                   feedback_set=testfeedbackset)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
-                                                          requestuser=candidate.relatedstudent.user)
-        self.assertFalse(mockresponse.selector.exists('.devilry-group-comment-edit-link'))
-        self.assertFalse(mockresponse.selector.exists('.devilry-group-comment-edit-link__examiner'))
-        self.assertFalse(mockresponse.selector.exists('.devilry-group-comment-edit-link__admin'))
+        candidate = baker.make(
+            "core.Candidate", assignment_group=testgroup, relatedstudent=baker.make("core.RelatedStudent")
+        )
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role="admin",
+            published_datetime=timezone.now(),
+            feedback_set=testfeedbackset,
+        )
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role="examiner",
+            published_datetime=timezone.now(),
+            feedback_set=testfeedbackset,
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup, requestuser=candidate.relatedstudent.user
+        )
+        self.assertFalse(mockresponse.selector.exists(".devilry-group-comment-edit-link"))
+        self.assertFalse(mockresponse.selector.exists(".devilry-group-comment-edit-link__examiner"))
+        self.assertFalse(mockresponse.selector.exists(".devilry-group-comment-edit-link__admin"))
