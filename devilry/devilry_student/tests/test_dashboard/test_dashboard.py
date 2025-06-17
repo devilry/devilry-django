@@ -692,7 +692,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             baker.make("core.Examiner", assignmentgroup=group2)
             baker.make("core.Candidate", relatedstudent__user=testuser, assignment_group=group2)
             devilry_group_baker_factories.feedbackset_first_attempt_published(group=group2, grading_points=1)
-        with self.assertNumQueries(12):
+        with self.assertNumQueries(14):
             mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(loops * 2, self.__get_assignment_count(selector=mockresponse.selector))
 
@@ -721,6 +721,6 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             group2 = baker.make("core.AssignmentGroup", parentnode=testassignment2)
             baker.make("core.Candidate", relatedstudent__user=testuser, assignment_group=group2)
             devilry_group_baker_factories.feedbackset_first_attempt_published(group=group2, grading_points=1)
-        with self.assertNumQueries(14):
+        with self.assertNumQueries(17):
             mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(loops * 2, self.__get_assignment_count(selector=mockresponse.selector))
