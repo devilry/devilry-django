@@ -2,9 +2,9 @@
 
 
 import htmls
+from cradmin_legacy import datetimeutils
 from django import test
 from django.conf import settings
-from cradmin_legacy import datetimeutils
 from model_bakery import baker
 
 from devilry.apps.core.models import Period
@@ -31,8 +31,9 @@ class TestAdminItemValue(test.TestCase):
                                 end_time=datetimeutils.default_timezone_datetime(2015, 12, 24))
         selector = htmls.S(devilry_listbuilder.period.AdminItemValue(value=testperiod).render())
         self.assertEqual(
-                'Thursday January 15, 2015, 00:00 \u2014 Thursday December 24, 2015, 00:00',
-                selector.one('.cradmin-legacy-listbuilder-itemvalue-titledescription-description').alltext_normalized)
+            "Thu Jan 15 2015 00:00 \u2014 Thu Dec 24 2015 00:00",
+            selector.one(".cradmin-legacy-listbuilder-itemvalue-titledescription-description").alltext_normalized,
+        )
 
 
 class TestStudentItemValue(test.TestCase):

@@ -3,9 +3,7 @@ from django.conf import settings
 from django.test import TestCase
 from model_bakery import baker
 
-from devilry.apps.core.baker_recipes import ACTIVE_PERIOD_END, ACTIVE_PERIOD_START
 from devilry.devilry_admin.views.subject_for_period_admin import overview_for_periodadmin
-from devilry.utils import datetimeutils
 
 
 class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -101,12 +99,12 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
         testuser = baker.make(settings.AUTH_USER_MODEL)
         periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                            period=testperiod)
-        baker.make('devilry_account.PermissionGroupUser',
-                   user=testuser, permissiongroup=periodpermissiongroup.permissiongroup)
-        with self.settings(DATETIME_FORMAT=datetimeutils.ISODATETIME_DJANGOFORMAT):
-            mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject, requestuser=testuser)
+        baker.make(
+            "devilry_account.PermissionGroupUser", user=testuser, permissiongroup=periodpermissiongroup.permissiongroup
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject, requestuser=testuser)
         self.assertEqual(
-            datetimeutils.isoformat_noseconds(ACTIVE_PERIOD_START),
+            "Sat Jan 1 2000 00:00",
             mockresponse.selector.one(".devilry-cradmin-perioditemvalue-start-time-value").alltext_normalized,
         )
 
@@ -116,12 +114,12 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
                                        parentnode=testsubject)
         testuser = baker.make(settings.AUTH_USER_MODEL)
         periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup', period=testperiod)
-        baker.make('devilry_account.PermissionGroupUser',
-                   user=testuser, permissiongroup=periodpermissiongroup.permissiongroup)
-        with self.settings(DATETIME_FORMAT=datetimeutils.ISODATETIME_DJANGOFORMAT):
-            mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject, requestuser=testuser)
+        baker.make(
+            "devilry_account.PermissionGroupUser", user=testuser, permissiongroup=periodpermissiongroup.permissiongroup
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject, requestuser=testuser)
         self.assertEqual(
-            datetimeutils.isoformat_noseconds(ACTIVE_PERIOD_END),
+            "Fri Dec 31 5999 23:59",
             mockresponse.selector.one(".devilry-cradmin-perioditemvalue-end-time-value").alltext_normalized,
         )
 

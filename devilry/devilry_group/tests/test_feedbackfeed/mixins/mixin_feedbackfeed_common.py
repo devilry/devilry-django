@@ -347,12 +347,11 @@ class MixinTestFeedbackFeed(MixinTestFeedbackFeedHeader, MixinTestFeedbackFeedGr
         testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
         testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        with self.settings(DATETIME_FORMAT="l j F, Y, H:i"):
-            mockresponse = self.mock_http200_getrequest_htmls(
-                cradmin_role=testgroup,
-            )
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+        )
         self.assertEqual(
-            mockresponse.selector.one(".header-title").alltext_normalized, "Deadline: Saturday 15 January, 2000, 23:59"
+            mockresponse.selector.one(".header-title").alltext_normalized, "Deadline: Sat Jan 15 2000 23:59"
         )
 
     def test_get_feedbackset_header_attempt(self):

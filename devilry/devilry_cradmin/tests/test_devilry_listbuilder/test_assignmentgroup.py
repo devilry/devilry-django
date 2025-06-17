@@ -110,16 +110,16 @@ class TestStudentItemValue(test.TestCase):
 
     def test_deadline_first_attempt(self):
         testgroup = baker.make(
-            'core.AssignmentGroup',
+            "core.AssignmentGroup",
             parentnode=baker.make_recipe(
-                'devilry.apps.core.assignment_activeperiod_start',
-                first_deadline=datetime(2000, 1, 15, 12, 0)))
-        with self.settings(DATETIME_FORMAT="Y-m-d H:i"):
-            selector = self.__render_studentitemvalue(group=testgroup)
+                "devilry.apps.core.assignment_activeperiod_start", first_deadline=datetime(2000, 1, 15, 12, 0)
+            ),
+        )
+        selector = self.__render_studentitemvalue(group=testgroup)
         self.assertEqual(
-            '2000-01-15 12:00',
-            selector.one(
-                    '.devilry-cradmin-groupitemvalue-deadline__datetime').alltext_normalized)
+            "Sat Jan 15 2000 12:00",
+            selector.one(".devilry-cradmin-groupitemvalue-deadline__datetime").alltext_normalized,
+        )
 
     def test_deadline_new_attempt(self):
         testgroup = baker.make(
@@ -128,14 +128,13 @@ class TestStudentItemValue(test.TestCase):
                 'devilry.apps.core.assignment_activeperiod_start',
                 first_deadline=datetime(2000, 1, 15, 12, 0)))
         devilry_group_baker_factories.feedbackset_new_attempt_unpublished(
-            group=testgroup,
-            deadline_datetime=datetime(2200, 1, 2, 12, 30))
-        with self.settings(DATETIME_FORMAT="Y-m-d H:i"):
-            selector = self.__render_studentitemvalue(group=testgroup)
+            group=testgroup, deadline_datetime=datetime(2200, 1, 2, 12, 30)
+        )
+        selector = self.__render_studentitemvalue(group=testgroup)
         self.assertEqual(
-            '2200-01-02 12:30',
-            selector.one(
-                    '.devilry-cradmin-groupitemvalue-deadline__datetime').alltext_normalized)
+            "Thu Jan 2 2200 12:30",
+            selector.one(".devilry-cradmin-groupitemvalue-deadline__datetime").alltext_normalized,
+        )
 
     def test_attempt_number_first_attempt(self):
         testgroup = baker.make(

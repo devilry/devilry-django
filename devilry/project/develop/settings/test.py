@@ -1,6 +1,5 @@
 from .base import *  # noqa
 
-
 # We want to set the task to be run as syncronous as this make testing easier.
 IEVV_BATCHFRAMEWORK_ALWAYS_SYNCRONOUS = True
 
@@ -99,3 +98,6 @@ STORAGES = {
         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
+
+LANGUAGE_CODE = "en"
+FORMAT_MODULE_PATH = "devilry.project.develop.testhelpers.formats"

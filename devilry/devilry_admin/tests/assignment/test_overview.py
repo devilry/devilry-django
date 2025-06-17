@@ -87,7 +87,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one(
                 "#devilry_admin_assignment_overview_settings_first_deadline p"
             ).alltext_normalized,
-            "The first deadline is Saturday January 1, 2000, 00:00. This deadline is common for all "
+            "The first deadline is Sat Jan 1 2000 00:00. This deadline is common for all "
             "students unless a new deadline have been provided to a group.",
         )
 

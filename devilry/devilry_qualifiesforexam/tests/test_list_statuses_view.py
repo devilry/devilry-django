@@ -3,18 +3,19 @@
 
 # 3rd party imports
 from unittest import mock
-from django.utils import timezone
-from model_bakery import baker
-
-# Django imports
-from django import test
 
 # CrAdmin imports
 from cradmin_legacy import cradmin_testhelpers
 
+# Django imports
+from django import test
+from django.utils import timezone
+from model_bakery import baker
+
+from devilry.devilry_qualifiesforexam import models as status_models
+
 # Devilry imports
 from devilry.devilry_qualifiesforexam.views import list_statuses_view
-from devilry.devilry_qualifiesforexam import models as status_models
 
 
 class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -66,8 +67,9 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
                 mockresponse.selector.one('.devilry-qualifiesforexam-status-description-name').alltext_normalized,
                 'Status')
         self.assertEqual(
-                mockresponse.selector.one('.devilry-qualifiesforexam-status-description-date').alltext_normalized,
-                timezone.localtime(teststatus.createtime).strftime('%A %B %-d, %Y, %H:%M'))
+            mockresponse.selector.one(".devilry-qualifiesforexam-status-description-date").alltext_normalized,
+            timezone.localtime(teststatus.createtime).strftime("%a %b %-d %Y %H:%M"),
+        )
 
     def test_status_ready_in_list(self):
         testperiod = baker.make('core.Period')

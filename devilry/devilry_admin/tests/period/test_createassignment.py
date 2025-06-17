@@ -182,8 +182,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
             first_deadline=default_timezone_datetime(3500, 9, 5, 13, 30),
         )
 
-        with self.settings(DATETIME_FORMAT="D M j Y H:i"):
-            mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=period)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=period)
         suggested_deadline_elements = mockresponse.selector.list(".devilry-admin-createassignment-suggested-deadline")
         suggested_deadline_labels = [element.alltext_normalized for element in suggested_deadline_elements]
         self.assertEqual(

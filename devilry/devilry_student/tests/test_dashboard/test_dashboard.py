@@ -513,10 +513,9 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             ),
         )
         baker.make("core.Candidate", relatedstudent__user=testuser, assignment_group=testgroup)
-        with self.settings(DATETIME_FORMAT="Y-m-d H:i"):
-            mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
-            "2000-01-15 12:00",
+            "Sat Jan 15 2000 12:00",
             mockresponse.selector.one(".devilry-cradmin-groupitemvalue-deadline__datetime").alltext_normalized,
         )
 
