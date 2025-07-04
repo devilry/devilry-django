@@ -232,7 +232,7 @@ HTML_SANITIZERS = {
         "tags": {
             "a", "h1", "h2", "h3", "strong", "em", "p", "ul", "ol",
             "li", "br", "sub", "sup", "hr", "img", "code", "pre", "div",
-            "span", "devilry-latex-math", "script"
+            "span", "devilry-latex-math", "script", "blockquote",
         },
         "attributes": {
             "a": ("href", "name", "target", "title", "id", "rel",),
