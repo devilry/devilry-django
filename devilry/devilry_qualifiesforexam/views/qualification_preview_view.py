@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 import json
+import csv
 
 # Django imports
 from django import forms
 from django.utils.translation import gettext_lazy
 from django.views import generic
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.db import models
 from django.db.models import F
 from django.db.models.functions import NullIf
@@ -232,7 +233,6 @@ class QualificationStatusView(PrefetchStatusInfoMixin, AbstractQualificationPrev
         current_status = self._get_status(statusid=self.kwargs['statusid'])
         context_data['status'] = current_status
         context_data['required_assignments'] = None
-        print(current_status.plugin_data)
 
         if current_status.plugin == 'devilry_qualifiesforexam_plugin_approved.plugin_select_assignments' and current_status.plugin_data:
             assignment_ids = json.loads(current_status.plugin_data)
@@ -291,8 +291,32 @@ class PrintStatusView(PrefetchStatusInfoMixin, generic.TemplateView):
         context_data['createtime'] = status.createtime
         context_data['qualifying_students'] = qualifying_students
         context_data['nonqualifying_students'] = nonqualifying_students
+        context_data['status'] = status
         return context_data
 
+class DownloadCsvView(PrintStatusView):
+    """
+    Downloads a CSV file of students that are qualified and not qualified for the final exam.
+    """
+    def get(self, request, *args, **kwargs):
+        context_data = self.get_context_data(**kwargs)
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="{}-status.csv"'.format(
+            context_data['period']
+        )
+        response['Content-Description'] = 'CSV export of Devilry qualification status'
+
+        writer = csv.writer(response)
+        
+        writer.writerow(['Full Name', 'Username', 'Status'])
+
+        for student in context_data['qualifying_students']:
+            writer.writerow([student.user.fullname, student.user.shortname, 'Qualified'])
+        
+        for student in context_data['nonqualifying_students']:
+            writer.writerow([student.user.fullname, student.user.shortname, 'Not Qualified'])
+            
+        return response
 
 class RetractStatusForm(forms.ModelForm):
     """
