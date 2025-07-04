@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load devilry_group_tags %}
 
-<span class="devilry_email_comment_assignment">{% trans "Assignment" context "devilry comment email" %}: {{ comment.feedback_set.group.parentnode.long_name }}</span>
+<span class="devilry_email_comment_assignment">{% trans "Assignment" context "devilry comment email" %}: {{ comment.feedback_set.group.parentnode.long_name }} - {{ comment.feedback_set.group.subject.short_name }}</span>
 <br>
 <span class="devilry_email_comment_added_datetime">{% trans "Added datetime" context "devilry comment email" %}: {{ comment.published_datetime|date:"DATETIME_FORMAT" }}</span>
 <br><br>
