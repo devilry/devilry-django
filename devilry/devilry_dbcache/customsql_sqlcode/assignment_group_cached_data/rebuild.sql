@@ -254,7 +254,20 @@ BEGIN
             FROM core_candidate
             WHERE
                 assignment_group_id = param_group_id
-        ) AS candidate_count
+        ) AS candidate_count,
+        (
+            SELECT COUNT(DISTINCT devilry_group_feedbackset.id)
+            FROM devilry_comment_commentfile
+            INNER JOIN devilry_comment_comment
+                ON devilry_comment_comment.id = devilry_comment_commentfile.comment_id
+            INNER JOIN devilry_group_groupcomment
+                ON devilry_group_groupcomment.comment_ptr_id = devilry_comment_comment.id
+            INNER JOIN devilry_group_feedbackset
+                ON devilry_group_feedbackset.id = devilry_group_groupcomment.feedback_set_id
+            WHERE
+                devilry_group_feedbackset.group_id = param_group_id
+                AND devilry_comment_comment.user_role = 'student'
+        ) AS public_student_attempts_with_delivered_files
 
     FROM core_assignmentgroup AS assignmentgroup
     WHERE id = param_group_id
@@ -299,6 +312,7 @@ BEGIN
             public_examiner_comment_count,
             public_admin_comment_count,
             public_student_file_upload_count,
+            public_student_attempts_with_delivered_files,
             last_public_comment_by_student_datetime,
             last_public_comment_by_examiner_datetime,
             examiner_count,
@@ -314,6 +328,7 @@ BEGIN
             var_groupcachedata.public_examiner_comment_count + var_groupcachedata.public_examiner_imageannotationcomment_count,
             var_groupcachedata.public_admin_comment_count + var_groupcachedata.public_admin_imageannotationcomment_count,
             var_groupcachedata.public_student_file_upload_count,
+            var_groupcachedata.public_student_attempts_with_delivered_files,
             var_last_public_comment_by_student_datetime,
             var_last_public_comment_by_examiner_datetime,
             var_groupcachedata.examiner_count,
@@ -330,6 +345,7 @@ BEGIN
             public_examiner_comment_count = var_groupcachedata.public_examiner_comment_count + var_groupcachedata.public_examiner_imageannotationcomment_count,
             public_admin_comment_count = var_groupcachedata.public_admin_comment_count + var_groupcachedata.public_admin_imageannotationcomment_count,
             public_student_file_upload_count = var_groupcachedata.public_student_file_upload_count,
+            public_student_attempts_with_delivered_files = var_groupcachedata.public_student_attempts_with_delivered_files,
             last_public_comment_by_student_datetime = var_last_public_comment_by_student_datetime,
             last_public_comment_by_examiner_datetime = var_last_public_comment_by_examiner_datetime,
             examiner_count = var_groupcachedata.examiner_count,

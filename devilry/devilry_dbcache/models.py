@@ -81,6 +81,14 @@ class AssignmentGroupCachedData(models.Model):
     # file_upload_count_student = models.PositiveIntegerField(default=0)
     public_student_file_upload_count = models.PositiveIntegerField(
         default=0, editable=False)
+    
+    #: Number of attempts by student that have delivered files.
+    #: Updated by trigger that counts the number of distinct feedbacksets that has :obj:`~devilry.devilry_comment.models.CommentFile`
+    #: where the :obj:`~devilry.devilry_comment.models.Comment.user_role` is set
+    #: to :obj:`~devilry.devilry_comment.models.Comment.USER_ROLE_STUDENT`.
+    public_student_attempts_with_delivered_files = models.PositiveIntegerField(
+        default=0, editable=False,
+    )
 
     #: Datetime of the last :class:`devilry.devilry_group.models.GroupComment` or
     #: :class:`devilry.devilry_group.models.ImageAnnotationComment` within the group

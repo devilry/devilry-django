@@ -966,6 +966,109 @@ class TestAssignmentGroupCachedDataPublicAdminCommentCount(test.TestCase):
         self.assertEqual(group.cached_data.public_admin_comment_count, 1)
 
 
+class TestAssignmentGroupCachedDataPublicStudentAttemptsWithDeliveredFiles(test.TestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_public_student_attempts_with_delivered_files_none(self):
+        group = baker.make('core.AssignmentGroup')
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.public_student_attempts_with_delivered_files, 0)
+
+    def test_public_student_attempts_with_delivered_files_simple(self):
+        group = baker.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        comment = baker.make(
+            'devilry_group.GroupComment',
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        baker.make('devilry_comment.CommentFile', comment=comment, _quantity=3)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.public_student_attempts_with_delivered_files, 1)
+
+    def test_public_student_attempts_with_delivered_files_ignore_user_role_examiner(self):
+        group = baker.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        comment = baker.make('devilry_group.GroupComment',
+                             user_role=Comment.USER_ROLE_EXAMINER,
+                             feedback_set=feedbackset1,
+                             visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        baker.make('devilry_comment.CommentFile', comment=comment)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.public_student_attempts_with_delivered_files, 0)
+    
+    def test_public_student_attempts_with_delivered_files_ignore_user_role_admin(self):
+        group = baker.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        comment = baker.make('devilry_group.GroupComment',
+                             user_role=Comment.USER_ROLE_ADMIN,
+                             feedback_set=feedbackset1,
+                             visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        baker.make('devilry_comment.CommentFile', comment=comment)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.public_student_attempts_with_delivered_files, 0)
+
+    def test_public_student_attempts_with_delivered_files_multiple_feedbacksets(self):
+        group = baker.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        comment1 = baker.make('devilry_group.GroupComment',
+                              user_role=Comment.USER_ROLE_STUDENT,
+                              feedback_set=feedbackset1,
+                              visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        baker.make('devilry_comment.CommentFile', comment=comment1, _quantity=2)
+        feedbackset2 = baker.make(
+            'devilry_group.FeedbackSet',
+            group=group,
+            deadline_datetime=ACTIVE_PERIOD_START)
+        comment2 = baker.make('devilry_group.GroupComment',
+                              user_role=Comment.USER_ROLE_STUDENT,
+                              feedback_set=feedbackset2,
+                              visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        baker.make('devilry_comment.CommentFile', comment=comment2, _quantity=4)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.public_student_attempts_with_delivered_files, 2)
+
+    def test_public_student_attempts_with_delivered_files_multiple_feedbacksets_different_comment_quantity(self):
+        group = baker.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        comment1 = baker.make('devilry_group.GroupComment',
+                              user_role=Comment.USER_ROLE_STUDENT,
+                              feedback_set=feedbackset1,
+                              visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        baker.make('devilry_comment.CommentFile', comment=comment1, _quantity=1)
+        feedbackset2 = baker.make(
+            'devilry_group.FeedbackSet',
+            group=group,
+            deadline_datetime=ACTIVE_PERIOD_START)
+        comment2 = baker.make('devilry_group.GroupComment',
+                              user_role=Comment.USER_ROLE_STUDENT,
+                              feedback_set=feedbackset2,
+                              visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        baker.make('devilry_comment.CommentFile', comment=comment2, _quantity=2)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.public_student_attempts_with_delivered_files, 2)
+
+    def test_public_student_attempts_with_delivered_files_multiple_feedbacksets_with_only_one_set_with_files(self):
+        group = baker.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        comment1 = baker.make('devilry_group.GroupComment',
+                              user_role=Comment.USER_ROLE_STUDENT,
+                              feedback_set=feedbackset1,
+                              visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        baker.make('devilry_comment.CommentFile', comment=comment1, _quantity=1)
+        feedbackset2 = baker.make(
+            'devilry_group.FeedbackSet',
+            group=group,
+            deadline_datetime=ACTIVE_PERIOD_START)
+        comment2 = baker.make('devilry_group.GroupComment',
+                              user_role=Comment.USER_ROLE_STUDENT,
+                              feedback_set=feedbackset2,
+                              visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.public_student_attempts_with_delivered_files, 1)
+
+
 class TestAssignmentGroupCachedDataPublicStudentFileUploadCount(test.TestCase):
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
@@ -986,6 +1089,7 @@ class TestAssignmentGroupCachedDataPublicStudentFileUploadCount(test.TestCase):
         baker.make('devilry_comment.CommentFile', comment=comment, _quantity=3)
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_student_file_upload_count, 3)
+        self.assertEqual(group.cached_data.public_student_attempts_with_delivered_files, 1)
 
     def test_public_student_file_upload_count_ignore_private(self):
         group = baker.make('core.AssignmentGroup')
