@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-31 15:59+0200\n"
-"PO-Revision-Date: 2025-03-31 15:59+0200\n"
+"POT-Creation-Date: 2025-07-04 14:58+0200\n"
+"PO-Revision-Date: 2025-07-04 14:59+0200\n"
 "Last-Translator: Tor Ivar Johansen <tor@appresso.no>\n"
 "Language-Team: Norwegian\n"
 "Language: nb\n"
@@ -5437,12 +5437,6 @@ msgstr "Kan IKKE gå opp til avsluttende eksamen"
 msgid "No users in permission group"
 msgstr "Ingen brukere tillatelsesgruppen"
 
-#: devilry_dbcache/models.py:140
-#, python-brace-format
-msgctxt "Attempt"
-msgid "Attempt {attempt_number}"
-msgstr "Forsøk {attempt_number}"
-
 #: devilry_deadlinemanagement/templates/devilry_deadlinemanagement/deadline-bulk-multiselect-filterlistview.django.html:15
 msgid "Back to deadline-overview"
 msgstr "Tilbake til oversikt for frist"
@@ -5575,38 +5569,52 @@ msgctxt "assignment_group_multiselect_list_filter_view page_subheading"
 msgid "Select the groups you want to manage the deadline for."
 msgstr "Velg grupper hvor du vil redigere innleveringsfristen."
 
-#: devilry_email/comment_email/comment_email.py:45
-#, python-format
-msgid "You added a new comment AFTER THE DEADLINE for %(assignment_name)s"
-msgstr "Du la til en ny kommentar ETTER FRISTEN på %(assignment_name)s"
-
-#: devilry_email/comment_email/comment_email.py:49
-#, python-format
-msgid "You added a new delivery/comment for %(assignment_name)s"
-msgstr "Du la til en ny innlevering/kommentar på %(assignment_name)s"
-
-#: devilry_email/comment_email/comment_email.py:55
+#: devilry_email/comment_email/comment_email.py:46
 #, python-format
 msgid ""
-"A student added a new comment AFTER THE DEADLINE for %(assignment_name)s"
+"You added a new comment AFTER THE DEADLINE for %(assignment_name)s "
+"%(course_name)s"
 msgstr ""
-"En student har lagt til en ny kommentar ETTER FRISTEN på %(assignment_name)s"
+"Du la til en ny kommentar ETTER FRISTEN på %(assignment_name)s "
+"%(course_name)s"
 
-#: devilry_email/comment_email/comment_email.py:58
+#: devilry_email/comment_email/comment_email.py:53
 #, python-format
-msgid "A student added a new delivery/comment for %(assignment_name)s"
+msgid ""
+"You added a new delivery/comment for %(assignment_name)s %(course_name)s"
 msgstr ""
-"En student har lagt til en ny innlevering/kommentar på %(assignment_name)s"
+"Du la til en ny innlevering/kommentar på %(assignment_name)s %(course_name)s"
 
 #: devilry_email/comment_email/comment_email.py:62
 #, python-format
-msgid "An examiner added a new comment for %(assignment_name)s"
-msgstr "En retter har lagt til en ny kommentar på %(assignment_name)s"
+msgid ""
+"A student added a new comment AFTER THE DEADLINE for %(assignment_name)s "
+"%(course_name)s"
+msgstr ""
+"En student har lagt til en ny kommentar ETTER FRISTEN på %(assignment_name)s "
+"%(course_name)s"
 
-#: devilry_email/comment_email/comment_email.py:65
+#: devilry_email/comment_email/comment_email.py:69
 #, python-format
-msgid "An admin added a new comment for %(assignment_name)s"
-msgstr "En administrator har lagt til en ny kommentar på %(assignment_name)s"
+msgid ""
+"A student added a new delivery/comment for %(assignment_name)s "
+"%(course_name)s"
+msgstr ""
+"En student har lagt til en ny innlevering/kommentar på %(assignment_name)s "
+"%(course_name)s"
+
+#: devilry_email/comment_email/comment_email.py:77
+#, python-format
+msgid "An examiner added a new comment for %(assignment_name)s %(course_name)s"
+msgstr ""
+"En retter har lagt til en ny kommentar på %(assignment_name)s %(course_name)s"
+
+#: devilry_email/comment_email/comment_email.py:83
+#, python-format
+msgid "An admin added a new comment for %(assignment_name)s %(course_name)s"
+msgstr ""
+"En administrator har lagt til en ny kommentar på %(assignment_name)s "
+"%(course_name)s"
 
 #: devilry_email/deadline_email/deadline_email.py:21
 #, python-format
@@ -6226,7 +6234,7 @@ msgstr "Tilbake til feed"
 
 #: devilry_group/templates/devilry_group/feedbackfeed_examiner/feedbackfeed_examiner_edit_grade.django.html:21
 #: devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:67
-#: devilry_group/views/examiner/feedbackfeed_examiner.py:395
+#: devilry_group/views/examiner/feedbackfeed_examiner.py:396
 msgid "Edit grade"
 msgstr "Rediger karakter"
 
@@ -6738,7 +6746,15 @@ msgstr ""
 msgid "Check the box to give a passing grade"
 msgstr "Velg denne for å gi bestått karakter"
 
-#: devilry_group/views/examiner/feedbackfeed_examiner.py:504
+#: devilry_group/views/examiner/feedbackfeed_examiner.py:391
+msgid ""
+"You can only edit the grade of the last feedback. You have been redirected "
+"to the feedbackset."
+msgstr ""
+"Du kan bare redigere karakteren på den siste tilbakemeldingen. Du har blitt "
+"omdirigert til tilbakemeldingssettet."
+
+#: devilry_group/views/examiner/feedbackfeed_examiner.py:505
 msgid "Groupcomment"
 msgstr "Gruppekommentar"
 
@@ -6761,6 +6777,10 @@ msgid ""
 "most likely had access as admin or examiner previously, but the permissions "
 "have been removed, and have therefore been redirected to the frontpage."
 msgstr ""
+"Du har forsøkt å få tilgang til tilbakemeldinger for en gruppe du ikke har "
+"tilgang til. Du har sannsynligvis hatt tilgang som administrator eller "
+"retter tidligere, men rettighetene er fjernet, og du har derfor blitt "
+"omdirigert til forsiden."
 
 #: devilry_group/views/student/feedbackfeed_student.py:45
 msgid "Add delivery or question"
@@ -7499,6 +7519,11 @@ msgstr "Engelsk"
 #: project/common/settings.py:177
 msgid "Norwegian Bokmal"
 msgstr "Norsk bokmål"
+
+#, python-brace-format
+#~ msgctxt "Attempt"
+#~ msgid "Attempt {attempt_number}"
+#~ msgstr "Forsøk {attempt_number}"
 
 #~ msgctxt "devilry attempt number"
 #~ msgid "1st attempt"

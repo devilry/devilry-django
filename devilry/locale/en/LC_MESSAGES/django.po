@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-31 15:59+0200\n"
+"POT-Creation-Date: 2025-07-04 14:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -4961,12 +4961,6 @@ msgstr ""
 msgid "No users in permission group"
 msgstr ""
 
-#: devilry_dbcache/models.py:140
-#, python-brace-format
-msgctxt "Attempt"
-msgid "Attempt {attempt_number}"
-msgstr ""
-
 #: devilry_deadlinemanagement/templates/devilry_deadlinemanagement/deadline-bulk-multiselect-filterlistview.django.html:15
 msgid "Back to deadline-overview"
 msgstr ""
@@ -5097,35 +5091,41 @@ msgctxt "assignment_group_multiselect_list_filter_view page_subheading"
 msgid "Select the groups you want to manage the deadline for."
 msgstr ""
 
-#: devilry_email/comment_email/comment_email.py:45
-#, python-format
-msgid "You added a new comment AFTER THE DEADLINE for %(assignment_name)s"
-msgstr ""
-
-#: devilry_email/comment_email/comment_email.py:49
-#, python-format
-msgid "You added a new delivery/comment for %(assignment_name)s"
-msgstr ""
-
-#: devilry_email/comment_email/comment_email.py:55
+#: devilry_email/comment_email/comment_email.py:46
 #, python-format
 msgid ""
-"A student added a new comment AFTER THE DEADLINE for %(assignment_name)s"
+"You added a new comment AFTER THE DEADLINE for %(assignment_name)s "
+"%(course_name)s"
 msgstr ""
 
-#: devilry_email/comment_email/comment_email.py:58
+#: devilry_email/comment_email/comment_email.py:53
 #, python-format
-msgid "A student added a new delivery/comment for %(assignment_name)s"
+msgid ""
+"You added a new delivery/comment for %(assignment_name)s %(course_name)s"
 msgstr ""
 
 #: devilry_email/comment_email/comment_email.py:62
 #, python-format
-msgid "An examiner added a new comment for %(assignment_name)s"
+msgid ""
+"A student added a new comment AFTER THE DEADLINE for %(assignment_name)s "
+"%(course_name)s"
 msgstr ""
 
-#: devilry_email/comment_email/comment_email.py:65
+#: devilry_email/comment_email/comment_email.py:69
 #, python-format
-msgid "An admin added a new comment for %(assignment_name)s"
+msgid ""
+"A student added a new delivery/comment for %(assignment_name)s "
+"%(course_name)s"
+msgstr ""
+
+#: devilry_email/comment_email/comment_email.py:77
+#, python-format
+msgid "An examiner added a new comment for %(assignment_name)s %(course_name)s"
+msgstr ""
+
+#: devilry_email/comment_email/comment_email.py:83
+#, python-format
+msgid "An admin added a new comment for %(assignment_name)s %(course_name)s"
 msgstr ""
 
 #: devilry_email/deadline_email/deadline_email.py:21
@@ -5711,7 +5711,7 @@ msgstr ""
 
 #: devilry_group/templates/devilry_group/feedbackfeed_examiner/feedbackfeed_examiner_edit_grade.django.html:21
 #: devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:67
-#: devilry_group/views/examiner/feedbackfeed_examiner.py:395
+#: devilry_group/views/examiner/feedbackfeed_examiner.py:396
 msgid "Edit grade"
 msgstr ""
 
@@ -6181,7 +6181,13 @@ msgstr ""
 msgid "Check the box to give a passing grade"
 msgstr ""
 
-#: devilry_group/views/examiner/feedbackfeed_examiner.py:504
+#: devilry_group/views/examiner/feedbackfeed_examiner.py:391
+msgid ""
+"You can only edit the grade of the last feedback. You have been redirected "
+"to the feedbackset."
+msgstr ""
+
+#: devilry_group/views/examiner/feedbackfeed_examiner.py:505
 msgid "Groupcomment"
 msgstr ""
 
