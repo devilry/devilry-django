@@ -113,6 +113,9 @@ CACHES = {
 
 RQ_QUEUES = rq_setup.make_simple_rq_queue_setting()
 
+# RQ exception handlers
+# Uncomment to enable RQ timeout exception handler
+# RQ_EXCEPTION_HANDLERS = ['devilry.devilry_compressionutil.rq_handlers.rq_timeout_exception_handler']
 
 ############################
 #
