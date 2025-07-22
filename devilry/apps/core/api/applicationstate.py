@@ -37,6 +37,8 @@ class ReadyCheck(View):
             return
         for config_name, config in settings.RQ_QUEUES.items():
             try:
+                from redis.client import Redis
+
                 if "SENTINELS" in config:
                     from redis.sentinel import Sentinel
 
@@ -53,11 +55,9 @@ class ReadyCheck(View):
                     sentinel = Sentinel(config["SENTINELS"], sentinel_kwargs=sentinel_kwargs, **connection_kwargs)
                     connection = sentinel.master_for(
                         service_name=config["MASTER_NAME"],
-                        redis_class=redis_cls,
+                        redis_class=Redis,
                     )
                 else:
-                    from redis.client import Redis
-
                     # NOTE: Just copied from the get_redis_connection function in django_rq/queues.py, so
                     # should match the same logic.
                     connection = Redis(
