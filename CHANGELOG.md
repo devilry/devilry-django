@@ -1,3 +1,9 @@
+## 6.5.0a1 (2025-07-22)
+
+### Fix
+
+- **applicationstate**: Update readiness check for Redis to handle sentinel
+
 ## 6.5.0a0 (2025-07-22)
 
 ### Feat
