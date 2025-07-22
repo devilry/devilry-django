@@ -38,7 +38,7 @@ class ReadyCheck(View):
         for config_name, config in settings.RQ_QUEUES.items():
             try:
                 if "SENTINELS" in config:
-                    from redis.client import Sentinel
+                    from redis.sentinel import Sentinel
 
                     # NOTE: Just copied from the get_redis_connection function in django_rq/queues.py, so
                     # should match the same logic.
