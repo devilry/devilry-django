@@ -1,3 +1,9 @@
+## 6.5.0a2 (2025-07-22)
+
+### Fix
+
+- **applicationstate**: Correct import path for redis Sentinel.
+
 ## 6.5.0a1 (2025-07-22)
 
 ### Fix
