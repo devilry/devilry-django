@@ -1,3 +1,9 @@
+## 6.5.0a3 (2025-07-22)
+
+### Fix
+
+- **applicationstate**: Fix redis_cls error
+
 ## 6.5.0a2 (2025-07-22)
 
 ### Fix
