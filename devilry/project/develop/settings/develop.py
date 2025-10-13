@@ -62,10 +62,13 @@ DEVILRY_FEIDE_USERID_SEC_TO_USERNAME_SUFFIX = "uio.no"
 # EMAIL_HOST = 'localhost'
 # EMAIL_PORT = 1025
 
-# Use the devilry_developemail package to send mails.
-# mails are stored in the database and available through /djangoadmin/
-EMAIL_BACKEND = 'devilry.devilry_developemail.email_backend.DevelopEmailBackend'
-INSTALLED_APPS += ['devilry.devilry_developemail']
+# # Use the devilry_developemail package to send mails.
+# # mails are stored in the database and available through /djangoadmin/
+# EMAIL_BACKEND = 'devilry.devilry_developemail.email_backend.DevelopEmailBackend'
+# INSTALLED_APPS += ['devilry.devilry_developemail']
+
+# Use ievv_developemail package to send mails.
+EMAIL_BACKEND = "ievv_opensource.ievv_developemail.email_backend.DevelopEmailBackend"
 
 
 # DEVILRY_FRONTPAGE_HEADER_INCLUDE_TEMPLATE = 'devilry_theme3/include/includetest.django.html'
