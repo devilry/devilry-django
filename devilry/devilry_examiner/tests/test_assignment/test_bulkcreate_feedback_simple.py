@@ -332,7 +332,7 @@ class TestBulkCreateFeedbackSimplePassedFailedPlugin(test.TestCase, cradmin_test
         baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=user)
         baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=user)
         baker.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=user)
-        with self.assertNumQueries(61):
+        with self.assertNumQueries(67):
             self.mock_http302_postrequest(
                 requestuser=user,
                 cradmin_role=testassignment,

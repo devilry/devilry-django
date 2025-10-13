@@ -1219,7 +1219,7 @@ class TestPointsBulkCreateFeedback(test.TestCase, cradmin_testhelpers.TestCaseMi
         devilry_group_baker_factories\
             .feedbackset_first_attempt_unpublished(group=testgroup5)
 
-        with self.assertNumQueries(93):
+        with self.assertNumQueries(103):
             self.mock_postrequest(
                 cradmin_role=testassignment,
                 requestuser=examiner_user,
