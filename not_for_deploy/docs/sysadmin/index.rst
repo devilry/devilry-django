@@ -8,7 +8,6 @@ Devilry sysadmin docs
    gettingstarted
    authbackend
    rq
-   rq_email
    supervisord
    webserver
    sentry
