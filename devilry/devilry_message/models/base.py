@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
+import logging
 import traceback
 
 from django.conf import settings
@@ -8,7 +9,7 @@ from django.contrib.auth import get_user_model
 from django.db import models, transaction
 from django.template.loader import render_to_string
 from django.utils import timezone
-from django.utils.translation import gettext_lazy
+from django.utils.translation import gettext_lazy, pgettext_lazy
 from django.contrib.postgres.fields import ArrayField
 from django.utils import translation
 
@@ -18,6 +19,8 @@ from ievv_opensource.utils import choices_with_meta
 
 from devilry.devilry_email.utils import activate_translation_for_user
 from devilry.utils.devilry_email import send_message
+
+logger = logging.getLogger(__name__)
 
 
 class MessageQuerySet(models.QuerySet):
@@ -354,13 +357,13 @@ class MessageReceiver(models.Model):
     #:
     STATUS_CHOICES = choices_with_meta.ChoicesWithMeta(
         choices_with_meta.Choice(value='not_sent',
-                                 label=gettext_lazy('Not sent')),
+                                 label=pgettext_lazy("devilry_message", 'Not sent')),
         choices_with_meta.Choice(value='failed',
-                                 label=gettext_lazy('Failed')),
+                                 label=pgettext_lazy("devilry_message", 'Failed')),
         choices_with_meta.Choice(value='error',
-                                 label=gettext_lazy('Error')),
+                                 label=pgettext_lazy("devilry_message", 'Error')),
         choices_with_meta.Choice(value='sent',
-                                 label=gettext_lazy('Sent'))
+                                 label=pgettext_lazy("devilry_message", 'Sent'))
     )
 
     #: The status of the message.
