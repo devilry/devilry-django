@@ -245,6 +245,7 @@ class Message(models.Model):
                 self.status = self.STATUS_CHOICES.SENT.value
                 self.save()
             except Exception as exception:
+                logger.exception('Failed to send Message#%s', self.pk)
                 self.status = self.STATUS_CHOICES.ERROR.value
 
                 if 'errors' in self.status_data:
@@ -442,7 +443,7 @@ class MessageReceiver(models.Model):
         """
         send_message(self.subject, self.message_content_html, *[self.user], is_html=True)
 
-    def send(self):
+    def sync_send(self):
         """
         Simply sends a message to this receiver. This method can also be
         used to resend an email.
@@ -454,6 +455,7 @@ class MessageReceiver(models.Model):
             self.sending_success_count += 1
             self.save()
         except Exception as exception:
+            logger.exception('Failed to send Message#%s to MessageReceiver#%s', self.message_id, self.id)
             self.sending_failed_count += 1
 
             if self.sending_failed_count > settings.DEVILRY_MESSAGE_RESEND_LIMIT:
@@ -476,6 +478,15 @@ class MessageReceiver(models.Model):
                     }]
                 }
             self.save()
+
+    def send(self):
+        """
+        Send the message to this receiver.
+
+        This method uses a RQ-job to send the message asynchronously.
+        """
+        from devilry.devilry_message import rq_jobs
+        rq_jobs.async_send_message_receiver.delay(message_receiver_id=self.id)
 
     def clean_message_content_fields(self):
         """
