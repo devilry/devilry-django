@@ -2,8 +2,6 @@
 Migrating from 6.3.8 to 6.4.0
 =============================
 
-.. warning:: 6.4 is not released yet and is undergoing testing - the lastest RC release is 6.4.0rc3.
-
 Backup database and files
 #########################
 
