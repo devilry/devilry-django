@@ -24,6 +24,7 @@ Update the devilry version to ``6.4.1`` as described in :doc:`../update`.
 
 Make sure to make the following changes to settings:
 
-- ``EMAIL_BACKEND``: Set this to the value you currently have in ``DEVILRY_LOWLEVEL_EMAIL_BACKEND``.
+- ``EMAIL_BACKEND``: Set this to the value you currently have in ``DEVILRY_LOWLEVEL_EMAIL_BACKEND``. Example:
+  ``EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'``.
 - ``DEVILRY_LOWLEVEL_EMAIL_BACKEND``: Remove this setting.
 
