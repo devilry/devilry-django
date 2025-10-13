@@ -23,16 +23,21 @@ only need commitizen for releases OR to make it easy to follow
 conventional commits for your commit messages
 (see _Use conventional commits for GIT commit messages_ above).
 
-First install pipx with:
+#### If using uv (recommended):
+Make sure uv is installed - see https://docs.astral.sh/uv/getting-started/installation/
+
+Then install with:
+
+```bash
+uv tool install commitizen
+uv tool install hatch
+```
+
+#### If using pipx (deprecated):
 
 ```bash
 brew install pipx
 pipx ensurepath
-```
-
-Then install hatch and commitizen:
-
-```bash
 pipx install hatch
 pipx install commitizen
 ```
@@ -43,44 +48,28 @@ needed, but we really recommend using pipx since that is isolated.
 
 ### Install development dependencies
 
-#### Install a local python version with pyenv:
+#### If using uv (recommended):
+
+```bash
+uv python install 3.10
+uv venv
+uv pip install -e ".[dev,test,docs]"
+```
+
+#### If using pipx (deprecated):
 
 ```bash
 pyenv install 3.10
 pyenv local 3.10
-```
 
-#### Install dependencies in a virtualenv:
-
-```bash
+# Create virtualenv:
 ./recreate-virtualenv.sh
-```
 
-Alternatively, create virtualenv manually (this does the same as recreate-virtualenv.sh):
-
-```bash
-python -m venv .venv
-```
-
-the ./recreate-virtualenv.sh script is just here to make creating virtualenvs more uniform
-across different repos because some repos will require extra setup in the virtualenv
-for package authentication etc.
-
-#### Install dependencies in a virtualenv:
-
-```bash
+# Install dependencies in a virtualenv:
 source .venv/bin/activate   # enable virtualenv
 .venv/bin/pip install -e ".[dev,test,docs]"
 ```
 
-### Upgrade your local packages
-
-This will upgrade all local packages according to the constraints
-set in pyproject.toml:
-
-```bash
-.venv/bin/pip install --upgrade --upgrade-strategy=eager ".[dev,test]"
-```
 
 ### Run postgres and redis
 
