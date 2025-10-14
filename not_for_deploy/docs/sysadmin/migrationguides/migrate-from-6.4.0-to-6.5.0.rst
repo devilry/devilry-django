@@ -2,7 +2,7 @@
 Migrating from 6.4.0 to 6.5.0
 =============================
 
-.. warning:: 6.5 is not released yet and is undergoing testing - the lastest RC release is 6.5.0rc3.
+.. warning:: 6.5 is not released yet and is undergoing testing - the lastest RC release is 6.5.0a4.
 
 Backup database and files
 #########################
