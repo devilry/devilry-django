@@ -1,3 +1,13 @@
+## 6.5.0a4 (2025-10-14)
+
+## 6.4.1 (2025-10-13)
+
+### Fix
+
+- Remove RQEmailBackend
+- **devilry_message**: Translation and logging fix.
+- **message**: Make devilry_message send via RQ - thus deprecating RQEmailBackend.
+
 ## 6.5.0a3 (2025-07-22)
 
 ### Fix
