@@ -1656,7 +1656,7 @@ class TestGroupInviteRespondViewStandalone(TestCase, cradmin_testhelpers.TestCas
         invite = baker.make('core.GroupInvite', group=group,
                             sent_by=candidate.relatedstudent.user, sent_to=candidate1.relatedstudent.user)
 
-        with self.assertNumQueries(26):
+        with self.assertNumQueries(28):
             self.mock_http302_postrequest(
                 requestuser=candidate1.relatedstudent.user,
                 viewkwargs={

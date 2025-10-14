@@ -58,20 +58,17 @@ DEVILRY_FEIDE_USERID_SEC_TO_USERNAME_SUFFIX = "uio.no"
 ## In short, uncomment the settings below and run the built in smtpd server in python:
 ##      python -m smtpd -n -c DebuggingServer localhost:1025
 ## The smtpd server prints emails to stdout.
-# EMAIL_BACKEND = 'devilry.devilry_email.rq_backend.RQEmailBackend'
-# DEVILRY_LOWLEVEL_EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_HOST = 'localhost'
 # EMAIL_PORT = 1025
 
-# Use the devilry_developemail package to send mails.
-# mails are stored in the database and available through /djangoadmin/
+# # Use the devilry_developemail package to send mails.
+# # mails are stored in the database and available through /djangoadmin/
 # EMAIL_BACKEND = 'devilry.devilry_developemail.email_backend.DevelopEmailBackend'
 # INSTALLED_APPS += ['devilry.devilry_developemail']
 
-# For testing RQ email backend
-# DEVILRY_LOWLEVEL_EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEVILRY_LOWLEVEL_EMAIL_BACKEND = "ievv_opensource.ievv_developemail.email_backend.DevelopEmailBackend"
-EMAIL_BACKEND = "devilry.devilry_email.rq_backend.RQEmailBackend"
+# Use ievv_developemail package to send mails.
+EMAIL_BACKEND = "ievv_opensource.ievv_developemail.email_backend.DevelopEmailBackend"
 
 
 # DEVILRY_FRONTPAGE_HEADER_INCLUDE_TEMPLATE = 'devilry_theme3/include/includetest.django.html'

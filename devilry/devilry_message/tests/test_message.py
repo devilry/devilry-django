@@ -171,7 +171,7 @@ class TestMessage(test.TestCase):
         message = baker.make('devilry_message.Message',
                              virtual_message_receivers={'user_ids': user_ids},
                              message_type=['email'])
-        with self.assertNumQueries(44):
+        with self.assertNumQueries(62):
             message.prepare_and_send(
                 subject_generator=test_utils.SubjectTextTestGenerator(),
                 template_name='devilry_message/for_test.django.html',

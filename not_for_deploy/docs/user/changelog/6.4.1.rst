@@ -1,0 +1,12 @@
+.. _6.4.1changelog:
+
+############################
+What is new in Devilry 6.4.1
+############################
+
+
+Fixes
+#####
+- More robust email sending in background tasks. This is a low level update toke email sending more robust and easier to
+  debug.
+

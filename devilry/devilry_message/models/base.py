@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
+import logging
 import traceback
 
 from django.conf import settings
@@ -8,7 +9,7 @@ from django.contrib.auth import get_user_model
 from django.db import models, transaction
 from django.template.loader import render_to_string
 from django.utils import timezone
-from django.utils.translation import gettext_lazy
+from django.utils.translation import gettext_lazy, pgettext_lazy
 from django.contrib.postgres.fields import ArrayField
 from django.utils import translation
 
@@ -18,6 +19,8 @@ from ievv_opensource.utils import choices_with_meta
 
 from devilry.devilry_email.utils import activate_translation_for_user
 from devilry.utils.devilry_email import send_message
+
+logger = logging.getLogger(__name__)
 
 
 class MessageQuerySet(models.QuerySet):
@@ -245,6 +248,7 @@ class Message(models.Model):
                 self.status = self.STATUS_CHOICES.SENT.value
                 self.save()
             except Exception as exception:
+                logger.exception('Failed to send Message#%s', self.pk)
                 self.status = self.STATUS_CHOICES.ERROR.value
 
                 if 'errors' in self.status_data:
@@ -353,13 +357,13 @@ class MessageReceiver(models.Model):
     #:
     STATUS_CHOICES = choices_with_meta.ChoicesWithMeta(
         choices_with_meta.Choice(value='not_sent',
-                                 label=gettext_lazy('Not sent')),
+                                 label=pgettext_lazy("devilry_message", 'Not sent')),
         choices_with_meta.Choice(value='failed',
-                                 label=gettext_lazy('Failed')),
+                                 label=pgettext_lazy("devilry_message", 'Failed')),
         choices_with_meta.Choice(value='error',
-                                 label=gettext_lazy('Error')),
+                                 label=pgettext_lazy("devilry_message", 'Error')),
         choices_with_meta.Choice(value='sent',
-                                 label=gettext_lazy('Sent'))
+                                 label=pgettext_lazy("devilry_message", 'Sent'))
     )
 
     #: The status of the message.
@@ -442,7 +446,7 @@ class MessageReceiver(models.Model):
         """
         send_message(self.subject, self.message_content_html, *[self.user], is_html=True)
 
-    def send(self):
+    def sync_send(self):
         """
         Simply sends a message to this receiver. This method can also be
         used to resend an email.
@@ -454,6 +458,7 @@ class MessageReceiver(models.Model):
             self.sending_success_count += 1
             self.save()
         except Exception as exception:
+            logger.exception('Failed to send Message#%s to MessageReceiver#%s', self.message_id, self.id)
             self.sending_failed_count += 1
 
             if self.sending_failed_count > settings.DEVILRY_MESSAGE_RESEND_LIMIT:
@@ -476,6 +481,15 @@ class MessageReceiver(models.Model):
                     }]
                 }
             self.save()
+
+    def send(self):
+        """
+        Send the message to this receiver.
+
+        This method uses a RQ-job to send the message asynchronously.
+        """
+        from devilry.devilry_message import rq_jobs
+        rq_jobs.async_send_message_receiver.delay(message_receiver_id=self.id)
 
     def clean_message_content_fields(self):
         """

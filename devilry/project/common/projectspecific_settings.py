@@ -51,9 +51,9 @@ DEVILRY_IMPORTED_PERIOD_TAG_DEFAULT_PREFIX = 'x'
 #: Disable tests that require RQ to run.
 DEVILRY_SKIP_RQ_TESTS = os.environ.get('DEVILRY_SKIP_RQ_TESTS', 'False') == 'True'
 
-#: RQ email queue
-DEVILRY_RQ_EMAIL_BACKEND_QUEUENAME = 'email'
-
+#: The RQ queue name used for sending MessageReceivers by devilry_message app.
+#: This is used for ALL builtin email sending in Devilry.
+DEVILRY_MESSAGE_RQ_QUEUENAME = 'email'
 
 #: If this is set, and the ``CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND``-setting
 #: is ``False``, users will be assigned
