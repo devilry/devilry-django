@@ -4,6 +4,8 @@
 import os
 from ievv_opensource.ievv_batchframework import batchregistry
 
+from devilry.utils.report_error import report_devilry_error
+
 
 class AbstractBaseBatchAction(batchregistry.Action):
     """
@@ -48,6 +50,19 @@ class AbstractBaseBatchAction(batchregistry.Action):
         zipfile_backend.add_file(
             os.path.join(sub_path, file_name),
             comment_file.file)
+
+    @classmethod
+    def run(cls, **kwargs):
+        action = cls(**kwargs)
+        try:
+            action.execute()
+        except Exception as e:
+            report_devilry_error(
+                context=f'{cls.__module__}.{cls.__name__}',
+                message='Error executing batch action: {}'.format(str(e)),
+                exception=e,
+                user=kwargs.get('started_by')
+            )
 
     def execute(self):
         raise NotImplementedError()

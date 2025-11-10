@@ -19,6 +19,7 @@ from ievv_opensource.utils import choices_with_meta
 
 from devilry.devilry_email.utils import activate_translation_for_user
 from devilry.utils.devilry_email import send_message
+from devilry.utils.report_error import report_devilry_error
 
 logger = logging.getLogger(__name__)
 
@@ -248,7 +249,12 @@ class Message(models.Model):
                 self.status = self.STATUS_CHOICES.SENT.value
                 self.save()
             except Exception as exception:
-                logger.exception('Failed to send Message#%s', self.pk)
+                report_devilry_error(
+                    context='devilry.devilry_message.models.base.Message.prepare_and_send',
+                    message=f'Failed to send Message#{self.pk}: {exception}',
+                    exception=exception,
+                    user=self.created_by
+                )
                 self.status = self.STATUS_CHOICES.ERROR.value
 
                 if 'errors' in self.status_data:
@@ -458,7 +464,12 @@ class MessageReceiver(models.Model):
             self.sending_success_count += 1
             self.save()
         except Exception as exception:
-            logger.exception('Failed to send Message#%s to MessageReceiver#%s', self.message_id, self.id)
+            report_devilry_error(
+                context='devilry.devilry_message.models.base.MessageReceiver.sync_send',
+                message=f'Failed to send Message#{self.message_id} to MessageReceiver#{self.pk}: {exception}',
+                exception=exception,
+                user=self.user
+            )
             self.sending_failed_count += 1
 
             if self.sending_failed_count > settings.DEVILRY_MESSAGE_RESEND_LIMIT:
