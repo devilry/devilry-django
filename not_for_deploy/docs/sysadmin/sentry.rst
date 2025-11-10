@@ -41,6 +41,19 @@ Then initialize the Django integration in the ``devilry_settings.py`` file::
         # release="myapp@1.0.0",
     )
 
+
+***********************************
+Configure deeper sentry integration
+***********************************
+
+If you want to report errors that use the devilry reporting module (background tasks, etc.),
+you should add this to setings::
+
+    DEVILRY_ERROR_REPORTER_CLASS = "devilry.utils.report_error.SentryErrorReporter"
+    # .. or if you want errors in both logs and Sentry:
+    # DEVILRY_ERROR_REPORTER_CLASS = "devilry.utils.report_error.SentryWithLogsErrorReporter"
+
+
 *****************
 Settings (legacy)
 *****************
