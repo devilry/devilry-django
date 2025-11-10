@@ -1,3 +1,9 @@
+## 6.4.2 (2025-11-10)
+
+### Fix
+
+- Add a new error reporting system that can be overridden via settings.
+
 ## 6.4.1 (2025-10-13)
 
 ### Fix
