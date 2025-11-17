@@ -63,6 +63,7 @@ class AbstractBaseBatchAction(batchregistry.Action):
                 exception=e,
                 user=kwargs.get('started_by')
             )
+            raise
 
     def execute(self):
         raise NotImplementedError()
