@@ -8,6 +8,8 @@ from django.conf import settings
 from django.template.loader import render_to_string
 import html2text
 
+from devilry.utils.report_error import debug_error_trigger
+
 logger = logging.getLogger(__name__)
 
 
@@ -46,6 +48,7 @@ def send_message(subject, message, *user_objects_to_send_to, **kwargs):
         else:
             errmsg = "User {0} has no email address.".format(user.shortname)
             logger.error(errmsg)
+        debug_error_trigger(user=user, context="send_message()")
     subject = settings.EMAIL_SUBJECT_PREFIX + subject
     try:
         send_mail(subject, plain_message, settings.DEVILRY_EMAIL_DEFAULT_FROM,

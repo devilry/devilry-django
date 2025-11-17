@@ -54,6 +54,14 @@ you should add this to setings::
     # DEVILRY_ERROR_REPORTER_CLASS = "devilry.utils.report_error.SentryWithLogsErrorReporter"
 
 
+To test that the setup is working, you can use the following management command::
+
+    $ cd ~/devilrydeploy/
+    $ venv/bin/python manage.py devilry_test_rq_task fail --queue default --userid <user_id>
+
+See :doc:`rq` for more information about the management command.
+
+
 *****************
 Settings (legacy)
 *****************

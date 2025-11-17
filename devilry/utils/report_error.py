@@ -91,3 +91,35 @@ def report_devilry_error(
         ReporterClass = ErrorReporter
     reporter = ReporterClass(context=context, message=message, exception=exception, user=user)
     reporter.report()
+
+
+class FakeException(Exception):
+    pass
+
+
+def debug_error_trigger(user, context=None):
+    """
+    Function to trigger an error for testing error reporting.
+
+    Raises a FakeException if the provided user has `user.shortname` in the
+    `DEVILRY_DEBUG_ERROR_TRIGGER_USER_SHORTNAMES` setting.
+
+    Example setup in `settings.py`::
+
+        DEVILRY_DEBUG_ERROR_TRIGGER_USER_SHORTNAMES = ['thefirstsuperuser', 'theothersuperuser']
+
+    """
+    trigger_shortnames = getattr(settings, "DEVILRY_DEBUG_ERROR_TRIGGER_USER_SHORTNAMES", None)
+    if not trigger_shortnames:
+        return
+    if not user or not user.is_authenticated:
+        return
+
+    if user.shortname in trigger_shortnames:
+        errormessage = (
+            f"Debug error triggered for testing error reporting because {user.shortname} is in "
+            f"the DEVILRY_DEBUG_ERROR_TRIGGER_USER_SHORTNAMES setting."
+        )
+        if context:
+            errormessage += f" Context info: {context}"
+        raise FakeException(errormessage)
