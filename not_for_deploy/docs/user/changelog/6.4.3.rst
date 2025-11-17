@@ -1,0 +1,11 @@
+.. _6.4.3changelog:
+
+############################
+What is new in Devilry 6.4.3
+############################
+
+
+Fixes
+#####
+- Tuning related to server error reporting. This is a low level update that does not affect normal usage.
+
