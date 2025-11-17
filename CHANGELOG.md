@@ -1,3 +1,10 @@
+## 6.4.3 (2025-11-17)
+
+### Fix
+
+- Make debugging error handling setup easier.
+- **compressionutil**: Make the base action class for compression re-raise after catching exception.
+
 ## 6.4.2 (2025-11-10)
 
 ### Fix
