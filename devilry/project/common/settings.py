@@ -145,7 +145,6 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     'devilry.devilry_i18n.middleware.LocaleMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware',
     'devilry.devilry_account.middleware.LocalMiddleware',
     'allauth.account.middleware.AccountMiddleware',
 ]
