@@ -198,9 +198,9 @@ Create a ``not_for_deploy/docs/sysadmin/migrationguides/migrate-to-<NEWVERSION>.
 with update instructions for sysadmins. See the previous version for example. Skeleton:
 
 ```rst
-===========================
-Migrating from <NEWVERSION>
-===========================
+=========================
+Migrating to <NEWVERSION>
+=========================
 
 .. warning:: Always update one version at a time. Do not skip versions unless it is explicitly stated in the migration guide.
 
