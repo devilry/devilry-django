@@ -218,8 +218,8 @@ What's new?
 - Change 2
 
 
-Update devilry to <NEWVERSION>
-##############################
+Update devilry
+##############
 
 Update the devilry version to ``<NEWVERSION>`` as described in :doc:`../update`.
 ```
