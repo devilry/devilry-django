@@ -38,3 +38,8 @@ Update devilry
 ##############
 
 Update the devilry version to ``6.5.0`` as described in :doc:`../update`.
+
+After running all the steps in the update guide, run the following command::
+
+    venv/bin/python manage.py ievvtasks_customsql -i -r --app devilry_dbcache
+
