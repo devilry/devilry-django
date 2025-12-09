@@ -194,13 +194,15 @@ To translate new texts, do the following:
 
 
 ### Update docs
-Create a ``not_for_deploy/docs/sysadmin/migrationguides/migrate-from-<OLDVERSION>-to-<NEWVERSION>.rst``
+Create a ``not_for_deploy/docs/sysadmin/migrationguides/migrate-to-<NEWVERSION>.rst``
 with update instructions for sysadmins. See the previous version for example. Skeleton:
 
 ```rst
-===========================================
-Migrating from <OLDVERSION> to <NEWVERSION>
-===========================================
+===========================
+Migrating from <NEWVERSION>
+===========================
+
+.. warning:: Always update one version at a time. Do not skip versions unless it is explicitly stated in the migration guide.
 
 
 Backup database and files
