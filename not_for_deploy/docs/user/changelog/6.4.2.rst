@@ -1,0 +1,12 @@
+.. _6.4.2changelog:
+
+############################
+What is new in Devilry 6.4.2
+############################
+
+
+Fixes
+#####
+- More feature rich server error reporting. This is a low level update that does not affect normal usage, but makes
+  error reporting more flexible and easier to debug for system administrators.
+

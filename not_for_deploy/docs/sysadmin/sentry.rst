@@ -54,29 +54,14 @@ you should add this to setings::
     # DEVILRY_ERROR_REPORTER_CLASS = "devilry.utils.report_error.SentryWithLogsErrorReporter"
 
 
-*****************
-Settings (legacy)
-*****************
+To test that the setup is working, you can use the following management command::
 
-Raven was the `official legacy Python client for Sentry <https://github.com/getsentry/raven-python>`_
-that some legacy Sentry servers might still require.
+    $ cd ~/devilrydeploy/
+    $ venv/bin/python manage.py devilry_test_rq_task fail --queue default --userid <user_id>
 
-Make sure Raven is installed in Python environment::
+See :doc:`rq` for more information about the management command.
 
-    $ venv/bin/pip install raven
 
-Update the ``devilry_settings.py`` file with Sentry project info and add 
-mapping of Devilry versions::
-
-    from devilry import __version__ as devilry_version
-    
-    (...)
-    
-    INSTALLED_APPS += ['raven.contrib.django.raven_compat']
-    RAVEN_CONFIG = {
-        'dsn': 'https:project_url@sentry.example.com',
-        'release': devilry_version,
-    }
 
 ***********
 Whats next?

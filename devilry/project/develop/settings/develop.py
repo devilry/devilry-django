@@ -30,9 +30,7 @@ MIDDLEWARE = MIDDLEWARE + [
 # Django Silk
 #
 ######################
-INSTALLED_APPS += [
-    'silk'
-]
+INSTALLED_APPS += ["silk"]
 
 
 #######################################################
@@ -357,3 +355,5 @@ DEVILRY_USE_STORAGE_BACKEND_URL_FOR_FILE_DOWNLOADS = True
 
 
 DEVILRY_MEMORY_DEBUG_ENABLED = True
+
+# DEVILRY_DEBUG_ERROR_TRIGGER_USER_SHORTNAMES = ["thor@example.com", "april@example.com"]

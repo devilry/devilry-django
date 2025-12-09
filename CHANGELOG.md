@@ -1,13 +1,5 @@
 ## 6.5.0a4 (2025-10-14)
 
-## 6.4.1 (2025-10-13)
-
-### Fix
-
-- Remove RQEmailBackend
-- **devilry_message**: Translation and logging fix.
-- **message**: Make devilry_message send via RQ - thus deprecating RQEmailBackend.
-
 ## 6.5.0a3 (2025-07-22)
 
 ### Fix
@@ -50,6 +42,18 @@
 - **settings**: Remove USE_L10N and SHA1PasswordHasher as they are no longer in use
 - **tests**: Remove USE_L10N as it no longer in use.
 
+## 6.4.3 (2025-11-17)
+
+### Fix
+
+- Make debugging error handling setup easier.
+- **compressionutil**: Make the base action class for compression re-raise after catching exception.
+
+## 6.4.2 (2025-11-10)
+
+### Fix
+
+- Add a new error reporting system that can be overridden via settings.
 
 ## 6.4.1 (2025-10-13)
 

@@ -4,7 +4,7 @@
 import os
 from ievv_opensource.ievv_batchframework import batchregistry
 
-from devilry.utils.report_error import report_devilry_error
+from devilry.utils.report_error import debug_error_trigger, report_devilry_error
 
 
 class AbstractBaseBatchAction(batchregistry.Action):
@@ -55,6 +55,7 @@ class AbstractBaseBatchAction(batchregistry.Action):
     def run(cls, **kwargs):
         action = cls(**kwargs)
         try:
+            debug_error_trigger(user=kwargs.get('started_by', None), context=cls.get_name())
             action.execute()
         except Exception as e:
             report_devilry_error(

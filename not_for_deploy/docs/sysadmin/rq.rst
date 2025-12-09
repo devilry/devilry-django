@@ -77,7 +77,39 @@ Verifying the setup
 You can verify the setup by running the ``devilry_test_rq_task`` management command::
 
     $ cd ~/devilrydeploy/
-    $ venv/bin/python manage.py devilry_test_rq_task --queue default
+    $ venv/bin/python manage.py devilry_test_rq_task success --queue default
+
+You may also want to check that errors are handled correctly::
+
+    $ cd ~/devilrydeploy/
+    $ venv/bin/python manage.py devilry_test_rq_task fail --queue default
+    $ venv/bin/python manage.py devilry_test_rq_task crash --queue default
+
+The `fail` task will report a handled exception, while the `crash` task will
+simulate a worker crash. Check the logs of the RQ worker to verify that the
+errors are logged correctly. If you have setup a custom `DEVILRY_ERROR_REPORTER_CLASS`,
+the `fail` task will be reported according to the error reporter class.
+The `fail` task can also take a `--userid` argument to simulate errors
+for specific users. This is only useful if the `DEVILRY_ERROR_REPORTER_CLASS`
+is setup to report user information (e.g.: SentryErrorReporter).
+
+Furthermore, we have the `DEVILRY_DEBUG_ERROR_TRIGGER_USER_SHORTNAMES` setting that you
+can use to trigger errors for specific users. This is useful to verify that
+error reporting is working as expected for real tasks in Devilry. This is triggered
+by adding the `shortname` of users to the `DEVILRY_DEBUG_ERROR_TRIGGER_USER_SHORTNAMES` list
+in settings::
+
+    DEVILRY_DEBUG_ERROR_TRIGGER_USER_SHORTNAMES = ['myshortname1', 'myshortname2']
+
+You can then trigger errors by:
+
+- Creating a compressed file (download feedbackset) as one of the users in the list.
+- Triggering message sending (e.g.: add a comment to an assignment) where one of the users in the list is
+  a recipient of the message.
+
+.. warning:: Make sure you restart the RQ workers AND the web workers after changing this setting.
+
+.. note:: You can find the `shortname` of users in the admin/superuser interface on the users page.
 
 
 Advanced setup
