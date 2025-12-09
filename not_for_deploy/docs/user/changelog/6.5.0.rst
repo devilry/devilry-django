@@ -8,6 +8,7 @@ What is new in Devilry 6.5.0
 Fixes
 #####
 This list is not exhaustive and may change before the final release.
+
 - Update the low level web framework to Django 5.2.
 - Improve accessibility in the student and examiner interfaces.
 - Improve error reporting for background tasks.
