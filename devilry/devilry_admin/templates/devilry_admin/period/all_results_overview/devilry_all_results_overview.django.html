@@ -63,6 +63,11 @@
                         received a grading is empty.
                     {% endblocktrans %}
                 </li>
+                <li>
+                    {% blocktrans trimmed with context='devilry_admin period all results overview' %}
+                    <strong>"Number of attempts"</strong>, a worksheet that shows how many times each assignment was attempted by students, including only attempts with submitted files.
+                    {% endblocktrans %}
+                </li>
             </ul>
             <form action="{% cradmin_appurl 'download_report' %}" method="POST">
                 {% csrf_token %}

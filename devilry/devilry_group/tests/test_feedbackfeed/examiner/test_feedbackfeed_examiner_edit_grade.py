@@ -28,35 +28,35 @@ class TestEditGradeView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_published(group=testgroup)
         group_baker.feedbackset_new_attempt_published(group=testgroup, deadline_datetime=timezone.now())
-        with self.assertRaises(Http404):
-            self.mock_http200_getrequest_htmls(
-                cradmin_role=testgroup,
-                viewkwargs={
-                    'pk': testfeedbackset.id
-                })
+
+        self.mock_http302_getrequest(
+            cradmin_role=testgroup,
+            viewkwargs={
+                'pk': testfeedbackset.id
+            })
 
     def test_raises_404_one_feedbackset_unpublished(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
-        with self.assertRaises(Http404):
-            self.mock_http200_getrequest_htmls(
-                cradmin_role=testgroup,
-                viewkwargs={
-                    'pk': testfeedbackset.id
-                })
+
+        self.mock_http302_getrequest(
+            cradmin_role=testgroup,
+            viewkwargs={
+                'pk': testfeedbackset.id
+            })
 
     def test_raises_404_last_feedbackset_is_not_last_published_feedbackset(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
         group_baker.feedbackset_first_attempt_published(group=testgroup)
         unpublished_feedbackset = group_baker.feedbackset_new_attempt_unpublished(group=testgroup, deadline_datetime=timezone.now())
-        with self.assertRaises(Http404):
-            self.mock_http200_getrequest_htmls(
-                cradmin_role=testgroup,
-                viewkwargs={
-                    'pk': unpublished_feedbackset.id
-                })
+
+        self.mock_http302_getrequest(
+            cradmin_role=testgroup,
+            viewkwargs={
+                'pk': unpublished_feedbackset.id
+            })
 
     def test_points_plugin_help_text(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',

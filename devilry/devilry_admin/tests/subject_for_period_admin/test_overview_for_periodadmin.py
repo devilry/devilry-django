@@ -1,14 +1,9 @@
-
-
+from cradmin_legacy import cradmin_testhelpers, crinstance
 from django.conf import settings
 from django.test import TestCase
-from cradmin_legacy import cradmin_testhelpers
-from cradmin_legacy import crinstance
 from model_bakery import baker
 
-from devilry.apps.core.baker_recipes import ACTIVE_PERIOD_START, ACTIVE_PERIOD_END
 from devilry.devilry_admin.views.subject_for_period_admin import overview_for_periodadmin
-from devilry.utils import datetimeutils
 
 
 class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -34,10 +29,7 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
         testuser = baker.make(settings.AUTH_USER_MODEL)
         baker.make('devilry_account.PermissionGroupUser',
                    user=testuser, permissiongroup=periodpermissiongroup.permissiongroup)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testperiod.parentnode,
-            requestuser = testuser
-        )
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod.parentnode, requestuser=testuser)
         self.assertEqual('Test period',
                          mockresponse.selector.one(
                              '.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
@@ -60,8 +52,10 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testperiod.parentnode,
             requestuser=testuser
         )
-        periodlist = [x.alltext_normalized for x in
-                      mockresponse.selector.list('.cradmin-legacy-listbuilder-itemvalue-titledescription-title') ]
+        periodlist = [
+            x.alltext_normalized
+            for x in mockresponse.selector.list(".cradmin-legacy-listbuilder-itemvalue-titledescription-title")
+        ]
         self.assertEqual(['Test period 2', 'Test period'], periodlist)
 
     def test_periodlist_no_periods(self):
@@ -105,13 +99,14 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
         testuser = baker.make(settings.AUTH_USER_MODEL)
         periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
                                            period=testperiod)
-        baker.make('devilry_account.PermissionGroupUser',
-                   user=testuser, permissiongroup=periodpermissiongroup.permissiongroup)
-        with self.settings(DATETIME_FORMAT=datetimeutils.ISODATETIME_DJANGOFORMAT, USE_L10N=False):
-            mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject, requestuser=testuser)
-        self.assertEqual(datetimeutils.isoformat_noseconds(ACTIVE_PERIOD_START),
-                         mockresponse.selector.one(
-                             '.devilry-cradmin-perioditemvalue-start-time-value').alltext_normalized)
+        baker.make(
+            "devilry_account.PermissionGroupUser", user=testuser, permissiongroup=periodpermissiongroup.permissiongroup
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject, requestuser=testuser)
+        self.assertEqual(
+            "Sat Jan 1 2000 00:00",
+            mockresponse.selector.one(".devilry-cradmin-perioditemvalue-start-time-value").alltext_normalized,
+        )
 
     def test_periodlist_itemrendering_end_time(self):
         testsubject = baker.make('core.Subject')
@@ -119,13 +114,14 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
                                        parentnode=testsubject)
         testuser = baker.make(settings.AUTH_USER_MODEL)
         periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup', period=testperiod)
-        baker.make('devilry_account.PermissionGroupUser',
-                   user=testuser, permissiongroup=periodpermissiongroup.permissiongroup)
-        with self.settings(DATETIME_FORMAT=datetimeutils.ISODATETIME_DJANGOFORMAT, USE_L10N=False):
-            mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject, requestuser=testuser)
-        self.assertEqual(datetimeutils.isoformat_noseconds(ACTIVE_PERIOD_END),
-                         mockresponse.selector.one(
-                             '.devilry-cradmin-perioditemvalue-end-time-value').alltext_normalized)
+        baker.make(
+            "devilry_account.PermissionGroupUser", user=testuser, permissiongroup=periodpermissiongroup.permissiongroup
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject, requestuser=testuser)
+        self.assertEqual(
+            "Fri Dec 31 5999 23:59",
+            mockresponse.selector.one(".devilry-cradmin-perioditemvalue-end-time-value").alltext_normalized,
+        )
 
     def test_periodlist_ordering(self):
         testsubject = baker.make('core.Subject')

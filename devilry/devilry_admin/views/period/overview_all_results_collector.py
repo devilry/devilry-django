@@ -134,6 +134,25 @@ class RelatedStudentResults(object):
         if not cached_data.last_published_feedbackset_is_last_feedbackset:
             return 0
         return cached_data.last_published_feedbackset.grading_points
+    
+    def get_number_of_attempts_for_assignment(self, assignment_id):
+        """
+        Get the number of attempts the student has made on the assignment.
+
+        An attempt is defined as a delivery with a file upload or a comment.
+
+        Args:
+            assignment_id: id of the Assignment to get the number of attempts for.
+
+        Returns:
+            (int): The number of attempts made by the student on the assignment.
+        """
+        if not self.student_is_registered_on_assignment(assignment_id=assignment_id):
+            return 0
+        cached_data = self.cached_data_dict[assignment_id]
+        if not cached_data.public_student_attempts_with_delivered_files:
+            return 0
+        return cached_data.public_student_attempts_with_delivered_files
 
     def get_total_result(self):
         """
@@ -245,7 +264,8 @@ class PeriodAllResultsCollector(object):
                 'assignment_group__cached_data__last_feedbackset__group',
                 'assignment_group__cached_data__last_feedbackset__group__parentnode',
                 'assignment_group__cached_data__last_feedbackset',
-                'assignment_group__cached_data__last_published_feedbackset')
+                'assignment_group__cached_data__last_published_feedbackset'
+            )
 
     def __get_relatedstudents(self):
         """

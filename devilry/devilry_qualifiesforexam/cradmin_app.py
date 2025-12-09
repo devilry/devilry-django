@@ -49,6 +49,11 @@ class App(crapp.App):
             name='print-status'
         ),
         crapp.Url(
+            r'download-status-csv/(?P<statusid>\d+)$',
+            qualification_preview_view.DownloadCsvView.as_view(),
+            name='download-status-csv'
+        ),
+        crapp.Url(
             r'^retract-status/(?P<statusid>\d+)$',
             qualification_preview_view.StatusRetractView.as_view(),
             name='retract-status'

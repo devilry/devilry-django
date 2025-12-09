@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-31 15:59+0200\n"
-"PO-Revision-Date: 2025-03-31 15:59+0200\n"
+"POT-Creation-Date: 2025-07-22 08:33+0200\n"
+"PO-Revision-Date: 2025-07-22 08:36+0200\n"
 "Last-Translator: Tor Ivar Johansen <tor@appresso.no>\n"
 "Language-Team: Norwegian\n"
 "Language: nb\n"
@@ -341,20 +341,20 @@ msgstr ""
 "Oppgaven har studenter. Du kan ikke kopiere og bruke dette på oppgaver med "
 "studenter."
 
-#: apps/core/models/assignment_group.py:996
+#: apps/core/models/assignment_group.py:997
 #: apps/core/templates/devilry_core/templatetags/multiple-candidates-long-displayname.django.html:8
 #: apps/core/templates/devilry_core/templatetags/multiple-candidates-short-displayname.django.html:8
 msgctxt "core assignmentgroup"
 msgid "no students in group"
 msgstr "ingen studenter i gruppen"
 
-#: apps/core/models/assignment_group.py:1000
+#: apps/core/models/assignment_group.py:1001
 #, python-format
 msgctxt "core assignmentgroup"
 msgid "group#%(groupid)s - no students in group"
 msgstr "gruppe#%(groupid)s - ingen studenter i gruppen"
 
-#: apps/core/models/assignment_group.py:1296
+#: apps/core/models/assignment_group.py:1297
 msgid ""
 "Cannot merge self into target, self and target is not part of same "
 "AssignmentGroup"
@@ -362,7 +362,7 @@ msgstr ""
 "Kan ikke flette seg selv med målet, seg selv og målet er ikke en del av "
 "samme oppgave gruppe (AssignmentGroup)"
 
-#: apps/core/models/assignment_group.py:1349
+#: apps/core/models/assignment_group.py:1350
 msgid "Cannot merge less than 2 groups"
 msgstr "Kan ikke flette mindre enn 2 grupper"
 
@@ -749,13 +749,13 @@ msgid "Is this your primary email?"
 msgstr "Er dette din primære e-post?"
 
 #: devilry_account/models.py:717 devilry_account/models.py:776
-#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:100
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:118
 #: devilry_student/cradminextensions/columntypes.py:79
 msgid "No"
 msgstr "Nei"
 
 #: devilry_account/models.py:718 devilry_account/models.py:777
-#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:75
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:93
 #: devilry_student/cradminextensions/columntypes.py:78
 msgid "Yes"
 msgstr "Ja"
@@ -2215,8 +2215,8 @@ msgstr ""
 "på tvers av de valgte oppgavene."
 
 #: devilry_admin/templates/devilry_admin/assignment/students/create_groups/grading_points_based/select-assignments.django.html:43
-#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:66
-#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:91
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:84
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:109
 msgid "NOTE"
 msgstr "NOTAT"
 
@@ -2829,7 +2829,16 @@ msgstr ""
 "verdier (0 eller 1). Feltene for hver oppgave hvor studenten ikke har fått "
 "noen poeng er blanke."
 
-#: devilry_admin/templates/devilry_admin/period/all_results_overview/devilry_all_results_overview.django.html:71
+#: devilry_admin/templates/devilry_admin/period/all_results_overview/devilry_all_results_overview.django.html:68
+msgid ""
+"<strong>\"Number of attempts\"</strong>, a worksheet that shows how many "
+"times each assignment was attempted by students, including only attempts "
+"with submitted files."
+msgstr ""
+"<strong>\"Antall forsøk\"</strong>, et Excel-ark som viser antall forsøk "
+"gjort på en oppgave , inkludert forsøk med tilknyttede filopplastinger."
+
+#: devilry_admin/templates/devilry_admin/period/all_results_overview/devilry_all_results_overview.django.html:76
 msgid "Download results"
 msgstr "Last ned resultater"
 
@@ -3129,7 +3138,7 @@ msgstr "Oversikt av alle resultater"
 #: devilry_admin/templates/devilry_admin/period/overview.django.html:115
 #: devilry_qualifiesforexam/tablebuilder/tablebuilder.py:33
 #: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/includes/qualification_table.django.html:9
-#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:58
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:76
 #: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:10
 msgid "Qualified for final exams"
 msgstr "Kvalifisert til avsluttende eksamen"
@@ -4215,18 +4224,22 @@ msgctxt "devilry report semesters assignment status"
 msgid "Waiting for feedback"
 msgstr "Venter på tilbakemelding"
 
-#: devilry_admin/views/period/all_results_generator.py:124
+#: devilry_admin/views/period/all_results_generator.py:141
 msgid "Grades"
 msgstr "Karakterer"
 
-#: devilry_admin/views/period/all_results_generator.py:125
+#: devilry_admin/views/period/all_results_generator.py:142
 #: devilry_group/views/examiner/feedbackfeed_examiner.py:75
 msgid "Points"
 msgstr "Poeng"
 
-#: devilry_admin/views/period/all_results_generator.py:126
+#: devilry_admin/views/period/all_results_generator.py:143
 msgid "Passed Failed"
 msgstr "Bestått Ikke-bestått"
+
+#: devilry_admin/views/period/all_results_generator.py:144
+msgid "Number of attempts"
+msgstr "Antall forsøk"
 
 #: devilry_admin/views/period/createassignment.py:50
 msgid "Type the name of your assignment."
@@ -5437,12 +5450,6 @@ msgstr "Kan IKKE gå opp til avsluttende eksamen"
 msgid "No users in permission group"
 msgstr "Ingen brukere tillatelsesgruppen"
 
-#: devilry_dbcache/models.py:140
-#, python-brace-format
-msgctxt "Attempt"
-msgid "Attempt {attempt_number}"
-msgstr "Forsøk {attempt_number}"
-
 #: devilry_deadlinemanagement/templates/devilry_deadlinemanagement/deadline-bulk-multiselect-filterlistview.django.html:15
 msgid "Back to deadline-overview"
 msgstr "Tilbake til oversikt for frist"
@@ -5575,38 +5582,52 @@ msgctxt "assignment_group_multiselect_list_filter_view page_subheading"
 msgid "Select the groups you want to manage the deadline for."
 msgstr "Velg grupper hvor du vil redigere innleveringsfristen."
 
-#: devilry_email/comment_email/comment_email.py:45
-#, python-format
-msgid "You added a new comment AFTER THE DEADLINE for %(assignment_name)s"
-msgstr "Du la til en ny kommentar ETTER FRISTEN på %(assignment_name)s"
-
-#: devilry_email/comment_email/comment_email.py:49
-#, python-format
-msgid "You added a new delivery/comment for %(assignment_name)s"
-msgstr "Du la til en ny innlevering/kommentar på %(assignment_name)s"
-
-#: devilry_email/comment_email/comment_email.py:55
+#: devilry_email/comment_email/comment_email.py:46
 #, python-format
 msgid ""
-"A student added a new comment AFTER THE DEADLINE for %(assignment_name)s"
+"You added a new comment AFTER THE DEADLINE for %(assignment_name)s "
+"%(course_name)s"
 msgstr ""
-"En student har lagt til en ny kommentar ETTER FRISTEN på %(assignment_name)s"
+"Du la til en ny kommentar ETTER FRISTEN på %(assignment_name)s "
+"%(course_name)s"
 
-#: devilry_email/comment_email/comment_email.py:58
+#: devilry_email/comment_email/comment_email.py:53
 #, python-format
-msgid "A student added a new delivery/comment for %(assignment_name)s"
+msgid ""
+"You added a new delivery/comment for %(assignment_name)s %(course_name)s"
 msgstr ""
-"En student har lagt til en ny innlevering/kommentar på %(assignment_name)s"
+"Du la til en ny innlevering/kommentar på %(assignment_name)s %(course_name)s"
 
 #: devilry_email/comment_email/comment_email.py:62
 #, python-format
-msgid "An examiner added a new comment for %(assignment_name)s"
-msgstr "En retter har lagt til en ny kommentar på %(assignment_name)s"
+msgid ""
+"A student added a new comment AFTER THE DEADLINE for %(assignment_name)s "
+"%(course_name)s"
+msgstr ""
+"En student har lagt til en ny kommentar ETTER FRISTEN på %(assignment_name)s "
+"%(course_name)s"
 
-#: devilry_email/comment_email/comment_email.py:65
+#: devilry_email/comment_email/comment_email.py:69
 #, python-format
-msgid "An admin added a new comment for %(assignment_name)s"
-msgstr "En administrator har lagt til en ny kommentar på %(assignment_name)s"
+msgid ""
+"A student added a new delivery/comment for %(assignment_name)s "
+"%(course_name)s"
+msgstr ""
+"En student har lagt til en ny innlevering/kommentar på %(assignment_name)s "
+"%(course_name)s"
+
+#: devilry_email/comment_email/comment_email.py:77
+#, python-format
+msgid "An examiner added a new comment for %(assignment_name)s %(course_name)s"
+msgstr ""
+"En retter har lagt til en ny kommentar på %(assignment_name)s %(course_name)s"
+
+#: devilry_email/comment_email/comment_email.py:83
+#, python-format
+msgid "An admin added a new comment for %(assignment_name)s %(course_name)s"
+msgstr ""
+"En administrator har lagt til en ny kommentar på %(assignment_name)s "
+"%(course_name)s"
 
 #: devilry_email/deadline_email/deadline_email.py:21
 #, python-format
@@ -6226,7 +6247,7 @@ msgstr "Tilbake til feed"
 
 #: devilry_group/templates/devilry_group/feedbackfeed_examiner/feedbackfeed_examiner_edit_grade.django.html:21
 #: devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:67
-#: devilry_group/views/examiner/feedbackfeed_examiner.py:395
+#: devilry_group/views/examiner/feedbackfeed_examiner.py:396
 msgid "Edit grade"
 msgstr "Rediger karakter"
 
@@ -6738,7 +6759,15 @@ msgstr ""
 msgid "Check the box to give a passing grade"
 msgstr "Velg denne for å gi bestått karakter"
 
-#: devilry_group/views/examiner/feedbackfeed_examiner.py:504
+#: devilry_group/views/examiner/feedbackfeed_examiner.py:391
+msgid ""
+"You can only edit the grade of the last feedback. You have been redirected "
+"to the feedbackset."
+msgstr ""
+"Du kan bare redigere karakteren på den siste tilbakemeldingen. Du har blitt "
+"omdirigert til tilbakemeldingssettet."
+
+#: devilry_group/views/examiner/feedbackfeed_examiner.py:505
 msgid "Groupcomment"
 msgstr "Gruppekommentar"
 
@@ -6761,6 +6790,10 @@ msgid ""
 "most likely had access as admin or examiner previously, but the permissions "
 "have been removed, and have therefore been redirected to the frontpage."
 msgstr ""
+"Du har forsøkt å få tilgang til tilbakemeldinger for en gruppe du ikke har "
+"tilgang til. Du har sannsynligvis hatt tilgang som administrator eller "
+"retter tidligere, men rettighetene er fjernet, og du har derfor blitt "
+"omdirigert til forsiden."
 
 #: devilry_group/views/student/feedbackfeed_student.py:45
 msgid "Add delivery or question"
@@ -6896,6 +6929,7 @@ msgid "Qualified for final exam statuses"
 msgstr "Kvalifisert til å se status for slutteksamener"
 
 #: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/base.django.html:16
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:44
 msgid "Back to mainpage"
 msgstr "Tilbake til hovedside"
 
@@ -6921,55 +6955,59 @@ msgstr "Klar"
 msgid "Not ready"
 msgstr "Ikke klar"
 
-#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:39
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:48
 msgid "Print qualified list"
 msgstr "Skriv ut godkjentliste"
 
-#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:43
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:52
+msgid "Download results as CSV"
+msgstr "Last ned godkjentliste (CSV)"
+
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:61
 #: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:58
 msgctxt "qualifies-for-exam-order-by-lastname"
 msgid "Order by"
 msgstr "Sorter på"
 
-#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:46
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:64
 #: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:61
 msgctxt "qualifies-for-exam-order-by-lastname"
 msgid "Last name"
 msgstr "Etternavn"
 
-#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:49
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:67
 #: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:64
 msgctxt "qualifies-for-exam-order-by-fullname"
 msgid "Full name"
 msgstr "Fullt navn"
 
-#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:52
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:70
 #: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:67
 msgctxt "qualifies-for-exam-order-by-username"
 msgid "Username"
 msgstr "Brukernavn"
 
-#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:62
-#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:87
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:80
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:105
 msgid "LASTNAME"
 msgstr "ETTERNAVN"
 
-#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:63
-#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:88
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:81
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:106
 msgid "FULL NAME"
 msgstr "FULLT NAVN"
 
-#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:64
-#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:89
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:82
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:107
 msgid "USERNAME"
 msgstr "BRUKERNAVN"
 
-#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:65
-#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:90
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:83
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:108
 msgid "CAN TAKE EXAM"
 msgstr "KAN TA EKSAMEN"
 
-#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:83
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:101
 msgid "NOT qualified for final exams"
 msgstr "Kan IKKE gå opp til avsluttende eksamen"
 
@@ -7027,7 +7065,7 @@ msgstr "Status (klar)"
 
 #: devilry_qualifiesforexam/views/list_statuses_view.py:55
 msgid "Status (not ready)"
-msgstr "Stauts (ikke klar)"
+msgstr "Status (ikke klar)"
 
 #: devilry_qualifiesforexam/views/list_statuses_view.py:92
 msgid "No status has been created for this period yet."
@@ -7077,19 +7115,19 @@ msgstr ""
 "Velg et av alternativene fra listen. Hvert alternativ starter som slutter "
 "med en forhåndsvisning av resultatene, før du får muligheten til å lagre"
 
-#: devilry_qualifiesforexam/views/qualification_preview_view.py:305
+#: devilry_qualifiesforexam/views/qualification_preview_view.py:329
 msgid "Provide a message as to why the Status needs to be retracted."
 msgstr "Gi en beskjed om hvorfor Statusen må trekkes tilbake."
 
-#: devilry_qualifiesforexam/views/qualification_preview_view.py:311
+#: devilry_qualifiesforexam/views/qualification_preview_view.py:335
 msgid "Message"
 msgstr "Beskjed"
 
-#: devilry_qualifiesforexam/views/qualification_preview_view.py:328
+#: devilry_qualifiesforexam/views/qualification_preview_view.py:352
 msgid "Why is the status retracted?"
 msgstr "Hvorfor er denne statusen trukket tilbake?"
 
-#: devilry_qualifiesforexam/views/qualification_preview_view.py:371
+#: devilry_qualifiesforexam/views/qualification_preview_view.py:395
 msgid "Cannot retract status without a message."
 msgstr "Kan ikke trekke tilbake en status uten en beskjed."
 
@@ -7499,6 +7537,11 @@ msgstr "Engelsk"
 #: project/common/settings.py:177
 msgid "Norwegian Bokmal"
 msgstr "Norsk bokmål"
+
+#, python-brace-format
+#~ msgctxt "Attempt"
+#~ msgid "Attempt {attempt_number}"
+#~ msgstr "Forsøk {attempt_number}"
 
 #~ msgctxt "devilry attempt number"
 #~ msgid "1st attempt"

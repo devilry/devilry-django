@@ -62,29 +62,6 @@ To test that the setup is working, you can use the following management command:
 See :doc:`rq` for more information about the management command.
 
 
-*****************
-Settings (legacy)
-*****************
-
-Raven was the `official legacy Python client for Sentry <https://github.com/getsentry/raven-python>`_
-that some legacy Sentry servers might still require.
-
-Make sure Raven is installed in Python environment::
-
-    $ venv/bin/pip install raven
-
-Update the ``devilry_settings.py`` file with Sentry project info and add 
-mapping of Devilry versions::
-
-    from devilry import __version__ as devilry_version
-    
-    (...)
-    
-    INSTALLED_APPS += ['raven.contrib.django.raven_compat']
-    RAVEN_CONFIG = {
-        'dsn': 'https:project_url@sentry.example.com',
-        'release': devilry_version,
-    }
 
 ***********
 Whats next?

@@ -1,17 +1,13 @@
-
 from unittest import mock
+
+from cradmin_legacy import cradmin_testhelpers, crinstance
 from django.conf import settings
 from django.test import TestCase
-from cradmin_legacy import cradmin_testhelpers
-from cradmin_legacy import crinstance
 from model_bakery import baker
 
 from devilry.apps.core.models import Assignment
-from devilry.apps.core.baker_recipes import ASSIGNMENT_ACTIVEPERIOD_START_FIRST_DEADLINE, ACTIVE_PERIOD_START
-from devilry.devilry_account.models import PermissionGroup
-from devilry.devilry_admin.views.period import overview
 from devilry.devilry_account import models as account_models
-from devilry.utils import datetimeutils
+from devilry.devilry_admin.views.period import overview
 
 
 class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -177,23 +173,26 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_assignmentlist_itemrendering_first_deadline(self):
         testperiod = baker.make_recipe('devilry.apps.core.period_active')
         periodadmin_user = self.__make_period_admin_user(period=testperiod)
-        baker.make_recipe('devilry.apps.core.assignment_activeperiod_start', parentnode=testperiod)
-        with self.settings(DATETIME_FORMAT=datetimeutils.ISODATETIME_DJANGOFORMAT, USE_L10N=False):
-            mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod, requestuser=periodadmin_user)
-        self.assertEqual(datetimeutils.isoformat_noseconds(ASSIGNMENT_ACTIVEPERIOD_START_FIRST_DEADLINE),
-                         mockresponse.selector.one(
-                             '.devilry-admin-period-overview-assignment-first-deadline-value').alltext_normalized)
+        baker.make_recipe("devilry.apps.core.assignment_activeperiod_start", parentnode=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod, requestuser=periodadmin_user)
+        self.assertEqual(
+            "Sat Jan 15 2000 23:59",
+            mockresponse.selector.one(
+                ".devilry-admin-period-overview-assignment-first-deadline-value"
+            ).alltext_normalized,
+        )
 
     def test_assignmentlist_itemrendering_publishing_time(self):
         testperiod = baker.make_recipe('devilry.apps.core.period_active')
         periodadmin_user = self.__make_period_admin_user(period=testperiod)
-        baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                          parentnode=testperiod)
-        with self.settings(DATETIME_FORMAT=datetimeutils.ISODATETIME_DJANGOFORMAT, USE_L10N=False):
-            mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod, requestuser=periodadmin_user)
-        self.assertEqual(datetimeutils.isoformat_noseconds(ACTIVE_PERIOD_START),
-                         mockresponse.selector.one(
-                             '.devilry-admin-period-overview-assignment-publishing-time-value').alltext_normalized)
+        baker.make_recipe("devilry.apps.core.assignment_activeperiod_start", parentnode=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod, requestuser=periodadmin_user)
+        self.assertEqual(
+            "Sat Jan 1 2000 00:00",
+            mockresponse.selector.one(
+                ".devilry-admin-period-overview-assignment-publishing-time-value"
+            ).alltext_normalized,
+        )
 
     def test_assignmentlist_ordering(self):
         testperiod = baker.make_recipe('devilry.apps.core.period_active')

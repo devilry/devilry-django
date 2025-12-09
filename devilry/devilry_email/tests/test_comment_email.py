@@ -116,7 +116,7 @@ class TestStudentCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
         for outbox in mail.outbox:
             self.assertEqual(
                 htmls.S(outbox.message().as_string()).one('.devilry_email_comment_assignment').alltext_normalized,
-                'Assignment: {}'.format(testassignment.long_name)
+                'Assignment: {} - {}'.format(testassignment.long_name, testassignment.subject.short_name)
             )
             self.assertEqual(
                 htmls.S(outbox.message().as_string()).one('.devilry_email_comment_text').alltext_normalized,
@@ -201,8 +201,9 @@ class TestStudentCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
         self.assertEqual(len(mail.outbox), 2)
         self.assertEqual(
             mail.outbox[0].subject,
-            '[Devilry] A student added a new comment AFTER THE DEADLINE for {}'.format(
-                test_feedbackset.group.parentnode.long_name))
+            '[Devilry] A student added a new comment AFTER THE DEADLINE for {} {}'.format(
+                test_feedbackset.group.parentnode.long_name,
+                test_feedbackset.group.subject.short_name))
 
     def test_send_student_comment_before_deadline_email_everyone_except_comment_poster_subject(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -231,8 +232,9 @@ class TestStudentCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
         self.assertEqual(len(mail.outbox), 2)
         self.assertEqual(
             mail.outbox[0].subject,
-            '[Devilry] A student added a new delivery/comment for {}'.format(
-                test_feedbackset.group.parentnode.long_name))
+            '[Devilry] A student added a new delivery/comment for {} {}'.format(
+                test_feedbackset.group.parentnode.long_name,
+                test_feedbackset.group.subject.short_name))
 
     def test_send_student_comment_after_deadline_email_to_comment_poster_subject(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -260,8 +262,9 @@ class TestStudentCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
         self.assertEqual(len(mail.outbox), 2)
         self.assertEqual(
             mail.outbox[1].subject,
-            '[Devilry] You added a new comment AFTER THE DEADLINE for {}'.format(
-                test_feedbackset.group.parentnode.long_name))
+            '[Devilry] You added a new comment AFTER THE DEADLINE for {} {}'.format(
+                test_feedbackset.group.parentnode.long_name,
+                test_feedbackset.group.subject.short_name))
 
     def test_send_student_comment_before_deadline_email_to_comment_poster_subject(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -290,8 +293,9 @@ class TestStudentCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
         self.assertEqual(len(mail.outbox), 2)
         self.assertEqual(
             mail.outbox[1].subject,
-            '[Devilry] You added a new delivery/comment for {}'.format(
-                test_feedbackset.group.parentnode.long_name))
+            '[Devilry] You added a new delivery/comment for {} {}'.format(
+                test_feedbackset.group.parentnode.long_name,
+                test_feedbackset.group.subject.short_name))
 
     def test_send_student_comment_message_and_message_receivers(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -351,8 +355,9 @@ class TestStudentCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(
             mail.outbox[0].subject,
-            '[Devilry] An examiner added a new comment for {}'.format(
-                test_feedbackset.group.parentnode.long_name))
+            '[Devilry] An examiner added a new comment for {} {}'.format(
+                test_feedbackset.group.parentnode.long_name,
+                test_feedbackset.group.subject.short_name))
 
     def test_admin_comment_post_subject(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -380,8 +385,9 @@ class TestStudentCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(
             mail.outbox[0].subject,
-            '[Devilry] An admin added a new comment for {}'.format(
-                test_feedbackset.group.parentnode.long_name))
+            '[Devilry] An admin added a new comment for {} {}'.format(
+                test_feedbackset.group.parentnode.long_name,
+                test_feedbackset.group.subject.short_name))
 
 
 class TestExaminerNotAssignedCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
@@ -505,8 +511,9 @@ class TestExaminerNotAssignedCommentEmail(TestCommentEmailForUsersMixin, test.Te
         self.assertIn(mail.outbox[1].recipients()[0], ['period_admin@example.com', 'subject_admin@example.com'])
         self.assertEqual(
             mail.outbox[0].subject,
-            '[Devilry] A student added a new comment AFTER THE DEADLINE for {}'.format(
-                test_feedbackset.group.parentnode.long_name))
+            '[Devilry] A student added a new comment AFTER THE DEADLINE for {} {}'.format(
+                test_feedbackset.group.parentnode.long_name,
+                test_feedbackset.group.subject.short_name))
 
     def test_send_examiner_comment_no_examiner_subject_from_student_before_deadline(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -535,8 +542,9 @@ class TestExaminerNotAssignedCommentEmail(TestCommentEmailForUsersMixin, test.Te
         self.assertIn(mail.outbox[1].recipients()[0], ['period_admin@example.com', 'subject_admin@example.com'])
         self.assertEqual(
             mail.outbox[0].subject,
-            '[Devilry] A student added a new delivery/comment for {}'.format(
-                test_feedbackset.group.parentnode.long_name))
+            '[Devilry] A student added a new delivery/comment for {} {}'.format(
+                test_feedbackset.group.parentnode.long_name,
+                test_feedbackset.group.subject.short_name))
 
     def test_send_examiner_comment_no_examiner_message_and_message_receivers_created(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -653,8 +661,9 @@ class TestExaminerNotAssignedCommentEmail(TestCommentEmailForUsersMixin, test.Te
         self.assertIn(mail.outbox[1].recipients()[0], ['period_admin@example.com', 'subject_admin@example.com'])
         self.assertEqual(
             mail.outbox[0].subject,
-            '[Devilry] An admin added a new comment for {}'.format(
-                test_feedbackset.group.parentnode.long_name)
+            '[Devilry] An admin added a new comment for {} {}'.format(
+                test_feedbackset.group.parentnode.long_name,
+                test_feedbackset.group.subject.short_name)
         )
 
     def test_send_examiner_no_examiner_admin_empty_comment_skipped(self):
@@ -841,7 +850,7 @@ class TestExaminerNotAssignedCommentEmail(TestCommentEmailForUsersMixin, test.Te
         for outbox in mail.outbox:
             self.assertEqual(
                 htmls.S(outbox.message().as_string()).one('.devilry_email_comment_assignment').alltext_normalized,
-                'Assignment: {}'.format(testassignment.long_name)
+                'Assignment: {} - {}'.format(testassignment.long_name, testassignment.subject.short_name)
             )
             self.assertEqual(
                 htmls.S(outbox.message().as_string()).one('.devilry_email_comment_no_examiner').alltext_normalized,
@@ -957,6 +966,12 @@ class TestExaminerCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
             before_original_deadline=before_original_deadline)
 
         self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].recipients(), ['examiner@example.com'])
+        self.assertEqual(
+            mail.outbox[0].subject,
+            '[Devilry] A student added a new comment AFTER THE DEADLINE for {} {}'.format(
+                test_feedbackset.group.parentnode.long_name,
+                test_feedbackset.group.subject.short_name))
 
     def test_send_examiner_comment_body(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -985,7 +1000,7 @@ class TestExaminerCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
         for outbox in mail.outbox:
             self.assertEqual(
                 htmls.S(outbox.message().as_string()).one('.devilry_email_comment_assignment').alltext_normalized,
-                'Assignment: {}'.format(testassignment.long_name)
+                'Assignment: {} - {}'.format(testassignment.long_name, testassignment.subject.short_name)
             )
             self.assertFalse(htmls.S(outbox.message().as_string()).exists('.devilry_email_comment_no_examiner'))
             self.assertEqual(
@@ -1069,8 +1084,9 @@ class TestExaminerCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
         self.assertEqual(mail.outbox[0].recipients(), ['examiner@example.com'])
         self.assertEqual(
             mail.outbox[0].subject,
-            '[Devilry] A student added a new comment AFTER THE DEADLINE for {}'.format(
-                test_feedbackset.group.parentnode.long_name))
+            '[Devilry] A student added a new comment AFTER THE DEADLINE for {} {}'.format(
+                test_feedbackset.group.parentnode.long_name,
+                test_feedbackset.group.subject.short_name))
 
     def test_send_examiner_comment_subject_from_student_before_deadline(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -1099,8 +1115,9 @@ class TestExaminerCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
         self.assertEqual(mail.outbox[0].recipients(), ['examiner@example.com'])
         self.assertEqual(
             mail.outbox[0].subject,
-            '[Devilry] A student added a new delivery/comment for {}'.format(
-                test_feedbackset.group.parentnode.long_name))
+            '[Devilry] A student added a new delivery/comment for {} {}'.format(
+                test_feedbackset.group.parentnode.long_name,
+                test_feedbackset.group.subject.short_name))
 
     def test_send_examiner_comment_message_and_message_receivers_created(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -1159,8 +1176,9 @@ class TestExaminerCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
         self.assertEqual(mail.outbox[0].recipients(), ['examiner@example.com'])
         self.assertEqual(
             mail.outbox[0].subject,
-            '[Devilry] An examiner added a new comment for {}'.format(
-                test_feedbackset.group.parentnode.long_name))
+            '[Devilry] An examiner added a new comment for {} {}'.format(
+                test_feedbackset.group.parentnode.long_name,
+                test_feedbackset.group.subject.short_name))
 
     def test_send_examiner_comment_subject_from_admin(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -1188,8 +1206,9 @@ class TestExaminerCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
         self.assertEqual(mail.outbox[0].recipients(), ['examiner@example.com'])
         self.assertEqual(
             mail.outbox[0].subject,
-            '[Devilry] An admin added a new comment for {}'.format(
-                test_feedbackset.group.parentnode.long_name))
+            '[Devilry] An admin added a new comment for {} {}'.format(
+                test_feedbackset.group.parentnode.long_name,
+                test_feedbackset.group.subject.short_name))
 
 
 # class TestBulkSendCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):

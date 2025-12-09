@@ -764,6 +764,7 @@ class AssignmentGroupManager(models.Manager):
         """
         batchoperation = BatchOperation.objects.create_synchronous(
             context_object=assignment,
+            started_by=created_by_user,
             operationtype='create-groups-with-candidate-and-feedbackset')
         group_queryset = self.__bulk_create_groups(assignment=assignment,
                                                    batchoperation=batchoperation,

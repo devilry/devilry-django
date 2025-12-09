@@ -17,6 +17,7 @@ class AssignmentGroupCachedDataAdmin(admin.ModelAdmin):
         'public_examiner_comment_count',
         'public_admin_comment_count',
         'public_student_file_upload_count',
+        'public_student_attempts_with_delivered_files',
         'examiner_count',
         'candidate_count'
     ]

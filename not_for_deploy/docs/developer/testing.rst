@@ -192,7 +192,7 @@ broken by changes to the date/time formatting settings::
 
     class MyTestCase(TestCase):
         def test_something(self):
-            with self.settings(DATETIME_FORMAT='Y-m-d H:i', USE_L10N=False):
+            with self.settings(DATETIME_FORMAT='Y-m-d H:i'):
                 ...
 
 Since using iso format with DATETIME_FORMAT is convenient, we provide
@@ -201,7 +201,7 @@ in the tests::
 
     class MyTestCase(TestCase):
         def test_something(self):
-            with self.settings(DATETIME_FORMAT=datetimeutils.ISODATETIME_DJANGOFORMAT, USE_L10N=False):
+            with self.settings(DATETIME_FORMAT=datetimeutils.ISODATETIME_DJANGOFORMAT):
                 ...
 
 ********

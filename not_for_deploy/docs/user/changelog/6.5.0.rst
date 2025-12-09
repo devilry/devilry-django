@@ -1,0 +1,15 @@
+.. _6.5.0alphachangelog:
+
+############################
+What is new in Devilry 6.5.0
+############################
+
+.. warning:: 6.5 is not released yet and is undergoing testing - the lastest RC release is 6.5.0a4.
+
+
+Fixes
+#####
+This list is not exhaustive and may change before the final release.
+- Added support for Django 5.2.
+- Improved accessibility in the student and examiner interfaces.
+

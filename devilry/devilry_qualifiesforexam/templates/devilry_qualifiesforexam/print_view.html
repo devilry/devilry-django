@@ -1,5 +1,6 @@
 {% extends "cradmin_legacy/base.django.html" %}
 {% load i18n %}
+{% load cradmin_legacy_tags %}
 
 {% block title %}
     {{ period }}
@@ -33,11 +34,28 @@
     }
     </style>
 
+    <div class="container">
+        <div class="devilry-dashboard-container devilry-dashboard-container-withtopmargin">
+
     <h2>{{ period }}, {{createtime}}</h2>
 
-    <a id="devilry_qualifiesforexam_print_link" class="btn btn-primary no-print" onclick="window.print();">
-        {% trans "Print qualified list" %}
-    </a>
+    <p class="devilry-buttonbar"> 
+        <a id="devilry_qualifiesforexam_back_index_button" class="btn btn-primary no-print" href="{% cradmin_instance_url 'qualifiesforexam' 'INDEX' %}">
+            <span class="glyphicon glyphicon-chevron-left"> </span> {% trans "Back to mainpage" %}
+        </a>
+
+        <a id="devilry_qualifiesforexam_print_link" class="btn btn-primary no-print" style="margin-left: auto;" onclick="window.print();">
+            <span class="glyphicon glyphicon-print"> </span> {% trans "Print qualified list" %}
+        </a>
+
+        <a id="devilry_qualifiesforexam_print_csv" class="btn btn-primary no-print" href="{% cradmin_instance_url 'qualifiesforexam' 'download-status-csv' status.id %}?order_by={{ order_by_queryparam }}">
+            <span class="glyphicon glyphicon-download"></span> {% trans 'Download results as CSV' %}
+        </a>
+    </p>
+
+
+
+
 
     <div class="no-print">
         {% trans 'Order by' context 'qualifies-for-exam-order-by-lastname' %}:
@@ -103,7 +121,8 @@
         </tr>
         {% endfor %}
     </table>
-
+        </div>
+    </div>
 {% endblock %}
 
 {% block end-of-body %}

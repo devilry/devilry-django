@@ -388,7 +388,8 @@ class ExaminerEditGradeView(update.UpdateView):
         self.feedbackset = group_models.FeedbackSet.objects.get(group=group, id=kwargs.get('pk'))
         if group.cached_data.last_feedbackset != self.feedbackset or \
                 not group.cached_data.last_published_feedbackset_is_last_feedbackset:
-            raise Http404()
+            messages.warning(self.request, gettext_lazy('You can only edit the grade of the last feedback. You have been redirected to the feedbackset.'))
+            return redirect(str(self.request.cradmin_app.reverse_appurl(viewname='public-discuss')))
         return super(ExaminerEditGradeView, self).dispatch(request, *args, **kwargs)
 
     def get_pagetitle(self):

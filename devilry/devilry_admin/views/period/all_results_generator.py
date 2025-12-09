@@ -106,6 +106,21 @@ class AllResultsExcelReportGenerator(AbstractExcelReportGenerator):
                 worksheet.write_boolean(row, column, assignment.points_is_passing_grade(points=points))
             column += 1
 
+    def __write_data_to_attempts_worksheet(self, worksheet, row, column, obj):
+        """
+        Write data to "Number of attempts"-worksheet.
+
+        Writes empty- or `int`-value.
+        """
+        for assignment in self.__get_all_assignments_for_period().order_by('first_deadline'):
+            result = self.__get_student_status(related_student_result=obj, assignment=assignment)
+            if result:
+                worksheet.write(row, column, '')
+            else:
+                attempts = obj.get_number_of_attempts_for_assignment(assignment_id=assignment.id)
+                worksheet.write_number(row, column, attempts)
+            column += 1
+
     def write_data_to_worksheet(self, worksheet_tuple, row, column, obj):
         worksheet_type = worksheet_tuple[0]
         worksheet = worksheet_tuple[1]
@@ -118,12 +133,15 @@ class AllResultsExcelReportGenerator(AbstractExcelReportGenerator):
             self.__write_data_to_points_worksheet(worksheet=worksheet, row=row, column=column, obj=obj)
         elif worksheet_type == 'passed':
             self.__write_data_to_passed_worksheet(worksheet=worksheet, row=row, column=column, obj=obj)
+        elif worksheet_type == 'attempts':
+            self.__write_data_to_attempts_worksheet(worksheet=worksheet, row=row, column=column, obj=obj)
 
     def get_work_sheets(self):
         return [
             ('grades', self.workbook.add_worksheet(name=gettext('Grades'))),
             ('points', self.workbook.add_worksheet(name=gettext('Points'))),
-            ('passed', self.workbook.add_worksheet(name=gettext('Passed Failed')))
+            ('passed', self.workbook.add_worksheet(name=gettext('Passed Failed'))),
+            ('attempts', self.workbook.add_worksheet(name=gettext('Number of attempts'))),
         ]
 
     def generate(self, file_like_object):

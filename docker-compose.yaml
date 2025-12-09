@@ -4,7 +4,7 @@ services:
   postgres:
     restart: unless-stopped
     container_name: 'devilry-django-dev-postgres'
-    image: 'postgres:14'
+    image: 'postgres:16'
     ports:
       # Set on purpose to match django-dbdev setup in developsettings_common.py
       - '23419:5432'
@@ -43,23 +43,31 @@ services:
     environment:
       - MINIO_ROOT_USER=testuser
       - MINIO_ROOT_PASSWORD=testpassword
-    command: server /data --console-address :9001
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9001/minio/health/live"]
+      interval: 5s
+      timeout: 10s
+      retries: 3
 
   createbuckets:
     image: minio/mc
+    restart: on-failure
     depends_on:
-      - minio
+      minio:
+        condition: service_healthy
     entrypoint: >
       /bin/sh -c "
-      /usr/bin/mc config host add myminio http://minio:9000 testuser testpassword;
-      /usr/bin/mc rm -r --force myminio/devilrytempstorage;
-      /usr/bin/mc mb myminio/devilrytempstorage;
-      /usr/bin/mc policy download myminio/devilrytempstorage;
-      /usr/bin/mc rm -r --force myminio/devilrydeliverystorage;
+      /usr/bin/mc alias set myminio http://minio:9000 testuser testpassword;
+      /usr/bin/mc rb --force myminio/devilrydeliverystorage;
       /usr/bin/mc mb myminio/devilrydeliverystorage;
-      /usr/bin/mc policy download myminio/devilrydeliverystorage;
+      /usr/bin/mc anonymous set download myminio/devilrydeliverystorage;
+      /usr/bin/mc rb --force myminio/devilrytempstorage;
+      /usr/bin/mc mb myminio/devilrytempstorage;
+      /usr/bin/mc anonymous set download myminio/devilrytempstorage;
       exit 0;
       "
+
   redis:
     restart: unless-stopped
     container_name: 'devilry-django-dev-redis'

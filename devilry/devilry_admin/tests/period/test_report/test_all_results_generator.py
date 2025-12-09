@@ -13,6 +13,8 @@ from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_baker_factories as group_factory
 from devilry.devilry_admin.views.period import all_results_generator
 from devilry.devilry_report.models import DevilryReport
+from devilry.devilry_comment.models import Comment
+from devilry.devilry_group.models import GroupComment
 
 
 class AllResultsGeneratorPreMixin:
@@ -59,7 +61,13 @@ class AllResultsGeneratorPreMixin:
             period=period, long_name='Assignment 1', passing_grade_min_points=1, max_points=1)
         teststudent = self.make_relatedstudent(period=period, user__shortname='teststudent@example.com')
         testgroup = self.make_group_for_student(assignment=testassignment, relatedstudent=teststudent)
-        group_factory.feedbackset_first_attempt_published(group=testgroup, grading_points=1)
+        feedbackset = group_factory.feedbackset_first_attempt_published(group=testgroup, grading_points=1)
+        comment = baker.make(
+            'devilry_group.GroupComment',
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        baker.make('devilry_comment.CommentFile', comment=comment, _quantity=1)
         return period
 
     def create_single_student_failed_plugin_passed_failed(self):
@@ -635,3 +643,12 @@ class TestAllResultsGeneratorGradesSheet(AllResultsGeneratorPreMixin, test.TestC
             self.assertEqual(worksheet.cell(row=2, column=2).value, 1)
             self.assertEqual(worksheet.cell(row=2, column=3).value, 1)
             self.assertEqual(worksheet.cell(row=2, column=4).value, 1)
+
+    def test_number_of_attempts_sheet_single_student_results_on_each_points_to_grade_mapper_type_assignment(self):
+        requestuser = baker.make(settings.AUTH_USER_MODEL)
+        period = self.create_single_student_passed_plugin_passed_failed()
+
+        with mock.patch.object(DevilryReport, 'generator', all_results_generator.AllResultsExcelReportGenerator):
+            worksheet = self.generate_report_and_get_worksheet(
+                generated_by_user=requestuser, period=period, worksheet_name='Number of attempts')
+            self.assertEqual(worksheet.cell(row=2, column=2).value, 1)

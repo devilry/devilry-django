@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
-
-
 import os
+import time
+import logging
+
 
 from devilry.devilry_compressionutil.abstract_batch_action import AbstractBaseBatchAction
 from devilry.devilry_compressionutil.batchjob_mixins.assignment_mixin import AssignmentBatchMixin
 
+logger = logging.getLogger(__name__)
 
 class AssignmentCompressAction(AbstractBaseBatchAction, AssignmentBatchMixin):
     backend_id = 'devilry_admin_local'
@@ -57,3 +59,18 @@ class AssignmentCompressAction(AbstractBaseBatchAction, AssignmentBatchMixin):
             user=started_by_user,
             user_role=CompressedArchiveMeta.CREATED_BY_ROLE_ADMIN
         )
+
+def simulate_timeout_task():
+    """
+    A simple task that sleeps for 10 seconds to force a timeout.
+    
+    Should be used in testing scenarios where you want to simulate a long-running task.
+    This will help in testing the timeout handling of the system.
+    
+    Enqueue the task and override the timeout for this job only
+    queue.enqueue(simulate_timeout_task, job_timeout=3)
+    
+    """
+    logger.info("Starting the timeout simulation task...")
+    time.sleep(10)
+    logger.info("This message will never be logged if the timeout is less than 10s.")
