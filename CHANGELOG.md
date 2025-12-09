@@ -1,3 +1,26 @@
+## 6.5.0 (2025-12-09)
+
+### Feat
+
+- Prepare 6.5.0 release - see 3aa94caf84054e3fd91b5282c5e775994eea40d5 for all the changes.
+
+### Fix
+
+- Remove TracebackLoggingMiddleware from default MIDDLEWARE setup.
+
+## 6.4.3 (2025-11-17)
+
+### Fix
+
+- Make debugging error handling setup easier.
+- **compressionutil**: Make the base action class for compression re-raise after catching exception.
+
+## 6.4.2 (2025-11-10)
+
+### Fix
+
+- Add a new error reporting system that can be overridden via settings.
+
 ## 6.5.0a4 (2025-10-14)
 
 ## 6.5.0a3 (2025-07-22)
