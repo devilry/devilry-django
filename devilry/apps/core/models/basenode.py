@@ -11,6 +11,7 @@ class InheritedAdmin(object):
     :class:`django.contrib.auth.models.User` object, and to the
     :class:`.BaseNode` object.
     """
+
     def __init__(self, user, basenode):
         #: The :class:`django.contrib.auth.models.User`
         self.user = user
@@ -41,7 +42,7 @@ class BaseNode(SaveInterface):
         return self.get_path()
 
     def get_path(self):
-        """ Get the unique path to this node.
+        """Get the unique path to this node.
 
         :return:
             A ``'.'`` separated list containing the short_name of this
@@ -50,16 +51,18 @@ class BaseNode(SaveInterface):
             this is up to a Node with ``parentnode==None``.
         """
         return self.parentnode.get_path() + "." + self.short_name
-    get_path.short_description = gettext_lazy('Path')
+
+    get_path.short_description = gettext_lazy("Path")
 
     def get_admins(self):
-        """ Get a string with the shortname of all administrators on this node
+        """Get a string with the shortname of all administrators on this node
         separated by comma and a space like: ``"uioadmin, superuser"``.
 
         Note that admins on parentnode(s) is not included.
         """
-        return ', '.join([u.shortname for u in self.admins.all()])
-    get_admins.short_description = gettext_lazy('Administrators')
+        return ", ".join([u.shortname for u in self.admins.all()])
+
+    get_admins.short_description = gettext_lazy("Administrators")
 
     def _get_inherited_admins(self, admins):
         for admin in self.admins.all():
@@ -96,7 +99,7 @@ class BaseNode(SaveInterface):
         return admin_ids
 
     def is_admin(self, user_obj):
-        """ Check if the given user is admin on this node or any parentnode.
+        """Check if the given user is admin on this node or any parentnode.
 
         :param user_obj: A User object.
         :rtype: bool
@@ -111,7 +114,7 @@ class BaseNode(SaveInterface):
         return False
 
     def _can_save_id_none(self, user_obj):
-        """ Used by all except Node, which overrides. """
+        """Used by all except Node, which overrides."""
         return self.parentnode.is_admin(user_obj)
 
     def can_save(self, user_obj):
@@ -135,7 +138,7 @@ class BaseNode(SaveInterface):
         :meth:`.can_delete` to determine if non-super-users are allowed to
         delete a node, but may also be useful in other situations.
         """
-        raise NotImplementedError('is_empty must be implemented in subclasses.')
+        raise NotImplementedError("is_empty must be implemented in subclasses.")
 
     def can_delete(self, user_obj):
         """

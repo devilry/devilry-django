@@ -25,23 +25,23 @@ def devilry_truncatefileextension(value, max_length):
         truncated to "Deli...pdf"
     """
     if len(value) == 0:
-        return 'NO_NAME'
+        return "NO_NAME"
     else:
-        offset = 3              # show at least three letters from filename
-        min_value_length = 8    # entire value name is same length or less than ex. Del.html
+        offset = 3  # show at least three letters from filename
+        min_value_length = 8  # entire value name is same length or less than ex. Del.html
 
         if len(value) <= min_value_length:
             return value
         elif len(value) > max_length:
             splitted = os.path.splitext(value)
-            value_extension = splitted[1].strip('.')   # get extension
+            value_extension = splitted[1].strip(".")  # get extension
 
             if (max_length - len(value_extension) - 3) < offset:
                 # show at least three letters from valuename
                 # to ensure no files are called "...<fileextension>"
-                truncated_value = value[:offset] + '...' + value_extension
+                truncated_value = value[:offset] + "..." + value_extension
             else:
-                truncated_value = value[:max_length - len(value_extension) - 3] + '...' + value_extension
+                truncated_value = value[: max_length - len(value_extension) - 3] + "..." + value_extension
             return truncated_value
 
     return value
@@ -61,23 +61,23 @@ def devilry_verbosenumber(value, number):
         str: Verbose version of number.
     """
     numbers = {
-        1: gettext_lazy('first'),
-        2: gettext_lazy('second'),
-        3: gettext_lazy('third'),
-        4: gettext_lazy('fourth'),
-        5: gettext_lazy('fifth'),
-        6: gettext_lazy('sixth'),
-        7: gettext_lazy('seventh'),
-        8: gettext_lazy('eighth'),
-        9: gettext_lazy('ninth'),
-        10: gettext_lazy('tenth')
+        1: gettext_lazy("first"),
+        2: gettext_lazy("second"),
+        3: gettext_lazy("third"),
+        4: gettext_lazy("fourth"),
+        5: gettext_lazy("fifth"),
+        6: gettext_lazy("sixth"),
+        7: gettext_lazy("seventh"),
+        8: gettext_lazy("eighth"),
+        9: gettext_lazy("ninth"),
+        10: gettext_lazy("tenth"),
     }
 
     if number <= 10:
         # use numbers dictionary
         # to get verbose result
         return numbers[number]
-    return '{}.'.format(number)
+    return "{}.".format(number)
 
 
 @register.filter("devilry_group_comment_published")

@@ -22,7 +22,7 @@ class ListViewBase(listbuilderview.FilterListMixin, listbuilderview.View):
             filterlist.append(listfilter_relateduser.TagSelectFilter(period=period))
 
     def get_no_items_message(self):
-        return gettext_lazy('No examiners found matching your filters/search.')
+        return gettext_lazy("No examiners found matching your filters/search.")
 
 
 class VerticalFilterListView(ListViewBase):
@@ -30,12 +30,13 @@ class VerticalFilterListView(ListViewBase):
     List view for :class:`devilry.apps.core.models.relateduser.RelatedExaminer`
     with filters in a vertical layout.
     """
+
     def get_filterlist_position(self):
-        return 'right'
+        return "right"
 
 
 class RelatedExaminerItemValueTitleDescriptionMixin(object):
-    valuealias = 'relatedexaminer'
+    valuealias = "relatedexaminer"
 
     def get_title(self):
         if self.relatedexaminer.user.fullname:
@@ -47,18 +48,16 @@ class RelatedExaminerItemValueTitleDescriptionMixin(object):
         if self.relatedexaminer.user.fullname:
             return self.relatedexaminer.user.shortname
         else:
-            return ''
+            return ""
 
 
-class OnPeriodItemValue(RelatedExaminerItemValueTitleDescriptionMixin,
-                        listbuilder.itemvalue.TitleDescription):
-
+class OnPeriodItemValue(RelatedExaminerItemValueTitleDescriptionMixin, listbuilder.itemvalue.TitleDescription):
     def get_extra_css_classes_list(self):
-        cssclasses = ['devilry-admin-relatedexaminer-onperioditemvalue']
+        cssclasses = ["devilry-admin-relatedexaminer-onperioditemvalue"]
         if self.relatedexaminer.active:
-            cssclasses.append('devilry-admin-relatedexaminer-itemvalue-active')
+            cssclasses.append("devilry-admin-relatedexaminer-itemvalue-active")
         else:
-            cssclasses.append('devilry-admin-relatedexaminer-itemvalue-inactive')
+            cssclasses.append("devilry-admin-relatedexaminer-itemvalue-inactive")
         return cssclasses
 
 
@@ -71,11 +70,12 @@ class OnassignmentItemValue(listbuilder.itemvalue.TitleDescription):
     - ``annotate_with_number_of_groups_on_assignment()``
     - ``extra_annotate_with_number_of_candidates_on_assignment()``
     """
-    template_name = 'devilry_admin/listbuilder/listbuilder_relatedexaminer/onassignment-itemvalue.django.html'
-    valuealias = 'relatedexaminer'
+
+    template_name = "devilry_admin/listbuilder/listbuilder_relatedexaminer/onassignment-itemvalue.django.html"
+    valuealias = "relatedexaminer"
 
     def get_extra_css_classes_list(self):
-        return ['devilry-admin-listbuilder-relatedexaminer-onassignment']
+        return ["devilry-admin-listbuilder-relatedexaminer-onassignment"]
 
     def get_number_of_groups(self):
         return self.relatedexaminer.number_of_groups_on_assignment

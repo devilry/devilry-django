@@ -9,8 +9,7 @@ from django.utils.translation import gettext_lazy
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import Candidate
 from devilry.devilry_account.models import User
-from devilry.devilry_email.groupinvite_email import send_invite_email, \
-    send_accepted_email, send_rejected_email
+from devilry.devilry_email.groupinvite_email import send_invite_email, send_accepted_email, send_rejected_email
 from .assignment_group import AssignmentGroup
 
 
@@ -55,12 +54,12 @@ class GroupInviteQuerySet(models.QuerySet):
         """
         return self.filter(
             models.Q(
-                models.Q(group__parentnode__students_can_create_groups=True) &
-                models.Q(group__parentnode__students_can_not_create_groups_after__gt=timezone.now())
-            ) |
-            models.Q(
-                models.Q(group__parentnode__students_can_create_groups=True) &
-                models.Q(group__parentnode__students_can_not_create_groups_after__isnull=True)
+                models.Q(group__parentnode__students_can_create_groups=True)
+                & models.Q(group__parentnode__students_can_not_create_groups_after__gt=timezone.now())
+            )
+            | models.Q(
+                models.Q(group__parentnode__students_can_create_groups=True)
+                & models.Q(group__parentnode__students_can_not_create_groups_after__isnull=True)
             )
         )
 
@@ -87,19 +86,19 @@ class GroupInvite(models.Model):
     To accept/reject an invite (sets the appropriate attributes and sends a notification)
     invite.respond(accepted=True)
     """
+
     group = models.ForeignKey(AssignmentGroup, on_delete=models.CASCADE)
     sent_datetime = models.DateTimeField(default=timezone.now)
-    sent_by = models.ForeignKey(User, related_name='groupinvite_sent_by_set', on_delete=models.CASCADE)
-    sent_to = models.ForeignKey(User, related_name='groupinvite_sent_to_set', on_delete=models.CASCADE)
+    sent_by = models.ForeignKey(User, related_name="groupinvite_sent_by_set", on_delete=models.CASCADE)
+    sent_to = models.ForeignKey(User, related_name="groupinvite_sent_to_set", on_delete=models.CASCADE)
 
     accepted = models.BooleanField(null=True, blank=True)
-    responded_datetime = models.DateTimeField(
-        default=None, blank=True, null=True)
+    responded_datetime = models.DateTimeField(default=None, blank=True, null=True)
 
     objects = GroupInviteManager.from_queryset(GroupInviteQuerySet)()
 
     class Meta:
-        app_label = 'core'
+        app_label = "core"
 
     @staticmethod
     def send_invite_to_choices_queryset(group):
@@ -114,17 +113,19 @@ class GroupInvite(models.Model):
         # Exclude users with pending invitations
         excluded_users = User.objects.filter(
             models.Q(groupinvite_sent_to_set__accepted=None) | models.Q(groupinvite_sent_to_set__accepted=True),
-            groupinvite_sent_to_set__group=group
+            groupinvite_sent_to_set__group=group,
         )
 
-        return Candidate.objects.filter(
-            assignment_group__parentnode__students_can_create_groups=True,
-            assignment_group__parentnode=group.parentnode,
-            assignment_group__cached_data__candidate_count=1
-        ).exclude(
-            models.Q(assignment_group_id=group.id) | models.Q(relatedstudent__user__in=excluded_users)
-        ).select_related('relatedstudent__user', 'assignment_group__parentnode')\
-            .order_by('relatedstudent__user__fullname', 'relatedstudent__user__shortname')
+        return (
+            Candidate.objects.filter(
+                assignment_group__parentnode__students_can_create_groups=True,
+                assignment_group__parentnode=group.parentnode,
+                assignment_group__cached_data__candidate_count=1,
+            )
+            .exclude(models.Q(assignment_group_id=group.id) | models.Q(relatedstudent__user__in=excluded_users))
+            .select_related("relatedstudent__user", "assignment_group__parentnode")
+            .order_by("relatedstudent__user__fullname", "relatedstudent__user__shortname")
+        )
 
     @staticmethod
     def validate_candidate_id_sent_to(group, candidate_id):
@@ -141,47 +142,56 @@ class GroupInvite(models.Model):
             ValidationError - If the user is not eligible to join
         """
         try:
-            return GroupInvite.send_invite_to_choices_queryset(group)\
-                .get(id=candidate_id)\
-                .relatedstudent.user
+            return GroupInvite.send_invite_to_choices_queryset(group).get(id=candidate_id).relatedstudent.user
         except Candidate.DoesNotExist:
-            raise ValidationError(gettext_lazy('The selected student is not eligible to join the group.'))
+            raise ValidationError(gettext_lazy("The selected student is not eligible to join the group."))
 
     def clean(self):
         if self.accepted and not self.responded_datetime:
             self.responded_datetime = timezone.now()
         if self.sent_by and not self.group.candidates.filter(relatedstudent__user=self.sent_by).exists():
-            raise ValidationError(gettext_lazy('The user sending an invite must be a Candiate on the group.'))
+            raise ValidationError(gettext_lazy("The user sending an invite must be a Candiate on the group."))
         if self.sent_to and self.group.candidates.filter(relatedstudent__user=self.sent_to).exists():
-            raise ValidationError(gettext_lazy('The student is already a member of the group.'))
-        if GroupInvite.objects.filter_no_response() \
-                .filter(group=self.group, sent_to=self.sent_to) \
-                .exclude(id=self.id).exists():
+            raise ValidationError(gettext_lazy("The student is already a member of the group."))
+        if (
+            GroupInvite.objects.filter_no_response()
+            .filter(group=self.group, sent_to=self.sent_to)
+            .exclude(id=self.id)
+            .exists()
+        ):
             raise ValidationError(
-                gettext_lazy('The student is already invited to join the group, but they have not responded yet.'))
+                gettext_lazy("The student is already invited to join the group, but they have not responded yet.")
+            )
 
         assignment = self.group.assignment
         if assignment.students_can_create_groups:
-            if assignment.students_can_not_create_groups_after and \
-                            assignment.students_can_not_create_groups_after < timezone.now():
-                raise ValidationError(gettext_lazy(
-                    'Creating project groups without administrator approval is not '
-                    'allowed on this assignment anymore. Please contact you course '
-                    'administrator if you think this is wrong.'))
+            if (
+                assignment.students_can_not_create_groups_after
+                and assignment.students_can_not_create_groups_after < timezone.now()
+            ):
+                raise ValidationError(
+                    gettext_lazy(
+                        "Creating project groups without administrator approval is not "
+                        "allowed on this assignment anymore. Please contact you course "
+                        "administrator if you think this is wrong."
+                    )
+                )
         else:
             raise ValidationError(
-                gettext_lazy('This assignment does not allow students to form project groups on their own.'))
+                gettext_lazy("This assignment does not allow students to form project groups on their own.")
+            )
 
         if not Assignment.objects.filter(id=assignment.id).filter_user_is_candidate(self.sent_to):
-            raise ValidationError(gettext_lazy('The invited student is not registered on this assignment.'))
+            raise ValidationError(gettext_lazy("The invited student is not registered on this assignment."))
 
         if self.accepted:
-            sent_to_group = AssignmentGroup.objects.filter(parentnode=assignment) \
-                .filter_user_is_candidate(self.sent_to) \
-                .first()
+            sent_to_group = (
+                AssignmentGroup.objects.filter(parentnode=assignment).filter_user_is_candidate(self.sent_to).first()
+            )
             if sent_to_group.cached_data.candidate_count > 1:
-                raise ValidationError(gettext_lazy(
-                    'The invited student is already in a project group with more than 1 students.'))
+                raise ValidationError(
+                    gettext_lazy("The invited student is already in a project group with more than 1 students.")
+                )
 
     def respond(self, accepted):
         """
@@ -197,9 +207,9 @@ class GroupInvite(models.Model):
         invite.
         """
         if self.accepted:
-            raise ValidationError(gettext_lazy('This invite has already been accepted.'))
+            raise ValidationError(gettext_lazy("This invite has already been accepted."))
         if self.accepted is not None and not self.accepted:
-            raise ValidationError(gettext_lazy('This invite has already been declined.'))
+            raise ValidationError(gettext_lazy("This invite has already been declined."))
         self.accepted = accepted
         self.responded_datetime = timezone.now()
         self.full_clean()
@@ -212,24 +222,20 @@ class GroupInvite(models.Model):
         """
         Merging assignment groups
         """
-        source = AssignmentGroup.objects.filter_user_is_candidate(self.sent_to) \
-            .filter(parentnode=self.group.parentnode) \
+        source = (
+            AssignmentGroup.objects.filter_user_is_candidate(self.sent_to)
+            .filter(parentnode=self.group.parentnode)
             .get()
+        )
         with transaction.atomic():
             source.merge_into(self.group)
 
     def _send_response_notification(self):
-        queue = django_rq.get_queue(name='email')
+        queue = django_rq.get_queue(name="email")
         if self.accepted:
-            queue.enqueue(
-                send_accepted_email,
-                groupinvite_id=self.id
-            )
+            queue.enqueue(send_accepted_email, groupinvite_id=self.id)
         else:
-            queue.enqueue(
-                send_rejected_email,
-                groupinvite_id=self.id
-            )
+            queue.enqueue(send_rejected_email, groupinvite_id=self.id)
 
     def send_invite_notification(self, request):
         """
@@ -248,13 +254,14 @@ class GroupInvite(models.Model):
 
         """
         if self.accepted is not None:
-            raise ValueError(gettext_lazy('Can not send notification for an accepted GroupInvite.'))
+            raise ValueError(gettext_lazy("Can not send notification for an accepted GroupInvite."))
         elif self.id is None:
-            raise ValueError(gettext_lazy('Can not send notification for an unsaved GroupInvite.'))
-        queue = django_rq.get_queue(name='email')
+            raise ValueError(gettext_lazy("Can not send notification for an unsaved GroupInvite."))
+        queue = django_rq.get_queue(name="email")
         queue.enqueue(
             send_invite_email,
             groupinvite_id=self.id,
             url=request.build_absolute_uri(
-                reverse('devilry_student_groupinvite_respond', kwargs={'invite_id': self.id})
-            ))
+                reverse("devilry_student_groupinvite_respond", kwargs={"invite_id": self.id})
+            ),
+        )

@@ -26,56 +26,42 @@ def get_feedbackfeed_builder_queryset(group, requestuser, devilryrole):
     Returns:
         QuerySet: FeedbackSet queryset.
     """
-    commentfile_queryset = comment_models.CommentFile.objects\
-        .select_related('comment__user')\
-        .order_by('filename')
-    groupcomment_queryset = group_models.GroupComment.objects \
-        .exclude_private_comments_from_other_users(user=requestuser) \
-        .annotate_with_last_edit_history(requestuser_devilryrole=devilryrole)\
-        .select_related(
-            'user',
-            'feedback_set',
-            'feedback_set__created_by',
-            'feedback_set__grading_published_by') \
-        .prefetch_related(
-            models.Prefetch(
-                'commentfile_set',
-                queryset=commentfile_queryset))
+    commentfile_queryset = comment_models.CommentFile.objects.select_related("comment__user").order_by("filename")
+    groupcomment_queryset = (
+        group_models.GroupComment.objects.exclude_private_comments_from_other_users(user=requestuser)
+        .annotate_with_last_edit_history(requestuser_devilryrole=devilryrole)
+        .select_related("user", "feedback_set", "feedback_set__created_by", "feedback_set__grading_published_by")
+        .prefetch_related(models.Prefetch("commentfile_set", queryset=commentfile_queryset))
+    )
     feedbackset_deadline_history_queryset = group_models.FeedbackSetDeadlineHistory.objects.all()
-    if devilryrole == 'student':
-        groupcomment_queryset = groupcomment_queryset\
-            .filter(visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)\
-            .exclude_is_part_of_grading_feedbackset_unpublished()
+    if devilryrole == "student":
+        groupcomment_queryset = groupcomment_queryset.filter(
+            visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
+        ).exclude_is_part_of_grading_feedbackset_unpublished()
 
-    return group_models.FeedbackSet.objects\
-        .select_related(
-            'group',
-            'group__parentnode',
-            'group__parentnode__parentnode',
-            'group__parentnode__parentnode__parentnode')\
-        .filter(group=group)\
+    return (
+        group_models.FeedbackSet.objects.select_related(
+            "group", "group__parentnode", "group__parentnode__parentnode", "group__parentnode__parentnode__parentnode"
+        )
+        .filter(group=group)
+        .prefetch_related(models.Prefetch("groupcomment_set", queryset=groupcomment_queryset))
+        .prefetch_related(
+            models.Prefetch("feedbacksetdeadlinehistory_set", queryset=feedbackset_deadline_history_queryset)
+        )
         .prefetch_related(
             models.Prefetch(
-                'groupcomment_set',
-                queryset=groupcomment_queryset))\
-        .prefetch_related(
-            models.Prefetch(
-                'feedbacksetdeadlinehistory_set',
-                queryset=feedbackset_deadline_history_queryset)
-        )\
-        .prefetch_related(
-            models.Prefetch(
-                'grading_update_histories',
+                "grading_update_histories",
                 queryset=group_models.FeedbackSetGradingUpdateHistory.objects.all(),
-                to_attr='grading_updates'
+                to_attr="grading_updates",
             )
-        )\
-        .order_by('created_datetime')
+        )
+        .order_by("created_datetime")
+    )
 
 
 class FeedbackFeedBuilderBase(object):
-    """
-    """
+    """ """
+
     def __init__(self, assignment, group, feedbacksets):
         super(FeedbackFeedBuilderBase, self).__init__()
         self.assignment = assignment
@@ -88,6 +74,7 @@ class FeedbackFeedBuilderBase(object):
         Args:
             dictionary (dict): Dictionary of item with datetime keys.
         """
+
         def compare_items(item_a, item_b):
             datetime_a = item_a[0]
             datetime_b = item_b[0]
@@ -96,4 +83,5 @@ class FeedbackFeedBuilderBase(object):
             if datetime_b is None:
                 datetime_b = datetime.datetime(1970, 1, 1)
             return (datetime_a > datetime_b) - (datetime_a < datetime_b)
+
         return collections.OrderedDict(sorted(list(dictionary.items()), key=functools.cmp_to_key(compare_items)))

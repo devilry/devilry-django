@@ -17,9 +17,9 @@ class ReportForm(forms.Form):
     report_options = forms.CharField(required=True)
 
     def clean_report_options(self):
-        report_options = json.loads(self.cleaned_data['report_options'])
-        if 'generator_type' not in report_options:
-            raise forms.ValidationError('Missing \'generator_type\' in report_options')
+        report_options = json.loads(self.cleaned_data["report_options"])
+        if "generator_type" not in report_options:
+            raise forms.ValidationError("Missing 'generator_type' in report_options")
         return report_options
 
 
@@ -48,6 +48,7 @@ class DownloadReportView(generic.FormView):
         Enqueues the a RQ-task that starts generating a report based on the posted data.
         Redirects to this view with method ``GET``.
     """
+
     template_name = "devilry_report/download_report.django.html"
     form_class = ReportForm
 
@@ -56,12 +57,12 @@ class DownloadReportView(generic.FormView):
     ###############################
     def __get_devilry_report(self):
         try:
-            return DevilryReport.objects.get(id=self.request.GET['report'])
+            return DevilryReport.objects.get(id=self.request.GET["report"])
         except DevilryReport.DoesNotExist:
             raise Http404
 
     def get(self, *args, **kwargs):
-        if 'report' not in self.request.GET:
+        if "report" not in self.request.GET:
             raise Http404()
 
         # Fetch report
@@ -74,38 +75,31 @@ class DownloadReportView(generic.FormView):
             # Return a download reponse if the report is finished.
             buffer = io.BytesIO()
             buffer.write(self.devilry_report.result)
-            response = HttpResponse(
-                buffer.getvalue(), content_type=self.devilry_report.content_type)
-            response['Content-Disposition'] = 'attachment; filename={}'.format(self.devilry_report.output_filename)
-            response['Content-Length'] = len(buffer.getvalue())
+            response = HttpResponse(buffer.getvalue(), content_type=self.devilry_report.content_type)
+            response["Content-Disposition"] = "attachment; filename={}".format(self.devilry_report.output_filename)
+            response["Content-Length"] = len(buffer.getvalue())
             return response
         return super(DownloadReportView, self).get(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(DownloadReportView, self).get_context_data(**kwargs)
-        context['devilry_report'] = self.devilry_report
+        context["devilry_report"] = self.devilry_report
         return context
 
     ###############################
     # POST: Generate report methods
     ###############################
     def form_valid(self, form):
-        report_options = form.cleaned_data['report_options']
+        report_options = form.cleaned_data["report_options"]
         self.devilry_report = DevilryReport(
-            generator_type=report_options['generator_type'],
-            generator_options=report_options['generator_options'],
-            generated_by_user=self.request.user
+            generator_type=report_options["generator_type"],
+            generator_options=report_options["generator_options"],
+            generated_by_user=self.request.user,
         )
         self.devilry_report.full_clean()
         self.devilry_report.save()
-        django_rq.enqueue(
-            generate_report,
-            devilry_report_id=self.devilry_report.id
-        )
+        django_rq.enqueue(generate_report, devilry_report_id=self.devilry_report.id)
         return super(DownloadReportView, self).form_valid(form=form)
 
     def get_success_url(self):
-        return '{}?report={}'.format(
-            self.request.cradmin_app.reverse_appurl('download_report'),
-            self.devilry_report.id
-        )
+        return "{}?report={}".format(self.request.cradmin_app.reverse_appurl("download_report"), self.devilry_report.id)

@@ -14,6 +14,6 @@ class AboutMeView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(AboutMeView, self).get_context_data(**kwargs)
-        context['logout_url'] = settings.DEVILRY_LOGOUT_URL
-        context['wrong_info_url'] = urlsetting_or_unsetview('DEVILRY_WRONG_USERINFO_URL')
+        context["logout_url"] = settings.DEVILRY_LOGOUT_URL
+        context["wrong_info_url"] = urlsetting_or_unsetview("DEVILRY_WRONG_USERINFO_URL")
         return context

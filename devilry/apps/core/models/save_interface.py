@@ -1,8 +1,6 @@
-
-
 class SaveInterface(object):
     def can_save(self, user_obj):
-        """ Check if the give user has permission to save (or create) this
+        """Check if the give user has permission to save (or create) this
         node.
 
         A user can create a new node if it:

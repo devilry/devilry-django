@@ -37,9 +37,12 @@ class PointToGradeMapQuerySet(models.QuerySet):
         good error message when you forget to use this method on the queryset.
         """
         return self.prefetch_related(
-                models.Prefetch('pointrangetograde_set',
-                                queryset=PointRangeToGrade.objects.order_by('minimum_points'),
-                                to_attr='prefetched_pointrangetograde_objects'))
+            models.Prefetch(
+                "pointrangetograde_set",
+                queryset=PointRangeToGrade.objects.order_by("minimum_points"),
+                to_attr="prefetched_pointrangetograde_objects",
+            )
+        )
 
 
 class PointToGradeMap(models.Model):
@@ -62,13 +65,14 @@ class PointToGradeMap(models.Model):
         changes to :attr:`devilry.apps.core.models.Assignment.max_points`,
         or when the map has been created, but it is empty.
     """
+
     objects = PointToGradeMapQuerySet.as_manager()
 
     assignment = models.OneToOneField(Assignment, on_delete=models.CASCADE)
     invalid = models.BooleanField(default=True)
 
     class Meta:
-        app_label = 'core'
+        app_label = "core"
 
     def clean(self):
         mapentries = list(self.pointrangetograde_set.all())
@@ -78,21 +82,25 @@ class PointToGradeMap(models.Model):
             first_entry = mapentries[0]
             if first_entry.minimum_points != 0:
                 raise NonzeroSmallesMinimalPointsValidationError(
-                    gettext_lazy('The smallest entry in the map must have minimum points set to '
-                      '0 (current value is {minimum_points}).').format(
-                        minimum_points=first_entry.minimum_points))
+                    gettext_lazy(
+                        "The smallest entry in the map must have minimum points set to "
+                        "0 (current value is {minimum_points})."
+                    ).format(minimum_points=first_entry.minimum_points)
+                )
             last_entry = mapentries[-1]
             if last_entry.maximum_points != self.assignment.max_points:
                 raise InvalidLargestMaximumPointsValidationError(
-                    'The last entry in the map must have maximum_points set to the '
-                    'maximum points allowed on the assignment ({}).'.format(
-                        self.assignment.max_points))
+                    "The last entry in the map must have maximum_points set to the "
+                    "maximum points allowed on the assignment ({}).".format(self.assignment.max_points)
+                )
             expected_minimum_points = 0
             for mapentry in mapentries:
                 if mapentry.minimum_points != expected_minimum_points:
                     raise GapsInMapValidationError(
-                        '{} must have minimum_points set to {} to avoid gaps in the point to grade map.'.format(
-                            mapentry, expected_minimum_points))
+                        "{} must have minimum_points set to {} to avoid gaps in the point to grade map.".format(
+                            mapentry, expected_minimum_points
+                        )
+                    )
                 expected_minimum_points = mapentry.maximum_points + 1
             self.invalid = False
 
@@ -102,18 +110,19 @@ class PointToGradeMap(models.Model):
             minimum_points, grade = entry
             if grade in gradeset:
                 raise DuplicateGradeError(
-                    gettext_lazy('{grade} occurs multiple times in the map. A grade must be unique within the map.'.format(
-                        grade=grade)))
+                    gettext_lazy(
+                        "{grade} occurs multiple times in the map. A grade must be unique within the map.".format(
+                            grade=grade
+                        )
+                    )
+                )
             gradeset.add(grade)
             if index == len(minimum_points_to_grade_list) - 1:
                 maximum_points = self.assignment.max_points
             else:
                 maximum_points = minimum_points_to_grade_list[index + 1][0] - 1
             pointrange_to_grade = PointRangeToGrade(
-                point_to_grade_map=self,
-                grade=grade,
-                minimum_points=minimum_points,
-                maximum_points=maximum_points
+                point_to_grade_map=self, grade=grade, minimum_points=minimum_points, maximum_points=maximum_points
             )
             pointrange_to_grade.full_clean()
             pointrange_to_grade.save()
@@ -122,8 +131,7 @@ class PointToGradeMap(models.Model):
         self.pointrangetograde_set.all().delete()
 
     def recreate_map(self, *minimum_points_to_grade_list):
-        """
-        """
+        """ """
         self.clear_map()
         self.create_map(*minimum_points_to_grade_list)
 
@@ -134,17 +142,14 @@ class PointToGradeMap(models.Model):
         :raises PointRangeToGrade.DoesNotExist:
             If no grade matching the given points exist.
         """
-        return PointRangeToGrade.objects \
-            .filter_grades_matching_points(points) \
-            .filter(point_to_grade_map=self).get()
+        return PointRangeToGrade.objects.filter_grades_matching_points(points).filter(point_to_grade_map=self).get()
 
     def as_choices(self):
         """
         Get as a list of tuples compatible with the choices argument for
         django ChoiceField and TypedChoiceField with coerce set to ``int``.
         """
-        return [(pointrange.minimum_points, pointrange.grade)
-                for pointrange in self.prefetched_pointrangetogrades]
+        return [(pointrange.minimum_points, pointrange.grade) for pointrange in self.prefetched_pointrangetogrades]
 
     @property
     def prefetched_pointrangetogrades(self):
@@ -155,9 +160,11 @@ class PointToGradeMap(models.Model):
         This only works if the queryset used to get the PointToGradeMap
         uses :class:`.PointToGradeMapQuerySet.prefetch_pointrange_to_grade`.
         """
-        if not hasattr(self, 'prefetched_pointrangetograde_objects'):
-            raise AttributeError('The prefetched_pointrangetogrades property requires '
-                                 'PointToGradeMapQuerySet.prefetch_pointrange_to_grade()')
+        if not hasattr(self, "prefetched_pointrangetograde_objects"):
+            raise AttributeError(
+                "The prefetched_pointrangetogrades property requires "
+                "PointToGradeMapQuerySet.prefetch_pointrange_to_grade()"
+            )
         return self.prefetched_pointrangetograde_objects
 
     def as_flat_dict(self):
@@ -170,27 +177,24 @@ class PointToGradeMap(models.Model):
         """
         points_to_grade_dict = {}
         for pointrange_to_grade in self.prefetched_pointrangetogrades:
-            for points in range(pointrange_to_grade.minimum_points,
-                                pointrange_to_grade.maximum_points + 1):
+            for points in range(pointrange_to_grade.minimum_points, pointrange_to_grade.maximum_points + 1):
                 points_to_grade_dict[points] = pointrange_to_grade.grade
         return points_to_grade_dict
 
     def __str__(self):
-        return 'Point to grade map for {}'.format(self.assignment.get_path())
+        return "Point to grade map for {}".format(self.assignment.get_path())
 
 
 class PointRangeToGradeQueryset(models.QuerySet):
     def filter_overlapping_ranges(self, start, end):
         return self.filter(
-            Q(minimum_points__lte=start, maximum_points__gte=start) |
-            Q(minimum_points__lte=end, maximum_points__gte=end) |
-            Q(minimum_points__gte=start, maximum_points__lte=end))
+            Q(minimum_points__lte=start, maximum_points__gte=start)
+            | Q(minimum_points__lte=end, maximum_points__gte=end)
+            | Q(minimum_points__gte=start, maximum_points__lte=end)
+        )
 
     def filter_grades_matching_points(self, points):
-        return self.filter(
-            minimum_points__lte=points,
-            maximum_points__gte=points
-        )
+        return self.filter(minimum_points__lte=points, maximum_points__gte=points)
 
 
 class PointRangeToGradeManager(models.Manager):
@@ -242,6 +246,7 @@ class PointRangeToGrade(models.Model):
 
         The grade that this entry represents a match for.
     """
+
     objects = PointRangeToGradeManager()
     point_to_grade_map = models.ForeignKey(PointToGradeMap, on_delete=models.CASCADE)
     minimum_points = models.PositiveIntegerField()
@@ -249,24 +254,24 @@ class PointRangeToGrade(models.Model):
     grade = models.CharField(max_length=12)
 
     class Meta:
-        unique_together = ('point_to_grade_map', 'grade')
-        app_label = 'core'
-        ordering = ['minimum_points']
+        unique_together = ("point_to_grade_map", "grade")
+        app_label = "core"
+        ordering = ["minimum_points"]
 
     def clean(self):
         if self.minimum_points > self.point_to_grade_map.assignment.max_points:
-            raise ValidationError(gettext_lazy(
-                'Can not have values in the grade table that is larger than '
-                'maximum number of points.'))
+            raise ValidationError(
+                gettext_lazy("Can not have values in the grade table that is larger than maximum number of points.")
+            )
         if self.minimum_points >= self.maximum_points:
-            raise ValidationError('Minimum points can not be equal to or greater than maximum points.')
-        overlapping_ranges = self.__class__.objects \
-            .filter_overlapping_ranges(self.minimum_points, self.maximum_points) \
-            .filter(point_to_grade_map=self.point_to_grade_map)
+            raise ValidationError("Minimum points can not be equal to or greater than maximum points.")
+        overlapping_ranges = self.__class__.objects.filter_overlapping_ranges(
+            self.minimum_points, self.maximum_points
+        ).filter(point_to_grade_map=self.point_to_grade_map)
         if self.id is not None:
             overlapping_ranges = overlapping_ranges.exclude(id=self.id)
         if overlapping_ranges.exists():
-            raise ValidationError('One or more PointRangeToGrade overlaps with this range.')
+            raise ValidationError("One or more PointRangeToGrade overlaps with this range.")
 
     def __str__(self):
-        return '{}-{}={}'.format(self.minimum_points, self.maximum_points, self.grade)
+        return "{}-{}={}".format(self.minimum_points, self.maximum_points, self.grade)

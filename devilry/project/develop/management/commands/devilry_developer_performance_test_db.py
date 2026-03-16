@@ -8,14 +8,22 @@ from django.utils import timezone
 from django.core.management.base import BaseCommand
 from model_bakery import baker
 
-from devilry.apps.core.models import Subject, Period, RelatedStudent, RelatedExaminer, AssignmentGroup, Candidate, \
-    Examiner, Assignment
+from devilry.apps.core.models import (
+    Subject,
+    Period,
+    RelatedStudent,
+    RelatedExaminer,
+    AssignmentGroup,
+    Candidate,
+    Examiner,
+    Assignment,
+)
 from devilry.devilry_comment.models import CommentFile
 from devilry.devilry_group.models import FeedbackSet, GroupComment
 
 
 class ProgressDots(object):
-    def __init__(self, interval=100, messageformat='One dot per {interval}: '):
+    def __init__(self, interval=100, messageformat="One dot per {interval}: "):
         self._count = 0
         self._interval = interval
         self._messageformat = messageformat
@@ -28,7 +36,7 @@ class ProgressDots(object):
         self._count += increment
         if self._enabled:
             if self._count % self._interval == 0:
-                sys.stdout.write('.')
+                sys.stdout.write(".")
                 sys.stdout.flush()
 
     def __enter__(self):
@@ -40,7 +48,7 @@ class ProgressDots(object):
 
     def __exit__(self, ttype, value, traceback):
         if self._enabled:
-            sys.stdout.write('\n')
+            sys.stdout.write("\n")
 
 
 class DatabaseBuilder(object):
@@ -57,42 +65,42 @@ class DatabaseBuilder(object):
         """
         Generate users to be used as candidates.
         """
-        sys.stdout.write('Creating student users:')
+        sys.stdout.write("Creating student users:")
         for num in range(self.num_students):
-            name = 'studentuser#{}'.format(num)
+            name = "studentuser#{}".format(num)
             user = get_user_model()(shortname=name)
             user.set_password("test")
             user.full_clean()
             user.save()
             user.username_set.create(username=name)
-            user.useremail_set.create(email=name.strip() + '@example.com')
+            user.useremail_set.create(email=name.strip() + "@example.com")
             self.progressdots.increment_progress()
         self.progressdots.reset()
-        sys.stdout.write('\n')
+        sys.stdout.write("\n")
 
     def __create_examiner_users(self):
         """
         Generate users to be used as examiners.
         """
-        sys.stdout.write('Creating examiner users:')
+        sys.stdout.write("Creating examiner users:")
         for num in range(self.num_students):
-            name = 'examineruser#{}'.format(num)
+            name = "examineruser#{}".format(num)
             user = get_user_model()(shortname=name)
             user.set_password("test")
             user.full_clean()
             user.save()
             user.username_set.create(username=name)
-            user.useremail_set.create(email=name.strip() + '@example.com')
+            user.useremail_set.create(email=name.strip() + "@example.com")
             self.progressdots.increment_progress()
         self.progressdots.reset()
-        sys.stdout.write('\n')
+        sys.stdout.write("\n")
 
     def __create_commentfiles_for_groupcomment(self, groupcomment):
         """
         Generate CommentFiles for GroupComment.
         """
-        commentfile = baker.make('devilry_comment.CommentFile', comment=groupcomment)
-        commentfile.file.save('testfile.txt', ContentFile('test'))
+        commentfile = baker.make("devilry_comment.CommentFile", comment=groupcomment)
+        commentfile.file.save("testfile.txt", ContentFile("test"))
 
     def __create_groupcomments_for_feedbackset(self, feedbackset):
         """
@@ -102,26 +110,28 @@ class DatabaseBuilder(object):
         for candidate in feedbackset.group.candidates.all():
             for num in range(self.num_comments):
                 baker.make(
-                    'devilry_group.GroupComment',
+                    "devilry_group.GroupComment",
                     user=candidate.relatedstudent.user,
                     user_role=GroupComment.USER_ROLE_STUDENT,
-                    published_datetime=feedbackset.deadline_datetime + timezone.timedelta(
-                        minutes=publish_aggregate_minutes),
+                    published_datetime=feedbackset.deadline_datetime
+                    + timezone.timedelta(minutes=publish_aggregate_minutes),
                     feedback_set=feedbackset,
-                    text='This is a comment')
+                    text="This is a comment",
+                )
                 publish_aggregate_minutes += 1
 
         publish_aggregate_minutes = 2
         for examiner in feedbackset.group.examiners.all():
             for num in range(self.num_comments):
                 baker.make(
-                    'devilry_group.GroupComment',
+                    "devilry_group.GroupComment",
                     user=examiner.relatedexaminer.user,
                     user_role=GroupComment.USER_ROLE_EXAMINER,
-                    published_datetime=feedbackset.deadline_datetime + timezone.timedelta(
-                        minutes=publish_aggregate_minutes),
+                    published_datetime=feedbackset.deadline_datetime
+                    + timezone.timedelta(minutes=publish_aggregate_minutes),
                     feedback_set=feedbackset,
-                    text='This is a comment.')
+                    text="This is a comment.",
+                )
                 publish_aggregate_minutes += 2
 
     def __create_examiners_for_assignmentgroup(self, assignmentgroup):
@@ -129,24 +139,24 @@ class DatabaseBuilder(object):
         Generate Examiners for each RelatedExaminer on the semester and
         add them to the AssignmentGroup.
         """
-        sys.stdout.write('Creating examiners:')
+        sys.stdout.write("Creating examiners:")
         for relatedexaminer in RelatedExaminer.objects.filter(period_id=assignmentgroup.parentnode.parentnode.id):
-            baker.make('core.Examiner', relatedexaminer=relatedexaminer, assignmentgroup=assignmentgroup)
+            baker.make("core.Examiner", relatedexaminer=relatedexaminer, assignmentgroup=assignmentgroup)
             self.progressdots.increment_progress()
         self.progressdots.reset()
-        sys.stdout.write('\n')
+        sys.stdout.write("\n")
 
     def __create_candidates_for_assignmentgroup(self, assignmentgroup):
         """
         Generate Candidates for each RelatedStudent on the semester and
         add them to the AssignmentGroup.
         """
-        sys.stdout.write('Creating candidates:')
+        sys.stdout.write("Creating candidates:")
         for relatedstudent in RelatedStudent.objects.filter(period_id=assignmentgroup.parentnode.parentnode.id):
-            baker.make('core.Candidate', relatedstudent=relatedstudent, assignment_group=assignmentgroup)
+            baker.make("core.Candidate", relatedstudent=relatedstudent, assignment_group=assignmentgroup)
             self.progressdots.increment_progress()
         self.progressdots.reset()
-        sys.stdout.write('\n')
+        sys.stdout.write("\n")
 
     def __create_assignmentgroups_for_assignment(self, assignment):
         """
@@ -155,24 +165,26 @@ class DatabaseBuilder(object):
         """
         groups = []
         for num in range(RelatedStudent.objects.filter(period=assignment.parentnode).count()):
-            assignmentgroup = baker.prepare('core.AssignmentGroup', parentnode=assignment)
+            assignmentgroup = baker.prepare("core.AssignmentGroup", parentnode=assignment)
             groups.append(assignmentgroup)
         AssignmentGroup.objects.bulk_create(groups)
 
-        relatedstudents = [relatedstudent for relatedstudent
-                           in RelatedStudent.objects.filter(period=assignment.parentnode)]
-        relatedexaminers = [relatedexaminer for relatedexaminer
-                           in RelatedExaminer.objects.filter(period=assignment.parentnode)]
-        assignmentgroups = [assignmentgroup for assignmentgroup
-                            in AssignmentGroup.objects.filter(parentnode=assignment)]
+        relatedstudents = [
+            relatedstudent for relatedstudent in RelatedStudent.objects.filter(period=assignment.parentnode)
+        ]
+        relatedexaminers = [
+            relatedexaminer for relatedexaminer in RelatedExaminer.objects.filter(period=assignment.parentnode)
+        ]
+        assignmentgroups = [
+            assignmentgroup for assignmentgroup in AssignmentGroup.objects.filter(parentnode=assignment)
+        ]
 
         candidates = []
         list_index = 0
         for relatedstudent in relatedstudents:
             candidate = baker.prepare(
-                'core.Candidate',
-                relatedstudent=relatedstudent,
-                assignment_group=assignmentgroups[list_index])
+                "core.Candidate", relatedstudent=relatedstudent, assignment_group=assignmentgroups[list_index]
+            )
             candidates.append(candidate)
             list_index += 1
         Candidate.objects.bulk_create(candidates)
@@ -181,19 +193,18 @@ class DatabaseBuilder(object):
         list_index = 0
         for relatedexaminer in relatedexaminers:
             examiner = baker.prepare(
-                'core.Examiner',
-                relatedexaminer=relatedexaminer,
-                assignmentgroup=assignmentgroups[list_index])
+                "core.Examiner", relatedexaminer=relatedexaminer, assignmentgroup=assignmentgroups[list_index]
+            )
             examiners.append(examiner)
             list_index += 1
         Examiner.objects.bulk_create(examiners)
 
-        sys.stdout.write('Creating comments:')
+        sys.stdout.write("Creating comments:")
         for feedbackset in FeedbackSet.objects.filter(group__parentnode_id=assignment.id):
             self.__create_groupcomments_for_feedbackset(feedbackset=feedbackset)
             self.progressdots.increment_progress()
         self.progressdots.reset()
-        sys.stdout.write('\n')
+        sys.stdout.write("\n")
 
     def __create_assignments_for_period(self, period):
         """
@@ -202,21 +213,22 @@ class DatabaseBuilder(object):
         publishing_time_from_period_start = 0
         first_deadline_from_period_start = 7
         created_assignments = []
-        sys.stdout.write('Creating assignments:')
+        sys.stdout.write("Creating assignments:")
         for num in range(self.num_assignments):
             assignment = baker.prepare(
-                'core.Assignment',
+                "core.Assignment",
                 parentnode=period,
-                long_name='Assignment#{}'.format(num),
-                short_name='assignment#{}'.format(num),
+                long_name="Assignment#{}".format(num),
+                short_name="assignment#{}".format(num),
                 publishing_time=period.start_time + timezone.timedelta(days=publishing_time_from_period_start),
-                first_deadline=period.start_time + timezone.timedelta(days=first_deadline_from_period_start))
+                first_deadline=period.start_time + timezone.timedelta(days=first_deadline_from_period_start),
+            )
             created_assignments.append(assignment)
             publishing_time_from_period_start += 7
             first_deadline_from_period_start += 7
             self.progressdots.increment_progress()
         self.progressdots.reset()
-        sys.stdout.write('\n')
+        sys.stdout.write("\n")
         Assignment.objects.bulk_create(created_assignments)
         for assignment in Assignment.objects.filter(parentnode=period):
             self.__create_assignmentgroups_for_assignment(assignment=assignment)
@@ -225,36 +237,38 @@ class DatabaseBuilder(object):
         """
         Generate RelatedStudents for period.
         """
-        sys.stdout.write('Adding students to {}:'.format(period))
-        for user in get_user_model().objects.filter(shortname__istartswith='student'):
-            baker.make('core.RelatedStudent', user=user, period=period)
+        sys.stdout.write("Adding students to {}:".format(period))
+        for user in get_user_model().objects.filter(shortname__istartswith="student"):
+            baker.make("core.RelatedStudent", user=user, period=period)
             self.progressdots.increment_progress()
         self.progressdots.reset()
-        sys.stdout.write('\n')
+        sys.stdout.write("\n")
 
     def __create_relatedexaminers_for_period(self, period):
         """
         Generate RelatedExaminers for period.
         """
-        sys.stdout.write('Adding examiners to {}:'.format(period))
-        for user in get_user_model().objects.filter(shortname__istartswith='examiner'):
-            baker.make('core.RelatedExaminer', user=user, period=period)
+        sys.stdout.write("Adding examiners to {}:".format(period))
+        for user in get_user_model().objects.filter(shortname__istartswith="examiner"):
+            baker.make("core.RelatedExaminer", user=user, period=period)
             self.progressdots.increment_progress()
         self.progressdots.reset()
-        sys.stdout.write('\n')
+        sys.stdout.write("\n")
 
     def __create_periods(self, subject):
         """
         Generate periods on subject.
         """
         for num in range(self.num_periods):
-            sys.stdout.write('Create period Period#{}:\n'.format(num))
-            period = baker.make('core.Period',
-                                parentnode=subject,
-                                long_name='Period#{}'.format(num),
-                                short_name='period#{}'.format(num),
-                                start_time=timezone.now() - timezone.timedelta(days=90),
-                                end_time=timezone.now() + timezone.timedelta(days=90))
+            sys.stdout.write("Create period Period#{}:\n".format(num))
+            period = baker.make(
+                "core.Period",
+                parentnode=subject,
+                long_name="Period#{}".format(num),
+                short_name="period#{}".format(num),
+                start_time=timezone.now() - timezone.timedelta(days=90),
+                end_time=timezone.now() + timezone.timedelta(days=90),
+            )
             self.__create_relatedstudents_for_period(period=period)
             self.__create_relatedexaminers_for_period(period=period)
             self.__create_assignments_for_period(period=period)
@@ -264,9 +278,9 @@ class DatabaseBuilder(object):
         Generate Subjects.
         """
         for num in range(self.num_subjects):
-            subject = baker.make('core.Subject',
-                                 long_name='Subject#{}'.format(num),
-                                 short_name='subject#{}'.format(num))
+            subject = baker.make(
+                "core.Subject", long_name="Subject#{}".format(num), short_name="subject#{}".format(num)
+            )
             self.__create_periods(subject=subject)
 
     def build_db(self):
@@ -288,62 +302,62 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '--num-subjects',
-            dest='num_subjects',
+            "--num-subjects", dest="num_subjects", type=int, default=1, help="How many subjects to create."
+        )
+        parser.add_argument(
+            "--num-periods",
+            dest="num_periods",
             type=int,
             default=1,
-            help='How many subjects to create.')
+            help="How many periods to create for each subject.",
+        )
         parser.add_argument(
-            '--num-periods',
-            dest='num_periods',
+            "--num-assignments",
+            dest="num_assignments",
             type=int,
             default=1,
-            help='How many periods to create for each subject.')
+            help="How many assignments to create for each period.",
+        )
         parser.add_argument(
-            '--num-assignments',
-            dest='num_assignments',
-            type=int,
-            default=1,
-            help='How many assignments to create for each period.')
-        parser.add_argument(
-            '--num-students',
-            dest='num_students',
+            "--num-students",
+            dest="num_students",
             type=int,
             default=10,
-            help='Minimum number of students to create for each assignment.')
+            help="Minimum number of students to create for each assignment.",
+        )
         parser.add_argument(
-            '--num-comments',
-            dest='num_comments',
+            "--num-comments",
+            dest="num_comments",
             type=int,
             default=5,
-            help='Number of comments that is added for each user in a group(examiners and students)')
+            help="Number of comments that is added for each user in a group(examiners and students)",
+        )
 
         parser.add_argument(
-            '--project-groups',
-            action='store_true',
-            dest='project_groups',
+            "--project-groups",
+            action="store_true",
+            dest="project_groups",
             default=False,
-            help='Add students two and two students to project groups')
+            help="Add students two and two students to project groups",
+        )
 
     def __clean_and_migrate(self):
-        call_command('dbdev_reinit')
-        call_command('migrate')
-        call_command('ievvtasks_customsql', '-i', '-r')
+        call_command("dbdev_reinit")
+        call_command("migrate")
+        call_command("ievvtasks_customsql", "-i", "-r")
 
     def __create_superuser(self):
-        get_user_model().objects.create_superuser(
-            shortname='grandma@example.com',
-            password='test')
+        get_user_model().objects.create_superuser(shortname="grandma@example.com", password="test")
 
     def handle(self, *args, **options):
         self.__clean_and_migrate()
         self.__create_superuser()
-        num_subjects = options.get('num_subjects')
-        num_periods = options.get('num_periods')
-        num_assignments = options.get('num_assignments')
-        num_students = options.get('num_students')
-        num_comments = options.get('num_comments')
-        project_groups = options.get('project_groups')
+        num_subjects = options.get("num_subjects")
+        num_periods = options.get("num_periods")
+        num_assignments = options.get("num_assignments")
+        num_students = options.get("num_students")
+        num_comments = options.get("num_comments")
+        project_groups = options.get("project_groups")
 
         with transaction.atomic():
             DatabaseBuilder(
@@ -355,17 +369,15 @@ class Command(BaseCommand):
                 project_groups=project_groups,
             ).build_db()
 
-            print('User count: {}'.format(get_user_model().objects.count()))
-            print('Subject count: {}'.format(Subject.objects.count()))
-            print('Period count: {}'.format(Period.objects.count()))
-            print('Assignment count: {}'.format(Assignment.objects.count()))
-            print('RelatedStudent count: {}'.format(RelatedStudent.objects.count()))
-            print('RelatedExaminer count: {}'.format(RelatedExaminer.objects.count()))
-            print('AssignmentGroup count: {}'.format(AssignmentGroup.objects.count()))
-            print('Candidate count: {}'.format(Candidate.objects.count()))
-            print('Examiner count: {}'.format(Examiner.objects.count()))
-            print('FeedbackSet count: {}'.format(FeedbackSet.objects.count()))
-            print('GroupComment count: {}'.format(GroupComment.objects.count()))
-            print('CommentFile count: {}'.format(CommentFile.objects.count()))
-
-
+            print("User count: {}".format(get_user_model().objects.count()))
+            print("Subject count: {}".format(Subject.objects.count()))
+            print("Period count: {}".format(Period.objects.count()))
+            print("Assignment count: {}".format(Assignment.objects.count()))
+            print("RelatedStudent count: {}".format(RelatedStudent.objects.count()))
+            print("RelatedExaminer count: {}".format(RelatedExaminer.objects.count()))
+            print("AssignmentGroup count: {}".format(AssignmentGroup.objects.count()))
+            print("Candidate count: {}".format(Candidate.objects.count()))
+            print("Examiner count: {}".format(Examiner.objects.count()))
+            print("FeedbackSet count: {}".format(FeedbackSet.objects.count()))
+            print("GroupComment count: {}".format(GroupComment.objects.count()))
+            print("CommentFile count: {}".format(CommentFile.objects.count()))

@@ -10,19 +10,22 @@ def docs():
     """
     Build the docs.
     """
-    local('sphinx-build -b html . _build')
+    local("sphinx-build -b html . _build")
+
 
 @task
 def doc2dash():
-    local('doc2dash -Af --name Devilry _build')
+    local("doc2dash -Af --name Devilry _build")
+
 
 @task
 def clean():
     """
     Remove all files built for the docs.
     """
-    if os.path.exists('_build'):
-        shutil.rmtree('_build')
+    if os.path.exists("_build"):
+        shutil.rmtree("_build")
+
 
 def _open_file(filename):
     if sys.platform == "win32":
@@ -34,9 +37,10 @@ def _open_file(filename):
             opener = "xdg-open"
         subprocess.call([opener, filename])
 
+
 @task
 def opendocs():
     """
     Open docs in the default browser.
     """
-    _open_file('_build/index.html')
+    _open_file("_build/index.html")

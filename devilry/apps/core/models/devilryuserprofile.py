@@ -3,7 +3,7 @@ from django.db import models
 
 
 class DevilryUserProfile(models.Model):
-    """ User profile with a one-to-one relation to ``django.contrib.auth.models.User``.
+    """User profile with a one-to-one relation to ``django.contrib.auth.models.User``.
 
     Ment to be used as a Django *user profile* (AUTH_PROFILE_MODULE).
 
@@ -22,9 +22,10 @@ class DevilryUserProfile(models.Model):
         Used to store the preferred language for a user.
         Not required (The UI defaults to the default language)
     """
+
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     full_name = models.CharField(max_length=300, blank=True, null=True)
     languagecode = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
-        app_label = 'core'
+        app_label = "core"

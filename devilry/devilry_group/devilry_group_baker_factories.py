@@ -24,16 +24,15 @@ def feedbackset_save(feedbackset, **kwargs):
 def _make_assignment_group_for_feedbackset(group, **kwargs):
     groupkwargs = {}
     for key in list(kwargs.keys()):
-        if key.startswith('group__'):
+        if key.startswith("group__"):
             value = kwargs.pop(key)
-            groupkey = key[len('group__'):]
+            groupkey = key[len("group__") :]
             groupkwargs[groupkey] = value
     if group:
         if groupkwargs:
-            raise ValueError('You can not supply a group AND supply kwargs starting '
-                             'with group__.')
+            raise ValueError("You can not supply a group AND supply kwargs starting with group__.")
     else:
-        group = baker.make('core.AssignmentGroup', **groupkwargs)
+        group = baker.make("core.AssignmentGroup", **groupkwargs)
     return group
 
 
@@ -121,7 +120,7 @@ def feedbackset_first_attempt_published(group=None, grading_published_datetime=N
     first_feedbackset.feedbackset_type = FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT
     first_feedbackset.grading_published_datetime = grading_published_datetime or timezone.now()
     first_feedbackset.grading_points = grading_points
-    examiner = baker.make('core.Examiner', assignmentgroup=group)
+    examiner = baker.make("core.Examiner", assignmentgroup=group)
     first_feedbackset.grading_published_by = examiner.relatedexaminer.user
     feedbackset_save(feedbackset=first_feedbackset, **kwargs)
     return first_feedbackset
@@ -168,18 +167,18 @@ def feedbackset_new_attempt_published(group, grading_published_datetime=None, gr
         FeedbackSet: The created FeedbackSet.
     """
     if not group:
-        raise ValueError('A FeedbackSet as a new attempt must have a pre-existing group!')
-    kwargs.setdefault('deadline_datetime', timezone.now())
-    if 'grading_published_by' not in kwargs:
-        examiner = baker.make('core.Examiner', assignmentgroup=group)
-        kwargs['grading_published_by'] = examiner.relatedexaminer.user
+        raise ValueError("A FeedbackSet as a new attempt must have a pre-existing group!")
+    kwargs.setdefault("deadline_datetime", timezone.now())
+    if "grading_published_by" not in kwargs:
+        examiner = baker.make("core.Examiner", assignmentgroup=group)
+        kwargs["grading_published_by"] = examiner.relatedexaminer.user
     feedbackset = baker.prepare(
-        'devilry_group.FeedbackSet',
+        "devilry_group.FeedbackSet",
         group=group,
         feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT,
         grading_published_datetime=grading_published_datetime or timezone.now(),
         grading_points=grading_points,
-        **kwargs
+        **kwargs,
     )
     feedbackset.full_clean()
     feedbackset.save()
@@ -199,13 +198,11 @@ def feedbackset_new_attempt_unpublished(group, **kwargs):
         FeedbackSet: The created FeedbackSet.
     """
     if not group:
-        raise ValueError('A FeedbackSet as a new attempt must have a pre-existing group!')
-    kwargs.setdefault('deadline_datetime', timezone.now() + timezone.timedelta(days=3))
+        raise ValueError("A FeedbackSet as a new attempt must have a pre-existing group!")
+    kwargs.setdefault("deadline_datetime", timezone.now() + timezone.timedelta(days=3))
     feedbackset = baker.prepare(
-        'devilry_group.FeedbackSet',
-        group=group,
-        feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT,
-        **kwargs)
+        "devilry_group.FeedbackSet", group=group, feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT, **kwargs
+    )
     feedbackset.full_clean()
     feedbackset.save()
     return feedbackset
@@ -220,11 +217,13 @@ def _add_file_to_collection(temporary_filecollection, file_like_object):
         temporary_filecollection: TemporaryFileCollection for the TemporaryFile created.
         file_like_object: A object that implements the general file attributes.
     """
-    baker.make('cradmin_temporaryfileuploadstore.TemporaryFile',
-               collection=temporary_filecollection,
-               filename=file_like_object.name,
-               file=file_like_object,
-               mimetype=file_like_object.content_type)
+    baker.make(
+        "cradmin_temporaryfileuploadstore.TemporaryFile",
+        collection=temporary_filecollection,
+        filename=file_like_object.name,
+        file=file_like_object,
+        mimetype=file_like_object.content_type,
+    )
 
 
 def temporary_file_collection_with_tempfile(**collection_attributes):
@@ -242,10 +241,10 @@ def temporary_file_collection_with_tempfile(**collection_attributes):
     Returns:
         cradmin_temporaryfileuploadstore.TemporaryFileCollection: TemporaryFileCollection instance.
     """
-    temp_collection = baker.make('cradmin_temporaryfileuploadstore.TemporaryFileCollection', **collection_attributes)
+    temp_collection = baker.make("cradmin_temporaryfileuploadstore.TemporaryFileCollection", **collection_attributes)
     _add_file_to_collection(
         temporary_filecollection=temp_collection,
-        file_like_object=SimpleUploadedFile(name='testfile.txt', content=b'Test content', content_type='text/txt')
+        file_like_object=SimpleUploadedFile(name="testfile.txt", content=b"Test content", content_type="text/txt"),
     )
     return temp_collection
 
@@ -278,7 +277,7 @@ def temporary_file_collection_with_tempfiles(file_list=None, **collection_attrib
     Returns:
         cradmin_temporaryfileuploadstore.TemporaryFileCollection: TemporaryFileCollection.
     """
-    temp_collection = baker.make('cradmin_temporaryfileuploadstore.TemporaryFileCollection', **collection_attributes)
+    temp_collection = baker.make("cradmin_temporaryfileuploadstore.TemporaryFileCollection", **collection_attributes)
     if file_list:
         for file_obj in file_list:
             _add_file_to_collection(temporary_filecollection=temp_collection, file_like_object=file_obj)

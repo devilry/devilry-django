@@ -8,14 +8,20 @@ from .base import *
 # The if's below is just to make it easy to toggle these settings on and off during development
 profiler_middleware = False
 if profiler_middleware:
-    MIDDLEWARE = MIDDLEWARE + [
-        "devilry.utils.profile.ProfilerMiddleware",  # Enable profiling. Just add ?prof=yes to any url to see a profile report
-    ]
+    MIDDLEWARE = (
+        MIDDLEWARE
+        + [
+            "devilry.utils.profile.ProfilerMiddleware",  # Enable profiling. Just add ?prof=yes to any url to see a profile report
+        ]
+    )
 
-MIDDLEWARE = MIDDLEWARE + [
-    # "debug_toolbar.middleware.DebugToolbarMiddleware",
-    #    "whitenoise.middleware.WhiteNoiseMiddleware",
-]
+MIDDLEWARE = (
+    MIDDLEWARE
+    + [
+        # "debug_toolbar.middleware.DebugToolbarMiddleware",
+        #    "whitenoise.middleware.WhiteNoiseMiddleware",
+    ]
+)
 
 # DELAY_MIDDLEWARE_TIME = (80, 120) # Wait for randint(*DELAY_MIDDLEWARE_TIME)/100.0 before responding to each request when using DelayMiddleware
 # delay_middleware = True

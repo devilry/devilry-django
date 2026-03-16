@@ -7,6 +7,7 @@ class Registry(Singleton):
     Holds exactly one subclass of :class:`devilry.devilry_report.abstract_generator.AbstractReportGenerator`
     for each `generator_type`.
     """
+
     def __init__(self):
         super(Registry, self).__init__()
         self._generator_type_classes = {}
@@ -37,7 +38,7 @@ class Registry(Singleton):
             ValueError: If `generator_type` is not in the registry.
         """
         if generator_type not in self:
-            raise ValueError('{} not in registry'.format(generator_type))
+            raise ValueError("{} not in registry".format(generator_type))
         return self._generator_type_classes[generator_type]
 
     def add(self, generator_class):
@@ -54,7 +55,7 @@ class Registry(Singleton):
                 already exists in the registry.
         """
         if generator_class.get_generator_type() in self:
-            raise ValueError('{} already in registry'.format(generator_class.get_generator_type()))
+            raise ValueError("{} already in registry".format(generator_class.get_generator_type()))
         self._generator_type_classes[generator_class.get_generator_type()] = generator_class
 
     def remove(self, generator_type):
@@ -69,7 +70,7 @@ class Registry(Singleton):
             ValueError: If the generator_type does not exist in the registry.
         """
         if generator_type not in self:
-            raise ValueError('{} not in registry'.format(generator_type))
+            raise ValueError("{} not in registry".format(generator_type))
         del self._generator_type_classes[generator_type]
 
 
@@ -77,6 +78,7 @@ class MockableRegistry(Registry):
     """
     A non-singleton version of :class:`Registry`. For tests.
     """
+
     def __init__(self):
         self._instance = None
         super(MockableRegistry, self).__init__()

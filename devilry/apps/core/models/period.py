@@ -1,5 +1,3 @@
-
-
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
@@ -55,15 +53,15 @@ class PeriodQuerySet(models.QuerySet):
         if user.is_superuser:
             return self.all()
         else:
-            subjectids_where_is_admin_queryset = Subject.objects\
-                .filter_user_is_admin(user=user)\
-                .values_list('id', flat=True)
-            periodids_where_is_admin_queryset = PeriodPermissionGroup.objects \
-                .filter(models.Q(permissiongroup__users=user))\
-                .values_list('period_id', flat=True)
+            subjectids_where_is_admin_queryset = Subject.objects.filter_user_is_admin(user=user).values_list(
+                "id", flat=True
+            )
+            periodids_where_is_admin_queryset = PeriodPermissionGroup.objects.filter(
+                models.Q(permissiongroup__users=user)
+            ).values_list("period_id", flat=True)
             return self.filter(
-                models.Q(id__in=periodids_where_is_admin_queryset) |
-                models.Q(parentnode_id__in=subjectids_where_is_admin_queryset)
+                models.Q(id__in=periodids_where_is_admin_queryset)
+                | models.Q(parentnode_id__in=subjectids_where_is_admin_queryset)
             )
 
     def extra_annotate_with_user_qualifies_for_final_exam(self, user):
@@ -73,9 +71,10 @@ class PeriodQuerySet(models.QuerySet):
         and ``None`` if qualifies for final exam has not been determined yet.
         """
         from devilry.devilry_qualifiesforexam.models import Status
+
         return self.extra(
-                select={
-                    'user_qualifies_for_final_exam': """
+            select={
+                "user_qualifies_for_final_exam": """
                         SELECT
                             CASE
                                 WHEN
@@ -99,11 +98,11 @@ class PeriodQuerySet(models.QuerySet):
                         ORDER BY devilry_qualifiesforexam_status.createtime DESC
                         LIMIT 1
                 """
-                },
-                select_params=[
-                    Status.NOTREADY,
-                    user.id,
-                ]
+            },
+            select_params=[
+                Status.NOTREADY,
+                user.id,
+            ],
         )
 
     def extra_annotate_with_assignmentcount_for_studentuser(self, user):
@@ -115,8 +114,8 @@ class PeriodQuerySet(models.QuerySet):
             user: A User object.
         """
         return self.extra(
-                select={
-                    'assignmentcount_for_studentuser': """
+            select={
+                "assignmentcount_for_studentuser": """
                         SELECT
                             COUNT(core_assignment.id)
                         FROM core_assignment
@@ -131,10 +130,10 @@ class PeriodQuerySet(models.QuerySet):
                             AND
                             core_assignment.parentnode_id = core_period.id
                     """
-                },
-                select_params=[
-                    user.id,
-                ]
+            },
+            select_params=[
+                user.id,
+            ],
         )
 
 
@@ -181,26 +180,29 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
        A DateTimeField containing the etag for this object.
 
     """
+
     objects = PeriodQuerySet.as_manager()
 
     class Meta:
-        app_label = 'core'
-        unique_together = ('short_name', 'parentnode')
-        ordering = ['short_name']
-        verbose_name = gettext_lazy('semester')
-        verbose_name_plural = gettext_lazy('semesters')
+        app_label = "core"
+        unique_together = ("short_name", "parentnode")
+        ordering = ["short_name"]
+        verbose_name = gettext_lazy("semester")
+        verbose_name_plural = gettext_lazy("semesters")
 
     short_name = ShortNameField()
     long_name = LongNameField()
-    parentnode = models.ForeignKey(Subject, related_name='periods',
-                                   verbose_name=gettext_lazy('Subject'),
-                                   on_delete=models.CASCADE)
+    parentnode = models.ForeignKey(
+        Subject, related_name="periods", verbose_name=gettext_lazy("Subject"), on_delete=models.CASCADE
+    )
     start_time = models.DateTimeField(
-        help_text=gettext_lazy('Start time and end time defines when the period is active.'),
-        verbose_name=gettext_lazy('Start time'))
+        help_text=gettext_lazy("Start time and end time defines when the period is active."),
+        verbose_name=gettext_lazy("Start time"),
+    )
     end_time = models.DateTimeField(
-        help_text=gettext_lazy('Start time and end time defines when the period is active.'),
-        verbose_name=gettext_lazy('End time'))
+        help_text=gettext_lazy("Start time and end time defines when the period is active."),
+        verbose_name=gettext_lazy("End time"),
+    )
     admins = models.ManyToManyField(User, blank=True)
     etag = models.DateTimeField(auto_now_add=True)
 
@@ -228,12 +230,11 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
         """
         if self.start_time and self.end_time:
             if self.start_time > self.end_time:
-                raise ValidationError(gettext_lazy('Start time must be before end time.'))
+                raise ValidationError(gettext_lazy("Start time must be before end time."))
         super(Period, self).clean(*args, **kwargs)
 
     def is_active(self):
-        """ Returns true if the period is active
-        """
+        """Returns true if the period is active"""
         now = timezone.now()
         return self.start_time < now < self.end_time
 
@@ -280,12 +281,13 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
 
 
 class PeriodApplicationKeyValue(AbstractApplicationKeyValue, AbstractIsAdmin):
-    """ Key/value pair tied to a specific Period. """
+    """Key/value pair tied to a specific Period."""
+
     period = models.ForeignKey(Period, help_text="The period where this metadata belongs.", on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = ('period', 'application', 'key')
-        app_label = 'core'
+        unique_together = ("period", "application", "key")
+        app_label = "core"
 
     def __str__(self):
-        return '{0}: {1}'.format(self.period, super(AbstractApplicationKeyValue, self))
+        return "{0}: {1}".format(self.period, super(AbstractApplicationKeyValue, self))

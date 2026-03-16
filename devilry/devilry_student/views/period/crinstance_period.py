@@ -1,5 +1,3 @@
-
-
 from django.http import Http404
 
 from devilry.apps.core.models import Period
@@ -22,19 +20,17 @@ def does_not_exist_view(request):
 
 
 class CrAdminInstance(devilry_crinstance.BaseCrInstanceStudent):
-    id = 'devilry_student_period'
+    id = "devilry_student_period"
     menuclass = Menu
     roleclass = Period
-    rolefrontpage_appname = 'overview'
+    rolefrontpage_appname = "overview"
 
     apps = [
-        ('overview', overview.App),
+        ("overview", overview.App),
     ]
 
     def get_rolequeryset(self):
-        return Period.objects\
-            .filter_user_is_relatedstudent(user=self.request.user)\
-            .select_related('parentnode')
+        return Period.objects.filter_user_is_relatedstudent(user=self.request.user).select_related("parentnode")
 
     def get_titletext_for_role(self, role):
         """
@@ -45,7 +41,7 @@ class CrAdminInstance(devilry_crinstance.BaseCrInstanceStudent):
 
     @classmethod
     def matches_urlpath(cls, urlpath):
-        return '/devilry_student/period' in urlpath
+        return "/devilry_student/period" in urlpath
 
     @classmethod
     def get_roleselect_view(cls):

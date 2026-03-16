@@ -19,8 +19,10 @@ def get_devilry_hard_deadline_info_text(setting_name):
     if info_dict and languagecode in info_dict:
         return info_dict[languagecode]
     try:
-        default_info = info_dict['__default']
+        default_info = info_dict["__default"]
     except KeyError:
-        raise ValueError("User error: The {} must contain a '__default' info setting. "
-                         "This exists by default and has been wrongly removed during setup.".format(setting_name))
+        raise ValueError(
+            "User error: The {} must contain a '__default' info setting. "
+            "This exists by default and has been wrongly removed during setup.".format(setting_name)
+        )
     return gettext(default_info)

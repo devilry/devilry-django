@@ -12,9 +12,8 @@ class UserTitleDescriptionMixin(object):
         if self.user.fullname:
             return self.user.shortname
         else:
-            return ''
+            return ""
 
 
-class ItemValue(UserTitleDescriptionMixin,
-                listbuilder.itemvalue.TitleDescription):
-    valuealias = 'user'
+class ItemValue(UserTitleDescriptionMixin, listbuilder.itemvalue.TitleDescription):
+    valuealias = "user"

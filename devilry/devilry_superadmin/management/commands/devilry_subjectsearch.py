@@ -6,42 +6,44 @@ from devilry.utils.management import add_output_encoding_argument
 
 class NodeSearchBase(BaseCommand):
     nodecls = None
-    args = '[search|empty for all]'
-    attrs = ['short_name', 'long_name']
+    args = "[search|empty for all]"
+    attrs = ["short_name", "long_name"]
 
     def add_arguments(self, parser):
-        parser.add_argument(
-            '--short_name-only',
-            action='store_true',
-            dest='short_name_only',
-            default=False,
-            help='Only print short name (one line per short_name)'),
+        (
+            parser.add_argument(
+                "--short_name-only",
+                action="store_true",
+                dest="short_name_only",
+                default=False,
+                help="Only print short name (one line per short_name)",
+            ),
+        )
         add_output_encoding_argument(parser)
 
     def _print_details(self, record):
         print(self.get_short(record))
-        print('   id: {}'.format(record.id))
+        print("   id: {}".format(record.id))
         for attrname in self.attrs:
             attr = getattr(record, attrname)
             try:
                 attr = attr.encode(self.outputencoding)
             except:
-                attr = attr.encode('ascii', 'replace')
-            print('   {attrname}: {attr}'.format(attrname=attrname,
-                                                 attr=attr))
+                attr = attr.encode("ascii", "replace")
+            print("   {attrname}: {attr}".format(attrname=attrname, attr=attr))
         # print '   admins:'
         # for admin in record.admins.all():
         #     print '        - {0}'.format(admin)
 
     def show_search_results(self, options, qry):
         for record in qry:
-            if options['short_name_only']:
+            if options["short_name_only"]:
                 print(self.get_short(record))
             else:
                 self._print_details(record)
 
     def handle(self, *args, **options):
-        self.outputencoding = options['outputencoding']
+        self.outputencoding = options["outputencoding"]
         if len(args) == 1:
             qry = self.get_qry(args[0])
         else:
@@ -56,5 +58,5 @@ class NodeSearchBase(BaseCommand):
 
 
 class Command(NodeSearchBase):
-    help = 'Search for a subject by short_name. Matches any part of the short_name.'
+    help = "Search for a subject by short_name. Matches any part of the short_name."
     nodecls = Subject

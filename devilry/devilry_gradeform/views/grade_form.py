@@ -3,8 +3,7 @@ from devilry.devilry_gradeform.views import editable_gradeform, viewable_gradefo
 
 
 class AbstractGradeForm(object):
-    """
-    """
+    """ """
 
     def render_setup(self, assignment):
         renderer_class = self.get_setuprenderer_class()
@@ -25,31 +24,31 @@ class AbstractGradeForm(object):
         return renderer.render()
 
     def get_setuprenderer_class(self):
-        raise NotImplementedError('Must be implemented by subclass')
+        raise NotImplementedError("Must be implemented by subclass")
 
     def get_editablerenderer_class(self):
-        raise NotImplementedError('Must be implemented by subclass')
+        raise NotImplementedError("Must be implemented by subclass")
 
     def get_viewablerenderer_class(self):
-        raise NotImplementedError('Must be implemented by subclass')
+        raise NotImplementedError("Must be implemented by subclass")
 
     def get_setuprenderer_javascript_library_urls(self):
-        return ['']
+        return [""]
 
     def get_setuprenderer_angularjs_libraries(self):
-        return ['']
+        return [""]
 
     def get_editablerenderer_javascript_library_urls(self):
-        return ['']
+        return [""]
 
     def get_editablerenderer_angularjs_libraries(self):
-        return ['']
+        return [""]
 
     def get_viewablerenderer_javascript_library_urls(self):
-        return ['']
+        return [""]
 
     def get_viewablerenderer_angularjs_libraries(self):
-        return ['']
+        return [""]
 
 
 # class ApprovedNotApprovedGradeForm(AbstractGradeForm):
@@ -59,7 +58,6 @@ class AbstractGradeForm(object):
 
 
 class AdvancedGradeForm(AbstractGradeForm):
-
     def get_setuprenderer_class(self):
         return setup_gradeform.SetupGradeForm
 

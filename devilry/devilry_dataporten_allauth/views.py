@@ -3,7 +3,7 @@ from allauth.socialaccount.providers.oauth2.views import (
     OAuth2LoginView,
 )
 
-from . callback import DevilryOAuth2CallbackView
+from .callback import DevilryOAuth2CallbackView
 from .provider import DevilryDataportenProvider
 
 

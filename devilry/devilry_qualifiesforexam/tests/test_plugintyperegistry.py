@@ -9,38 +9,35 @@ from devilry.devilry_qualifiesforexam import plugintyperegistry
 
 
 class TestPluginSubclassFactory(test.TestCase):
-
     def test_create_subclass(self):
         testpluginclass = plugintyperegistry.PluginTypeSubclassFactory.make_subclass(
-                str('TestPlugin'),
-                plugintypeid='test_plugin',
-                human_readable_name='Test plugin',
-                description='Test plugin that does stuff')
+            str("TestPlugin"),
+            plugintypeid="test_plugin",
+            human_readable_name="Test plugin",
+            description="Test plugin that does stuff",
+        )
         testplugin = testpluginclass()
-        self.assertEqual('test_plugin', testplugin.get_plugintypeid())
-        self.assertEqual('Test plugin', testplugin.get_human_readable_name())
-        self.assertEqual('Test plugin that does stuff', testplugin.get_description())
+        self.assertEqual("test_plugin", testplugin.get_plugintypeid())
+        self.assertEqual("Test plugin", testplugin.get_human_readable_name())
+        self.assertEqual("Test plugin that does stuff", testplugin.get_description())
         self.assertEqual(None, testplugin.get_plugin_view_class())
 
 
 class TestPluginTypeRegistry(test.TestCase):
-
     def test_add_plugin(self):
         # Plugin is added to registry and check is performed to make sure it was added.
         testregistry = plugintyperegistry.MockableRegistry.make_mockregistry()
         testpluginclass = plugintyperegistry.PluginTypeSubclassFactory.make_subclass(
-            classname=str('TestPlugin'),
-            plugintypeid='test_plugin'
+            classname=str("TestPlugin"), plugintypeid="test_plugin"
         )
         testregistry.add(testpluginclass)
-        self.assertEqual('test_plugin', testregistry['test_plugin'].get_plugintypeid())
+        self.assertEqual("test_plugin", testregistry["test_plugin"].get_plugintypeid())
 
     def test_add_plugin_duplicate(self):
         # Registry should raise error if plugin with same plugintypeid is added.
         testregistry = plugintyperegistry.MockableRegistry.make_mockregistry()
         testpluginclass = plugintyperegistry.PluginTypeSubclassFactory.make_subclass(
-                classname=str('TestPlugin'),
-                plugintypeid='test_plugin'
+            classname=str("TestPlugin"), plugintypeid="test_plugin"
         )
         testregistry.add(testpluginclass)
 
@@ -51,16 +48,13 @@ class TestPluginTypeRegistry(test.TestCase):
         # Iterate and make sure all plugins exist in registry
         testregistry = plugintyperegistry.MockableRegistry.make_mockregistry()
         testpluginclass1 = plugintyperegistry.PluginTypeSubclassFactory.make_subclass(
-            classname=str('TestPlugin1'),
-            plugintypeid='test_plugin1'
+            classname=str("TestPlugin1"), plugintypeid="test_plugin1"
         )
         testpluginclass2 = plugintyperegistry.PluginTypeSubclassFactory.make_subclass(
-            classname=str('TestPlugin2'),
-            plugintypeid='test_plugin2'
+            classname=str("TestPlugin2"), plugintypeid="test_plugin2"
         )
         testpluginclass3 = plugintyperegistry.PluginTypeSubclassFactory.make_subclass(
-            classname=str('TestPlugin3'),
-            plugintypeid='test_plugin3'
+            classname=str("TestPlugin3"), plugintypeid="test_plugin3"
         )
 
         plugins = [testpluginclass1, testpluginclass2, testpluginclass3]

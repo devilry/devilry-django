@@ -13,54 +13,50 @@ THIS_DIR = os.path.dirname(__file__)
 # generated files during development
 #
 #########################################################
-developfilesdir = 'devilry_developfiles'
+developfilesdir = "devilry_developfiles"
 if not exists(developfilesdir):
     os.mkdir(developfilesdir)
-logdir = join(developfilesdir, 'log')
+logdir = join(developfilesdir, "log")
 if not exists(logdir):
     os.mkdir(logdir)
 MEDIA_ROOT = join(developfilesdir, "filestore")
 
 DATABASES = {
-    'default': dj_database_url.parse(
+    "default": dj_database_url.parse(
         # The default should match postgres in docker-compose.yaml
-        os.environ.get('DATABASE_URL', 'postgres://dbdev:dbdev@localhost:23419/dbdev')
+        os.environ.get("DATABASE_URL", "postgres://dbdev:dbdev@localhost:23419/dbdev")
     )
 }
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS += [
     # 'raven.contrib.django.raven_compat', # Sentry client (Raven)
-    'devilry.devilry_sandbox',
-
-    'devilry.project.develop',
+    "devilry.devilry_sandbox",
+    "devilry.project.develop",
     #'simple_rest',
-    'ievv_opensource.ievvtasks_development',
-
+    "ievv_opensource.ievvtasks_development",
     # Not apps, but here for the Django test system to discover them:
-    'devilry.utils',
+    "devilry.utils",
 ]
 
 
 INTERNAL_IPS = ["127.0.0.1"]
 DEBUG = True
-STATIC_ROOT = 'static'
-CRISPY_TEMPLATE_PACK = 'bootstrap3'
+STATIC_ROOT = "static"
+CRISPY_TEMPLATE_PACK = "bootstrap3"
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = '+g$%**q(w78xqa_2)(_+%v8d)he-b_^@d*pqhq!#2p*a7*9e9h'
+SECRET_KEY = "+g$%**q(w78xqa_2)(_+%v8d)he-b_^@d*pqhq!#2p*a7*9e9h"
 
 # If no admins are set, no emails are sent to admins
-ADMINS = (
-     ('Devilry admin', 'admin@example.com'),
-)
+ADMINS = (("Devilry admin", "admin@example.com"),)
 MANAGERS = ADMINS
-ROOT_URLCONF = 'devilry.project.develop.dev_urls'
+ROOT_URLCONF = "devilry.project.develop.dev_urls"
 
-DEVILRY_SCHEME_AND_DOMAIN = 'https://devilry.example.com'
+DEVILRY_SCHEME_AND_DOMAIN = "https://devilry.example.com"
 
-DEVILRY_SYNCSYSTEM = 'FS (Felles Studentsystem)'
+DEVILRY_SYNCSYSTEM = "FS (Felles Studentsystem)"
 
 PASSWORD_HASHERS = ("django.contrib.auth.hashers.MD5PasswordHasher",)
 
@@ -76,17 +72,17 @@ PASSWORD_HASHERS = ("django.contrib.auth.hashers.MD5PasswordHasher",)
 # Email
 ##################################################################################
 DEVILRY_SEND_EMAIL_TO_USERS = True
-DEVILRY_EMAIL_DEFAULT_FROM = 'devilry-support@example.com'
-DEVILRY_SYSTEM_ADMIN_EMAIL = 'devilry-support@example.com'
-DEVILRY_DEFAULT_EMAIL_SUFFIX = '@example.com'
+DEVILRY_EMAIL_DEFAULT_FROM = "devilry-support@example.com"
+DEVILRY_SYSTEM_ADMIN_EMAIL = "devilry-support@example.com"
+DEVILRY_DEFAULT_EMAIL_SUFFIX = "@example.com"
 
 
 #######################################################################
 # Logging
 #######################################################################
 
-if 'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware' not in MIDDLEWARE:
-    MIDDLEWARE.append('devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware')
+if "devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware" not in MIDDLEWARE:
+    MIDDLEWARE.append("devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware")
 
 # MIDDLEWARE += [
 #'devilry.utils.profile.ProfilerMiddleware' # Enable profiling. Just add ?prof=yes to any url to see a profile report
@@ -98,11 +94,7 @@ if 'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware' not in MID
 # Cache
 #
 ##############################################################
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'
-    }
-}
+CACHES = {"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}}
 
 
 ###################################################################################
@@ -123,9 +115,9 @@ RQ_QUEUES = rq_setup.make_simple_rq_queue_setting()
 #
 ############################
 
-BAKER_CUSTOM_CLASS = 'devilry.utils.custom_baker.CustomBaker'
+BAKER_CUSTOM_CLASS = "devilry.utils.custom_baker.CustomBaker"
 
-IEVVTASKS_DUMPDATA_DIRECTORY = os.path.join(os.path.dirname(THIS_DIR), 'dumps')
+IEVVTASKS_DUMPDATA_DIRECTORY = os.path.join(os.path.dirname(THIS_DIR), "dumps")
 
 from devilry.project.log import create_logging_config  # noqa
 

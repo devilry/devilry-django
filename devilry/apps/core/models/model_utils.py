@@ -5,11 +5,11 @@
     be changed.
 """
 
-pathsep = '.'  # path separator for Node-paths
+pathsep = "."  # path separator for Node-paths
 
 
 def splitpath(path, expected_len=0):
-    """ Split the path on :attr:`pathsep` and return the resulting list.
+    """Split the path on :attr:`pathsep` and return the resulting list.
     Example:
 
     >>> splitpath('uio.ifi.matnat')
@@ -26,7 +26,7 @@ def splitpath(path, expected_len=0):
     """
     p = path.split(pathsep)
     if expected_len and len(p) != expected_len:
-        raise ValueError('Path must have exactly %d parts' % expected_len)
+        raise ValueError("Path must have exactly %d parts" % expected_len)
     return p
 
 

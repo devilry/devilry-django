@@ -1,5 +1,3 @@
-
-
 import itertools
 
 from django.db import connections
@@ -18,9 +16,9 @@ class BulkInsertSQLBuilder(object):
     def _create_db_prepared_values_from_object(self, obj):
         values = [
             field.get_db_prep_save(
-                getattr(obj, field.attname) if self.raw else field.pre_save(obj, True),
-                connection=self.connection
-            ) for field in self.fields
+                getattr(obj, field.attname) if self.raw else field.pre_save(obj, True), connection=self.connection
+            )
+            for field in self.fields
         ]
         return values
 
@@ -30,23 +28,17 @@ class BulkInsertSQLBuilder(object):
         for obj in self.objs:
             values = self._create_db_prepared_values_from_object(obj=obj)
             all_params.extend(values)
-            value_placeholder_sql = ', '.join(["%s"] * len(values))
-            all_value_placeholder_sql.append('  ({})'.format(value_placeholder_sql))
+            value_placeholder_sql = ", ".join(["%s"] * len(values))
+            all_value_placeholder_sql.append("  ({})".format(value_placeholder_sql))
         return all_params, all_value_placeholder_sql
 
     def to_sql(self):
         all_params, all_value_placeholder_sql = self._build_values()
         fieldnames = [self.connection.ops.quote_name(field.column) for field in self.fields]
-        sql = (
-            'INSERT INTO {table_name}\n'
-            '  ({fieldnames})\n'
-            'VALUES\n'
-            '{all_value_placeholder_sql}\n'
-            'RETURNING id'
-        ).format(
+        sql = ("INSERT INTO {table_name}\n  ({fieldnames})\nVALUES\n{all_value_placeholder_sql}\nRETURNING id").format(
             table_name=self.connection.ops.quote_name(self.model_class._meta.db_table),
-            fieldnames=', '.join(fieldnames),
-            all_value_placeholder_sql=',\n'.join(all_value_placeholder_sql),
+            fieldnames=", ".join(fieldnames),
+            all_value_placeholder_sql=",\n".join(all_value_placeholder_sql),
         )
         return sql, all_params
 
@@ -62,18 +54,17 @@ class PostgresBulkInsert(object):
         self.fields = [field for field in self.fields if not isinstance(field, AutoField)]
 
         ops = self.connection.ops
-        self.batch_size = (batch_size or max(ops.bulk_batch_size(self.fields, objs), 1))
+        self.batch_size = batch_size or max(ops.bulk_batch_size(self.fields, objs), 1)
 
         self.sql_list = self._build_sql(objs=objs)
 
     def _build_sql(self, objs):
         sql_list = []
         with transaction.atomic(using=self.db, savepoint=False):
-            for batch in [objs[i:i + self.batch_size]
-                          for i in range(0, len(objs), self.batch_size)]:
+            for batch in [objs[i : i + self.batch_size] for i in range(0, len(objs), self.batch_size)]:
                 sql, params = BulkInsertSQLBuilder(
-                    model_class=self.model_class, objs=batch, connection=self.connection,
-                    fields=self.fields).to_sql()
+                    model_class=self.model_class, objs=batch, connection=self.connection, fields=self.fields
+                ).to_sql()
                 sql_list.append((sql, params))
         return sql_list
 
@@ -105,22 +96,22 @@ class PostgresBulkInsert(object):
         return rows
 
     def explain(self, compact=False):
-        querystring = ''
+        querystring = ""
         for sql, params in self.sql_list:
             querystring += sql
             if compact:
-                querystring += '\n-- VALUES:\n'
+                querystring += "\n-- VALUES:\n"
                 for paramlist in self._group_params(params):
-                    querystring += '-- [{}]\n'.format(', '.join([repr(param) for param in paramlist]))
-                querystring += '\n\n'
+                    querystring += "-- [{}]\n".format(", ".join([repr(param) for param in paramlist]))
+                querystring += "\n\n"
             else:
-                querystring += '\n'
+                querystring += "\n"
                 for valuesindex, paramlist in enumerate(self._group_params(params)):
-                    querystring += '-- VALUES[{}]:\n'.format(valuesindex)
+                    querystring += "-- VALUES[{}]:\n".format(valuesindex)
                     for fieldindex, param in enumerate(paramlist):
                         field = self.fields[fieldindex]
-                        querystring += '--   [{}] {}: {!r}\n'.format(fieldindex, field.column, param)
-                querystring += '\n\n'
+                        querystring += "--   [{}] {}: {!r}\n".format(fieldindex, field.column, param)
+                querystring += "\n\n"
         return querystring
 
 
@@ -132,8 +123,4 @@ class BulkCreateQuerySetMixin(object):
         if not objs:
             return []
         self._for_write = True
-        return PostgresBulkInsert(queryset=self,
-                                  model_class=self.model,
-                                  db=self.db,
-                                  objs=objs,
-                                  batch_size=batch_size)
+        return PostgresBulkInsert(queryset=self, model_class=self.model, db=self.db, objs=objs, batch_size=batch_size)

@@ -1,4 +1,3 @@
-
 class PluginMixin(object):
     #:
     proxyview = None

@@ -6,20 +6,18 @@ from django.utils.encoding import smart_str
 class Search(listfilter.django.single.textinput.Search):
     def __init__(self, label_is_screenreader_only=True):
         super(Search, self).__init__(
-            slug='search',
-            label=gettext_lazy('Search'),
-            label_is_screenreader_only=label_is_screenreader_only
+            slug="search", label=gettext_lazy("Search"), label_is_screenreader_only=label_is_screenreader_only
         )
 
     def get_placeholder(self):
-        return gettext_lazy('Search listed objects ...')
+        return gettext_lazy("Search listed objects ...")
 
     def get_modelfields(self):
         return [
-            'fullname',
-            'shortname',
-            'username__username',
-            'useremail__email',
+            "fullname",
+            "shortname",
+            "username__username",
+            "useremail__email",
         ]
 
     def get_cleaned_value(self):

@@ -24,18 +24,19 @@ class StudentCrInstance(crinstance_base.DevilryGroupCrInstanceMixin, devilry_cri
     """
     CrInstance class for students.
     """
+
     menuclass = Menu
     apps = [
-        ('projectgroup', projectgroupapp.App),
-        ('feedbackfeed', feedbackfeed_student.App),
-        ('commenthistory', group_comment_history.App),
-        ('download', batch_download_files.App)
+        ("projectgroup", projectgroupapp.App),
+        ("feedbackfeed", feedbackfeed_student.App),
+        ("commenthistory", group_comment_history.App),
+        ("download", batch_download_files.App),
     ]
-    id = 'devilry_group_student'
+    id = "devilry_group_student"
 
     @classmethod
     def matches_urlpath(cls, urlpath):
-        return urlpath.startswith('/devilry_group/student')
+        return urlpath.startswith("/devilry_group/student")
 
     def get_rolequeryset(self):
         """
@@ -46,5 +47,4 @@ class StudentCrInstance(crinstance_base.DevilryGroupCrInstanceMixin, devilry_cri
             QuerySet: A queryset of :class:`~devilry.apps.core.models.AssignmentGroup`s
                 the ``request.user`` is student on.
         """
-        return self._get_base_rolequeryset()\
-            .filter_student_has_access(self.request.user)
+        return self._get_base_rolequeryset().filter_student_has_access(self.request.user)

@@ -16,12 +16,12 @@ class DevilrySingleLineNode(template.Node):
 
     def render(self, context):
         output = self.nodelist.render(context)
-        return re.sub('(\s|\\xa0)+', ' ', output).strip()
+        return re.sub("(\s|\\xa0)+", " ", output).strip()
 
 
 @register.tag
 def devilrysingleline(parser, token):
-    nodelist = parser.parse(('enddevilrysingleline',))
+    nodelist = parser.parse(("enddevilrysingleline",))
     parser.delete_first_token()
     return DevilrySingleLineNode(nodelist)
 
@@ -29,28 +29,26 @@ def devilrysingleline(parser, token):
 @register.filter
 def devilry_user_displayname(user):
     if not user:
-        return ''
+        return ""
     return user.get_full_name()
 
 
 @register.filter
 def format_is_passing_grade(is_passing_grade):
     if is_passing_grade:
-        return gettext_lazy('passed')
+        return gettext_lazy("passed")
     else:
-        return gettext_lazy('failed')
+        return gettext_lazy("failed")
 
 
 @register.filter
 def devilry_feedback_shortformat(staticfeedback):
     if not staticfeedback:
-        return ''
-    if staticfeedback.grade in ('Passed', 'Failed'):
+        return ""
+    if staticfeedback.grade in ("Passed", "Failed"):
         return staticfeedback.grade
     else:
-        return '{} ({})'.format(
-            staticfeedback.grade,
-            format_is_passing_grade(staticfeedback.is_passing_grade))
+        return "{} ({})".format(staticfeedback.grade, format_is_passing_grade(staticfeedback.is_passing_grade))
 
 
 @register.filter
@@ -61,7 +59,7 @@ def devilry_isoformat_datetime(datetimeobject):
     return datetimeutils.isoformat_noseconds(datetimeobject)
 
 
-@register.inclusion_tag('devilry_core/templatetags/single-candidate-long-displayname.django.html')
+@register.inclusion_tag("devilry_core/templatetags/single-candidate-long-displayname.django.html")
 def devilry_single_candidate_long_displayname(assignment, candidate, devilryrole):
     """
     Returns the candidate wrapped in HTML formatting tags perfect for showing
@@ -77,14 +75,13 @@ def devilry_single_candidate_long_displayname(assignment, candidate, devilryrole
             :meth:`devilry.apps.core.models.Assignment.students_must_be_anonymized_for_devilryrole`.
     """
     return {
-        'candidate': candidate,
-        'anonymous': assignment.students_must_be_anonymized_for_devilryrole(
-            devilryrole=devilryrole),
-        'anonymous_name': candidate.get_anonymous_name(assignment=assignment)
+        "candidate": candidate,
+        "anonymous": assignment.students_must_be_anonymized_for_devilryrole(devilryrole=devilryrole),
+        "anonymous_name": candidate.get_anonymous_name(assignment=assignment),
     }
 
 
-@register.inclusion_tag('devilry_core/templatetags/single-candidate-short-displayname.django.html')
+@register.inclusion_tag("devilry_core/templatetags/single-candidate-short-displayname.django.html")
 def devilry_single_candidate_short_displayname(assignment, candidate, devilryrole):
     """
     Returns the candidate wrapped in HTML formatting tags perfect for showing
@@ -100,14 +97,13 @@ def devilry_single_candidate_short_displayname(assignment, candidate, devilryrol
             :meth:`devilry.apps.core.models.Assignment.students_must_be_anonymized_for_devilryrole`.
     """
     return {
-        'candidate': candidate,
-        'anonymous': assignment.students_must_be_anonymized_for_devilryrole(
-            devilryrole=devilryrole),
-        'anonymous_name': candidate.get_anonymous_name(assignment=assignment)
+        "candidate": candidate,
+        "anonymous": assignment.students_must_be_anonymized_for_devilryrole(devilryrole=devilryrole),
+        "anonymous_name": candidate.get_anonymous_name(assignment=assignment),
     }
 
 
-@register.inclusion_tag('devilry_core/templatetags/single-examiner-long-displayname.django.html')
+@register.inclusion_tag("devilry_core/templatetags/single-examiner-long-displayname.django.html")
 def devilry_single_examiner_long_displayname(assignment, examiner, devilryrole):
     """
     Returns the examiner wrapped in HTML formatting tags perfect for showing
@@ -123,25 +119,23 @@ def devilry_single_examiner_long_displayname(assignment, examiner, devilryrole):
             :meth:`devilry.apps.core.models.Assignment.examiners_must_be_anonymized_for_devilryrole`.
     """
     return {
-        'examiner': examiner,
-        'anonymous': assignment.examiners_must_be_anonymized_for_devilryrole(
-            devilryrole=devilryrole)
+        "examiner": examiner,
+        "anonymous": assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole=devilryrole),
     }
 
 
-@register.inclusion_tag('devilry_core/templatetags/single-examiner-long-displayname-plain.django.html')
+@register.inclusion_tag("devilry_core/templatetags/single-examiner-long-displayname-plain.django.html")
 def devilry_single_examiner_long_displayname_plain(assignment, examiner, devilryrole):
     """
     Same as :meth:`.devilry_single_examiner_long_displayname` but returns the examiner without styling.
     """
     return {
-        'examiner': examiner,
-        'anonymous': assignment.examiners_must_be_anonymized_for_devilryrole(
-            devilryrole=devilryrole)
+        "examiner": examiner,
+        "anonymous": assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole=devilryrole),
     }
 
 
-@register.inclusion_tag('devilry_core/templatetags/single-examiner-short-displayname.django.html')
+@register.inclusion_tag("devilry_core/templatetags/single-examiner-short-displayname.django.html")
 def devilry_single_examiner_short_displayname(assignment, examiner, devilryrole):
     """
     Returns the examiner wrapped in HTML formatting tags perfect for showing
@@ -157,13 +151,12 @@ def devilry_single_examiner_short_displayname(assignment, examiner, devilryrole)
             :meth:`devilry.apps.core.models.Assignment.examiners_must_be_anonymized_for_devilryrole`.
     """
     return {
-        'examiner': examiner,
-        'anonymous': assignment.examiners_must_be_anonymized_for_devilryrole(
-            devilryrole=devilryrole)
+        "examiner": examiner,
+        "anonymous": assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole=devilryrole),
     }
 
 
-@register.inclusion_tag('devilry_core/templatetags/multiple-candidates-long-displayname.django.html')
+@register.inclusion_tag("devilry_core/templatetags/multiple-candidates-long-displayname.django.html")
 def devilry_multiple_candidates_long_displayname(assignment, candidates, devilryrole):
     """
     Returns the candidates wrapped in HTML formatting tags perfect for showing
@@ -182,13 +175,13 @@ def devilry_multiple_candidates_long_displayname(assignment, candidates, devilry
             :meth:`devilry.apps.core.models.Assignment.students_must_be_anonymized_for_devilryrole`.
     """
     return {
-        'assignment': assignment,
-        'candidates': candidates,
-        'devilryrole': devilryrole,
+        "assignment": assignment,
+        "candidates": candidates,
+        "devilryrole": devilryrole,
     }
 
 
-@register.inclusion_tag('devilry_core/templatetags/multiple-candidates-short-displayname.django.html')
+@register.inclusion_tag("devilry_core/templatetags/multiple-candidates-short-displayname.django.html")
 def devilry_multiple_candidates_short_displayname(assignment, candidates, devilryrole):
     """
     Returns the candidates wrapped in HTML formatting tags perfect for showing
@@ -207,13 +200,13 @@ def devilry_multiple_candidates_short_displayname(assignment, candidates, devilr
             :meth:`devilry.apps.core.models.Assignment.students_must_be_anonymized_for_devilryrole`.
     """
     return {
-        'assignment': assignment,
-        'candidates': candidates,
-        'devilryrole': devilryrole,
+        "assignment": assignment,
+        "candidates": candidates,
+        "devilryrole": devilryrole,
     }
 
 
-@register.inclusion_tag('devilry_core/templatetags/multiple-examiners-long-displayname.django.html')
+@register.inclusion_tag("devilry_core/templatetags/multiple-examiners-long-displayname.django.html")
 def devilry_multiple_examiners_long_displayname(assignment, examiners, devilryrole):
     """
     Returns the examiners wrapped in HTML formatting tags perfect for showing
@@ -232,13 +225,13 @@ def devilry_multiple_examiners_long_displayname(assignment, examiners, devilryro
             :meth:`devilry.apps.core.models.Assignment.examiners_must_be_anonymized_for_devilryrole`.
     """
     return {
-        'assignment': assignment,
-        'examiners': examiners,
-        'devilryrole': devilryrole,
+        "assignment": assignment,
+        "examiners": examiners,
+        "devilryrole": devilryrole,
     }
 
 
-@register.inclusion_tag('devilry_core/templatetags/multiple-examiners-short-displayname.django.html')
+@register.inclusion_tag("devilry_core/templatetags/multiple-examiners-short-displayname.django.html")
 def devilry_multiple_examiners_short_displayname(assignment, examiners, devilryrole):
     """
     Returns the examiners wrapped in HTML formatting tags perfect for showing
@@ -257,13 +250,13 @@ def devilry_multiple_examiners_short_displayname(assignment, examiners, devilryr
             :meth:`devilry.apps.core.models.Assignment.examiners_must_be_anonymized_for_devilryrole`.
     """
     return {
-        'assignment': assignment,
-        'examiners': examiners,
-        'devilryrole': devilryrole,
+        "assignment": assignment,
+        "examiners": examiners,
+        "devilryrole": devilryrole,
     }
 
 
-@register.inclusion_tag('devilry_core/templatetags/groupstatus.django.html')
+@register.inclusion_tag("devilry_core/templatetags/groupstatus.django.html")
 def devilry_groupstatus(group):
     """
     Get the status for the given AssignmentGroup.
@@ -289,12 +282,10 @@ def devilry_groupstatus(group):
         group: A An :class:`devilry.apps.core.models.AssignmentGroup` object.
 
     """
-    return {
-        'group': group
-    }
+    return {"group": group}
 
 
-@register.inclusion_tag('devilry_core/templatetags/grade-short.django.html')
+@register.inclusion_tag("devilry_core/templatetags/grade-short.django.html")
 def devilry_grade_short(assignment, points):
     """
     Renders a grade as in its shortest form - no information about passed or failed,
@@ -305,13 +296,13 @@ def devilry_grade_short(assignment, points):
         points: The points to render the grade for.
     """
     return {
-        'assignment': assignment,
-        'grade': assignment.points_to_grade(points=points),
-        'is_passing_grade': assignment.points_is_passing_grade(points=points),
+        "assignment": assignment,
+        "grade": assignment.points_to_grade(points=points),
+        "is_passing_grade": assignment.points_is_passing_grade(points=points),
     }
 
 
-@register.inclusion_tag('devilry_core/templatetags/grade-full.django.html')
+@register.inclusion_tag("devilry_core/templatetags/grade-full.django.html")
 def devilry_grade_full(assignment, points, devilryrole):
     """
     Renders a grade as in its long form - including information about passed or failed.
@@ -339,39 +330,40 @@ def devilry_grade_full(assignment, points, devilryrole):
     """
     include_is_passing_grade = assignment.points_to_grade_mapper != Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED
     include_points = assignment.points_to_grade_mapper != Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS
-    if devilryrole == 'student' and not assignment.students_can_see_points:
+    if devilryrole == "student" and not assignment.students_can_see_points:
         include_points = False
 
     return {
-        'assignment': assignment,
-        'grade': assignment.points_to_grade(points=points),
-        'points': points,
-        'is_passing_grade': assignment.points_is_passing_grade(points=points),
-        'include_is_passing_grade': include_is_passing_grade,
-        'include_points': include_points,
+        "assignment": assignment,
+        "grade": assignment.points_to_grade(points=points),
+        "points": points,
+        "is_passing_grade": assignment.points_is_passing_grade(points=points),
+        "include_is_passing_grade": include_is_passing_grade,
+        "include_points": include_points,
     }
 
-@register.inclusion_tag('devilry_core/templatetags/grade-full-plain.django.html')
+
+@register.inclusion_tag("devilry_core/templatetags/grade-full-plain.django.html")
 def devilry_grade_full_plain(assignment, points, devilryrole):
     """
     Renders a grade as in its long form - including information about passed or failed without styling.
     """
     include_is_passing_grade = assignment.points_to_grade_mapper != Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED
     include_points = assignment.points_to_grade_mapper != Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS
-    if devilryrole == 'student' and not assignment.students_can_see_points:
+    if devilryrole == "student" and not assignment.students_can_see_points:
         include_points = False
 
     return {
-        'assignment': assignment,
-        'grade': assignment.points_to_grade(points=points),
-        'points': points,
-        'is_passing_grade': assignment.points_is_passing_grade(points=points),
-        'include_is_passing_grade': include_is_passing_grade,
-        'include_points': include_points,
+        "assignment": assignment,
+        "grade": assignment.points_to_grade(points=points),
+        "points": points,
+        "is_passing_grade": assignment.points_is_passing_grade(points=points),
+        "include_is_passing_grade": include_is_passing_grade,
+        "include_points": include_points,
     }
 
 
-@register.inclusion_tag('devilry_core/templatetags/comment-summary.django.html')
+@register.inclusion_tag("devilry_core/templatetags/comment-summary.django.html")
 def devilry_comment_summary(group):
     """
     Renders a comment summary for the given AssignmentGroup.
@@ -385,20 +377,15 @@ def devilry_comment_summary(group):
         group: An :class:`devilry.apps.core.models.AssignmentGroup` object annotated
             as explained above.
     """
-    return {
-        'group': group
-    }
+    return {"group": group}
 
 
-@register.inclusion_tag('devilry_core/templatetags/period-tags-on-period.django.html')
+@register.inclusion_tag("devilry_core/templatetags/period-tags-on-period.django.html")
 def devilry_period_tags_on_period(period, period_tags):
-    return {
-        'period': period,
-        'period_tags': period_tags
-    }
+    return {"period": period, "period_tags": period_tags}
 
 
-@register.inclusion_tag('devilry_core/templatetags/relatedexaminers-on-period-tag.django.html')
+@register.inclusion_tag("devilry_core/templatetags/relatedexaminers-on-period-tag.django.html")
 def devilry_relatedexaminers_on_period_tag(period_tag):
     """
     Renders the :class:`devilry.apps.core.models.relateduser.RelatedExaminer` in a comma separated format if there
@@ -408,12 +395,12 @@ def devilry_relatedexaminers_on_period_tag(period_tag):
         period_tag: a :class:`~.devilry.apps.core.models.period_tag.PeriodTag` instance.
     """
     return {
-        'relatedexaminers': period_tag.relatedexaminers.all(),
-        'num_relatedexaminers': period_tag.relatedexaminers.count()
+        "relatedexaminers": period_tag.relatedexaminers.all(),
+        "num_relatedexaminers": period_tag.relatedexaminers.count(),
     }
 
 
-@register.inclusion_tag('devilry_core/templatetags/relatedstudents-on-period-tag.django.html')
+@register.inclusion_tag("devilry_core/templatetags/relatedstudents-on-period-tag.django.html")
 def devilry_relatedstudents_on_period_tag(period_tag):
     """
     Renders the :class:`devilry.apps.core.models.relateduser.RelatedStudent` in a comma separated format if there
@@ -423,12 +410,12 @@ def devilry_relatedstudents_on_period_tag(period_tag):
         period_tag: a :class:`~.devilry.apps.core.models.period_tag.PeriodTag` object.
     """
     return {
-        'relatedstudents': period_tag.relatedstudents.all(),
-        'num_relatedstudents': period_tag.relatedstudents.count()
+        "relatedstudents": period_tag.relatedstudents.all(),
+        "num_relatedstudents": period_tag.relatedstudents.count(),
     }
 
 
-@register.inclusion_tag('devilry_core/templatetags/relatedusers-on-period-tag.django.html')
+@register.inclusion_tag("devilry_core/templatetags/relatedusers-on-period-tag.django.html")
 def devilry_relatedusers_on_period_tag(period_tag):
     """
     Renders the :class:`devilry.apps.core.models.RelatedExaminer` and :class:`devilry.apps.core.models.RelatedStudent`
@@ -439,9 +426,7 @@ def devilry_relatedusers_on_period_tag(period_tag):
     Args:
         period_tag: a :class:`devilry.apps.core.models.period_tag.PeriodTag` object.
     """
-    return {
-        'period_tag': period_tag
-    }
+    return {"period_tag": period_tag}
 
 
 @register.simple_tag
@@ -488,8 +473,8 @@ def devilry_test_css_class(suffix):
     Args:
         suffix: The suffix for your css class. The actual css class will be `` test-<suffix> ``.
     """
-    include_test_css_classes = getattr(settings, 'DEVILRY_INCLUDE_TEST_CSS_CLASSES', False)
+    include_test_css_classes = getattr(settings, "DEVILRY_INCLUDE_TEST_CSS_CLASSES", False)
     if include_test_css_classes:
-        return '  test-{}  '.format(suffix)
+        return "  test-{}  ".format(suffix)
     else:
-        return ''
+        return ""

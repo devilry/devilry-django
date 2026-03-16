@@ -1,5 +1,3 @@
-
-
 from django.forms import forms
 from cradmin_legacy.viewhelpers.crudbase import OnlySaveButtonMixin
 from cradmin_legacy.viewhelpers.update import UpdateView
@@ -10,7 +8,7 @@ from devilry.apps.core import models as coremodels
 
 
 class PublishNowRedirectView(RedirectView):
-    http_method_names = ['post']
+    http_method_names = ["post"]
     permanent = False
 
     def __publish_assignment_now(self):
@@ -26,7 +24,7 @@ class PublishNowRedirectView(RedirectView):
 class AssignmentPublishingTimeUpdateView(OnlySaveButtonMixin, UpdateView):
     model = coremodels.Assignment
 
-    fields = ['publishing_time']
+    fields = ["publishing_time"]
 
     def get_queryset_for_role(self, role):
-        return self.model.objects.filter(id=self.kwargs['pk'])
+        return self.model.objects.filter(id=self.kwargs["pk"])

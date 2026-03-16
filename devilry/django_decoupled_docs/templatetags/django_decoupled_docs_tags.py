@@ -6,6 +6,7 @@ from devilry.django_decoupled_docs.registry import documentationregistry
 
 register = template.Library()
 
+
 @register.simple_tag()
 def decoupled_docs_url(documentid):
     current_language = get_language()

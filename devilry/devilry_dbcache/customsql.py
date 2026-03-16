@@ -10,22 +10,21 @@ log = logging.getLogger(__name__)
 
 
 class AssignmentGroupDbCacheCustomSql(customsql_registry.AbstractCustomSql):
-
     _initialize_sqlfiles = [
-        'general_purpose_functions.sql',
-        'feedbackset/helperfunctions.sql',
-        'commentfile/helperfunctions.sql',
-        'assignment_group/triggers.sql',
-        'feedbackset/validate.sql',
-        'feedbackset/triggers.sql',
-        'groupcomment/triggers.sql',
-        'imageannotationcomment/triggers.sql',
-        'comment/triggers.sql',
-        'commentfile/triggers.sql',
-        'examiner/triggers.sql',
-        'candidate/triggers.sql',
-        'assignment_group_cached_data/rebuild.sql',
-        'assignment/triggers.sql'
+        "general_purpose_functions.sql",
+        "feedbackset/helperfunctions.sql",
+        "commentfile/helperfunctions.sql",
+        "assignment_group/triggers.sql",
+        "feedbackset/validate.sql",
+        "feedbackset/triggers.sql",
+        "groupcomment/triggers.sql",
+        "imageannotationcomment/triggers.sql",
+        "comment/triggers.sql",
+        "commentfile/triggers.sql",
+        "examiner/triggers.sql",
+        "candidate/triggers.sql",
+        "assignment_group_cached_data/rebuild.sql",
+        "assignment/triggers.sql",
     ]
 
     def initialize(self):
@@ -46,10 +45,12 @@ class AssignmentGroupDbCacheCustomSql(customsql_registry.AbstractCustomSql):
         log.info("Candidate count: %s" % Candidate.objects.count())
 
         AssignmentGroupCachedData.objects.all().delete()
-        for period in Period.objects.order_by('-start_time').iterator():
-            self.execute_sql("""
+        for period in Period.objects.order_by("-start_time").iterator():
+            self.execute_sql(
+                """
                 SELECT devilry__rebuild_assignmentgroupcacheddata_for_period({period_id});
-            """.format(period_id=period.id))
+            """.format(period_id=period.id)
+            )
 
     def clear(self):
         drop_statements = self.make_drop_statements_from_sql_files(self._initialize_sqlfiles)

@@ -1,6 +1,7 @@
 from model_bakery import recipe
 
 from devilry.apps.core.models import Period, Assignment
+
 #: The ``start_time`` of the period created by the :obj:`.period_old` recipe.
 from devilry.utils.datetimeutils import default_timezone_datetime
 
@@ -102,9 +103,7 @@ ASSIGNMENT_FUTUREPERIOD_END_PUBLISHING_TIME = default_timezone_datetime(9998, 1,
 #:
 #: See also :obj:`.period_active` and :obj:`.period_future`.
 period_old = recipe.Recipe(
-    Period,
-    start_time=OLD_PERIOD_START,
-    end_time=default_timezone_datetime(1999, 12, 31, 23, 59, 59)
+    Period, start_time=OLD_PERIOD_START, end_time=default_timezone_datetime(1999, 12, 31, 23, 59, 59)
 )
 
 
@@ -120,11 +119,7 @@ period_old = recipe.Recipe(
 #:
 #:
 #: See also :obj:`.period_old` and :obj:`.period_future`.
-period_active = recipe.Recipe(
-    Period,
-    start_time=ACTIVE_PERIOD_START,
-    end_time=ACTIVE_PERIOD_END
-)
+period_active = recipe.Recipe(Period, start_time=ACTIVE_PERIOD_START, end_time=ACTIVE_PERIOD_END)
 
 #: Use this Recipe to create a Period that has start time
 #: set to ``6000-01-01 00:00`` and end time set to ``9999-01-01 23:59``.
@@ -138,11 +133,7 @@ period_active = recipe.Recipe(
 #:
 #:
 #: See also :obj:`.period_active` and :obj:`.period_old`.
-period_future = recipe.Recipe(
-    Period,
-    start_time=FUTURE_PERIOD_START,
-    end_time=FUTURE_PERIOD_END
-)
+period_future = recipe.Recipe(Period, start_time=FUTURE_PERIOD_START, end_time=FUTURE_PERIOD_END)
 
 
 #: Use this Recipe to create an Assignment that has ``publishing_time``
@@ -164,7 +155,7 @@ assignment_oldperiod_start = recipe.Recipe(
     Assignment,
     publishing_time=OLD_PERIOD_START,
     first_deadline=ASSIGNMENT_OLDPERIOD_START_FIRST_DEADLINE,
-    parentnode=recipe.foreign_key(period_old)
+    parentnode=recipe.foreign_key(period_old),
 )
 
 
@@ -185,7 +176,7 @@ assignment_oldperiod_middle = recipe.Recipe(
     Assignment,
     publishing_time=ASSIGNMENT_OLDPERIOD_MIDDLE_PUBLISHING_TIME,
     first_deadline=ASSIGNMENT_OLDPERIOD_MIDDLE_FIRST_DEADLINE,
-    parentnode=recipe.foreign_key(period_old)
+    parentnode=recipe.foreign_key(period_old),
 )
 
 #: Use this Recipe to create an Assignment that has ``publishing_time``
@@ -208,7 +199,7 @@ assignment_oldperiod_end = recipe.Recipe(
     Assignment,
     publishing_time=ASSIGNMENT_OLDPERIOD_END_PUBLISHING_TIME,
     first_deadline=OLD_PERIOD_END,
-    parentnode=recipe.foreign_key(period_old)
+    parentnode=recipe.foreign_key(period_old),
 )
 
 
@@ -231,7 +222,7 @@ assignment_activeperiod_start = recipe.Recipe(
     Assignment,
     publishing_time=ACTIVE_PERIOD_START,
     first_deadline=ASSIGNMENT_ACTIVEPERIOD_START_FIRST_DEADLINE,
-    parentnode=recipe.foreign_key(period_active)
+    parentnode=recipe.foreign_key(period_active),
 )
 
 
@@ -252,7 +243,7 @@ assignment_activeperiod_middle = recipe.Recipe(
     Assignment,
     publishing_time=ASSIGNMENT_ACTIVEPERIOD_MIDDLE_PUBLISHING_TIME,
     first_deadline=ASSIGNMENT_ACTIVEPERIOD_MIDDLE_FIRST_DEADLINE,
-    parentnode=recipe.foreign_key(period_active)
+    parentnode=recipe.foreign_key(period_active),
 )
 
 
@@ -276,7 +267,7 @@ assignment_activeperiod_end = recipe.Recipe(
     Assignment,
     publishing_time=ASSIGNMENT_ACTIVEPERIOD_END_PUBLISHING_TIME,
     first_deadline=ACTIVE_PERIOD_END,
-    parentnode=recipe.foreign_key(period_active)
+    parentnode=recipe.foreign_key(period_active),
 )
 
 
@@ -299,7 +290,7 @@ assignment_futureperiod_start = recipe.Recipe(
     Assignment,
     publishing_time=FUTURE_PERIOD_START,
     first_deadline=ASSIGNMENT_FUTUREPERIOD_START_FIRST_DEADLINE,
-    parentnode=recipe.foreign_key(period_future)
+    parentnode=recipe.foreign_key(period_future),
 )
 
 
@@ -320,7 +311,7 @@ assignment_futureperiod_middle = recipe.Recipe(
     Assignment,
     publishing_time=ASSIGNMENT_FUTUREPERIOD_MIDDLE_PUBLISHING_TIME,
     first_deadline=ASSIGNMENT_FUTUREPERIOD_MIDDLE_FIRST_DEADLINE,
-    parentnode=recipe.foreign_key(period_future)
+    parentnode=recipe.foreign_key(period_future),
 )
 
 
@@ -344,5 +335,5 @@ assignment_futureperiod_end = recipe.Recipe(
     Assignment,
     publishing_time=ASSIGNMENT_FUTUREPERIOD_END_PUBLISHING_TIME,
     first_deadline=FUTURE_PERIOD_END,
-    parentnode=recipe.foreign_key(period_future)
+    parentnode=recipe.foreign_key(period_future),
 )

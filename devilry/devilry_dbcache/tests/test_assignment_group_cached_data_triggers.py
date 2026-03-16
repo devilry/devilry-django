@@ -21,7 +21,7 @@ class TestAssignmentGroupCachedDataBasics(test.TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_autocreated_feedbackset_is_correctly_cached(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         first_feedbackset = group.feedbackset_set.first()
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_feedbackset, first_feedbackset)
@@ -29,94 +29,78 @@ class TestAssignmentGroupCachedDataBasics(test.TestCase):
         self.assertEqual(group.cached_data.last_published_feedbackset, None)
 
     def test_first_feedbackset(self):
-        assignment = baker.make('core.Assignment', first_deadline=ACTIVE_PERIOD_START - timedelta(days=2))
-        group = baker.make('core.AssignmentGroup', parentnode=assignment)
+        assignment = baker.make("core.Assignment", first_deadline=ACTIVE_PERIOD_START - timedelta(days=2))
+        group = baker.make("core.AssignmentGroup", parentnode=assignment)
         first_feedbackset = group.feedbackset_set.first()
-        baker.make('devilry_group.FeedbackSet',
-                   group=group,
-                   deadline_datetime=ACTIVE_PERIOD_START)
-        baker.make('devilry_group.FeedbackSet',
-                   group=group,
-                   deadline_datetime=ACTIVE_PERIOD_START + timedelta(days=2))
+        baker.make("devilry_group.FeedbackSet", group=group, deadline_datetime=ACTIVE_PERIOD_START)
+        baker.make("devilry_group.FeedbackSet", group=group, deadline_datetime=ACTIVE_PERIOD_START + timedelta(days=2))
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.first_feedbackset, first_feedbackset)
 
     def test_last_feedbackset(self):
-        assignment = baker.make('core.Assignment', first_deadline=ACTIVE_PERIOD_START - timedelta(days=2))
-        group = baker.make('core.AssignmentGroup', parentnode=assignment)
-        baker.make('devilry_group.FeedbackSet',
-                   group=group,
-                   deadline_datetime=ACTIVE_PERIOD_START)
-        last_feedbackset = baker.make('devilry_group.FeedbackSet',
-                                      group=group,
-                                      deadline_datetime=ACTIVE_PERIOD_START + timedelta(days=2))
+        assignment = baker.make("core.Assignment", first_deadline=ACTIVE_PERIOD_START - timedelta(days=2))
+        group = baker.make("core.AssignmentGroup", parentnode=assignment)
+        baker.make("devilry_group.FeedbackSet", group=group, deadline_datetime=ACTIVE_PERIOD_START)
+        last_feedbackset = baker.make(
+            "devilry_group.FeedbackSet", group=group, deadline_datetime=ACTIVE_PERIOD_START + timedelta(days=2)
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_feedbackset, last_feedbackset)
 
     def test_last_published_feedbackset_none(self):
-        group = baker.make('core.AssignmentGroup')
-        baker.make('devilry_group.FeedbackSet',
-                   group=group,
-                   deadline_datetime=ACTIVE_PERIOD_START)
+        group = baker.make("core.AssignmentGroup")
+        baker.make("devilry_group.FeedbackSet", group=group, deadline_datetime=ACTIVE_PERIOD_START)
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_published_feedbackset, None)
 
     def test_last_published_feedbackset_simple(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         last_published_feedbackset = baker.make(
-            'devilry_group.FeedbackSet',
+            "devilry_group.FeedbackSet",
             group=group,
             grading_published_datetime=ACTIVE_PERIOD_START,
-            deadline_datetime=ACTIVE_PERIOD_START)
+            deadline_datetime=ACTIVE_PERIOD_START,
+        )
         group.cached_data.refresh_from_db()
-        self.assertEqual(group.cached_data.last_published_feedbackset,
-                         last_published_feedbackset)
+        self.assertEqual(group.cached_data.last_published_feedbackset, last_published_feedbackset)
 
     def test_last_published_feedbackset_multiple(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         baker.make(
-            'devilry_group.FeedbackSet',
+            "devilry_group.FeedbackSet",
             group=group,
             grading_published_datetime=ACTIVE_PERIOD_START,
-            deadline_datetime=ACTIVE_PERIOD_START)
+            deadline_datetime=ACTIVE_PERIOD_START,
+        )
         last_published_feedbackset = baker.make(
-            'devilry_group.FeedbackSet',
+            "devilry_group.FeedbackSet",
             group=group,
             grading_published_datetime=ACTIVE_PERIOD_START,
-            deadline_datetime=ACTIVE_PERIOD_START + timedelta(days=2))
+            deadline_datetime=ACTIVE_PERIOD_START + timedelta(days=2),
+        )
         group.cached_data.refresh_from_db()
-        self.assertEqual(group.cached_data.last_published_feedbackset,
-                         last_published_feedbackset)
+        self.assertEqual(group.cached_data.last_published_feedbackset, last_published_feedbackset)
 
     def test_last_published_feedbackset_ignore_unpublished(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         last_published_feedbackset = baker.make(
-            'devilry_group.FeedbackSet',
+            "devilry_group.FeedbackSet",
             group=group,
             grading_published_datetime=ACTIVE_PERIOD_START,
-            deadline_datetime=ACTIVE_PERIOD_START)
-        baker.make(
-            'devilry_group.FeedbackSet',
-            group=group,
-            deadline_datetime=ACTIVE_PERIOD_START + timedelta(days=2))
+            deadline_datetime=ACTIVE_PERIOD_START,
+        )
+        baker.make("devilry_group.FeedbackSet", group=group, deadline_datetime=ACTIVE_PERIOD_START + timedelta(days=2))
         group.cached_data.refresh_from_db()
-        self.assertEqual(group.cached_data.last_published_feedbackset,
-                         last_published_feedbackset)
+        self.assertEqual(group.cached_data.last_published_feedbackset, last_published_feedbackset)
 
     def test_new_attempt_count(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.new_attempt_count, 0)
-        baker.make(
-            'devilry_group.FeedbackSet',
-            group=group,
-            deadline_datetime=ACTIVE_PERIOD_START)
+        baker.make("devilry_group.FeedbackSet", group=group, deadline_datetime=ACTIVE_PERIOD_START)
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.new_attempt_count, 1)
-        baker.make(
-            'devilry_group.FeedbackSet',
-            group=group,
-            deadline_datetime=ACTIVE_PERIOD_START + timedelta(days=2))
+        baker.make("devilry_group.FeedbackSet", group=group, deadline_datetime=ACTIVE_PERIOD_START + timedelta(days=2))
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.new_attempt_count, 2)
 
@@ -126,18 +110,18 @@ class TestAssignmentGroupCachedDataExaminerCount(test.TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_none(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.examiner_count, 0)
 
     def test_examiner_simple(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         core_baker.examiner(group=group)
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.examiner_count, 1)
 
     def test_examiner_multiple(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         core_baker.examiner(group=group)
         core_baker.examiner(group=group)
         core_baker.examiner(group=group)
@@ -145,7 +129,7 @@ class TestAssignmentGroupCachedDataExaminerCount(test.TestCase):
         self.assertEqual(group.cached_data.examiner_count, 3)
 
     def test_examiner_delete_decrements_count(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         core_baker.examiner(group=group)
         examiner = core_baker.examiner(group=group)
         group.cached_data.refresh_from_db()
@@ -155,8 +139,8 @@ class TestAssignmentGroupCachedDataExaminerCount(test.TestCase):
         self.assertEqual(group.cached_data.examiner_count, 1)
 
     def test_examiner_count_when_examiner_moved(self):
-        group1 = baker.make('core.AssignmentGroup')
-        group2 = baker.make('core.AssignmentGroup')
+        group1 = baker.make("core.AssignmentGroup")
+        group2 = baker.make("core.AssignmentGroup")
         core_baker.examiner(group=group1)
         core_baker.examiner(group=group2)
         examiner = core_baker.examiner(group=group1)
@@ -176,18 +160,18 @@ class TestAssignmentGroupCachedDataCandidateCount(test.TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_none(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.candidate_count, 0)
 
     def test_examiner_simple(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         core_baker.candidate(group=group)
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.candidate_count, 1)
 
     def test_candidate_multiple(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         core_baker.candidate(group=group)
         core_baker.candidate(group=group)
         core_baker.candidate(group=group)
@@ -195,7 +179,7 @@ class TestAssignmentGroupCachedDataCandidateCount(test.TestCase):
         self.assertEqual(group.cached_data.candidate_count, 3)
 
     def test_candidate_delete_decrements_count(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         core_baker.candidate(group=group)
         candidate = core_baker.candidate(group=group)
         group.cached_data.refresh_from_db()
@@ -205,15 +189,15 @@ class TestAssignmentGroupCachedDataCandidateCount(test.TestCase):
         self.assertEqual(group.cached_data.candidate_count, 1)
 
     def test_num_queries(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         core_baker.candidate(group=group)
         core_baker.examiner(group=group)
         with self.assertNumQueries(19):
             group.delete()
 
     def test_candidate_count_when_candidate_moved(self):
-        group1 = baker.make('core.AssignmentGroup')
-        group2 = baker.make('core.AssignmentGroup')
+        group1 = baker.make("core.AssignmentGroup")
+        group2 = baker.make("core.AssignmentGroup")
         core_baker.candidate(group=group1)
         core_baker.candidate(group=group2)
         candidate = core_baker.candidate(group=group1)
@@ -233,67 +217,72 @@ class TestAssignmentGroupCachedDataPublicTotalCommentCount(test.TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_none(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_total_comment_count, 0)
 
     def test_groupcomment_simple(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.GroupComment',
-                   feedback_set=feedbackset1,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   _quantity=3)
+        baker.make(
+            "devilry_group.GroupComment",
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            _quantity=3,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_total_comment_count, 3)
 
     def test_groupcomment_ignore_private(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.GroupComment',
-                   feedback_set=feedbackset1,
-                   visibility=GroupComment.VISIBILITY_PRIVATE)
+        baker.make("devilry_group.GroupComment", feedback_set=feedbackset1, visibility=GroupComment.VISIBILITY_PRIVATE)
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_total_comment_count, 0)
 
     def test_groupcomment_ignore_visible_to_examiners_and_admins(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.GroupComment',
-                   feedback_set=feedbackset1,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
+        baker.make(
+            "devilry_group.GroupComment",
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_total_comment_count, 0)
 
     def test_groupcomment_multiple_feedbacksets(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.GroupComment',
-                   feedback_set=feedbackset1,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   _quantity=2)
-        feedbackset2 = baker.make(
-            'devilry_group.FeedbackSet',
-            group=group,
-            deadline_datetime=ACTIVE_PERIOD_START)
-        baker.make('devilry_group.GroupComment',
-                   feedback_set=feedbackset2,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   _quantity=4)
+        baker.make(
+            "devilry_group.GroupComment",
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            _quantity=2,
+        )
+        feedbackset2 = baker.make("devilry_group.FeedbackSet", group=group, deadline_datetime=ACTIVE_PERIOD_START)
+        baker.make(
+            "devilry_group.GroupComment",
+            feedback_set=feedbackset2,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            _quantity=4,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_total_comment_count, 6)
 
     def test_groupcomment_delete_decrements_count(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
         groupcomment1 = baker.make(
-            'devilry_group.GroupComment',
+            "devilry_group.GroupComment",
             feedback_set=feedbackset1,
-            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         baker.make(
-            'devilry_group.GroupComment',
+            "devilry_group.GroupComment",
             feedback_set=feedbackset1,
-            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_total_comment_count, 2)
         groupcomment1.delete()
@@ -301,62 +290,71 @@ class TestAssignmentGroupCachedDataPublicTotalCommentCount(test.TestCase):
         self.assertEqual(group.cached_data.public_total_comment_count, 1)
 
     def test_imageannotationcomment_simple(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.ImageAnnotationComment',
-                   feedback_set=feedbackset1,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   _quantity=3)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            _quantity=3,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_total_comment_count, 3)
 
     def test_imageannotationcomment_ignore_private(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.ImageAnnotationComment',
-                   feedback_set=feedbackset1,
-                   visibility=ImageAnnotationComment.VISIBILITY_PRIVATE)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_PRIVATE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_total_comment_count, 0)
 
     def test_imageannotationcomment_ignore_visible_to_examiners_and_admins(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.ImageAnnotationComment',
-                   feedback_set=feedbackset1,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_total_comment_count, 0)
 
     def test_imageannotationcomment_multiple_feedbacksets(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.ImageAnnotationComment',
-                   feedback_set=feedbackset1,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   _quantity=2)
-        feedbackset2 = baker.make(
-            'devilry_group.FeedbackSet',
-            group=group,
-            deadline_datetime=ACTIVE_PERIOD_START)
-        baker.make('devilry_group.ImageAnnotationComment',
-                   feedback_set=feedbackset2,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   _quantity=4)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            _quantity=2,
+        )
+        feedbackset2 = baker.make("devilry_group.FeedbackSet", group=group, deadline_datetime=ACTIVE_PERIOD_START)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            feedback_set=feedbackset2,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            _quantity=4,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_total_comment_count, 6)
 
     def test_imageannotationcomment_delete_decrements_count(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
         groupcomment1 = baker.make(
-            'devilry_group.ImageAnnotationComment',
+            "devilry_group.ImageAnnotationComment",
             feedback_set=feedbackset1,
-            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         baker.make(
-            'devilry_group.ImageAnnotationComment',
+            "devilry_group.ImageAnnotationComment",
             feedback_set=feedbackset1,
-            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_total_comment_count, 2)
         groupcomment1.delete()
@@ -369,126 +367,145 @@ class TestAssignmentGroupCachedDataPublicStudentCommentCount(test.TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_none(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_student_comment_count, 0)
 
     def test_groupcomment_simple(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.GroupComment',
-                   user_role=Comment.USER_ROLE_STUDENT,
-                   feedback_set=feedbackset1,
-                   text='bla',
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   _quantity=3)
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            text="bla",
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            _quantity=3,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_student_comment_count, 3)
 
     def test_groupcomment_ignore_comment_without_text(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.GroupComment',
-                   user_role=Comment.USER_ROLE_STUDENT,
-                   feedback_set=feedbackset1,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_student_comment_count, 0)
 
     def test_groupcomment_ignore_comment_without_text_multiple(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.GroupComment',
-                   user_role=Comment.USER_ROLE_STUDENT,
-                   feedback_set=feedbackset1,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   _quantity=3)
-        baker.make('devilry_group.GroupComment',
-                   user_role=Comment.USER_ROLE_STUDENT,
-                   feedback_set=feedbackset1,
-                   text='bla',
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   _quantity=3)
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            _quantity=3,
+        )
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            text="bla",
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            _quantity=3,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_student_comment_count, 3)
 
     def test_groupcomment_ignore_private(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.GroupComment',
-                   user_role=Comment.USER_ROLE_STUDENT,
-                   feedback_set=feedbackset1,
-                   visibility=GroupComment.VISIBILITY_PRIVATE)
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_PRIVATE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_student_comment_count, 0)
 
     def test_groupcomment_ignore_visible_to_examiners_and_admins(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.GroupComment',
-                   user_role=Comment.USER_ROLE_STUDENT,
-                   feedback_set=feedbackset1,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_student_comment_count, 0)
 
     def test_groupcomment_ignore_user_role_examiner(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.GroupComment',
-                   user_role=Comment.USER_ROLE_EXAMINER,
-                   feedback_set=feedbackset1,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_EXAMINER,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_student_comment_count, 0)
 
     def test_groupcomment_ignore_user_role_admin(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.GroupComment',
-                   user_role=Comment.USER_ROLE_ADMIN,
-                   feedback_set=feedbackset1,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_ADMIN,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_student_comment_count, 0)
 
     def test_groupcomment_multiple_feedbacksets(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.GroupComment',
-                   user_role=Comment.USER_ROLE_STUDENT,
-                   feedback_set=feedbackset1,
-                   text='bla',
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   _quantity=2)
-        feedbackset2 = baker.make(
-            'devilry_group.FeedbackSet',
-            group=group,
-            deadline_datetime=ACTIVE_PERIOD_START)
-        baker.make('devilry_group.GroupComment',
-                   user_role=Comment.USER_ROLE_STUDENT,
-                   feedback_set=feedbackset2,
-                   text='bla',
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   _quantity=4)
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            text="bla",
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            _quantity=2,
+        )
+        feedbackset2 = baker.make("devilry_group.FeedbackSet", group=group, deadline_datetime=ACTIVE_PERIOD_START)
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset2,
+            text="bla",
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            _quantity=4,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_student_comment_count, 6)
 
     def test_groupcomment_delete_decrements_count(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
         groupcomment1 = baker.make(
-            'devilry_group.GroupComment',
+            "devilry_group.GroupComment",
             user_role=Comment.USER_ROLE_STUDENT,
-            text='bla',
+            text="bla",
             feedback_set=feedbackset1,
-            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         baker.make(
-            'devilry_group.GroupComment',
+            "devilry_group.GroupComment",
             user_role=Comment.USER_ROLE_STUDENT,
-            text='bla',
+            text="bla",
             feedback_set=feedbackset1,
-            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_student_comment_count, 2)
         groupcomment1.delete()
@@ -496,89 +513,102 @@ class TestAssignmentGroupCachedDataPublicStudentCommentCount(test.TestCase):
         self.assertEqual(group.cached_data.public_student_comment_count, 1)
 
     def test_imageannotationcomment_simple(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.ImageAnnotationComment',
-                   user_role=Comment.USER_ROLE_STUDENT,
-                   feedback_set=feedbackset1,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   _quantity=3)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            _quantity=3,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_student_comment_count, 3)
 
     def test_imageannotationcomment_ignore_private(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.ImageAnnotationComment',
-                   user_role=Comment.USER_ROLE_STUDENT,
-                   feedback_set=feedbackset1,
-                   visibility=ImageAnnotationComment.VISIBILITY_PRIVATE)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_PRIVATE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_student_comment_count, 0)
 
     def test_imageannotationcomment_ignore_visible_to_examiners_and_admins(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.ImageAnnotationComment',
-                   user_role=Comment.USER_ROLE_STUDENT,
-                   feedback_set=feedbackset1,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_student_comment_count, 0)
 
     def test_imageannotationcomment_ignore_user_role_examiner(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.ImageAnnotationComment',
-                   user_role=Comment.USER_ROLE_EXAMINER,
-                   feedback_set=feedbackset1,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_EXAMINER,
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_student_comment_count, 0)
 
     def test_imageannotationcomment_ignore_user_role_admin(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.ImageAnnotationComment',
-                   user_role=Comment.USER_ROLE_ADMIN,
-                   feedback_set=feedbackset1,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_ADMIN,
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_student_comment_count, 0)
 
     def test_imageannotationcomment_multiple_feedbacksets(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.ImageAnnotationComment',
-                   user_role=Comment.USER_ROLE_STUDENT,
-                   feedback_set=feedbackset1,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   _quantity=2)
-        feedbackset2 = baker.make(
-            'devilry_group.FeedbackSet',
-            group=group,
-            deadline_datetime=ACTIVE_PERIOD_START)
-        baker.make('devilry_group.ImageAnnotationComment',
-                   user_role=Comment.USER_ROLE_STUDENT,
-                   feedback_set=feedbackset2,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   _quantity=4)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            _quantity=2,
+        )
+        feedbackset2 = baker.make("devilry_group.FeedbackSet", group=group, deadline_datetime=ACTIVE_PERIOD_START)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset2,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            _quantity=4,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_student_comment_count, 6)
 
     def test_imageannotationcomment_delete_decrements_count(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
         groupcomment1 = baker.make(
-            'devilry_group.ImageAnnotationComment',
+            "devilry_group.ImageAnnotationComment",
             user_role=Comment.USER_ROLE_STUDENT,
             feedback_set=feedbackset1,
-            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         baker.make(
-            'devilry_group.ImageAnnotationComment',
+            "devilry_group.ImageAnnotationComment",
             user_role=Comment.USER_ROLE_STUDENT,
             feedback_set=feedbackset1,
-            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_student_comment_count, 2)
         groupcomment1.delete()
@@ -591,94 +621,107 @@ class TestAssignmentGroupCachedDataPublicExaminerCommentCount(test.TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_none(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_examiner_comment_count, 0)
 
     def test_groupcomment_simple(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.GroupComment',
-                   user_role=Comment.USER_ROLE_EXAMINER,
-                   feedback_set=feedbackset1,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   _quantity=3)
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_EXAMINER,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            _quantity=3,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_examiner_comment_count, 3)
 
     def test_groupcomment_ignore_private(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.GroupComment',
-                   user_role=Comment.USER_ROLE_EXAMINER,
-                   feedback_set=feedbackset1,
-                   visibility=GroupComment.VISIBILITY_PRIVATE)
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_EXAMINER,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_PRIVATE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_examiner_comment_count, 0)
 
     def test_groupcomment_ignore_visible_to_examiners_and_admins(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.GroupComment',
-                   user_role=Comment.USER_ROLE_EXAMINER,
-                   feedback_set=feedbackset1,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_EXAMINER,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_examiner_comment_count, 0)
 
     def test_groupcomment_ignore_user_role_student(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.GroupComment',
-                   user_role=Comment.USER_ROLE_STUDENT,
-                   feedback_set=feedbackset1,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_examiner_comment_count, 0)
 
     def test_groupcomment_ignore_user_role_admin(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.GroupComment',
-                   user_role=Comment.USER_ROLE_ADMIN,
-                   feedback_set=feedbackset1,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_ADMIN,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_examiner_comment_count, 0)
 
     def test_groupcomment_multiple_feedbacksets(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.GroupComment',
-                   user_role=Comment.USER_ROLE_EXAMINER,
-                   feedback_set=feedbackset1,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   _quantity=2)
-        feedbackset2 = baker.make(
-            'devilry_group.FeedbackSet',
-            group=group,
-            deadline_datetime=ACTIVE_PERIOD_START)
-        baker.make('devilry_group.GroupComment',
-                   user_role=Comment.USER_ROLE_EXAMINER,
-                   feedback_set=feedbackset2,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   _quantity=4)
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_EXAMINER,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            _quantity=2,
+        )
+        feedbackset2 = baker.make("devilry_group.FeedbackSet", group=group, deadline_datetime=ACTIVE_PERIOD_START)
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_EXAMINER,
+            feedback_set=feedbackset2,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            _quantity=4,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_examiner_comment_count, 6)
 
     def test_groupcomment_delete_decrements_count(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
         groupcomment1 = baker.make(
-            'devilry_group.GroupComment',
+            "devilry_group.GroupComment",
             user_role=Comment.USER_ROLE_EXAMINER,
             feedback_set=feedbackset1,
-            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         baker.make(
-            'devilry_group.GroupComment',
+            "devilry_group.GroupComment",
             user_role=Comment.USER_ROLE_EXAMINER,
             feedback_set=feedbackset1,
-            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_examiner_comment_count, 2)
         groupcomment1.delete()
@@ -686,89 +729,102 @@ class TestAssignmentGroupCachedDataPublicExaminerCommentCount(test.TestCase):
         self.assertEqual(group.cached_data.public_examiner_comment_count, 1)
 
     def test_imageannotationcomment_simple(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.ImageAnnotationComment',
-                   user_role=Comment.USER_ROLE_EXAMINER,
-                   feedback_set=feedbackset1,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   _quantity=3)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_EXAMINER,
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            _quantity=3,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_examiner_comment_count, 3)
 
     def test_imageannotationcomment_ignore_private(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.ImageAnnotationComment',
-                   user_role=Comment.USER_ROLE_EXAMINER,
-                   feedback_set=feedbackset1,
-                   visibility=ImageAnnotationComment.VISIBILITY_PRIVATE)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_EXAMINER,
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_PRIVATE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_examiner_comment_count, 0)
 
     def test_imageannotationcomment_ignore_visible_to_examiners_and_admins(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.ImageAnnotationComment',
-                   user_role=Comment.USER_ROLE_EXAMINER,
-                   feedback_set=feedbackset1,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_EXAMINER,
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_examiner_comment_count, 0)
 
     def test_imageannotationcomment_ignore_user_role_student(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.ImageAnnotationComment',
-                   user_role=Comment.USER_ROLE_STUDENT,
-                   feedback_set=feedbackset1,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_examiner_comment_count, 0)
 
     def test_imageannotationcomment_ignore_user_role_admin(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.ImageAnnotationComment',
-                   user_role=Comment.USER_ROLE_ADMIN,
-                   feedback_set=feedbackset1,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_ADMIN,
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_examiner_comment_count, 0)
 
     def test_imageannotationcomment_multiple_feedbacksets(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.ImageAnnotationComment',
-                   user_role=Comment.USER_ROLE_EXAMINER,
-                   feedback_set=feedbackset1,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   _quantity=2)
-        feedbackset2 = baker.make(
-            'devilry_group.FeedbackSet',
-            group=group,
-            deadline_datetime=ACTIVE_PERIOD_START)
-        baker.make('devilry_group.ImageAnnotationComment',
-                   user_role=Comment.USER_ROLE_EXAMINER,
-                   feedback_set=feedbackset2,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   _quantity=4)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_EXAMINER,
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            _quantity=2,
+        )
+        feedbackset2 = baker.make("devilry_group.FeedbackSet", group=group, deadline_datetime=ACTIVE_PERIOD_START)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_EXAMINER,
+            feedback_set=feedbackset2,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            _quantity=4,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_examiner_comment_count, 6)
 
     def test_imageannotationcomment_delete_decrements_count(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
         groupcomment1 = baker.make(
-            'devilry_group.ImageAnnotationComment',
+            "devilry_group.ImageAnnotationComment",
             user_role=Comment.USER_ROLE_EXAMINER,
             feedback_set=feedbackset1,
-            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         baker.make(
-            'devilry_group.ImageAnnotationComment',
+            "devilry_group.ImageAnnotationComment",
             user_role=Comment.USER_ROLE_EXAMINER,
             feedback_set=feedbackset1,
-            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_examiner_comment_count, 2)
         groupcomment1.delete()
@@ -781,94 +837,107 @@ class TestAssignmentGroupCachedDataPublicAdminCommentCount(test.TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_none(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_admin_comment_count, 0)
 
     def test_groupcomment_simple(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.GroupComment',
-                   user_role=Comment.USER_ROLE_ADMIN,
-                   feedback_set=feedbackset1,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   _quantity=3)
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_ADMIN,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            _quantity=3,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_admin_comment_count, 3)
 
     def test_groupcomment_ignore_private(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.GroupComment',
-                   user_role=Comment.USER_ROLE_ADMIN,
-                   feedback_set=feedbackset1,
-                   visibility=GroupComment.VISIBILITY_PRIVATE)
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_ADMIN,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_PRIVATE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_admin_comment_count, 0)
 
     def test_groupcomment_ignore_visible_to_examiners_and_admins(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.GroupComment',
-                   user_role=Comment.USER_ROLE_ADMIN,
-                   feedback_set=feedbackset1,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_ADMIN,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_admin_comment_count, 0)
 
     def test_groupcomment_ignore_user_role_student(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.GroupComment',
-                   user_role=Comment.USER_ROLE_STUDENT,
-                   feedback_set=feedbackset1,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_admin_comment_count, 0)
 
     def test_groupcomment_ignore_user_role_examiner(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.GroupComment',
-                   user_role=Comment.USER_ROLE_EXAMINER,
-                   feedback_set=feedbackset1,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_EXAMINER,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_admin_comment_count, 0)
 
     def test_groupcomment_multiple_feedbacksets(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.GroupComment',
-                   user_role=Comment.USER_ROLE_ADMIN,
-                   feedback_set=feedbackset1,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   _quantity=2)
-        feedbackset2 = baker.make(
-            'devilry_group.FeedbackSet',
-            group=group,
-            deadline_datetime=ACTIVE_PERIOD_START)
-        baker.make('devilry_group.GroupComment',
-                   user_role=Comment.USER_ROLE_ADMIN,
-                   feedback_set=feedbackset2,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   _quantity=4)
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_ADMIN,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            _quantity=2,
+        )
+        feedbackset2 = baker.make("devilry_group.FeedbackSet", group=group, deadline_datetime=ACTIVE_PERIOD_START)
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_ADMIN,
+            feedback_set=feedbackset2,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            _quantity=4,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_admin_comment_count, 6)
 
     def test_groupcomment_delete_decrements_count(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
         groupcomment1 = baker.make(
-            'devilry_group.GroupComment',
+            "devilry_group.GroupComment",
             user_role=Comment.USER_ROLE_ADMIN,
             feedback_set=feedbackset1,
-            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         baker.make(
-            'devilry_group.GroupComment',
+            "devilry_group.GroupComment",
             user_role=Comment.USER_ROLE_ADMIN,
             feedback_set=feedbackset1,
-            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_admin_comment_count, 2)
         groupcomment1.delete()
@@ -876,89 +945,102 @@ class TestAssignmentGroupCachedDataPublicAdminCommentCount(test.TestCase):
         self.assertEqual(group.cached_data.public_admin_comment_count, 1)
 
     def test_imageannotationcomment_simple(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.ImageAnnotationComment',
-                   user_role=Comment.USER_ROLE_ADMIN,
-                   feedback_set=feedbackset1,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   _quantity=3)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_ADMIN,
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            _quantity=3,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_admin_comment_count, 3)
 
     def test_imageannotationcomment_ignore_private(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.ImageAnnotationComment',
-                   user_role=Comment.USER_ROLE_ADMIN,
-                   feedback_set=feedbackset1,
-                   visibility=ImageAnnotationComment.VISIBILITY_PRIVATE)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_ADMIN,
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_PRIVATE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_admin_comment_count, 0)
 
     def test_imageannotationcomment_ignore_visible_to_examiners_and_admins(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.ImageAnnotationComment',
-                   user_role=Comment.USER_ROLE_ADMIN,
-                   feedback_set=feedbackset1,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_ADMIN,
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_admin_comment_count, 0)
 
     def test_imageannotationcomment_ignore_user_role_student(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.ImageAnnotationComment',
-                   user_role=Comment.USER_ROLE_STUDENT,
-                   feedback_set=feedbackset1,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_admin_comment_count, 0)
 
     def test_imageannotationcomment_ignore_user_role_examiner(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.ImageAnnotationComment',
-                   user_role=Comment.USER_ROLE_EXAMINER,
-                   feedback_set=feedbackset1,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_EXAMINER,
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_admin_comment_count, 0)
 
     def test_imageannotationcomment_multiple_feedbacksets(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.ImageAnnotationComment',
-                   user_role=Comment.USER_ROLE_ADMIN,
-                   feedback_set=feedbackset1,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   _quantity=2)
-        feedbackset2 = baker.make(
-            'devilry_group.FeedbackSet',
-            group=group,
-            deadline_datetime=ACTIVE_PERIOD_START)
-        baker.make('devilry_group.ImageAnnotationComment',
-                   user_role=Comment.USER_ROLE_ADMIN,
-                   feedback_set=feedbackset2,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   _quantity=4)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_ADMIN,
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            _quantity=2,
+        )
+        feedbackset2 = baker.make("devilry_group.FeedbackSet", group=group, deadline_datetime=ACTIVE_PERIOD_START)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_ADMIN,
+            feedback_set=feedbackset2,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            _quantity=4,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_admin_comment_count, 6)
 
     def test_imageannotationcomment_delete_decrements_count(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
         groupcomment1 = baker.make(
-            'devilry_group.ImageAnnotationComment',
+            "devilry_group.ImageAnnotationComment",
             user_role=Comment.USER_ROLE_ADMIN,
             feedback_set=feedbackset1,
-            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         baker.make(
-            'devilry_group.ImageAnnotationComment',
+            "devilry_group.ImageAnnotationComment",
             user_role=Comment.USER_ROLE_ADMIN,
             feedback_set=feedbackset1,
-            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_admin_comment_count, 2)
         groupcomment1.delete()
@@ -971,100 +1053,108 @@ class TestAssignmentGroupCachedDataPublicStudentAttemptsWithDeliveredFiles(test.
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_public_student_attempts_with_delivered_files_none(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_student_attempts_with_delivered_files, 0)
 
     def test_public_student_attempts_with_delivered_files_simple(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
         comment = baker.make(
-            'devilry_group.GroupComment',
+            "devilry_group.GroupComment",
             user_role=Comment.USER_ROLE_STUDENT,
             feedback_set=feedbackset1,
-            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        baker.make('devilry_comment.CommentFile', comment=comment, _quantity=3)
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
+        baker.make("devilry_comment.CommentFile", comment=comment, _quantity=3)
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_student_attempts_with_delivered_files, 1)
 
     def test_public_student_attempts_with_delivered_files_ignore_user_role_examiner(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        comment = baker.make('devilry_group.GroupComment',
-                             user_role=Comment.USER_ROLE_EXAMINER,
-                             feedback_set=feedbackset1,
-                             visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        baker.make('devilry_comment.CommentFile', comment=comment)
+        comment = baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_EXAMINER,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
+        baker.make("devilry_comment.CommentFile", comment=comment)
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_student_attempts_with_delivered_files, 0)
-    
+
     def test_public_student_attempts_with_delivered_files_ignore_user_role_admin(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        comment = baker.make('devilry_group.GroupComment',
-                             user_role=Comment.USER_ROLE_ADMIN,
-                             feedback_set=feedbackset1,
-                             visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        baker.make('devilry_comment.CommentFile', comment=comment)
+        comment = baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_ADMIN,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
+        baker.make("devilry_comment.CommentFile", comment=comment)
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_student_attempts_with_delivered_files, 0)
 
     def test_public_student_attempts_with_delivered_files_multiple_feedbacksets(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        comment1 = baker.make('devilry_group.GroupComment',
-                              user_role=Comment.USER_ROLE_STUDENT,
-                              feedback_set=feedbackset1,
-                              visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        baker.make('devilry_comment.CommentFile', comment=comment1, _quantity=2)
-        feedbackset2 = baker.make(
-            'devilry_group.FeedbackSet',
-            group=group,
-            deadline_datetime=ACTIVE_PERIOD_START)
-        comment2 = baker.make('devilry_group.GroupComment',
-                              user_role=Comment.USER_ROLE_STUDENT,
-                              feedback_set=feedbackset2,
-                              visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        baker.make('devilry_comment.CommentFile', comment=comment2, _quantity=4)
+        comment1 = baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
+        baker.make("devilry_comment.CommentFile", comment=comment1, _quantity=2)
+        feedbackset2 = baker.make("devilry_group.FeedbackSet", group=group, deadline_datetime=ACTIVE_PERIOD_START)
+        comment2 = baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset2,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
+        baker.make("devilry_comment.CommentFile", comment=comment2, _quantity=4)
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_student_attempts_with_delivered_files, 2)
 
     def test_public_student_attempts_with_delivered_files_multiple_feedbacksets_different_comment_quantity(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        comment1 = baker.make('devilry_group.GroupComment',
-                              user_role=Comment.USER_ROLE_STUDENT,
-                              feedback_set=feedbackset1,
-                              visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        baker.make('devilry_comment.CommentFile', comment=comment1, _quantity=1)
-        feedbackset2 = baker.make(
-            'devilry_group.FeedbackSet',
-            group=group,
-            deadline_datetime=ACTIVE_PERIOD_START)
-        comment2 = baker.make('devilry_group.GroupComment',
-                              user_role=Comment.USER_ROLE_STUDENT,
-                              feedback_set=feedbackset2,
-                              visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        baker.make('devilry_comment.CommentFile', comment=comment2, _quantity=2)
+        comment1 = baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
+        baker.make("devilry_comment.CommentFile", comment=comment1, _quantity=1)
+        feedbackset2 = baker.make("devilry_group.FeedbackSet", group=group, deadline_datetime=ACTIVE_PERIOD_START)
+        comment2 = baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset2,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
+        baker.make("devilry_comment.CommentFile", comment=comment2, _quantity=2)
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_student_attempts_with_delivered_files, 2)
 
     def test_public_student_attempts_with_delivered_files_multiple_feedbacksets_with_only_one_set_with_files(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        comment1 = baker.make('devilry_group.GroupComment',
-                              user_role=Comment.USER_ROLE_STUDENT,
-                              feedback_set=feedbackset1,
-                              visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        baker.make('devilry_comment.CommentFile', comment=comment1, _quantity=1)
-        feedbackset2 = baker.make(
-            'devilry_group.FeedbackSet',
-            group=group,
-            deadline_datetime=ACTIVE_PERIOD_START)
-        comment2 = baker.make('devilry_group.GroupComment',
-                              user_role=Comment.USER_ROLE_STUDENT,
-                              feedback_set=feedbackset2,
-                              visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        comment1 = baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
+        baker.make("devilry_comment.CommentFile", comment=comment1, _quantity=1)
+        feedbackset2 = baker.make("devilry_group.FeedbackSet", group=group, deadline_datetime=ACTIVE_PERIOD_START)
+        comment2 = baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset2,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_student_attempts_with_delivered_files, 1)
 
@@ -1074,97 +1164,108 @@ class TestAssignmentGroupCachedDataPublicStudentFileUploadCount(test.TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_public_student_file_upload_count_none(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_student_file_upload_count, 0)
 
     def test_public_student_file_upload_count_simple(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
         comment = baker.make(
-            'devilry_group.GroupComment',
+            "devilry_group.GroupComment",
             user_role=Comment.USER_ROLE_STUDENT,
             feedback_set=feedbackset1,
-            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        baker.make('devilry_comment.CommentFile', comment=comment, _quantity=3)
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
+        baker.make("devilry_comment.CommentFile", comment=comment, _quantity=3)
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_student_file_upload_count, 3)
         self.assertEqual(group.cached_data.public_student_attempts_with_delivered_files, 1)
 
     def test_public_student_file_upload_count_ignore_private(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        comment = baker.make('devilry_group.GroupComment',
-                             user_role=Comment.USER_ROLE_STUDENT,
-                             feedback_set=feedbackset1,
-                             visibility=GroupComment.VISIBILITY_PRIVATE)
-        baker.make('devilry_comment.CommentFile', comment=comment)
+        comment = baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_PRIVATE,
+        )
+        baker.make("devilry_comment.CommentFile", comment=comment)
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_student_file_upload_count, 0)
 
     def test_public_student_file_upload_count_ignore_visible_to_examiners_and_admins(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        comment = baker.make('devilry_group.GroupComment',
-                             user_role=Comment.USER_ROLE_STUDENT,
-                             feedback_set=feedbackset1,
-                             visibility=GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
-        baker.make('devilry_comment.CommentFile', comment=comment)
+        comment = baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+        )
+        baker.make("devilry_comment.CommentFile", comment=comment)
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_student_file_upload_count, 0)
 
     def test_public_student_file_upload_count_ignore_user_role_examiner(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        comment = baker.make('devilry_group.GroupComment',
-                             user_role=Comment.USER_ROLE_EXAMINER,
-                             feedback_set=feedbackset1,
-                             visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        baker.make('devilry_comment.CommentFile', comment=comment)
+        comment = baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_EXAMINER,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
+        baker.make("devilry_comment.CommentFile", comment=comment)
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_student_file_upload_count, 0)
 
     def test_public_student_file_upload_count_ignore_user_role_admin(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        comment = baker.make('devilry_group.GroupComment',
-                             user_role=Comment.USER_ROLE_ADMIN,
-                             feedback_set=feedbackset1,
-                             visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        baker.make('devilry_comment.CommentFile', comment=comment)
+        comment = baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_ADMIN,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
+        baker.make("devilry_comment.CommentFile", comment=comment)
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_student_file_upload_count, 0)
 
     def test_public_student_file_upload_count_multiple_feedbacksets(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        comment1 = baker.make('devilry_group.GroupComment',
-                              user_role=Comment.USER_ROLE_STUDENT,
-                              feedback_set=feedbackset1,
-                              visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        baker.make('devilry_comment.CommentFile', comment=comment1, _quantity=2)
-        feedbackset2 = baker.make(
-            'devilry_group.FeedbackSet',
-            group=group,
-            deadline_datetime=ACTIVE_PERIOD_START)
-        comment2 = baker.make('devilry_group.GroupComment',
-                              user_role=Comment.USER_ROLE_STUDENT,
-                              feedback_set=feedbackset2,
-                              visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        baker.make('devilry_comment.CommentFile', comment=comment2, _quantity=4)
+        comment1 = baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
+        baker.make("devilry_comment.CommentFile", comment=comment1, _quantity=2)
+        feedbackset2 = baker.make("devilry_group.FeedbackSet", group=group, deadline_datetime=ACTIVE_PERIOD_START)
+        comment2 = baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset2,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
+        baker.make("devilry_comment.CommentFile", comment=comment2, _quantity=4)
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_student_file_upload_count, 6)
 
     def test_public_student_file_upload_count_delete_decrements_count(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
         commentcomment = baker.make(
-            'devilry_group.GroupComment',
+            "devilry_group.GroupComment",
             user_role=Comment.USER_ROLE_STUDENT,
             feedback_set=feedbackset1,
-            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        commentfile1 = baker.make('devilry_comment.CommentFile', comment=commentcomment)
-        baker.make('devilry_comment.CommentFile', comment=commentcomment)
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
+        commentfile1 = baker.make("devilry_comment.CommentFile", comment=commentcomment)
+        baker.make("devilry_comment.CommentFile", comment=commentcomment)
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_student_file_upload_count, 2)
         commentfile1.delete()
@@ -1177,191 +1278,209 @@ class TestAssignmentGroupCachedDataLastPublicCommentByStudentDatetime(test.TestC
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_none(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_public_comment_by_student_datetime, None)
 
     def test_groupcomment_single(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        comment = baker.make('devilry_group.GroupComment',
-                             user_role=Comment.USER_ROLE_STUDENT,
-                             feedback_set=feedbackset1,
-                             visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        comment = baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
-        self.assertEqual(group.cached_data.last_public_comment_by_student_datetime,
-                         comment.published_datetime)
+        self.assertEqual(group.cached_data.last_public_comment_by_student_datetime, comment.published_datetime)
 
     def test_groupcomment_ignore_private(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.GroupComment',
-                   user_role=Comment.USER_ROLE_STUDENT,
-                   feedback_set=feedbackset1,
-                   visibility=GroupComment.VISIBILITY_PRIVATE)
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_PRIVATE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_public_comment_by_student_datetime, None)
 
     def test_groupcomment_ignore_visible_to_examiners_and_admins(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.GroupComment',
-                   user_role=Comment.USER_ROLE_STUDENT,
-                   feedback_set=feedbackset1,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_public_comment_by_student_datetime, None)
 
     def test_groupcomment_ignore_user_role_examiner(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.GroupComment',
-                   user_role=Comment.USER_ROLE_EXAMINER,
-                   feedback_set=feedbackset1,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_EXAMINER,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_public_comment_by_student_datetime, None)
 
     def test_groupcomment_ignore_user_role_admin(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.GroupComment',
-                   user_role=Comment.USER_ROLE_ADMIN,
-                   feedback_set=feedbackset1,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_ADMIN,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_public_comment_by_student_datetime, None)
 
     def test_groupcomment_multiple_feedbacksets(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.GroupComment',
-                   user_role=Comment.USER_ROLE_STUDENT,
-                   feedback_set=feedbackset1,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        feedbackset2 = baker.make(
-            'devilry_group.FeedbackSet',
-            group=group,
-            deadline_datetime=ACTIVE_PERIOD_START)
-        comment2 = baker.make('devilry_group.GroupComment',
-                              user_role=Comment.USER_ROLE_STUDENT,
-                              feedback_set=feedbackset2,
-                              visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
+        feedbackset2 = baker.make("devilry_group.FeedbackSet", group=group, deadline_datetime=ACTIVE_PERIOD_START)
+        comment2 = baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset2,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
-        self.assertEqual(group.cached_data.last_public_comment_by_student_datetime,
-                         comment2.published_datetime)
+        self.assertEqual(group.cached_data.last_public_comment_by_student_datetime, comment2.published_datetime)
 
     def test_groupcomment_delete_updates_datetime(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
         groupcomment1 = baker.make(
-            'devilry_group.GroupComment',
+            "devilry_group.GroupComment",
             user_role=Comment.USER_ROLE_STUDENT,
             feedback_set=feedbackset1,
-            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         groupcomment2 = baker.make(
-            'devilry_group.GroupComment',
+            "devilry_group.GroupComment",
             user_role=Comment.USER_ROLE_STUDENT,
             feedback_set=feedbackset1,
-            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
-        self.assertEqual(group.cached_data.last_public_comment_by_student_datetime,
-                         groupcomment2.published_datetime)
+        self.assertEqual(group.cached_data.last_public_comment_by_student_datetime, groupcomment2.published_datetime)
         groupcomment2.delete()
         group.cached_data.refresh_from_db()
-        self.assertEqual(group.cached_data.last_public_comment_by_student_datetime,
-                         groupcomment1.published_datetime)
+        self.assertEqual(group.cached_data.last_public_comment_by_student_datetime, groupcomment1.published_datetime)
 
     def test_imageannotationcomment_single(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        comment = baker.make('devilry_group.ImageAnnotationComment',
-                             user_role=Comment.USER_ROLE_STUDENT,
-                             feedback_set=feedbackset1,
-                             visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        comment = baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
-        self.assertEqual(group.cached_data.last_public_comment_by_student_datetime,
-                         comment.published_datetime)
+        self.assertEqual(group.cached_data.last_public_comment_by_student_datetime, comment.published_datetime)
 
     def test_imageannotationcomment_ignore_private(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.ImageAnnotationComment',
-                   user_role=Comment.USER_ROLE_STUDENT,
-                   feedback_set=feedbackset1,
-                   visibility=ImageAnnotationComment.VISIBILITY_PRIVATE)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_PRIVATE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_public_comment_by_student_datetime, None)
 
     def test_imageannotationcomment_ignore_visible_to_examiners_and_admins(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.ImageAnnotationComment',
-                   user_role=Comment.USER_ROLE_STUDENT,
-                   feedback_set=feedbackset1,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_public_comment_by_student_datetime, None)
 
     def test_imageannotationcomment_ignore_user_role_examiner(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.ImageAnnotationComment',
-                   user_role=Comment.USER_ROLE_EXAMINER,
-                   feedback_set=feedbackset1,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_EXAMINER,
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_public_comment_by_student_datetime, None)
 
     def test_imageannotationcomment_ignore_user_role_admin(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.ImageAnnotationComment',
-                   user_role=Comment.USER_ROLE_ADMIN,
-                   feedback_set=feedbackset1,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_ADMIN,
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_public_comment_by_student_datetime, None)
 
     def test_imageannotationcomment_multiple_feedbacksets(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.ImageAnnotationComment',
-                   user_role=Comment.USER_ROLE_STUDENT,
-                   feedback_set=feedbackset1,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        feedbackset2 = baker.make(
-            'devilry_group.FeedbackSet',
-            group=group,
-            deadline_datetime=ACTIVE_PERIOD_START)
-        comment2 = baker.make('devilry_group.ImageAnnotationComment',
-                              user_role=Comment.USER_ROLE_STUDENT,
-                              feedback_set=feedbackset2,
-                              visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
+        feedbackset2 = baker.make("devilry_group.FeedbackSet", group=group, deadline_datetime=ACTIVE_PERIOD_START)
+        comment2 = baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset2,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
-        self.assertEqual(group.cached_data.last_public_comment_by_student_datetime,
-                         comment2.published_datetime)
+        self.assertEqual(group.cached_data.last_public_comment_by_student_datetime, comment2.published_datetime)
 
     def test_imageannotationcomment_delete_updates_datetime(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
         comment1 = baker.make(
-            'devilry_group.ImageAnnotationComment',
+            "devilry_group.ImageAnnotationComment",
             user_role=Comment.USER_ROLE_STUDENT,
             feedback_set=feedbackset1,
-            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         comment2 = baker.make(
-            'devilry_group.ImageAnnotationComment',
+            "devilry_group.ImageAnnotationComment",
             user_role=Comment.USER_ROLE_STUDENT,
             feedback_set=feedbackset1,
-            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
-        self.assertEqual(group.cached_data.last_public_comment_by_student_datetime,
-                         comment2.published_datetime)
+        self.assertEqual(group.cached_data.last_public_comment_by_student_datetime, comment2.published_datetime)
         comment2.delete()
         group.cached_data.refresh_from_db()
-        self.assertEqual(group.cached_data.last_public_comment_by_student_datetime,
-                         comment1.published_datetime)
+        self.assertEqual(group.cached_data.last_public_comment_by_student_datetime, comment1.published_datetime)
 
 
 class TestAssignmentGroupCachedDataLastPublicCommentByExaminerDatetime(test.TestCase):
@@ -1369,191 +1488,209 @@ class TestAssignmentGroupCachedDataLastPublicCommentByExaminerDatetime(test.Test
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_none(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime, None)
 
     def test_groupcomment_single(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        comment = baker.make('devilry_group.GroupComment',
-                             user_role=Comment.USER_ROLE_EXAMINER,
-                             feedback_set=feedbackset1,
-                             visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        comment = baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_EXAMINER,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
-        self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime,
-                         comment.published_datetime)
+        self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime, comment.published_datetime)
 
     def test_groupcomment_ignore_private(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.GroupComment',
-                   user_role=Comment.USER_ROLE_EXAMINER,
-                   feedback_set=feedbackset1,
-                   visibility=GroupComment.VISIBILITY_PRIVATE)
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_EXAMINER,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_PRIVATE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime, None)
 
     def test_groupcomment_ignore_visible_to_examiners_and_admins(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.GroupComment',
-                   user_role=Comment.USER_ROLE_EXAMINER,
-                   feedback_set=feedbackset1,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_EXAMINER,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime, None)
 
     def test_groupcomment_ignore_user_role_student(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.GroupComment',
-                   user_role=Comment.USER_ROLE_STUDENT,
-                   feedback_set=feedbackset1,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime, None)
 
     def test_groupcomment_ignore_user_role_admin(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.GroupComment',
-                   user_role=Comment.USER_ROLE_ADMIN,
-                   feedback_set=feedbackset1,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_ADMIN,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime, None)
 
     def test_groupcomment_multiple_feedbacksets(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.GroupComment',
-                   user_role=Comment.USER_ROLE_EXAMINER,
-                   feedback_set=feedbackset1,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        feedbackset2 = baker.make(
-            'devilry_group.FeedbackSet',
-            group=group,
-            deadline_datetime=ACTIVE_PERIOD_START)
-        comment2 = baker.make('devilry_group.GroupComment',
-                              user_role=Comment.USER_ROLE_EXAMINER,
-                              feedback_set=feedbackset2,
-                              visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_EXAMINER,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
+        feedbackset2 = baker.make("devilry_group.FeedbackSet", group=group, deadline_datetime=ACTIVE_PERIOD_START)
+        comment2 = baker.make(
+            "devilry_group.GroupComment",
+            user_role=Comment.USER_ROLE_EXAMINER,
+            feedback_set=feedbackset2,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
-        self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime,
-                         comment2.published_datetime)
+        self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime, comment2.published_datetime)
 
     def test_groupcomment_delete_updates_datetime(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
         groupcomment1 = baker.make(
-            'devilry_group.GroupComment',
+            "devilry_group.GroupComment",
             user_role=Comment.USER_ROLE_EXAMINER,
             feedback_set=feedbackset1,
-            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         groupcomment2 = baker.make(
-            'devilry_group.GroupComment',
+            "devilry_group.GroupComment",
             user_role=Comment.USER_ROLE_EXAMINER,
             feedback_set=feedbackset1,
-            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
-        self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime,
-                         groupcomment2.published_datetime)
+        self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime, groupcomment2.published_datetime)
         groupcomment2.delete()
         group.cached_data.refresh_from_db()
-        self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime,
-                         groupcomment1.published_datetime)
+        self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime, groupcomment1.published_datetime)
 
     def test_imageannotationcomment_single(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        comment = baker.make('devilry_group.ImageAnnotationComment',
-                             user_role=Comment.USER_ROLE_EXAMINER,
-                             feedback_set=feedbackset1,
-                             visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        comment = baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_EXAMINER,
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
-        self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime,
-                         comment.published_datetime)
+        self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime, comment.published_datetime)
 
     def test_imageannotationcomment_ignore_private(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.ImageAnnotationComment',
-                   user_role=Comment.USER_ROLE_EXAMINER,
-                   feedback_set=feedbackset1,
-                   visibility=ImageAnnotationComment.VISIBILITY_PRIVATE)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_EXAMINER,
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_PRIVATE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime, None)
 
     def test_imageannotationcomment_ignore_visible_to_examiners_and_admins(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.ImageAnnotationComment',
-                   user_role=Comment.USER_ROLE_EXAMINER,
-                   feedback_set=feedbackset1,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_EXAMINER,
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime, None)
 
     def test_imageannotationcomment_ignore_user_role_student(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.ImageAnnotationComment',
-                   user_role=Comment.USER_ROLE_STUDENT,
-                   feedback_set=feedbackset1,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime, None)
 
     def test_imageannotationcomment_ignore_user_role_admin(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.ImageAnnotationComment',
-                   user_role=Comment.USER_ROLE_ADMIN,
-                   feedback_set=feedbackset1,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_ADMIN,
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime, None)
 
     def test_imageannotationcomment_multiple_feedbacksets(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
-        baker.make('devilry_group.ImageAnnotationComment',
-                   user_role=Comment.USER_ROLE_EXAMINER,
-                   feedback_set=feedbackset1,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        feedbackset2 = baker.make(
-            'devilry_group.FeedbackSet',
-            group=group,
-            deadline_datetime=ACTIVE_PERIOD_START)
-        comment2 = baker.make('devilry_group.ImageAnnotationComment',
-                              user_role=Comment.USER_ROLE_EXAMINER,
-                              feedback_set=feedbackset2,
-                              visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_EXAMINER,
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
+        feedbackset2 = baker.make("devilry_group.FeedbackSet", group=group, deadline_datetime=ACTIVE_PERIOD_START)
+        comment2 = baker.make(
+            "devilry_group.ImageAnnotationComment",
+            user_role=Comment.USER_ROLE_EXAMINER,
+            feedback_set=feedbackset2,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
-        self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime,
-                         comment2.published_datetime)
+        self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime, comment2.published_datetime)
 
     def test_imageannotationcomment_delete_updates_datetime(self):
-        group = baker.make('core.AssignmentGroup')
+        group = baker.make("core.AssignmentGroup")
         feedbackset1 = group.feedbackset_set.first()
         comment1 = baker.make(
-            'devilry_group.ImageAnnotationComment',
+            "devilry_group.ImageAnnotationComment",
             user_role=Comment.USER_ROLE_EXAMINER,
             feedback_set=feedbackset1,
-            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         comment2 = baker.make(
-            'devilry_group.ImageAnnotationComment',
+            "devilry_group.ImageAnnotationComment",
             user_role=Comment.USER_ROLE_EXAMINER,
             feedback_set=feedbackset1,
-            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
         group.cached_data.refresh_from_db()
-        self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime,
-                         comment2.published_datetime)
+        self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime, comment2.published_datetime)
         comment2.delete()
         group.cached_data.refresh_from_db()
-        self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime,
-                         comment1.published_datetime)
+        self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime, comment1.published_datetime)
 
 
 class TestRecrateCacheData(test.TestCase):
@@ -1561,7 +1698,7 @@ class TestRecrateCacheData(test.TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_new_attempt_count(self):
-        testgroup = baker.make('core.AssignmentGroup')
+        testgroup = baker.make("core.AssignmentGroup")
         devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup)
         devilry_group_baker_factories.feedbackset_new_attempt_published(group=testgroup)
         devilry_group_baker_factories.feedbackset_new_attempt_unpublished(group=testgroup)
@@ -1573,20 +1710,24 @@ class TestRecrateCacheData(test.TestCase):
         self.assertEqual(testgroup.cached_data.new_attempt_count, 2)
 
     def test_public_total_comment_count(self):
-        testgroup = baker.make('core.AssignmentGroup')
+        testgroup = baker.make("core.AssignmentGroup")
         feedbackset = devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup)
-        testcomment1 = baker.make('devilry_group.GroupComment',
-                                  feedback_set=feedbackset,
-                                  comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
-                                  user_role=GroupComment.USER_ROLE_STUDENT,
-                                  visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        baker.make('devilry_comment.CommentFile', comment=testcomment1)
-        testcomment2 = baker.make('devilry_group.GroupComment',
-                                  feedback_set=feedbackset,
-                                  comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
-                                  user_role=GroupComment.USER_ROLE_EXAMINER,
-                                  visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        baker.make('devilry_comment.CommentFile', comment=testcomment2)
+        testcomment1 = baker.make(
+            "devilry_group.GroupComment",
+            feedback_set=feedbackset,
+            comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+            user_role=GroupComment.USER_ROLE_STUDENT,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
+        baker.make("devilry_comment.CommentFile", comment=testcomment1)
+        testcomment2 = baker.make(
+            "devilry_group.GroupComment",
+            feedback_set=feedbackset,
+            comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+            user_role=GroupComment.USER_ROLE_EXAMINER,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
+        baker.make("devilry_comment.CommentFile", comment=testcomment2)
         testgroup.cached_data.refresh_from_db()
         self.assertEqual(testgroup.cached_data.public_total_comment_count, 2)
         AssignmentGroupDbCacheCustomSql().recreate_data()
@@ -1599,7 +1740,7 @@ class TestAssignmentGroupDelete(test.TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_delete_cached_data(self):
-        testgroup = baker.make('core.AssignmentGroup')
+        testgroup = baker.make("core.AssignmentGroup")
         group_id = testgroup.id
         cached_data_id = testgroup.cached_data.id
         core_baker.examiner(group=testgroup)
@@ -1609,7 +1750,7 @@ class TestAssignmentGroupDelete(test.TestCase):
         self.assertFalse(AssignmentGroup.objects.filter(id=group_id).exists())
 
     def test_delete_cached_data_queryset(self):
-        testgroup = baker.make('core.AssignmentGroup')
+        testgroup = baker.make("core.AssignmentGroup")
         group_id = testgroup.id
         cached_data_id = testgroup.cached_data.id
         core_baker.examiner(group=testgroup)
@@ -1619,7 +1760,7 @@ class TestAssignmentGroupDelete(test.TestCase):
         self.assertFalse(AssignmentGroup.objects.filter(id=group_id).exists())
 
     def test_delete_with_candidates_examiners_feedbacksets(self):
-        testgroup = baker.make('core.AssignmentGroup')
+        testgroup = baker.make("core.AssignmentGroup")
         examiner = core_baker.examiner(group=testgroup)
         candidate = core_baker.candidate(group=testgroup)
         feedbackset1 = group_baker.feedbackset_first_attempt_published(group=testgroup)
@@ -1634,7 +1775,7 @@ class TestAssignmentGroupDelete(test.TestCase):
         self.assertFalse(FeedbackSet.objects.filter(id=feedbackset3.id).exists())
 
     def test_delete_num_queries(self):
-        testgroup = baker.make('core.AssignmentGroup')
+        testgroup = baker.make("core.AssignmentGroup")
         core_baker.examiner(group=testgroup)
         core_baker.candidate(group=testgroup)
         group_baker.feedbackset_first_attempt_published(group=testgroup)

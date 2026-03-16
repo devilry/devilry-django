@@ -9,6 +9,7 @@ class PeriodResultSetCollector(PeriodResultsCollector):
     """
     A subset of assignments are evaluated for the period.
     """
+
     def student_qualifies_for_exam(self, aggregated_relstudentinfo):
         for assignmentid, groupfeedbacksetlist in aggregated_relstudentinfo.assignments.items():
             if assignmentid in self.qualifying_assignment_ids or len(self.qualifying_assignment_ids) == 0:

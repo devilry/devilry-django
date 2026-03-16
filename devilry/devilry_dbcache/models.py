@@ -16,38 +16,38 @@ class AssignmentGroupCachedData(models.Model):
 
     #: The :class:`devilry.apps.core.models.assignment_group.AssignmentGroup`
     #: that this model caches data for.
-    group = models.OneToOneField(AssignmentGroup, related_name='cached_data',
-                                 editable=False, on_delete=models.CASCADE)
+    group = models.OneToOneField(AssignmentGroup, related_name="cached_data", editable=False, on_delete=models.CASCADE)
 
     #: The first :class:`devilry.devilry_group.models.FeedbackSet` in the
     #: group.
-    first_feedbackset = models.ForeignKey(FeedbackSet, related_name='+',
-                                          null=True, blank=True, editable=False, on_delete=models.CASCADE)
+    first_feedbackset = models.ForeignKey(
+        FeedbackSet, related_name="+", null=True, blank=True, editable=False, on_delete=models.CASCADE
+    )
 
     #: The last :class:`devilry.devilry_group.models.FeedbackSet` in the
     #: group.
-    last_feedbackset = models.ForeignKey(FeedbackSet, related_name='+',
-                                         null=True, blank=True, editable=False, on_delete=models.CASCADE)
+    last_feedbackset = models.ForeignKey(
+        FeedbackSet, related_name="+", null=True, blank=True, editable=False, on_delete=models.CASCADE
+    )
 
     #: The last :class:`devilry.devilry_group.models.FeedbackSet` in the
     #: group with a :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime`.
     #: This also means that the FeedbackSet has
     #: :obj:`~devilry.devilry_group.models.FeedbackSet.grading_points`.
-    last_published_feedbackset = models.ForeignKey(FeedbackSet, related_name='+',
-                                                   null=True, blank=True, editable=False, on_delete=models.CASCADE)
+    last_published_feedbackset = models.ForeignKey(
+        FeedbackSet, related_name="+", null=True, blank=True, editable=False, on_delete=models.CASCADE
+    )
 
     #: Number of FeedbackSets with :obj:`~devilry.devilry_group.models.FeedbackSet.feedbackset_type`
     #: set to :obj:`~devilry.devilry_group.models.FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT`.
-    new_attempt_count = models.PositiveIntegerField(
-        default=0, editable=False)
+    new_attempt_count = models.PositiveIntegerField(default=0, editable=False)
 
     #: The number of :class:`devilry.devilry_group.models.GroupComment` and
     #: :class:`devilry.devilry_group.models.ImageAnnotationComment` within the group
     #: with :obj:`~devilry.devilry_group.models.AbstractGroupComment.visibility`
     #: set to :obj:`~devilry.devilry_group.models.AbstractGroupComment.VISIBILITY_VISIBLE_TO_EVERYONE`
     #: within the group.
-    public_total_comment_count = models.PositiveIntegerField(
-        default=0, editable=False)
+    public_total_comment_count = models.PositiveIntegerField(default=0, editable=False)
 
     #: The number of :class:`devilry.devilry_group.models.GroupComment` and
     #: :class:`devilry.devilry_group.models.ImageAnnotationComment` within the group
@@ -55,8 +55,7 @@ class AssignmentGroupCachedData(models.Model):
     #: set to :obj:`~devilry.devilry_group.models.AbstractGroupComment.VISIBILITY_VISIBLE_TO_EVERYONE`
     #: and :obj:`~devilry.devilry_comment.models.Comment.user_role` set
     #: to :obj:`~devilry.devilry_comment.models.Comment.USER_ROLE_STUDENT`.
-    public_student_comment_count = models.PositiveIntegerField(
-        default=0, editable=False)
+    public_student_comment_count = models.PositiveIntegerField(default=0, editable=False)
 
     #: The number of :class:`devilry.devilry_group.models.GroupComment` and
     #: :class:`devilry.devilry_group.models.ImageAnnotationComment` within the group
@@ -64,8 +63,7 @@ class AssignmentGroupCachedData(models.Model):
     #: set to :obj:`~devilry.devilry_group.models.AbstractGroupComment.VISIBILITY_VISIBLE_TO_EVERYONE`
     #: and :obj:`~devilry.devilry_comment.models.Comment.user_role` set
     #: to :obj:`~devilry.devilry_comment.models.Comment.USER_ROLE_EXAMINER`.
-    public_examiner_comment_count = models.PositiveIntegerField(
-        default=0, editable=False)
+    public_examiner_comment_count = models.PositiveIntegerField(default=0, editable=False)
 
     #: The number of :class:`devilry.devilry_group.models.GroupComment` and
     #: :class:`devilry.devilry_group.models.ImageAnnotationComment` within the group
@@ -73,21 +71,20 @@ class AssignmentGroupCachedData(models.Model):
     #: set to :obj:`~devilry.devilry_group.models.AbstractGroupComment.VISIBILITY_VISIBLE_TO_EVERYONE`
     #: and :obj:`~devilry.devilry_comment.models.Comment.user_role` set
     #: to :obj:`~devilry.devilry_comment.models.Comment.USER_ROLE_ADMIN`.
-    public_admin_comment_count = models.PositiveIntegerField(
-        default=0, editable=False)
+    public_admin_comment_count = models.PositiveIntegerField(default=0, editable=False)
 
     #: Number of files uploaded by a student on a
     #: comment that is visible to everyone on the assignment.
     # file_upload_count_student = models.PositiveIntegerField(default=0)
-    public_student_file_upload_count = models.PositiveIntegerField(
-        default=0, editable=False)
-    
+    public_student_file_upload_count = models.PositiveIntegerField(default=0, editable=False)
+
     #: Number of attempts by student that have delivered files.
     #: Updated by trigger that counts the number of distinct feedbacksets that has :obj:`~devilry.devilry_comment.models.CommentFile`
     #: where the :obj:`~devilry.devilry_comment.models.Comment.user_role` is set
     #: to :obj:`~devilry.devilry_comment.models.Comment.USER_ROLE_STUDENT`.
     public_student_attempts_with_delivered_files = models.PositiveIntegerField(
-        default=0, editable=False,
+        default=0,
+        editable=False,
     )
 
     #: Datetime of the last :class:`devilry.devilry_group.models.GroupComment` or
@@ -96,8 +93,7 @@ class AssignmentGroupCachedData(models.Model):
     #: set to :obj:`~devilry.devilry_group.models.AbstractGroupComment.VISIBILITY_VISIBLE_TO_EVERYONE`
     #: and :obj:`~devilry.devilry_comment.models.Comment.user_role` set
     #: to :obj:`~devilry.devilry_comment.models.Comment.USER_ROLE_STUDENT`.
-    last_public_comment_by_student_datetime = models.DateTimeField(
-        null=True, blank=True, editable=False)
+    last_public_comment_by_student_datetime = models.DateTimeField(null=True, blank=True, editable=False)
 
     #: Datetime of the last :class:`devilry.devilry_group.models.GroupComment` or
     #: :class:`devilry.devilry_group.models.ImageAnnotationComment` within the group
@@ -105,8 +101,7 @@ class AssignmentGroupCachedData(models.Model):
     #: set to :obj:`~devilry.devilry_group.models.AbstractGroupComment.VISIBILITY_VISIBLE_TO_EVERYONE`
     #: and :obj:`~devilry.devilry_comment.models.Comment.user_role` set
     #: to :obj:`~devilry.devilry_comment.models.Comment.USER_ROLE_EXAMINER`.
-    last_public_comment_by_examiner_datetime = models.DateTimeField(
-        null=True, blank=True, editable=False)
+    last_public_comment_by_examiner_datetime = models.DateTimeField(null=True, blank=True, editable=False)
 
     #: The number of :class:`core.Examiner' within the group
     examiner_count = models.PositiveIntegerField(default=0, editable=False)
@@ -147,27 +142,35 @@ class AssignmentGroupCachedData(models.Model):
         attempt_number = self.new_attempt_count + 1
         selected_language = get_language()
 
-        if selected_language.startswith('nb'):
+        if selected_language.startswith("nb"):
             norwegian_ordinals = [
-                "første", "andre", "tredje", "fjerde", "femte",
-                "sjette", "sjuende", "åttende", "niende", "tiende"
+                "første",
+                "andre",
+                "tredje",
+                "fjerde",
+                "femte",
+                "sjette",
+                "sjuende",
+                "åttende",
+                "niende",
+                "tiende",
             ]
             try:
-                ordinal = norwegian_ordinals[attempt_number-1]
+                ordinal = norwegian_ordinals[attempt_number - 1]
             except IndexError:
-                ordinal = f'{attempt_number}.'
-            return f'{ordinal} forsøk'
+                ordinal = f"{attempt_number}."
+            return f"{ordinal} forsøk"
         else:
             if 10 <= attempt_number % 100 <= 20:
-                ordinal = 'th'
+                ordinal = "th"
             else:
                 remainder = attempt_number % 10
                 if remainder == 1:
-                    ordinal = 'st'
+                    ordinal = "st"
                 elif remainder == 2:
-                    ordinal = 'nd'
+                    ordinal = "nd"
                 elif remainder == 3:
-                    ordinal = 'rd'
+                    ordinal = "rd"
                 else:
-                    ordinal = 'th'
-            return f'{attempt_number}{ordinal} attempt'
+                    ordinal = "th"
+            return f"{attempt_number}{ordinal} attempt"

@@ -20,10 +20,9 @@ from devilry.devilry_group import devilry_group_baker_factories
 
 
 class TestPluginHelper:
-
-    def _build_data_set(self, grading_plugin=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED,
-                        min_points=1,
-                        max_points=1):
+    def _build_data_set(
+        self, grading_plugin=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED, min_points=1, max_points=1
+    ):
         """
         Creates a default dataset for a Period with:
         3 Assignments,
@@ -39,70 +38,73 @@ class TestPluginHelper:
 
         """
         # Util function for creating a dataset of multiple assignments
-        testperiod = baker.make_recipe('devilry.apps.core.period_active')
+        testperiod = baker.make_recipe("devilry.apps.core.period_active")
         admin_user = baker.make(settings.AUTH_USER_MODEL)
-        periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup', period=testperiod)
-        baker.make('devilry_account.PermissionGroupUser',
-                   user=admin_user,
-                   permissiongroup=periodpermissiongroup.permissiongroup)
+        periodpermissiongroup = baker.make("devilry_account.PeriodPermissionGroup", period=testperiod)
+        baker.make(
+            "devilry_account.PermissionGroupUser",
+            user=admin_user,
+            permissiongroup=periodpermissiongroup.permissiongroup,
+        )
 
         # Create assignments
-        assign1 = baker.make('core.Assignment',
-                             short_name='assignment1',
-                             long_name='Assignment 1',
-                             parentnode=testperiod,
-                             grading_system_plugin_id=grading_plugin,
-                             max_points=max_points,
-                             passing_grade_min_points=min_points)
-        assign2 = baker.make('core.Assignment',
-                             short_name='assignment2',
-                             long_name='Assignment 2',
-                             parentnode=testperiod,
-                             grading_system_plugin_id=grading_plugin,
-                             max_points=max_points,
-                             passing_grade_min_points=min_points)
-        assign3 = baker.make('core.Assignment',
-                             short_name='assignment3',
-                             long_name='Assignment 3',
-                             parentnode=testperiod,
-                             grading_system_plugin_id=grading_plugin,
-                             max_points=max_points,
-                             passing_grade_min_points=min_points)
+        assign1 = baker.make(
+            "core.Assignment",
+            short_name="assignment1",
+            long_name="Assignment 1",
+            parentnode=testperiod,
+            grading_system_plugin_id=grading_plugin,
+            max_points=max_points,
+            passing_grade_min_points=min_points,
+        )
+        assign2 = baker.make(
+            "core.Assignment",
+            short_name="assignment2",
+            long_name="Assignment 2",
+            parentnode=testperiod,
+            grading_system_plugin_id=grading_plugin,
+            max_points=max_points,
+            passing_grade_min_points=min_points,
+        )
+        assign3 = baker.make(
+            "core.Assignment",
+            short_name="assignment3",
+            long_name="Assignment 3",
+            parentnode=testperiod,
+            grading_system_plugin_id=grading_plugin,
+            max_points=max_points,
+            passing_grade_min_points=min_points,
+        )
 
         # Create AssignmentGroups
-        assigngroup1 = baker.make('core.AssignmentGroup', parentnode=assign1)
-        assigngroup2 = baker.make('core.AssignmentGroup', parentnode=assign2)
-        assigngroup3 = baker.make('core.AssignmentGroup', parentnode=assign3)
+        assigngroup1 = baker.make("core.AssignmentGroup", parentnode=assign1)
+        assigngroup2 = baker.make("core.AssignmentGroup", parentnode=assign2)
+        assigngroup3 = baker.make("core.AssignmentGroup", parentnode=assign3)
 
         # Create FeedbackSets
-        fb1 = devilry_group_baker_factories.feedbackset_first_attempt_published(
-                group=assigngroup1,
-                grading_points=1)
-        fb2 = devilry_group_baker_factories.feedbackset_first_attempt_published(
-                group=assigngroup2,
-                grading_points=1)
-        fb3 = devilry_group_baker_factories.feedbackset_first_attempt_published(
-                group=assigngroup3,
-                grading_points=1)
+        fb1 = devilry_group_baker_factories.feedbackset_first_attempt_published(group=assigngroup1, grading_points=1)
+        fb2 = devilry_group_baker_factories.feedbackset_first_attempt_published(group=assigngroup2, grading_points=1)
+        fb3 = devilry_group_baker_factories.feedbackset_first_attempt_published(group=assigngroup3, grading_points=1)
 
         # Create a student with user
-        student_user = baker.make(settings.AUTH_USER_MODEL, shortname='apduc', fullname='April Duck')
-        relatedstudent = baker.make('core.RelatedStudent', user=student_user, period=testperiod)
+        student_user = baker.make(settings.AUTH_USER_MODEL, shortname="apduc", fullname="April Duck")
+        relatedstudent = baker.make("core.RelatedStudent", user=student_user, period=testperiod)
 
         # Create candidates with relatedstudents and assignmentgroups
-        cand1 = baker.make('core.Candidate', relatedstudent=relatedstudent, assignment_group=assigngroup1)
-        cand2 = baker.make('core.Candidate', relatedstudent=relatedstudent, assignment_group=assigngroup2)
-        cand3 = baker.make('core.Candidate', relatedstudent=relatedstudent, assignment_group=assigngroup3)
+        cand1 = baker.make("core.Candidate", relatedstudent=relatedstudent, assignment_group=assigngroup1)
+        cand2 = baker.make("core.Candidate", relatedstudent=relatedstudent, assignment_group=assigngroup2)
+        cand3 = baker.make("core.Candidate", relatedstudent=relatedstudent, assignment_group=assigngroup3)
 
-        return {'testperiod': testperiod,
-                'testassignments': [assign1, assign2, assign3],
-                'testgroups': [assigngroup1, assigngroup2, assigngroup3],
-                'testcandidates': [cand1, cand2, cand3],
-                'testfeedbacksets': [fb1, fb2, fb3],
-                'relatedstudent': relatedstudent,
-                'student_user': student_user,
-                'admin_user': admin_user
-                }
+        return {
+            "testperiod": testperiod,
+            "testassignments": [assign1, assign2, assign3],
+            "testgroups": [assigngroup1, assigngroup2, assigngroup3],
+            "testcandidates": [cand1, cand2, cand3],
+            "testfeedbacksets": [fb1, fb2, fb3],
+            "relatedstudent": relatedstudent,
+            "student_user": student_user,
+            "admin_user": admin_user,
+        }
 
 
 class TestGroupFeedbackSetList(test.TestCase, TestPluginHelper):
@@ -112,15 +114,17 @@ class TestGroupFeedbackSetList(test.TestCase, TestPluginHelper):
     def test_append_errorhandling_not_a_tuple(self):
         # Test that adding something not a tuple will raise a ValueError.
         groupfeedbacksetlist = groups_groupedby_relatedstudent_and_assignments.GroupFeedbackSetList()
-        with self.assertRaisesMessage(ValueError, 'Appended object must be a tuple of '
-                                                  'objects (AssignmentGroup, FeedbackSet).'):
+        with self.assertRaisesMessage(
+            ValueError, "Appended object must be a tuple of objects (AssignmentGroup, FeedbackSet)."
+        ):
             groupfeedbacksetlist.append(1)
 
     def test_append_errorhandling_not_supported_objects(self):
         # Test that adding a tuple with objects not of the required type will raise a ValueError.
         groupfeedbacksetlist = groups_groupedby_relatedstudent_and_assignments.GroupFeedbackSetList()
-        with self.assertRaisesMessage(ValueError, 'Objects in tuple must be of (AssignmentGroup, FeedbackSet) '
-                                                  'in that order.'):
+        with self.assertRaisesMessage(
+            ValueError, "Objects in tuple must be of (AssignmentGroup, FeedbackSet) in that order."
+        ):
             groupfeedbacksetlist.append((1, 1))
 
     def test_serialize_feedbackset(self):
@@ -128,57 +132,53 @@ class TestGroupFeedbackSetList(test.TestCase, TestPluginHelper):
 
         # Create FeedbackSet
         feedbackset = devilry_group_baker_factories.feedbackset_first_attempt_published(
-                grading_points=1,
-                grading_published_by=baker.make(settings.AUTH_USER_MODEL, shortname='donduc', fullname='Donald Duck')
+            grading_points=1,
+            grading_published_by=baker.make(settings.AUTH_USER_MODEL, shortname="donduc", fullname="Donald Duck"),
         )
 
         groupfeedbacksetlist = groups_groupedby_relatedstudent_and_assignments.GroupFeedbackSetList()
         serialized_feedbackset = groupfeedbacksetlist._serialize_feedbackset(feedbackset)
 
-        self.assertEqual(serialized_feedbackset['id'], feedbackset.id)
-        self.assertEqual(serialized_feedbackset['grade'], 'NA')
-        self.assertEqual(serialized_feedbackset['points'], feedbackset.grading_points)
-        self.assertEqual(serialized_feedbackset['published_by'], feedbackset.grading_published_by)
-        self.assertEqual(serialized_feedbackset['published'], feedbackset.grading_published_datetime)
-        self.assertEqual(serialized_feedbackset['deadline'], feedbackset.current_deadline())
+        self.assertEqual(serialized_feedbackset["id"], feedbackset.id)
+        self.assertEqual(serialized_feedbackset["grade"], "NA")
+        self.assertEqual(serialized_feedbackset["points"], feedbackset.grading_points)
+        self.assertEqual(serialized_feedbackset["published_by"], feedbackset.grading_published_by)
+        self.assertEqual(serialized_feedbackset["published"], feedbackset.grading_published_datetime)
+        self.assertEqual(serialized_feedbackset["deadline"], feedbackset.current_deadline())
 
     def test_serialize_group(self):
         # Test serialization of AssignmentGroup
 
         # Create AssignmentGroup
-        testgroup = baker.make('core.AssignmentGroup')
+        testgroup = baker.make("core.AssignmentGroup")
 
         # Create FeedbackSet
         feedbackset = devilry_group_baker_factories.feedbackset_first_attempt_published(
-                grading_points=1,
-                grading_published_by=baker.make(settings.AUTH_USER_MODEL, shortname='donduc', fullname='Donald Duck')
+            grading_points=1,
+            grading_published_by=baker.make(settings.AUTH_USER_MODEL, shortname="donduc", fullname="Donald Duck"),
         )
 
         groupfeedbacksetlist = groups_groupedby_relatedstudent_and_assignments.GroupFeedbackSetList()
         serialized_group = groupfeedbacksetlist._serialize_group(testgroup, feedbackset)
-        self.assertEqual(serialized_group['id'], testgroup.id)
-        self.assertEqual(type(serialized_group['feedbackset']), dict)
+        self.assertEqual(serialized_group["id"], testgroup.id)
+        self.assertEqual(type(serialized_group["feedbackset"]), dict)
 
     def test_serialize(self):
         # Test serialization of the entire GroupFeedbackSetList.
 
         # Create AssignmentGroup
-        testgroup1 = baker.make('core.AssignmentGroup')
-        testgroup2 = baker.make('core.AssignmentGroup')
+        testgroup1 = baker.make("core.AssignmentGroup")
+        testgroup2 = baker.make("core.AssignmentGroup")
 
         # Create examiner
-        testexaminer = baker.make(settings.AUTH_USER_MODEL, shortname='donduc', fullname='Donald Duck')
+        testexaminer = baker.make(settings.AUTH_USER_MODEL, shortname="donduc", fullname="Donald Duck")
 
         # Create FeedbackSet
         test_feedbackset1 = devilry_group_baker_factories.feedbackset_first_attempt_published(
-                grading_points=1,
-                grading_published_by=testexaminer,
-                group=testgroup1
+            grading_points=1, grading_published_by=testexaminer, group=testgroup1
         )
         test_feedbackset2 = devilry_group_baker_factories.feedbackset_first_attempt_published(
-                grading_points=1,
-                grading_published_by=testexaminer,
-                group=testgroup2
+            grading_points=1, grading_published_by=testexaminer, group=testgroup2
         )
 
         groupfeedbacksetlist = groups_groupedby_relatedstudent_and_assignments.GroupFeedbackSetList()
@@ -187,14 +187,15 @@ class TestGroupFeedbackSetList(test.TestCase, TestPluginHelper):
         serialized = groupfeedbacksetlist.serialize()
 
         self.assertEqual(2, len(serialized))
-        self.assertEqual(serialized[0]['id'], testgroup1.id)
-        self.assertEqual(serialized[1]['id'], testgroup2.id)
+        self.assertEqual(serialized[0]["id"], testgroup1.id)
+        self.assertEqual(serialized[1]["id"], testgroup2.id)
 
 
 class TestAggregatedRelatedStudentInfoSerializers(test.TestCase, TestPluginHelper):
     """
     Does some simple testing for the serialization of AggregatedRelatedStudentInfo.
     """
+
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
@@ -202,47 +203,49 @@ class TestAggregatedRelatedStudentInfoSerializers(test.TestCase, TestPluginHelpe
         # Test serialization of user.
         dataset_dict = self._build_data_set()
         grouper = groups_groupedby_relatedstudent_and_assignments.GroupsGroupedByRelatedStudentAndAssignment(
-            period=dataset_dict['testperiod'],
+            period=dataset_dict["testperiod"],
         )
-        serialized_user = list(grouper.result.values())[0].serialize()['user']
-        self.assertEqual(serialized_user['id'], dataset_dict['student_user'].id)
-        self.assertEqual(serialized_user['username'], dataset_dict['student_user'].shortname)
-        self.assertEqual(serialized_user['fullname'], dataset_dict['student_user'].fullname)
+        serialized_user = list(grouper.result.values())[0].serialize()["user"]
+        self.assertEqual(serialized_user["id"], dataset_dict["student_user"].id)
+        self.assertEqual(serialized_user["username"], dataset_dict["student_user"].shortname)
+        self.assertEqual(serialized_user["fullname"], dataset_dict["student_user"].fullname)
 
     def test_serialize_relatedstudent(self):
         # Test serialization of relatedstudent.
         dataset_dict = self._build_data_set()
         grouper = groups_groupedby_relatedstudent_and_assignments.GroupsGroupedByRelatedStudentAndAssignment(
-            period=dataset_dict['testperiod']
+            period=dataset_dict["testperiod"]
         )
-        serialized_relatedstudent = list(grouper.result.values())[0].serialize()['relatedstudent']
-        self.assertEqual(serialized_relatedstudent['id'], dataset_dict['relatedstudent'].id)
-        self.assertEqual(serialized_relatedstudent['tags'], dataset_dict['relatedstudent'].tags)
-        self.assertEqual(serialized_relatedstudent['candidate_id'], dataset_dict['relatedstudent'].candidate_id)
+        serialized_relatedstudent = list(grouper.result.values())[0].serialize()["relatedstudent"]
+        self.assertEqual(serialized_relatedstudent["id"], dataset_dict["relatedstudent"].id)
+        self.assertEqual(serialized_relatedstudent["tags"], dataset_dict["relatedstudent"].tags)
+        self.assertEqual(serialized_relatedstudent["candidate_id"], dataset_dict["relatedstudent"].candidate_id)
 
     def test_serialize_groups_by_assignments(self):
         # Test the serialization of groups by assignment.
         dataset_dict = self._build_data_set()
         grouper = groups_groupedby_relatedstudent_and_assignments.GroupsGroupedByRelatedStudentAndAssignment(
-            period=dataset_dict['testperiod'],
+            period=dataset_dict["testperiod"],
         )
-        serialized_groups_by_assignment = list(grouper.result.values())[0].serialize()['groups_by_assignment']
-        self.assertEqual(serialized_groups_by_assignment[0]['assignmentid'], dataset_dict['testassignments'][0].id)
+        serialized_groups_by_assignment = list(grouper.result.values())[0].serialize()["groups_by_assignment"]
+        self.assertEqual(serialized_groups_by_assignment[0]["assignmentid"], dataset_dict["testassignments"][0].id)
 
         # Test serialized group part
-        serialized_group = serialized_groups_by_assignment[0]['group_feedbackset_list'][0]
-        self.assertEqual(len(serialized_groups_by_assignment[0]['group_feedbackset_list']), 1)
-        self.assertEqual(serialized_group['id'], dataset_dict['testgroups'][0].id)
+        serialized_group = serialized_groups_by_assignment[0]["group_feedbackset_list"][0]
+        self.assertEqual(len(serialized_groups_by_assignment[0]["group_feedbackset_list"]), 1)
+        self.assertEqual(serialized_group["id"], dataset_dict["testgroups"][0].id)
 
         # Test the serialized feedbackset part
-        serialized_feedbackset = serialized_group['feedbackset']
-        self.assertEqual(serialized_feedbackset['id'], dataset_dict['testfeedbacksets'][0].id)
-        self.assertEqual(serialized_feedbackset['points'], dataset_dict['testfeedbacksets'][0].grading_points)
-        self.assertEqual(serialized_feedbackset['published_by'],
-                          dataset_dict['testfeedbacksets'][0].grading_published_by)
-        self.assertEqual(serialized_feedbackset['published'],
-                          dataset_dict['testfeedbacksets'][0].grading_published_datetime)
-        self.assertEqual(serialized_feedbackset['deadline'], dataset_dict['testfeedbacksets'][0].current_deadline())
+        serialized_feedbackset = serialized_group["feedbackset"]
+        self.assertEqual(serialized_feedbackset["id"], dataset_dict["testfeedbacksets"][0].id)
+        self.assertEqual(serialized_feedbackset["points"], dataset_dict["testfeedbacksets"][0].grading_points)
+        self.assertEqual(
+            serialized_feedbackset["published_by"], dataset_dict["testfeedbacksets"][0].grading_published_by
+        )
+        self.assertEqual(
+            serialized_feedbackset["published"], dataset_dict["testfeedbacksets"][0].grading_published_datetime
+        )
+        self.assertEqual(serialized_feedbackset["deadline"], dataset_dict["testfeedbacksets"][0].current_deadline())
 
 
 class TestGroupsGroupedByRelatedStudentAndAssignment(test.TestCase, TestPluginHelper):
@@ -253,9 +256,9 @@ class TestGroupsGroupedByRelatedStudentAndAssignment(test.TestCase, TestPluginHe
         # Test that all Assignments for the Period is fetched when no
         # qualifying Assignments are passed to the grouper.
         dataset_dict = self._build_data_set()
-        testassignments = dataset_dict['testassignments']
+        testassignments = dataset_dict["testassignments"]
         grouper = groups_groupedby_relatedstudent_and_assignments.GroupsGroupedByRelatedStudentAndAssignment(
-            period=dataset_dict['testperiod']
+            period=dataset_dict["testperiod"]
         )
         retreived_assignment_ids = [assignment.id for assignment in grouper.assignments]
         self.assertEqual(len(retreived_assignment_ids), 3)
@@ -266,26 +269,29 @@ class TestGroupsGroupedByRelatedStudentAndAssignment(test.TestCase, TestPluginHe
     def test_student_qualifies(self):
         dataset_dict = self._build_data_set()
         resultinfo = groups_groupedby_relatedstudent_and_assignments.GroupsGroupedByRelatedStudentAndAssignment(
-            period=dataset_dict['testperiod']).result
+            period=dataset_dict["testperiod"]
+        ).result
         for aggregatedstudentinfo in resultinfo.values():
             self.assertTrue(aggregatedstudentinfo.student_qualifies())
 
     def test_student_does_not_qualify_not_enlisted(self):
         # Tests that a student does not qualify when not enlisted on a qualifying Assignment.
         dataset_dict = self._build_data_set()
-        dataset_dict['testcandidates'][2].delete()
+        dataset_dict["testcandidates"][2].delete()
         resultinfo = groups_groupedby_relatedstudent_and_assignments.GroupsGroupedByRelatedStudentAndAssignment(
-            period=dataset_dict['testperiod']).result
+            period=dataset_dict["testperiod"]
+        ).result
         for aggregatedstudentinfo in resultinfo.values():
             self.assertFalse(aggregatedstudentinfo.student_qualifies())
 
     def test_student_does_not_qualify_not_enough_points(self):
         dataset_dict = self._build_data_set()
         # Set the points to 0 on FeedbackSet for Assignment 3
-        dataset_dict['testfeedbacksets'][2].grading_points = 0
-        dataset_dict['testfeedbacksets'][2].save()
+        dataset_dict["testfeedbacksets"][2].grading_points = 0
+        dataset_dict["testfeedbacksets"][2].save()
         resultinfo = groups_groupedby_relatedstudent_and_assignments.GroupsGroupedByRelatedStudentAndAssignment(
-            period=dataset_dict['testperiod']).result
+            period=dataset_dict["testperiod"]
+        ).result
         for aggregatedstudentinfo in resultinfo.values():
             self.assertFalse(aggregatedstudentinfo.student_qualifies())
 
@@ -293,9 +299,9 @@ class TestGroupsGroupedByRelatedStudentAndAssignment(test.TestCase, TestPluginHe
         # Check that a student qualifies when assignment is not passed, but assignment is
         # not part of qualifying assignments.
         dataset_dict = self._build_data_set()
-        testassignments = dataset_dict['testassignments']
+        testassignments = dataset_dict["testassignments"]
         resultinfo = groups_groupedby_relatedstudent_and_assignments.GroupsGroupedByRelatedStudentAndAssignment(
-            period=dataset_dict['testperiod'],
+            period=dataset_dict["testperiod"],
         ).result
         for aggregatedstudentinfo in resultinfo.values():
             self.assertTrue(aggregatedstudentinfo.student_qualifies())
@@ -305,11 +311,11 @@ class TestGroupsGroupedByRelatedStudentAndAssignment(test.TestCase, TestPluginHe
         dataset_dict = self._build_data_set()
 
         # Update feedbackset to passed but not published.
-        dataset_dict['testfeedbacksets'][2].grading_points = 1
-        dataset_dict['testfeedbacksets'][2].grading_published_datetime = None
-        dataset_dict['testfeedbacksets'][2].save()
+        dataset_dict["testfeedbacksets"][2].grading_points = 1
+        dataset_dict["testfeedbacksets"][2].grading_published_datetime = None
+        dataset_dict["testfeedbacksets"][2].save()
         resultinfo = groups_groupedby_relatedstudent_and_assignments.GroupsGroupedByRelatedStudentAndAssignment(
-            period=dataset_dict['testperiod']
+            period=dataset_dict["testperiod"]
         ).result
         for aggregatedstudentinfo in resultinfo.values():
             self.assertFalse(aggregatedstudentinfo.student_qualifies())

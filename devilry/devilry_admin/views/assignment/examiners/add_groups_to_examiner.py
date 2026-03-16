@@ -1,5 +1,3 @@
-
-
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.utils.translation import gettext_lazy, ngettext_lazy
@@ -13,21 +11,21 @@ from devilry.devilry_cradmin import devilry_listbuilder
 
 class TargetRenderer(devilry_listbuilder.assignmentgroup.GroupTargetRenderer):
     def get_submit_button_text(self):
-        return gettext_lazy('Add students')
+        return gettext_lazy("Add students")
 
 
-class AddGroupsToExaminerView(groupview_base.BaseMultiselectView,
-                              base_single_examinerview.SingleExaminerViewMixin):
-    template_name = 'devilry_admin/assignment/examiners/add_groups_to_examiner.django.html'
+class AddGroupsToExaminerView(groupview_base.BaseMultiselectView, base_single_examinerview.SingleExaminerViewMixin):
+    template_name = "devilry_admin/assignment/examiners/add_groups_to_examiner.django.html"
 
     def get(self, request, *args, **kwargs):
         response = super(AddGroupsToExaminerView, self).get(request, *args, **kwargs)
         if self.get_unfiltered_queryset_for_role(role=self.request.cradmin_role).exists():
             return response
         else:
-            messages.info(self.request,
-                          gettext_lazy("All students registered on this assignment has already "
-                                        "been added to this examiner."))
+            messages.info(
+                self.request,
+                gettext_lazy("All students registered on this assignment has already been added to this examiner."),
+            )
 
             return redirect(str(self.get_success_url()))
 
@@ -37,40 +35,37 @@ class AddGroupsToExaminerView(groupview_base.BaseMultiselectView,
     def get_filterlist_url(self, filters_string):
         return self.request.cradmin_app.reverse_appurl(
             crapp.INDEXVIEW_NAME,
-            kwargs={'filters_string': filters_string,
-                    'relatedexaminer_id': self.get_relatedexaminer_id()})
+            kwargs={"filters_string": filters_string, "relatedexaminer_id": self.get_relatedexaminer_id()},
+        )
 
     def get_unfiltered_queryset_for_role(self, role):
-        return super(AddGroupsToExaminerView, self).get_unfiltered_queryset_for_role(role=role)\
+        return (
+            super(AddGroupsToExaminerView, self)
+            .get_unfiltered_queryset_for_role(role=role)
             .exclude(examiners__relatedexaminer=self.get_relatedexaminer())
+        )
 
     def get_context_data(self, **kwargs):
         context = super(AddGroupsToExaminerView, self).get_context_data(**kwargs)
-        context['relatedexaminer'] = self.get_relatedexaminer()
+        context["relatedexaminer"] = self.get_relatedexaminer()
         return context
 
     def get_success_message(self, groupcount, candidatecount):
         if groupcount == candidatecount:
-            return gettext_lazy('Added %(count)s students.') % {
-                'count': candidatecount
-            }
+            return gettext_lazy("Added %(count)s students.") % {"count": candidatecount}
         else:
             return ngettext_lazy(
-                'Added %(groupcount)s project group with %(studentcount)s students.',
-                'Added %(groupcount)s project groups with %(studentcount)s students.',
-                groupcount
-            ) % {
-                'groupcount': groupcount,
-                'studentcount': candidatecount
-            }
+                "Added %(groupcount)s project group with %(studentcount)s students.",
+                "Added %(groupcount)s project groups with %(studentcount)s students.",
+                groupcount,
+            ) % {"groupcount": groupcount, "studentcount": candidatecount}
 
     def __create_examiner_objects(self, groupqueryset):
         examiners = []
         groupcount = 0
         candidatecount = 0
         for group in groupqueryset:
-            examiner = Examiner(assignmentgroup=group,
-                                relatedexaminer=self.get_relatedexaminer())
+            examiner = Examiner(assignmentgroup=group, relatedexaminer=self.get_relatedexaminer())
             examiners.append(examiner)
             groupcount += 1
             candidatecount += len(group.candidates.all())
@@ -79,22 +74,24 @@ class AddGroupsToExaminerView(groupview_base.BaseMultiselectView,
 
     def get_success_url(self):
         url = self.request.cradmin_instance.reverse_url(
-            appname='examinerdetails',
+            appname="examinerdetails",
             viewname=crapp.INDEXVIEW_NAME,
-            kwargs={'relatedexaminer_id': self.get_relatedexaminer_id()})
+            kwargs={"relatedexaminer_id": self.get_relatedexaminer_id()},
+        )
         return url
 
     def form_valid(self, form):
-        groupqueryset = form.cleaned_data['selected_items']
+        groupqueryset = form.cleaned_data["selected_items"]
         groupcount, candidatecount = self.__create_examiner_objects(groupqueryset=groupqueryset)
-        messages.success(self.request, self.get_success_message(
-            groupcount=groupcount, candidatecount=candidatecount))
+        messages.success(self.request, self.get_success_message(groupcount=groupcount, candidatecount=candidatecount))
         return redirect(str(self.get_success_url()))
 
 
 class App(crapp.App):
     appurls = [
-        crapp.Url(r'^(?P<relatedexaminer_id>\d+)/(?P<filters_string>.+)?$',
-                  AddGroupsToExaminerView.as_view(),
-                  name=crapp.INDEXVIEW_NAME),
+        crapp.Url(
+            r"^(?P<relatedexaminer_id>\d+)/(?P<filters_string>.+)?$",
+            AddGroupsToExaminerView.as_view(),
+            name=crapp.INDEXVIEW_NAME,
+        ),
     ]

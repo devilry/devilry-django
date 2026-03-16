@@ -5,20 +5,20 @@ from django.utils.translation import gettext_lazy
 
 
 class DeliverySummaryColumn(objecttable.SingleActionColumn):
-    modelfield = 'number'
-    template_name = 'devilry_student/cradminextensions/columntypes/delivery-summary-column.django.html'
-    context_object_name = 'delivery'
+    modelfield = "number"
+    template_name = "devilry_student/cradminextensions/columntypes/delivery-summary-column.django.html"
+    context_object_name = "delivery"
 
     def get_header(self):
-        return gettext_lazy('Delivery')
+        return gettext_lazy("Delivery")
 
     def get_actionurl(self, delivery):
         return crinstance.reverse_cradmin_url(
-            instanceid='devilry_student_group',
-            appname='deliveries',
+            instanceid="devilry_student_group",
+            appname="deliveries",
             roleid=delivery.deadline.assignment_group_id,
-            viewname='deliverydetails',
-            kwargs={'pk': delivery.pk}
+            viewname="deliverydetails",
+            kwargs={"pk": delivery.pk},
         )
 
     def is_sortable(self):
@@ -26,36 +26,34 @@ class DeliverySummaryColumn(objecttable.SingleActionColumn):
 
 
 class NaturaltimeAndDateTimeColumn(objecttable.PlainTextColumn):
-    datetime_format = 'SHORT_DATETIME_FORMAT'
+    datetime_format = "SHORT_DATETIME_FORMAT"
 
     def render_value(self, obj):
         datetimeobject = super(NaturaltimeAndDateTimeColumn, self).render_value(obj)
         if datetimeobject:
             return render_to_string(
-                'devilry_student/cradminextensions/columntypes/naturaltime-and-datetime-column.django.html', {
-                    'datetimeobject': datetimeobject,
-                    'datetime_format': self.datetime_format
-                })
+                "devilry_student/cradminextensions/columntypes/naturaltime-and-datetime-column.django.html",
+                {"datetimeobject": datetimeobject, "datetime_format": self.datetime_format},
+            )
         else:
             return datetimeobject
 
 
 class NaturaltimeColumn(objecttable.PlainTextColumn):
-
     def render_value(self, obj):
         datetimeobject = super(NaturaltimeColumn, self).render_value(obj)
         if datetimeobject:
             return render_to_string(
-                'devilry_student/cradminextensions/columntypes/naturaltime-column.django.html', {
-                    'datetimeobject': datetimeobject
-                })
+                "devilry_student/cradminextensions/columntypes/naturaltime-column.django.html",
+                {"datetimeobject": datetimeobject},
+            )
         else:
             return datetimeobject
 
 
 class BooleanColumn(objecttable.PlainTextColumn):
-    true_label = gettext_lazy('True')
-    false_label = gettext_lazy('False')
+    true_label = gettext_lazy("True")
+    false_label = gettext_lazy("False")
 
     def get_true_value(self):
         return self.true_label
@@ -75,5 +73,5 @@ class BooleanColumn(objecttable.PlainTextColumn):
 
 
 class BooleanYesNoColumn(BooleanColumn):
-    true_label = gettext_lazy('Yes')
-    false_label = gettext_lazy('No')
+    true_label = gettext_lazy("Yes")
+    false_label = gettext_lazy("No")

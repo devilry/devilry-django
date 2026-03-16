@@ -18,22 +18,21 @@ from devilry.devilry_compressionutil.models import CompressedArchiveMeta
 
 # Dummy text for file
 lorem_ipsum = (
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In facilisis dignissim enim eu luctus. '
-    'Vivamus volutpat porta interdum. Curabitur porttitor justo ut turpis eleifend tristique. Cras posuere '
-    'mauris vitae risus luctus, ac hendrerit mi rhoncus. Nullam ultricies mollis elit. Aenean venenatis, '
-    'est at ultricies ullamcorper, velit neque ultrices sapien, vitae gravida orci odio a massa. Integer '
-    'lobortis dapibus placerat. Nunc id odio id lacus dapibus iaculis. Praesent sit amet nibh faucibus, '
-    'congue urna at, ornare risus. Quisque fringilla libero at metus interdum gravida. '
-    'Quisque at pellentesque magna. Morbi sagittis magna in sollicitudin viverra. '
-    'Donec quis velit suscipit, mollis leo ut.'
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In facilisis dignissim enim eu luctus. "
+    "Vivamus volutpat porta interdum. Curabitur porttitor justo ut turpis eleifend tristique. Cras posuere "
+    "mauris vitae risus luctus, ac hendrerit mi rhoncus. Nullam ultricies mollis elit. Aenean venenatis, "
+    "est at ultricies ullamcorper, velit neque ultrices sapien, vitae gravida orci odio a massa. Integer "
+    "lobortis dapibus placerat. Nunc id odio id lacus dapibus iaculis. Praesent sit amet nibh faucibus, "
+    "congue urna at, ornare risus. Quisque fringilla libero at metus interdum gravida. "
+    "Quisque at pellentesque magna. Morbi sagittis magna in sollicitudin viverra. "
+    "Donec quis velit suscipit, mollis leo ut."
 )
 
 
-@override_settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY='devilry_compressed_archives')
+@override_settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY="devilry_compressed_archives")
 class TestCompressedFileMeta(TestCase):
-
     def setUp(self):
-        self.backend_path = pathlib.Path('devilry_testfiles', 'devilry_compressed_archives')
+        self.backend_path = pathlib.Path("devilry_testfiles", "devilry_compressed_archives")
         self.mock_registry = backend_registry.MockableRegistry.make_mockregistry(backend_mock.MockDevilryZipBackend)
 
     def tearDown(self):
@@ -41,12 +40,13 @@ class TestCompressedFileMeta(TestCase):
             shutil.rmtree(self.backend_path.absolute(), ignore_errors=False)
 
     def __create_testfile(self):
-        testfile = ContentFile(lorem_ipsum.encode('utf-8'))
+        testfile = ContentFile(lorem_ipsum.encode("utf-8"))
         return testfile
 
     def __setup_mock_backend(self, archive_path, file_size):
         mock_backend = self.mock_registry.get_instance().get(backend_mock.MockDevilryZipBackend.backend_id)(
-            archive_path=archive_path, readmode=False)
+            archive_path=archive_path, readmode=False
+        )
         mock_backend.archive_size = mock.MagicMock(return_value=file_size)
         return mock_backend
 
@@ -58,61 +58,62 @@ class TestCompressedFileMeta(TestCase):
     def test_manager_create_meta(self):
         # Does not create an actual file(we need to call backend.add_file for that.), but we are mocking
         # the data need from the backend to create a CompressedArchiveMeta entry.
-        with mock.patch('devilry.devilry_compressionutil.models.backend_registry.Registry._instance',
-                        self.mock_registry):
-            testcomment = baker.make('devilry_group.GroupComment', user__shortname='user@example.com')
-            archivepath = 'test.tar.gz'
-            mock_backend = self.mock_registry.get_instance().get(
-                backend_mock.MockDevilryZipBackend.backend_id)(archive_path=archivepath)
+        with mock.patch(
+            "devilry.devilry_compressionutil.models.backend_registry.Registry._instance", self.mock_registry
+        ):
+            testcomment = baker.make("devilry_group.GroupComment", user__shortname="user@example.com")
+            archivepath = "test.tar.gz"
+            mock_backend = self.mock_registry.get_instance().get(backend_mock.MockDevilryZipBackend.backend_id)(
+                archive_path=archivepath
+            )
             mock_backend.archive_size = mock.MagicMock(return_value=1)
             CompressedArchiveMeta.objects.create_meta(
-                instance=testcomment,
-                zipfile_backend=mock_backend,
-                user=baker.make(settings.AUTH_USER_MODEL))
+                instance=testcomment, zipfile_backend=mock_backend, user=baker.make(settings.AUTH_USER_MODEL)
+            )
             archive_meta = CompressedArchiveMeta.objects.get(content_object_id=testcomment.id)
             self.assertEqual(archive_meta.archive_path, archivepath)
 
     def test_generic_foreignkey_comment(self):
-        testcomment = baker.make('devilry_comment.Comment')
-        archivemeta = baker.make('devilry_compressionutil.CompressedArchiveMeta', content_object=testcomment)
+        testcomment = baker.make("devilry_comment.Comment")
+        archivemeta = baker.make("devilry_compressionutil.CompressedArchiveMeta", content_object=testcomment)
         self.assertEqual(archivemeta.content_object_id, testcomment.id)
         self.assertEqual(type(archivemeta.content_object), type(testcomment))
 
     def test_archive_path_cannot_be_blank(self):
         with self.assertRaises(IntegrityError):
-            baker.make('devilry_compressionutil.CompressedArchiveMeta', archive_path=None)
+            baker.make("devilry_compressionutil.CompressedArchiveMeta", archive_path=None)
 
     def test_archive_name_cannot_be_blank(self):
         with self.assertRaises(IntegrityError):
-            baker.make('devilry_compressionutil.CompressedArchiveMeta', archive_path=None)
+            baker.make("devilry_compressionutil.CompressedArchiveMeta", archive_path=None)
 
     def test_is_marked_for_delete_default_none(self):
-        testcomment = baker.make('devilry_comment.Comment')
-        archive_meta = baker.make('devilry_compressionutil.CompressedArchiveMeta', content_object=testcomment)
+        testcomment = baker.make("devilry_comment.Comment")
+        archive_meta = baker.make("devilry_compressionutil.CompressedArchiveMeta", content_object=testcomment)
         self.assertIsNone(archive_meta.deleted_datetime)
 
     def test_is_marked_for_delete_true(self):
-        testcomment = baker.make('devilry_comment.Comment')
+        testcomment = baker.make("devilry_comment.Comment")
         archive_meta = baker.make(
-            'devilry_compressionutil.CompressedArchiveMeta',
-            content_object=testcomment,
-            deleted_datetime=timezone.now())
+            "devilry_compressionutil.CompressedArchiveMeta", content_object=testcomment, deleted_datetime=timezone.now()
+        )
         self.assertTrue(archive_meta.deleted_datetime)
 
     def test_clean_invalid_backend_id(self):
-        testcomment = baker.make('devilry_comment.Comment')
-        archive_meta = baker.make('devilry_compressionutil.CompressedArchiveMeta', content_object=testcomment)
-        with self.assertRaisesMessage(ValidationError, 'backend_id must refer to a valid backend'):
+        testcomment = baker.make("devilry_comment.Comment")
+        archive_meta = baker.make("devilry_compressionutil.CompressedArchiveMeta", content_object=testcomment)
+        with self.assertRaisesMessage(ValidationError, "backend_id must refer to a valid backend"):
             archive_meta.full_clean()
 
     def test_compressed_archive_meta_delete_older_than_num_days(self):
-        with mock.patch('devilry.devilry_compressionutil.models.backend_registry.Registry._instance',
-                        self.mock_registry):
-            archivepath1 = 'test1.tar.gz'
-            archivepath2 = 'test2.tar.gz'
+        with mock.patch(
+            "devilry.devilry_compressionutil.models.backend_registry.Registry._instance", self.mock_registry
+        ):
+            archivepath1 = "test1.tar.gz"
+            archivepath2 = "test2.tar.gz"
 
             # Create a testfile
-            testfile_name = 'testfile.txt'
+            testfile_name = "testfile.txt"
             testfile = self.__create_testfile()
 
             # Set up mock backend
@@ -121,13 +122,15 @@ class TestCompressedFileMeta(TestCase):
 
             # Create archive meta
             compressed_archive_meta1 = CompressedArchiveMeta.objects.create_meta(
-                instance=baker.make('devilry_group.GroupComment'),
+                instance=baker.make("devilry_group.GroupComment"),
                 zipfile_backend=mock_backend1,
-                user=baker.make(settings.AUTH_USER_MODEL))
+                user=baker.make(settings.AUTH_USER_MODEL),
+            )
             compressed_archive_meta2 = CompressedArchiveMeta.objects.create_meta(
-                instance=baker.make('devilry_group.GroupComment'),
+                instance=baker.make("devilry_group.GroupComment"),
                 zipfile_backend=mock_backend2,
-                user=baker.make(settings.AUTH_USER_MODEL))
+                user=baker.make(settings.AUTH_USER_MODEL),
+            )
 
             compressed_archive_meta1.created_datetime = timezone.now()
             compressed_archive_meta2.created_datetime = timezone.now() - timezone.timedelta(days=10)
@@ -135,8 +138,8 @@ class TestCompressedFileMeta(TestCase):
             compressed_archive_meta2.save()
 
             # Write to backend
-            self.__write_to_backend(backend=mock_backend1, filename='{}'.format(testfile_name), file=testfile)
-            self.__write_to_backend(backend=mock_backend2, filename='{}'.format(testfile_name), file=testfile)
+            self.__write_to_backend(backend=mock_backend1, filename="{}".format(testfile_name), file=testfile)
+            self.__write_to_backend(backend=mock_backend2, filename="{}".format(testfile_name), file=testfile)
 
             compressed_archive_path1 = self.backend_path / compressed_archive_meta1.archive_path
             compressed_archive_path2 = self.backend_path / compressed_archive_meta2.archive_path
@@ -149,13 +152,14 @@ class TestCompressedFileMeta(TestCase):
             self.assertFalse(os.path.exists(compressed_archive_path2))
 
     def test_compressed_archive_meta_delete_older_than_num_seconds(self):
-        with mock.patch('devilry.devilry_compressionutil.models.backend_registry.Registry._instance',
-                        self.mock_registry):
-            archivepath1 = 'test1.tar.gz'
-            archivepath2 = 'test2.tar.gz'
+        with mock.patch(
+            "devilry.devilry_compressionutil.models.backend_registry.Registry._instance", self.mock_registry
+        ):
+            archivepath1 = "test1.tar.gz"
+            archivepath2 = "test2.tar.gz"
 
             # Create a testfile
-            testfile_name = 'testfile.txt'
+            testfile_name = "testfile.txt"
             testfile = self.__create_testfile()
 
             # Set up mock backend
@@ -164,13 +168,15 @@ class TestCompressedFileMeta(TestCase):
 
             # Create archive meta
             compressed_archive_meta1 = CompressedArchiveMeta.objects.create_meta(
-                instance=baker.make('devilry_group.GroupComment'),
+                instance=baker.make("devilry_group.GroupComment"),
                 zipfile_backend=mock_backend1,
-                user=baker.make(settings.AUTH_USER_MODEL))
+                user=baker.make(settings.AUTH_USER_MODEL),
+            )
             compressed_archive_meta2 = CompressedArchiveMeta.objects.create_meta(
-                instance=baker.make('devilry_group.GroupComment'),
+                instance=baker.make("devilry_group.GroupComment"),
                 zipfile_backend=mock_backend2,
-                user=baker.make(settings.AUTH_USER_MODEL))
+                user=baker.make(settings.AUTH_USER_MODEL),
+            )
 
             compressed_archive_meta1.created_datetime = timezone.now()
             compressed_archive_meta2.created_datetime = timezone.now() - timezone.timedelta(seconds=10)
@@ -178,8 +184,8 @@ class TestCompressedFileMeta(TestCase):
             compressed_archive_meta2.save()
 
             # Write to backend
-            self.__write_to_backend(backend=mock_backend1, filename='{}'.format(testfile_name), file=testfile)
-            self.__write_to_backend(backend=mock_backend2, filename='{}'.format(testfile_name), file=testfile)
+            self.__write_to_backend(backend=mock_backend1, filename="{}".format(testfile_name), file=testfile)
+            self.__write_to_backend(backend=mock_backend2, filename="{}".format(testfile_name), file=testfile)
 
             compressed_archive_path1 = self.backend_path / compressed_archive_meta1.archive_path
             compressed_archive_path2 = self.backend_path / compressed_archive_meta2.archive_path
@@ -192,13 +198,14 @@ class TestCompressedFileMeta(TestCase):
             self.assertFalse(os.path.exists(compressed_archive_path2))
 
     def test_compressed_archive_meta_delete_archives_marked_as_deleted(self):
-        with mock.patch('devilry.devilry_compressionutil.models.backend_registry.Registry._instance',
-                        self.mock_registry):
-            archivepath1 = 'test1.tar.gz'
-            archivepath2 = 'test2.tar.gz'
+        with mock.patch(
+            "devilry.devilry_compressionutil.models.backend_registry.Registry._instance", self.mock_registry
+        ):
+            archivepath1 = "test1.tar.gz"
+            archivepath2 = "test2.tar.gz"
 
             # Create a testfile
-            testfile_name = 'testfile.txt'
+            testfile_name = "testfile.txt"
             testfile = self.__create_testfile()
 
             # Set up mock backend
@@ -207,13 +214,15 @@ class TestCompressedFileMeta(TestCase):
 
             # Create archive meta
             compressed_archive_meta1 = CompressedArchiveMeta.objects.create_meta(
-                instance=baker.make('devilry_group.GroupComment'),
+                instance=baker.make("devilry_group.GroupComment"),
                 zipfile_backend=mock_backend1,
-                user=baker.make(settings.AUTH_USER_MODEL))
+                user=baker.make(settings.AUTH_USER_MODEL),
+            )
             compressed_archive_meta2 = CompressedArchiveMeta.objects.create_meta(
-                instance=baker.make('devilry_group.GroupComment'),
+                instance=baker.make("devilry_group.GroupComment"),
                 zipfile_backend=mock_backend2,
-                user=baker.make(settings.AUTH_USER_MODEL))
+                user=baker.make(settings.AUTH_USER_MODEL),
+            )
 
             compressed_archive_meta1.created_datetime = timezone.now()
             compressed_archive_meta2.created_datetime = timezone.now()
@@ -222,8 +231,8 @@ class TestCompressedFileMeta(TestCase):
             compressed_archive_meta2.save()
 
             # Write to backend
-            self.__write_to_backend(backend=mock_backend1, filename='{}'.format(testfile_name), file=testfile)
-            self.__write_to_backend(backend=mock_backend2, filename='{}'.format(testfile_name), file=testfile)
+            self.__write_to_backend(backend=mock_backend1, filename="{}".format(testfile_name), file=testfile)
+            self.__write_to_backend(backend=mock_backend2, filename="{}".format(testfile_name), file=testfile)
 
             compressed_archive_path1 = self.backend_path / compressed_archive_meta1.archive_path
             compressed_archive_path2 = self.backend_path / compressed_archive_meta2.archive_path

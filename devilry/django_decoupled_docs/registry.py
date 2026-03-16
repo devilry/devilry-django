@@ -1,7 +1,6 @@
 from django.conf import settings
 
 
-
 class DocProxy(object):
     def __init__(self, **languages):
         self.urls = {}
@@ -18,22 +17,18 @@ class DocProxy(object):
         return self.urls[languagecode]
 
 
-
 class VersionedReadTheDocsDocProxyBase(DocProxy):
     #: The name of the project (the first path of the URL). Must be difined in subclasses.
     projectname = None
 
     def add_for_language(self, languagecode, path):
-        url = 'http://{projectname}.readthedocs.org/{languagecode}/{version}/{path}'.format(
-            projectname=self.projectname,
-            languagecode=languagecode,
-            version=self.get_current_version(),
-            path=path)
+        url = "http://{projectname}.readthedocs.org/{languagecode}/{version}/{path}".format(
+            projectname=self.projectname, languagecode=languagecode, version=self.get_current_version(), path=path
+        )
         super(VersionedReadTheDocsDocProxyBase, self).add_for_language(languagecode, url)
 
     def get_current_version(self):
-        return 'latest'
-
+        return "latest"
 
 
 class DocumentationRegistry(object):
@@ -47,7 +42,7 @@ class DocumentationRegistry(object):
 
     def get(self, documentid, languagecode):
         documenturl = None
-        default_languagecode = getattr(settings, 'DJANGO_DECOUPLED_DOCS_DEFAULT_LANGUAGECODE', 'en')
+        default_languagecode = getattr(settings, "DJANGO_DECOUPLED_DOCS_DEFAULT_LANGUAGECODE", "en")
         for lang in (languagecode, default_languagecode):
             try:
                 documenturl = self._get_document(self._overrides, documentid, lang)

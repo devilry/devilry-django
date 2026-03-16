@@ -6,14 +6,15 @@ class Suggest(object):
     Suggests short and long name by adding 1 to any common
     number suggfixed in the given short and long name.
     """
-    pattern = re.compile(r'^.+?(?P<suffixnumber>\d+)$')
+
+    pattern = re.compile(r"^.+?(?P<suffixnumber>\d+)$")
 
     def __init__(self, long_name, short_name):
         self.long_name = long_name
         self.short_name = short_name
         self.number = self.__find_common_number()
-        self.suggested_short_name = ''
-        self.suggested_long_name = ''
+        self.suggested_short_name = ""
+        self.suggested_long_name = ""
         if self.number is not None:
             self.__suggest_names_from_number()
 
@@ -45,8 +46,8 @@ class Suggest(object):
 
     def __suggest_name_from_number(self, name):
         match = self.pattern.match(name)
-        prefix = name[:match.start(1)]
-        suggested_name = '{}{}'.format(prefix, self.number + 1)
+        prefix = name[: match.start(1)]
+        suggested_name = "{}{}".format(prefix, self.number + 1)
         return suggested_name
 
     def __suggest_names_from_number(self):

@@ -9,6 +9,7 @@ class PeriodResultSetCollector(PeriodResultsCollector):
     """
     A subset or proper subset of assignments are evaluated for the period.
     """
+
     def __init__(self, custom_min_passing_score=None, *args, **kwargs):
         """
         Args:

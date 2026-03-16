@@ -17,142 +17,141 @@ class TestSelectMethodView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = bulk_organize.SelectMethodView
 
     def test_title(self):
-        testassignment = baker.make('core.Assignment', long_name='Test Assignment')
+        testassignment = baker.make("core.Assignment", long_name="Test Assignment")
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertIn(
-            'How would you like to bulk-organize your examiners?',
-            mockresponse.selector.one('title').alltext_normalized)
+            "How would you like to bulk-organize your examiners?", mockresponse.selector.one("title").alltext_normalized
+        )
 
     def test_h1(self):
-        testassignment = baker.make('core.Assignment', long_name='Test Assignment')
+        testassignment = baker.make("core.Assignment", long_name="Test Assignment")
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
-            'How would you like to bulk-organize your examiners?',
-            mockresponse.selector.one('h1').alltext_normalized)
+            "How would you like to bulk-organize your examiners?", mockresponse.selector.one("h1").alltext_normalized
+        )
 
     def test_header_backlink_url(self):
-        testassignment = baker.make('core.Assignment', long_name='Test Assignment')
+        testassignment = baker.make("core.Assignment", long_name="Test Assignment")
         mock_cradmin_instance = mock.MagicMock()
 
         def mock_reverse_url(appname, viewname, **kwargs):
-            return '/{}/{}'.format(appname, viewname)
+            return "/{}/{}".format(appname, viewname)
 
         mock_cradmin_instance.reverse_url = mock_reverse_url
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
-                                                          cradmin_instance=mock_cradmin_instance)
-        self.assertEqual(
-            '/examineroverview/INDEX',
-            mockresponse.selector.one('.devilry-page-header-backlink')['href'])
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment, cradmin_instance=mock_cradmin_instance
+        )
+        self.assertEqual("/examineroverview/INDEX", mockresponse.selector.one(".devilry-page-header-backlink")["href"])
 
     def test_buttons_sanity(self):
-        testassignment = baker.make('core.Assignment')
-        baker.make('core.RelatedExaminer', period=testassignment.period)
+        testassignment = baker.make("core.Assignment")
+        baker.make("core.RelatedExaminer", period=testassignment.period)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
-            3,
-            mockresponse.selector.count(
-                '#devilry_admin_assignment_examiners_bulk_organize_buttons .btn'))
+            3, mockresponse.selector.count("#devilry_admin_assignment_examiners_bulk_organize_buttons .btn")
+        )
 
     def test_buttonbar_random_link(self):
-        testassignment = baker.make('core.Assignment')
-        baker.make('core.RelatedExaminer', period=testassignment.period)
+        testassignment = baker.make("core.Assignment")
+        baker.make("core.RelatedExaminer", period=testassignment.period)
         mock_cradmin_app = mock.MagicMock()
 
         def mock_reverse_url(viewname, *args, **kwargs):
-            return '/{}'.format(viewname)
+            return "/{}".format(viewname)
 
         mock_cradmin_app.reverse_appurl = mock_reverse_url
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_app=mock_cradmin_app)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, cradmin_app=mock_cradmin_app)
         self.assertEqual(
-            '/random',
-            mockresponse.selector
-            .one('#devilry_admin_assignment_examiners_bulk_organize_button_random')['href'])
+            "/random",
+            mockresponse.selector.one("#devilry_admin_assignment_examiners_bulk_organize_button_random")["href"],
+        )
 
     def test_buttonbar_random_text(self):
-        testassignment = baker.make('core.Assignment')
-        baker.make('core.RelatedExaminer', period=testassignment.period)
+        testassignment = baker.make("core.Assignment")
+        baker.make("core.RelatedExaminer", period=testassignment.period)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
-            'Organize examiners randomly( Select students and '
-            'randomly assign two or more examiners to those students )',
-            mockresponse.selector
-            .one('#devilry_admin_assignment_examiners_bulk_organize_button_random')
-            .alltext_normalized)
+            "Organize examiners randomly( Select students and "
+            "randomly assign two or more examiners to those students )",
+            mockresponse.selector.one(
+                "#devilry_admin_assignment_examiners_bulk_organize_button_random"
+            ).alltext_normalized,
+        )
 
     def test_buttonbar_manual_add_link(self):
-        testassignment = baker.make('core.Assignment')
-        baker.make('core.RelatedExaminer', period=testassignment.period)
+        testassignment = baker.make("core.Assignment")
+        baker.make("core.RelatedExaminer", period=testassignment.period)
         mock_cradmin_app = mock.MagicMock()
 
         def mock_reverse_url(viewname, *args, **kwargs):
-            return '/{}'.format(viewname)
+            return "/{}".format(viewname)
 
         mock_cradmin_app.reverse_appurl = mock_reverse_url
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_app=mock_cradmin_app)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, cradmin_app=mock_cradmin_app)
         self.assertEqual(
-            '/manual-add',
-            mockresponse.selector
-            .one('#devilry_admin_assignment_examiners_bulk_organize_button_manual_add')['href'])
+            "/manual-add",
+            mockresponse.selector.one("#devilry_admin_assignment_examiners_bulk_organize_button_manual_add")["href"],
+        )
 
     def test_buttonbar_manual_add_text(self):
-        testassignment = baker.make('core.Assignment')
-        baker.make('core.RelatedExaminer', period=testassignment.period)
+        testassignment = baker.make("core.Assignment")
+        baker.make("core.RelatedExaminer", period=testassignment.period)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
-            'Manually add examiners( Select students and add examiners to those students )',
-            mockresponse.selector
-            .one('#devilry_admin_assignment_examiners_bulk_organize_button_manual_add')
-            .alltext_normalized)
+            "Manually add examiners( Select students and add examiners to those students )",
+            mockresponse.selector.one(
+                "#devilry_admin_assignment_examiners_bulk_organize_button_manual_add"
+            ).alltext_normalized,
+        )
 
     def test_buttonbar_manual_replace_link(self):
-        testassignment = baker.make('core.Assignment')
-        baker.make('core.RelatedExaminer', period=testassignment.period)
+        testassignment = baker.make("core.Assignment")
+        baker.make("core.RelatedExaminer", period=testassignment.period)
         mock_cradmin_app = mock.MagicMock()
 
         def mock_reverse_url(viewname, *args, **kwargs):
-            return '/{}'.format(viewname)
+            return "/{}".format(viewname)
 
         mock_cradmin_app.reverse_appurl = mock_reverse_url
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_app=mock_cradmin_app)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, cradmin_app=mock_cradmin_app)
         self.assertEqual(
-            '/manual-replace',
-            mockresponse.selector
-            .one('#devilry_admin_assignment_examiners_bulk_organize_button_manual_replace')['href'])
+            "/manual-replace",
+            mockresponse.selector.one("#devilry_admin_assignment_examiners_bulk_organize_button_manual_replace")[
+                "href"
+            ],
+        )
 
     def test_buttonbar_manual_replace_text(self):
-        testassignment = baker.make('core.Assignment')
-        baker.make('core.RelatedExaminer', period=testassignment.period)
+        testassignment = baker.make("core.Assignment")
+        baker.make("core.RelatedExaminer", period=testassignment.period)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
-            'Manually replace examiners( Select students and replace examiners for those students )',
-            mockresponse.selector
-            .one('#devilry_admin_assignment_examiners_bulk_organize_button_manual_replace')
-            .alltext_normalized)
+            "Manually replace examiners( Select students and replace examiners for those students )",
+            mockresponse.selector.one(
+                "#devilry_admin_assignment_examiners_bulk_organize_button_manual_replace"
+            ).alltext_normalized,
+        )
 
     def test_students_without_examiners_warning(self):
-        testassignment = baker.make('core.Assignment')
-        baker.make('core.Candidate', assignment_group__parentnode=testassignment)
-        baker.make('core.RelatedExaminer', period=testassignment.period)
+        testassignment = baker.make("core.Assignment")
+        baker.make("core.Candidate", assignment_group__parentnode=testassignment)
+        baker.make("core.RelatedExaminer", period=testassignment.period)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
-        self.assertTrue(mockresponse.selector.exists('#id_devilry_admin_assignment_bulk_organize_examiner'))
+        self.assertTrue(mockresponse.selector.exists("#id_devilry_admin_assignment_bulk_organize_examiner"))
         self.assertEqual(
-            mockresponse.selector.one('#id_devilry_admin_assignment_bulk_organize_examiner').alltext_normalized,
-            'warning: There are still students on the assignment with no examiners assigned to them')
+            mockresponse.selector.one("#id_devilry_admin_assignment_bulk_organize_examiner").alltext_normalized,
+            "warning: There are still students on the assignment with no examiners assigned to them",
+        )
 
     def test_students_all_students_are_assigned_examiners_warning_not_rendered(self):
-        testassignment = baker.make('core.Assignment')
-        assignment_group = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Candidate', assignment_group=assignment_group)
-        baker.make('core.Examiner', related_examiner__period=testassignment.parentnode,
-                   assignmentgroup=assignment_group)
+        testassignment = baker.make("core.Assignment")
+        assignment_group = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Candidate", assignment_group=assignment_group)
+        baker.make(
+            "core.Examiner", related_examiner__period=testassignment.parentnode, assignmentgroup=assignment_group
+        )
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
-        self.assertFalse(mockresponse.selector.exists('#id_devilry_admin_assignment_bulk_organize_examiner'))
+        self.assertFalse(mockresponse.selector.exists("#id_devilry_admin_assignment_bulk_organize_examiner"))
 
 
 class TestRandomView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -161,6 +160,7 @@ class TestRandomView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     test_groupview_base.test_groupviewmixin.TestGroupViewMixin
     and test_basemultiselectview.TestBaseMultiselectView.
     """
+
     viewclass = bulk_organize.RandomView
 
     def __mockinstance_with_devilryrole(self, devilryrole):
@@ -169,247 +169,256 @@ class TestRandomView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         return mockinstance
 
     def test_title(self):
-        testassignment = baker.make('core.Assignment')
+        testassignment = baker.make("core.Assignment")
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
-        self.assertIn(
-            'Organize examiners randomly',
-            mockresponse.selector.one('title').alltext_normalized)
+            cradmin_role=testassignment, cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin")
+        )
+        self.assertIn("Organize examiners randomly", mockresponse.selector.one("title").alltext_normalized)
 
     def test_h1(self):
-        testassignment = baker.make('core.Assignment')
+        testassignment = baker.make("core.Assignment")
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
-        self.assertEqual(
-            'Organize examiners randomly',
-            mockresponse.selector.one('h1').alltext_normalized)
+            cradmin_role=testassignment, cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin")
+        )
+        self.assertEqual("Organize examiners randomly", mockresponse.selector.one("h1").alltext_normalized)
 
     def test_groups_sanity(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        baker.make('core.AssignmentGroup', parentnode=testassignment, _quantity=3)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        baker.make("core.AssignmentGroup", parentnode=testassignment, _quantity=3)
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
-        self.assertEqual(
-            3,
-            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
+            cradmin_role=testassignment, cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin")
+        )
+        self.assertEqual(3, mockresponse.selector.count(".cradmin-legacy-listbuilder-itemvalue"))
 
     def test_submit_button_text(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
+            cradmin_role=testassignment, cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin")
+        )
         self.assertEqual(
-            'Randomly assign selected students to selected examiners',
-            mockresponse.selector.one('.cradmin-legacy-multiselect2-target-formfields .btn').alltext_normalized)
+            "Randomly assign selected students to selected examiners",
+            mockresponse.selector.one(".cradmin-legacy-multiselect2-target-formfields .btn").alltext_normalized,
+        )
 
     def test_target_with_selected_items_title(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
+            cradmin_role=testassignment, cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin")
+        )
         self.assertEqual(
-            'Select at least two students:',
-            mockresponse.selector.one('.cradmin-legacy-multiselect2-target-title').alltext_normalized)
+            "Select at least two students:",
+            mockresponse.selector.one(".cradmin-legacy-multiselect2-target-title").alltext_normalized,
+        )
 
     def test_target_examiners_title(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
+            cradmin_role=testassignment, cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin")
+        )
         self.assertEqual(
-            'Select at least two examiners:',
-            mockresponse.selector.one('#div_id_selected_relatedexaminers .control-label ').alltext_normalized)
+            "Select at least two examiners:",
+            mockresponse.selector.one("#div_id_selected_relatedexaminers .control-label ").alltext_normalized,
+        )
 
     def test_target_examiners_values(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        relatedexaminer1 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        relatedexaminer2 = baker.make('core.RelatedExaminer', period=testassignment.period)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        relatedexaminer1 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        relatedexaminer2 = baker.make("core.RelatedExaminer", period=testassignment.period)
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
-        values = [element['value']
-                  for element in mockresponse.selector.list('input[name="selected_relatedexaminers"]')]
-        self.assertEqual(
-            {str(relatedexaminer1.id), str(relatedexaminer2.id)},
-            set(values))
+            cradmin_role=testassignment, cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin")
+        )
+        values = [element["value"] for element in mockresponse.selector.list('input[name="selected_relatedexaminers"]')]
+        self.assertEqual({str(relatedexaminer1.id), str(relatedexaminer2.id)}, set(values))
 
     def test_target_examiners_only_from_period(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        relatedexaminer1 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        relatedexaminer2 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        baker.make('core.RelatedExaminer')  # Not in the same period as testassignment
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        relatedexaminer1 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        relatedexaminer2 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        baker.make("core.RelatedExaminer")  # Not in the same period as testassignment
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
-        values = [element['value']
-                  for element in mockresponse.selector.list('input[name="selected_relatedexaminers"]')]
-        self.assertEqual(
-            {str(relatedexaminer1.id), str(relatedexaminer2.id)},
-            set(values))
+            cradmin_role=testassignment, cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin")
+        )
+        values = [element["value"] for element in mockresponse.selector.list('input[name="selected_relatedexaminers"]')]
+        self.assertEqual({str(relatedexaminer1.id), str(relatedexaminer2.id)}, set(values))
 
     def test_target_examiners_labels(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        baker.make('core.RelatedExaminer', period=testassignment.period,
-                   user__fullname='Examiner One')
-        baker.make('core.RelatedExaminer', period=testassignment.period,
-                   user__shortname='examiner2')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        baker.make("core.RelatedExaminer", period=testassignment.period, user__fullname="Examiner One")
+        baker.make("core.RelatedExaminer", period=testassignment.period, user__shortname="examiner2")
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
+            cradmin_role=testassignment, cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin")
+        )
         labels = [
             element.alltext_normalized
-            for element in mockresponse.selector.list(
-                '#div_id_selected_relatedexaminers .checkbox label')]
-        self.assertEqual(
-            {'Examiner One', 'examiner2'},
-            set(labels))
+            for element in mockresponse.selector.list("#div_id_selected_relatedexaminers .checkbox label")
+        ]
+        self.assertEqual({"Examiner One", "examiner2"}, set(labels))
 
     def test_post_ok(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        relatedexaminer1 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        relatedexaminer2 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        relatedexaminer1 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        relatedexaminer2 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
         self.assertEqual(0, Examiner.objects.count())
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
             requestkwargs={
-                'data': {
-                    'selected_items': [str(testgroup1.id), str(testgroup2.id)],
-                    'selected_relatedexaminers': [str(relatedexaminer1.id), str(relatedexaminer2.id)],
+                "data": {
+                    "selected_items": [str(testgroup1.id), str(testgroup2.id)],
+                    "selected_relatedexaminers": [str(relatedexaminer1.id), str(relatedexaminer2.id)],
                 }
-            })
+            },
+        )
         self.assertEqual(2, Examiner.objects.count())
 
     def test_post_clears_existing(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        relatedexaminer1 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        relatedexaminer2 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        relatedexaminer3 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', relatedexaminer=relatedexaminer3,
-                   assignmentgroup=testgroup1)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        relatedexaminer1 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        relatedexaminer2 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        relatedexaminer3 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", relatedexaminer=relatedexaminer3, assignmentgroup=testgroup1)
         self.assertEqual(1, Examiner.objects.count())
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
             requestkwargs={
-                'data': {
-                    'selected_items': [str(testgroup1.id), str(testgroup2.id)],
-                    'selected_relatedexaminers': [str(relatedexaminer1.id), str(relatedexaminer2.id)],
+                "data": {
+                    "selected_items": [str(testgroup1.id), str(testgroup2.id)],
+                    "selected_relatedexaminers": [str(relatedexaminer1.id), str(relatedexaminer2.id)],
                 }
-            })
+            },
+        )
         self.assertEqual(2, Examiner.objects.count())
         self.assertFalse(Examiner.objects.filter(relatedexaminer=relatedexaminer3).exists())
 
     def test_post_evenly_distributed(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        relatedexaminer1 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        relatedexaminer2 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        relatedexaminer3 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup4 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup5 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup6 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup7 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup8 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        relatedexaminer1 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        relatedexaminer2 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        relatedexaminer3 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup3 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup4 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup5 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup6 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup7 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup8 = baker.make("core.AssignmentGroup", parentnode=testassignment)
         for index in range(30):
             self.mock_http302_postrequest(
                 cradmin_role=testassignment,
-                cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+                cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
                 requestkwargs={
-                    'data': {
-                        'selected_items': [str(testgroup1.id), str(testgroup2.id),
-                                           str(testgroup3.id), str(testgroup4.id),
-                                           str(testgroup5.id), str(testgroup5.id),
-                                           str(testgroup6.id), str(testgroup7.id),
-                                           str(testgroup8.id)],
-                        'selected_relatedexaminers': [str(relatedexaminer1.id),
-                                                      str(relatedexaminer2.id),
-                                                      str(relatedexaminer3.id)],
+                    "data": {
+                        "selected_items": [
+                            str(testgroup1.id),
+                            str(testgroup2.id),
+                            str(testgroup3.id),
+                            str(testgroup4.id),
+                            str(testgroup5.id),
+                            str(testgroup5.id),
+                            str(testgroup6.id),
+                            str(testgroup7.id),
+                            str(testgroup8.id),
+                        ],
+                        "selected_relatedexaminers": [
+                            str(relatedexaminer1.id),
+                            str(relatedexaminer2.id),
+                            str(relatedexaminer3.id),
+                        ],
                     }
-                })
+                },
+            )
             count_examiner1 = relatedexaminer1.examiner_set.count()
             count_examiner2 = relatedexaminer2.examiner_set.count()
             count_examiner3 = relatedexaminer3.examiner_set.count()
             self.assertTrue(
-                (count_examiner1 == 2 and count_examiner2 == 3 and count_examiner3 == 3) or
-                (count_examiner1 == 3 and count_examiner2 == 2 and count_examiner3 == 3) or
-                (count_examiner1 == 3 and count_examiner2 == 3 and count_examiner3 == 2)
+                (count_examiner1 == 2 and count_examiner2 == 3 and count_examiner3 == 3)
+                or (count_examiner1 == 3 and count_examiner2 == 2 and count_examiner3 == 3)
+                or (count_examiner1 == 3 and count_examiner2 == 3 and count_examiner3 == 2)
             )
 
     def test_post_evenly_distributed_symmetrical(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        relatedexaminer1 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        relatedexaminer2 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        relatedexaminer3 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup4 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup5 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup6 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup7 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup8 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup9 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        relatedexaminer1 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        relatedexaminer2 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        relatedexaminer3 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup3 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup4 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup5 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup6 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup7 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup8 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup9 = baker.make("core.AssignmentGroup", parentnode=testassignment)
         for index in range(30):
             self.mock_http302_postrequest(
                 cradmin_role=testassignment,
-                cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+                cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
                 requestkwargs={
-                    'data': {
-                        'selected_items': [str(testgroup1.id), str(testgroup2.id),
-                                           str(testgroup3.id), str(testgroup4.id),
-                                           str(testgroup5.id), str(testgroup5.id),
-                                           str(testgroup6.id), str(testgroup7.id),
-                                           str(testgroup8.id), str(testgroup9.id)],
-                        'selected_relatedexaminers': [str(relatedexaminer1.id),
-                                                      str(relatedexaminer2.id),
-                                                      str(relatedexaminer3.id)],
+                    "data": {
+                        "selected_items": [
+                            str(testgroup1.id),
+                            str(testgroup2.id),
+                            str(testgroup3.id),
+                            str(testgroup4.id),
+                            str(testgroup5.id),
+                            str(testgroup5.id),
+                            str(testgroup6.id),
+                            str(testgroup7.id),
+                            str(testgroup8.id),
+                            str(testgroup9.id),
+                        ],
+                        "selected_relatedexaminers": [
+                            str(relatedexaminer1.id),
+                            str(relatedexaminer2.id),
+                            str(relatedexaminer3.id),
+                        ],
                     }
-                })
+                },
+            )
             self.assertEqual(relatedexaminer1.examiner_set.count(), 3)
             self.assertEqual(relatedexaminer2.examiner_set.count(), 3)
             self.assertEqual(relatedexaminer3.examiner_set.count(), 3)
 
     def test_post_evenly_distributed_more_groups_than_examiners(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        relatedexaminer1 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        relatedexaminer2 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        relatedexaminer3 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        relatedexaminer4 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        relatedexaminer5 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        relatedexaminer6 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        relatedexaminer7 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        relatedexaminer8 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        relatedexaminer1 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        relatedexaminer2 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        relatedexaminer3 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        relatedexaminer4 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        relatedexaminer5 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        relatedexaminer6 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        relatedexaminer7 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        relatedexaminer8 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup3 = baker.make("core.AssignmentGroup", parentnode=testassignment)
         for index in range(30):
             self.mock_http302_postrequest(
                 cradmin_role=testassignment,
-                cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+                cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
                 requestkwargs={
-                    'data': {
-                        'selected_items': [str(testgroup1.id), str(testgroup2.id),
-                                           str(testgroup3.id)],
-                        'selected_relatedexaminers': [str(relatedexaminer1.id),
-                                                      str(relatedexaminer2.id),
-                                                      str(relatedexaminer3.id),
-                                                      str(relatedexaminer4.id),
-                                                      str(relatedexaminer5.id),
-                                                      str(relatedexaminer6.id),
-                                                      str(relatedexaminer7.id),
-                                                      str(relatedexaminer8.id)],
+                    "data": {
+                        "selected_items": [str(testgroup1.id), str(testgroup2.id), str(testgroup3.id)],
+                        "selected_relatedexaminers": [
+                            str(relatedexaminer1.id),
+                            str(relatedexaminer2.id),
+                            str(relatedexaminer3.id),
+                            str(relatedexaminer4.id),
+                            str(relatedexaminer5.id),
+                            str(relatedexaminer6.id),
+                            str(relatedexaminer7.id),
+                            str(relatedexaminer8.id),
+                        ],
                     }
-                })
+                },
+            )
             count_examiner1 = relatedexaminer1.examiner_set.count()
             count_examiner2 = relatedexaminer2.examiner_set.count()
             count_examiner3 = relatedexaminer3.examiner_set.count()
@@ -419,63 +428,61 @@ class TestRandomView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             count_examiner7 = relatedexaminer3.examiner_set.count()
             count_examiner8 = relatedexaminer3.examiner_set.count()
             self.assertTrue(
-                (count_examiner1 == 0 or count_examiner1 == 1) and
-                (count_examiner2 == 0 or count_examiner2 == 1) and
-                (count_examiner3 == 0 or count_examiner3 == 1) and
-                (count_examiner4 == 0 or count_examiner4 == 1) and
-                (count_examiner5 == 0 or count_examiner5 == 1) and
-                (count_examiner6 == 0 or count_examiner6 == 1) and
-                (count_examiner7 == 0 or count_examiner7 == 1) and
-                (count_examiner8 == 0 or count_examiner8 == 1)
+                (count_examiner1 == 0 or count_examiner1 == 1)
+                and (count_examiner2 == 0 or count_examiner2 == 1)
+                and (count_examiner3 == 0 or count_examiner3 == 1)
+                and (count_examiner4 == 0 or count_examiner4 == 1)
+                and (count_examiner5 == 0 or count_examiner5 == 1)
+                and (count_examiner6 == 0 or count_examiner6 == 1)
+                and (count_examiner7 == 0 or count_examiner7 == 1)
+                and (count_examiner8 == 0 or count_examiner8 == 1)
             )
 
-
-
     def test_post_less_than_two_examiners(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        relatedexaminer1 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        relatedexaminer1 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
         messagesmock = mock.MagicMock()
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=testassignment,
             messagesmock=messagesmock,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
             requestkwargs={
-                'data': {
-                    'selected_items': [str(testgroup1.id), str(testgroup2.id)],
-                    'selected_relatedexaminers': [str(relatedexaminer1.id)],
+                "data": {
+                    "selected_items": [str(testgroup1.id), str(testgroup2.id)],
+                    "selected_relatedexaminers": [str(relatedexaminer1.id)],
                 }
-            })
+            },
+        )
         self.assertEqual(
-                bulk_organize.RandomOrganizeForm.selected_relatedexaminers_invalid_choice_message,
-                mockresponse.selector.one(
-                        '#div_id_selected_relatedexaminers.has-error .help-block').alltext_normalized)
-        messagesmock.add.assert_called_once_with(
-            messages.ERROR,
             bulk_organize.RandomOrganizeForm.selected_relatedexaminers_invalid_choice_message,
-            '')
+            mockresponse.selector.one("#div_id_selected_relatedexaminers.has-error .help-block").alltext_normalized,
+        )
+        messagesmock.add.assert_called_once_with(
+            messages.ERROR, bulk_organize.RandomOrganizeForm.selected_relatedexaminers_invalid_choice_message, ""
+        )
 
     def test_post_invalid_groups(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        relatedexaminer1 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        relatedexaminer2 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        testgroup1 = baker.make('core.AssignmentGroup')  # Not within the assignment
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        relatedexaminer1 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        relatedexaminer2 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        testgroup1 = baker.make("core.AssignmentGroup")  # Not within the assignment
         messagesmock = mock.MagicMock()
         self.mock_http200_postrequest_htmls(
             cradmin_role=testassignment,
             messagesmock=messagesmock,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
             requestkwargs={
-                'data': {
-                    'selected_items': [str(testgroup1.id)],
-                    'selected_relatedexaminers': [str(relatedexaminer1.id), str(relatedexaminer2.id)],
+                "data": {
+                    "selected_items": [str(testgroup1.id)],
+                    "selected_relatedexaminers": [str(relatedexaminer1.id), str(relatedexaminer2.id)],
                 }
-            })
+            },
+        )
         messagesmock.add.assert_called_once_with(
-            messages.ERROR,
-            bulk_organize.RandomOrganizeForm.invalid_students_selected_message,
-            '')
+            messages.ERROR, bulk_organize.RandomOrganizeForm.invalid_students_selected_message, ""
+        )
 
 
 class TestManualAddView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -484,6 +491,7 @@ class TestManualAddView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     test_groupview_base.test_groupviewmixin.TestGroupViewMixin
     and test_basemultiselectview.TestBaseMultiselectView.
     """
+
     viewclass = bulk_organize.ManualAddView
 
     def __mockinstance_with_devilryrole(self, devilryrole):
@@ -492,210 +500,200 @@ class TestManualAddView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         return mockinstance
 
     def test_title(self):
-        testassignment = baker.make('core.Assignment')
+        testassignment = baker.make("core.Assignment")
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
-        self.assertIn(
-            'Manually add examiners',
-            mockresponse.selector.one('title').alltext_normalized)
+            cradmin_role=testassignment, cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin")
+        )
+        self.assertIn("Manually add examiners", mockresponse.selector.one("title").alltext_normalized)
 
     def test_h1(self):
-        testassignment = baker.make('core.Assignment')
+        testassignment = baker.make("core.Assignment")
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
-        self.assertEqual(
-            'Manually add examiners',
-            mockresponse.selector.one('h1').alltext_normalized)
+            cradmin_role=testassignment, cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin")
+        )
+        self.assertEqual("Manually add examiners", mockresponse.selector.one("h1").alltext_normalized)
 
     def test_groups_sanity(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        baker.make('core.AssignmentGroup', parentnode=testassignment, _quantity=3)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        baker.make("core.AssignmentGroup", parentnode=testassignment, _quantity=3)
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
-        self.assertEqual(
-            3,
-            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
+            cradmin_role=testassignment, cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin")
+        )
+        self.assertEqual(3, mockresponse.selector.count(".cradmin-legacy-listbuilder-itemvalue"))
 
     def test_submit_button_text(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
+            cradmin_role=testassignment, cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin")
+        )
         self.assertEqual(
-            'Add selected examiners to selected students',
-            mockresponse.selector.one('.cradmin-legacy-multiselect2-target-formfields .btn').alltext_normalized)
+            "Add selected examiners to selected students",
+            mockresponse.selector.one(".cradmin-legacy-multiselect2-target-formfields .btn").alltext_normalized,
+        )
 
     def test_target_with_selected_items_title(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
+            cradmin_role=testassignment, cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin")
+        )
         self.assertEqual(
-            'Selected students:',
-            mockresponse.selector.one('.cradmin-legacy-multiselect2-target-title').alltext_normalized)
+            "Selected students:",
+            mockresponse.selector.one(".cradmin-legacy-multiselect2-target-title").alltext_normalized,
+        )
 
     def test_target_examiners_title(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
+            cradmin_role=testassignment, cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin")
+        )
         self.assertEqual(
-            'Select examiners:*',
-            mockresponse.selector.one('#div_id_selected_relatedexaminers .control-label ').alltext_normalized)
+            "Select examiners:*",
+            mockresponse.selector.one("#div_id_selected_relatedexaminers .control-label ").alltext_normalized,
+        )
 
     def test_target_examiners_values(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        relatedexaminer1 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        relatedexaminer2 = baker.make('core.RelatedExaminer', period=testassignment.period)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        relatedexaminer1 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        relatedexaminer2 = baker.make("core.RelatedExaminer", period=testassignment.period)
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
-        values = [element['value']
-                  for element in mockresponse.selector.list('input[name="selected_relatedexaminers"]')]
-        self.assertEqual(
-            {str(relatedexaminer1.id), str(relatedexaminer2.id)},
-            set(values))
+            cradmin_role=testassignment, cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin")
+        )
+        values = [element["value"] for element in mockresponse.selector.list('input[name="selected_relatedexaminers"]')]
+        self.assertEqual({str(relatedexaminer1.id), str(relatedexaminer2.id)}, set(values))
 
     def test_target_examiners_only_from_period(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        relatedexaminer1 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        relatedexaminer2 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        baker.make('core.RelatedExaminer')  # Not in the same period as testassignment
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        relatedexaminer1 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        relatedexaminer2 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        baker.make("core.RelatedExaminer")  # Not in the same period as testassignment
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
-        values = [element['value']
-                  for element in mockresponse.selector.list('input[name="selected_relatedexaminers"]')]
-        self.assertEqual(
-            {str(relatedexaminer1.id), str(relatedexaminer2.id)},
-            set(values))
+            cradmin_role=testassignment, cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin")
+        )
+        values = [element["value"] for element in mockresponse.selector.list('input[name="selected_relatedexaminers"]')]
+        self.assertEqual({str(relatedexaminer1.id), str(relatedexaminer2.id)}, set(values))
 
     def test_target_examiners_labels(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        baker.make('core.RelatedExaminer', period=testassignment.period,
-                   user__fullname='Examiner One')
-        baker.make('core.RelatedExaminer', period=testassignment.period,
-                   user__shortname='examiner2')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        baker.make("core.RelatedExaminer", period=testassignment.period, user__fullname="Examiner One")
+        baker.make("core.RelatedExaminer", period=testassignment.period, user__shortname="examiner2")
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
+            cradmin_role=testassignment, cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin")
+        )
         labels = [
             element.alltext_normalized
-            for element in mockresponse.selector.list(
-                '#div_id_selected_relatedexaminers .checkbox label')]
-        self.assertEqual(
-            {'Examiner One', 'examiner2'},
-            set(labels))
+            for element in mockresponse.selector.list("#div_id_selected_relatedexaminers .checkbox label")
+        ]
+        self.assertEqual({"Examiner One", "examiner2"}, set(labels))
 
     def test_post_ok(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        relatedexaminer1 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        relatedexaminer2 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        relatedexaminer1 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        relatedexaminer2 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
         self.assertEqual(0, Examiner.objects.count())
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
             requestkwargs={
-                'data': {
-                    'selected_items': [str(testgroup1.id), str(testgroup2.id)],
-                    'selected_relatedexaminers': [str(relatedexaminer1.id), str(relatedexaminer2.id)],
+                "data": {
+                    "selected_items": [str(testgroup1.id), str(testgroup2.id)],
+                    "selected_relatedexaminers": [str(relatedexaminer1.id), str(relatedexaminer2.id)],
                 }
-            })
-        self.assertEqual({relatedexaminer1, relatedexaminer2},
-                         {examiner.relatedexaminer for examiner in testgroup1.examiners.all()})
-        self.assertEqual({relatedexaminer1, relatedexaminer2},
-                         {examiner.relatedexaminer for examiner in testgroup2.examiners.all()})
+            },
+        )
+        self.assertEqual(
+            {relatedexaminer1, relatedexaminer2}, {examiner.relatedexaminer for examiner in testgroup1.examiners.all()}
+        )
+        self.assertEqual(
+            {relatedexaminer1, relatedexaminer2}, {examiner.relatedexaminer for examiner in testgroup2.examiners.all()}
+        )
         self.assertEqual(4, Examiner.objects.count())
 
     def test_post_adds_to_existing(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        relatedexaminer1 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        relatedexaminer2 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', relatedexaminer=relatedexaminer2,
-                   assignmentgroup=testgroup)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        relatedexaminer1 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        relatedexaminer2 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", relatedexaminer=relatedexaminer2, assignmentgroup=testgroup)
         self.assertEqual(1, Examiner.objects.count())
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
             requestkwargs={
-                'data': {
-                    'selected_items': [str(testgroup.id)],
-                    'selected_relatedexaminers': [str(relatedexaminer1.id)],
+                "data": {
+                    "selected_items": [str(testgroup.id)],
+                    "selected_relatedexaminers": [str(relatedexaminer1.id)],
                 }
-            })
-        self.assertEqual({relatedexaminer1, relatedexaminer2},
-                         {examiner.relatedexaminer for examiner in testgroup.examiners.all()})
+            },
+        )
+        self.assertEqual(
+            {relatedexaminer1, relatedexaminer2}, {examiner.relatedexaminer for examiner in testgroup.examiners.all()}
+        )
         self.assertEqual(2, Examiner.objects.count())
 
     def test_post_does_not_add_duplicates(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        relatedexaminer1 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', relatedexaminer=relatedexaminer1,
-                   assignmentgroup=testgroup)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        relatedexaminer1 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", relatedexaminer=relatedexaminer1, assignmentgroup=testgroup)
         self.assertEqual(1, Examiner.objects.count())
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
             requestkwargs={
-                'data': {
-                    'selected_items': [str(testgroup.id)],
-                    'selected_relatedexaminers': [str(relatedexaminer1.id)],
+                "data": {
+                    "selected_items": [str(testgroup.id)],
+                    "selected_relatedexaminers": [str(relatedexaminer1.id)],
                 }
-            })
-        self.assertEqual({relatedexaminer1},
-                         {examiner.relatedexaminer for examiner in testgroup.examiners.all()})
+            },
+        )
+        self.assertEqual({relatedexaminer1}, {examiner.relatedexaminer for examiner in testgroup.examiners.all()})
         self.assertEqual(1, Examiner.objects.count())
 
     def test_post_no_examiners_selected(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         messagesmock = mock.MagicMock()
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=testassignment,
             messagesmock=messagesmock,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
             requestkwargs={
-                'data': {
-                    'selected_items': [str(testgroup.id)],
-                    'selected_relatedexaminers': [],
+                "data": {
+                    "selected_items": [str(testgroup.id)],
+                    "selected_relatedexaminers": [],
                 }
-            })
+            },
+        )
         self.assertEqual(
-                bulk_organize.ManualAddOrReplaceExaminersForm.selected_relatedexaminers_required_message,
-                mockresponse.selector.one(
-                        '#div_id_selected_relatedexaminers.has-error .help-block').alltext_normalized)
-        messagesmock.add.assert_called_once_with(
-            messages.ERROR,
             bulk_organize.ManualAddOrReplaceExaminersForm.selected_relatedexaminers_required_message,
-            '')
+            mockresponse.selector.one("#div_id_selected_relatedexaminers.has-error .help-block").alltext_normalized,
+        )
+        messagesmock.add.assert_called_once_with(
+            messages.ERROR, bulk_organize.ManualAddOrReplaceExaminersForm.selected_relatedexaminers_required_message, ""
+        )
 
     def test_post_invalid_groups(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        relatedexaminer1 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        relatedexaminer2 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        testgroup1 = baker.make('core.AssignmentGroup')  # Not within the assignment
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        relatedexaminer1 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        relatedexaminer2 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        testgroup1 = baker.make("core.AssignmentGroup")  # Not within the assignment
         messagesmock = mock.MagicMock()
         self.mock_http200_postrequest_htmls(
             cradmin_role=testassignment,
             messagesmock=messagesmock,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
             requestkwargs={
-                'data': {
-                    'selected_items': [str(testgroup1.id)],
-                    'selected_relatedexaminers': [str(relatedexaminer1.id), str(relatedexaminer2.id)],
+                "data": {
+                    "selected_items": [str(testgroup1.id)],
+                    "selected_relatedexaminers": [str(relatedexaminer1.id), str(relatedexaminer2.id)],
                 }
-            })
+            },
+        )
         messagesmock.add.assert_called_once_with(
-            messages.ERROR,
-            bulk_organize.ManualAddOrReplaceExaminersForm.invalid_students_selected_message,
-            '')
+            messages.ERROR, bulk_organize.ManualAddOrReplaceExaminersForm.invalid_students_selected_message, ""
+        )
 
 
 class TestManualReplaceView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -704,6 +702,7 @@ class TestManualReplaceView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     test_groupview_base.test_groupviewmixin.TestGroupViewMixin
     and test_basemultiselectview.TestBaseMultiselectView.
     """
+
     viewclass = bulk_organize.ManualReplaceView
 
     def __mockinstance_with_devilryrole(self, devilryrole):
@@ -712,195 +711,183 @@ class TestManualReplaceView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         return mockinstance
 
     def test_title(self):
-        testassignment = baker.make('core.Assignment')
+        testassignment = baker.make("core.Assignment")
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
-        self.assertIn(
-            'Manually replace examiners',
-            mockresponse.selector.one('title').alltext_normalized)
+            cradmin_role=testassignment, cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin")
+        )
+        self.assertIn("Manually replace examiners", mockresponse.selector.one("title").alltext_normalized)
 
     def test_h1(self):
-        testassignment = baker.make('core.Assignment')
+        testassignment = baker.make("core.Assignment")
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
-        self.assertEqual(
-            'Manually replace examiners',
-            mockresponse.selector.one('h1').alltext_normalized)
+            cradmin_role=testassignment, cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin")
+        )
+        self.assertEqual("Manually replace examiners", mockresponse.selector.one("h1").alltext_normalized)
 
     def test_groups_sanity(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        baker.make('core.AssignmentGroup', parentnode=testassignment, _quantity=3)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        baker.make("core.AssignmentGroup", parentnode=testassignment, _quantity=3)
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
-        self.assertEqual(
-            3,
-            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
+            cradmin_role=testassignment, cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin")
+        )
+        self.assertEqual(3, mockresponse.selector.count(".cradmin-legacy-listbuilder-itemvalue"))
 
     def test_submit_button_text(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
+            cradmin_role=testassignment, cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin")
+        )
         self.assertEqual(
-            'Replace selected examiners with current examiners for selected students',
-            mockresponse.selector.one('.cradmin-legacy-multiselect2-target-formfields .btn').alltext_normalized)
+            "Replace selected examiners with current examiners for selected students",
+            mockresponse.selector.one(".cradmin-legacy-multiselect2-target-formfields .btn").alltext_normalized,
+        )
 
     def test_target_with_selected_items_title(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
+            cradmin_role=testassignment, cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin")
+        )
         self.assertEqual(
-            'Selected students:',
-            mockresponse.selector.one('.cradmin-legacy-multiselect2-target-title').alltext_normalized)
+            "Selected students:",
+            mockresponse.selector.one(".cradmin-legacy-multiselect2-target-title").alltext_normalized,
+        )
 
     def test_target_examiners_title(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
+            cradmin_role=testassignment, cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin")
+        )
         self.assertEqual(
-            'Select examiners:*',
-            mockresponse.selector.one('#div_id_selected_relatedexaminers .control-label ').alltext_normalized)
+            "Select examiners:*",
+            mockresponse.selector.one("#div_id_selected_relatedexaminers .control-label ").alltext_normalized,
+        )
 
     def test_target_examiners_values(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        relatedexaminer1 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        relatedexaminer2 = baker.make('core.RelatedExaminer', period=testassignment.period)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        relatedexaminer1 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        relatedexaminer2 = baker.make("core.RelatedExaminer", period=testassignment.period)
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
-        values = [element['value']
-                  for element in mockresponse.selector.list('input[name="selected_relatedexaminers"]')]
-        self.assertEqual(
-            {str(relatedexaminer1.id), str(relatedexaminer2.id)},
-            set(values))
+            cradmin_role=testassignment, cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin")
+        )
+        values = [element["value"] for element in mockresponse.selector.list('input[name="selected_relatedexaminers"]')]
+        self.assertEqual({str(relatedexaminer1.id), str(relatedexaminer2.id)}, set(values))
 
     def test_target_examiners_only_from_period(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        relatedexaminer1 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        relatedexaminer2 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        baker.make('core.RelatedExaminer')  # Not in the same period as testassignment
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        relatedexaminer1 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        relatedexaminer2 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        baker.make("core.RelatedExaminer")  # Not in the same period as testassignment
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
-        values = [element['value']
-                  for element in mockresponse.selector.list('input[name="selected_relatedexaminers"]')]
-        self.assertEqual(
-            {str(relatedexaminer1.id), str(relatedexaminer2.id)},
-            set(values))
+            cradmin_role=testassignment, cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin")
+        )
+        values = [element["value"] for element in mockresponse.selector.list('input[name="selected_relatedexaminers"]')]
+        self.assertEqual({str(relatedexaminer1.id), str(relatedexaminer2.id)}, set(values))
 
     def test_target_examiners_labels(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        baker.make('core.RelatedExaminer', period=testassignment.period,
-                   user__fullname='Examiner One')
-        baker.make('core.RelatedExaminer', period=testassignment.period,
-                   user__shortname='examiner2')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        baker.make("core.RelatedExaminer", period=testassignment.period, user__fullname="Examiner One")
+        baker.make("core.RelatedExaminer", period=testassignment.period, user__shortname="examiner2")
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
+            cradmin_role=testassignment, cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin")
+        )
         labels = [
             element.alltext_normalized
-            for element in mockresponse.selector.list(
-                '#div_id_selected_relatedexaminers .checkbox label')]
-        self.assertEqual(
-            {'Examiner One', 'examiner2'},
-            set(labels))
+            for element in mockresponse.selector.list("#div_id_selected_relatedexaminers .checkbox label")
+        ]
+        self.assertEqual({"Examiner One", "examiner2"}, set(labels))
 
     def test_post_ok(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        relatedexaminer1 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        relatedexaminer2 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        relatedexaminer1 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        relatedexaminer2 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
         self.assertEqual(0, Examiner.objects.count())
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
             requestkwargs={
-                'data': {
-                    'selected_items': [str(testgroup1.id), str(testgroup2.id)],
-                    'selected_relatedexaminers': [str(relatedexaminer1.id), str(relatedexaminer2.id)],
+                "data": {
+                    "selected_items": [str(testgroup1.id), str(testgroup2.id)],
+                    "selected_relatedexaminers": [str(relatedexaminer1.id), str(relatedexaminer2.id)],
                 }
-            })
-        self.assertEqual({relatedexaminer1, relatedexaminer2},
-                         {examiner.relatedexaminer for examiner in testgroup1.examiners.all()})
-        self.assertEqual({relatedexaminer1, relatedexaminer2},
-                         {examiner.relatedexaminer for examiner in testgroup2.examiners.all()})
+            },
+        )
+        self.assertEqual(
+            {relatedexaminer1, relatedexaminer2}, {examiner.relatedexaminer for examiner in testgroup1.examiners.all()}
+        )
+        self.assertEqual(
+            {relatedexaminer1, relatedexaminer2}, {examiner.relatedexaminer for examiner in testgroup2.examiners.all()}
+        )
         self.assertEqual(4, Examiner.objects.count())
 
     def test_post_replaces_existing(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        relatedexaminer1 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        relatedexaminer2 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', relatedexaminer=relatedexaminer1,
-                   assignmentgroup=testgroup)
-        baker.make('core.Examiner', relatedexaminer=relatedexaminer2,
-                   assignmentgroup=testgroup)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        relatedexaminer1 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        relatedexaminer2 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", relatedexaminer=relatedexaminer1, assignmentgroup=testgroup)
+        baker.make("core.Examiner", relatedexaminer=relatedexaminer2, assignmentgroup=testgroup)
         self.assertEqual(2, Examiner.objects.count())
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
             requestkwargs={
-                'data': {
-                    'selected_items': [str(testgroup.id)],
-                    'selected_relatedexaminers': [str(relatedexaminer1.id)],
+                "data": {
+                    "selected_items": [str(testgroup.id)],
+                    "selected_relatedexaminers": [str(relatedexaminer1.id)],
                 }
-            })
-        self.assertEqual({relatedexaminer1},
-                         {examiner.relatedexaminer for examiner in testgroup.examiners.all()})
+            },
+        )
+        self.assertEqual({relatedexaminer1}, {examiner.relatedexaminer for examiner in testgroup.examiners.all()})
         self.assertEqual(1, Examiner.objects.count())
 
     def test_post_no_examiners_selected(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         messagesmock = mock.MagicMock()
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=testassignment,
             messagesmock=messagesmock,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
             requestkwargs={
-                'data': {
-                    'selected_items': [str(testgroup.id)],
-                    'selected_relatedexaminers': [],
+                "data": {
+                    "selected_items": [str(testgroup.id)],
+                    "selected_relatedexaminers": [],
                 }
-            })
+            },
+        )
         self.assertEqual(
-                bulk_organize.ManualAddOrReplaceExaminersForm.selected_relatedexaminers_required_message,
-                mockresponse.selector.one(
-                        '#div_id_selected_relatedexaminers.has-error .help-block').alltext_normalized)
-        messagesmock.add.assert_called_once_with(
-            messages.ERROR,
             bulk_organize.ManualAddOrReplaceExaminersForm.selected_relatedexaminers_required_message,
-            '')
+            mockresponse.selector.one("#div_id_selected_relatedexaminers.has-error .help-block").alltext_normalized,
+        )
+        messagesmock.add.assert_called_once_with(
+            messages.ERROR, bulk_organize.ManualAddOrReplaceExaminersForm.selected_relatedexaminers_required_message, ""
+        )
 
     def test_post_invalid_groups(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        relatedexaminer1 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        relatedexaminer2 = baker.make('core.RelatedExaminer', period=testassignment.period)
-        testgroup1 = baker.make('core.AssignmentGroup')  # Not within the assignment
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        relatedexaminer1 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        relatedexaminer2 = baker.make("core.RelatedExaminer", period=testassignment.period)
+        testgroup1 = baker.make("core.AssignmentGroup")  # Not within the assignment
         messagesmock = mock.MagicMock()
         self.mock_http200_postrequest_htmls(
             cradmin_role=testassignment,
             messagesmock=messagesmock,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
             requestkwargs={
-                'data': {
-                    'selected_items': [str(testgroup1.id)],
-                    'selected_relatedexaminers': [str(relatedexaminer1.id), str(relatedexaminer2.id)],
+                "data": {
+                    "selected_items": [str(testgroup1.id)],
+                    "selected_relatedexaminers": [str(relatedexaminer1.id), str(relatedexaminer2.id)],
                 }
-            })
+            },
+        )
         messagesmock.add.assert_called_once_with(
-            messages.ERROR,
-            bulk_organize.ManualAddOrReplaceExaminersForm.invalid_students_selected_message,
-            '')
+            messages.ERROR, bulk_organize.ManualAddOrReplaceExaminersForm.invalid_students_selected_message, ""
+        )
 
 
-@skip('Skip tests, organize examiners by period tags')
+@skip("Skip tests, organize examiners by period tags")
 class TestOrganizeByTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = bulk_organize.OrganizeByTagListbuilderView
 
@@ -908,123 +895,109 @@ class TestOrganizeByTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_no_related_students(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testperiodtag = baker.make('core.PeriodTag', period=testassignment.parentnode)
-        testrelatedexaminer = baker.make('core.RelatedExaminer', period=testassignment.parentnode)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testperiodtag = baker.make("core.PeriodTag", period=testassignment.parentnode)
+        testrelatedexaminer = baker.make("core.RelatedExaminer", period=testassignment.parentnode)
         testperiodtag.relatedexaminers.add(testrelatedexaminer)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment
-        )
-        self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-listbuilder-itemvalue'))
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
+        self.assertFalse(mockresponse.selector.exists(".cradmin-legacy-listbuilder-itemvalue"))
 
     def test_no_related_students_message_link(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testperiodtag = baker.make('core.PeriodTag', period=testassignment.parentnode)
-        testrelatedstudent = baker.make('core.RelatedStudent', period=testassignment.parentnode)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testperiodtag = baker.make("core.PeriodTag", period=testassignment.parentnode)
+        testrelatedstudent = baker.make("core.RelatedStudent", period=testassignment.parentnode)
         testperiodtag.relatedstudents.add(testrelatedstudent)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
+        self.assertTrue(mockresponse.selector.exists(".devilry-listbuilderlist-footer"))
+        self.assertEqual(
+            mockresponse.selector.one(".devilry-listbuilderlist-footer").alltext_normalized,
+            "Tags exist for the semester, but is missing either examiners, students or both. Manage tags.",
         )
-        self.assertTrue(mockresponse.selector.exists('.devilry-listbuilderlist-footer'))
-        self.assertEqual(mockresponse.selector.one('.devilry-listbuilderlist-footer').alltext_normalized,
-                          'Tags exist for the semester, but is missing either examiners, students or both. '
-                          'Manage tags.')
 
     def test_no_related_examiners(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testperiodtag = baker.make('core.PeriodTag', period=testassignment.parentnode)
-        testrelatedstudent = baker.make('core.RelatedStudent', period=testassignment.parentnode)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testperiodtag = baker.make("core.PeriodTag", period=testassignment.parentnode)
+        testrelatedstudent = baker.make("core.RelatedStudent", period=testassignment.parentnode)
         testperiodtag.relatedstudents.add(testrelatedstudent)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment
-        )
-        self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-listbuilder-itemvalue'))
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
+        self.assertFalse(mockresponse.selector.exists(".cradmin-legacy-listbuilder-itemvalue"))
 
     def test_no_related_examiners_message_link(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testperiodtag = baker.make('core.PeriodTag', period=testassignment.parentnode)
-        testrelatedstudent = baker.make('core.RelatedStudent', period=testassignment.parentnode)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testperiodtag = baker.make("core.PeriodTag", period=testassignment.parentnode)
+        testrelatedstudent = baker.make("core.RelatedStudent", period=testassignment.parentnode)
         testperiodtag.relatedstudents.add(testrelatedstudent)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
+        self.assertTrue(mockresponse.selector.exists(".devilry-listbuilderlist-footer"))
+        self.assertEqual(
+            mockresponse.selector.one(".devilry-listbuilderlist-footer").alltext_normalized,
+            "Tags exist for the semester, but is missing either examiners, students or both. Manage tags.",
         )
-        self.assertTrue(mockresponse.selector.exists('.devilry-listbuilderlist-footer'))
-        self.assertEqual(mockresponse.selector.one('.devilry-listbuilderlist-footer').alltext_normalized,
-                          'Tags exist for the semester, but is missing either examiners, students or both. '
-                          'Manage tags.')
 
     def test_no_period_tags_message_link(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
+        self.assertTrue(mockresponse.selector.exists(".devilry-listbuilderlist-footer"))
+        self.assertEqual(
+            mockresponse.selector.one(".devilry-listbuilderlist-footer").alltext_normalized,
+            "No tags registered on the semester. If you add tags, "
+            "you can organize examiners and students based on the tags. Add semester tags.",
         )
-        self.assertTrue(mockresponse.selector.exists('.devilry-listbuilderlist-footer'))
-        self.assertEqual(mockresponse.selector.one('.devilry-listbuilderlist-footer').alltext_normalized,
-                          'No tags registered on the semester. If you add tags, '
-                          'you can organize examiners and students based on the tags. Add semester tags.')
 
     def test_no_candidates_in_groups(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testperiodtag1 = baker.make('core.PeriodTag', period=testassignment.parentnode)
-        testperiodtag2 = baker.make('core.PeriodTag', period=testassignment.parentnode)
-        testrelatedstudent = baker.make('core.RelatedStudent', period=testassignment.parentnode)
-        testrelatedexaminer = baker.make('core.RelatedExaminer', period=testassignment.parentnode)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testperiodtag1 = baker.make("core.PeriodTag", period=testassignment.parentnode)
+        testperiodtag2 = baker.make("core.PeriodTag", period=testassignment.parentnode)
+        testrelatedstudent = baker.make("core.RelatedStudent", period=testassignment.parentnode)
+        testrelatedexaminer = baker.make("core.RelatedExaminer", period=testassignment.parentnode)
         testperiodtag1.relatedstudents.add(testrelatedstudent)
         testperiodtag1.relatedexaminers.add(testrelatedexaminer)
         testperiodtag2.relatedstudents.add(testrelatedstudent)
         testperiodtag2.relatedexaminers.add(testrelatedexaminer)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment
-        )
-        self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-listbuilder-itemvalue'))
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
+        self.assertFalse(mockresponse.selector.exists(".cradmin-legacy-listbuilder-itemvalue"))
 
     def test_no_candidates_in_groups_where_relatedstudent_is_registered_on_tag(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testperiodtag = baker.make('core.PeriodTag', period=testassignment.parentnode)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.RelatedStudent', period=testassignment.parentnode)
-        testrelatedstudent = baker.make('core.RelatedStudent', period=testassignment.parentnode)
-        testrelatedexaminer = baker.make('core.RelatedExaminer', period=testassignment.parentnode)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testperiodtag = baker.make("core.PeriodTag", period=testassignment.parentnode)
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.RelatedStudent", period=testassignment.parentnode)
+        testrelatedstudent = baker.make("core.RelatedStudent", period=testassignment.parentnode)
+        testrelatedexaminer = baker.make("core.RelatedExaminer", period=testassignment.parentnode)
         testperiodtag.relatedstudents.add(testrelatedstudent)
         testperiodtag.relatedexaminers.add(testrelatedexaminer)
-        baker.make('core.Candidate', assignment_group=testgroup)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment
-        )
-        self.assertFalse(mockresponse.selector.exists('.cradmin-legacy-listbuilder-itemvalue'))
+        baker.make("core.Candidate", assignment_group=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
+        self.assertFalse(mockresponse.selector.exists(".cradmin-legacy-listbuilder-itemvalue"))
 
     def test_candidates_in_groups(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testperiodtag1 = baker.make('core.PeriodTag', period=testassignment.parentnode)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testrelatedstudent = baker.make('core.RelatedStudent', period=testassignment.parentnode)
-        testrelatedexaminer = baker.make('core.RelatedExaminer', period=testassignment.parentnode)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testperiodtag1 = baker.make("core.PeriodTag", period=testassignment.parentnode)
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testrelatedstudent = baker.make("core.RelatedStudent", period=testassignment.parentnode)
+        testrelatedexaminer = baker.make("core.RelatedExaminer", period=testassignment.parentnode)
         testperiodtag1.relatedstudents.add(testrelatedstudent)
         testperiodtag1.relatedexaminers.add(testrelatedexaminer)
-        baker.make('core.Candidate', assignment_group=testgroup, relatedstudent=testrelatedstudent)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment
-        )
-        self.assertTrue(mockresponse.selector.exists('.cradmin-legacy-listbuilder-itemvalue'))
-        self.assertTrue(mockresponse.selector.one('.cradmin-legacy-listbuilder-itemvalue'))
+        baker.make("core.Candidate", assignment_group=testgroup, relatedstudent=testrelatedstudent)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
+        self.assertTrue(mockresponse.selector.exists(".cradmin-legacy-listbuilder-itemvalue"))
+        self.assertTrue(mockresponse.selector.one(".cradmin-legacy-listbuilder-itemvalue"))
 
     def test_post(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testperiodtag = baker.make('core.PeriodTag', period=testassignment.parentnode)
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testrelatedstudent = baker.make('core.RelatedStudent', period=testassignment.parentnode, user__shortname='sa')
-        testrelatedexaminer = baker.make('core.RelatedExaminer', period=testassignment.parentnode)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testperiodtag = baker.make("core.PeriodTag", period=testassignment.parentnode)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testrelatedstudent = baker.make("core.RelatedStudent", period=testassignment.parentnode, user__shortname="sa")
+        testrelatedexaminer = baker.make("core.RelatedExaminer", period=testassignment.parentnode)
 
         # add relatedstudent and relatedexaminer to tag
         testperiodtag.relatedstudents.add(testrelatedstudent)
         testperiodtag.relatedexaminers.add(testrelatedexaminer)
-        baker.make('core.Candidate', assignment_group=testgroup1, relatedstudent=testrelatedstudent)
-        baker.make('core.Candidate', assignment_group=testgroup2, relatedstudent=testrelatedstudent)
+        baker.make("core.Candidate", assignment_group=testgroup1, relatedstudent=testrelatedstudent)
+        baker.make("core.Candidate", assignment_group=testgroup2, relatedstudent=testrelatedstudent)
 
-        self.mock_http302_postrequest(
-            cradmin_role=testassignment
-        )
+        self.mock_http302_postrequest(cradmin_role=testassignment)
 
         examiners = Examiner.objects.all()
         group1 = AssignmentGroup.objects.get(id=testgroup1.id)
@@ -1036,22 +1009,20 @@ class TestOrganizeByTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertIn(examiners[1], group2.examiners.all())
 
     def test_post_examiner_in_unrelated_group_is_not_deleted(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testperiodtag = baker.make('core.PeriodTag', period=testassignment.parentnode)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testrelatedstudent = baker.make('core.RelatedStudent', period=testassignment.parentnode, user__shortname='sa')
-        testrelatedexaminer = baker.make('core.RelatedExaminer', period=testassignment.parentnode)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testperiodtag = baker.make("core.PeriodTag", period=testassignment.parentnode)
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testrelatedstudent = baker.make("core.RelatedStudent", period=testassignment.parentnode, user__shortname="sa")
+        testrelatedexaminer = baker.make("core.RelatedExaminer", period=testassignment.parentnode)
 
         # add relatedstudent and relatedexaminer to tag
         testperiodtag.relatedstudents.add(testrelatedstudent)
         testperiodtag.relatedexaminers.add(testrelatedexaminer)
 
-        testexaminer_in_another_group = baker.make('core.Examiner', relatedexaminer=testrelatedexaminer)
-        testcandidate = baker.make('core.Candidate', assignment_group=testgroup, relatedstudent=testrelatedstudent)
+        testexaminer_in_another_group = baker.make("core.Examiner", relatedexaminer=testrelatedexaminer)
+        testcandidate = baker.make("core.Candidate", assignment_group=testgroup, relatedstudent=testrelatedstudent)
 
-        self.mock_http302_postrequest(
-            cradmin_role=testassignment
-        )
+        self.mock_http302_postrequest(cradmin_role=testassignment)
 
         examiners = Examiner.objects.all()
         group = AssignmentGroup.objects.get(id=testgroup.id)
@@ -1061,69 +1032,65 @@ class TestOrganizeByTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(group.examiners.all().count(), 1)
 
     def test_examiner_and_candidate_already_in_group(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testperiodtag = baker.make('core.PeriodTag', period=testassignment.parentnode)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testrelatedexaminer = baker.make('core.RelatedExaminer', period=testassignment.parentnode)
-        testrelatedstudent = baker.make('core.RelatedStudent', period=testassignment.parentnode)
-        baker.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer=testrelatedexaminer)
-        baker.make('core.Candidate', assignment_group=testgroup, relatedstudent=testrelatedstudent)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testperiodtag = baker.make("core.PeriodTag", period=testassignment.parentnode)
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testrelatedexaminer = baker.make("core.RelatedExaminer", period=testassignment.parentnode)
+        testrelatedstudent = baker.make("core.RelatedStudent", period=testassignment.parentnode)
+        baker.make("core.Examiner", assignmentgroup=testgroup, relatedexaminer=testrelatedexaminer)
+        baker.make("core.Candidate", assignment_group=testgroup, relatedstudent=testrelatedstudent)
         testperiodtag.relatedexaminers.add(testrelatedexaminer)
         testperiodtag.relatedstudents.add(testrelatedstudent)
-        self.mock_http302_postrequest(
-            cradmin_role=testassignment
-        )
+        self.mock_http302_postrequest(cradmin_role=testassignment)
 
     def test_post_sanity_multiple_tags(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testperiodtags = baker.make('core.PeriodTag', period=testassignment.parentnode, _quantity=5)
-        testrelatedstudents = baker.make('core.RelatedStudent', period=testassignment.parentnode, _quantity=30)
-        testrelatedexaminers = baker.make('core.RelatedExaminer', period=testassignment.parentnode, _quantity=3)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testperiodtags = baker.make("core.PeriodTag", period=testassignment.parentnode, _quantity=5)
+        testrelatedstudents = baker.make("core.RelatedStudent", period=testassignment.parentnode, _quantity=30)
+        testrelatedexaminers = baker.make("core.RelatedExaminer", period=testassignment.parentnode, _quantity=3)
 
         for periodtag in testperiodtags:
             for relatedstudent in testrelatedstudents:
                 periodtag.relatedstudents.add(relatedstudent)
-                baker.make('core.Candidate', assignment_group__parentnode=testassignment, relatedstudent=relatedstudent)
+                baker.make("core.Candidate", assignment_group__parentnode=testassignment, relatedstudent=relatedstudent)
             for relatedexaminer in testrelatedexaminers:
                 periodtag.relatedexaminers.add(relatedexaminer)
         requestuser = baker.make(settings.AUTH_USER_MODEL)
         with self.assertNumQueries(6):
-            self.mock_http302_postrequest(
-                cradmin_role=testassignment,
-                requestuser=requestuser
-            )
+            self.mock_http302_postrequest(cradmin_role=testassignment, requestuser=requestuser)
         examiners = Examiner.objects.all()
         self.assertEqual(examiners.count(), 450)
 
     def test_get_query_count(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testperiodtag1 = baker.make('core.PeriodTag', period=testassignment.parentnode)
-        testperiodtag2 = baker.make('core.PeriodTag', period=testassignment.parentnode)
-        testperiodtag3 = baker.make('core.PeriodTag', period=testassignment.parentnode)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testrelatedstudent1 = baker.make('core.RelatedStudent', period=testassignment.parentnode)
-        testrelatedstudent2 = baker.make('core.RelatedStudent', period=testassignment.parentnode)
-        testrelatedstudent3 = baker.make('core.RelatedStudent', period=testassignment.parentnode)
-        testrelatedstudent4 = baker.make('core.RelatedStudent', period=testassignment.parentnode)
-        testrelatedexaminer1 = baker.make('core.RelatedExaminer', period=testassignment.parentnode)
-        testrelatedexaminer2 = baker.make('core.RelatedExaminer', period=testassignment.parentnode)
-        testrelatedexaminer3 = baker.make('core.RelatedExaminer', period=testassignment.parentnode)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testperiodtag1 = baker.make("core.PeriodTag", period=testassignment.parentnode)
+        testperiodtag2 = baker.make("core.PeriodTag", period=testassignment.parentnode)
+        testperiodtag3 = baker.make("core.PeriodTag", period=testassignment.parentnode)
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testrelatedstudent1 = baker.make("core.RelatedStudent", period=testassignment.parentnode)
+        testrelatedstudent2 = baker.make("core.RelatedStudent", period=testassignment.parentnode)
+        testrelatedstudent3 = baker.make("core.RelatedStudent", period=testassignment.parentnode)
+        testrelatedstudent4 = baker.make("core.RelatedStudent", period=testassignment.parentnode)
+        testrelatedexaminer1 = baker.make("core.RelatedExaminer", period=testassignment.parentnode)
+        testrelatedexaminer2 = baker.make("core.RelatedExaminer", period=testassignment.parentnode)
+        testrelatedexaminer3 = baker.make("core.RelatedExaminer", period=testassignment.parentnode)
 
-        baker.make('core.Candidate', assignment_group=testgroup, relatedstudent=testrelatedstudent1)
-        baker.make('core.Candidate', assignment_group=testgroup, relatedstudent=testrelatedstudent2)
-        baker.make('core.Candidate', assignment_group=testgroup, relatedstudent=testrelatedstudent3)
-        baker.make('core.Candidate', assignment_group=testgroup, relatedstudent=testrelatedstudent4)
-        testperiodtag1.relatedstudents.add(testrelatedstudent1, testrelatedstudent2, testrelatedstudent3,
-                                           testrelatedstudent4)
+        baker.make("core.Candidate", assignment_group=testgroup, relatedstudent=testrelatedstudent1)
+        baker.make("core.Candidate", assignment_group=testgroup, relatedstudent=testrelatedstudent2)
+        baker.make("core.Candidate", assignment_group=testgroup, relatedstudent=testrelatedstudent3)
+        baker.make("core.Candidate", assignment_group=testgroup, relatedstudent=testrelatedstudent4)
+        testperiodtag1.relatedstudents.add(
+            testrelatedstudent1, testrelatedstudent2, testrelatedstudent3, testrelatedstudent4
+        )
         testperiodtag1.relatedexaminers.add(testrelatedexaminer1, testrelatedexaminer2, testrelatedexaminer3)
-        testperiodtag2.relatedstudents.add(testrelatedstudent1, testrelatedstudent2, testrelatedstudent3,
-                                           testrelatedstudent4)
+        testperiodtag2.relatedstudents.add(
+            testrelatedstudent1, testrelatedstudent2, testrelatedstudent3, testrelatedstudent4
+        )
         testperiodtag2.relatedexaminers.add(testrelatedexaminer1, testrelatedexaminer2, testrelatedexaminer3)
-        testperiodtag3.relatedstudents.add(testrelatedstudent1, testrelatedstudent2, testrelatedstudent3,
-                                           testrelatedstudent4)
+        testperiodtag3.relatedstudents.add(
+            testrelatedstudent1, testrelatedstudent2, testrelatedstudent3, testrelatedstudent4
+        )
         testperiodtag3.relatedexaminers.add(testrelatedexaminer1, testrelatedexaminer2, testrelatedexaminer3)
 
         with self.assertNumQueries(7):
-            self.mock_http200_getrequest_htmls(
-                cradmin_role=testassignment
-            )
+            self.mock_http200_getrequest_htmls(cradmin_role=testassignment)

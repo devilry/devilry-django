@@ -11,6 +11,4 @@ from model_bakery.recipe import Recipe
 #:    self.assertTrue(user.check_password('test'))
 from devilry.devilry_account.models import User
 
-user = Recipe(
-    User,
-    password=make_password('test'))
+user = Recipe(User, password=make_password("test"))

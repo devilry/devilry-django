@@ -3,38 +3,38 @@ from .base import *  # noqa
 # We want to set the task to be run as syncronous as this make testing easier.
 IEVV_BATCHFRAMEWORK_ALWAYS_SYNCRONOUS = True
 
-testfilesdir = 'devilry_testfiles'
+testfilesdir = "devilry_testfiles"
 if not exists(testfilesdir):
     os.mkdir(testfilesdir)
-logdir = join(testfilesdir, 'log')
+logdir = join(testfilesdir, "log")
 if not exists(logdir):
     os.mkdir(logdir)
 MEDIA_ROOT = join(testfilesdir, "filestore")
 
 #: Where to store compressed archives for download.
-DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY = os.path.join(testfilesdir, 'devilry_compressed_archives', '')
+DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY = os.path.join(testfilesdir, "devilry_compressed_archives", "")
 
 #: Remove tracback logging middleware when running tests.
-if 'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware' in MIDDLEWARE:
-    MIDDLEWARE.remove('devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware')
+if "devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware" in MIDDLEWARE:
+    MIDDLEWARE.remove("devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware")
 
 #: Remove django toolbar middleware while running tests.
-if 'debug_toolbar.middleware.DebugToolbarMiddleware' in MIDDLEWARE:
-    MIDDLEWARE.remove('debug_toolbar.middleware.DebugToolbarMiddleware')
+if "debug_toolbar.middleware.DebugToolbarMiddleware" in MIDDLEWARE:
+    MIDDLEWARE.remove("debug_toolbar.middleware.DebugToolbarMiddleware")
 
 #: Remove django toolbar from installed apps.
 INSTALLED_APPS += [
-    'devilry.devilry_dbcache.devilry_dbcache_testapp',
+    "devilry.devilry_dbcache.devilry_dbcache_testapp",
 ]
 
-if 'debug_toolbar' in INSTALLED_APPS:
-    INSTALLED_APPS.remove('debug_toolbar')
+if "debug_toolbar" in INSTALLED_APPS:
+    INSTALLED_APPS.remove("debug_toolbar")
 
 # We need to use this because loads of tests uses username and password to login
 CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND = False
 AUTHENTICATION_BACKENDS = (
-    'devilry.devilry_account.authbackend.default.UsernameAuthBackend',
-    'devilry.devilry_account.authbackend.default.EmailAuthBackend',
+    "devilry.devilry_account.authbackend.default.UsernameAuthBackend",
+    "devilry.devilry_account.authbackend.default.EmailAuthBackend",
 )
 
 # Ensures we are testing against the default translation strings.
@@ -76,23 +76,23 @@ DEVILRY_INCLUDE_TEST_CSS_CLASSES = True
 ###################################################################################
 
 # RQ runs synchronously by default for tests.
-RQ_QUEUES['default']['ASYNC'] = False
-RQ_QUEUES['email']['ASYNC'] = False
-RQ_QUEUES['highpriority']['ASYNC'] = False
+RQ_QUEUES["default"]["ASYNC"] = False
+RQ_QUEUES["email"]["ASYNC"] = False
+RQ_QUEUES["highpriority"]["ASYNC"] = False
 
 RQ = {
-    'COMMIT_MODE': 'auto',
+    "COMMIT_MODE": "auto",
 }
 
 
 STORAGES = {
-    'devilry_delivery_storage': {
+    "devilry_delivery_storage": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
         "OPTIONS": {
             "location": "devilry_testfiles",
         },
     },
-    'devilry_temp_storage': {
+    "devilry_temp_storage": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
         "OPTIONS": {
             "location": "devilry_testfiles",

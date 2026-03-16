@@ -3,4 +3,4 @@
 from .base import *
 
 MEDIA_ROOT = "filestore"
-DATABASES['default']['NAME'] = ':memory:'
+DATABASES["default"]["NAME"] = ":memory:"

@@ -48,12 +48,13 @@ class AbstractBatchCompressionAPIView(View):
 
         content_object: This will be a instance set in :func:`~.dispatch()` from the ``model_class``.
     """
+
     model_class = None
     batchoperation_type = None
 
     @property
     def created_by_role(self):
-        return ''
+        return ""
 
     def __get_content_object(self, content_object_id):
         """
@@ -72,12 +73,12 @@ class AbstractBatchCompressionAPIView(View):
         Raises:
             Http404: If kwarg ``content_object_id`` is not passed.
         """
-        if 'content_object_id' not in kwargs:
+        if "content_object_id" not in kwargs:
             raise Http404
-        self.content_object = self.__get_content_object(kwargs.get('content_object_id'))
+        self.content_object = self.__get_content_object(kwargs.get("content_object_id"))
 
         if self.has_no_files():
-            return JsonResponse({'status': 'no-files'})
+            return JsonResponse({"status": "no-files"})
         return super(AbstractBatchCompressionAPIView, self).dispatch(request, *args, **kwargs)
 
     def has_no_files(self):
@@ -122,26 +123,26 @@ class AbstractBatchCompressionAPIView(View):
 
         # Check if any changes has been made in context to examiners on the groups.
         if ExaminerAssignmentGroupHistory.objects.filter(
-                assignment_group_id__in=assignment_group_ids,
-                created_datetime__gt=latest_compressed_datetime).exists():
+            assignment_group_id__in=assignment_group_ids, created_datetime__gt=latest_compressed_datetime
+        ).exists():
             return True
 
         # Check if any changes has been made in context to candidates on the groups.
         if CandidateAssignmentGroupHistory.objects.filter(
-                assignment_group_id__in=assignment_group_ids,
-                created_datetime__gt=latest_compressed_datetime).exists():
+            assignment_group_id__in=assignment_group_ids, created_datetime__gt=latest_compressed_datetime
+        ).exists():
             return True
 
         # Check if a new feedbackset has been created for any of the groups.
         if group_models.FeedbackSet.objects.filter(
-                group_id__in=assignment_group_ids,
-                created_datetime__gt=latest_compressed_datetime).exists():
+            group_id__in=assignment_group_ids, created_datetime__gt=latest_compressed_datetime
+        ).exists():
             return True
 
         # Check if a deadline has been moved for any of the groups.
         if group_models.FeedbackSetDeadlineHistory.objects.filter(
-                feedback_set__group_id__in=assignment_group_ids,
-                changed_datetime__gt=latest_compressed_datetime).exists():
+            feedback_set__group_id__in=assignment_group_ids, changed_datetime__gt=latest_compressed_datetime
+        ).exists():
             return True
 
         # Check if any new files are added. Implemented in subclass.
@@ -201,14 +202,14 @@ class AbstractBatchCompressionAPIView(View):
             (dict): A dictionary with the entries ``status`` and ``download_link``
         """
         return {
-            'status': 'finished',
-            'download_link': content_object_id,
-            'download_instructions': render_to_string(
+            "status": "finished",
+            "download_link": content_object_id,
+            "download_instructions": render_to_string(
                 template_name=[
-                    'devilry_deploy/custom_archive_download_instructions.django.html',
-                    'devilry_group/include/archive_download_instructions.django.html'
+                    "devilry_deploy/custom_archive_download_instructions.django.html",
+                    "devilry_group/include/archive_download_instructions.django.html",
                 ]
-            )
+            ),
         }
 
     def _compressed_archive_created(self, content_object_id):
@@ -221,13 +222,14 @@ class AbstractBatchCompressionAPIView(View):
         Returns:
             (:class:`~.devilry.devilry_compressionutil.models.CompressedArchiveMeta`): instance or ``None``.
         """
-        queryset = compression_models.CompressedArchiveMeta.objects \
-            .filter(content_object_id=content_object_id,
-                    content_type=ContentType.objects.get_for_model(model=self.content_object),
-                    deleted_datetime=None)
+        queryset = compression_models.CompressedArchiveMeta.objects.filter(
+            content_object_id=content_object_id,
+            content_type=ContentType.objects.get_for_model(model=self.content_object),
+            deleted_datetime=None,
+        )
         if self.should_filter_by_created_by_user():
             queryset = queryset.filter(created_by=self.request.user)
-        return queryset.filter(created_by_role=self.created_by_role).order_by('-created_datetime').first()
+        return queryset.filter(created_by_role=self.created_by_role).order_by("-created_datetime").first()
 
     def _get_batchoperation(self):
         """
@@ -237,12 +239,15 @@ class AbstractBatchCompressionAPIView(View):
         Returns:
             ``BatchOperation`` or ``None``.
         """
-        queryset = BatchOperation.objects \
-            .filter(context_object_id=self.content_object.id,
-                    context_content_type=ContentType.objects.get_for_model(model=self.content_object),
-                    operationtype=self.batchoperation_type) \
-            .exclude(status=BatchOperation.STATUS_FINISHED) \
-            .order_by('-created_datetime')
+        queryset = (
+            BatchOperation.objects.filter(
+                context_object_id=self.content_object.id,
+                context_content_type=ContentType.objects.get_for_model(model=self.content_object),
+                operationtype=self.batchoperation_type,
+            )
+            .exclude(status=BatchOperation.STATUS_FINISHED)
+            .order_by("-created_datetime")
+        )
         if self.should_filter_by_created_by_user():
             queryset = queryset.filter(started_by=self.request.user)
         return queryset.first()
@@ -262,11 +267,11 @@ class AbstractBatchCompressionAPIView(View):
         """
         batchoperation = self._get_batchoperation()
         if not batchoperation:
-            return {'status': 'not-created'}
+            return {"status": "not-created"}
 
         if batchoperation.status == BatchOperation.STATUS_UNPROCESSED:
-            return {'status': 'not-started'}
-        return {'status': 'running'}
+            return {"status": "not-started"}
+        return {"status": "running"}
 
     def get_response_status(self, content_object_id):
         """
@@ -306,10 +311,11 @@ class AbstractBatchCompressionAPIView(View):
         Returns:
             (JsonResponse): Status of the compression.
         """
-        content_object_id = kwargs.get('content_object_id')
+        content_object_id = kwargs.get("content_object_id")
         compressed_archive_meta = self._compressed_archive_created(content_object_id=content_object_id)
-        if compressed_archive_meta and \
-                not self._should_reproduce_archive(latest_compressed_datetime=compressed_archive_meta.created_datetime):
+        if compressed_archive_meta and not self._should_reproduce_archive(
+            latest_compressed_datetime=compressed_archive_meta.created_datetime
+        ):
             return JsonResponse(self.get_ready_for_download_status(content_object_id=content_object_id))
         return JsonResponse(self.get_status_dict(context_object_id=content_object_id))
 
@@ -329,7 +335,7 @@ class AbstractBatchCompressionAPIView(View):
         Returns:
             (JsonResponse): Status of the compression.
         """
-        content_object_id = self.kwargs.get('content_object_id')
+        content_object_id = self.kwargs.get("content_object_id")
 
         # start task or return status.
         compressed_archive_meta = self._compressed_archive_created(content_object_id=content_object_id)
@@ -350,33 +356,34 @@ class BatchCompressionAPIFeedbackSetView(AbstractBatchCompressionAPIView):
     """
     API for checking if a compressed ``FeedbackSet`` is ready for download.
     """
+
     model_class = group_models.FeedbackSet
-    batchoperation_type = 'batchframework_compress_feedbackset'
+    batchoperation_type = "batchframework_compress_feedbackset"
 
     def has_no_files(self):
-        return not group_models.FeedbackSet.objects\
-            .filter_public_comment_files_from_students()\
-            .filter(id=self.content_object.id)\
+        return (
+            not group_models.FeedbackSet.objects.filter_public_comment_files_from_students()
+            .filter(id=self.content_object.id)
             .exists()
+        )
 
     def get_assignment_group_ids(self):
         return [self.content_object.group.id]
 
     def new_files_added(self, latest_compressed_datetime):
-        group_comment_ids = group_models.GroupComment.objects \
-            .filter(feedback_set=self.content_object).values_list('id', flat=True)
+        group_comment_ids = group_models.GroupComment.objects.filter(feedback_set=self.content_object).values_list(
+            "id", flat=True
+        )
         if CommentFile.objects.filter(
-                comment_id__in=group_comment_ids, created_datetime__gt=latest_compressed_datetime
+            comment_id__in=group_comment_ids, created_datetime__gt=latest_compressed_datetime
         ).exists():
             return True
 
     def get_ready_for_download_status(self, content_object_id=None):
         status_dict = super(BatchCompressionAPIFeedbackSetView, self).get_ready_for_download_status()
-        status_dict['download_link'] = self.request.cradmin_app.reverse_appurl(
-            viewname='feedbackset-file-download',
-            kwargs={
-                'feedbackset_id': content_object_id
-            })
+        status_dict["download_link"] = self.request.cradmin_app.reverse_appurl(
+            viewname="feedbackset-file-download", kwargs={"feedbackset_id": content_object_id}
+        )
         return status_dict
 
     def should_filter_by_created_by_user(self):
@@ -387,5 +394,5 @@ class BatchCompressionAPIFeedbackSetView(AbstractBatchCompressionAPIView):
             actiongroup_name=self.batchoperation_type,
             context_object=self.content_object,
             operationtype=self.batchoperation_type,
-            started_by=self.request.user
+            started_by=self.request.user,
         )

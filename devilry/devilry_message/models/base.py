@@ -29,8 +29,7 @@ class MessageQuerySet(models.QuerySet):
         """
         Filter all :obj:`.Message`s without any :class:`.MessageReceiver`s.
         """
-        return self.annotate(receiver_count=models.Count('messagereceiver'))\
-            .filter(receiver_count=0)
+        return self.annotate(receiver_count=models.Count("messagereceiver")).filter(receiver_count=0)
 
 
 class Message(models.Model):
@@ -45,21 +44,18 @@ class Message(models.Model):
         foreignkey to this class. The reason for this being that we want to save the subject and content
         in the preferred language of the user.
     """
+
     objects = MessageQuerySet.as_manager()
 
     #: When the message was created.
-    created_datetime = models.DateTimeField(
-        blank=True, null=True, default=timezone.now
-    )
+    created_datetime = models.DateTimeField(blank=True, null=True, default=timezone.now)
 
     #: The user that created the message.
     #:
     #: This field may be ``None`` as we need to support system message and
     #: other messages with no specific user.
     created_by = models.ForeignKey(
-        to=settings.AUTH_USER_MODEL,
-        blank=True, null=True, default=None,
-        on_delete=models.SET_NULL
+        to=settings.AUTH_USER_MODEL, blank=True, null=True, default=None, on_delete=models.SET_NULL
     )
 
     #: Choices for :obj:`~.BaseMessage.status`.
@@ -73,17 +69,15 @@ class Message(models.Model):
     #: - ``error``: Something went wrong. Details in :obj:`~.BaseMessage.status_data`.
     #: - ``sent``: The message has been sent without any errors.
     STATUS_CHOICES = choices_with_meta.ChoicesWithMeta(
-        choices_with_meta.Choice(value='draft',
-                                 label=gettext_lazy('Draft')),
-        choices_with_meta.Choice(value='preparing',
-                                 label=gettext_lazy('Preparing for sending'),
-                                 description=gettext_lazy('Building the list of actual users to send to.')),
-        choices_with_meta.Choice(value='sending',
-                                 label=gettext_lazy('Sending')),
-        choices_with_meta.Choice(value='error',
-                                 label=gettext_lazy('Error')),
-        choices_with_meta.Choice(value='sent',
-                                 label=gettext_lazy('Sent'))
+        choices_with_meta.Choice(value="draft", label=gettext_lazy("Draft")),
+        choices_with_meta.Choice(
+            value="preparing",
+            label=gettext_lazy("Preparing for sending"),
+            description=gettext_lazy("Building the list of actual users to send to."),
+        ),
+        choices_with_meta.Choice(value="sending", label=gettext_lazy("Sending")),
+        choices_with_meta.Choice(value="error", label=gettext_lazy("Error")),
+        choices_with_meta.Choice(value="sent", label=gettext_lazy("Sent")),
     )
 
     #: The "send"-status of a message.
@@ -93,7 +87,7 @@ class Message(models.Model):
         max_length=30,
         db_index=True,
         choices=STATUS_CHOICES.iter_as_django_choices_short(),
-        default=STATUS_CHOICES.DRAFT.value
+        default=STATUS_CHOICES.DRAFT.value,
     )
 
     #: Extra data for the :obj:`~.Message.status` as JSON.
@@ -113,51 +107,39 @@ class Message(models.Model):
     #: - `feedback`: Message regarding feedback/grading.
     #: - `feedback_updated`: Message regarding an updated grade/result.
     CONTEXT_TYPE_CHOICES = choices_with_meta.ChoicesWithMeta(
-        choices_with_meta.Choice(value='other',
-                                 label='Other'),
-        choices_with_meta.Choice(value='comment_delivery',
-                                 label='Comment or delivery'),
-        choices_with_meta.Choice(value='deadline_moved',
-                                 label='Deadline moved'),
-        choices_with_meta.Choice(value='new_attempt',
-                                 label='New attempt'),
-        choices_with_meta.Choice(value='feedback',
-                                 label='Feedback'),
-        choices_with_meta.Choice(value='feedback_updated',
-                                 label='Grading updated'),
-        choices_with_meta.Choice(value='group_invite_invitation',
-                                 label='Group invitation: invitation'),
-        choices_with_meta.Choice(value='group_invite_accepted',
-                                 label='Group invitation: accepted'),
-        choices_with_meta.Choice(value='group_invite_rejected',
-                                 label='Group invitation: rejected'),
+        choices_with_meta.Choice(value="other", label="Other"),
+        choices_with_meta.Choice(value="comment_delivery", label="Comment or delivery"),
+        choices_with_meta.Choice(value="deadline_moved", label="Deadline moved"),
+        choices_with_meta.Choice(value="new_attempt", label="New attempt"),
+        choices_with_meta.Choice(value="feedback", label="Feedback"),
+        choices_with_meta.Choice(value="feedback_updated", label="Grading updated"),
+        choices_with_meta.Choice(value="group_invite_invitation", label="Group invitation: invitation"),
+        choices_with_meta.Choice(value="group_invite_accepted", label="Group invitation: accepted"),
+        choices_with_meta.Choice(value="group_invite_rejected", label="Group invitation: rejected"),
     )
 
     #: The context type of the message.
     #: See `CONTEXT_TYPE_CHOICES` for more info.
     context_type = models.CharField(
         max_length=255,
-        blank=False, null=False,
+        blank=False,
+        null=False,
         choices=CONTEXT_TYPE_CHOICES.iter_as_django_choices_short(),
-        default=CONTEXT_TYPE_CHOICES.OTHER.value
+        default=CONTEXT_TYPE_CHOICES.OTHER.value,
     )
 
     #: ArrayField with the types for this message.
     #:
     #: Examples:
     #: - ``['email']``: Send as email only.
-    message_type = ArrayField(
-        models.CharField(max_length=30),
-        blank=False, null=False
-    )
+    message_type = ArrayField(models.CharField(max_length=30), blank=False, null=False)
 
     #: Store data needed to create :class:`.MessageReceiver`-objects.
     #:
     #: Each subclass defines how the dataformat of this field should be.
     #: Override :obj:`.Message.prepare_message_receivers` to create message receivers
     #: from this field.
-    virtual_message_receivers = models.JSONField(
-        null=False, blank=True, default=dict)
+    virtual_message_receivers = models.JSONField(null=False, blank=True, default=dict)
 
     def prepare_message_receivers(self, subject_generator, template_name, template_context):
         """
@@ -170,7 +152,7 @@ class Message(models.Model):
         Must return a list of :class:`.MessageReceiver` objects, or a
         generator that yields lists of :class:`.MessageReceiver` objects.
         """
-        user_queryset = get_user_model().objects.filter(id__in=self.virtual_message_receivers['user_ids'])
+        user_queryset = get_user_model().objects.filter(id__in=self.virtual_message_receivers["user_ids"])
         message_receivers = []
         for user in user_queryset.iterator():
             message_receiver = MessageReceiver.objects.create_receiver(
@@ -179,11 +161,9 @@ class Message(models.Model):
                 message_type=self.message_type[0],
                 subject_generator=subject_generator,
                 template_name=template_name,
-                template_context=template_context
+                template_context=template_context,
             )
-            message_receivers.append(
-                message_receiver
-            )
+            message_receivers.append(message_receiver)
         return message_receivers
 
     def validate_virtual_message_receivers(self):
@@ -193,16 +173,17 @@ class Message(models.Model):
 
         Does nothing by default.
         """
-        if 'user_ids' not in self.virtual_message_receivers:
-            raise ValueError('Missing \'user_ids\' in \'virtual_message_receivers\'')
-        if type(self.virtual_message_receivers['user_ids']) != list:
-            raise ValueError('\'user_ids\' in \'virtual_message_receivers\' is not a list')
-        if len(self.virtual_message_receivers['user_ids']) == 0:
-            raise ValueError('\'user_ids\' in \'virtual_message_receivers\' is empty')
-        for user_id in self.virtual_message_receivers['user_ids']:
+        if "user_ids" not in self.virtual_message_receivers:
+            raise ValueError("Missing 'user_ids' in 'virtual_message_receivers'")
+        if type(self.virtual_message_receivers["user_ids"]) != list:
+            raise ValueError("'user_ids' in 'virtual_message_receivers' is not a list")
+        if len(self.virtual_message_receivers["user_ids"]) == 0:
+            raise ValueError("'user_ids' in 'virtual_message_receivers' is empty")
+        for user_id in self.virtual_message_receivers["user_ids"]:
             if not isinstance(user_id, int):
                 raise ValueError(
-                    '\'virtual_message_receivers["user_ids"]\' contains a non-integer value.: {}'.format(user_id))
+                    "'virtual_message_receivers[\"user_ids\"]' contains a non-integer value.: {}".format(user_id)
+                )
 
     def create_message_receivers(self, **kwargs):
         """
@@ -226,23 +207,21 @@ class Message(models.Model):
         """
         self.validate_virtual_message_receivers()
         if not self.status == self.STATUS_CHOICES.DRAFT.value:
-            raise ValueError('Can only send drafted messages.')
+            raise ValueError("Can only send drafted messages.")
         with transaction.atomic():
             try:
                 # Prepare message receivers. Set status to 'preparing'.
                 self.status = self.STATUS_CHOICES.PREPARING.value
                 self.save()
                 self.create_message_receivers(
-                    subject_generator=subject_generator,
-                    template_name=template_name,
-                    template_context=template_context
+                    subject_generator=subject_generator, template_name=template_name, template_context=template_context
                 )
 
                 # Send to receivers. Set status to 'sending'.
                 self.status = self.STATUS_CHOICES.SENDING.value
                 self.save()
 
-                for message_receiver in self.messagereceiver_set.select_related('user').all():
+                for message_receiver in self.messagereceiver_set.select_related("user").all():
                     message_receiver.send()
 
                 # Set status to 'sent'.
@@ -250,26 +229,30 @@ class Message(models.Model):
                 self.save()
             except Exception as exception:
                 report_devilry_error(
-                    context='devilry.devilry_message.models.base.Message.prepare_and_send',
-                    message=f'Failed to send Message#{self.pk}: {exception}',
+                    context="devilry.devilry_message.models.base.Message.prepare_and_send",
+                    message=f"Failed to send Message#{self.pk}: {exception}",
                     exception=exception,
-                    user=self.created_by
+                    user=self.created_by,
                 )
                 self.status = self.STATUS_CHOICES.ERROR.value
 
-                if 'errors' in self.status_data:
-                    self.status_data['errors'].append({
-                        'error_message': str(exception),
-                        'timestamp': timezone.now().isoformat(),
-                        'exception_traceback': traceback.format_exc()
-                    })
+                if "errors" in self.status_data:
+                    self.status_data["errors"].append(
+                        {
+                            "error_message": str(exception),
+                            "timestamp": timezone.now().isoformat(),
+                            "exception_traceback": traceback.format_exc(),
+                        }
+                    )
                 else:
                     self.status_data = {
-                        'errors': [{
-                            'error_message': str(exception),
-                            'timestamp': timezone.now().isoformat(),
-                            'exception_traceback': traceback.format_exc()
-                        }]
+                        "errors": [
+                            {
+                                "error_message": str(exception),
+                                "timestamp": timezone.now().isoformat(),
+                                "exception_traceback": traceback.format_exc(),
+                            }
+                        ]
                     }
                 self.save()
 
@@ -278,13 +261,13 @@ class Message(models.Model):
         Sets `email` as default message type if empty or `None`.
         """
         if not self.message_type:
-            self.message_type = ['email']
+            self.message_type = ["email"]
 
     def clean(self):
         self.clean_message_type()
 
     def __str__(self):
-        return 'Message - {} - {}'.format(self.context_type, self.created_datetime)
+        return "Message - {} - {}".format(self.context_type, self.created_datetime)
 
 
 class MessageReceiverQuerySet(models.QuerySet):
@@ -309,10 +292,7 @@ class MessageReceiverQuerySet(models.QuerySet):
         current_language = translation.get_language()
         activate_translation_for_user(user=user)
         message_receiver = MessageReceiver(
-            user=user,
-            message=message,
-            message_type=message_type,
-            subject=subject_generator.get_subject_text()
+            user=user, message=message, message_type=message_type, subject=subject_generator.get_subject_text()
         )
         message_receiver.message_content_html = render_to_string(template_name, template_context)
         message_receiver.full_clean()
@@ -343,12 +323,11 @@ class MessageReceiver(models.Model):
     message was created.
 
     """
+
     objects = MessageReceiverQuerySet.as_manager()
 
     #: When the message receiver was created.
-    created_datetime = models.DateTimeField(
-        blank=True, null=True, default=timezone.now
-    )
+    created_datetime = models.DateTimeField(blank=True, null=True, default=timezone.now)
 
     #: Choices for the :obj:`.MessageReceiver.status` field.
     #:
@@ -362,22 +341,16 @@ class MessageReceiver(models.Model):
     #: - ``sent``: The message was sent to a backend (mailserver, SMS-provider etc.) without any errors.
     #:
     STATUS_CHOICES = choices_with_meta.ChoicesWithMeta(
-        choices_with_meta.Choice(value='not_sent',
-                                 label=pgettext_lazy("devilry_message", 'Not sent')),
-        choices_with_meta.Choice(value='failed',
-                                 label=pgettext_lazy("devilry_message", 'Failed')),
-        choices_with_meta.Choice(value='error',
-                                 label=pgettext_lazy("devilry_message", 'Error')),
-        choices_with_meta.Choice(value='sent',
-                                 label=pgettext_lazy("devilry_message", 'Sent'))
+        choices_with_meta.Choice(value="not_sent", label=pgettext_lazy("devilry_message", "Not sent")),
+        choices_with_meta.Choice(value="failed", label=pgettext_lazy("devilry_message", "Failed")),
+        choices_with_meta.Choice(value="error", label=pgettext_lazy("devilry_message", "Error")),
+        choices_with_meta.Choice(value="sent", label=pgettext_lazy("devilry_message", "Sent")),
     )
 
     #: The status of the message.
     #: Must be one of the choices defined in :obj:`~.MessageReceiver.STATUS_CHOICES`.
     status = models.CharField(
-        max_length=10,
-        choices=STATUS_CHOICES.iter_as_django_choices_short(),
-        default=STATUS_CHOICES.NOT_SENT.value
+        max_length=10, choices=STATUS_CHOICES.iter_as_django_choices_short(), default=STATUS_CHOICES.NOT_SENT.value
     )
 
     #: Extra data for the :obj:`~.MessageReceiver.status` as JSON. Typically used to
@@ -391,29 +364,21 @@ class MessageReceiver(models.Model):
     #: The subject of the message.
     #:
     #: Only used for emails.
-    subject = models.CharField(
-        max_length=255,
-        null=False, blank=True,
-        default='')
+    subject = models.CharField(max_length=255, null=False, blank=True, default="")
 
     #: Message content plain text.
     #:
     #: If :attr:`.MessageReceiver.message_content_html` is set, the HTML
     #: content is converted to plaint text and saved on this field.
-    message_content_plain = models.TextField(
-        null=False, blank=True, default='')
+    message_content_plain = models.TextField(null=False, blank=True, default="")
 
     #: Message content HTML.
     #:
     #: Optional, but normally used when sending an email.
-    message_content_html = models.TextField(
-        null=False, blank=True, default='')
+    message_content_html = models.TextField(null=False, blank=True, default="")
 
     #: The :class:`.BaseMessage` this message receiver belongs too.
-    message = models.ForeignKey(
-        to=Message,
-        on_delete=models.CASCADE
-    )
+    message = models.ForeignKey(to=Message, on_delete=models.CASCADE)
 
     #: The message type.
     #: Will always be one of the message types in the :obj:`.BaseMessage.message_types`
@@ -422,27 +387,21 @@ class MessageReceiver(models.Model):
 
     #: The receivers email-address. A user can have multiple email-addresses, this is
     #: the actual address for the `user` the mail was sent/will be sent to.
-    send_to = models.CharField(max_length=255, null=False, blank=True, default='')
+    send_to = models.CharField(max_length=255, null=False, blank=True, default="")
 
     #: The User to send this to. Currently we only send
     #: to registered users, so this field is required.
-    user = models.ForeignKey(
-        to=settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE)
+    user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     #: The datetime the message was successfully sent
     #: to the user.
     sent_datetime = models.DateTimeField(null=True, blank=True)
 
     #: Number of failed attempts.
-    sending_failed_count = models.IntegerField(
-        default=0
-    )
+    sending_failed_count = models.IntegerField(default=0)
 
     #: Number of successful attempts.
-    sending_success_count = models.IntegerField(
-        default=0
-    )
+    sending_success_count = models.IntegerField(default=0)
 
     def _send_email(self):
         """
@@ -465,10 +424,10 @@ class MessageReceiver(models.Model):
             self.save()
         except Exception as exception:
             report_devilry_error(
-                context='devilry.devilry_message.models.base.MessageReceiver.sync_send',
-                message=f'Failed to send Message#{self.message_id} to MessageReceiver#{self.pk}: {exception}',
+                context="devilry.devilry_message.models.base.MessageReceiver.sync_send",
+                message=f"Failed to send Message#{self.message_id} to MessageReceiver#{self.pk}: {exception}",
                 exception=exception,
-                user=self.user
+                user=self.user,
             )
             self.sending_failed_count += 1
 
@@ -477,19 +436,23 @@ class MessageReceiver(models.Model):
             else:
                 self.status = self.STATUS_CHOICES.FAILED.value
 
-            if 'errors' in self.status_data:
-                self.status_data['errors'].append({
-                    'error_message': str(exception),
-                    'timestamp': timezone.now().isoformat(),
-                    'exception_traceback': traceback.format_exc()
-                })
+            if "errors" in self.status_data:
+                self.status_data["errors"].append(
+                    {
+                        "error_message": str(exception),
+                        "timestamp": timezone.now().isoformat(),
+                        "exception_traceback": traceback.format_exc(),
+                    }
+                )
             else:
                 self.status_data = {
-                    'errors': [{
-                        'error_message': str(exception),
-                        'timestamp': timezone.now().isoformat(),
-                        'exception_traceback': traceback.format_exc()
-                    }]
+                    "errors": [
+                        {
+                            "error_message": str(exception),
+                            "timestamp": timezone.now().isoformat(),
+                            "exception_traceback": traceback.format_exc(),
+                        }
+                    ]
                 }
             self.save()
 
@@ -500,6 +463,7 @@ class MessageReceiver(models.Model):
         This method uses a RQ-job to send the message asynchronously.
         """
         from devilry.devilry_message import rq_jobs
+
         rq_jobs.async_send_message_receiver.delay(message_receiver_id=self.id)
 
     def clean_message_content_fields(self):
@@ -515,7 +479,7 @@ class MessageReceiver(models.Model):
         Sets `email` as default message type if empty or `None`.
         """
         if not self.message_type:
-            self.message_type = 'email'
+            self.message_type = "email"
 
     def clean(self):
         self.subject = self.subject.strip()
@@ -524,4 +488,4 @@ class MessageReceiver(models.Model):
         self.message_content_plain = self.message_content_plain.strip()
 
     def __str__(self):
-        return '{}'.format(self.user)
+        return "{}".format(self.user)

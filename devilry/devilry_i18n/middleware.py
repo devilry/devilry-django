@@ -30,7 +30,7 @@ class LocaleMiddleware(MiddlewareMixin):
     def process_response(self, request, response):
         language = translation.get_language()
         translation.deactivate()
-        patch_vary_headers(response, ('Accept-Language',))
-        if 'Content-Language' not in response:
-            response['Content-Language'] = language
+        patch_vary_headers(response, ("Accept-Language",))
+        if "Content-Language" not in response:
+            response["Content-Language"] = language
         return response

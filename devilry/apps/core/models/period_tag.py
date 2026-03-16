@@ -1,5 +1,3 @@
-
-
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
@@ -13,6 +11,7 @@ class PeriodTagQuerySet(models.QuerySet):
     """
     Model manager for :class:`.PeriodTag`.
     """
+
     def filter_distinct_tags(self):
         """
         Get all distinct tags across periods.
@@ -20,7 +19,7 @@ class PeriodTagQuerySet(models.QuerySet):
         Returns:
             (QuerySet): QuerySet of :class:`.PeriodTag`.
         """
-        return self.distinct('prefix', 'tag')
+        return self.distinct("prefix", "tag")
 
     def filter_tags_for_active_periods(self):
         """
@@ -30,8 +29,7 @@ class PeriodTagQuerySet(models.QuerySet):
             (QuerySet): QuerySet of :class:`.PeriodTag`.
         """
         now = timezone.now()
-        return self.filter(period__start_time__lt=now,
-                           period__end_time__gt=now)
+        return self.filter(period__start_time__lt=now, period__end_time__gt=now)
 
     def filter_editable_tags(self):
         """
@@ -41,7 +39,7 @@ class PeriodTagQuerySet(models.QuerySet):
         Returns:
             (QuerySet): QuerySet of :class:`.PeriodTag`.
         """
-        return self.filter(prefix='')
+        return self.filter(prefix="")
 
     def filter_editable_tags_on_period(self, period):
         """
@@ -54,7 +52,7 @@ class PeriodTagQuerySet(models.QuerySet):
         Returns:
             (QuerySet): QuerySet of :class:`.PeriodTag`.
         """
-        return self.filter(period=period, prefix='')
+        return self.filter(period=period, prefix="")
 
     def filter_visible_tags(self):
         """
@@ -98,8 +96,7 @@ class PeriodTagQuerySet(models.QuerySet):
         Returns:
             (QuerySet): QuerySet of :class:`.PeriodTag`.
         """
-        return self.filter_tags_for_related_student_user(user=user)\
-            .filter(period=period)
+        return self.filter_tags_for_related_student_user(user=user).filter(period=period)
 
     def filter_tags_for_related_examiner_user(self, user):
         """
@@ -125,8 +122,7 @@ class PeriodTagQuerySet(models.QuerySet):
         Returns:
             (QuerySet): QuerySet of :class:`.PeriodTag`.
         """
-        return self.filter_tags_for_related_examiner_user(user=user)\
-            .filter(period=period)
+        return self.filter_tags_for_related_examiner_user(user=user).filter(period=period)
 
     def tags_string_list_on_period(self, period):
         """
@@ -150,7 +146,7 @@ class PeriodTagQuerySet(models.QuerySet):
 
         Returns:
             (list): List of tuples that map tags and ids.
-         """
+        """
         return [(str(tag.id), tag.displayname) for tag in self.filter(period=period)]
 
     def annotate_with_relatedexaminers_count(self):
@@ -160,9 +156,7 @@ class PeriodTagQuerySet(models.QuerySet):
         """
         return self.annotate(
             annotated_relatedexaminers_count=models.Count(
-                models.Case(
-                    models.When(relatedexaminers__user__isnull=False, then=1)
-                )
+                models.Case(models.When(relatedexaminers__user__isnull=False, then=1))
             )
         )
 
@@ -173,9 +167,7 @@ class PeriodTagQuerySet(models.QuerySet):
         """
         return self.annotate(
             annotated_relatedstudents_count=models.Count(
-                models.Case(
-                    models.When(relatedstudents__user__isnull=False, then=1)
-                )
+                models.Case(models.When(relatedstudents__user__isnull=False, then=1))
             )
         )
 
@@ -186,22 +178,21 @@ class PeriodTag(models.Model):
     :class:`~.devilry.app.core.models.relateduser.RelatedStudent`s and
     :class:`~.devilry.app.core.models.relateduser.RelatedExaminer`s.
     """
+
     objects = PeriodTagQuerySet.as_manager()
 
     class Meta:
-        ordering = ['prefix', 'tag']
-        unique_together = [
-            ('period', 'prefix', 'tag')
-        ]
+        ordering = ["prefix", "tag"]
+        unique_together = [("period", "prefix", "tag")]
 
     #: The period(semester) for the tag.
-    period = models.ForeignKey(Period, related_name='period_tag', on_delete=models.CASCADE)
+    period = models.ForeignKey(Period, related_name="period_tag", on_delete=models.CASCADE)
 
     #: Used by import scripts.
     #: If tags are imported from another system, the prefix should be used.
     #: If the prefix is used, the tag cannot(should not) be edited.
     #: If the prefix is blank, the tag is editable.
-    prefix = models.CharField(blank=True, default='', max_length=30)
+    prefix = models.CharField(blank=True, default="", max_length=30)
 
     #: A tag unique for the period.
     #: If the prefix is blank, the tag itself is unique, else
@@ -228,15 +219,13 @@ class PeriodTag(models.Model):
 
     @property
     def displayname(self):
-        if self.prefix == '':
-            return '{}'.format(self.tag)
-        return '{}:{}'.format(self.prefix, self.tag)
+        if self.prefix == "":
+            return "{}".format(self.tag)
+        return "{}:{}".format(self.prefix, self.tag)
 
     def __str__(self):
         return self.tag
 
     def clean(self):
         if len(self.tag) == 0:
-            raise ValidationError({
-                'tag': gettext_lazy('Field cannot be blank.')
-            })
+            raise ValidationError({"tag": gettext_lazy("Field cannot be blank.")})

@@ -9,10 +9,11 @@ class AbstractCellRenderer(renderable.AbstractRenderableWithCss):
     """
     Abstract class for cells which cell-renderers should inherit from.
     """
-    template_name = 'devilry_cradmin/new_devilry_tablebuilder/base_cell.django.html'
+
+    template_name = "devilry_cradmin/new_devilry_tablebuilder/base_cell.django.html"
 
     def get_base_css_classes_list(self):
-        return ['devilry-tabulardata-list__cell']
+        return ["devilry-tabulardata-list__cell"]
 
 
 class AbstractRowList(base.List):
@@ -21,7 +22,8 @@ class AbstractRowList(base.List):
 
     The subclasses that inherits from this has access to ``renderable_list`` where renderables can be added.
     """
-    template_name = 'devilry_cradmin/new_devilry_tablebuilder/base_row.django.html'
+
+    template_name = "devilry_cradmin/new_devilry_tablebuilder/base_row.django.html"
 
 
 class AbstractListAsTable(base.List):
@@ -30,7 +32,8 @@ class AbstractListAsTable(base.List):
 
     Subclass this and override ``__init__`` to add the desired data to be used in the table.
     """
-    template_name = 'devilry_cradmin/new_devilry_tablebuilder/base_tablebuilder.django.html'
+
+    template_name = "devilry_cradmin/new_devilry_tablebuilder/base_tablebuilder.django.html"
 
     def __init__(self, is_paginated=False, page_obj=None):
         """
@@ -78,6 +81,6 @@ class AbstractListAsTable(base.List):
 
     def get_context_data(self, request=None):
         context_data = super(AbstractListAsTable, self).get_context_data(request=request)
-        context_data['is_paginated'] = self.is_paginated
-        context_data['page_obj'] = self.page_obj
+        context_data["is_paginated"] = self.is_paginated
+        context_data["page_obj"] = self.page_obj
         return context_data

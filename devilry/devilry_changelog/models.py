@@ -10,22 +10,20 @@ class AbstractChangeLogItem(models.Model):
 
     #: Value for :obj:`~AbstractChangeLogItem.status` when the change is in progress.
     #: Only used for background tasks.
-    STATUS_IN_PROGRESS = 'in-progress'
+    STATUS_IN_PROGRESS = "in-progress"
 
     #: Value for :obj:`~AbstractChangeLogItem.status` when the change failed.
     #: Only used for background tasks.
-    STATUS_FAILED = 'failed'
+    STATUS_FAILED = "failed"
 
     #: Value for :obj:`~AbstractChangeLogItem.status` when the change failed.
-    STATUS_FINISHED = 'finished'
+    STATUS_FINISHED = "finished"
 
     #: The user that made the change.
     #: Can be ``None``, and it is set to ``None`` if a user is deleted.
     #: It is also typically set to ``None`` for changes made via system
     #: scripts.
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.SET_NULL,
-                             null=True, blank=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
 
     #: The status of the change. One of:
     #:
@@ -36,10 +34,10 @@ class AbstractChangeLogItem(models.Model):
         max_length=15,
         default=STATUS_FINISHED,
         choices=(
-            (STATUS_IN_PROGRESS, gettext_lazy('in progress')),
-            (STATUS_FAILED, gettext_lazy('failed')),
-            (STATUS_FINISHED, gettext_lazy('finished')),
-        )
+            (STATUS_IN_PROGRESS, gettext_lazy("in progress")),
+            (STATUS_FAILED, gettext_lazy("failed")),
+            (STATUS_FINISHED, gettext_lazy("finished")),
+        ),
     )
 
     #: The action performed.
@@ -50,13 +48,10 @@ class AbstractChangeLogItem(models.Model):
 
 class AssignmentChangeLogItem(AbstractChangeLogItem):
     ACTIONS = {
-        'update-anonymous-ids': gettext_lazy('Update all candidate IDs and anonymous IDs.'),
+        "update-anonymous-ids": gettext_lazy("Update all candidate IDs and anonymous IDs."),
         # 'change-publishing-time': gettext_lazy(''),
         # 'change-first-deadline': gettext_lazy(''),
     }
 
-    actions = models.CharField(
-        max_length=50,
-        choices=list(ACTIONS.items())
-    )
+    actions = models.CharField(max_length=50, choices=list(ACTIONS.items()))
     assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE)

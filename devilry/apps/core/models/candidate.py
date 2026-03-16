@@ -22,10 +22,9 @@ class CandidateQuerySet(models.QuerySet):
         Args:
             assignment: A :class:`devilry.apps.core.models.assignment.Assignment` object.
         """
-        return self.filter(assignment_group__parentnode=assignment)\
-            .extra(
-                where=[
-                    """
+        return self.filter(assignment_group__parentnode=assignment).extra(
+            where=[
+                """
                     (
                         SELECT devilry_group_feedbackset.grading_points
                         FROM devilry_group_feedbackset
@@ -37,11 +36,9 @@ class CandidateQuerySet(models.QuerySet):
                         LIMIT 1
                     ) >= %s
                     """
-                ],
-                params=[
-                    assignment.passing_grade_min_points
-                ]
-            )
+            ],
+            params=[assignment.passing_grade_min_points],
+        )
 
 
 class Candidate(models.Model):
@@ -51,13 +48,16 @@ class Candidate(models.Model):
     A candidate is a many-to-many between :class:`devilry.apps.core.models.AssignmentGroup`
     and a user.
     """
+
     objects = CandidateQuerySet.as_manager()
 
     class Meta:
-        app_label = 'core'
+        app_label = "core"
 
     #: Will be removed in 3.0 - see https://github.com/devilry/devilry-django/issues/810
-    old_reference_not_in_use_student = models.ForeignKey(User, null=True, default=None, blank=True, on_delete=models.CASCADE)
+    old_reference_not_in_use_student = models.ForeignKey(
+        User, null=True, default=None, blank=True, on_delete=models.CASCADE
+    )
 
     #: ForeignKey to :class:`devilry.apps.core.models.relateduser.RelatedStudent`
     #: (the model that ties User as student on a Period).
@@ -65,16 +65,17 @@ class Candidate(models.Model):
 
     #: The :class:`devilry.apps.core.models.assignment_group.AssignmentGroup`
     #: where this candidate belongs.
-    assignment_group = models.ForeignKey(
-        'AssignmentGroup',
-        related_name='candidates', on_delete=models.CASCADE)
+    assignment_group = models.ForeignKey("AssignmentGroup", related_name="candidates", on_delete=models.CASCADE)
 
     #: A candidate ID imported from a third party system.
     #: Only used if ``uses_custom_candidate_ids==True`` on the assignment.
     candidate_id = models.CharField(
-        max_length=30, blank=True, null=True,
-        help_text='An optional candidate id. This can be anything as long as it '
-                  'is less than 30 characters. Used to show the user on anonymous assignmens.')
+        max_length=30,
+        blank=True,
+        null=True,
+        help_text="An optional candidate id. This can be anything as long as it "
+        "is less than 30 characters. Used to show the user on anonymous assignmens.",
+    )
 
     def get_anonymous_name(self, assignment=None):
         """
@@ -97,7 +98,6 @@ class Candidate(models.Model):
             return self.relatedstudent.get_anonymous_name()
 
     def __str__(self):
-        return 'Candiate id={id}, student={student}, group={group}'.format(
-            id=self.id,
-            student=self.relatedstudent,
-            group=self.assignment_group)
+        return "Candiate id={id}, student={student}, group={group}".format(
+            id=self.id, student=self.relatedstudent, group=self.assignment_group
+        )

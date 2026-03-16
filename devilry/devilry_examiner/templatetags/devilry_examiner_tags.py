@@ -5,18 +5,18 @@ from django.template.defaultfilters import stringfilter
 register = template.Library()
 
 
-@register.filter(name='formatted_status')
+@register.filter(name="formatted_status")
 @stringfilter
 def formatted_status(value):
-    if value == 'waiting-for-feedback':
+    if value == "waiting-for-feedback":
         return gettext_lazy("Waiting for feedback")
-    elif value == 'waiting-for-deliveries':
+    elif value == "waiting-for-deliveries":
         return gettext_lazy("Waiting for deliveries")
-    elif value == 'no-deadlines':
+    elif value == "no-deadlines":
         return gettext_lazy("No deadlines")
-    elif value == 'corrected':
+    elif value == "corrected":
         return gettext_lazy("Corrected")
-    elif value == 'closed-without-feedback':
+    elif value == "closed-without-feedback":
         return gettext_lazy("Closed without feedback")
     return value
 
@@ -24,9 +24,9 @@ def formatted_status(value):
 @register.filter
 def format_is_passing_grade(is_passing_grade):
     if is_passing_grade:
-        return gettext_lazy('passed')
+        return gettext_lazy("passed")
     else:
-        return gettext_lazy('failed')
+        return gettext_lazy("failed")
 
 
 @register.filter
@@ -38,18 +38,18 @@ def formatted_delivery_count(count):
     return gettext_lazy("{0} deliveries received").format(count)
 
 
-@register.filter(name='status_to_buttontext')
+@register.filter(name="status_to_buttontext")
 @stringfilter
 def status_to_buttontext(value):
-    if value == 'waiting-for-feedback':
+    if value == "waiting-for-feedback":
         return gettext_lazy("Write feedback")
-    elif value == 'waiting-for-deliveries':
+    elif value == "waiting-for-deliveries":
         return gettext_lazy("Waiting for deliveries")
-    elif value == 'no-deadlines':
+    elif value == "no-deadlines":
         return gettext_lazy("No deadlines")
-    elif value == 'corrected':
+    elif value == "corrected":
         return gettext_lazy("Show feedback")
-    elif value == 'closed-without-feedback':
+    elif value == "closed-without-feedback":
         return gettext_lazy("Closed without feedback")
     return value
 
@@ -57,14 +57,15 @@ def status_to_buttontext(value):
 @register.filter
 def feedback_to_bootstrapclass(feedback):
     if feedback.is_passing_grade:
-        return 'success'
+        return "success"
     else:
-        return 'warning'
+        return "warning"
 
 
 @register.filter
 def group_form(value, groupid):
     return value.get_form_by_groupid(groupid)
+
 
 # @register.simple_tag
 # def get_quickmodeform_by_groupid(formcollection, groupid):

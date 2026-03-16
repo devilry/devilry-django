@@ -27,50 +27,53 @@ class Menu(devilry_crmenu_admin.Menu):
         self.add_period_breadcrumb_item(period=period, active=True)
 
     def add_subject_breadcrumb_item(self, subject, active=False):
-        if self.cradmin_instance.get_devilryrole_for_requestuser() == 'periodadmin':
-            return self.add_headeritem_object(devilry_crmenu.BreadcrumbMenuItem(
-                label=subject.short_name,
-                url=reverse_cradmin_url(
-                    instanceid='devilry_admin_subject_for_periodadmin',
-                    appname='overview',
-                    roleid=subject.id,
-                    viewname=crapp.INDEXVIEW_NAME
-                ),
-                active=active
-            ))
+        if self.cradmin_instance.get_devilryrole_for_requestuser() == "periodadmin":
+            return self.add_headeritem_object(
+                devilry_crmenu.BreadcrumbMenuItem(
+                    label=subject.short_name,
+                    url=reverse_cradmin_url(
+                        instanceid="devilry_admin_subject_for_periodadmin",
+                        appname="overview",
+                        roleid=subject.id,
+                        viewname=crapp.INDEXVIEW_NAME,
+                    ),
+                    active=active,
+                )
+            )
         else:
-            return self.add_headeritem_object(devilry_crmenu.BreadcrumbMenuItem(
-                label=subject.short_name,
-                url=reverse_cradmin_url(
-                    instanceid='devilry_admin_subjectadmin',
-                    appname='overview',
-                    roleid=subject.id,
-                    viewname=crapp.INDEXVIEW_NAME
-                ),
-                active=active
-            ))
+            return self.add_headeritem_object(
+                devilry_crmenu.BreadcrumbMenuItem(
+                    label=subject.short_name,
+                    url=reverse_cradmin_url(
+                        instanceid="devilry_admin_subjectadmin",
+                        appname="overview",
+                        roleid=subject.id,
+                        viewname=crapp.INDEXVIEW_NAME,
+                    ),
+                    active=active,
+                )
+            )
 
 
 class CrAdminInstance(devilry_crinstance.BaseCrInstanceAdmin):
     menuclass = Menu
     roleclass = Period
     apps = [
-        ('overview', overview.App),
-        ('students', students.App),
-        ('examiners', examiners.App),
-        ('admins', admins.App),
-        ('createassignment', createassignment.App),
-        ('edit', edit.App),
-        ('overview_all_results', overview_all_results.App),
-        ('qualifiesforexam', qualifiesforexam.App),
-        ('manage_tags', manage_tags.App),
+        ("overview", overview.App),
+        ("students", students.App),
+        ("examiners", examiners.App),
+        ("admins", admins.App),
+        ("createassignment", createassignment.App),
+        ("edit", edit.App),
+        ("overview_all_results", overview_all_results.App),
+        ("qualifiesforexam", qualifiesforexam.App),
+        ("manage_tags", manage_tags.App),
     ]
-    id = 'devilry_admin_periodadmin'
-    rolefrontpage_appname = 'overview'
+    id = "devilry_admin_periodadmin"
+    rolefrontpage_appname = "overview"
 
     def get_rolequeryset(self):
-        return Period.objects.filter_user_is_admin(user=self.request.user)\
-            .order_by('-start_time')
+        return Period.objects.filter_user_is_admin(user=self.request.user).order_by("-start_time")
 
     def get_titletext_for_role(self, role):
         """
@@ -82,17 +85,15 @@ class CrAdminInstance(devilry_crinstance.BaseCrInstanceAdmin):
 
     @classmethod
     def matches_urlpath(cls, urlpath):
-        return urlpath.startswith('/devilry_admin/period')
+        return urlpath.startswith("/devilry_admin/period")
 
     def __get_devilryrole_for_requestuser(self, period=None):
         period = period or self.request.cradmin_role
         devilryrole = PeriodPermissionGroup.objects.get_devilryrole_for_user_on_period(
-            user=self.request.user,
-            period=period
+            user=self.request.user, period=period
         )
         if devilryrole is None:
-            raise ValueError('Could not find a devilryrole for request.user. This must be a bug in '
-                             'get_rolequeryset().')
+            raise ValueError("Could not find a devilryrole for request.user. This must be a bug in get_rolequeryset().")
 
         return devilryrole
 
@@ -105,7 +106,7 @@ class CrAdminInstance(devilry_crinstance.BaseCrInstanceAdmin):
         :meth:`devilry.devilry_account.models.PeriodPermissionGroupQuerySet.get_devilryrole_for_user_on_period`,
         exept that this method raises ValueError if it does not find a role.
         """
-        if not hasattr(self, '_devilryrole_for_requestuser'):
+        if not hasattr(self, "_devilryrole_for_requestuser"):
             self._devilryrole_for_requestuser = self.__get_devilryrole_for_requestuser(period=period)
         return self._devilryrole_for_requestuser
 
@@ -123,10 +124,11 @@ class CrAdminInstance(devilry_crinstance.BaseCrInstanceAdmin):
         """
         devilryrole = self.get_devilryrole_for_requestuser(period=period)
         period = period or self.request.cradmin_role
-        semi_anonymous_assignments_exist = Assignment.objects\
-            .filter(parentnode=period)\
-            .filter(anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)\
+        semi_anonymous_assignments_exist = (
+            Assignment.objects.filter(parentnode=period)
+            .filter(anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
             .exists()
+        )
         if semi_anonymous_assignments_exist and devilryrole == PermissionGroup.GROUPTYPE_PERIODADMIN:
             return True
         return False
@@ -140,7 +142,7 @@ class CrAdminInstance(devilry_crinstance.BaseCrInstanceAdmin):
         role = super().get_role_from_rolequeryset(role=role)
 
         requesting_appname = self.request.cradmin_app.appname
-        if requesting_appname in ['qualifiesforexam', 'overview_all_results']:
+        if requesting_appname in ["qualifiesforexam", "overview_all_results"]:
             if self.period_admin_access_semi_anonymous_assignments_restricted(period=role):
                 raise Http404()
 

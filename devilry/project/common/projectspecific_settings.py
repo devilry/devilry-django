@@ -1,59 +1,60 @@
 """
 Settings added for Devilry.
 """
+
 import os
 
 
 # Make sure this does not end with / (i.e. '' means / is the main page).
 # DEVILRY_URLPATH_PREFIX = '/django/devilry'
-DEVILRY_URLPATH_PREFIX = ''
+DEVILRY_URLPATH_PREFIX = ""
 
 # The default grade-plugin:
-DEVILRY_DEFAULT_GRADEEDITOR = 'approved'
+DEVILRY_DEFAULT_GRADEEDITOR = "approved"
 
-DEVILRY_STATIC_URL = '/static'  # Must not end in / (this means that '' is the server root)
-DEVILRY_MATHJAX_URL = 'https://cdn.mathjax.org/mathjax/latest/MathJax.js'
-DEVILRY_LOGOUT_URL = '/authenticate/logout'
-DEVILRY_HELP_URL = 'https://devilry.readthedocs.io/en/master/user/'
-DEVILRY_CHANGELOG_URL = 'https://devilry.readthedocs.io/en/master/user/changelog_overview.html'
+DEVILRY_STATIC_URL = "/static"  # Must not end in / (this means that '' is the server root)
+DEVILRY_MATHJAX_URL = "https://cdn.mathjax.org/mathjax/latest/MathJax.js"
+DEVILRY_LOGOUT_URL = "/authenticate/logout"
+DEVILRY_HELP_URL = "https://devilry.readthedocs.io/en/master/user/"
+DEVILRY_CHANGELOG_URL = "https://devilry.readthedocs.io/en/master/user/changelog_overview.html"
 
 
 # Set max file size to 5MB. Files greater than this size are split into chunks of this size.
 DEVILRY_MAX_ARCHIVE_CHUNK_SIZE = 5000000
 
 DEVILRY_SEND_EMAIL_TO_USERS = True
-DEVILRY_EMAIL_SUBJECT_PREFIX_ADMIN = '[devilry-admin] '
-DEVILRY_EMAIL_SIGNATURE = \
-    "This is a message from the Devilry assignment delivery system. "\
-    "Please do not respond to this email."
+DEVILRY_EMAIL_SUBJECT_PREFIX_ADMIN = "[devilry-admin] "
+DEVILRY_EMAIL_SIGNATURE = (
+    "This is a message from the Devilry assignment delivery system. Please do not respond to this email."
+)
 
 
-DEVILRY_EMAIL_DEFAULT_FROM = 'devilry-support@example.com'
-DEVILRY_SYSTEM_ADMIN_EMAIL = 'devilry-admin@example.com'
-DEVILRY_SCHEME_AND_DOMAIN = 'https://devilry.example.com'
+DEVILRY_EMAIL_DEFAULT_FROM = "devilry-support@example.com"
+DEVILRY_SYSTEM_ADMIN_EMAIL = "devilry-admin@example.com"
+DEVILRY_SCHEME_AND_DOMAIN = "https://devilry.example.com"
 
 DEVILRY_MESSAGE_RESEND_LIMIT = 2
 
 # The name of the primary sync system where data is imported from.
 # This is shown in the user interface, and can be a longer string
 # with spaces.
-DEVILRY_SYNCSYSTEM = 'YOUR SYNC SYSTEM HERE'
+DEVILRY_SYNCSYSTEM = "YOUR SYNC SYSTEM HERE"
 
 # The short name of the sync system that data is imported from.
 # This can only contain english lower-case letters (a-z),
 # numbers and ``_``.
-DEVILRY_SYNCSYSTEM_SHORTNAME = 'x'
+DEVILRY_SYNCSYSTEM_SHORTNAME = "x"
 
 #: The default tag prefix used when importing tags from
 #: from an external system.
-DEVILRY_IMPORTED_PERIOD_TAG_DEFAULT_PREFIX = 'x'
+DEVILRY_IMPORTED_PERIOD_TAG_DEFAULT_PREFIX = "x"
 
 #: Disable tests that require RQ to run.
-DEVILRY_SKIP_RQ_TESTS = os.environ.get('DEVILRY_SKIP_RQ_TESTS', 'False') == 'True'
+DEVILRY_SKIP_RQ_TESTS = os.environ.get("DEVILRY_SKIP_RQ_TESTS", "False") == "True"
 
 #: The RQ queue name used for sending MessageReceivers by devilry_message app.
 #: This is used for ALL builtin email sending in Devilry.
-DEVILRY_MESSAGE_RQ_QUEUENAME = 'email'
+DEVILRY_MESSAGE_RQ_QUEUENAME = "email"
 
 #: If this is set, and the ``CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND``-setting
 #: is ``False``, users will be assigned
@@ -110,7 +111,6 @@ DEFAULT_DEADLINE_HANDLING_METHOD = 0
 DEVILRY_ASSIGNMENT_GUIDELINES = {}
 
 
-
 #: Url where users are directed when they do not have the permissions they believe they should have.
 DEVILRY_LACKING_PERMISSIONS_URL = None
 
@@ -118,7 +118,7 @@ DEVILRY_LACKING_PERMISSIONS_URL = None
 DEVILRY_WRONG_USERINFO_URL = None
 
 #: The URL of the official help pages for Devilry.
-DEVILRY_OFFICIAL_HELP_URL = 'http://devilry.org#help'
+DEVILRY_OFFICIAL_HELP_URL = "http://devilry.org#help"
 
 #: Url where users can go to get documentation for Devilry that your organization provides.
 DEVILRY_ORGANIZATION_SPECIFIC_DOCUMENTATION_URL = None
@@ -127,7 +127,7 @@ DEVILRY_ORGANIZATION_SPECIFIC_DOCUMENTATION_URL = None
 DEVILRY_ORGANIZATION_SPECIFIC_DOCUMENTATION_TEXT = None
 
 #: The documentation version to use.
-DEVILRY_DOCUMENTATION_VERSION = 'latest'
+DEVILRY_DOCUMENTATION_VERSION = "latest"
 
 #: A Django template to include at the top of the frontpage (below the navbar, but above the main content).
 DEVILRY_FRONTPAGE_HEADER_INCLUDE_TEMPLATE = None
@@ -215,14 +215,18 @@ gettext_noop = lambda s: s
 
 #: Hard deadline info texts for students.
 DEVILRY_HARD_DEADLINE_INFO_FOR_STUDENTS = {
-    '__default': gettext_noop('This assignment uses hard deadlines. You will not be able to write comments '
-                              'or upload files after the deadline has expired.')
+    "__default": gettext_noop(
+        "This assignment uses hard deadlines. You will not be able to write comments "
+        "or upload files after the deadline has expired."
+    )
 }
 
 #: Hard deadline info texts for examiners and admins
 DEVILRY_HARD_DEADLINE_INFO_FOR_EXAMINERS_AND_ADMINS = {
-    '__default': gettext_noop('This assignment uses hard deadlines. Students will not be able to write comments '
-                              'or upload files after the deadline has expired.')
+    "__default": gettext_noop(
+        "This assignment uses hard deadlines. Students will not be able to write comments "
+        "or upload files after the deadline has expired."
+    )
 }
 
 
@@ -239,15 +243,15 @@ DEVILRY_HARD_DEADLINE_INFO_FOR_EXAMINERS_AND_ADMINS = {
 #: Can students edit their comments?
 #: Students can always see their own comment edit history, but this will of course not
 #: available unless they have or have had the ability to edit their comments.
-DEVILRY_COMMENT_STUDENTS_CAN_EDIT = os.environ.get(
-    'DEVILRY_COMMENT_STUDENTS_CAN_EDIT', 'True') == 'True'
+DEVILRY_COMMENT_STUDENTS_CAN_EDIT = os.environ.get("DEVILRY_COMMENT_STUDENTS_CAN_EDIT", "True") == "True"
 
 #: Should students be able to see the comment edit history of other users in their group?
 #: Students only see comments or comment edit histories that are visible to everyone. This means that
 #: students can only see edit history entries for comments that where had the "visible to everyone" state when the
 #: edit history entry was created.
-DEVILRY_COMMENT_STUDENTS_CAN_SEE_OTHER_USERS_COMMENT_HISTORY = os.environ.get(
-    'DEVILRY_COMMENT_STUDENTS_CAN_SEE_OTHER_USERS_COMMENT_HISTORY', 'True') == 'True'
+DEVILRY_COMMENT_STUDENTS_CAN_SEE_OTHER_USERS_COMMENT_HISTORY = (
+    os.environ.get("DEVILRY_COMMENT_STUDENTS_CAN_SEE_OTHER_USERS_COMMENT_HISTORY", "True") == "True"
+)
 
 
 ###########################################################
@@ -256,19 +260,19 @@ DEVILRY_COMMENT_STUDENTS_CAN_SEE_OTHER_USERS_COMMENT_HISTORY = os.environ.get(
 #
 ###########################################################
 #: The storage backend where deliveries are stored (whould be some sort of high redundancy storage)
-DELIVERY_STORAGE_BACKEND = 'devilry_delivery_storage'
+DELIVERY_STORAGE_BACKEND = "devilry_delivery_storage"
 
 #: The storage backend where temp files are stored
-DELIVERY_TEMPORARY_STORAGE_BACKEND = 'devilry_temp_storage'
+DELIVERY_TEMPORARY_STORAGE_BACKEND = "devilry_temp_storage"
 
 #: The django storage backend where devilry stores temporary files during delivery uploads
-CRADMIN_LEGACY_TEMPORARY_FILE_STORAGE_BACKEND = 'devilry_temp_storage'
+CRADMIN_LEGACY_TEMPORARY_FILE_STORAGE_BACKEND = "devilry_temp_storage"
 
 #: The directory where compressed archives are stored within the storage backend
 #: configured via ``DELIVERY_TEMPORARY_STORAGE_BACKEND``.
 #: Archives are compressed when examiners or students
 #: downloads files from an assignment or a feedbackset.
-DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY = 'compressed_archives'
+DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY = "compressed_archives"
 
 #: Storages - defaults to local file storage in:
 #:
@@ -283,13 +287,13 @@ DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY = 'compressed_archives'
 #:   library or similar for delivery storage (tempstorage does not require high redundancy).
 #:
 STORAGES = {
-    'devilry_delivery_storage': {
+    "devilry_delivery_storage": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
         "OPTIONS": {
             "location": "devilry_delivery_storage",
         },
     },
-    'devilry_temp_storage': {
+    "devilry_temp_storage": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
         "OPTIONS": {
             "location": "devilry_temp_storage",

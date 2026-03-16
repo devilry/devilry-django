@@ -15,72 +15,52 @@ class TestSelectLanguagePostView(test.TestCase, cradmin_testhelpers.TestCaseMixi
         return mockrequest
 
     def test_language_options_sanity(self):
-        user = baker.make('devilry_account.User', languagecode='en')
+        user = baker.make("devilry_account.User", languagecode="en")
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=user)
-        self.assertEqual(mockresponse.selector.one('.test-current-language').alltext_normalized, 'English (en)')
-        self.assertEqual(mockresponse.selector.one('.test-change-language').alltext_normalized, 'Norwegian Bokmal (nb)')
+        self.assertEqual(mockresponse.selector.one(".test-current-language").alltext_normalized, "English (en)")
+        self.assertEqual(mockresponse.selector.one(".test-change-language").alltext_normalized, "Norwegian Bokmal (nb)")
 
     def test_no_selected_language(self):
         mockrequest = self.__make_mock_request()
         mockresponse = self.mock_http302_postrequest(
             sessionmock=mockrequest.session,
-            requestkwargs={
-                'data': {
-                    'selected_language': ''
-                }
-            },
+            requestkwargs={"data": {"selected_language": ""}},
         )
-        self.assertEqual(mockresponse.request.session['SELECTED_LANGUAGE_CODE'], 'en')
+        self.assertEqual(mockresponse.request.session["SELECTED_LANGUAGE_CODE"], "en")
 
     def test_selected_language_not_in_settings(self):
         mockrequest = self.__make_mock_request()
         mockresponse = self.mock_http302_postrequest(
             sessionmock=mockrequest.session,
-            requestkwargs={
-                'data': {
-                    'selected_language': 'de'
-                }
-            },
+            requestkwargs={"data": {"selected_language": "de"}},
         )
-        self.assertEqual(mockresponse.request.session['SELECTED_LANGUAGE_CODE'], 'en')
+        self.assertEqual(mockresponse.request.session["SELECTED_LANGUAGE_CODE"], "en")
 
     def test_selected_language_sanity(self):
         mockrequest = self.__make_mock_request()
         mockresponse = self.mock_http302_postrequest(
             sessionmock=mockrequest.session,
-            requestkwargs={
-                'data': {
-                    'selected_language': 'nb'
-                }
-            },
+            requestkwargs={"data": {"selected_language": "nb"}},
         )
-        self.assertEqual(mockresponse.request.session['SELECTED_LANGUAGE_CODE'], 'nb')
+        self.assertEqual(mockresponse.request.session["SELECTED_LANGUAGE_CODE"], "nb")
 
     def test_change_languagecode_on_user(self):
-        user = baker.make('devilry_account.User', languagecode='en')
+        user = baker.make("devilry_account.User", languagecode="en")
         mockrequest = self.__make_mock_request()
         self.mock_http302_postrequest(
             requestuser=user,
             sessionmock=mockrequest.session,
-            requestkwargs={
-                'data': {
-                    'selected_language': 'nb'
-                }
-            },
+            requestkwargs={"data": {"selected_language": "nb"}},
         )
         user.refresh_from_db()
-        self.assertEqual(user.languagecode, 'nb')
+        self.assertEqual(user.languagecode, "nb")
 
     def test_selected_language_user_authenticated(self):
-        user = baker.make('devilry_account.User', languagecode='en')
+        user = baker.make("devilry_account.User", languagecode="en")
         mockrequest = self.__make_mock_request()
         mockresponse = self.mock_http302_postrequest(
             requestuser=user,
             sessionmock=mockrequest.session,
-            requestkwargs={
-                'data': {
-                    'selected_language': 'nb'
-                }
-            },
+            requestkwargs={"data": {"selected_language": "nb"}},
         )
-        self.assertEqual(mockresponse.request.session['SELECTED_LANGUAGE_CODE'], 'nb')
+        self.assertEqual(mockresponse.request.session["SELECTED_LANGUAGE_CODE"], "nb")

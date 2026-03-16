@@ -9,7 +9,7 @@ def missing_setting(request, setting):
     message = """
 You have been redirected to this view because your local Devilry system administrator
 have not set the <strong>{setting}</strong>-setting. Please tell them to set it.""".format(setting=setting)
-    return HttpResponse('<html><body>{message}</body></html>'.format(message=message))
+    return HttpResponse("<html><body>{message}</body></html>".format(message=message))
 
 
 def urlsetting_or_unsetview(settingname):
@@ -17,4 +17,4 @@ def urlsetting_or_unsetview(settingname):
     if setting:
         return setting
     else:
-        return reverse('devilry_settings_missing_setting', args=(settingname,))
+        return reverse("devilry_settings_missing_setting", args=(settingname,))

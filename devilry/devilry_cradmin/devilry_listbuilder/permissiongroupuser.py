@@ -12,9 +12,8 @@ class PermissionGroupUserTitleDescriptionMixin(object):
         if self.permissiongroupuser.user.fullname:
             return self.permissiongroupuser.user.shortname
         else:
-            return ''
+            return ""
 
 
-class ItemValue(PermissionGroupUserTitleDescriptionMixin,
-                listbuilder.itemvalue.TitleDescription):
-    valuealias = 'permissiongroupuser'
+class ItemValue(PermissionGroupUserTitleDescriptionMixin, listbuilder.itemvalue.TitleDescription):
+    valuealias = "permissiongroupuser"

@@ -19,16 +19,16 @@ class EditGroupCommentForm(forms.ModelForm):
     """
 
     class Meta:
-        fields = ['text']
+        fields = ["text"]
         model = group_models.GroupComment
 
     @classmethod
     def get_field_layout(cls):
-        return ['text']
+        return ["text"]
 
     def clean(self):
-        if self.instance.text == self.cleaned_data['text']:
-            raise ValidationError(message='')
+        if self.instance.text == self.cleaned_data["text"]:
+            raise ValidationError(message="")
 
 
 class EditGroupCommentBase(update.UpdateView):
@@ -43,7 +43,8 @@ class EditGroupCommentBase(update.UpdateView):
 
     If you need to do some extra checks, subclass this class and override the appropriate methods.
     """
-    template_name = 'devilry_group/group_comment_edit_base.django.html'
+
+    template_name = "devilry_group/group_comment_edit_base.django.html"
     model = group_models.GroupComment
 
     def dispatch(self, request, *args, **kwargs):
@@ -52,36 +53,34 @@ class EditGroupCommentBase(update.UpdateView):
         return super(EditGroupCommentBase, self).dispatch(request, *args, **kwargs)
 
     def get_pagetitle(self):
-        return gettext_lazy('Edit comment')
+        return gettext_lazy("Edit comment")
 
     def get_pageheading(self):
-        return gettext_lazy('Edit comment')
+        return gettext_lazy("Edit comment")
 
     def get_queryset_for_role(self, role):
         return group_models.GroupComment.objects.filter(
-                feedback_set__group=role,
-                user=self.request.user,
-                id=self.kwargs.get('pk'))
+            feedback_set__group=role, user=self.request.user, id=self.kwargs.get("pk")
+        )
 
     def get_form_class(self):
         return EditGroupCommentForm
 
     def get_form(self, form_class=None):
         form = super(EditGroupCommentBase, self).get_form(form_class=form_class)
-        form.fields['text'].widget = DevilryMarkdownWidget(request=self.request)
-        form.fields['text'].label = False
+        form.fields["text"].widget = DevilryMarkdownWidget(request=self.request)
+        form.fields["text"].label = False
         return form
 
     def get_field_layout(self):
         return [
             layout.Div(
-                layout.Field('text', focusonme='focusonme', css_class='form-control'),
-                css_class='cradmin-globalfields'
+                layout.Field("text", focusonme="focusonme", css_class="form-control"), css_class="cradmin-globalfields"
             )
         ]
 
     def form_invalid(self, form):
-        messages.success(self.request, gettext_lazy('No changes, comment not updated'))
+        messages.success(self.request, gettext_lazy("No changes, comment not updated"))
         return HttpResponseRedirect(str(self.__get_redirect_url()))
 
     def save_object(self, form, commit=False):
@@ -89,7 +88,7 @@ class EditGroupCommentBase(update.UpdateView):
         return comment
 
     def get_success_message(self, object):
-        messages.success(self.request, gettext_lazy('Comment updated!'))
+        messages.success(self.request, gettext_lazy("Comment updated!"))
 
     def __get_redirect_url(self):
         """
@@ -98,10 +97,7 @@ class EditGroupCommentBase(update.UpdateView):
         """
         if self.get_submit_save_and_continue_edititing_button_name() not in self.request.POST:
             return self.request.cradmin_app.reverse_appindexurl()
-        return self.request.cradmin_app.reverse_appurl(
-            'groupcomment-edit',
-            args=self.args,
-            kwargs=self.kwargs)
+        return self.request.cradmin_app.reverse_appurl("groupcomment-edit", args=self.args, kwargs=self.kwargs)
 
     def get_success_url(self):
         return str(self.__get_redirect_url())

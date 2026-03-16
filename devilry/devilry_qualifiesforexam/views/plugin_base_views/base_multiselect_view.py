@@ -16,6 +16,7 @@ from devilry.apps.core import models as core_models
 
 import json
 
+
 class QualifiedForExamPluginViewMixin(object):
     plugintypeid = None
 
@@ -27,27 +28,26 @@ class SelectedQualificationForm(forms.Form):
     """
     Subclass this if extra fields needs to be added.
     """
+
     qualification_modelclass = core_models.Assignment
-    invalid_qualification_item_message = gettext_lazy('Invalid qualification items was selected.')
+    invalid_qualification_item_message = gettext_lazy("Invalid qualification items was selected.")
 
     #: The items selected as ModelMultipleChoiceField.
     #: If some or all items should be selected by default, override this.
     selected_items = forms.ModelMultipleChoiceField(
-
         # No items are selectable by default.
         queryset=None,
-
         # Used if the object to select for some reason does
         # not exist(has been deleted or altered in some way)
         error_messages={
-            'invalid_choice': invalid_qualification_item_message,
-        }
+            "invalid_choice": invalid_qualification_item_message,
+        },
     )
 
     def __init__(self, *args, **kwargs):
-        selectable_qualification_items_queryset = kwargs.pop('selectable_items_queryset')
+        selectable_qualification_items_queryset = kwargs.pop("selectable_items_queryset")
         super(SelectedQualificationForm, self).__init__(*args, **kwargs)
-        self.fields['selected_items'].queryset = selectable_qualification_items_queryset
+        self.fields["selected_items"].queryset = selectable_qualification_items_queryset
 
 
 class SelectedQualificationItem(multiselect2.selected_item_renderer.SelectedItem):
@@ -56,6 +56,7 @@ class SelectedQualificationItem(multiselect2.selected_item_renderer.SelectedItem
 
     This can be subclassed if needed.
     """
+
     def get_title(self):
         """
         Get the title of an item.
@@ -70,13 +71,13 @@ class SelectableQualificationItemValue(multiselect2.listbuilder_itemvalues.ItemV
     selected_item_renderer_class = SelectedQualificationItem
 
     def get_inputfield_name(self):
-        return 'selected_items'
+        return "selected_items"
 
     def get_title(self):
         return self.value
 
     def get_description(self):
-        return ''
+        return ""
 
 
 class QualificationItemTargetRenderer(multiselect2.target_renderer.Target):
@@ -94,28 +95,28 @@ class QualificationItemTargetRenderer(multiselect2.target_renderer.Target):
     selected_target_renderer = SelectedQualificationItem
 
     #: A descriptive name for the items selected.
-    descriptive_item_name = gettext_lazy('assignments')
+    descriptive_item_name = gettext_lazy("assignments")
 
     def get_submit_button_text(self):
         """
         Returns:
             str: The text that should be shown on the submit button.
         """
-        return gettext_lazy('Submit selected %(what)s') % {'what': self.descriptive_item_name}
+        return gettext_lazy("Submit selected %(what)s") % {"what": self.descriptive_item_name}
 
     def get_with_items_title(self):
         """
         Returns:
             str: The text that should be shown when items are selected.
         """
-        return gettext_lazy('Selected %(what)s') % {'what': self.descriptive_item_name}
+        return gettext_lazy("Selected %(what)s") % {"what": self.descriptive_item_name}
 
     def get_without_items_text(self):
         """
         Returns:
             str: The text that should be shown when no items are selected.
         """
-        return gettext_lazy('No %(what)s selected') % {'what': self.descriptive_item_name}
+        return gettext_lazy("No %(what)s selected") % {"what": self.descriptive_item_name}
 
 
 class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForExamPluginViewMixin):
@@ -178,6 +179,7 @@ class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForEx
                     return WithPointsFormDataTargetRenderer
 
     """
+
     class Meta:
         abstract = True
 
@@ -193,13 +195,13 @@ class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForEx
         period = self.request.cradmin_role
         status = status_models.Status.objects.get_last_status_in_period(period=period)
         if status and status.status == status_models.Status.READY:
-            return HttpResponseRedirect(str(self.request.cradmin_app.reverse_appurl(
-                viewname='show-status',
-                kwargs={
-                    'roleid': self.request.cradmin_role.id,
-                    'statusid': status.id
-                }
-            )))
+            return HttpResponseRedirect(
+                str(
+                    self.request.cradmin_app.reverse_appurl(
+                        viewname="show-status", kwargs={"roleid": self.request.cradmin_role.id, "statusid": status.id}
+                    )
+                )
+            )
         return super(QualificationItemListView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset_for_role(self, role):
@@ -266,11 +268,11 @@ class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForEx
         Returns:
             List of ``self.model.id`` that were selected.
         """
-        return [item.id for item in posted_form.cleaned_data['selected_items']]
+        return [item.id for item in posted_form.cleaned_data["selected_items"]]
 
     def get_form_kwargs(self):
         kwargs = super(QualificationItemListView, self).get_form_kwargs()
-        kwargs['selectable_items_queryset'] = self.get_queryset_for_role(self.request.cradmin_role)
+        kwargs["selectable_items_queryset"] = self.get_queryset_for_role(self.request.cradmin_role)
         return kwargs
 
     def form_valid(self, form):
@@ -287,14 +289,13 @@ class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForEx
         # Collect ids for relatedstudents that qualify
         collector_class = self.get_period_result_collector_class()
         passing_relatedstudentids = collector_class(
-                period=self.request.cradmin_role,
-                qualifying_assignment_ids=qualifying_assignmentids
+            period=self.request.cradmin_role, qualifying_assignment_ids=qualifying_assignmentids
         ).get_relatedstudents_that_qualify_for_exam()
 
         # Attach collected data to session.
-        self.request.session['passing_relatedstudentids'] = passing_relatedstudentids
-        self.request.session['plugintypeid'] = self.get_plugintypeid()
+        self.request.session["passing_relatedstudentids"] = passing_relatedstudentids
+        self.request.session["plugintypeid"] = self.get_plugintypeid()
         print(json.dumps(qualifying_assignmentids))
-        self.request.session['plugindata'] = json.dumps(qualifying_assignmentids)
-        
-        return HttpResponseRedirect(str(self.request.cradmin_app.reverse_appurl('preview')))
+        self.request.session["plugindata"] = json.dumps(qualifying_assignmentids)
+
+        return HttpResponseRedirect(str(self.request.cradmin_app.reverse_appurl("preview")))

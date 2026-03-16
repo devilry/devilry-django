@@ -21,10 +21,7 @@ class FeedbackFeedSidebarBuilder(builder_base.FeedbackFeedBuilderBase):
 
     def build(self):
         for feedbackset in self.feedbacksets:
-            self.feedbackset_dict[feedbackset.created_datetime] = {
-                'feedbackset_num': 0,
-                'feedbackset': feedbackset
-            }
+            self.feedbackset_dict[feedbackset.created_datetime] = {"feedbackset_num": 0, "feedbackset": feedbackset}
         self.feedbackset_dict = self.sort_dict(self.feedbackset_dict)
 
     def get_as_list(self):
@@ -32,7 +29,7 @@ class FeedbackFeedSidebarBuilder(builder_base.FeedbackFeedBuilderBase):
         num = 1
         for key_datetime in sorted(self.feedbackset_dict.keys()):
             feedbacksets = self.feedbackset_dict[key_datetime]
-            feedbacksets['feedbackset_num'] = num
+            feedbacksets["feedbackset_num"] = num
             feedbackset_list.append(feedbacksets)
             num += 1
         return feedbackset_list

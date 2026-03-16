@@ -30,7 +30,7 @@ class PluginType(object):
     #: A description of the plugin in plain text.
     #: Should describe what the plugin does.
     #: Should be set, but defuaults to 'Description not available'.
-    description = 'Description not available'
+    description = "Description not available"
 
     @classmethod
     def get_plugintypeid(cls):
@@ -43,7 +43,7 @@ class PluginType(object):
 
     def __init__(self):
         if self.__class__.get_plugintypeid() is None:
-            raise ValueError('plugintypeid is required')
+            raise ValueError("plugintypeid is required")
 
     def get_human_readable_name(self):
         """
@@ -77,12 +77,13 @@ class Registry(Singleton):
     """
     Registry of `qualifies for exam` plugins as plugin types. Each PluginType is added as a :class:`.PluginType` object.
     """
+
     def __init__(self):
         super(Registry, self).__init__()
         self._plugintypeclasses = {}
 
     def __get_classpath(self):
-        return '{}.{}'.format(self.__module__, self.__class__.__name__)
+        return "{}.{}".format(self.__module__, self.__class__.__name__)
 
     def add(self, registryplugin):
         """
@@ -92,10 +93,9 @@ class Registry(Singleton):
             registryplugin (:class:`.PageType`): plugin.
         """
         if registryplugin.plugintypeid in self._plugintypeclasses:
-            raise DuplicatePluginTypeError('Duplicate plugintypeid in {}: {}'.format(
-                    self.__get_classpath(),
-                    registryplugin.plugintypeid
-            ))
+            raise DuplicatePluginTypeError(
+                "Duplicate plugintypeid in {}: {}".format(self.__get_classpath(), registryplugin.plugintypeid)
+            )
         self._plugintypeclasses[registryplugin.get_plugintypeid()] = registryplugin
 
     def __getitem__(self, plugintypeid):
@@ -124,13 +124,16 @@ class PluginTypeSubclassFactory(object):
     """
     Creates a instance of :class:`.PluginType` for use in tests.
     """
+
     @classmethod
-    def make_subclass(cls,
-                      classname,
-                      plugintypeid,
-                      human_readable_name=None,
-                      description='Description not available',
-                      plugin_view_class=None):
+    def make_subclass(
+        cls,
+        classname,
+        plugintypeid,
+        human_readable_name=None,
+        description="Description not available",
+        plugin_view_class=None,
+    ):
         """
         Creates a subclass of :class:`.PluginType` with required arguments.
 
@@ -148,12 +151,16 @@ class PluginTypeSubclassFactory(object):
         def get_plugin_view_class(self):
             return plugin_view_class
 
-        plugin_subclass = type(classname, (PluginType,), {
-            'plugintypeid': plugintypeid,
-            'human_readable_name': human_readable_name,
-            'description': description,
-            'get_plugin_view_class': get_plugin_view_class
-        })
+        plugin_subclass = type(
+            classname,
+            (PluginType,),
+            {
+                "plugintypeid": plugintypeid,
+                "human_readable_name": human_readable_name,
+                "description": description,
+                "get_plugin_view_class": get_plugin_view_class,
+            },
+        )
         return plugin_subclass
 
 
@@ -161,6 +168,7 @@ class MockableRegistry(Registry):
     """
     A non-singleton version of :class:`.Registry` for use in tests.
     """
+
     def __init__(self):
         self._instance = None  # Ensure the singleton-check is not triggered
         super(MockableRegistry, self).__init__()

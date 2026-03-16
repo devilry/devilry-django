@@ -33,9 +33,7 @@ class GroupViewMixin(object):
         return super(GroupViewMixin, self).dispatch(request, *args, **kwargs)
 
     def get_filterlist_url(self, filters_string):
-        return self.request.cradmin_app.reverse_appurl(
-            self.filterview_name,
-            kwargs={'filters_string': filters_string})
+        return self.request.cradmin_app.reverse_appurl(self.filterview_name, kwargs={"filters_string": filters_string})
 
     def get_period(self):
         return self.assignment.parentnode
@@ -56,65 +54,70 @@ class GroupViewMixin(object):
             filterlist.append(listfilter_assignmentgroup.AssignmentGroupRelatedExaminerTagSelectFilter(period=period))
 
     def get_unfiltered_queryset_for_role(self, role):
-        candidatequeryset = Candidate.objects\
-            .select_related('relatedstudent__user')\
+        candidatequeryset = (
+            Candidate.objects.select_related("relatedstudent__user")
             .only(
-                'candidate_id',
-                'assignment_group',
-                'relatedstudent__candidate_id',
-                'relatedstudent__automatic_anonymous_id',
-                'relatedstudent__active',
-                'relatedstudent__user__shortname',
-                'relatedstudent__user__fullname',
-            )\
+                "candidate_id",
+                "assignment_group",
+                "relatedstudent__candidate_id",
+                "relatedstudent__automatic_anonymous_id",
+                "relatedstudent__active",
+                "relatedstudent__user__shortname",
+                "relatedstudent__user__fullname",
+            )
             .order_by(
                 Lower(
                     Concat(
-                        'relatedstudent__user__fullname',
-                        'relatedstudent__user__shortname',
-                        output_field=models.CharField()
-                    )))
-        examinerqueryset = Examiner.objects\
-            .select_related('relatedexaminer__user')\
+                        "relatedstudent__user__fullname",
+                        "relatedstudent__user__shortname",
+                        output_field=models.CharField(),
+                    )
+                )
+            )
+        )
+        examinerqueryset = (
+            Examiner.objects.select_related("relatedexaminer__user")
             .only(
-                'relatedexaminer',
-                'assignmentgroup',
-                'relatedexaminer__automatic_anonymous_id',
-                'relatedexaminer__user__shortname',
-                'relatedexaminer__active',
-                'relatedexaminer__user__fullname',
-            )\
+                "relatedexaminer",
+                "assignmentgroup",
+                "relatedexaminer__automatic_anonymous_id",
+                "relatedexaminer__user__shortname",
+                "relatedexaminer__active",
+                "relatedexaminer__user__fullname",
+            )
             .order_by(
                 Lower(
                     Concat(
-                        'relatedexaminer__user__fullname',
-                        'relatedexaminer__user__shortname',
-                        output_field=models.CharField()
-                    )))
-        queryset = coremodels.AssignmentGroup.objects\
-            .filter(parentnode=self.assignment)\
-            .prefetch_related(
-                models.Prefetch('candidates',
-                                queryset=candidatequeryset))\
-            .prefetch_related(
-                models.Prefetch('examiners',
-                                queryset=examinerqueryset))\
-            .annotate_with_is_waiting_for_feedback_count()\
-            .annotate_with_is_waiting_for_deliveries_count()\
-            .annotate_with_is_corrected_count() \
-            .annotate_with_number_of_private_groupcomments_from_user(user=self.request.user) \
-            .annotate_with_number_of_private_imageannotationcomments_from_user(user=self.request.user)\
-            .distinct() \
-            .select_related('cached_data__last_published_feedbackset',
-                            'cached_data__last_feedbackset',
-                            'cached_data__first_feedbackset',
-                            'parentnode')
+                        "relatedexaminer__user__fullname",
+                        "relatedexaminer__user__shortname",
+                        output_field=models.CharField(),
+                    )
+                )
+            )
+        )
+        queryset = (
+            coremodels.AssignmentGroup.objects.filter(parentnode=self.assignment)
+            .prefetch_related(models.Prefetch("candidates", queryset=candidatequeryset))
+            .prefetch_related(models.Prefetch("examiners", queryset=examinerqueryset))
+            .annotate_with_is_waiting_for_feedback_count()
+            .annotate_with_is_waiting_for_deliveries_count()
+            .annotate_with_is_corrected_count()
+            .annotate_with_number_of_private_groupcomments_from_user(user=self.request.user)
+            .annotate_with_number_of_private_imageannotationcomments_from_user(user=self.request.user)
+            .distinct()
+            .select_related(
+                "cached_data__last_published_feedbackset",
+                "cached_data__last_feedbackset",
+                "cached_data__first_feedbackset",
+                "parentnode",
+            )
+        )
         return queryset
 
     def get_status_filter_value(self):
-        status_value = self.get_filterlist().filtershandler.get_cleaned_value_for('status')
+        status_value = self.get_filterlist().filtershandler.get_cleaned_value_for("status")
         if not status_value:
-            status_value = 'all'
+            status_value = "all"
         return status_value
 
     def __get_unfiltered_queryset_for_role(self):
@@ -124,43 +127,41 @@ class GroupViewMixin(object):
         return self.__get_unfiltered_queryset_for_role().count()
 
     def __get_excluding_filters_is_applied(self, total_groupcount):
-        return self.get_filterlist().filter(
-            queryobject=self.__get_unfiltered_queryset_for_role()
-        ).count() < total_groupcount
+        return (
+            self.get_filterlist().filter(queryobject=self.__get_unfiltered_queryset_for_role()).count()
+            < total_groupcount
+        )
 
     def __get_distinct_relatedexaminer_ids(self):
-        if not hasattr(self, '_distinct_relatedexaminer_ids'):
-            self._distinct_relatedexaminer_ids = Examiner.objects\
-                .filter(assignmentgroup__in=self.__get_unfiltered_queryset_for_role())\
-                .values_list('relatedexaminer_id', flat=True)\
+        if not hasattr(self, "_distinct_relatedexaminer_ids"):
+            self._distinct_relatedexaminer_ids = (
+                Examiner.objects.filter(assignmentgroup__in=self.__get_unfiltered_queryset_for_role())
+                .values_list("relatedexaminer_id", flat=True)
                 .distinct()
+            )
             self._distinct_relatedexaminer_ids = list(self._distinct_relatedexaminer_ids)
         return self._distinct_relatedexaminer_ids
 
     def get_distinct_relatedexaminers(self):
-        return RelatedExaminer.objects\
-            .filter(id__in=self.__get_distinct_relatedexaminer_ids())\
-            .select_related('user')\
-            .order_by(Lower(
-                Concat(
-                    'user__fullname',
-                    'user__shortname',
-                    output_field=models.CharField()
-                )))
+        return (
+            RelatedExaminer.objects.filter(id__in=self.__get_distinct_relatedexaminer_ids())
+            .select_related("user")
+            .order_by(Lower(Concat("user__fullname", "user__shortname", output_field=models.CharField())))
+        )
 
     def get_context_data(self, **kwargs):
         context = super(GroupViewMixin, self).get_context_data(**kwargs)
-        context['assignment'] = self.assignment
-        context['status_filter_value_normalized'] = self.get_status_filter_value()
+        context["assignment"] = self.assignment
+        context["status_filter_value_normalized"] = self.get_status_filter_value()
         total_groupcount = self.__get_total_groupcount()
-        context['excluding_filters_is_applied'] = \
-            self.__get_excluding_filters_is_applied(
-                total_groupcount=total_groupcount)
+        context["excluding_filters_is_applied"] = self.__get_excluding_filters_is_applied(
+            total_groupcount=total_groupcount
+        )
         return context
 
 
 class BaseInfoView(GroupViewMixin, listbuilderview.FilterListMixin, listbuilderview.View):
-    template_name = 'devilry_admin/assignment/students/groupview_base/base-info-view.django.html'
+    template_name = "devilry_admin/assignment/students/groupview_base/base-info-view.django.html"
     paginate_by = 20
 
     def use_pagination_load_all(self):
@@ -168,22 +169,20 @@ class BaseInfoView(GroupViewMixin, listbuilderview.FilterListMixin, listbuilderv
 
     def get_value_renderer_class(self):
         devilryrole = self.request.cradmin_instance.get_devilryrole_for_requestuser()
-        if devilryrole == 'departmentadmin':
+        if devilryrole == "departmentadmin":
             return devilry_listbuilder.assignmentgroup.DepartmentAdminItemValue
-        elif devilryrole == 'subjectadmin':
+        elif devilryrole == "subjectadmin":
             if self.assignment.anonymizationmode == Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS:
                 return devilry_listbuilder.assignmentgroup.FullyAnonymousSubjectAdminItemValue
             else:
                 return devilry_listbuilder.assignmentgroup.SubjectAdminItemValue
-        elif devilryrole == 'periodadmin':
+        elif devilryrole == "periodadmin":
             return devilry_listbuilder.assignmentgroup.PeriodAdminItemValue
         else:
-            raise ValueError('Invalid devilryrole: {}'.format(devilryrole))
+            raise ValueError("Invalid devilryrole: {}".format(devilryrole))
 
     def get_value_and_frame_renderer_kwargs(self):
-        return {
-            'assignment': self.assignment
-        }
+        return {"assignment": self.assignment}
 
 
 class SelectedGroupsForm(forms.Form):
@@ -196,44 +195,46 @@ class SelectedGroupsForm(forms.Form):
     matches the value returned by ``get_inputfield_name()`` in the
     ``SelectableProductItemValue`` class.
     """
+
     invalid_students_selected_message = pgettext_lazy(
-            'admin group multiselect submit',
-            'Something went wrong. This may happen if changes was made to the selected '
-            'students while you where working on them. Please try again.')
+        "admin group multiselect submit",
+        "Something went wrong. This may happen if changes was made to the selected "
+        "students while you where working on them. Please try again.",
+    )
 
     selected_items = forms.ModelMultipleChoiceField(
         queryset=AssignmentGroup.objects.none(),
         error_messages={
-            'invalid_choice': invalid_students_selected_message,
-        }
+            "invalid_choice": invalid_students_selected_message,
+        },
     )
 
     def __init__(self, *args, **kwargs):
-        selectable_groups_queryset = kwargs.pop('selectable_groups_queryset')
+        selectable_groups_queryset = kwargs.pop("selectable_groups_queryset")
         super(SelectedGroupsForm, self).__init__(*args, **kwargs)
-        self.fields['selected_items'].queryset = selectable_groups_queryset
+        self.fields["selected_items"].queryset = selectable_groups_queryset
 
 
 class BaseMultiselectView(GroupViewMixin, multiselect2view.ListbuilderFilterView):
-    template_name = 'devilry_admin/assignment/students/groupview_base/base-multiselect-view.django.html'
+    template_name = "devilry_admin/assignment/students/groupview_base/base-multiselect-view.django.html"
 
     def get_value_renderer_class(self):
         devilryrole = self.request.cradmin_instance.get_devilryrole_for_requestuser()
-        if devilryrole == 'departmentadmin':
+        if devilryrole == "departmentadmin":
             return devilry_listbuilder.assignmentgroup.DepartmentAdminMultiselectItemValue
-        elif devilryrole == 'subjectadmin':
+        elif devilryrole == "subjectadmin":
             if self.assignment.anonymizationmode == Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS:
                 return devilry_listbuilder.assignmentgroup.FullyAnonymousSubjectAdminMultiselectItemValue
             else:
                 return devilry_listbuilder.assignmentgroup.SubjectAdminMultiselectItemValue
-        elif devilryrole == 'periodadmin':
+        elif devilryrole == "periodadmin":
             return devilry_listbuilder.assignmentgroup.PeriodAdminMultiselectItemValue
         else:
-            raise ValueError('Invalid devilryrole: {}'.format(devilryrole))
+            raise ValueError("Invalid devilryrole: {}".format(devilryrole))
 
     def make_value_and_frame_renderer_kwargs(self, value):
         kwargs = super(BaseMultiselectView, self).make_value_and_frame_renderer_kwargs(value=value)
-        kwargs['assignment'] = self.assignment
+        kwargs["assignment"] = self.assignment
         return kwargs
 
     def get_target_renderer_class(self):
@@ -244,6 +245,5 @@ class BaseMultiselectView(GroupViewMixin, multiselect2view.ListbuilderFilterView
 
     def get_form_kwargs(self):
         kwargs = super(BaseMultiselectView, self).get_form_kwargs()
-        kwargs['selectable_groups_queryset'] = self.get_unfiltered_queryset_for_role(
-            role=self.request.cradmin_role)
+        kwargs["selectable_groups_queryset"] = self.get_unfiltered_queryset_for_role(role=self.request.cradmin_role)
         return kwargs

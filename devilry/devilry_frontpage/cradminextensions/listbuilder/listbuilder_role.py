@@ -9,15 +9,15 @@ from devilry.devilry_cradmin import devilry_listbuilder
 
 
 class AbstractRoleItemValue(listbuilder.itemvalue.TitleDescription):
-    valuealias = 'user'
+    valuealias = "user"
 
     def get_devilryrole(self):
         raise NotImplementedError()
 
     def get_extra_css_classes_list(self):
         return [
-            'devilry-frontpage-listbuilder-roleselect-itemvalue',
-            'devilry-frontpage-listbuilder-roleselect-itemvalue-{}'.format(self.get_devilryrole()),
+            "devilry-frontpage-listbuilder-roleselect-itemvalue",
+            "devilry-frontpage-listbuilder-roleselect-itemvalue-{}".format(self.get_devilryrole()),
         ]
 
 
@@ -25,49 +25,49 @@ class StudentRoleItemValue(AbstractRoleItemValue):
     """
     Listbuilder ItemValue renderer for information about the student devilryrole.
     """
+
     def get_devilryrole(self):
-        return 'student'
+        return "student"
 
     def get_title(self):
-        return pgettext_lazy('role', 'Student')
+        return pgettext_lazy("role", "Student")
 
     def get_description(self):
-        return pgettext_lazy('roleselect',
-                             'Upload deliveries or see your delivery and feedback history.')
+        return pgettext_lazy("roleselect", "Upload deliveries or see your delivery and feedback history.")
 
 
 class ExaminerRoleItemValue(AbstractRoleItemValue):
     """
     Listbuilder ItemValue renderer for information about the examiner devilryrole.
     """
+
     def get_devilryrole(self):
-        return 'examiner'
+        return "examiner"
 
     def get_title(self):
-        return pgettext_lazy('role', 'Examiner')
+        return pgettext_lazy("role", "Examiner")
 
     def get_description(self):
-        return pgettext_lazy('roleselect',
-                             'Give students feedback on their deliveries as examiner.')
+        return pgettext_lazy("roleselect", "Give students feedback on their deliveries as examiner.")
 
 
 class AnyAdminRoleItemValue(AbstractRoleItemValue):
     """
     Listbuilder ItemValue renderer for information about the anyadmin devilryrole.
     """
+
     def get_devilryrole(self):
-        return 'anyadmin'
+        return "anyadmin"
 
     def get_title(self):
-        return pgettext_lazy('role', 'Administrator')
+        return pgettext_lazy("role", "Administrator")
 
     def get_description(self):
-        return pgettext_lazy('roleselect',
-                             'Manage departments, courses, semesters and assignments.')
+        return pgettext_lazy("roleselect", "Manage departments, courses, semesters and assignments.")
 
 
 class AbstractRoleItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
-    valuealias = 'user'
+    valuealias = "user"
 
     def get_url(self):
         raise NotImplementedError()
@@ -77,8 +77,8 @@ class AbstractRoleItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
 
     def get_extra_css_classes_list(self):
         return [
-            'devilry-frontpage-listbuilder-roleselect-itemframe',
-            'devilry-frontpage-listbuilder-roleselect-itemframe-{}'.format(self.get_devilryrole()),
+            "devilry-frontpage-listbuilder-roleselect-itemframe",
+            "devilry-frontpage-listbuilder-roleselect-itemframe-{}".format(self.get_devilryrole()),
         ]
 
 
@@ -86,45 +86,42 @@ class StudentRoleItemFrame(AbstractRoleItemFrame):
     """
     Listbuilder ItemFrame renderer for the student devilryrole.
     """
+
     def get_devilryrole(self):
-        return 'student'
+        return "student"
 
     def get_url(self):
         return reverse_cradmin_url(
-            instanceid='devilry_student',
-            appname='dashboard',
-            roleid=None,
-            viewname=crapp.INDEXVIEW_NAME)
+            instanceid="devilry_student", appname="dashboard", roleid=None, viewname=crapp.INDEXVIEW_NAME
+        )
 
 
 class ExaminerRoleItemFrame(AbstractRoleItemFrame):
     """
     Listbuilder ItemFrame renderer for the examiner devilryrole.
     """
+
     def get_devilryrole(self):
-        return 'examiner'
+        return "examiner"
 
     def get_url(self):
         return reverse_cradmin_url(
-            instanceid='devilry_examiner',
-            appname='assignmentlist',
-            roleid=None,
-            viewname=crapp.INDEXVIEW_NAME)
+            instanceid="devilry_examiner", appname="assignmentlist", roleid=None, viewname=crapp.INDEXVIEW_NAME
+        )
 
 
 class AnyAdminRoleItemFrame(AbstractRoleItemFrame):
     """
     Listbuilder ItemFrame renderer for the anyadmin devilryrole.
     """
+
     def get_devilryrole(self):
-        return 'anyadmin'
+        return "anyadmin"
 
     def get_url(self):
         return reverse_cradmin_url(
-            instanceid='devilry_admin',
-            appname='overview',
-            roleid=None,
-            viewname=crapp.INDEXVIEW_NAME)
+            instanceid="devilry_admin", appname="overview", roleid=None, viewname=crapp.INDEXVIEW_NAME
+        )
 
 
 class RoleSelectList(listbuilder.lists.RowList):
@@ -162,4 +159,4 @@ class RoleSelectList(listbuilder.lists.RowList):
             self.user_has_no_roles = False
 
     def get_extra_css_classes_list(self):
-        return ['devilry-frontpage-roleselectlist']
+        return ["devilry-frontpage-roleselectlist"]

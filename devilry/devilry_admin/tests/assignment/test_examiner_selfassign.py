@@ -17,58 +17,42 @@ class TestAssignmentExaminerSelfAssignUpdateView(TestCase, cradmin_testhelpers.T
 
     def test_title(self):
         testuser = baker.make(settings.AUTH_USER_MODEL, is_superuser=True)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            requestuser=testuser,
-            viewkwargs={'pk': testassignment.id})
-        self.assertEqual(mockresponse.selector.one('h1').alltext_normalized,
-                          'Edit examiner self-assign')
+            cradmin_role=testassignment, requestuser=testuser, viewkwargs={"pk": testassignment.id}
+        )
+        self.assertEqual(mockresponse.selector.one("h1").alltext_normalized, "Edit examiner self-assign")
 
     def test_post_enable_examiner_self_assign(self):
         testuser = baker.make(settings.AUTH_USER_MODEL, is_superuser=True)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
         messagesmock = mock.MagicMock()
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
-            viewkwargs={'pk': testassignment.id},
+            viewkwargs={"pk": testassignment.id},
             requestuser=testuser,
-            requestkwargs={
-                'data': {
-                    'examiners_can_self_assign': True,
-                    'examiner_self_assign_limit': 1
-                }
-            },
-            messagesmock=messagesmock
+            requestkwargs={"data": {"examiners_can_self_assign": True, "examiner_self_assign_limit": 1}},
+            messagesmock=messagesmock,
         )
         messagesmock.add.assert_called_once_with(
-            messages.SUCCESS,
-            'Examiner self-assign enabled with self-assign limit set to 1.',
-            ''
+            messages.SUCCESS, "Examiner self-assign enabled with self-assign limit set to 1.", ""
         )
         testassignment.refresh_from_db()
         self.assertTrue(testassignment.examiners_can_self_assign)
 
     def test_post_enable_examiner_self_assign_with_nondefault_limit(self):
         testuser = baker.make(settings.AUTH_USER_MODEL, is_superuser=True)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
         messagesmock = mock.MagicMock()
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
-            viewkwargs={'pk': testassignment.id},
+            viewkwargs={"pk": testassignment.id},
             requestuser=testuser,
-            requestkwargs={
-                'data': {
-                    'examiners_can_self_assign': True,
-                    'examiner_self_assign_limit': 12
-                }
-            },
-            messagesmock=messagesmock
+            requestkwargs={"data": {"examiners_can_self_assign": True, "examiner_self_assign_limit": 12}},
+            messagesmock=messagesmock,
         )
         messagesmock.add.assert_called_once_with(
-            messages.SUCCESS,
-            'Examiner self-assign enabled with self-assign limit set to 12.',
-            ''
+            messages.SUCCESS, "Examiner self-assign enabled with self-assign limit set to 12.", ""
         )
         testassignment.refresh_from_db()
         self.assertTrue(testassignment.examiners_can_self_assign)
@@ -76,27 +60,20 @@ class TestAssignmentExaminerSelfAssignUpdateView(TestCase, cradmin_testhelpers.T
     def test_post_update_limit_only(self):
         testuser = baker.make(settings.AUTH_USER_MODEL, is_superuser=True)
         testassignment = baker.make_recipe(
-            'devilry.apps.core.assignment_activeperiod_start',
+            "devilry.apps.core.assignment_activeperiod_start",
             examiners_can_self_assign=True,
-            examiner_self_assign_limit=3
+            examiner_self_assign_limit=3,
         )
         messagesmock = mock.MagicMock()
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
-            viewkwargs={'pk': testassignment.id},
+            viewkwargs={"pk": testassignment.id},
             requestuser=testuser,
-            requestkwargs={
-                'data': {
-                    'examiners_can_self_assign': True,
-                    'examiner_self_assign_limit': 12
-                }
-            },
-            messagesmock=messagesmock
+            requestkwargs={"data": {"examiners_can_self_assign": True, "examiner_self_assign_limit": 12}},
+            messagesmock=messagesmock,
         )
         messagesmock.add.assert_called_once_with(
-            messages.SUCCESS,
-            'Examiner self-assign limit changed from 3 to 12.',
-            ''
+            messages.SUCCESS, "Examiner self-assign limit changed from 3 to 12.", ""
         )
         testassignment.refresh_from_db()
         self.assertTrue(testassignment.examiners_can_self_assign)
@@ -105,27 +82,18 @@ class TestAssignmentExaminerSelfAssignUpdateView(TestCase, cradmin_testhelpers.T
     def test_post_disable_selfassign(self):
         testuser = baker.make(settings.AUTH_USER_MODEL, is_superuser=True)
         testassignment = baker.make_recipe(
-            'devilry.apps.core.assignment_activeperiod_start',
+            "devilry.apps.core.assignment_activeperiod_start",
             examiners_can_self_assign=True,
-            examiner_self_assign_limit=3
+            examiner_self_assign_limit=3,
         )
         messagesmock = mock.MagicMock()
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
-            viewkwargs={'pk': testassignment.id},
+            viewkwargs={"pk": testassignment.id},
             requestuser=testuser,
-            requestkwargs={
-                'data': {
-                    'examiners_can_self_assign': False,
-                    'examiner_self_assign_limit': 12
-                }
-            },
-            messagesmock=messagesmock
+            requestkwargs={"data": {"examiners_can_self_assign": False, "examiner_self_assign_limit": 12}},
+            messagesmock=messagesmock,
         )
-        messagesmock.add.assert_called_once_with(
-            messages.SUCCESS,
-            'Examiner self-assign disabled.',
-            ''
-        )
+        messagesmock.add.assert_called_once_with(messages.SUCCESS, "Examiner self-assign disabled.", "")
         testassignment.refresh_from_db()
         self.assertFalse(testassignment.examiners_can_self_assign)

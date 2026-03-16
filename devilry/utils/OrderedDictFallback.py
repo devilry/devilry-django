@@ -1,7 +1,8 @@
 from collections import MutableMapping as DictMixin
 
+
 class OrderedDictFallback(dict, DictMixin):
-    """ OrderedDict implementation which works just like OrderedDict
+    """OrderedDict implementation which works just like OrderedDict
     in python >2.7. See: http://docs.python.org/dev/library/collections.html#collections.OrderedDict
 
     **Released under the MIT license**
@@ -32,7 +33,7 @@ class OrderedDictFallback(dict, DictMixin):
 
     def __init__(self, *args, **kwds):
         if len(args) > 1:
-            raise TypeError('expected at most 1 arguments, got %d' % len(args))
+            raise TypeError("expected at most 1 arguments, got %d" % len(args))
         try:
             self.__end
         except AttributeError:
@@ -41,8 +42,8 @@ class OrderedDictFallback(dict, DictMixin):
 
     def clear(self):
         self.__end = end = []
-        end += [None, end, end]         # sentinel node for doubly linked list
-        self.__map = {}                 # key --> [key, prev, next]
+        end += [None, end, end]  # sentinel node for doubly linked list
+        self.__map = {}  # key --> [key, prev, next]
         dict.clear(self)
 
     def __setitem__(self, key, value):
@@ -74,7 +75,7 @@ class OrderedDictFallback(dict, DictMixin):
 
     def popitem(self, last=True):
         if not self:
-            raise KeyError('dictionary is empty')
+            raise KeyError("dictionary is empty")
         if last:
             key = next(reversed(self))
         else:
@@ -106,8 +107,8 @@ class OrderedDictFallback(dict, DictMixin):
 
     def __repr__(self):
         if not self:
-            return '%s()' % (self.__class__.__name__,)
-        return '%s(%r)' % (self.__class__.__name__, list(self.items()))
+            return "%s()" % (self.__class__.__name__,)
+        return "%s(%r)" % (self.__class__.__name__, list(self.items()))
 
     def copy(self):
         return self.__class__(self)
@@ -121,8 +122,7 @@ class OrderedDictFallback(dict, DictMixin):
 
     def __eq__(self, other):
         if isinstance(other, OrderedDict):
-            return len(self)==len(other) and \
-                   min(p==q for p, q in  zip(list(self.items()), list(other.items())))
+            return len(self) == len(other) and min(p == q for p, q in zip(list(self.items()), list(other.items())))
         return dict.__eq__(self, other)
 
     def __ne__(self, other):

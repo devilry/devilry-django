@@ -2,8 +2,9 @@
 
 
 # Devilry imports
-from devilry.devilry_qualifiesforexam.utils.groups_groupedby_relatedstudent_and_assignments import \
-    GroupsGroupedByRelatedStudentAndAssignment
+from devilry.devilry_qualifiesforexam.utils.groups_groupedby_relatedstudent_and_assignments import (
+    GroupsGroupedByRelatedStudentAndAssignment,
+)
 
 
 class PeriodResultsCollector(object):
@@ -12,6 +13,7 @@ class PeriodResultsCollector(object):
 
     This class must be subclassed for each plugin handling it's requirement for qualifying students.
     """
+
     def __init__(self, period, qualifying_assignment_ids=None):
         """
         Args:

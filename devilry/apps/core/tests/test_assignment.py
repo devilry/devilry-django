@@ -23,52 +23,53 @@ class TestAssignment(TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_points_is_passing_grade(self):
-        assignment1 = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1', passing_grade_min_points=1).assignment
+        assignment1 = (
+            PeriodBuilder.quickadd_ducku_duck1010_active()
+            .add_assignment("assignment1", passing_grade_min_points=1)
+            .assignment
+        )
         self.assertTrue(assignment1.points_is_passing_grade(1))
         self.assertFalse(assignment1.points_is_passing_grade(0))
 
     def test_points_to_grade_passed_failed(self):
-        assignment1 = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1', points_to_grade_mapper='passed-failed').assignment
-        self.assertEqual(assignment1.points_to_grade(0), 'failed')
-        self.assertEqual(assignment1.points_to_grade(1), 'passed')
+        assignment1 = (
+            PeriodBuilder.quickadd_ducku_duck1010_active()
+            .add_assignment("assignment1", points_to_grade_mapper="passed-failed")
+            .assignment
+        )
+        self.assertEqual(assignment1.points_to_grade(0), "failed")
+        self.assertEqual(assignment1.points_to_grade(1), "passed")
 
     def test_points_to_grade_points(self):
-        assignment1 = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment(
-                'assignment1',
-                points_to_grade_mapper='raw-points',
-                max_points=10).assignment
-        self.assertEqual(assignment1.points_to_grade(0), '0/10')
-        self.assertEqual(assignment1.points_to_grade(1), '1/10')
-        self.assertEqual(assignment1.points_to_grade(10), '10/10')
+        assignment1 = (
+            PeriodBuilder.quickadd_ducku_duck1010_active()
+            .add_assignment("assignment1", points_to_grade_mapper="raw-points", max_points=10)
+            .assignment
+        )
+        self.assertEqual(assignment1.points_to_grade(0), "0/10")
+        self.assertEqual(assignment1.points_to_grade(1), "1/10")
+        self.assertEqual(assignment1.points_to_grade(10), "10/10")
 
     def test_points_to_grade_custom_table(self):
         testassignment = baker.make(
-                'core.Assignment',
-                max_points=10,
-                points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE)
-        point_to_grade_map = baker.make(
-                'core.PointToGradeMap',
-                assignment=testassignment)
-        baker.make('core.PointRangeToGrade',
-                   point_to_grade_map=point_to_grade_map,
-                   minimum_points=0,
-                   maximum_points=10,
-                   grade='Ok')
+            "core.Assignment", max_points=10, points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE
+        )
+        point_to_grade_map = baker.make("core.PointToGradeMap", assignment=testassignment)
+        baker.make(
+            "core.PointRangeToGrade",
+            point_to_grade_map=point_to_grade_map,
+            minimum_points=0,
+            maximum_points=10,
+            grade="Ok",
+        )
         prefetched_assignment = Assignment.objects.prefetch_point_to_grade_map().get(id=testassignment.id)
-        self.assertEqual(prefetched_assignment.points_to_grade(5), 'Ok')
+        self.assertEqual(prefetched_assignment.points_to_grade(5), "Ok")
 
     def test_set_max_points(self):
-        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment(
-                'assignment1',
-                points_to_grade_mapper='custom-table',
-                max_points=10)
-        PointToGradeMap.objects.create(
-            invalid=False,
-            assignment=assignmentbuilder.assignment)
+        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active().add_assignment(
+            "assignment1", points_to_grade_mapper="custom-table", max_points=10
+        )
+        PointToGradeMap.objects.create(invalid=False, assignment=assignmentbuilder.assignment)
         assignmentbuilder.assignment.set_max_points(20)
         assignmentbuilder.assignment.save()
         assignmentbuilder.reload_from_db()
@@ -76,322 +77,334 @@ class TestAssignment(TestCase):
         self.assertTrue(assignmentbuilder.assignment.pointtogrademap.invalid)
 
     def test_feedback_workflow_allows_shared_feedback_drafts_default(self):
-        testassignment = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1',
-                            feedback_workflow='').assignment
+        testassignment = (
+            PeriodBuilder.quickadd_ducku_duck1010_active()
+            .add_assignment("assignment1", feedback_workflow="")
+            .assignment
+        )
         self.assertFalse(testassignment.feedback_workflow_allows_shared_feedback_drafts())
 
     def test_feedback_workflow_allows_shared_feedback_drafts_trusted_cooperative_feedback_editing(self):
-        testassignment = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1',
-                            feedback_workflow='trusted-cooperative-feedback-editing').assignment
+        testassignment = (
+            PeriodBuilder.quickadd_ducku_duck1010_active()
+            .add_assignment("assignment1", feedback_workflow="trusted-cooperative-feedback-editing")
+            .assignment
+        )
         self.assertTrue(testassignment.feedback_workflow_allows_shared_feedback_drafts())
 
     def test_feedback_workflow_allows_examiners_publish_feedback_default(self):
-        testassignment = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1',
-                            feedback_workflow='').assignment
+        testassignment = (
+            PeriodBuilder.quickadd_ducku_duck1010_active()
+            .add_assignment("assignment1", feedback_workflow="")
+            .assignment
+        )
         self.assertTrue(testassignment.feedback_workflow_allows_examiners_publish_feedback())
 
     def test_feedback_workflow_allows_examiners_publish_feedback_trusted_cooperative_feedback_editing(self):
-        testassignment = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1',
-                            feedback_workflow='trusted-cooperative-feedback-editing').assignment
+        testassignment = (
+            PeriodBuilder.quickadd_ducku_duck1010_active()
+            .add_assignment("assignment1", feedback_workflow="trusted-cooperative-feedback-editing")
+            .assignment
+        )
         self.assertFalse(testassignment.feedback_workflow_allows_examiners_publish_feedback())
 
     def test_get_group_with_passing_grade_one(self):
-        assignment = baker.make('core.Assignment')
-        sourceassignment = baker.make('core.Assignment')
-        group = baker.make('core.AssignmentGroup', parentnode=sourceassignment)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            grading_points=1, group=group)
+        assignment = baker.make("core.Assignment")
+        sourceassignment = baker.make("core.Assignment")
+        group = baker.make("core.AssignmentGroup", parentnode=sourceassignment)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(grading_points=1, group=group)
         group_queryset = assignment.get_groups_with_passing_grade(sourceassignment=sourceassignment)
         self.assertEqual(group_queryset.count(), 1)
         self.assertIn(group, group_queryset)
 
     def test_get_group_with_passing_grade_none(self):
-        assignment = baker.make('core.Assignment')
-        sourceassignment = baker.make('core.Assignment')
-        group = baker.make('core.AssignmentGroup', parentnode=sourceassignment)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            grading_points=0, group=group)
+        assignment = baker.make("core.Assignment")
+        sourceassignment = baker.make("core.Assignment")
+        group = baker.make("core.AssignmentGroup", parentnode=sourceassignment)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(grading_points=0, group=group)
         group_queryset = assignment.get_groups_with_passing_grade(sourceassignment=sourceassignment)
         self.assertEqual(group_queryset.count(), 0)
 
     def test_get_group_with_passing_grade_feedbackset_not_published(self):
-        assignment = baker.make('core.Assignment')
-        sourceassignment = baker.make('core.Assignment')
-        group = baker.make('core.AssignmentGroup', parentnode=sourceassignment)
+        assignment = baker.make("core.Assignment")
+        sourceassignment = baker.make("core.Assignment")
+        group = baker.make("core.AssignmentGroup", parentnode=sourceassignment)
         devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=group)
         group_queryset = assignment.get_groups_with_passing_grade(sourceassignment=sourceassignment)
         self.assertEqual(group_queryset.count(), 0)
 
     def test_get_group_with_passing_grade_multiple_feedbacksets_last_not_published(self):
-        assignment = baker.make('core.Assignment')
-        sourceassignment = baker.make('core.Assignment')
-        group = baker.make('core.AssignmentGroup', parentnode=sourceassignment)
+        assignment = baker.make("core.Assignment")
+        sourceassignment = baker.make("core.Assignment")
+        group = baker.make("core.AssignmentGroup", parentnode=sourceassignment)
         devilry_group_baker_factories.feedbackset_first_attempt_published(group=group, grading_points=1)
         devilry_group_baker_factories.feedbackset_new_attempt_unpublished(group=group)
         group_queryset = assignment.get_groups_with_passing_grade(sourceassignment=sourceassignment)
         self.assertEqual(group_queryset.count(), 0)
 
     def test_get_group_with_passing_grade_multiple_feedbacksets_first_failed_last_passed(self):
-        assignment = baker.make('core.Assignment')
-        sourceassignment = baker.make('core.Assignment')
-        group = baker.make('core.AssignmentGroup', parentnode=sourceassignment)
+        assignment = baker.make("core.Assignment")
+        sourceassignment = baker.make("core.Assignment")
+        group = baker.make("core.AssignmentGroup", parentnode=sourceassignment)
         devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=group, grading_points=0, deadline_datetime=timezone.now() - timezone.timedelta(days=2))
+            group=group, grading_points=0, deadline_datetime=timezone.now() - timezone.timedelta(days=2)
+        )
         devilry_group_baker_factories.feedbackset_new_attempt_published(
-            group=group, grading_points=1, deadline_datetime=timezone.now())
+            group=group, grading_points=1, deadline_datetime=timezone.now()
+        )
         group_queryset = assignment.get_groups_with_passing_grade(sourceassignment=sourceassignment)
         self.assertEqual(group_queryset.count(), 1)
 
     def test_get_group_with_passing_grade_one_group_passed_one_group_failed(self):
-        assignment = baker.make('core.Assignment')
-        sourceassignment = baker.make('core.Assignment')
-        group_with_passing_grade = baker.make('core.AssignmentGroup', parentnode=sourceassignment)
-        group_with_failing_grade = baker.make('core.AssignmentGroup', parentnode=sourceassignment)
+        assignment = baker.make("core.Assignment")
+        sourceassignment = baker.make("core.Assignment")
+        group_with_passing_grade = baker.make("core.AssignmentGroup", parentnode=sourceassignment)
+        group_with_failing_grade = baker.make("core.AssignmentGroup", parentnode=sourceassignment)
         devilry_group_baker_factories.feedbackset_first_attempt_published(
-            grading_points=0, group=group_with_failing_grade)
+            grading_points=0, group=group_with_failing_grade
+        )
         devilry_group_baker_factories.feedbackset_first_attempt_published(
-            grading_points=1, group=group_with_passing_grade)
+            grading_points=1, group=group_with_passing_grade
+        )
         group_queryset = assignment.get_groups_with_passing_grade(sourceassignment=sourceassignment)
         self.assertEqual(group_queryset.count(), 1)
         self.assertNotIn(group_with_failing_grade, group_queryset)
         self.assertIn(group_with_passing_grade, group_queryset)
 
     def test_copy_groups_passing_grade_only_only_source_has_no_groups(self):
-        sourceassignment = baker.make('core.Assignment')
-        targetassignment = baker.make('core.Assignment')
+        sourceassignment = baker.make("core.Assignment")
+        targetassignment = baker.make("core.Assignment")
         targetassignment.copy_groups_from_another_assignment(sourceassignment=sourceassignment, passing_grade_only=True)
         self.assertEqual(targetassignment.assignmentgroups.count(), 0)
 
     def test_copy_groups_passing_grade_only_source_has_no_groups_with_passing_grade(self):
-        targetassignment = baker.make('core.Assignment')
-        sourceassignment = baker.make('core.Assignment')
-        group = baker.make('core.AssignmentGroup', parentnode=sourceassignment)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            grading_points=0, group=group)
+        targetassignment = baker.make("core.Assignment")
+        sourceassignment = baker.make("core.Assignment")
+        group = baker.make("core.AssignmentGroup", parentnode=sourceassignment)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(grading_points=0, group=group)
         targetassignment.copy_groups_from_another_assignment(sourceassignment=sourceassignment, passing_grade_only=True)
         self.assertEqual(targetassignment.assignmentgroups.count(), 0)
 
     def test_copy_groups_passing_grade_only_source_has_group_with_passing_grade(self):
-        targetassignment = baker.make('core.Assignment')
-        sourceassignment = baker.make('core.Assignment')
-        group = baker.make('core.AssignmentGroup', parentnode=sourceassignment)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            grading_points=1, group=group)
+        targetassignment = baker.make("core.Assignment")
+        sourceassignment = baker.make("core.Assignment")
+        group = baker.make("core.AssignmentGroup", parentnode=sourceassignment)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(grading_points=1, group=group)
         targetassignment.copy_groups_from_another_assignment(sourceassignment=sourceassignment, passing_grade_only=True)
         self.assertEqual(targetassignment.assignmentgroups.count(), 1)
 
     def test_copy_groups_passing_grade_only_source_has_multiple_groups_with_passing_grade(self):
-        targetassignment = baker.make('core.Assignment')
-        sourceassignment = baker.make('core.Assignment')
-        group1 = baker.make('core.AssignmentGroup', parentnode=sourceassignment)
-        group2 = baker.make('core.AssignmentGroup', parentnode=sourceassignment)
-        group3 = baker.make('core.AssignmentGroup', parentnode=sourceassignment)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            grading_points=1, group=group1)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            grading_points=1, group=group2)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            grading_points=1, group=group3)
+        targetassignment = baker.make("core.Assignment")
+        sourceassignment = baker.make("core.Assignment")
+        group1 = baker.make("core.AssignmentGroup", parentnode=sourceassignment)
+        group2 = baker.make("core.AssignmentGroup", parentnode=sourceassignment)
+        group3 = baker.make("core.AssignmentGroup", parentnode=sourceassignment)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(grading_points=1, group=group1)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(grading_points=1, group=group2)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(grading_points=1, group=group3)
         targetassignment.copy_groups_from_another_assignment(sourceassignment=sourceassignment, passing_grade_only=True)
         self.assertEqual(targetassignment.assignmentgroups.count(), 3)
 
     def test_copy_groups_passing_grade_only_source_new_attempt_passed(self):
-        targetassignment = baker.make('core.Assignment')
-        sourceassignment = baker.make('core.Assignment')
-        group = baker.make('core.AssignmentGroup', parentnode=sourceassignment)
+        targetassignment = baker.make("core.Assignment")
+        sourceassignment = baker.make("core.Assignment")
+        group = baker.make("core.AssignmentGroup", parentnode=sourceassignment)
         devilry_group_baker_factories.feedbackset_first_attempt_published(
-            grading_points=0, group=group, deadline_datetime=timezone.now() - timedelta(days=1))
+            grading_points=0, group=group, deadline_datetime=timezone.now() - timedelta(days=1)
+        )
         devilry_group_baker_factories.feedbackset_new_attempt_published(
-            grading_points=1, group=group, deadline_datetime=timezone.now())
+            grading_points=1, group=group, deadline_datetime=timezone.now()
+        )
         targetassignment.copy_groups_from_another_assignment(sourceassignment=sourceassignment, passing_grade_only=True)
         self.assertEqual(targetassignment.assignmentgroups.count(), 1)
 
     def test_copy_groups_passing_grade_only_target_has_groups(self):
-        sourceassignment = baker.make('core.Assignment')
-        targetassignment = baker.make('core.Assignment')
-        baker.make('core.AssignmentGroup', parentnode=targetassignment)
+        sourceassignment = baker.make("core.Assignment")
+        targetassignment = baker.make("core.Assignment")
+        baker.make("core.AssignmentGroup", parentnode=targetassignment)
         with self.assertRaises(AssignmentHasGroupsError):
             targetassignment.copy_groups_from_another_assignment(
-                sourceassignment=sourceassignment, passing_grade_only=True)
+                sourceassignment=sourceassignment, passing_grade_only=True
+            )
 
     def test_copy_groups_passing_grade_only_groups_is_created(self):
-        sourceassignment = baker.make('core.Assignment')
-        group1 = baker.make('core.AssignmentGroup', parentnode=sourceassignment)
-        group2 = baker.make('core.AssignmentGroup', parentnode=sourceassignment)
-        group3 = baker.make('core.AssignmentGroup', parentnode=sourceassignment)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            grading_points=1, group=group1)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            grading_points=1, group=group2)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            grading_points=1, group=group3)
-        targetassignment = baker.make('core.Assignment')
+        sourceassignment = baker.make("core.Assignment")
+        group1 = baker.make("core.AssignmentGroup", parentnode=sourceassignment)
+        group2 = baker.make("core.AssignmentGroup", parentnode=sourceassignment)
+        group3 = baker.make("core.AssignmentGroup", parentnode=sourceassignment)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(grading_points=1, group=group1)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(grading_points=1, group=group2)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(grading_points=1, group=group3)
+        targetassignment = baker.make("core.Assignment")
         targetassignment.copy_groups_from_another_assignment(sourceassignment=sourceassignment, passing_grade_only=True)
         self.assertEqual(targetassignment.assignmentgroups.count(), 3)
 
     def test_copy_groups_passing_grade_only_candidate_added_to_group(self):
-        sourceassignment = baker.make('core.Assignment')
-        group = baker.make('core.AssignmentGroup', parentnode=sourceassignment)
+        sourceassignment = baker.make("core.Assignment")
+        group = baker.make("core.AssignmentGroup", parentnode=sourceassignment)
         candidate_user = baker.make(settings.AUTH_USER_MODEL)
-        baker.make('core.Candidate', assignment_group=group, relatedstudent__user=candidate_user)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            grading_points=1, group=group)
-        targetassignment = baker.make('core.Assignment')
+        baker.make("core.Candidate", assignment_group=group, relatedstudent__user=candidate_user)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(grading_points=1, group=group)
+        targetassignment = baker.make("core.Assignment")
         targetassignment.copy_groups_from_another_assignment(sourceassignment=sourceassignment, passing_grade_only=True)
         self.assertEqual(targetassignment.assignmentgroups.count(), 1)
         self.assertTrue(
             Candidate.objects.filter(
-                assignment_group__parentnode=targetassignment, relatedstudent__user=candidate_user).exists())
+                assignment_group__parentnode=targetassignment, relatedstudent__user=candidate_user
+            ).exists()
+        )
 
     def test_copy_groups_passing_grade_only_projectgroup_candidates_added(self):
-        sourceassignment = baker.make('core.Assignment')
-        group = baker.make('core.AssignmentGroup', parentnode=sourceassignment)
+        sourceassignment = baker.make("core.Assignment")
+        group = baker.make("core.AssignmentGroup", parentnode=sourceassignment)
         candidate_user1 = baker.make(settings.AUTH_USER_MODEL)
         candidate_user2 = baker.make(settings.AUTH_USER_MODEL)
-        baker.make('core.Candidate', assignment_group=group, relatedstudent__user=candidate_user1)
-        baker.make('core.Candidate', assignment_group=group, relatedstudent__user=candidate_user2)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            grading_points=1, group=group)
-        targetassignment = baker.make('core.Assignment')
+        baker.make("core.Candidate", assignment_group=group, relatedstudent__user=candidate_user1)
+        baker.make("core.Candidate", assignment_group=group, relatedstudent__user=candidate_user2)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(grading_points=1, group=group)
+        targetassignment = baker.make("core.Assignment")
         targetassignment.copy_groups_from_another_assignment(sourceassignment=sourceassignment, passing_grade_only=True)
         self.assertEqual(targetassignment.assignmentgroups.count(), 1)
         new_group = targetassignment.assignmentgroups.get()
         self.assertTrue(
-            Candidate.objects.filter(
-                assignment_group=new_group, relatedstudent__user=candidate_user1).exists())
+            Candidate.objects.filter(assignment_group=new_group, relatedstudent__user=candidate_user1).exists()
+        )
         self.assertTrue(
-            Candidate.objects.filter(
-                assignment_group=new_group, relatedstudent__user=candidate_user2).exists())
+            Candidate.objects.filter(assignment_group=new_group, relatedstudent__user=candidate_user2).exists()
+        )
 
     def test_copy_groups_passing_grade_only_groups_with_one_candidate_each_added(self):
-        sourceassignment = baker.make('core.Assignment')
-        group1 = baker.make('core.AssignmentGroup', parentnode=sourceassignment)
-        group2 = baker.make('core.AssignmentGroup', parentnode=sourceassignment)
+        sourceassignment = baker.make("core.Assignment")
+        group1 = baker.make("core.AssignmentGroup", parentnode=sourceassignment)
+        group2 = baker.make("core.AssignmentGroup", parentnode=sourceassignment)
         candidate_user_group1 = baker.make(settings.AUTH_USER_MODEL)
         candidate_user_group2 = baker.make(settings.AUTH_USER_MODEL)
-        baker.make('core.Candidate', assignment_group=group1, relatedstudent__user=candidate_user_group1)
-        baker.make('core.Candidate', assignment_group=group2, relatedstudent__user=candidate_user_group2)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            grading_points=1, group=group1)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            grading_points=1, group=group2)
-        targetassignment = baker.make('core.Assignment')
+        baker.make("core.Candidate", assignment_group=group1, relatedstudent__user=candidate_user_group1)
+        baker.make("core.Candidate", assignment_group=group2, relatedstudent__user=candidate_user_group2)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(grading_points=1, group=group1)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(grading_points=1, group=group2)
+        targetassignment = baker.make("core.Assignment")
         targetassignment.copy_groups_from_another_assignment(sourceassignment=sourceassignment, passing_grade_only=True)
         self.assertEqual(targetassignment.assignmentgroups.count(), 2)
         self.assertTrue(
             Candidate.objects.filter(
-                assignment_group__parentnode=targetassignment, relatedstudent__user=candidate_user_group1).exists())
+                assignment_group__parentnode=targetassignment, relatedstudent__user=candidate_user_group1
+            ).exists()
+        )
         self.assertTrue(
             Candidate.objects.filter(
-                assignment_group__parentnode=targetassignment, relatedstudent__user=candidate_user_group2).exists())
+                assignment_group__parentnode=targetassignment, relatedstudent__user=candidate_user_group2
+            ).exists()
+        )
 
     def test_copy_groups_passing_grade_only_groups_candidates_from_failing_group_not_added(self):
-        sourceassignment = baker.make('core.Assignment')
-        group1 = baker.make('core.AssignmentGroup', parentnode=sourceassignment)
-        group2 = baker.make('core.AssignmentGroup', parentnode=sourceassignment)
+        sourceassignment = baker.make("core.Assignment")
+        group1 = baker.make("core.AssignmentGroup", parentnode=sourceassignment)
+        group2 = baker.make("core.AssignmentGroup", parentnode=sourceassignment)
         candidate_user_group1 = baker.make(settings.AUTH_USER_MODEL)
         candidate_user_group2 = baker.make(settings.AUTH_USER_MODEL)
-        baker.make('core.Candidate', assignment_group=group1, relatedstudent__user=candidate_user_group1)
-        baker.make('core.Candidate', assignment_group=group2, relatedstudent__user=candidate_user_group2)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            grading_points=1, group=group1)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            grading_points=0, group=group2)
-        targetassignment = baker.make('core.Assignment')
+        baker.make("core.Candidate", assignment_group=group1, relatedstudent__user=candidate_user_group1)
+        baker.make("core.Candidate", assignment_group=group2, relatedstudent__user=candidate_user_group2)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(grading_points=1, group=group1)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(grading_points=0, group=group2)
+        targetassignment = baker.make("core.Assignment")
         targetassignment.copy_groups_from_another_assignment(sourceassignment=sourceassignment, passing_grade_only=True)
         self.assertEqual(targetassignment.assignmentgroups.count(), 1)
         self.assertTrue(
             Candidate.objects.filter(
-                assignment_group__parentnode=targetassignment, relatedstudent__user=candidate_user_group1).exists())
+                assignment_group__parentnode=targetassignment, relatedstudent__user=candidate_user_group1
+            ).exists()
+        )
         self.assertFalse(
             Candidate.objects.filter(
-                assignment_group__parentnode=targetassignment, relatedstudent__user=candidate_user_group2).exists())
+                assignment_group__parentnode=targetassignment, relatedstudent__user=candidate_user_group2
+            ).exists()
+        )
 
     def test_copy_groups_passing_grade_only_examiners_from_passing_group_added(self):
-        sourceassignment = baker.make('core.Assignment')
-        group = baker.make('core.AssignmentGroup', parentnode=sourceassignment)
+        sourceassignment = baker.make("core.Assignment")
+        group = baker.make("core.AssignmentGroup", parentnode=sourceassignment)
         examiner_user = baker.make(settings.AUTH_USER_MODEL)
-        baker.make('core.Candidate', assignment_group=group, relatedstudent__period=sourceassignment.parentnode)
-        baker.make('core.Examiner', assignmentgroup=group, relatedexaminer__user=examiner_user)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            grading_points=1, group=group)
-        targetassignment = baker.make('core.Assignment', parentnode=sourceassignment.parentnode)
+        baker.make("core.Candidate", assignment_group=group, relatedstudent__period=sourceassignment.parentnode)
+        baker.make("core.Examiner", assignmentgroup=group, relatedexaminer__user=examiner_user)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(grading_points=1, group=group)
+        targetassignment = baker.make("core.Assignment", parentnode=sourceassignment.parentnode)
         targetassignment.copy_groups_from_another_assignment(sourceassignment=sourceassignment, passing_grade_only=True)
         self.assertEqual(targetassignment.assignmentgroups.count(), 1)
         self.assertTrue(
-            Examiner.objects.filter(
-                assignmentgroup__parentnode=targetassignment, relatedexaminer__user=examiner_user))
+            Examiner.objects.filter(assignmentgroup__parentnode=targetassignment, relatedexaminer__user=examiner_user)
+        )
 
     def test_copy_groups_passing_grade_only_examiners_from_failing_group_not_added(self):
-        sourceassignment = baker.make('core.Assignment')
-        group_with_passing_grade = baker.make('core.AssignmentGroup', parentnode=sourceassignment)
-        group_with_failing_grade = baker.make('core.AssignmentGroup', parentnode=sourceassignment)
+        sourceassignment = baker.make("core.Assignment")
+        group_with_passing_grade = baker.make("core.AssignmentGroup", parentnode=sourceassignment)
+        group_with_failing_grade = baker.make("core.AssignmentGroup", parentnode=sourceassignment)
         examiner_user1 = baker.make(settings.AUTH_USER_MODEL)
         examiner_user2 = baker.make(settings.AUTH_USER_MODEL)
-        baker.make('core.Examiner', assignmentgroup=group_with_passing_grade, relatedexaminer__user=examiner_user1)
-        baker.make('core.Examiner', assignmentgroup=group_with_failing_grade, relatedexaminer__user=examiner_user2)
+        baker.make("core.Examiner", assignmentgroup=group_with_passing_grade, relatedexaminer__user=examiner_user1)
+        baker.make("core.Examiner", assignmentgroup=group_with_failing_grade, relatedexaminer__user=examiner_user2)
         devilry_group_baker_factories.feedbackset_first_attempt_published(
-            grading_points=1, group=group_with_passing_grade)
+            grading_points=1, group=group_with_passing_grade
+        )
         devilry_group_baker_factories.feedbackset_first_attempt_published(
-            grading_points=0, group=group_with_failing_grade)
-        targetassignment = baker.make('core.Assignment', parentnode=sourceassignment.parentnode)
+            grading_points=0, group=group_with_failing_grade
+        )
+        targetassignment = baker.make("core.Assignment", parentnode=sourceassignment.parentnode)
         targetassignment.copy_groups_from_another_assignment(sourceassignment=sourceassignment, passing_grade_only=True)
         self.assertEqual(targetassignment.assignmentgroups.count(), 1)
         self.assertTrue(
-            Examiner.objects.filter(
-                assignmentgroup__parentnode=targetassignment, relatedexaminer__user=examiner_user1))
+            Examiner.objects.filter(assignmentgroup__parentnode=targetassignment, relatedexaminer__user=examiner_user1)
+        )
         self.assertFalse(
-            Examiner.objects.filter(
-                assignmentgroup__parentnode=targetassignment, relatedexaminer__user=examiner_user2))
+            Examiner.objects.filter(assignmentgroup__parentnode=targetassignment, relatedexaminer__user=examiner_user2)
+        )
 
     def test_copy_groups_passing_grade_only_examiners_added_to_groups_with_correct_candidates(self):
-        sourceassignment = baker.make('core.Assignment')
-        group1 = baker.make('core.AssignmentGroup', parentnode=sourceassignment)
-        group2 = baker.make('core.AssignmentGroup', parentnode=sourceassignment)
+        sourceassignment = baker.make("core.Assignment")
+        group1 = baker.make("core.AssignmentGroup", parentnode=sourceassignment)
+        group2 = baker.make("core.AssignmentGroup", parentnode=sourceassignment)
         examiner_user1 = baker.make(settings.AUTH_USER_MODEL)
         examiner_user2 = baker.make(settings.AUTH_USER_MODEL)
         candidate_user1 = baker.make(settings.AUTH_USER_MODEL)
         candidate_user2 = baker.make(settings.AUTH_USER_MODEL)
-        baker.make('core.Examiner', assignmentgroup=group1, relatedexaminer__user=examiner_user1)
-        baker.make('core.Examiner', assignmentgroup=group2, relatedexaminer__user=examiner_user2)
-        baker.make('core.Candidate', assignment_group=group1, relatedstudent__user=candidate_user1)
-        baker.make('core.Candidate', assignment_group=group2, relatedstudent__user=candidate_user2)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            grading_points=1, group=group1)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            grading_points=1, group=group2)
-        targetassignment = baker.make('core.Assignment', parentnode=sourceassignment.parentnode)
+        baker.make("core.Examiner", assignmentgroup=group1, relatedexaminer__user=examiner_user1)
+        baker.make("core.Examiner", assignmentgroup=group2, relatedexaminer__user=examiner_user2)
+        baker.make("core.Candidate", assignment_group=group1, relatedstudent__user=candidate_user1)
+        baker.make("core.Candidate", assignment_group=group2, relatedstudent__user=candidate_user2)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(grading_points=1, group=group1)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(grading_points=1, group=group2)
+        targetassignment = baker.make("core.Assignment", parentnode=sourceassignment.parentnode)
         targetassignment.copy_groups_from_another_assignment(sourceassignment=sourceassignment, passing_grade_only=True)
         self.assertEqual(targetassignment.assignmentgroups.count(), 2)
-        candidate1 = Candidate.objects\
-            .filter(assignment_group__parentnode=targetassignment, relatedstudent__user=candidate_user1).get()
-        candidate2 = Candidate.objects\
-            .filter(assignment_group__parentnode=targetassignment, relatedstudent__user=candidate_user2).get()
+        candidate1 = Candidate.objects.filter(
+            assignment_group__parentnode=targetassignment, relatedstudent__user=candidate_user1
+        ).get()
+        candidate2 = Candidate.objects.filter(
+            assignment_group__parentnode=targetassignment, relatedstudent__user=candidate_user2
+        ).get()
         self.assertTrue(
             Examiner.objects.filter(
-                assignmentgroup=candidate1.assignment_group, relatedexaminer__user=examiner_user1).exists())
+                assignmentgroup=candidate1.assignment_group, relatedexaminer__user=examiner_user1
+            ).exists()
+        )
         self.assertTrue(
             Examiner.objects.filter(
-                assignmentgroup=candidate2.assignment_group, relatedexaminer__user=examiner_user2).exists())
+                assignmentgroup=candidate2.assignment_group, relatedexaminer__user=examiner_user2
+            ).exists()
+        )
 
     def test_copy_groups_passing_grade_only_querycount(self):
-        sourceassignment = baker.make('core.Assignment')
-        group1 = baker.make('core.AssignmentGroup', parentnode=sourceassignment)
-        group2 = baker.make('core.AssignmentGroup', parentnode=sourceassignment)
-        baker.make('core.Candidate', assignment_group=group1, _quantity=40)
-        baker.make('core.Examiner', assignmentgroup=group1, _quantity=20)
-        baker.make('core.Candidate', assignment_group=group2, _quantity=5)
-        baker.make('core.Examiner', assignmentgroup=group2, _quantity=2)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            grading_points=1, group=group1)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            grading_points=1, group=group2)
+        sourceassignment = baker.make("core.Assignment")
+        group1 = baker.make("core.AssignmentGroup", parentnode=sourceassignment)
+        group2 = baker.make("core.AssignmentGroup", parentnode=sourceassignment)
+        baker.make("core.Candidate", assignment_group=group1, _quantity=40)
+        baker.make("core.Examiner", assignmentgroup=group1, _quantity=20)
+        baker.make("core.Candidate", assignment_group=group2, _quantity=5)
+        baker.make("core.Examiner", assignmentgroup=group2, _quantity=2)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(grading_points=1, group=group1)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(grading_points=1, group=group2)
 
-        targetassignment = baker.make('core.Assignment')
+        targetassignment = baker.make("core.Assignment")
         # Should require only 9 queries no matter how many groups, candidates or examiners we
         # have (at least up to the max number of bulk created object per query):
         # 1. Check if any groups exists within the targetassignment.
@@ -407,53 +420,49 @@ class TestAssignment(TestCase):
             targetassignment.copy_groups_from_another_assignment(sourceassignment, passing_grade_only=True)
 
     def test_copy_groups_from_another_assignment_source_has_no_groups(self):
-        sourceassignment = baker.make('core.Assignment')
-        targetassignment = baker.make('core.Assignment')
+        sourceassignment = baker.make("core.Assignment")
+        targetassignment = baker.make("core.Assignment")
         targetassignment.copy_groups_from_another_assignment(sourceassignment)
         self.assertEqual(targetassignment.assignmentgroups.count(), 0)
 
     def test_copy_groups_from_another_assignment_target_has_groups(self):
-        sourceassignment = baker.make('core.Assignment')
-        targetassignment = baker.make('core.Assignment')
-        baker.make('core.AssignmentGroup', parentnode=targetassignment)
+        sourceassignment = baker.make("core.Assignment")
+        targetassignment = baker.make("core.Assignment")
+        baker.make("core.AssignmentGroup", parentnode=targetassignment)
         with self.assertRaises(AssignmentHasGroupsError):
             targetassignment.copy_groups_from_another_assignment(sourceassignment)
 
     def test_copy_groups_from_another_assignment_groups_is_created(self):
-        sourceassignment = baker.make('core.Assignment')
-        baker.make('core.AssignmentGroup', parentnode=sourceassignment, _quantity=5)
-        targetassignment = baker.make('core.Assignment')
+        sourceassignment = baker.make("core.Assignment")
+        baker.make("core.AssignmentGroup", parentnode=sourceassignment, _quantity=5)
+        targetassignment = baker.make("core.Assignment")
         targetassignment.copy_groups_from_another_assignment(sourceassignment)
         self.assertEqual(targetassignment.assignmentgroups.count(), 5)
 
     def test_copy_groups_from_another_assignment_candidates(self):
-        sourceassignment = baker.make('core.Assignment')
-        student1 = baker.make(settings.AUTH_USER_MODEL, shortname='student1')
-        student2 = baker.make(settings.AUTH_USER_MODEL, shortname='student2')
-        baker.make('core.Candidate',
-                   assignment_group__parentnode=sourceassignment,
-                   relatedstudent__user=student1)
-        baker.make('core.Candidate',
-                   assignment_group__parentnode=sourceassignment,
-                   relatedstudent__user=student2)
+        sourceassignment = baker.make("core.Assignment")
+        student1 = baker.make(settings.AUTH_USER_MODEL, shortname="student1")
+        student2 = baker.make(settings.AUTH_USER_MODEL, shortname="student2")
+        baker.make("core.Candidate", assignment_group__parentnode=sourceassignment, relatedstudent__user=student1)
+        baker.make("core.Candidate", assignment_group__parentnode=sourceassignment, relatedstudent__user=student2)
 
-        targetassignment = baker.make('core.Assignment')
+        targetassignment = baker.make("core.Assignment")
         targetassignment.copy_groups_from_another_assignment(sourceassignment)
         self.assertEqual(targetassignment.assignmentgroups.count(), 2)
         candidatesqueryset = Candidate.objects.filter(assignment_group__parentnode=targetassignment)
-        self.assertTrue(candidatesqueryset.filter(relatedstudent__user__shortname='student1').exists())
-        self.assertTrue(candidatesqueryset.filter(relatedstudent__user__shortname='student2').exists())
+        self.assertTrue(candidatesqueryset.filter(relatedstudent__user__shortname="student1").exists())
+        self.assertTrue(candidatesqueryset.filter(relatedstudent__user__shortname="student2").exists())
 
     def test_copy_groups_from_another_assignment_querycount(self):
-        sourceassignment = baker.make('core.Assignment')
-        group1 = baker.make('core.AssignmentGroup', parentnode=sourceassignment)
-        group2 = baker.make('core.AssignmentGroup', parentnode=sourceassignment)
-        baker.make('core.Candidate', assignment_group=group1, _quantity=40)
-        baker.make('core.Examiner', assignmentgroup=group1, _quantity=20)
-        baker.make('core.Candidate', assignment_group=group2, _quantity=5)
-        baker.make('core.Examiner', assignmentgroup=group2, _quantity=2)
+        sourceassignment = baker.make("core.Assignment")
+        group1 = baker.make("core.AssignmentGroup", parentnode=sourceassignment)
+        group2 = baker.make("core.AssignmentGroup", parentnode=sourceassignment)
+        baker.make("core.Candidate", assignment_group=group1, _quantity=40)
+        baker.make("core.Examiner", assignmentgroup=group1, _quantity=20)
+        baker.make("core.Candidate", assignment_group=group2, _quantity=5)
+        baker.make("core.Examiner", assignmentgroup=group2, _quantity=2)
 
-        targetassignment = baker.make('core.Assignment')
+        targetassignment = baker.make("core.Assignment")
         # Should require only 9 queries no matter how many groups, candidates or examiners we
         # have (at least up to the max number of bulk created object per query):
         # 1. Check if any groups exists within the targetassignment.
@@ -469,45 +478,45 @@ class TestAssignment(TestCase):
             targetassignment.copy_groups_from_another_assignment(sourceassignment)
 
     def test_create_groups_from_relatedstudents_on_period_period_has_no_relatedstudents(self):
-        testassignment = baker.make('core.Assignment')
+        testassignment = baker.make("core.Assignment")
         testassignment.create_groups_from_relatedstudents_on_period()
         self.assertEqual(testassignment.assignmentgroups.count(), 0)
 
     def test_create_groups_from_relatedstudents_on_period_assignment_has_groups(self):
-        testassignment = baker.make('core.Assignment')
-        baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make("core.Assignment")
+        baker.make("core.AssignmentGroup", parentnode=testassignment)
         with self.assertRaises(AssignmentHasGroupsError):
             testassignment.create_groups_from_relatedstudents_on_period()
 
     def test_create_groups_from_relatedstudents_on_period_groups_is_created(self):
-        testperiod = baker.make('core.Period')
-        baker.make('core.RelatedStudent', period=testperiod, _quantity=5)
-        testassignment = baker.make('core.Assignment', parentnode=testperiod)
+        testperiod = baker.make("core.Period")
+        baker.make("core.RelatedStudent", period=testperiod, _quantity=5)
+        testassignment = baker.make("core.Assignment", parentnode=testperiod)
         testassignment.create_groups_from_relatedstudents_on_period()
         self.assertEqual(testassignment.assignmentgroups.count(), 5)
 
     def test_create_groups_from_relatedstudents_on_period_candidates_is_created(self):
-        testperiod = baker.make('core.Period')
-        baker.make('core.RelatedStudent', period=testperiod, _quantity=5)
-        testassignment = baker.make('core.Assignment', parentnode=testperiod)
+        testperiod = baker.make("core.Period")
+        baker.make("core.RelatedStudent", period=testperiod, _quantity=5)
+        testassignment = baker.make("core.Assignment", parentnode=testperiod)
         testassignment.create_groups_from_relatedstudents_on_period()
         candidatesqueryset = Candidate.objects.filter(assignment_group__parentnode=testassignment)
         self.assertEqual(candidatesqueryset.count(), 5)
 
     def test_create_groups_from_relatedstudents_on_period_candidates_has_correct_user(self):
-        testperiod = baker.make('core.Period')
-        baker.make('core.RelatedStudent', period=testperiod, user__shortname='student1')
-        baker.make('core.RelatedStudent', period=testperiod, user__shortname='student2')
-        testassignment = baker.make('core.Assignment', parentnode=testperiod)
+        testperiod = baker.make("core.Period")
+        baker.make("core.RelatedStudent", period=testperiod, user__shortname="student1")
+        baker.make("core.RelatedStudent", period=testperiod, user__shortname="student2")
+        testassignment = baker.make("core.Assignment", parentnode=testperiod)
         testassignment.create_groups_from_relatedstudents_on_period()
         candidatesqueryset = Candidate.objects.filter(assignment_group__parentnode=testassignment)
-        self.assertTrue(candidatesqueryset.filter(relatedstudent__user__shortname='student1').exists())
-        self.assertTrue(candidatesqueryset.filter(relatedstudent__user__shortname='student2').exists())
+        self.assertTrue(candidatesqueryset.filter(relatedstudent__user__shortname="student1").exists())
+        self.assertTrue(candidatesqueryset.filter(relatedstudent__user__shortname="student2").exists())
 
     def test_create_groups_from_relatedstudents_on_period_querycount(self):
-        testperiod = baker.make('core.Period')
-        baker.make('core.RelatedStudent', period=testperiod, _quantity=30)
-        testassignment = baker.make('core.Assignment', parentnode=testperiod)
+        testperiod = baker.make("core.Period")
+        baker.make("core.RelatedStudent", period=testperiod, _quantity=30)
+        testassignment = baker.make("core.Assignment", parentnode=testperiod)
         # Should require only 5 queries no matter how many relatedstudents we
         # have (at least up to the max number of bulk created object per query):
         # 1. Check if any groups exists within the assignment.
@@ -519,7 +528,7 @@ class TestAssignment(TestCase):
             testassignment.create_groups_from_relatedstudents_on_period()
 
     def test_setup_examiners_by_relateduser_syncsystem_tags_no_relatedstudents(self):
-        testassignment = baker.make('core.Assignment')
+        testassignment = baker.make("core.Assignment")
         testassignment.setup_examiners_by_relateduser_syncsystem_tags()
 
     # def test_setup_examiners_by_relateduser_syncsystem_tags_simple(self):
@@ -549,25 +558,23 @@ class TestAssignment(TestCase):
     #     self.assertTrue(group1.examiners.filter(relatedexaminer__user__shortname='examiner1').exists())
 
     def test_setup_examiners_by_relateduser_syncsystem_tags_simple(self):
-        testperiod = baker.make('core.Period')
-        testperiodtag = baker.make('core.PeriodTag', period=testperiod)
+        testperiod = baker.make("core.Period")
+        testperiodtag = baker.make("core.PeriodTag", period=testperiod)
 
-        examiner1 = baker.make(settings.AUTH_USER_MODEL, shortname='examiner1')
-        testperiodtag.relatedexaminers.add(
-            baker.make('core.RelatedExaminer', period=testperiod, user=examiner1))
+        examiner1 = baker.make(settings.AUTH_USER_MODEL, shortname="examiner1")
+        testperiodtag.relatedexaminers.add(baker.make("core.RelatedExaminer", period=testperiod, user=examiner1))
 
         student1 = baker.make(settings.AUTH_USER_MODEL)
-        relatedstudent1 = baker.make('core.RelatedStudent', period=testperiod, user=student1)
+        relatedstudent1 = baker.make("core.RelatedStudent", period=testperiod, user=student1)
         testperiodtag.relatedstudents.add(relatedstudent1)
 
-        testassignment = baker.make('core.Assignment', parentnode=testperiod)
-        group1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Candidate', assignment_group=group1,
-                   relatedstudent=relatedstudent1)
+        testassignment = baker.make("core.Assignment", parentnode=testperiod)
+        group1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Candidate", assignment_group=group1, relatedstudent=relatedstudent1)
 
         testassignment.setup_examiners_by_relateduser_syncsystem_tags()
         self.assertEqual(group1.examiners.count(), 1)
-        self.assertTrue(group1.examiners.filter(relatedexaminer__user__shortname='examiner1').exists())
+        self.assertTrue(group1.examiners.filter(relatedexaminer__user__shortname="examiner1").exists())
 
     # def test_setup_examiners_by_relateduser_syncsystem_tags_exclude_existing_examinerobjects(self):
     #     testperiod = baker.make('core.Period')
@@ -602,30 +609,28 @@ class TestAssignment(TestCase):
     #     self.assertTrue(group1.examiners.filter(relatedexaminer__user__shortname='examiner1').exists())
 
     def test_setup_examiners_by_relateduser_syncsystem_tags_exclude_existing_examinerobjects(self):
-        testperiod = baker.make('core.Period')
-        testperiodtag = baker.make('core.PeriodTag', period=testperiod)
+        testperiod = baker.make("core.Period")
+        testperiodtag = baker.make("core.PeriodTag", period=testperiod)
 
-        examiner1 = baker.make(settings.AUTH_USER_MODEL, shortname='examiner1')
-        relatedexaminer1 = baker.make('core.RelatedExaminer', period=testperiod, user=examiner1)
+        examiner1 = baker.make(settings.AUTH_USER_MODEL, shortname="examiner1")
+        relatedexaminer1 = baker.make("core.RelatedExaminer", period=testperiod, user=examiner1)
         testperiodtag.relatedexaminers.add(relatedexaminer1)
 
         student1 = baker.make(settings.AUTH_USER_MODEL)
-        relatedstudent1 = baker.make('core.RelatedStudent', period=testperiod, user=student1)
+        relatedstudent1 = baker.make("core.RelatedStudent", period=testperiod, user=student1)
         testperiodtag.relatedstudents.add(relatedstudent1)
 
-        testassignment = baker.make('core.Assignment', parentnode=testperiod)
-        group1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Candidate', assignment_group=group1,
-                   relatedstudent=relatedstudent1)
-        baker.make('core.Examiner', assignmentgroup=group1,
-                   relatedexaminer=relatedexaminer1)
+        testassignment = baker.make("core.Assignment", parentnode=testperiod)
+        group1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Candidate", assignment_group=group1, relatedstudent=relatedstudent1)
+        baker.make("core.Examiner", assignmentgroup=group1, relatedexaminer=relatedexaminer1)
 
         # NOTE: The real test here is that we do not get an IntegrityError
         self.assertEqual(group1.examiners.count(), 1)
         testassignment.setup_examiners_by_relateduser_syncsystem_tags()
         group1 = AssignmentGroup.objects.get(id=group1.id)
         self.assertEqual(group1.examiners.count(), 1)
-        self.assertTrue(group1.examiners.filter(relatedexaminer__user__shortname='examiner1').exists())
+        self.assertTrue(group1.examiners.filter(relatedexaminer__user__shortname="examiner1").exists())
 
     # def test_setup_examiners_by_relateduser_syncsystem_tags_multiple_tags_and_examiners(self):
     #     testperiod = baker.make('core.Period')
@@ -677,45 +682,43 @@ class TestAssignment(TestCase):
     #     self.assertTrue(group2.examiners.filter(relatedexaminer__user__shortname='examiner2').exists())
 
     def test_setup_examiners_by_relateduser_syncsystem_tags_multiple_tags_and_examiners(self):
-        testperiod = baker.make('core.Period')
-        testperiodtag1 = baker.make('core.PeriodTag', period=testperiod, tag='group1')
-        testperiodtag2 = baker.make('core.PeriodTag', period=testperiod, tag='group2')
+        testperiod = baker.make("core.Period")
+        testperiodtag1 = baker.make("core.PeriodTag", period=testperiod, tag="group1")
+        testperiodtag2 = baker.make("core.PeriodTag", period=testperiod, tag="group2")
 
-        examiner1 = baker.make(settings.AUTH_USER_MODEL, shortname='examiner1')
-        relatedexaminer1 = baker.make('core.RelatedExaminer', period=testperiod, user=examiner1)
+        examiner1 = baker.make(settings.AUTH_USER_MODEL, shortname="examiner1")
+        relatedexaminer1 = baker.make("core.RelatedExaminer", period=testperiod, user=examiner1)
         testperiodtag1.relatedexaminers.add(relatedexaminer1)
-        examiner2 = baker.make(settings.AUTH_USER_MODEL, shortname='examiner2')
-        relatedexaminer2 = baker.make('core.RelatedExaminer', period=testperiod, user=examiner2)
+        examiner2 = baker.make(settings.AUTH_USER_MODEL, shortname="examiner2")
+        relatedexaminer2 = baker.make("core.RelatedExaminer", period=testperiod, user=examiner2)
         testperiodtag2.relatedexaminers.add(relatedexaminer2)
 
         student1 = baker.make(settings.AUTH_USER_MODEL)
-        relatedstudent1 = baker.make('core.RelatedStudent', period=testperiod, user=student1)
+        relatedstudent1 = baker.make("core.RelatedStudent", period=testperiod, user=student1)
         testperiodtag1.relatedstudents.add(relatedstudent1)
         student2 = baker.make(settings.AUTH_USER_MODEL)
-        relatedstudent2 = baker.make('core.RelatedStudent', period=testperiod, user=student2)
+        relatedstudent2 = baker.make("core.RelatedStudent", period=testperiod, user=student2)
         testperiodtag1.relatedstudents.add(relatedstudent2)
         testperiodtag2.relatedstudents.add(relatedstudent2)
 
-        testassignment = baker.make('core.Assignment', parentnode=testperiod)
-        group1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Candidate', assignment_group=group1,
-                   relatedstudent=relatedstudent1)
-        group2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Candidate', assignment_group=group2,
-                   relatedstudent=relatedstudent2)
+        testassignment = baker.make("core.Assignment", parentnode=testperiod)
+        group1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Candidate", assignment_group=group1, relatedstudent=relatedstudent1)
+        group2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Candidate", assignment_group=group2, relatedstudent=relatedstudent2)
 
         testassignment.setup_examiners_by_relateduser_syncsystem_tags()
         self.assertEqual(Examiner.objects.count(), 3)
         self.assertEqual(group1.examiners.count(), 1)
-        self.assertTrue(group1.examiners.filter(relatedexaminer__user__shortname='examiner1').exists())
-        self.assertFalse(group1.examiners.filter(relatedexaminer__user__shortname='examiner2').exists())
+        self.assertTrue(group1.examiners.filter(relatedexaminer__user__shortname="examiner1").exists())
+        self.assertFalse(group1.examiners.filter(relatedexaminer__user__shortname="examiner2").exists())
         self.assertEqual(group2.examiners.count(), 2)
-        self.assertTrue(group2.examiners.filter(relatedexaminer__user__shortname='examiner1').exists())
-        self.assertTrue(group2.examiners.filter(relatedexaminer__user__shortname='examiner2').exists())
+        self.assertTrue(group2.examiners.filter(relatedexaminer__user__shortname="examiner1").exists())
+        self.assertTrue(group2.examiners.filter(relatedexaminer__user__shortname="examiner2").exists())
 
     def test_setup_examiners_by_relateduser_syncsystem_tags_querycount_minimal(self):
-        testperiod = baker.make('core.Period')
-        testassignment = baker.make('core.Assignment', parentnode=testperiod)
+        testperiod = baker.make("core.Period")
+        testassignment = baker.make("core.Assignment", parentnode=testperiod)
 
         # Should require 2 queries if we have no PeriodTags
         # 1 query to map groupids to examiner user ID.
@@ -724,31 +727,21 @@ class TestAssignment(TestCase):
             testassignment.setup_examiners_by_relateduser_syncsystem_tags()
 
     def test_setup_examiners_by_relateduser_syncsystem_tags_querycount(self):
-        testperiod = baker.make('core.Period')
-        testperiodtag1 = baker.make('core.PeriodTag', period=testperiod, tag='group1')
-        testperiodtag2 = baker.make('core.PeriodTag', period=testperiod, tag='group2')
+        testperiod = baker.make("core.Period")
+        testperiodtag1 = baker.make("core.PeriodTag", period=testperiod, tag="group1")
+        testperiodtag2 = baker.make("core.PeriodTag", period=testperiod, tag="group2")
 
         # Add RelatedExaminers to group1 and group2 tag.
-        testperiodtag1.relatedexaminers.add(
-            *baker.make('core.RelatedExaminer', period=testperiod, _quantity=8)
-        )
-        testperiodtag2.relatedexaminers.add(
-            *baker.make('core.RelatedExaminer', period=testperiod, _quantity=10)
-        )
+        testperiodtag1.relatedexaminers.add(*baker.make("core.RelatedExaminer", period=testperiod, _quantity=8))
+        testperiodtag2.relatedexaminers.add(*baker.make("core.RelatedExaminer", period=testperiod, _quantity=10))
 
         # Add RelatedStudents to group1 and group2 tag.
-        testperiodtag1.relatedstudents.add(
-            *baker.make('core.RelatedStudent', period=testperiod, _quantity=20)
-        )
-        testperiodtag2.relatedstudents.add(
-            *baker.make('core.RelatedStudent', period=testperiod, _quantity=30)
-        )
+        testperiodtag1.relatedstudents.add(*baker.make("core.RelatedStudent", period=testperiod, _quantity=20))
+        testperiodtag2.relatedstudents.add(*baker.make("core.RelatedStudent", period=testperiod, _quantity=30))
 
-        testassignment = baker.make('core.Assignment', parentnode=testperiod)
+        testassignment = baker.make("core.Assignment", parentnode=testperiod)
         for relatedstudent in testperiod.relatedstudent_set.all():
-            baker.make('core.Candidate',
-                       relatedstudent=relatedstudent,
-                       assignment_group__parentnode=testassignment)
+            baker.make("core.Candidate", relatedstudent=relatedstudent, assignment_group__parentnode=testassignment)
 
         # Should require 39 queries:
         # - 1 query to map groupids to examiner user ID.
@@ -762,172 +755,146 @@ class TestAssignment(TestCase):
         self.assertEqual(460, Examiner.objects.count())
 
     def test_students_must_be_anonymized_for_devilryrole_student_nonanonymous_assignment(self):
-        assignment = baker.make('core.Assignment',
-                                anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
-        self.assertFalse(assignment.students_must_be_anonymized_for_devilryrole(devilryrole='student'))
+        assignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
+        self.assertFalse(assignment.students_must_be_anonymized_for_devilryrole(devilryrole="student"))
 
     def test_students_must_be_anonymized_for_devilryrole_student_semi_anonymous_assignment(self):
-        assignment = baker.make('core.Assignment',
-                                anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        self.assertFalse(assignment.students_must_be_anonymized_for_devilryrole(devilryrole='student'))
+        assignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        self.assertFalse(assignment.students_must_be_anonymized_for_devilryrole(devilryrole="student"))
 
     def test_students_must_be_anonymized_for_devilryrole_student_fully_anonymous_assignment(self):
-        assignment = baker.make('core.Assignment',
-                                anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        self.assertFalse(assignment.students_must_be_anonymized_for_devilryrole(devilryrole='student'))
+        assignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        self.assertFalse(assignment.students_must_be_anonymized_for_devilryrole(devilryrole="student"))
 
     def test_students_must_be_anonymized_for_devilryrole_examiner_nonanonymous_assignment(self):
-        assignment = baker.make('core.Assignment',
-                                anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
-        self.assertFalse(assignment.students_must_be_anonymized_for_devilryrole(devilryrole='examiner'))
+        assignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
+        self.assertFalse(assignment.students_must_be_anonymized_for_devilryrole(devilryrole="examiner"))
 
     def test_students_must_be_anonymized_for_devilryrole_examiner_semi_anonymous_assignment(self):
-        assignment = baker.make('core.Assignment',
-                                anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        self.assertTrue(assignment.students_must_be_anonymized_for_devilryrole(devilryrole='examiner'))
+        assignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        self.assertTrue(assignment.students_must_be_anonymized_for_devilryrole(devilryrole="examiner"))
 
     def test_students_must_be_anonymized_for_devilryrole_examiner_fully_anonymous_assignment(self):
-        assignment = baker.make('core.Assignment',
-                                anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        self.assertTrue(assignment.students_must_be_anonymized_for_devilryrole(devilryrole='examiner'))
+        assignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        self.assertTrue(assignment.students_must_be_anonymized_for_devilryrole(devilryrole="examiner"))
 
     def test_students_must_be_anonymized_for_devilryrole_periodadmin_nonanonymous_assignment(self):
-        assignment = baker.make('core.Assignment',
-                                anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
-        self.assertFalse(assignment.students_must_be_anonymized_for_devilryrole(devilryrole='periodadmin'))
+        assignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
+        self.assertFalse(assignment.students_must_be_anonymized_for_devilryrole(devilryrole="periodadmin"))
 
     def test_students_must_be_anonymized_for_devilryrole_periodadmin_semi_anonymous_assignment(self):
-        assignment = baker.make('core.Assignment',
-                                anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        with self.assertRaisesMessage(ValueError, 'It is illegal for periodadmins to '
-                                                  'have access to anonymous assignments.'):
-            assignment.students_must_be_anonymized_for_devilryrole(devilryrole='periodadmin')
+        assignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        with self.assertRaisesMessage(
+            ValueError, "It is illegal for periodadmins to have access to anonymous assignments."
+        ):
+            assignment.students_must_be_anonymized_for_devilryrole(devilryrole="periodadmin")
 
     def test_students_must_be_anonymized_for_devilryrole_periodadmin_fully_anonymous_assignment(self):
-        assignment = baker.make('core.Assignment',
-                                anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        with self.assertRaisesMessage(ValueError, 'It is illegal for periodadmins to '
-                                                  'have access to anonymous assignments.'):
-            assignment.students_must_be_anonymized_for_devilryrole(devilryrole='periodadmin')
+        assignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        with self.assertRaisesMessage(
+            ValueError, "It is illegal for periodadmins to have access to anonymous assignments."
+        ):
+            assignment.students_must_be_anonymized_for_devilryrole(devilryrole="periodadmin")
 
     def test_students_must_be_anonymized_for_devilryrole_subjectadmin_nonanonymous_assignment(self):
-        assignment = baker.make('core.Assignment',
-                                anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
-        self.assertFalse(assignment.students_must_be_anonymized_for_devilryrole(devilryrole='subjectadmin'))
+        assignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
+        self.assertFalse(assignment.students_must_be_anonymized_for_devilryrole(devilryrole="subjectadmin"))
 
     def test_students_must_be_anonymized_for_devilryrole_subjectadmin_semi_anonymous_assignment(self):
-        assignment = baker.make('core.Assignment',
-                                anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        self.assertFalse(assignment.students_must_be_anonymized_for_devilryrole(devilryrole='subjectadmin'))
+        assignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        self.assertFalse(assignment.students_must_be_anonymized_for_devilryrole(devilryrole="subjectadmin"))
 
     def test_students_must_be_anonymized_for_devilryrole_subjectadmin_fully_anonymous_assignment(self):
-        assignment = baker.make('core.Assignment',
-                                anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        self.assertTrue(assignment.students_must_be_anonymized_for_devilryrole(devilryrole='subjectadmin'))
+        assignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        self.assertTrue(assignment.students_must_be_anonymized_for_devilryrole(devilryrole="subjectadmin"))
 
     def test_students_must_be_anonymized_for_devilryrole_departmentadmin_nonanonymous_assignment(self):
-        assignment = baker.make('core.Assignment',
-                                anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
-        self.assertFalse(assignment.students_must_be_anonymized_for_devilryrole(devilryrole='departmentadmin'))
+        assignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
+        self.assertFalse(assignment.students_must_be_anonymized_for_devilryrole(devilryrole="departmentadmin"))
 
     def test_students_must_be_anonymized_for_devilryrole_departmentadmin_semi_anonymous_assignment(self):
-        assignment = baker.make('core.Assignment',
-                                anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        self.assertFalse(assignment.students_must_be_anonymized_for_devilryrole(devilryrole='departmentadmin'))
+        assignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        self.assertFalse(assignment.students_must_be_anonymized_for_devilryrole(devilryrole="departmentadmin"))
 
     def test_students_must_be_anonymized_for_devilryrole_departmentadmin_fully_anonymous_assignment(self):
-        assignment = baker.make('core.Assignment',
-                                anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        self.assertFalse(assignment.students_must_be_anonymized_for_devilryrole(devilryrole='departmentadmin'))
+        assignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        self.assertFalse(assignment.students_must_be_anonymized_for_devilryrole(devilryrole="departmentadmin"))
 
     def test_examiners_must_be_anonymized_for_devilryrole_student_nonanonymous_assignment(self):
-        assignment = baker.make('core.Assignment',
-                                anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
-        self.assertFalse(assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole='student'))
+        assignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
+        self.assertFalse(assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole="student"))
 
     def test_examiners_must_be_anonymized_for_devilryrole_student_semi_anonymous_assignment(self):
-        assignment = baker.make('core.Assignment',
-                                anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        self.assertTrue(assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole='student'))
+        assignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        self.assertTrue(assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole="student"))
 
     def test_examiners_must_be_anonymized_for_devilryrole_student_fully_anonymous_assignment(self):
-        assignment = baker.make('core.Assignment',
-                                anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        self.assertTrue(assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole='student'))
+        assignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        self.assertTrue(assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole="student"))
 
     def test_examiners_must_be_anonymized_for_devilryrole_examiner_nonanonymous_assignment(self):
-        assignment = baker.make('core.Assignment',
-                                anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
-        self.assertFalse(assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole='examiner'))
+        assignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
+        self.assertFalse(assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole="examiner"))
 
     def test_examiners_must_be_anonymized_for_devilryrole_examiner_semi_anonymous_assignment(self):
-        assignment = baker.make('core.Assignment',
-                                anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        self.assertFalse(assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole='examiner'))
+        assignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        self.assertFalse(assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole="examiner"))
 
     def test_examiners_must_be_anonymized_for_devilryrole_examiner_fully_anonymous_assignment(self):
-        assignment = baker.make('core.Assignment',
-                                anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        self.assertFalse(assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole='examiner'))
+        assignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        self.assertFalse(assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole="examiner"))
 
     def test_examiners_must_be_anonymized_for_devilryrole_periodadmin_nonanonymous_assignment(self):
-        assignment = baker.make('core.Assignment',
-                                anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
-        self.assertFalse(assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole='periodadmin'))
+        assignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
+        self.assertFalse(assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole="periodadmin"))
 
     def test_examiners_must_be_anonymized_for_devilryrole_periodadmin_semi_anonymous_assignment(self):
-        assignment = baker.make('core.Assignment',
-                                anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        with self.assertRaisesMessage(ValueError, 'It is illegal for periodadmins to '
-                                                  'have access to anonymous assignments.'):
-            assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole='periodadmin')
+        assignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        with self.assertRaisesMessage(
+            ValueError, "It is illegal for periodadmins to have access to anonymous assignments."
+        ):
+            assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole="periodadmin")
 
     def test_examiners_must_be_anonymized_for_devilryrole_periodadmin_fully_anonymous_assignment(self):
-        assignment = baker.make('core.Assignment',
-                                anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        with self.assertRaisesMessage(ValueError, 'It is illegal for periodadmins to '
-                                                  'have access to anonymous assignments.'):
-            assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole='periodadmin')
+        assignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        with self.assertRaisesMessage(
+            ValueError, "It is illegal for periodadmins to have access to anonymous assignments."
+        ):
+            assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole="periodadmin")
 
     def test_examiners_must_be_anonymized_for_devilryrole_subjectadmin_nonanonymous_assignment(self):
-        assignment = baker.make('core.Assignment',
-                                anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
-        self.assertFalse(assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole='subjectadmin'))
+        assignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
+        self.assertFalse(assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole="subjectadmin"))
 
     def test_examiners_must_be_anonymized_for_devilryrole_subjectadmin_semi_anonymous_assignment(self):
-        assignment = baker.make('core.Assignment',
-                                anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        self.assertFalse(assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole='subjectadmin'))
+        assignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        self.assertFalse(assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole="subjectadmin"))
 
     def test_examiners_must_be_anonymized_for_devilryrole_subjectadmin_fully_anonymous_assignment(self):
-        assignment = baker.make('core.Assignment',
-                                anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        self.assertTrue(assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole='subjectadmin'))
+        assignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        self.assertTrue(assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole="subjectadmin"))
 
     def test_examiners_must_be_anonymized_for_devilryrole_departmentadmin_nonanonymous_assignment(self):
-        assignment = baker.make('core.Assignment',
-                                anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
-        self.assertFalse(assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole='departmentadmin'))
+        assignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
+        self.assertFalse(assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole="departmentadmin"))
 
     def test_examiners_must_be_anonymized_for_devilryrole_departmentadmin_semi_anonymous_assignment(self):
-        assignment = baker.make('core.Assignment',
-                                anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        self.assertFalse(assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole='departmentadmin'))
+        assignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        self.assertFalse(assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole="departmentadmin"))
 
     def test_examiners_must_be_anonymized_for_devilryrole_departmentadmin_fully_anonymous_assignment(self):
-        assignment = baker.make('core.Assignment',
-                                anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        self.assertFalse(assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole='departmentadmin'))
+        assignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        self.assertFalse(assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole="departmentadmin"))
 
 
 class TestAssignmentQuerySet(TestCase):
     def test_filter_is_active(self):
         duck1010builder = SubjectBuilder.quickadd_ducku_duck1010()
-        activeassignmentbuilder = duck1010builder.add_6month_active_period().add_assignment('week1')
+        activeassignmentbuilder = duck1010builder.add_6month_active_period().add_assignment("week1")
 
         # Add inactive groups to make sure we get no false positives
-        duck1010builder.add_6month_lastyear_period().add_assignment('week1')
-        duck1010builder.add_6month_nextyear_period().add_assignment('week1')
+        duck1010builder.add_6month_lastyear_period().add_assignment("week1")
+        duck1010builder.add_6month_nextyear_period().add_assignment("week1")
 
         qry = Assignment.objects.filter_is_active()
         self.assertEqual(qry.count(), 1)
@@ -935,10 +902,10 @@ class TestAssignmentQuerySet(TestCase):
 
     def test_filter_user_is_examiner(self):
         user = baker.make(settings.AUTH_USER_MODEL)
-        assignment = baker.make('core.Assignment')
-        assignmentgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
-        relatedexaminer = baker.make('core.RelatedExaminer', user=user)
-        baker.make('core.Examiner', relatedexaminer=relatedexaminer, assignmentgroup=assignmentgroup)
+        assignment = baker.make("core.Assignment")
+        assignmentgroup = baker.make("core.AssignmentGroup", parentnode=assignment)
+        relatedexaminer = baker.make("core.RelatedExaminer", user=user)
+        baker.make("core.Examiner", relatedexaminer=relatedexaminer, assignmentgroup=assignmentgroup)
         queryset = Assignment.objects.filter_user_is_examiner(user)
         self.assertEqual(queryset.count(), 1)
         returned_assignment = queryset.first()
@@ -946,21 +913,21 @@ class TestAssignmentQuerySet(TestCase):
 
     def test_filter_user_is_examiner_active_is_false_hence_user_is_not_examiner(self):
         user = baker.make(settings.AUTH_USER_MODEL)
-        assignment = baker.make('core.Assignment')
-        assignmentgroup = baker.make('core.AssignmentGroup', parentnode=assignment)
-        relatedexaminer = baker.make('core.RelatedExaminer', user=user, active=False)
-        baker.make('core.Examiner', relatedexaminer=relatedexaminer,
-                   assignmentgroup=assignmentgroup)
+        assignment = baker.make("core.Assignment")
+        assignmentgroup = baker.make("core.AssignmentGroup", parentnode=assignment)
+        relatedexaminer = baker.make("core.RelatedExaminer", user=user, active=False)
+        baker.make("core.Examiner", relatedexaminer=relatedexaminer, assignmentgroup=assignmentgroup)
         queryset = Assignment.objects.filter_user_is_examiner(user)
         self.assertEqual(queryset.count(), 0)
 
     def test_filter_user_is_candidate(self):
         user = baker.make(settings.AUTH_USER_MODEL)
-        assignment = baker.make('core.Assignment')
+        assignment = baker.make("core.Assignment")
         baker.make(
-                'core.Candidate',
-                relatedstudent=baker.make('core.RelatedStudent', user=user),
-                assignment_group=baker.make('core.AssignmentGroup', parentnode=assignment))
+            "core.Candidate",
+            relatedstudent=baker.make("core.RelatedStudent", user=user),
+            assignment_group=baker.make("core.AssignmentGroup", parentnode=assignment),
+        )
         queryset = Assignment.objects.filter_student_has_access(user)
         self.assertEqual(queryset.count(), 1)
         returned_assignment = queryset.first()
@@ -968,15 +935,12 @@ class TestAssignmentQuerySet(TestCase):
 
     def test_filter_user_is_not_candidate(self):
         user_not_set_as_candidate = baker.make(settings.AUTH_USER_MODEL)
-        assignment = baker.make('core.Assignment')
+        assignment = baker.make("core.Assignment")
         baker.make(
-                'core.Candidate',
-                relatedstudent=baker.make(
-                        'core.RelatedStudent',
-                        user=baker.make(settings.AUTH_USER_MODEL)),
-                assignment_group=baker.make(
-                        'core.AssignmentGroup',
-                        parentnode=assignment))
+            "core.Candidate",
+            relatedstudent=baker.make("core.RelatedStudent", user=baker.make(settings.AUTH_USER_MODEL)),
+            assignment_group=baker.make("core.AssignmentGroup", parentnode=assignment),
+        )
         queryset = Assignment.objects.filter_student_has_access(user_not_set_as_candidate)
         self.assertEqual(queryset.count(), 0)
 
@@ -984,57 +948,47 @@ class TestAssignmentQuerySet(TestCase):
 class TestAssignmentQuerySetFilterExaminerHasAccess(TestCase):
     def test_not_examiner_for_any_groups(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        self.assertEqual(
-                0,
-                Assignment.objects.filter_examiner_has_access(user=testuser).count())
+        self.assertEqual(0, Assignment.objects.filter_examiner_has_access(user=testuser).count())
 
     def test_examiner_for_group_but_not_active(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testgroup = baker.make('core.AssignmentGroup',
-                               parentnode=baker.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
-        baker.make('core.Examiner',
-                   assignmentgroup=testgroup,
-                   relatedexaminer__user=testuser,
-                   relatedexaminer__active=False)
-        self.assertEqual(
-                0,
-                Assignment.objects.filter_examiner_has_access(user=testuser).count())
+        testgroup = baker.make(
+            "core.AssignmentGroup", parentnode=baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        )
+        baker.make(
+            "core.Examiner", assignmentgroup=testgroup, relatedexaminer__user=testuser, relatedexaminer__active=False
+        )
+        self.assertEqual(0, Assignment.objects.filter_examiner_has_access(user=testuser).count())
 
     def test_examiner_for_group_and_active_but_in_old_period(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testgroup = baker.make('core.AssignmentGroup',
-                               parentnode=baker.make_recipe('devilry.apps.core.assignment_oldperiod_end'))
-        baker.make('core.Examiner',
-                   assignmentgroup=testgroup,
-                   relatedexaminer__user=testuser,
-                   relatedexaminer__active=True)
-        self.assertEqual(
-                0,
-                Assignment.objects.filter_examiner_has_access(user=testuser).count())
+        testgroup = baker.make(
+            "core.AssignmentGroup", parentnode=baker.make_recipe("devilry.apps.core.assignment_oldperiod_end")
+        )
+        baker.make(
+            "core.Examiner", assignmentgroup=testgroup, relatedexaminer__user=testuser, relatedexaminer__active=True
+        )
+        self.assertEqual(0, Assignment.objects.filter_examiner_has_access(user=testuser).count())
 
     def test_examiner_for_group_and_active_but_in_future_period(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testgroup = baker.make('core.AssignmentGroup',
-                               parentnode=baker.make_recipe('devilry.apps.core.assignment_futureperiod_start'))
-        baker.make('core.Examiner',
-                   assignmentgroup=testgroup,
-                   relatedexaminer__user=testuser,
-                   relatedexaminer__active=True)
-        self.assertEqual(
-                0,
-                Assignment.objects.filter_examiner_has_access(user=testuser).count())
+        testgroup = baker.make(
+            "core.AssignmentGroup", parentnode=baker.make_recipe("devilry.apps.core.assignment_futureperiod_start")
+        )
+        baker.make(
+            "core.Examiner", assignmentgroup=testgroup, relatedexaminer__user=testuser, relatedexaminer__active=True
+        )
+        self.assertEqual(0, Assignment.objects.filter_examiner_has_access(user=testuser).count())
 
     def test_examiner_for_group_and_active(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testgroup = baker.make('core.AssignmentGroup',
-                               parentnode=baker.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
-        baker.make('core.Examiner',
-                   assignmentgroup=testgroup,
-                   relatedexaminer__user=testuser,
-                   relatedexaminer__active=True)
-        self.assertEqual(
-                1,
-                Assignment.objects.filter_examiner_has_access(user=testuser).count())
+        testgroup = baker.make(
+            "core.AssignmentGroup", parentnode=baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        )
+        baker.make(
+            "core.Examiner", assignmentgroup=testgroup, relatedexaminer__user=testuser, relatedexaminer__active=True
+        )
+        self.assertEqual(1, Assignment.objects.filter_examiner_has_access(user=testuser).count())
 
 
 class TestAssignmentQuerySetAnnotateWithWaitingForFeedback(TestCase):
@@ -1042,110 +996,87 @@ class TestAssignmentQuerySetAnnotateWithWaitingForFeedback(TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_nomatch_deadline_not_expired_first_attempt(self):
-        baker.make('core.AssignmentGroup',
-                   parentnode__first_deadline=ACTIVE_PERIOD_END)
+        baker.make("core.AssignmentGroup", parentnode__first_deadline=ACTIVE_PERIOD_END)
         queryset = Assignment.objects.all().annotate_with_waiting_for_feedback_count()
         self.assertEqual(0, queryset.first().waiting_for_feedback_count)
 
     def test_nomatch_deadline_not_expired_new_attempt(self):
-        group = baker.make('core.AssignmentGroup',
-                           parentnode__first_deadline=ACTIVE_PERIOD_START)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=group)
+        group = baker.make("core.AssignmentGroup", parentnode__first_deadline=ACTIVE_PERIOD_START)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=group)
         devilry_group_baker_factories.feedbackset_new_attempt_unpublished(
-            group=group,
-            deadline_datetime=ACTIVE_PERIOD_END)
+            group=group, deadline_datetime=ACTIVE_PERIOD_END
+        )
         queryset = Assignment.objects.all().annotate_with_waiting_for_feedback_count()
         self.assertEqual(0, queryset.first().waiting_for_feedback_count)
 
     def test_match_deadline_expired_first_attempt(self):
-        baker.make('core.AssignmentGroup',
-                   parentnode__first_deadline=ACTIVE_PERIOD_START)
+        baker.make("core.AssignmentGroup", parentnode__first_deadline=ACTIVE_PERIOD_START)
         queryset = Assignment.objects.all().annotate_with_waiting_for_feedback_count()
         self.assertEqual(1, queryset.first().waiting_for_feedback_count)
 
     def test_match_deadline_expired_new_attempt(self):
-        group = baker.make('core.AssignmentGroup',
-                           parentnode__first_deadline=ACTIVE_PERIOD_START)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=group)
+        group = baker.make("core.AssignmentGroup", parentnode__first_deadline=ACTIVE_PERIOD_START)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=group)
         devilry_group_baker_factories.feedbackset_new_attempt_unpublished(
-            group=group,
-            deadline_datetime=ACTIVE_PERIOD_START + timedelta(days=1))
+            group=group, deadline_datetime=ACTIVE_PERIOD_START + timedelta(days=1)
+        )
         queryset = Assignment.objects.all().annotate_with_waiting_for_feedback_count()
         self.assertEqual(1, queryset.first().waiting_for_feedback_count)
 
     def test_nomatch_grading_published_first_feedabackset(self):
-        group = baker.make('core.AssignmentGroup',
-                           parentnode__first_deadline=ACTIVE_PERIOD_END)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=group)
+        group = baker.make("core.AssignmentGroup", parentnode__first_deadline=ACTIVE_PERIOD_END)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=group)
         queryset = Assignment.objects.all().annotate_with_waiting_for_feedback_count()
         self.assertEqual(0, queryset.first().waiting_for_feedback_count)
 
     def test_nomatch_grading_published(self):
-        group = baker.make('core.AssignmentGroup',
-                           parentnode__first_deadline=ACTIVE_PERIOD_END)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=group)
+        group = baker.make("core.AssignmentGroup", parentnode__first_deadline=ACTIVE_PERIOD_END)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=group)
         devilry_group_baker_factories.feedbackset_new_attempt_published(
-            group=group,
-            deadline_datetime=ACTIVE_PERIOD_START + timedelta(days=1))
+            group=group, deadline_datetime=ACTIVE_PERIOD_START + timedelta(days=1)
+        )
         queryset = Assignment.objects.all().annotate_with_waiting_for_feedback_count()
         self.assertEqual(0, queryset.first().waiting_for_feedback_count)
 
     def test_match_multiple_groups(self):
-        assignment = baker.make('core.Assignment',
-                                first_deadline=ACTIVE_PERIOD_START)
+        assignment = baker.make("core.Assignment", first_deadline=ACTIVE_PERIOD_START)
 
         # These should match
-        group1 = baker.make('core.AssignmentGroup', parentnode=assignment)
-        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(
-            group=group1)
-        group2 = baker.make('core.AssignmentGroup', parentnode=assignment)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=group2)
+        group1 = baker.make("core.AssignmentGroup", parentnode=assignment)
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=group1)
+        group2 = baker.make("core.AssignmentGroup", parentnode=assignment)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=group2)
         devilry_group_baker_factories.feedbackset_new_attempt_unpublished(
-            group=group2,
-            deadline_datetime=timezone.now())
+            group=group2, deadline_datetime=timezone.now()
+        )
 
         # These should not match
-        group2 = baker.make('core.AssignmentGroup', parentnode=assignment)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=group2)
-        group3 = baker.make('core.AssignmentGroup', parentnode=assignment)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=group3)
-        devilry_group_baker_factories.feedbackset_new_attempt_published(
-            group=group3)
+        group2 = baker.make("core.AssignmentGroup", parentnode=assignment)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=group2)
+        group3 = baker.make("core.AssignmentGroup", parentnode=assignment)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=group3)
+        devilry_group_baker_factories.feedbackset_new_attempt_published(group=group3)
 
         queryset = Assignment.objects.all().annotate_with_waiting_for_feedback_count()
         self.assertEqual(2, queryset.first().waiting_for_feedback_count)
 
     def test_match_multiple_assignments(self):
-        assignment1 = baker.make('core.Assignment',
-                                 first_deadline=ACTIVE_PERIOD_START)
-        assignment2 = baker.make('core.Assignment',
-                                 first_deadline=ACTIVE_PERIOD_START)
+        assignment1 = baker.make("core.Assignment", first_deadline=ACTIVE_PERIOD_START)
+        assignment2 = baker.make("core.Assignment", first_deadline=ACTIVE_PERIOD_START)
 
         # These should match
-        group1_1 = baker.make('core.AssignmentGroup', parentnode=assignment1)
-        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(
-            group=group1_1)
-        group2_1 = baker.make('core.AssignmentGroup', parentnode=assignment2)
-        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(
-            group=group2_1)
-        group2_2 = baker.make('core.AssignmentGroup', parentnode=assignment2)
-        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(
-            group=group2_2)
+        group1_1 = baker.make("core.AssignmentGroup", parentnode=assignment1)
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=group1_1)
+        group2_1 = baker.make("core.AssignmentGroup", parentnode=assignment2)
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=group2_1)
+        group2_2 = baker.make("core.AssignmentGroup", parentnode=assignment2)
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=group2_2)
 
         # These should not match
-        group1_2 = baker.make('core.AssignmentGroup', parentnode=assignment1)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=group1_2)
-        group2_3 = baker.make('core.AssignmentGroup', parentnode=assignment2)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=group2_3)
+        group1_2 = baker.make("core.AssignmentGroup", parentnode=assignment1)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=group1_2)
+        group2_3 = baker.make("core.AssignmentGroup", parentnode=assignment2)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=group2_3)
 
         queryset = Assignment.objects.all().annotate_with_waiting_for_feedback_count()
         self.assertEqual(2, queryset.count())
@@ -1156,177 +1087,155 @@ class TestAssignmentQuerySetAnnotateWithWaitingForFeedback(TestCase):
 class TestAssignmentQuerySetFilterIsAdmin(TestCase):
     def test_filter_user_is_admin_is_not_admin_on_anything(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        baker.make('core.Assignment')
+        baker.make("core.Assignment")
         self.assertFalse(Assignment.objects.filter_user_is_admin(user=testuser).exists())
 
     def test_filter_user_is_admin_superuser(self):
         testuser = baker.make(settings.AUTH_USER_MODEL, is_superuser=True)
-        testassignment = baker.make('core.Assignment')
-        self.assertEqual(
-            {testassignment},
-            set(Assignment.objects.filter_user_is_admin(user=testuser)))
+        testassignment = baker.make("core.Assignment")
+        self.assertEqual({testassignment}, set(Assignment.objects.filter_user_is_admin(user=testuser)))
 
     def test_filter_user_is_admin_ignore_assignments_where_not_in_group(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make('core.Assignment')
-        baker.make('core.Assignment')
-        periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
-                                           period=testassignment.period)
-        baker.make('devilry_account.PermissionGroupUser',
-                   user=testuser, permissiongroup=periodpermissiongroup.permissiongroup)
-        self.assertEqual(
-                {testassignment},
-                set(Assignment.objects.filter_user_is_admin(user=testuser)))
+        testassignment = baker.make("core.Assignment")
+        baker.make("core.Assignment")
+        periodpermissiongroup = baker.make("devilry_account.PeriodPermissionGroup", period=testassignment.period)
+        baker.make(
+            "devilry_account.PermissionGroupUser", user=testuser, permissiongroup=periodpermissiongroup.permissiongroup
+        )
+        self.assertEqual({testassignment}, set(Assignment.objects.filter_user_is_admin(user=testuser)))
 
     def test_filter_user_is_admin(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make('core.Assignment')
-        periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
-                                           period=testassignment.period)
-        baker.make('devilry_account.PermissionGroupUser',
-                   user=testuser, permissiongroup=periodpermissiongroup.permissiongroup)
-        self.assertEqual(
-            {testassignment},
-            set(Assignment.objects.filter_user_is_admin(user=testuser)))
+        testassignment = baker.make("core.Assignment")
+        periodpermissiongroup = baker.make("devilry_account.PeriodPermissionGroup", period=testassignment.period)
+        baker.make(
+            "devilry_account.PermissionGroupUser", user=testuser, permissiongroup=periodpermissiongroup.permissiongroup
+        )
+        self.assertEqual({testassignment}, set(Assignment.objects.filter_user_is_admin(user=testuser)))
 
     def test_filter_user_is_admin_on_period(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testperiod = baker.make('core.Period')
-        testassignment1 = baker.make('core.Assignment',
-                                     parentnode=testperiod)
-        testassignment2 = baker.make('core.Assignment',
-                                     parentnode=testperiod)
-        periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
-                                           period=testperiod)
-        baker.make('devilry_account.PermissionGroupUser',
-                   user=testuser,
-                   permissiongroup=periodpermissiongroup.permissiongroup)
+        testperiod = baker.make("core.Period")
+        testassignment1 = baker.make("core.Assignment", parentnode=testperiod)
+        testassignment2 = baker.make("core.Assignment", parentnode=testperiod)
+        periodpermissiongroup = baker.make("devilry_account.PeriodPermissionGroup", period=testperiod)
+        baker.make(
+            "devilry_account.PermissionGroupUser", user=testuser, permissiongroup=periodpermissiongroup.permissiongroup
+        )
         self.assertEqual(
-            {testassignment1, testassignment2},
-            set(Assignment.objects.filter_user_is_admin(user=testuser)))
+            {testassignment1, testassignment2}, set(Assignment.objects.filter_user_is_admin(user=testuser))
+        )
 
     def test_filter_user_is_admin_on_period_ignore_semi_anonymous(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testperiod = baker.make('core.Period')
-        testassignment1 = baker.make('core.Assignment',
-                                     parentnode=testperiod)
-        baker.make('core.Assignment',
-                   parentnode=testperiod,
-                   anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
-                                           period=testperiod)
-        baker.make('devilry_account.PermissionGroupUser',
-                   user=testuser,
-                   permissiongroup=periodpermissiongroup.permissiongroup)
-        self.assertEqual(
-            {testassignment1},
-            set(Assignment.objects.filter_user_is_admin(user=testuser)))
+        testperiod = baker.make("core.Period")
+        testassignment1 = baker.make("core.Assignment", parentnode=testperiod)
+        baker.make(
+            "core.Assignment", parentnode=testperiod, anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS
+        )
+        periodpermissiongroup = baker.make("devilry_account.PeriodPermissionGroup", period=testperiod)
+        baker.make(
+            "devilry_account.PermissionGroupUser", user=testuser, permissiongroup=periodpermissiongroup.permissiongroup
+        )
+        self.assertEqual({testassignment1}, set(Assignment.objects.filter_user_is_admin(user=testuser)))
 
     def test_filter_user_is_admin_on_period_ignore_fully_anonymous(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testperiod = baker.make('core.Period')
-        testassignment1 = baker.make('core.Assignment',
-                                     parentnode=testperiod)
-        baker.make('core.Assignment',
-                   parentnode=testperiod,
-                   anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        periodpermissiongroup = baker.make('devilry_account.PeriodPermissionGroup',
-                                           period=testperiod)
-        baker.make('devilry_account.PermissionGroupUser',
-                   user=testuser,
-                   permissiongroup=periodpermissiongroup.permissiongroup)
-        self.assertEqual(
-            {testassignment1},
-            set(Assignment.objects.filter_user_is_admin(user=testuser)))
+        testperiod = baker.make("core.Period")
+        testassignment1 = baker.make("core.Assignment", parentnode=testperiod)
+        baker.make(
+            "core.Assignment", parentnode=testperiod, anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS
+        )
+        periodpermissiongroup = baker.make("devilry_account.PeriodPermissionGroup", period=testperiod)
+        baker.make(
+            "devilry_account.PermissionGroupUser", user=testuser, permissiongroup=periodpermissiongroup.permissiongroup
+        )
+        self.assertEqual({testassignment1}, set(Assignment.objects.filter_user_is_admin(user=testuser)))
 
     def test_filter_user_is_admin_on_subject(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testsubject = baker.make('core.Subject')
-        testassignment1 = baker.make('core.Assignment',
-                                     parentnode__parentnode=testsubject)
-        testassignment2 = baker.make('core.Assignment',
-                                     parentnode__parentnode=testsubject)
-        subjectpermissiongroup = baker.make('devilry_account.SubjectPermissionGroup',
-                                            subject=testsubject)
-        baker.make('devilry_account.PermissionGroupUser',
-                   user=testuser,
-                   permissiongroup=subjectpermissiongroup.permissiongroup)
+        testsubject = baker.make("core.Subject")
+        testassignment1 = baker.make("core.Assignment", parentnode__parentnode=testsubject)
+        testassignment2 = baker.make("core.Assignment", parentnode__parentnode=testsubject)
+        subjectpermissiongroup = baker.make("devilry_account.SubjectPermissionGroup", subject=testsubject)
+        baker.make(
+            "devilry_account.PermissionGroupUser", user=testuser, permissiongroup=subjectpermissiongroup.permissiongroup
+        )
         self.assertEqual(
-            {testassignment1, testassignment2},
-            set(Assignment.objects.filter_user_is_admin(user=testuser)))
+            {testassignment1, testassignment2}, set(Assignment.objects.filter_user_is_admin(user=testuser))
+        )
 
     def test_filter_user_is_admin_on_subject_include_semi_anonymous(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testsubject = baker.make('core.Subject')
-        testassignment1 = baker.make('core.Assignment',
-                                     parentnode__parentnode=testsubject)
-        testassignment2 = baker.make('core.Assignment',
-                                     parentnode__parentnode=testsubject,
-                                     anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        subjectpermissiongroup = baker.make('devilry_account.SubjectPermissionGroup',
-                                            subject=testsubject)
-        baker.make('devilry_account.PermissionGroupUser',
-                   user=testuser,
-                   permissiongroup=subjectpermissiongroup.permissiongroup)
+        testsubject = baker.make("core.Subject")
+        testassignment1 = baker.make("core.Assignment", parentnode__parentnode=testsubject)
+        testassignment2 = baker.make(
+            "core.Assignment",
+            parentnode__parentnode=testsubject,
+            anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS,
+        )
+        subjectpermissiongroup = baker.make("devilry_account.SubjectPermissionGroup", subject=testsubject)
+        baker.make(
+            "devilry_account.PermissionGroupUser", user=testuser, permissiongroup=subjectpermissiongroup.permissiongroup
+        )
         self.assertEqual(
-            {testassignment1, testassignment2},
-            set(Assignment.objects.filter_user_is_admin(user=testuser)))
+            {testassignment1, testassignment2}, set(Assignment.objects.filter_user_is_admin(user=testuser))
+        )
 
     def test_filter_user_is_admin_on_subject_include_fully_anonymous(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testsubject = baker.make('core.Subject')
-        testassignment1 = baker.make('core.Assignment',
-                                     parentnode__parentnode=testsubject)
-        testassignment2 = baker.make('core.Assignment',
-                                     parentnode__parentnode=testsubject,
-                                     anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        subjectpermissiongroup = baker.make('devilry_account.SubjectPermissionGroup',
-                                            subject=testsubject)
-        baker.make('devilry_account.PermissionGroupUser',
-                   user=testuser,
-                   permissiongroup=subjectpermissiongroup.permissiongroup)
+        testsubject = baker.make("core.Subject")
+        testassignment1 = baker.make("core.Assignment", parentnode__parentnode=testsubject)
+        testassignment2 = baker.make(
+            "core.Assignment",
+            parentnode__parentnode=testsubject,
+            anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS,
+        )
+        subjectpermissiongroup = baker.make("devilry_account.SubjectPermissionGroup", subject=testsubject)
+        baker.make(
+            "devilry_account.PermissionGroupUser", user=testuser, permissiongroup=subjectpermissiongroup.permissiongroup
+        )
         self.assertEqual(
-            {testassignment1, testassignment2},
-            set(Assignment.objects.filter_user_is_admin(user=testuser)))
+            {testassignment1, testassignment2}, set(Assignment.objects.filter_user_is_admin(user=testuser))
+        )
 
     def test_filter_user_is_admin_distinct(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testsubject = baker.make('core.Subject')
-        testperiod = baker.make('core.Period', parentnode=testsubject)
-        testassignment = baker.make('core.Assignment', parentnode=testperiod)
-        subjectpermissiongroup1 = baker.make('devilry_account.SubjectPermissionGroup',
-                                             subject=testsubject)
-        subjectpermissiongroup2 = baker.make('devilry_account.SubjectPermissionGroup',
-                                             subject=testsubject)
-        periodpermissiongroup1 = baker.make('devilry_account.PeriodPermissionGroup',
-                                            period=testperiod)
-        periodpermissiongroup2 = baker.make('devilry_account.PeriodPermissionGroup',
-                                            period=testperiod)
-        baker.make('devilry_account.PermissionGroupUser',
-                   user=testuser,
-                   permissiongroup=subjectpermissiongroup1.permissiongroup)
-        baker.make('devilry_account.PermissionGroupUser',
-                   user=testuser,
-                   permissiongroup=subjectpermissiongroup2.permissiongroup)
-        baker.make('devilry_account.PermissionGroupUser',
-                   user=testuser,
-                   permissiongroup=periodpermissiongroup1.permissiongroup)
-        baker.make('devilry_account.PermissionGroupUser',
-                   user=testuser,
-                   permissiongroup=periodpermissiongroup2.permissiongroup)
-        self.assertEqual(
-            {testassignment},
-            set(Assignment.objects.filter_user_is_admin(user=testuser)))
+        testsubject = baker.make("core.Subject")
+        testperiod = baker.make("core.Period", parentnode=testsubject)
+        testassignment = baker.make("core.Assignment", parentnode=testperiod)
+        subjectpermissiongroup1 = baker.make("devilry_account.SubjectPermissionGroup", subject=testsubject)
+        subjectpermissiongroup2 = baker.make("devilry_account.SubjectPermissionGroup", subject=testsubject)
+        periodpermissiongroup1 = baker.make("devilry_account.PeriodPermissionGroup", period=testperiod)
+        periodpermissiongroup2 = baker.make("devilry_account.PeriodPermissionGroup", period=testperiod)
+        baker.make(
+            "devilry_account.PermissionGroupUser",
+            user=testuser,
+            permissiongroup=subjectpermissiongroup1.permissiongroup,
+        )
+        baker.make(
+            "devilry_account.PermissionGroupUser",
+            user=testuser,
+            permissiongroup=subjectpermissiongroup2.permissiongroup,
+        )
+        baker.make(
+            "devilry_account.PermissionGroupUser", user=testuser, permissiongroup=periodpermissiongroup1.permissiongroup
+        )
+        baker.make(
+            "devilry_account.PermissionGroupUser", user=testuser, permissiongroup=periodpermissiongroup2.permissiongroup
+        )
+        self.assertEqual({testassignment}, set(Assignment.objects.filter_user_is_admin(user=testuser)))
 
 
 class TestAssignmentQuerySetPrefetchGradeToPointMap(TestCase):
     def test_no_pointtogrademap(self):
-        testassignment = baker.make('core.Assignment')
+        testassignment = baker.make("core.Assignment")
         annotated_assignment = Assignment.objects.prefetch_point_to_grade_map().get(id=testassignment.id)
         self.assertIsNone(annotated_assignment.prefetched_point_to_grade_map)
 
     def test_has_pointtogrademap(self):
-        testassignment = baker.make('core.Assignment')
-        point_to_grade_map = baker.make('core.PointToGradeMap', assignment=testassignment)
+        testassignment = baker.make("core.Assignment")
+        point_to_grade_map = baker.make("core.PointToGradeMap", assignment=testassignment)
         annotated_assignment = Assignment.objects.prefetch_point_to_grade_map().get(id=testassignment.id)
         self.assertEqual(point_to_grade_map, annotated_assignment.prefetched_point_to_grade_map)

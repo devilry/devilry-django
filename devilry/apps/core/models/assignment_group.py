@@ -43,6 +43,7 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
     """
     QuerySet for :class:`.AssignmentGroup`
     """
+
     def filter_user_is_admin(self, user):
         """
         Filter the queryset to only include :class:`.Assignment` objects where the
@@ -55,28 +56,28 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
         if user.is_superuser:
             return self.all()
         else:
-            subjectids_where_is_admin_queryset = Subject.objects\
-                .filter_user_is_admin(user=user)\
-                .values_list('id', flat=True)
-            periodids_where_is_admin_queryset = PeriodPermissionGroup.objects \
-                .filter(models.Q(permissiongroup__users=user))\
-                .values_list('period_id', flat=True)
+            subjectids_where_is_admin_queryset = Subject.objects.filter_user_is_admin(user=user).values_list(
+                "id", flat=True
+            )
+            periodids_where_is_admin_queryset = PeriodPermissionGroup.objects.filter(
+                models.Q(permissiongroup__users=user)
+            ).values_list("period_id", flat=True)
             return self.filter(
                 # If anonymous, ignore periodadmins
                 models.Q(
                     models.Q(
-                        models.Q(parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS) |
-                        models.Q(parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-                    ) &
-                    models.Q(parentnode__parentnode__parentnode_id__in=subjectids_where_is_admin_queryset)
-                ) |
-
+                        models.Q(parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+                        | models.Q(parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+                    )
+                    & models.Q(parentnode__parentnode__parentnode_id__in=subjectids_where_is_admin_queryset)
+                )
+                |
                 # If not anonymous, include periodadmins
                 models.Q(
-                    models.Q(parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF) &
-                    models.Q(
-                        models.Q(parentnode__parentnode_id__in=periodids_where_is_admin_queryset) |
-                        models.Q(parentnode__parentnode__parentnode_id__in=subjectids_where_is_admin_queryset)
+                    models.Q(parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
+                    & models.Q(
+                        models.Q(parentnode__parentnode_id__in=periodids_where_is_admin_queryset)
+                        | models.Q(parentnode__parentnode__parentnode_id__in=subjectids_where_is_admin_queryset)
                     )
                 )
             )
@@ -119,17 +120,19 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
         """
         now = timezone.now()
         return self.filter_is_published().filter(
-            parentnode__parentnode__start_time__lt=now,
-            parentnode__parentnode__end_time__gt=now)
+            parentnode__parentnode__start_time__lt=now, parentnode__parentnode__end_time__gt=now
+        )
 
     def filter_examiner_has_access(self, user):
         """
         Filter all :class:`.AssignmentGroup` objects where the given
         ``user`` has access as examiner.
         """
-        return self.filter_is_active()\
-            .filter(examiners__relatedexaminer__user=user,
-                    examiners__relatedexaminer__active=True).distinct()
+        return (
+            self.filter_is_active()
+            .filter(examiners__relatedexaminer__user=user, examiners__relatedexaminer__active=True)
+            .distinct()
+        )
 
     def filter_student_has_access(self, user):
         """
@@ -154,10 +157,9 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
         Args:
             assignment: A :class:`devilry.apps.core.models.assignment.Assignment` object.
         """
-        return self.filter(parentnode=assignment)\
-            .extra(
-                where=[
-                    """
+        return self.filter(parentnode=assignment).extra(
+            where=[
+                """
                     (
                         SELECT devilry_group_feedbackset.grading_points
                         FROM devilry_group_feedbackset
@@ -169,11 +171,9 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
                         LIMIT 1
                     ) >= %s
                     """
-                ],
-                params=[
-                    assignment.passing_grade_min_points
-                ]
-            )
+            ],
+            params=[assignment.passing_grade_min_points],
+        )
 
     def filter_no_periodtag_for_students(self):
         """
@@ -220,8 +220,7 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
             number_of_published_feedbacksets=models.Count(
                 models.Case(
                     # When grading_published_datetime, count that as 1 in the Count.
-                    models.When(feedbackset__grading_published_datetime__isnull=False,
-                                then=1)
+                    models.When(feedbackset__grading_published_datetime__isnull=False, then=1)
                 )
             )
         )
@@ -233,10 +232,9 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
         :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime`
         or any comments.
         """
-        return self.annotate_with_number_of_published_feedbacksets() \
-            .filter(
-                models.Q(number_of_published_feedbacksets__gt=0) |
-                models.Q(cached_data__public_total_comment_count__gt=0))
+        return self.annotate_with_number_of_published_feedbacksets().filter(
+            models.Q(number_of_published_feedbacksets__gt=0) | models.Q(cached_data__public_total_comment_count__gt=0)
+        )
 
     def extra_annotate_with_fullname_of_first_candidate(self):
         # Not ment to be used directly - this is used by the
@@ -273,12 +271,10 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
             descending: Set this to ``True`` to order descending.
         """
         if descending:
-            order_by = ['-fullname_of_first_candidate']
+            order_by = ["-fullname_of_first_candidate"]
         else:
-            order_by = ['fullname_of_first_candidate']
-        return self.extra_annotate_with_fullname_of_first_candidate().extra(
-            order_by=order_by
-        )
+            order_by = ["fullname_of_first_candidate"]
+        return self.extra_annotate_with_fullname_of_first_candidate().extra(order_by=order_by)
 
     def extra_annotate_with_relatedstudents_anonymous_id_of_first_candidate(self):
         # Not ment to be used directly - this is used by the
@@ -322,12 +318,10 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
             descending: Set this to ``True`` to order descending.
         """
         if descending:
-            order_by = ['-relatedstudents_anonymous_id_of_first_candidate']
+            order_by = ["-relatedstudents_anonymous_id_of_first_candidate"]
         else:
-            order_by = ['relatedstudents_anonymous_id_of_first_candidate']
-        return self.extra_annotate_with_relatedstudents_anonymous_id_of_first_candidate().extra(
-            order_by=order_by
-        )
+            order_by = ["relatedstudents_anonymous_id_of_first_candidate"]
+        return self.extra_annotate_with_relatedstudents_anonymous_id_of_first_candidate().extra(order_by=order_by)
 
     def extra_annotate_with_candidates_candidate_id_of_first_candidate(self):
         # Not ment to be used directly - this is used by the
@@ -367,12 +361,10 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
             descending: Set this to ``True`` to order descending.
         """
         if descending:
-            order_by = ['-candidates_candidate_id_of_first_candidate']
+            order_by = ["-candidates_candidate_id_of_first_candidate"]
         else:
-            order_by = ['candidates_candidate_id_of_first_candidate']
-        return self.extra_annotate_with_candidates_candidate_id_of_first_candidate().extra(
-            order_by=order_by
-        )
+            order_by = ["candidates_candidate_id_of_first_candidate"]
+        return self.extra_annotate_with_candidates_candidate_id_of_first_candidate().extra(order_by=order_by)
 
     def extra_annotate_with_shortname_of_first_candidate(self):
         # Not ment to be used directly - this is used by the
@@ -406,12 +398,10 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
             descending: Set this to ``True`` to order descending.
         """
         if descending:
-            order_by = ['-shortname_of_first_candidate']
+            order_by = ["-shortname_of_first_candidate"]
         else:
-            order_by = ['shortname_of_first_candidate']
-        return self.extra_annotate_with_shortname_of_first_candidate().extra(
-            order_by=order_by
-        )
+            order_by = ["shortname_of_first_candidate"]
+        return self.extra_annotate_with_shortname_of_first_candidate().extra(order_by=order_by)
 
     def extra_annotate_with_lastname_of_first_candidate(self):
         # Not ment to be used directly - this is used by the
@@ -445,12 +435,10 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
             descending: Set this to ``True`` to order descending.
         """
         if descending:
-            order_by = ['-lastname_of_first_candidate']
+            order_by = ["-lastname_of_first_candidate"]
         else:
-            order_by = ['lastname_of_first_candidate']
-        return self.extra_annotate_with_lastname_of_first_candidate().extra(
-            order_by=order_by
-        )
+            order_by = ["lastname_of_first_candidate"]
+        return self.extra_annotate_with_lastname_of_first_candidate().extra(order_by=order_by)
 
     def extra_annotate_datetime_of_last_admin_comment(self):
         """
@@ -461,6 +449,7 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
             This query is fairly expensive.
         """
         from devilry.devilry_group.models import AbstractGroupComment
+
         return self.extra(
             select={
                 "datetime_of_last_admin_comment": """
@@ -484,7 +473,7 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
             select_params=[
                 Comment.USER_ROLE_ADMIN,
                 AbstractGroupComment.VISIBILITY_PRIVATE,
-            ]
+            ],
         )
 
     def extra_order_by_datetime_of_last_admin_comment(self, descending=False):
@@ -499,12 +488,10 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
             descending: Set this to ``True`` to order descending.
         """
         if descending:
-            order_by = ['-datetime_of_last_admin_comment']
+            order_by = ["-datetime_of_last_admin_comment"]
         else:
-            order_by = ['datetime_of_last_admin_comment']
-        return self.extra_annotate_datetime_of_last_admin_comment().extra(
-            order_by=order_by
-        )
+            order_by = ["datetime_of_last_admin_comment"]
+        return self.extra_annotate_datetime_of_last_admin_comment().extra(order_by=order_by)
 
     def annotate_with_number_of_private_groupcomments_from_user(self, user):
         """
@@ -516,12 +503,15 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
             user: A User object.
         """
         from devilry.devilry_group.models import GroupComment
+
         return self.annotate(
             number_of_private_groupcomments_from_user=models.Count(
                 models.Case(
-                    models.When(feedbackset__groupcomment__visibility=GroupComment.VISIBILITY_PRIVATE,
-                                feedbackset__groupcomment__user=user,
-                                then=1)
+                    models.When(
+                        feedbackset__groupcomment__visibility=GroupComment.VISIBILITY_PRIVATE,
+                        feedbackset__groupcomment__user=user,
+                        then=1,
+                    )
                 )
             )
         )
@@ -536,12 +526,15 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
             user: A User object.
         """
         from devilry.devilry_group.models import ImageAnnotationComment
+
         return self.annotate(
             number_of_private_imageannotationcomments_from_user=models.Count(
                 models.Case(
-                    models.When(feedbackset__imageannotationcomment__visibility=ImageAnnotationComment.VISIBILITY_PRIVATE,
-                                feedbackset__imageannotationcomment__user=user,
-                                then=1)
+                    models.When(
+                        feedbackset__imageannotationcomment__visibility=ImageAnnotationComment.VISIBILITY_PRIVATE,
+                        feedbackset__imageannotationcomment__user=user,
+                        then=1,
+                    )
                 )
             )
         )
@@ -561,9 +554,9 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
         if not assignmentqueryset:
             assignmentqueryset = Assignment.objects.all()
         assignmentqueryset = assignmentqueryset.prefetch_point_to_grade_map()
-        return self.prefetch_related(models.Prefetch('parentnode',
-                                                     queryset=assignmentqueryset,
-                                                     to_attr='prefetched_assignment'))
+        return self.prefetch_related(
+            models.Prefetch("parentnode", queryset=assignmentqueryset, to_attr="prefetched_assignment")
+        )
 
     def annotate_with_is_waiting_for_feedback_count(self):
         """
@@ -583,15 +576,11 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
         now = timezone.now()
         whenquery = models.Q(
             cached_data__last_feedbackset__grading_published_datetime__isnull=True,
-            cached_data__last_feedbackset__deadline_datetime__lt=now
+            cached_data__last_feedbackset__deadline_datetime__lt=now,
         )
 
         return self.annotate(
-            annotated_is_waiting_for_feedback=models.Count(
-                models.Case(
-                    models.When(whenquery, then=1)
-                )
-            )
+            annotated_is_waiting_for_feedback=models.Count(models.Case(models.When(whenquery, then=1)))
         )
 
     def annotate_with_is_waiting_for_deliveries_count(self):
@@ -612,18 +601,13 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
         now = timezone.now()
         whenquery = models.Q(
             models.Q(cached_data__last_feedbackset__grading_published_datetime__isnull=True)
-            |
-            models.Q(cached_data__last_feedbackset__grading_published_datetime__isnull=False,
-                     cached_data__last_feedbackset__deadline_datetime__gte=now)
-        ) & (
-                models.Q(cached_data__last_feedbackset__deadline_datetime__gte=now)
-        )
-        return self.annotate(
-            annotated_is_waiting_for_deliveries=models.Count(
-                models.Case(
-                    models.When(whenquery, then=1)
-                )
+            | models.Q(
+                cached_data__last_feedbackset__grading_published_datetime__isnull=False,
+                cached_data__last_feedbackset__deadline_datetime__gte=now,
             )
+        ) & (models.Q(cached_data__last_feedbackset__deadline_datetime__gte=now))
+        return self.annotate(
+            annotated_is_waiting_for_deliveries=models.Count(models.Case(models.When(whenquery, then=1)))
         )
 
     def annotate_with_is_corrected_count(self):
@@ -641,16 +625,9 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
         you should use the :meth:`.AssignmentGroup.is_corrected` property.
         """
         whenquery = models.Q(
-            models.Q(cached_data__last_feedbackset=models.F(
-                'cached_data__last_published_feedbackset')),
+            models.Q(cached_data__last_feedbackset=models.F("cached_data__last_published_feedbackset")),
         )
-        return self.annotate(
-            annotated_is_corrected=models.Count(
-                models.Case(
-                    models.When(whenquery, then=1)
-                )
-            )
-        )
+        return self.annotate(annotated_is_corrected=models.Count(models.Case(models.When(whenquery, then=1))))
 
     def annotate_with_is_passing_grade_count(self):
         """
@@ -668,10 +645,11 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
                     models.When(
                         cached_data__last_published_feedbackset__isnull=False,
                         cached_data__last_published_feedbackset__grading_points__gte=models.F(
-                            'parentnode__passing_grade_min_points'),
-                        then=1
+                            "parentnode__passing_grade_min_points"
+                        ),
+                        then=1,
                     ),
-                    default=models.Value(None)
+                    default=models.Value(None),
                 )
             )
         )
@@ -697,11 +675,10 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
         """
         whenquery = models.Q(
             cached_data__last_feedbackset__grading_published_datetime__isnull=True,
-            cached_data__last_feedbackset__grading_points__isnull=False)
+            cached_data__last_feedbackset__grading_points__isnull=False,
+        )
         return self.annotate(
-            annotated_has_unpublished_feedbackdraft=models.Count(
-                models.Case(models.When(whenquery, then=1))
-            )
+            annotated_has_unpublished_feedbackdraft=models.Count(models.Case(models.When(whenquery, then=1)))
         )
 
     def delete(self, *args, **kwargs):
@@ -717,25 +694,23 @@ class AssignmentGroupManager(models.Manager):
     def __bulk_create_groups(self, assignment, batchoperation, relatedstudents):
         groups = []
         for relatedstudent in relatedstudents:
-            group = AssignmentGroup(
-                batchoperation=batchoperation,
-                parentnode=assignment)
+            group = AssignmentGroup(batchoperation=batchoperation, parentnode=assignment)
             groups.append(group)
         AssignmentGroup.objects.bulk_create(groups)
         return AssignmentGroup.objects.filter(batchoperation=batchoperation)
 
     def __bulk_create_candidates(self, group_list, relatedstudents):
         from devilry.apps.core.models import Candidate
+
         candidates = []
         for group, relatedstudent in zip(group_list, relatedstudents):
-            candidate = Candidate(
-                relatedstudent=relatedstudent,
-                assignment_group=group)
+            candidate = Candidate(relatedstudent=relatedstudent, assignment_group=group)
             candidates.append(candidate)
         Candidate.objects.bulk_create(candidates)
 
     def __bulk_update_feedbacksets(self, group_list, created_by_user):
         from devilry.devilry_group.models import FeedbackSet
+
         FeedbackSet.objects.filter(group__in=group_list).update(created_by=created_by_user)
 
     def bulk_create_groups(self, created_by_user, assignment, relatedstudents):
@@ -765,17 +740,16 @@ class AssignmentGroupManager(models.Manager):
         batchoperation = BatchOperation.objects.create_synchronous(
             context_object=assignment,
             started_by=created_by_user,
-            operationtype='create-groups-with-candidate-and-feedbackset')
-        group_queryset = self.__bulk_create_groups(assignment=assignment,
-                                                   batchoperation=batchoperation,
-                                                   relatedstudents=relatedstudents)
+            operationtype="create-groups-with-candidate-and-feedbackset",
+        )
+        group_queryset = self.__bulk_create_groups(
+            assignment=assignment, batchoperation=batchoperation, relatedstudents=relatedstudents
+        )
         # We iterate over the groups multiple times, so we do this to avoid multiple queries
         group_list = list(group_queryset)
 
-        self.__bulk_create_candidates(group_list=group_list,
-                                      relatedstudents=relatedstudents)
-        self.__bulk_update_feedbacksets(created_by_user=created_by_user,
-                                        group_list=group_list)
+        self.__bulk_create_candidates(group_list=group_list, relatedstudents=relatedstudents)
+        self.__bulk_update_feedbacksets(created_by_user=created_by_user, group_list=group_list)
         batchoperation.finish()
         return group_queryset
 
@@ -832,14 +806,17 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
     objects = AssignmentGroupManager.from_queryset(AssignmentGroupQuerySet)()
 
-    parentnode = models.ForeignKey(Assignment, related_name='assignmentgroups', on_delete=models.CASCADE)
+    parentnode = models.ForeignKey(Assignment, related_name="assignmentgroups", on_delete=models.CASCADE)
     name = models.CharField(
-        max_length=30, blank=True, null=False, default='',
-        help_text='An optional name for the group. Typically used a project '
-                  'name on project assignments.')
+        max_length=30,
+        blank=True,
+        null=False,
+        default="",
+        help_text="An optional name for the group. Typically used a project name on project assignments.",
+    )
     is_open = models.BooleanField(
-        blank=True, default=True,
-        help_text='If this is checked, the group can add deliveries.')
+        blank=True, default=True, help_text="If this is checked, the group can add deliveries."
+    )
     etag = models.DateTimeField(auto_now_add=True)
 
     #: Foreignkey to :class:`ievv_opensource.ievv_batchframework.models.BatchOperation`.
@@ -848,22 +825,16 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     #: object to enable us to recursively batch create AssignmentGroup,
     #: Candidate and FeedbackSet in a very efficient batch operation with
     #: a fixed set of database queries.
-    batchoperation = models.ForeignKey(
-        to=BatchOperation,
-        null=True, blank=True,
-        on_delete=models.SET_NULL)
+    batchoperation = models.ForeignKey(to=BatchOperation, null=True, blank=True, on_delete=models.SET_NULL)
 
     #: If this group was copied from another group, this will be set.
     #: This can safely be set to ``None`` at any time since it is only
     #: used to make it possible to bulk copy huge amounts of groups
     #: efficiently.
-    copied_from = models.ForeignKey('self',
-                                    on_delete=models.SET_NULL,
-                                    blank=True, null=True)
+    copied_from = models.ForeignKey("self", on_delete=models.SET_NULL, blank=True, null=True)
 
     #: The time when this group was created.
-    created_datetime = models.DateTimeField(null=False, blank=True,
-                                            default=timezone.now)
+    created_datetime = models.DateTimeField(null=False, blank=True, default=timezone.now)
 
     # NEVER set this yourself!
     # This field is used internally to make delete triggers related
@@ -879,8 +850,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     internal_is_being_deleted = models.BooleanField(default=False, editable=False)
 
     class Meta:
-        app_label = 'core'
-        ordering = ['id']
+        app_label = "core"
+        ordering = ["id"]
 
     @classmethod
     def q_is_candidate(cls, user_obj):
@@ -892,7 +863,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
     @classmethod
     def where_is_candidate(cls, user_obj):
-        """ Returns a QuerySet matching all AssignmentGroups where the
+        """Returns a QuerySet matching all AssignmentGroups where the
         given user is student.
 
         :param user_obj: A User object.
@@ -902,20 +873,18 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
     @classmethod
     def published_where_is_candidate(cls, user_obj, old=True, active=True):
-        """ Returns a QuerySet matching all :ref:`published
+        """Returns a QuerySet matching all :ref:`published
         <assignment-classifications>` assignment groups where the given user
         is student.
 
         :param user_obj: A User object.
         :rtype: QuerySet
         """
-        return AssignmentGroup.objects.filter(
-            cls.q_is_candidate(user_obj) &
-            cls.q_published(old=old, active=active))
+        return AssignmentGroup.objects.filter(cls.q_is_candidate(user_obj) & cls.q_published(old=old, active=active))
 
     @classmethod
     def active_where_is_candidate(cls, user_obj):
-        """ Returns a QuerySet matching all :ref:`active
+        """Returns a QuerySet matching all :ref:`active
         <assignment-classifications>` assignment groups where the given user
         is student.
 
@@ -926,7 +895,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
     @classmethod
     def old_where_is_candidate(cls, user_obj):
-        """ Returns a QuerySet matching all :ref:`old
+        """Returns a QuerySet matching all :ref:`old
         <assignment-classifications>` assignment groups where the given user
         is student.
 
@@ -991,21 +960,17 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         for candidate in self.candidates.all():
             candidateids.append(str(candidate.get_anonymous_name(assignment=assignment)))
         if candidateids:
-            return ', '.join(candidateids)
+            return ", ".join(candidateids)
         else:
-            return pgettext_lazy('core assignmentgroup',
-                                 'no students in group')
+            return pgettext_lazy("core assignmentgroup", "no students in group")
 
     def __get_no_candidates_nonanonymous_displayname(self):
-        return pgettext_lazy('core assignmentgroup',
-                             'group#%(groupid)s - no students in group') % {
-            'groupid': self.id
-        }
+        return pgettext_lazy("core assignmentgroup", "group#%(groupid)s - no students in group") % {"groupid": self.id}
 
     def get_unanonymized_short_displayname(self):
         candidates = self.candidates.all()
         names = [candidate.relatedstudent.user.shortname for candidate in candidates]
-        out = ', '.join(names)
+        out = ", ".join(names)
         if out:
             if self.name:
                 return self.name
@@ -1021,7 +986,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         else:
             candidates = self.candidates.all()
             names = [candidate.relatedstudent.user.shortname for candidate in candidates]
-            out = ', '.join(names)
+            out = ", ".join(names)
             if out:
                 if self.name:
                     return self.name
@@ -1045,11 +1010,11 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     def get_unanonymized_long_displayname(self):
         candidates = self.candidates.all()
         names = [candidate.relatedstudent.user.get_full_name() for candidate in candidates]
-        out = ', '.join(names)
+        out = ", ".join(names)
         if not out:
             out = self.__get_no_candidates_nonanonymous_displayname()
         if self.name:
-            out = '{} ({})'.format(self.name, out)
+            out = "{} ({})".format(self.name, out)
         return out
 
     def get_long_displayname(self, assignment=None):
@@ -1087,9 +1052,9 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         return self.get_long_displayname()
 
     def __str__(self):
-        return '{} - {}'.format(self.short_displayname, self.parentnode.get_path())
+        return "{} - {}".format(self.short_displayname, self.parentnode.get_path())
 
-    def get_examiners(self, separator=', '):
+    def get_examiners(self, separator=", "):
         """
         Get a string contaning the shortname of all examiners in the group separated by
         comma (``','``).
@@ -1097,7 +1062,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         :param separator: The unicode string used to separate candidates. Defaults to ``u', '``.
         """
         warnings.warn("deprecated", DeprecationWarning)
-        examiners = [examiner.user.shortname for examiner in self.examiners.select_related('user')]
+        examiners = [examiner.user.shortname for examiner in self.examiners.select_related("user")]
         examiners.sort()
         return separator.join(examiners)
 
@@ -1110,7 +1075,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         return self.candidates.filter(student=user_obj).count() > 0
 
     def is_examiner(self, user_obj):
-        """ Return True if user is examiner on this assignment group """
+        """Return True if user is examiner on this assignment group"""
         warnings.warn("deprecated", DeprecationWarning)
         return self.examiners.filter(user__id=user_obj.pk).count() > 0
 
@@ -1141,10 +1106,11 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         Returns ``True`` if this AssignmentGroup does not contain any deliveries.
         """
         from devilry.devilry_group.models import FeedbackSet
+
         return not FeedbackSet.objects.filter(assignment_group=self).exists()
 
     def can_save(self, user_obj):
-        """ Check if the user has permission to save this AssignmentGroup. """
+        """Check if the user has permission to save this AssignmentGroup."""
         if user_obj.is_superuser:
             return True
         elif self.parentnode:
@@ -1153,7 +1119,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             return False
 
     def can_add_deliveries(self):
-        """ Returns true if a student can add deliveries on this assignmentgroup
+        """Returns true if a student can add deliveries on this assignmentgroup
 
         Both the assignmentgroups is_open attribute, and the periods start
         and end time is checked.
@@ -1169,9 +1135,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         Returns:
             :class:`~core.AssignmentGroup` a new assignmentgroup
         """
-        groupcopy = AssignmentGroup(parentnode=self.parentnode,
-                                    name=self.name,
-                                    is_open=self.is_open)
+        groupcopy = AssignmentGroup(parentnode=self.parentnode, name=self.name, is_open=self.is_open)
         groupcopy.full_clean()
         groupcopy.save()
         for examiner in self.examiners.all():
@@ -1245,11 +1209,10 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         feedbackset_type_merge_map = {
             FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT: FeedbackSet.FEEDBACKSET_TYPE_MERGE_FIRST_ATTEMPT,
             FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT: FeedbackSet.FEEDBACKSET_TYPE_MERGE_NEW_ATTEMPT,
-            FeedbackSet.FEEDBACKSET_TYPE_RE_EDIT: FeedbackSet.FEEDBACKSET_TYPE_MERGE_RE_EDIT
+            FeedbackSet.FEEDBACKSET_TYPE_RE_EDIT: FeedbackSet.FEEDBACKSET_TYPE_MERGE_RE_EDIT,
         }
 
-        feedbacksets = self.feedbackset_set.order_by_deadline_datetime()\
-            .select_related('group__parentnode')
+        feedbacksets = self.feedbackset_set.order_by_deadline_datetime().select_related("group__parentnode")
 
         for feedbackset in feedbacksets:
             # change feedbackset_type to merge prefix
@@ -1294,7 +1257,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         """
         if self.parentnode_id != target.parentnode_id:
             raise ValidationError(
-                gettext_lazy('Cannot merge self into target, self and target is not part of same AssignmentGroup')
+                gettext_lazy("Cannot merge self into target, self and target is not part of same AssignmentGroup")
             )
 
     def set_all_target_feedbacksets_to_merge_type(self, target):
@@ -1310,7 +1273,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         feedbackset_type_merge_map = {
             FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT: FeedbackSet.FEEDBACKSET_TYPE_MERGE_FIRST_ATTEMPT,
             FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT: FeedbackSet.FEEDBACKSET_TYPE_MERGE_NEW_ATTEMPT,
-            FeedbackSet.FEEDBACKSET_TYPE_RE_EDIT: FeedbackSet.FEEDBACKSET_TYPE_MERGE_RE_EDIT
+            FeedbackSet.FEEDBACKSET_TYPE_RE_EDIT: FeedbackSet.FEEDBACKSET_TYPE_MERGE_RE_EDIT,
         }
         for feedbackset in target.feedbackset_set.all():
             if feedbackset.feedbackset_type in list(feedbackset_type_merge_map.keys()):
@@ -1325,11 +1288,12 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             target: :class:`~core.AssignmentGroup` the assignment group to add new feedbackset to.
         """
         from devilry.devilry_group.models import FeedbackSet
-        last_deadline = target.feedbackset_set.order_by('-deadline_datetime').first().deadline_datetime
+
+        last_deadline = target.feedbackset_set.order_by("-deadline_datetime").first().deadline_datetime
         last_deadline = last_deadline + timezone.timedelta(microseconds=1)
         new_feedbackset = FeedbackSet(
-            group=target, feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
-            deadline_datetime=last_deadline)
+            group=target, feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT, deadline_datetime=last_deadline
+        )
         new_feedbackset.full_clean()
         new_feedbackset.save()
 
@@ -1347,7 +1311,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             ValidationError if we are not able to merge groups
         """
         if len(groups) < 2:
-            raise ValidationError(gettext_lazy('Cannot merge less than 2 groups'))
+            raise ValidationError(gettext_lazy("Cannot merge less than 2 groups"))
 
         from devilry.apps.core.models import AssignmentGroupHistory
 
@@ -1387,16 +1351,15 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
         """
         if not self.candidates.filter(id=candidate.id).exists():
-            raise GroupPopNotCandidateError('candidate is not part of AssignmentGroup')
+            raise GroupPopNotCandidateError("candidate is not part of AssignmentGroup")
         if len(self.candidates.all()) < 2:
-            raise GroupPopToFewCandidatesError('cannot pop candidate from AssignmentGroup when there is only one')
+            raise GroupPopToFewCandidatesError("cannot pop candidate from AssignmentGroup when there is only one")
 
         groupcopy = self.copy_all_except_candidates()
         candidate.assignment_group = groupcopy
         candidate.save()
         self.cached_data.first_feedbackset.copy_feedbackset_into_group(
-            group=groupcopy,
-            target=groupcopy.cached_data.first_feedbackset
+            group=groupcopy, target=groupcopy.cached_data.first_feedbackset
         )
         for feedbackset in self.feedbackset_set.order_by_deadline_datetime():
             if feedbackset != self.cached_data.first_feedbackset:
@@ -1410,23 +1373,23 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         Returns:
             dictonary with current state of assignmentGroup and all inherent models
         """
-        candidate_queryset = self.candidates.all().select_related('relatedstudent')
+        candidate_queryset = self.candidates.all().select_related("relatedstudent")
         candidates = [candidate.relatedstudent.user_id for candidate in candidate_queryset]
-        examiner_queryset = self.examiners.all().select_related('relatedexaminer')
+        examiner_queryset = self.examiners.all().select_related("relatedexaminer")
         examiners = [examiner.relatedexaminer.user_id for examiner in examiner_queryset]
         tag_queryset = self.tags.all()
         tags = [tag.tag for tag in tag_queryset]
-        feedbackset_queryset = self.feedbackset_set.order_by_deadline_datetime().prefetch_related('groupcomment_set')
+        feedbackset_queryset = self.feedbackset_set.order_by_deadline_datetime().prefetch_related("groupcomment_set")
         feedbacksets = [feedbackset.id for feedbackset in feedbackset_queryset]
 
         return {
-            'name': self.name,
-            'created_datetime': self.created_datetime.isoformat(),
-            'candidates': candidates,
-            'examiners': examiners,
-            'tags': tags,
-            'feedbacksets': feedbacksets,
-            'parentnode': self.parentnode.id
+            "name": self.name,
+            "created_datetime": self.created_datetime.isoformat(),
+            "candidates": candidates,
+            "examiners": examiners,
+            "tags": tags,
+            "feedbacksets": feedbacksets,
+            "parentnode": self.parentnode.id,
         }
 
     def get_all_admin_ids(self):
@@ -1487,8 +1450,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         is corrected, and ready be be published.
         """
         last_feedbackset = self.cached_data.last_feedbackset
-        return (last_feedbackset.grading_published_datetime is None
-                and last_feedbackset.grading_points is not None)
+        return last_feedbackset.grading_published_datetime is None and last_feedbackset.grading_points is not None
 
     @property
     def is_corrected(self):
@@ -1539,13 +1501,14 @@ class AssignmentGroupTag(models.Model):
 
         The tag. Max 20 characters. Can only contain a-z, A-Z, 0-9 and "_".
     """
-    assignment_group = models.ForeignKey(AssignmentGroup, related_name='tags', on_delete=models.CASCADE)
+
+    assignment_group = models.ForeignKey(AssignmentGroup, related_name="tags", on_delete=models.CASCADE)
     tag = models.SlugField(max_length=20, help_text='A tag can contain a-z, A-Z, 0-9 and "_".')
 
     class Meta:
-        app_label = 'core'
-        ordering = ['tag']
-        unique_together = ('assignment_group', 'tag')
+        app_label = "core"
+        ordering = ["tag"]
+        unique_together = ("assignment_group", "tag")
 
     def __str__(self):
         return self.tag

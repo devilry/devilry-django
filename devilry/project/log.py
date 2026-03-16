@@ -4,14 +4,15 @@ Sane default logging setup.
 
 
 def create_logging_config(
-        mail_admins=True,
-        mail_admins_level='ERROR',
-        dangerous_actions_loglevel='INFO',
-        django_loglevel='INFO',
-        db_loglevel='WARNING',
-        sh_loglevel='WARNING',
-        request_loglevel='ERROR',
-        storages_loglevel='WARNING'):
+    mail_admins=True,
+    mail_admins_level="ERROR",
+    dangerous_actions_loglevel="INFO",
+    django_loglevel="INFO",
+    db_loglevel="WARNING",
+    sh_loglevel="WARNING",
+    request_loglevel="ERROR",
+    storages_loglevel="WARNING",
+):
     """
     Returns a logging config that can be used for ``settings.LOGGING``.
 
@@ -49,98 +50,38 @@ def create_logging_config(
         If ``log_to_file_dir`` is not given when ``log_to_file==True``.
     """
 
-    handlers = ['stderr']
+    handlers = ["stderr"]
     if mail_admins:
-        handlers.append('mail_admins')
+        handlers.append("mail_admins")
 
     return {
-        'version': 1,
-        'disable_existing_loggers': False,
-        'formatters': {
-            'verbose': {
-                'format': '[%(levelname)s %(asctime)s %(name)s] %(message)s'
-            }
-        },
-
-        'filters': {
-            'require_debug_false': {
-                '()': 'django.utils.log.RequireDebugFalse'
-            }
-        },
-
-        'handlers': {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "formatters": {"verbose": {"format": "[%(levelname)s %(asctime)s %(name)s] %(message)s"}},
+        "filters": {"require_debug_false": {"()": "django.utils.log.RequireDebugFalse"}},
+        "handlers": {
             # We set all handlers except mail_admins to level=DEBUG, and configure the actual loglevel in the loggers
-            'stderr': {
-                'level': 'DEBUG',
-                'formatter': 'verbose',
-                'class': 'logging.StreamHandler'
-            },
-            'mail_admins': {
-                'level': mail_admins_level,
-                'class': 'django.utils.log.AdminEmailHandler',
+            "stderr": {"level": "DEBUG", "formatter": "verbose", "class": "logging.StreamHandler"},
+            "mail_admins": {
+                "level": mail_admins_level,
+                "class": "django.utils.log.AdminEmailHandler",
                 # The traceback email includes an HTML attachment containing the
                 # full content of the debug Web page that would have been produced
                 # if DEBUG were True.
-                'include_html': True
-            }
+                "include_html": True,
+            },
         },
-        'loggers': {
-            'django.request': {
-                'handlers': handlers,
-                'level': request_loglevel,
-                'propagate': False
-            },
-            'devilry_subjectadmin': {
-                'handlers': handlers,
-                'level': dangerous_actions_loglevel,
-                'propagate': False
-            },
-            'django.db': {
-                'handlers': ['stderr'],
-                'level': db_loglevel,
-                'propagate': False
-            },
-            'sh': {
-                'handlers': ['stderr'],
-                'level': sh_loglevel,
-                'propagate': False
-            },
-            'MARKDOWN': {
-                'handlers': ['stderr'],
-                'level': 'INFO',
-                'propagate': False
-            },
-            'chardet.charsetprober': {
-                'handlers': ['stderr'],
-                'level': 'INFO',
-                'propagate': False
-            },
-            's3transfer': {
-                'handlers': ['stderr'],
-                'level': storages_loglevel,
-                'propagate': False
-            },
-            'botocore': {
-                'handlers': ['stderr'],
-                'level': storages_loglevel,
-                'propagate': False
-            },
-            'urllib3': {
-                'handlers': ['stderr'],
-                'level': storages_loglevel,
-                'propagate': False
-            },
-            'boto3': {
-                'handlers': ['stderr'],
-                'level': storages_loglevel,
-                'propagate': False
-            },
-            '': {
-                'handlers': handlers,
-                'level': django_loglevel,
-                'propagate': False
-            },
-
-        }
+        "loggers": {
+            "django.request": {"handlers": handlers, "level": request_loglevel, "propagate": False},
+            "devilry_subjectadmin": {"handlers": handlers, "level": dangerous_actions_loglevel, "propagate": False},
+            "django.db": {"handlers": ["stderr"], "level": db_loglevel, "propagate": False},
+            "sh": {"handlers": ["stderr"], "level": sh_loglevel, "propagate": False},
+            "MARKDOWN": {"handlers": ["stderr"], "level": "INFO", "propagate": False},
+            "chardet.charsetprober": {"handlers": ["stderr"], "level": "INFO", "propagate": False},
+            "s3transfer": {"handlers": ["stderr"], "level": storages_loglevel, "propagate": False},
+            "botocore": {"handlers": ["stderr"], "level": storages_loglevel, "propagate": False},
+            "urllib3": {"handlers": ["stderr"], "level": storages_loglevel, "propagate": False},
+            "boto3": {"handlers": ["stderr"], "level": storages_loglevel, "propagate": False},
+            "": {"handlers": handlers, "level": django_loglevel, "propagate": False},
+        },
     }
-

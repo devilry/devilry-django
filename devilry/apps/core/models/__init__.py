@@ -17,11 +17,28 @@ from .examiner import Examiner
 from .groupinvite import GroupInvite
 from .examiner_candidate_group_history import ExaminerAssignmentGroupHistory, CandidateAssignmentGroupHistory
 
-__all__ = ("AbstractIsAdmin", "AbstractIsExaminer", "AbstractIsCandidate",
-           "BaseNode", "Subject", "Period", "PeriodTag", 'RelatedExaminer', 'RelatedStudent',
-           "RelatedStudentKeyValue", "Assignment", "AssignmentGroup",
-           "AssignmentGroupTag", "Candidate",
-           "DevilryUserProfile", 'PeriodApplicationKeyValue', 'Examiner',
-           'GroupInvite', 'PointRangeToGrade',
-           'PointToGradeMap', 'AssignmentGroupHistory', 'ExaminerAssignmentGroupHistory',
-           'CandidateAssignmentGroupHistory')
+__all__ = (
+    "AbstractIsAdmin",
+    "AbstractIsExaminer",
+    "AbstractIsCandidate",
+    "BaseNode",
+    "Subject",
+    "Period",
+    "PeriodTag",
+    "RelatedExaminer",
+    "RelatedStudent",
+    "RelatedStudentKeyValue",
+    "Assignment",
+    "AssignmentGroup",
+    "AssignmentGroupTag",
+    "Candidate",
+    "DevilryUserProfile",
+    "PeriodApplicationKeyValue",
+    "Examiner",
+    "GroupInvite",
+    "PointRangeToGrade",
+    "PointToGradeMap",
+    "AssignmentGroupHistory",
+    "ExaminerAssignmentGroupHistory",
+    "CandidateAssignmentGroupHistory",
+)

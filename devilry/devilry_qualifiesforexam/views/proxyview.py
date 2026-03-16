@@ -17,6 +17,7 @@ class PluginProxyView(View):
     :obj:`devilry.devilry_qualifiesforexam.plugintyperegistry.Registry` and the request is forwarded to the view
     returned from :meth:`devilry.devilry_qualifiesforexam.plugintyperegistry.PluginType.get_plugin_view_class`.
     """
+
     def dispatch(self, request, *args, **kwargs):
         """
         Proxy the request to the correct
@@ -32,7 +33,7 @@ class PluginProxyView(View):
             or a :class:`~django.http.HttpResponseBadRequest` if ``plugintypeid`` provided in ``**kwargs`` does not
             exist.
         """
-        plugintypeid = kwargs['plugintypeid']
+        plugintypeid = kwargs["plugintypeid"]
 
         try:
             pluginclass = plugintyperegistry.Registry.get_instance()[plugintypeid]
@@ -41,8 +42,5 @@ class PluginProxyView(View):
 
         plugin = pluginclass()
         viewclass = plugin.get_plugin_view_class()
-        view = viewclass.as_view(
-            proxyview=self,
-            plugin=plugin
-        )
+        view = viewclass.as_view(proxyview=self, plugin=plugin)
         return view(request, *args, **kwargs)

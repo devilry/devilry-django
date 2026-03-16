@@ -26,7 +26,7 @@ class SelectedStudentQualificationItem(base_multiselect_view.SelectedQualificati
 
 
 class StudentQualificationItemTargetRenderer(base_multiselect_view.QualificationItemTargetRenderer):
-    descriptive_item_name = 'students'
+    descriptive_item_name = "students"
     selected_target_renderer = SelectedStudentQualificationItem
 
     def __init__(self, *args, **kwargs):
@@ -45,7 +45,7 @@ class SelectableStudentQualificationItem(base_multiselect_view.SelectableQualifi
 
 class PluginSelectStudentsView(base_multiselect_view.QualificationItemListView, plugin_mixin.PluginMixin):
     model = core_models.RelatedStudent
-    plugintypeid = 'devilry_qualifiesforexam_plugin_students.plugin_select_students'
+    plugintypeid = "devilry_qualifiesforexam_plugin_students.plugin_select_students"
     value_renderer_class = SelectableStudentQualificationItem
 
     def get_period_result_collector_class(self):
@@ -64,9 +64,9 @@ class PluginSelectStudentsView(base_multiselect_view.QualificationItemListView, 
         return StudentQualificationForm
 
     def get_pagetitle(self):
-        return 'Select students'
+        return "Select students"
 
     def form_valid(self, form):
-        self.request.session['passing_relatedstudentids'] = self.get_qualifying_itemids(posted_form=form)
-        self.request.session['plugintypeid'] = PluginSelectStudentsView.plugintypeid
-        return HttpResponseRedirect(str(self.request.cradmin_app.reverse_appurl('preview')))
+        self.request.session["passing_relatedstudentids"] = self.get_qualifying_itemids(posted_form=form)
+        self.request.session["plugintypeid"] = PluginSelectStudentsView.plugintypeid
+        return HttpResponseRedirect(str(self.request.cradmin_app.reverse_appurl("preview")))

@@ -24,110 +24,93 @@ class TestSplitGroup(TestCase, cradmin_testhelpers.TestCaseMixin):
         return mockinstance
 
     def test_title(self):
-        testassignment = baker.make('core.Assignment')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make("core.Assignment")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
-            viewkwargs={'pk': testgroup.id}
+            cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
+            viewkwargs={"pk": testgroup.id},
         )
-        self.assertIn(
-            'Split students from project group',
-            mockresponse.selector.one('title').alltext_normalized)
+        self.assertIn("Split students from project group", mockresponse.selector.one("title").alltext_normalized)
 
     def test_h1(self):
-        testassignment = baker.make('core.Assignment')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make("core.Assignment")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
-            viewkwargs={'pk': testgroup.id}
+            cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
+            viewkwargs={"pk": testgroup.id},
         )
-        self.assertIn(
-            'Split students from project group',
-            mockresponse.selector.one('h1').alltext_normalized)
+        self.assertIn("Split students from project group", mockresponse.selector.one("h1").alltext_normalized)
 
     def test_submit_button_text(self):
-        testassignment = baker.make('core.Assignment')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make("core.Assignment")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
-            viewkwargs={'pk': testgroup.id}
+            cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
+            viewkwargs={"pk": testgroup.id},
         )
-        self.assertIn(
-            'Split',
-            mockresponse.selector.one('#submit-id-split').alltext_normalized)
+        self.assertIn("Split", mockresponse.selector.one("#submit-id-split").alltext_normalized)
 
     def test_select_candidate(self):
-        testassignment = baker.make('core.Assignment')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        candidate1 = core_baker.candidate(group=testgroup, shortname='mrcool', fullname='Mr. Cool')
-        candidate2 = core_baker.candidate(group=testgroup, shortname='mrman', fullname='Mr. Man')
-        candidate3 = core_baker.candidate(group=testgroup, shortname='sirtoby', fullname='sir. Toby')
+        testassignment = baker.make("core.Assignment")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        candidate1 = core_baker.candidate(group=testgroup, shortname="mrcool", fullname="Mr. Cool")
+        candidate2 = core_baker.candidate(group=testgroup, shortname="mrman", fullname="Mr. Man")
+        candidate3 = core_baker.candidate(group=testgroup, shortname="sirtoby", fullname="sir. Toby")
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
-            viewkwargs={'pk': testgroup.id}
+            cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
+            viewkwargs={"pk": testgroup.id},
         )
-        selectlist = [elem.alltext_normalized for elem in mockresponse.selector.list('#id_students > option')]
+        selectlist = [elem.alltext_normalized for elem in mockresponse.selector.list("#id_students > option")]
         self.assertIn(candidate1.relatedstudent.user.get_displayname(), selectlist)
         self.assertIn(candidate2.relatedstudent.user.get_displayname(), selectlist)
         self.assertIn(candidate3.relatedstudent.user.get_displayname(), selectlist)
 
     def test_cannot_pop_candidate_if_there_is_only_one(self):
-        testgroup = baker.make('core.AssignmentGroup')
+        testgroup = baker.make("core.AssignmentGroup")
         candidate = core_baker.candidate(group=testgroup)
         messagesmock = mock.MagicMock()
         self.mock_http302_postrequest(
             cradmin_role=testgroup.parentnode,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
             messagesmock=messagesmock,
-            viewkwargs={'pk': testgroup.id},
-            requestkwargs={
-                'data':
-                    {'students': candidate.id}
-            }
+            viewkwargs={"pk": testgroup.id},
+            requestkwargs={"data": {"students": candidate.id}},
         )
         messagesmock.add.assert_called_once_with(
-            messages.WARNING,
-            'Cannot split student if there is less than 2 students in project group.',
-            ''
+            messages.WARNING, "Cannot split student if there is less than 2 students in project group.", ""
         )
 
     def test_pop_candidate_sanity(self):
-        testgroup = baker.make('core.AssignmentGroup')
+        testgroup = baker.make("core.AssignmentGroup")
         core_baker.candidate(group=testgroup)
-        candidate = core_baker.candidate(group=testgroup, shortname='sirtoby', fullname='sir. Toby')
+        candidate = core_baker.candidate(group=testgroup, shortname="sirtoby", fullname="sir. Toby")
         messagesmock = mock.MagicMock()
         self.mock_http302_postrequest(
             cradmin_role=testgroup.parentnode,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
             messagesmock=messagesmock,
-            viewkwargs={'pk': testgroup.id},
-            requestkwargs={
-                'data':
-                    {'students': candidate.id}
-            }
+            viewkwargs={"pk": testgroup.id},
+            requestkwargs={"data": {"students": candidate.id}},
         )
         messagesmock.add.assert_called_once_with(
             messages.SUCCESS,
-            '{} was removed from the project group'.format(candidate.relatedstudent.user.get_displayname()),
-            ''
+            "{} was removed from the project group".format(candidate.relatedstudent.user.get_displayname()),
+            "",
         )
 
     def test_pop_candidate_db(self):
-        testgroup = baker.make('core.AssignmentGroup')
+        testgroup = baker.make("core.AssignmentGroup")
         core_baker.candidate(group=testgroup)
-        candidate = core_baker.candidate(group=testgroup, shortname='sirtoby', fullname='sir. Toby')
+        candidate = core_baker.candidate(group=testgroup, shortname="sirtoby", fullname="sir. Toby")
         self.mock_http302_postrequest(
             cradmin_role=testgroup.parentnode,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
-            viewkwargs={'pk': testgroup.id},
-            requestkwargs={
-                'data':
-                    {'students': candidate.id}
-            }
+            cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
+            viewkwargs={"pk": testgroup.id},
+            requestkwargs={"data": {"students": candidate.id}},
         )
         candidate = Candidate.objects.get(id=candidate.id)
         self.assertNotEqual(candidate.assignment_group, testgroup)
@@ -147,76 +130,85 @@ class TestSplitGroupAnonymization(TestCase, cradmin_testhelpers.TestCaseMixin):
         return mockinstance
 
     def test_404_anonymizationmode_fully_subjectadmin(self):
-        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         with self.assertRaises(Http404):
             self.mock_http200_getrequest_htmls(
-                viewkwargs={'pk': testgroup.id},
+                viewkwargs={"pk": testgroup.id},
                 cradmin_role=testassignment,
-                cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'))
+                cradmin_instance=self.__mockinstance_with_devilryrole("subjectadmin"),
+            )
 
     def test_404_anonymizationmode_semi_periodadmin(self):
-        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         with self.assertRaises(Http404):
             self.mock_http200_getrequest_htmls(
-                viewkwargs={'pk': testgroup.id},
+                viewkwargs={"pk": testgroup.id},
                 cradmin_role=testassignment,
-                cradmin_instance=self.__mockinstance_with_devilryrole('periodadmin'))
+                cradmin_instance=self.__mockinstance_with_devilryrole("periodadmin"),
+            )
 
     def test_404_anonymizationmode_fully_periodadmin(self):
-        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         with self.assertRaises(Http404):
             self.mock_http200_getrequest_htmls(
-                viewkwargs={'pk': testgroup.id},
+                viewkwargs={"pk": testgroup.id},
                 cradmin_role=testassignment,
-                cradmin_instance=self.__mockinstance_with_devilryrole('periodadmin'))
+                cradmin_instance=self.__mockinstance_with_devilryrole("periodadmin"),
+            )
 
     def test_anonymizationmode_fully_departmentadmin(self):
-        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'pk': testgroup.id},
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
+            viewkwargs={"pk": testgroup.id},
+            cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
+        )
 
     def test_anonymizationmode_semi_departmentadmin(self):
-        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'pk': testgroup.id},
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
+            viewkwargs={"pk": testgroup.id},
+            cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
+        )
 
     def test_anonymizationmode_off_departmentadmin(self):
-        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'pk': testgroup.id},
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
+            viewkwargs={"pk": testgroup.id},
+            cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
+        )
 
     def test_anonymizationmode_semi_subjectadmin(self):
-        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'pk': testgroup.id},
-            cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'))
+            viewkwargs={"pk": testgroup.id},
+            cradmin_instance=self.__mockinstance_with_devilryrole("subjectadmin"),
+        )
 
     def test_anonymizationmode_off_subjectadmin(self):
-        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'pk': testgroup.id},
-            cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'))
+            viewkwargs={"pk": testgroup.id},
+            cradmin_instance=self.__mockinstance_with_devilryrole("subjectadmin"),
+        )
 
     def test_anonymizationmode_off_period(self):
-        testassignment = baker.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make("core.Assignment", anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'pk': testgroup.id},
-            cradmin_instance=self.__mockinstance_with_devilryrole('periodadmin'))
+            viewkwargs={"pk": testgroup.id},
+            cradmin_instance=self.__mockinstance_with_devilryrole("periodadmin"),
+        )

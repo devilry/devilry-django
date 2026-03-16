@@ -13,11 +13,9 @@ class Menu(devilry_crmenu_examiner.Menu):
 
 class CrAdminInstance(devilry_crinstance.BaseCrInstanceExaminer):
     menuclass = Menu
-    apps = [
-        ('assignmentlist', assignmentlist.App)
-    ]
-    id = 'devilry_examiner'
-    rolefrontpage_appname = 'assignmentlist'
+    apps = [("assignmentlist", assignmentlist.App)]
+    id = "devilry_examiner"
+    rolefrontpage_appname = "assignmentlist"
     flatten_rolefrontpage_url = True
 
     def has_access(self):
@@ -35,5 +33,4 @@ class CrAdminInstance(devilry_crinstance.BaseCrInstanceExaminer):
 
     @classmethod
     def matches_urlpath(cls, urlpath):
-        return re.match('^/devilry_examiner/$', urlpath) or \
-            re.match('^/devilry_examiner/filter/.*$', urlpath)
+        return re.match("^/devilry_examiner/$", urlpath) or re.match("^/devilry_examiner/filter/.*$", urlpath)

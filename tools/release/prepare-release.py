@@ -2,6 +2,7 @@
 """
 Ref for the argparse setup: https://mike.depalatis.net/blog/simplifying-argparse.html
 """
+
 from argparse import ArgumentParser
 import shlex
 import subprocess
@@ -18,6 +19,7 @@ def subcommand(args=[], parent=subparsers):
         for arg in args:
             parser.add_argument(*arg[0], **arg[1])
         parser.set_defaults(func=func)
+
     return decorator
 
 
@@ -25,61 +27,51 @@ def argument(*name_or_flags, **kwargs):
     return ([*name_or_flags], kwargs)
 
 
-@subcommand([
-    argument(
-        '--apply',
-        help='Apply changes. If this is not provided, we only print the actions that would be performed.',
-        action='store_true'
-    ),
-    argument(
-        '--version',
-        required=False,
-        help='Override version'
-    ),
-    argument(
-        '--prerelease',
-        required=False,
-        help='Prerelease version'
-    )
-])
+@subcommand(
+    [
+        argument(
+            "--apply",
+            help="Apply changes. If this is not provided, we only print the actions that would be performed.",
+            action="store_true",
+        ),
+        argument("--version", required=False, help="Override version"),
+        argument("--prerelease", required=False, help="Prerelease version"),
+    ]
+)
 def prepare(args):
     apply = args.apply
     version = args.version
     prerelease = args.prerelease
 
-    cz_bump_command = ['cz', 'bump']
+    cz_bump_command = ["cz", "bump"]
     if version:
         cz_bump_command.append(version)
     if prerelease:
-        cz_bump_command.append('--prerelease')
+        cz_bump_command.append("--prerelease")
         cz_bump_command.append(prerelease)
 
     commands = [
         cz_bump_command,
-        ['git', 'rm', '-r', 'devilry/devilry_theme3/static/devilry_theme3/'],
-        ['git', 'rm', '-r', 'devilry/devilry_statistics/static/devilry_statistics/'],
-        ['ievv', 'buildstatic', '--production', '--npm-clean-node-modules'],
-        ['git', 'add', 'devilry/devilry_theme3/static/devilry_theme3/'],
-        ['git', 'add', 'devilry/devilry_statistics/static/devilry_statistics/'],
-        ['git', 'commit', '-m', 'build: staticfiles']
+        ["git", "rm", "-r", "devilry/devilry_theme3/static/devilry_theme3/"],
+        ["git", "rm", "-r", "devilry/devilry_statistics/static/devilry_statistics/"],
+        ["ievv", "buildstatic", "--production", "--npm-clean-node-modules"],
+        ["git", "add", "devilry/devilry_theme3/static/devilry_theme3/"],
+        ["git", "add", "devilry/devilry_statistics/static/devilry_statistics/"],
+        ["git", "commit", "-m", "build: staticfiles"],
     ]
 
     for command in commands:
         if apply:
             try:
-                subprocess.run(
-                    command,
-                    check=True,
-                    text=True
-                )
+                subprocess.run(command, check=True, text=True)
             except subprocess.CalledProcessError as e:
                 print(e.stdout, flush=True)
                 print(e.stderr, file=sys.stderr, flush=True)
         else:
-            print(f'{shlex.join(command)}', flush=True)
+            print(f"{shlex.join(command)}", flush=True)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     args = cli.parse_args()
     if args.subcommand is None:
         cli.print_help()

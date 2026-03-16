@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
-    help = 'Clear the allauth user info tables.'
+    help = "Clear the allauth user info tables."
 
     def handle(self, *args, **options):
         SocialToken.objects.all().delete()

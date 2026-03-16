@@ -18,11 +18,10 @@ class TestGroupCommentTriggers(test.TestCase):
         ContentType.objects.clear_cache()
 
     def test_delete(self):
-        testcomment = baker.make('devilry_comment.Comment')
+        testcomment = baker.make("devilry_comment.Comment")
         testcomment_id = testcomment.id
-        testcommentfile = baker.make('devilry_comment.CommentFile',
-                                     comment=testcomment)
-        testcommentfile.file.save('testfile.txt', ContentFile('test'))
+        testcommentfile = baker.make("devilry_comment.CommentFile", comment=testcomment)
+        testcommentfile.file.save("testfile.txt", ContentFile("test"))
         testcomment.delete()
         self.assertFalse(Comment.objects.filter(id=testcomment_id).exists())
 
@@ -32,26 +31,26 @@ class TestCommentEditTriggers(test.TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_id_update_raise_internal_error(self):
-        comment = baker.make('devilry_comment.Comment', text='Test')
-        with self.assertRaisesMessage(ProgrammingError, f'OLD.id #{comment.id} != NEW.id #2'):
+        comment = baker.make("devilry_comment.Comment", text="Test")
+        with self.assertRaisesMessage(ProgrammingError, f"OLD.id #{comment.id} != NEW.id #2"):
             Comment.objects.filter(id=comment.id).update(id=2)
 
     def test_not_create_when_comment_is_created(self):
-        baker.make('devilry_comment.Comment', text='Test')
+        baker.make("devilry_comment.Comment", text="Test")
         self.assertEqual(CommentEditHistory.objects.count(), 0)
 
     def test_comment_history_model_created_on_comment_update(self):
-        testcomment = baker.make('devilry_comment.Comment', text='Test')
+        testcomment = baker.make("devilry_comment.Comment", text="Test")
         testcomment.save()
         self.assertEqual(CommentEditHistory.objects.count(), 1)
 
     def test_comment_history_model_created_fields(self):
         user = baker.make(settings.AUTH_USER_MODEL)
-        testcomment = baker.make('devilry_comment.Comment', text='Test', user=user)
-        testcomment.text = 'Test edited'
+        testcomment = baker.make("devilry_comment.Comment", text="Test", user=user)
+        testcomment.text = "Test edited"
         testcomment.save()
         comment_history = CommentEditHistory.objects.get()
         self.assertEqual(comment_history.comment, testcomment)
-        self.assertEqual(comment_history.pre_edit_text, 'Test')
-        self.assertEqual(comment_history.post_edit_text, 'Test edited')
+        self.assertEqual(comment_history.pre_edit_text, "Test")
+        self.assertEqual(comment_history.post_edit_text, "Test edited")
         self.assertEqual(comment_history.edited_by, testcomment.user)

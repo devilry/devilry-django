@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
+
 # from develop.testhelpers.soupselect import cssFind
 # from develop.testhelpers.soupselect import cssGet
 # from develop.testhelpers.soupselect import cssExists
@@ -10,11 +11,11 @@ from devilry.project.develop.testhelpers.soupselect import cssExists, cssGet
 
 class TestAboutMeView(TestCase):
     def setUp(self):
-        self.testuserbuilder = UserBuilder('testuserbuilder')
-        self.url = reverse('devilry_header_aboutme')
+        self.testuserbuilder = UserBuilder("testuserbuilder")
+        self.url = reverse("devilry_header_aboutme")
 
     def _getas(self, user, *args, **kwargs):
-        self.client.login(username=user.shortname, password='test')
+        self.client.login(username=user.shortname, password="test")
         return self.client.get(self.url, *args, **kwargs)
 
     def test_nologin(self):
@@ -27,23 +28,14 @@ class TestAboutMeView(TestCase):
         # html = response.content
 
     def test_languageselect(self):
-        self.testuserbuilder.update(
-            languagecode='en'
-        )
-        with self.settings(LANGUAGES=[('en', 'English'), ('nb', 'Norwegian')]):
+        self.testuserbuilder.update(languagecode="en")
+        with self.settings(LANGUAGES=[("en", "English"), ("nb", "Norwegian")]):
             html = self._getas(self.testuserbuilder.user).content
-            self.assertTrue(cssExists(html,
-                '#devilry_change_language_form'))
-            self.assertEqual(
-                cssGet(html, '#devilry_change_language_form option[value="en"]')['selected'],
-                'selected')
+            self.assertTrue(cssExists(html, "#devilry_change_language_form"))
+            self.assertEqual(cssGet(html, '#devilry_change_language_form option[value="en"]')["selected"], "selected")
 
     def test_languageselect_no_current_language(self):
-        with self.settings(
-                LANGUAGES=[('en', 'English'), ('nb', 'Norwegian')],
-                LANGUAGE_CODE='nb'):
+        with self.settings(LANGUAGES=[("en", "English"), ("nb", "Norwegian")], LANGUAGE_CODE="nb"):
             html = self._getas(self.testuserbuilder.user).content
-            self.assertTrue(cssExists(html, '#devilry_change_language_form'))
-            self.assertEqual(
-                cssGet(html, '#devilry_change_language_form option[value="nb"]')['selected'],
-                'selected')
+            self.assertTrue(cssExists(html, "#devilry_change_language_form"))
+            self.assertEqual(cssGet(html, '#devilry_change_language_form option[value="nb"]')["selected"], "selected")

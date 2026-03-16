@@ -1,6 +1,6 @@
 class AbstractIsExaminer(object):
-    """ Abstract class implemented by all classes where it is natural to
-    need to check if a user is examiner. """
+    """Abstract class implemented by all classes where it is natural to
+    need to check if a user is examiner."""
 
     @classmethod
     def q_published(cls, old=True, active=True):
@@ -25,15 +25,13 @@ class AbstractIsExaminer(object):
 
     @classmethod
     def where_is_examiner(cls, user_obj):
-        """ Get all items of this type where the given ``user_obj`` is
+        """Get all items of this type where the given ``user_obj`` is
         examiner on one of the assignment groups.
 
         :param user_obj: A User object.
         :rtype: QuerySet
         """
-        return cls.objects.filter(
-            cls.q_is_examiner(user_obj)
-        ).distinct()
+        return cls.objects.filter(cls.q_is_examiner(user_obj)).distinct()
 
     @classmethod
     def published_where_is_examiner(cls, user_obj, old=True, active=True):
@@ -48,10 +46,7 @@ class AbstractIsExaminer(object):
         :return: A django.db.models.QuerySet with duplicate
             assignments eliminated.
         """
-        return cls.objects.filter(
-            cls.q_published(old=old, active=active) &
-            cls.q_is_examiner(user_obj)
-        ).distinct()
+        return cls.objects.filter(cls.q_published(old=old, active=active) & cls.q_is_examiner(user_obj)).distinct()
 
     @classmethod
     def active_where_is_examiner(cls, user_obj):
@@ -59,8 +54,7 @@ class AbstractIsExaminer(object):
         Shortcut for :meth:`published_where_is_examiner` with
         ``old=False``.
         """
-        return cls.published_where_is_examiner(user_obj, old=False,
-                                               active=True)
+        return cls.published_where_is_examiner(user_obj, old=False, active=True)
 
     @classmethod
     def old_where_is_examiner(cls, user_obj):

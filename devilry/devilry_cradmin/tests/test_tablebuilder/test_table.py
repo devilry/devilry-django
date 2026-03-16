@@ -7,7 +7,6 @@ from devilry.devilry_cradmin.devilry_tablebuilder import base as tablebuilder
 
 
 class TestTableBuilder(test.TestCase):
-
     def test_table_structure(self):
         table = tablebuilder.Table()
         row1 = tablebuilder.RowRenderer()
@@ -26,6 +25,6 @@ class TestTableBuilder(test.TestCase):
 
         selector = htmls.S(table.render())
 
-        self.assertTrue(selector.one('.devilry-tablebuilder-table'))
-        self.assertEqual(3, len(selector.list('.devilry-tablebuilder-row')))
-        self.assertEqual(6, len(selector.list('.devilry-tablebuilder-data')))
+        self.assertTrue(selector.one(".devilry-tablebuilder-table"))
+        self.assertEqual(3, len(selector.list(".devilry-tablebuilder-row")))
+        self.assertEqual(6, len(selector.list(".devilry-tablebuilder-data")))

@@ -5,7 +5,7 @@ from django.apps import AppConfig
 
 
 class DevilryGroupAppConfig(AppConfig):
-    name = 'devilry.devilry_group'
+    name = "devilry.devilry_group"
     verbose_name = "Devilry group"
 
     def ready(self):
@@ -15,8 +15,10 @@ class DevilryGroupAppConfig(AppConfig):
         from devilry.devilry_compressionutil import backend_registry
         from ievv_opensource.ievv_batchframework import batchregistry
         from devilry.devilry_group import tasks
+
         appconfig = superuserui_registry.default.add_djangoapp(
-                superuserui_registry.DjangoAppConfig(app_label='devilry_group'))
+            superuserui_registry.DjangoAppConfig(app_label="devilry_group")
+        )
         appconfig.add_all_models()
 
         # add zip backend to registry
@@ -25,8 +27,8 @@ class DevilryGroupAppConfig(AppConfig):
         # add actiongroup for zipping all files in a feedbackset to registry
         batchregistry.Registry.get_instance().add_actiongroup(
             batchregistry.ActionGroup(
-                name='batchframework_compress_feedbackset',
+                name="batchframework_compress_feedbackset",
                 mode=batchregistry.ActionGroup.MODE_ASYNCHRONOUS,
-                actions=[
-                    tasks.FeedbackSetCompressAction
-                ]))
+                actions=[tasks.FeedbackSetCompressAction],
+            )
+        )

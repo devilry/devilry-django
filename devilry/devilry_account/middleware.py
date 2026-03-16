@@ -5,13 +5,12 @@ from devilry.devilry_account.models import User
 
 
 class LocalMiddleware(MiddlewareMixin):
-
     def process_request(self, request):
         if request.user.is_authenticated:
             user = self.__get_devilry_user(request=request)
             languagecode = user.languagecode
         else:
-            languagecode = request.session.get('SELECTED_LANGUAGE_CODE')
+            languagecode = request.session.get("SELECTED_LANGUAGE_CODE")
         translation.activate(languagecode)
         request.LANGUAGE_CODE = translation.get_language()
 
@@ -19,5 +18,5 @@ class LocalMiddleware(MiddlewareMixin):
         return User.objects.get(id=request.user.id)
 
     def process_response(self, request, response):
-        response['Content-Language'] = translation.get_language()
+        response["Content-Language"] = translation.get_language()
         return response

@@ -8,11 +8,9 @@ from django.db.models.base import ModelBase
 from .dot import UmlClassLabel, Association, Node, Edge, UmlField
 
 
-
-
 class GetIdMixin(object):
     def get_id(self, model):
-        return '%s.%s' % (getmodule(model).__name__, model.__name__)
+        return "%s.%s" % (getmodule(model).__name__, model.__name__)
 
     def get_dotid(self, model):
         return model._meta.db_table
@@ -51,8 +49,7 @@ class ModelsToDiagramDot(list, GetIdMixin):
     def add_onetomany_relation(self, model, related_obj):
         if not related_obj.model in self.models:
             return
-        assoc = Association(self.get_dotid(model),
-                self.get_dotid(related_obj.model), Edge('1', '*'))
+        assoc = Association(self.get_dotid(model), self.get_dotid(related_obj.model), Edge("1", "*"))
         self.append(assoc)
 
     def add_manytomany_relation(self, model, related_obj):
@@ -79,13 +76,11 @@ class ModelsToClassDiagramDot(ModelsToDiagramDot):
     def add_manytomany_relation(self, model, related_obj):
         if not related_obj.model in self.models:
             return
-        assoc = Association(self.get_dotid(model),
-                self.get_dotid(related_obj.model), Edge('*', '*'))
+        assoc = Association(self.get_dotid(model), self.get_dotid(related_obj.model), Edge("*", "*"))
         self.append(assoc)
 
     def create_umlfield(self, field, fieldname):
-        fieldtype = '%s.%s' % (field.__class__.__module__,
-                field.__class__.__name__)
+        fieldtype = "%s.%s" % (field.__class__.__module__, field.__class__.__name__)
         return UmlField(fieldname, fieldtype)
 
     def modelfield_to_umlfield(self, fieldname, field):
@@ -93,7 +88,7 @@ class ModelsToClassDiagramDot(ModelsToDiagramDot):
             return None
         elif isinstance(field, fields.related.RelatedObject):
             return None
-        #elif isinstance(field, fields.related.ForeignKey):
+        # elif isinstance(field, fields.related.ForeignKey):
         else:
             return self.create_umlfield(field, fieldname)
 
@@ -110,7 +105,7 @@ class ModelsToDbDiagramDot(ModelsToDiagramDot):
             return None
         elif isinstance(field, fields.related.RelatedObject):
             return None
-        #elif isinstance(field, fields.related.ForeignKey):
+        # elif isinstance(field, fields.related.ForeignKey):
         else:
             return self.create_umlfield(field, fieldname)
 
@@ -118,8 +113,9 @@ class ModelsToDbDiagramDot(ModelsToDiagramDot):
         values = []
         if self.show_values:
             values = [
-                    UmlField(field.m2m_column_name(), 'integer'),  # TODO: make this use the actual type
-                    UmlField(field.m2m_reverse_name(), 'integer')] # TODO: make this use the actual type
+                UmlField(field.m2m_column_name(), "integer"),  # TODO: make this use the actual type
+                UmlField(field.m2m_reverse_name(), "integer"),
+            ]  # TODO: make this use the actual type
         label = UmlClassLabel(field.m2m_db_table(), values=values)
         return Node(id, label)
 
@@ -141,19 +137,17 @@ class ModelsToDbDiagramDot(ModelsToDiagramDot):
         table_name = field.m2m_db_table()
         node = self.manytomany_to_dotnode(field, table_name)
         self.append(node)
-        #node = self.model_to_dotnode(model)
-        assocA = Association(self.get_dotid(model),
-                table_name, Edge('1', '*'))
-        assocB = Association(table_name,
-                self.get_dotid(related_obj.model), Edge('*', '1'))
+        # node = self.model_to_dotnode(model)
+        assocA = Association(self.get_dotid(model), table_name, Edge("1", "*"))
+        assocB = Association(table_name, self.get_dotid(related_obj.model), Edge("*", "1"))
         self.append(assocA)
         self.append(assocB)
 
 
-
 class ModelSet(set, GetIdMixin):
-    """ A set containing django db models, with methods to ease creating a
-    set of related models and all models in install apps. """
+    """A set containing django db models, with methods to ease creating a
+    set of related models and all models in install apps."""
+
     def __init__(self, pattern, *models):
         super(ModelSet, self).__init__(*models)
         self.patt = re.compile(pattern)
@@ -169,6 +163,7 @@ class ModelSet(set, GetIdMixin):
             for rel in curmodel._meta.get_all_related_many_to_many_objects():
                 if rel.model != curmodel:
                     recurse(rel.model)
+
         recurse(model)
 
     def add_installed_apps_models(self):
@@ -189,7 +184,7 @@ class ModelSet(set, GetIdMixin):
             super(ModelSet, self).add(model)
 
 
-if __name__ == '__main__':
-    models = ModelSet('^(devilry|django\.contrib\.auth)\..*$')
+if __name__ == "__main__":
+    models = ModelSet("^(devilry|django\.contrib\.auth)\..*$")
     models.add_installed_apps_models()
     print(models)

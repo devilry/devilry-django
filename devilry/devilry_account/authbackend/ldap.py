@@ -15,14 +15,11 @@ class LDAPUsernameAuthBackend(LDAPBackend):
         the user's DN and ldap_user.attrs contains all of their LDAP attributes.
         """
         username = username.lower()
-        cn = ldap_user.attrs.get('cn')
-        fullname = ''
+        cn = ldap_user.attrs.get("cn")
+        fullname = ""
         if cn and isinstance(cn, list):
             fullname = cn[0]
-        kwargs = {
-            'username': username,
-            'fullname': fullname
-        }
+        kwargs = {"username": username, "fullname": fullname}
         # import sys
         # print >> sys.stderr, 'LDAP attrs', ldap_user.attrs
         user, created = get_user_model().objects.get_or_create_user(**kwargs)

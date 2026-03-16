@@ -18,4 +18,4 @@ def setup_logging(verbosity):
 
 
 def get_verbosity(options):
-    return int(options.get('verbosity', '1'))
+    return int(options.get("verbosity", "1"))

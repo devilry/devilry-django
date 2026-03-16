@@ -12,16 +12,15 @@ from devilry.devilry_deadlinemanagement.views import manage_deadline_view
 class ExaminerDeadlineListView(deadline_listview.DeadlineListView):
     def get_backlink_url(self):
         return reverse_cradmin_url(
-            instanceid='devilry_examiner_assignment',
-            appname='grouplist',
+            instanceid="devilry_examiner_assignment",
+            appname="grouplist",
             roleid=self.request.cradmin_role.id,
-            viewname=crapp.INDEXVIEW_NAME
+            viewname=crapp.INDEXVIEW_NAME,
         )
 
 
 class ExaminerManageDeadlineFromPreviousView(manage_deadline_view.ManageDeadlineFromPreviousView):
-    """
-    """
+    """ """
 
 
 class App(ExaminerDeadlineManagementApp):

@@ -16,27 +16,26 @@ class Menu(devilry_crmenu_admin.Menu):
         self.add_subject_breadcrumb_item(subject=subject, active=True)
 
     def add_subject_breadcrumb_item(self, subject, active=False):
-        return self.add_headeritem_object(devilry_crmenu.BreadcrumbMenuItem(
-            label=subject.short_name,
-            url=reverse_cradmin_url(
-                instanceid='devilry_admin_subject_for_periodadmin',
-                appname='overview',
-                roleid=subject.id,
-                viewname=crapp.INDEXVIEW_NAME
-            ),
-            active=active
-        ))
+        return self.add_headeritem_object(
+            devilry_crmenu.BreadcrumbMenuItem(
+                label=subject.short_name,
+                url=reverse_cradmin_url(
+                    instanceid="devilry_admin_subject_for_periodadmin",
+                    appname="overview",
+                    roleid=subject.id,
+                    viewname=crapp.INDEXVIEW_NAME,
+                ),
+                active=active,
+            )
+        )
 
 
 class CrAdminInstance(devilry_crinstance.BaseCrInstanceAdmin):
     menuclass = Menu
     roleclass = Subject
-    apps = [
-        ('overview', overview_for_periodadmin.App),
-        ('subject_redirect', subject_redirect.App)
-    ]
-    id = 'devilry_admin_subject_for_periodadmin'
-    rolefrontpage_appname = 'overview'
+    apps = [("overview", overview_for_periodadmin.App), ("subject_redirect", subject_redirect.App)]
+    id = "devilry_admin_subject_for_periodadmin"
+    rolefrontpage_appname = "overview"
 
     def get_rolequeryset(self):
         return Subject.objects.filter_user_is_admin_for_any_periods_within_subject(user=self.request.user)
@@ -51,10 +50,10 @@ class CrAdminInstance(devilry_crinstance.BaseCrInstanceAdmin):
 
     @classmethod
     def matches_urlpath(cls, urlpath):
-        return urlpath.startswith('/devilry_admin/subject_for_periodadmin')
+        return urlpath.startswith("/devilry_admin/subject_for_periodadmin")
 
     def get_devilryrole_for_requestuser(self):
         """
         Only period admins will be redirected back to this crinstance
         """
-        return 'periodadmin'
+        return "periodadmin"

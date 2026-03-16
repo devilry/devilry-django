@@ -15,6 +15,6 @@ class TracebackLoggingMiddleware(MiddlewareMixin):
     your setting.py's MIDDLEWARE.
 
     """
+
     def process_exception(self, request, exception):
         logger.exception(repr(request))
-

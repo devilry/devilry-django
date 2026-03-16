@@ -15,11 +15,11 @@ class TestCradminInstanceAssignment(test.TestCase):
     def test_user_not_related_examiner_on_period_sanity(self):
         examiner_user = baker.make(settings.AUTH_USER_MODEL)
         assignment = baker.make_recipe(
-            'devilry.apps.core.assignment_activeperiod_start',
-            long_name='Assignment One',
-            examiners_can_self_assign=True
+            "devilry.apps.core.assignment_activeperiod_start",
+            long_name="Assignment One",
+            examiners_can_self_assign=True,
         )
-        baker.make('core.AssignmentGroup', parentnode=assignment)
+        baker.make("core.AssignmentGroup", parentnode=assignment)
         mockrequest = mock.MagicMock()
         mockrequest.user = examiner_user
         crinstance = crinstance_selfassign.CrAdminInstance(request=mockrequest)
@@ -28,12 +28,10 @@ class TestCradminInstanceAssignment(test.TestCase):
     def test_period_not_active_ended(self):
         examiner_user = baker.make(settings.AUTH_USER_MODEL)
         assignment = baker.make_recipe(
-            'devilry.apps.core.assignment_oldperiod_start',
-            long_name='Assignment One',
-            examiners_can_self_assign=True
+            "devilry.apps.core.assignment_oldperiod_start", long_name="Assignment One", examiners_can_self_assign=True
         )
-        baker.make('core.RelatedExaminer', period=assignment.parentnode, user=examiner_user)
-        baker.make('core.AssignmentGroup', parentnode=assignment)
+        baker.make("core.RelatedExaminer", period=assignment.parentnode, user=examiner_user)
+        baker.make("core.AssignmentGroup", parentnode=assignment)
         mockrequest = mock.MagicMock()
         mockrequest.user = examiner_user
         crinstance = crinstance_selfassign.CrAdminInstance(request=mockrequest)
@@ -42,12 +40,12 @@ class TestCradminInstanceAssignment(test.TestCase):
     def test_period_not_active_not_started(self):
         examiner_user = baker.make(settings.AUTH_USER_MODEL)
         assignment = baker.make_recipe(
-            'devilry.apps.core.assignment_futureperiod_start',
-            long_name='Assignment One',
-            examiners_can_self_assign=True
+            "devilry.apps.core.assignment_futureperiod_start",
+            long_name="Assignment One",
+            examiners_can_self_assign=True,
         )
-        baker.make('core.RelatedExaminer', period=assignment.parentnode, user=examiner_user)
-        baker.make('core.AssignmentGroup', parentnode=assignment)
+        baker.make("core.RelatedExaminer", period=assignment.parentnode, user=examiner_user)
+        baker.make("core.AssignmentGroup", parentnode=assignment)
         mockrequest = mock.MagicMock()
         mockrequest.user = examiner_user
         crinstance = crinstance_selfassign.CrAdminInstance(request=mockrequest)
@@ -56,12 +54,12 @@ class TestCradminInstanceAssignment(test.TestCase):
     def test_single_period_accessible_sanity(self):
         examiner_user = baker.make(settings.AUTH_USER_MODEL)
         assignment = baker.make_recipe(
-            'devilry.apps.core.assignment_activeperiod_start',
-            long_name='Assignment One',
-            examiners_can_self_assign=True
+            "devilry.apps.core.assignment_activeperiod_start",
+            long_name="Assignment One",
+            examiners_can_self_assign=True,
         )
-        baker.make('core.RelatedExaminer', period=assignment.parentnode, user=examiner_user)
-        baker.make('core.AssignmentGroup', parentnode=assignment)
+        baker.make("core.RelatedExaminer", period=assignment.parentnode, user=examiner_user)
+        baker.make("core.AssignmentGroup", parentnode=assignment)
         mockrequest = mock.MagicMock()
         mockrequest.user = examiner_user
         crinstance = crinstance_selfassign.CrAdminInstance(request=mockrequest)
@@ -70,19 +68,19 @@ class TestCradminInstanceAssignment(test.TestCase):
     def test_multiple_periods_accessible_sanity(self):
         examiner_user = baker.make(settings.AUTH_USER_MODEL)
         assignment1 = baker.make_recipe(
-            'devilry.apps.core.assignment_activeperiod_start',
-            long_name='Assignment One',
-            examiners_can_self_assign=True
+            "devilry.apps.core.assignment_activeperiod_start",
+            long_name="Assignment One",
+            examiners_can_self_assign=True,
         )
         assignment2 = baker.make_recipe(
-            'devilry.apps.core.assignment_activeperiod_start',
-            long_name='Assignment Two',
-            examiners_can_self_assign=True
+            "devilry.apps.core.assignment_activeperiod_start",
+            long_name="Assignment Two",
+            examiners_can_self_assign=True,
         )
-        baker.make('core.RelatedExaminer', period=assignment1.parentnode, user=examiner_user)
-        baker.make('core.AssignmentGroup', parentnode=assignment1)
-        baker.make('core.RelatedExaminer', period=assignment2.parentnode, user=examiner_user)
-        baker.make('core.AssignmentGroup', parentnode=assignment2)
+        baker.make("core.RelatedExaminer", period=assignment1.parentnode, user=examiner_user)
+        baker.make("core.AssignmentGroup", parentnode=assignment1)
+        baker.make("core.RelatedExaminer", period=assignment2.parentnode, user=examiner_user)
+        baker.make("core.AssignmentGroup", parentnode=assignment2)
         mockrequest = mock.MagicMock()
         mockrequest.user = examiner_user
         crinstance = crinstance_selfassign.CrAdminInstance(request=mockrequest)
@@ -93,13 +91,13 @@ class TestCradminInstanceAssignment(test.TestCase):
     def test_period_accessible_user_already_examiner(self):
         examiner_user = baker.make(settings.AUTH_USER_MODEL)
         assignment = baker.make_recipe(
-            'devilry.apps.core.assignment_activeperiod_start',
-            long_name='Assignment One',
-            examiners_can_self_assign=True
+            "devilry.apps.core.assignment_activeperiod_start",
+            long_name="Assignment One",
+            examiners_can_self_assign=True,
         )
-        relatedexaminer = baker.make('core.RelatedExaminer', period=assignment.parentnode, user=examiner_user)
-        group = baker.make('core.AssignmentGroup', parentnode=assignment)
-        baker.make('core.Examiner', assignmentgroup=group, relatedexaminer=relatedexaminer)
+        relatedexaminer = baker.make("core.RelatedExaminer", period=assignment.parentnode, user=examiner_user)
+        group = baker.make("core.AssignmentGroup", parentnode=assignment)
+        baker.make("core.Examiner", assignmentgroup=group, relatedexaminer=relatedexaminer)
         mockrequest = mock.MagicMock()
         mockrequest.user = examiner_user
         crinstance = crinstance_selfassign.CrAdminInstance(request=mockrequest)

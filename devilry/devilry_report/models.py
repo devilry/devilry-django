@@ -30,36 +30,22 @@ class DevilryReport(models.Model):
     """
 
     #: The user(`AUTH_USER_MODEL`) that generated the report.
-    generated_by_user = models.ForeignKey(
-        to=settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE
-    )
+    generated_by_user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     #: The datetime the report was generated. Defaults to timezone.now
-    created_datetime = models.DateTimeField(
-        null=False, blank=False,
-        default=timezone.now
-    )
+    created_datetime = models.DateTimeField(null=False, blank=False, default=timezone.now)
 
     #: When the report generation was started.
-    started_datetime = models.DateTimeField(
-        null=True, blank=True,
-        default=None
-    )
+    started_datetime = models.DateTimeField(null=True, blank=True, default=None)
 
     #: When the report generation was finished.
-    finished_datetime = models.DateTimeField(
-        null=True, blank=True,
-        default=None
-    )
+    finished_datetime = models.DateTimeField(null=True, blank=True, default=None)
 
     #: The generator type.
     #:
     #: This is specified in a subclass
     #: of :class:`devilry.devilry_report.abstract_generator.AbstractReportGenerator`.
-    generator_type = models.CharField(
-        null=False, blank=False, max_length=255
-    )
+    generator_type = models.CharField(null=False, blank=False, max_length=255)
 
     #: JSON-field for generator options that are specific to the ``generator_type``.
     #:
@@ -68,10 +54,10 @@ class DevilryReport(models.Model):
 
     #: Supported status types.
     STATUS_CHOICES = choices_with_meta.ChoicesWithMeta(
-        choices_with_meta.Choice(value='unprocessed'),
-        choices_with_meta.Choice(value='generating'),
-        choices_with_meta.Choice(value='success'),
-        choices_with_meta.Choice(value='error'),
+        choices_with_meta.Choice(value="unprocessed"),
+        choices_with_meta.Choice(value="generating"),
+        choices_with_meta.Choice(value="success"),
+        choices_with_meta.Choice(value="error"),
     )
 
     #: The current status of the report.
@@ -81,39 +67,28 @@ class DevilryReport(models.Model):
     #: - `success`: The report was successfully generated.
     #: - `error`: Something happened during report generation. Data will be available in the ``status_data``-field.
     status = models.CharField(
-        null=False, blank=False,
+        null=False,
+        blank=False,
         max_length=255,
         choices=STATUS_CHOICES.iter_as_django_choices_short(),
-        default=STATUS_CHOICES.UNPROCESSED.value
+        default=STATUS_CHOICES.UNPROCESSED.value,
     )
 
     #: The status data of the report generation. Usually only contains data when the some error occurred
     #: during report generation.
-    status_data = models.JSONField(
-        null=False, blank=True,
-        default=dict
-    )
+    status_data = models.JSONField(null=False, blank=True, default=dict)
 
     #: Name of the generated file with results.
-    output_filename = models.CharField(
-        null=True, blank=True,
-        max_length=255,
-        default=''
-    )
+    output_filename = models.CharField(null=True, blank=True, max_length=255, default="")
 
     #: Content-type used when creating a download-request.
-    content_type = models.CharField(
-        null=True, blank=True,
-        max_length=255,
-        default=''
-    )
+    content_type = models.CharField(null=True, blank=True, max_length=255, default="")
 
     #: The complete report stored as binary data.
     result = models.BinaryField()
 
     def __str__(self):
-        return '#{}-{}-{}'.format(
-            self.id, self.generator_type, self.status)
+        return "#{}-{}-{}".format(self.id, self.generator_type, self.status)
 
     def clean_generator_options(self):
         if len(self.generator_options) == 0:
@@ -155,19 +130,16 @@ class DevilryReport(models.Model):
             generator.generate(file_like_object=file_like_obj)
         except Exception as exception:
             self.status = self.STATUS_CHOICES.ERROR.value
-            self.status_data = {
-                'error_message': str(exception),
-                'exception_traceback': traceback.format_exc()
-            }
-            logger.exception('Failed to generate DevilryReport#{}'.format(self.id))
+            self.status_data = {"error_message": str(exception), "exception_traceback": traceback.format_exc()}
+            logger.exception("Failed to generate DevilryReport#{}".format(self.id))
         else:
             self.result = file_like_obj.getvalue()
             self.finished_datetime = timezone.now()
             self.content_type = generator.get_content_type()
-            self.output_filename = '{}-{}.{}'.format(
+            self.output_filename = "{}-{}.{}".format(
                 generator.get_output_filename_prefix(),
-                self.finished_datetime.strftime('%d%m%Y-%H%M%S'),
-                generator.get_output_file_extension()
+                self.finished_datetime.strftime("%d%m%Y-%H%M%S"),
+                generator.get_output_file_extension(),
             )
             self.status = self.STATUS_CHOICES.SUCCESS.value
         self.full_clean()

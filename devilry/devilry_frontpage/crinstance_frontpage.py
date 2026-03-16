@@ -9,10 +9,10 @@ from devilry.devilry_frontpage.views import frontpage
 class CrAdminInstance(crinstance.BaseCrAdminInstance):
     menuclass = devilry_crmenu_frontpage.Menu
     apps = [
-        ('frontpage', frontpage.App),
+        ("frontpage", frontpage.App),
     ]
-    id = 'devilry_frontpage'
-    rolefrontpage_appname = 'frontpage'
+    id = "devilry_frontpage"
+    rolefrontpage_appname = "frontpage"
     flatten_rolefrontpage_url = True
 
     def has_access(self):
@@ -30,4 +30,4 @@ class CrAdminInstance(crinstance.BaseCrAdminInstance):
 
     @classmethod
     def matches_urlpath(cls, urlpath):
-        return re.match('^/$', urlpath)
+        return re.match("^/$", urlpath)

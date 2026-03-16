@@ -16,11 +16,7 @@ class AssignmentGroupHistory(models.Model):
     #: OneToOneFiled :class:`core.AssignmentGroup`
     assignment_group = models.OneToOneField("AssignmentGroup", null=False, on_delete=models.CASCADE)
 
-    DEFAULT_MERGE_HISTORY_JSON = {
-        'merge_datetime': None,
-        'state': None,
-        'groups': []
-    }
+    DEFAULT_MERGE_HISTORY_JSON = {"merge_datetime": None, "state": None, "groups": []}
 
     #: The merge history for the one to one field :class:`core.AssignmentGroupHistory.assignment_group`
     #: will be stored inn a Btree structure
@@ -29,9 +25,7 @@ class AssignmentGroupHistory(models.Model):
     #:  'state': state of assignment group before merge
     #:  'groups': child merge histories
     #: }
-    merge_history_json = models.TextField(
-        null=False, blank=False, default=json.dumps(DEFAULT_MERGE_HISTORY_JSON)
-    )
+    merge_history_json = models.TextField(null=False, blank=False, default=json.dumps(DEFAULT_MERGE_HISTORY_JSON))
 
     @property
     def merge_history(self):
@@ -44,8 +38,7 @@ class AssignmentGroupHistory(models.Model):
         """
 
         if self.merge_history_json:
-            if not hasattr(self, '_merge_history'):
-
+            if not hasattr(self, "_merge_history"):
                 self._merge_history = json.loads(self.merge_history_json)
 
             return self._merge_history
@@ -64,10 +57,10 @@ class AssignmentGroupHistory(models.Model):
 
         """
         self.merge_history_json = json.dumps(merge_history)
-        if hasattr(self, '_merge_history'):
-            delattr(self, '_merge_history')
-        if hasattr(self, '_meta_data'):
-            delattr(self, '_meta_data')
+        if hasattr(self, "_merge_history"):
+            delattr(self, "_merge_history")
+        if hasattr(self, "_meta_data"):
+            delattr(self, "_meta_data")
 
     def _meta_data_bfs(self):
         """
@@ -81,15 +74,17 @@ class AssignmentGroupHistory(models.Model):
         queue.append(self.merge_history)
         while queue:
             merge = queue.pop(0)
-            if not merge['merge_datetime']:
+            if not merge["merge_datetime"]:
                 continue
 
-            meta_data.append({
-                'merge_datetime': merge['merge_datetime'],
-                'groups': [group['state']['name'] for group in merge['groups']],
-            })
+            meta_data.append(
+                {
+                    "merge_datetime": merge["merge_datetime"],
+                    "groups": [group["state"]["name"] for group in merge["groups"]],
+                }
+            )
 
-            queue.extend(merge['groups'])
+            queue.extend(merge["groups"])
         return meta_data
 
     @property
@@ -100,7 +95,7 @@ class AssignmentGroupHistory(models.Model):
         Returns:
             flat list
         """
-        if not hasattr(self, '_meta_data'):
+        if not hasattr(self, "_meta_data"):
             self._meta_data = self._meta_data_bfs()
         return self._meta_data
 
@@ -108,11 +103,7 @@ class AssignmentGroupHistory(models.Model):
         """
         Makes default merge history dict
         """
-        return {
-            'merge_datetime': None,
-            'state': None,
-            'groups': []
-        }
+        return {"merge_datetime": None, "state": None, "groups": []}
 
     def merge_assignment_group_history(self, groups):
         """
@@ -123,14 +114,14 @@ class AssignmentGroupHistory(models.Model):
         """
         newhistory = self._make_default_merge_history()
         self_history = self.merge_history
-        self_history['state'] = self.assignment_group.get_current_state()
-        newhistory['groups'].append(self_history)
-        newhistory['merge_datetime'] = timezone.now().isoformat()
+        self_history["state"] = self.assignment_group.get_current_state()
+        newhistory["groups"].append(self_history)
+        newhistory["merge_datetime"] = timezone.now().isoformat()
         for group in groups:
             try:
                 group_history = group.assignmentgrouphistory.merge_history
             except AssignmentGroupHistory.DoesNotExist:
                 group_history = self._make_default_merge_history()
-            group_history['state'] = group.get_current_state()
-            newhistory['groups'].append(group_history)
+            group_history["state"] = group.get_current_state()
+            newhistory["groups"].append(group_history)
         self.merge_history = newhistory

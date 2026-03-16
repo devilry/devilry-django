@@ -15,70 +15,61 @@ from devilry.devilry_cradmin import devilry_listbuilder, devilry_listfilter
 class SelectedAssignmentGroupForm(forms.Form):
     qualification_modelclass = core_models.AssignmentGroup
     invalid_qualification_item_message = pgettext_lazy(
-        'selected_assignment_group_form error_message',
-        'Invalid assignment group items was selected.'
+        "selected_assignment_group_form error_message", "Invalid assignment group items was selected."
     )
 
     #: The items selected as ModelMultipleChoiceField.
     #: If some or all items should be selected by default, override this.
     selected_items = forms.ModelMultipleChoiceField(
-
         # No items are selectable by default.
         queryset=None,
-
         # Used if the object to select for some reason does
         # not exist(has been deleted or altered in some way)
         error_messages={
-            'invalid_choice': invalid_qualification_item_message,
-        }
+            "invalid_choice": invalid_qualification_item_message,
+        },
     )
 
     #: A wysiwig editor for writing a feedback message.
     feedback_comment_text = forms.CharField(
         widget=DevilryMarkdownNoPreviewWidget(),
-        help_text=gettext_lazy('Add a general comment to the feedback'),
-        initial=gettext_lazy('Delivery has been corrected.'),
-        label=False
+        help_text=gettext_lazy("Add a general comment to the feedback"),
+        initial=gettext_lazy("Delivery has been corrected."),
+        label=False,
     )
 
     def __init__(self, *args, **kwargs):
-        selectable_qualification_items_queryset = kwargs.pop('selectable_items_queryset')
-        self.assignment = kwargs.pop('assignment')
+        selectable_qualification_items_queryset = kwargs.pop("selectable_items_queryset")
+        self.assignment = kwargs.pop("assignment")
         super(SelectedAssignmentGroupForm, self).__init__(*args, **kwargs)
-        self.fields['selected_items'].queryset = selectable_qualification_items_queryset
+        self.fields["selected_items"].queryset = selectable_qualification_items_queryset
 
 
 class AssignmentGroupTargetRenderer(multiselect2.target_renderer.Target):
-
     #: The selected item as it is shown when selected.
     #: By default this is :class:`.SelectedQualificationItem`.
     selected_target_renderer = devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue
 
     #: A descriptive name for the items selected.
-    descriptive_item_name = gettext_lazy('assignment group')
+    descriptive_item_name = gettext_lazy("assignment group")
 
     def get_submit_button_text(self):
-        return pgettext_lazy(
-            'assignment_group_target_renderer submit_button_text',
-            'Submit selected %(what)s'
-        ) % {'what': self.descriptive_item_name}
+        return pgettext_lazy("assignment_group_target_renderer submit_button_text", "Submit selected %(what)s") % {
+            "what": self.descriptive_item_name
+        }
 
     def get_with_items_title(self):
-        return pgettext_lazy(
-            'assignment_group_target_renderer with_items_title',
-            'Selected %(what)s'
-        ) % {'what': self.descriptive_item_name}
+        return pgettext_lazy("assignment_group_target_renderer with_items_title", "Selected %(what)s") % {
+            "what": self.descriptive_item_name
+        }
 
     def get_without_items_text(self):
-        return pgettext_lazy(
-            'assignment_group_target_renderer without_items_text',
-            'No %(what)s selected'
-        ) % {'what': self.descriptive_item_name}
+        return pgettext_lazy("assignment_group_target_renderer without_items_text", "No %(what)s selected") % {
+            "what": self.descriptive_item_name
+        }
 
     def get_field_layout(self):
-        return [
-            'feedback_comment_text'
-        ]
+        return ["feedback_comment_text"]
 
 
 class AbstractAssignmentGroupMultiSelectListFilterView(multiselect2view.ListbuilderFilterView):
@@ -89,6 +80,7 @@ class AbstractAssignmentGroupMultiSelectListFilterView(multiselect2view.Listbuil
     Fetches the ``AssignmentGroups`` through :meth:`~.get_unfiltered_queryset_for_role` and joins
     necessary tables used for anonymzation and annotations used by viewfilters.
     """
+
     model = core_models.AssignmentGroup
 
     def dispatch(self, request, *args, **kwargs):
@@ -133,41 +125,47 @@ class AbstractAssignmentGroupMultiSelectListFilterView(multiselect2view.Listbuil
         filterlist.append(devilry_listfilter.assignmentgroup.ActivityFilter())
 
     def get_candidate_queryset(self):
-        return core_models.Candidate.objects\
-            .select_related('relatedstudent__user')\
+        return (
+            core_models.Candidate.objects.select_related("relatedstudent__user")
             .only(
-                'candidate_id',
-                'assignment_group',
-                'relatedstudent__candidate_id',
-                'relatedstudent__automatic_anonymous_id',
-                'relatedstudent__user__shortname',
-                'relatedstudent__user__fullname',
-            )\
+                "candidate_id",
+                "assignment_group",
+                "relatedstudent__candidate_id",
+                "relatedstudent__automatic_anonymous_id",
+                "relatedstudent__user__shortname",
+                "relatedstudent__user__fullname",
+            )
             .order_by(
                 Lower(
                     Concat(
-                        'relatedstudent__user__fullname',
-                        'relatedstudent__user__shortname',
-                        output_field=models.CharField()
-                    )))
+                        "relatedstudent__user__fullname",
+                        "relatedstudent__user__shortname",
+                        output_field=models.CharField(),
+                    )
+                )
+            )
+        )
 
     def get_examiner_queryset(self):
-        return core_models.Examiner.objects\
-            .select_related('relatedexaminer__user')\
+        return (
+            core_models.Examiner.objects.select_related("relatedexaminer__user")
             .only(
-                'relatedexaminer',
-                'assignmentgroup',
-                'relatedexaminer__automatic_anonymous_id',
-                'relatedexaminer__user__shortname',
-                'relatedexaminer__user__fullname',
-            )\
+                "relatedexaminer",
+                "assignmentgroup",
+                "relatedexaminer__automatic_anonymous_id",
+                "relatedexaminer__user__shortname",
+                "relatedexaminer__user__fullname",
+            )
             .order_by(
                 Lower(
                     Concat(
-                        'relatedexaminer__user__fullname',
-                        'relatedexaminer__user__shortname',
-                        output_field=models.CharField()
-                    )))
+                        "relatedexaminer__user__fullname",
+                        "relatedexaminer__user__shortname",
+                        output_field=models.CharField(),
+                    )
+                )
+            )
+        )
 
     def get_annotations_for_queryset(self, queryset):
         """
@@ -180,12 +178,13 @@ class AbstractAssignmentGroupMultiSelectListFilterView(multiselect2view.Listbuil
         Returns:
             (QuerySet): annotated queryset.
         """
-        return queryset \
-            .annotate_with_is_waiting_for_feedback_count() \
-            .annotate_with_is_waiting_for_deliveries_count() \
-            .annotate_with_is_corrected_count() \
-            .annotate_with_number_of_private_groupcomments_from_user(user=self.request.user) \
+        return (
+            queryset.annotate_with_is_waiting_for_feedback_count()
+            .annotate_with_is_waiting_for_deliveries_count()
+            .annotate_with_is_corrected_count()
+            .annotate_with_number_of_private_groupcomments_from_user(user=self.request.user)
             .annotate_with_number_of_private_imageannotationcomments_from_user(user=self.request.user)
+        )
 
     def get_unfiltered_queryset_for_role(self, role):
         """
@@ -199,34 +198,33 @@ class AbstractAssignmentGroupMultiSelectListFilterView(multiselect2view.Listbuil
         Returns:
             (QuerySet): ``QuerySet`` of ``AssignmentGroups``.
         """
-        group_queryset = core_models.AssignmentGroup.objects \
-            .filter(parentnode=role) \
-            .prefetch_related(
-                models.Prefetch('candidates',
-                                queryset=self.get_candidate_queryset())) \
-            .prefetch_related(
-                models.Prefetch('examiners',
-                                queryset=self.get_examiner_queryset()))
-        return self.get_annotations_for_queryset(queryset=group_queryset)\
-            .distinct() \
-            .select_related('cached_data__last_published_feedbackset',
-                            'cached_data__last_feedbackset',
-                            'cached_data__first_feedbackset',
-                            'parentnode')
+        group_queryset = (
+            core_models.AssignmentGroup.objects.filter(parentnode=role)
+            .prefetch_related(models.Prefetch("candidates", queryset=self.get_candidate_queryset()))
+            .prefetch_related(models.Prefetch("examiners", queryset=self.get_examiner_queryset()))
+        )
+        return (
+            self.get_annotations_for_queryset(queryset=group_queryset)
+            .distinct()
+            .select_related(
+                "cached_data__last_published_feedbackset",
+                "cached_data__last_feedbackset",
+                "cached_data__first_feedbackset",
+                "parentnode",
+            )
+        )
 
     def get_value_and_frame_renderer_kwargs(self):
-        return {
-            'assignment': self.assignment
-        }
+        return {"assignment": self.assignment}
 
     def get_form_kwargs(self):
         kwargs = super(AbstractAssignmentGroupMultiSelectListFilterView, self).get_form_kwargs()
-        kwargs['selectable_items_queryset'] = self.get_unfiltered_queryset_for_role(self.request.cradmin_role)
-        kwargs['assignment'] = self.request.cradmin_role
+        kwargs["selectable_items_queryset"] = self.get_unfiltered_queryset_for_role(self.request.cradmin_role)
+        kwargs["assignment"] = self.request.cradmin_role
         return kwargs
 
     def get_selected_groupids(self, posted_form):
-        return [item.id for item in posted_form.cleaned_data['selected_items']]
+        return [item.id for item in posted_form.cleaned_data["selected_items"]]
 
     def get_feedbackset_ids_from_posted_ids(self, form):
         """
@@ -240,9 +238,11 @@ class AbstractAssignmentGroupMultiSelectListFilterView(multiselect2view.Listbuil
             (list): list of ``FeedbackSet`` ids.
         """
         group_ids = self.get_selected_groupids(posted_form=form)
-        feedback_set_ids = self.get_unfiltered_queryset_for_role(role=self.request.cradmin_role) \
-            .filter(id__in=group_ids) \
-            .values_list('cached_data__last_feedbackset_id', flat=True)
+        feedback_set_ids = (
+            self.get_unfiltered_queryset_for_role(role=self.request.cradmin_role)
+            .filter(id__in=group_ids)
+            .values_list("cached_data__last_feedbackset_id", flat=True)
+        )
         return list(feedback_set_ids)
 
     def get_group_displaynames(self, form):
@@ -259,7 +259,7 @@ class AbstractAssignmentGroupMultiSelectListFilterView(multiselect2view.Listbuil
         Returns:
             (list): list of short displaynames for the groups
         """
-        groups = form.cleaned_data['selected_items']
+        groups = form.cleaned_data["selected_items"]
         display_names = [group.short_displayname for group in groups]
         return display_names
 

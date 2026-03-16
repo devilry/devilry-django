@@ -32,15 +32,12 @@ class UserBuilder(ReloadableDbBuilderInterface):
     """
 
     def __init__(self, username, full_name=None, email=None, is_superuser=False):
-        email = email or '{}@example.com'.format(username)
+        email = email or "{}@example.com".format(username)
         if settings.CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND:
-            username = ''
+            username = ""
         self.user = get_user_model().objects.create_user(
-            username=username,
-            email=email,
-            is_superuser=is_superuser,
-            password='test',
-            fullname=full_name or '')
+            username=username, email=email, is_superuser=is_superuser, password="test", fullname=full_name or ""
+        )
 
     def update(self, **attributes):
         for attrname, value in attributes.items():
@@ -61,7 +58,7 @@ class UserBuilder2(ReloadableDbBuilderInterface):
     """
 
     def __init__(self, **kwargs):
-        self.user = baker.make_recipe('devilry.devilry_account.user', **kwargs)
+        self.user = baker.make_recipe("devilry.devilry_account.user", **kwargs)
         self.user.save()
 
     def update(self, **attributes):
@@ -79,8 +76,7 @@ class UserBuilder2(ReloadableDbBuilderInterface):
         return self
 
     def add_primary_email(self, email, use_for_notifications=True):
-        self.user.useremail_set.create(email=email, use_for_notifications=use_for_notifications,
-                                       is_primary=True)
+        self.user.useremail_set.create(email=email, use_for_notifications=use_for_notifications, is_primary=True)
         return self
 
     def add_usernames(self, *usernames):
@@ -139,12 +135,8 @@ class BaseNodeBuilderBase(CoreBuilderBase):
 
     def __init__(self, short_name=None, long_name=None, **kwargs):
         if not short_name:
-            short_name = '{}{}'.format(self.object_attribute_name,
-                                       self.sequencenumber)
-        full_kwargs = {
-            'short_name': short_name,
-            'long_name': long_name or short_name
-        }
+            short_name = "{}{}".format(self.object_attribute_name, self.sequencenumber)
+        full_kwargs = {"short_name": short_name, "long_name": long_name or short_name}
         full_kwargs.update(kwargs)
         setattr(self, self.object_attribute_name, self.modelcls.objects.create(**full_kwargs))
         BaseNodeBuilderBase.sequencenumber += 1
@@ -157,12 +149,12 @@ class BaseNodeBuilderBase(CoreBuilderBase):
 
 
 class CommentFileBuilder(CoreBuilderBase):
-    object_attribute_name = 'comment_file'
+    object_attribute_name = "comment_file"
 
     def __init__(self, **kwargs):
-        fileobject = ContentFile(kwargs['data'], kwargs['filename'])
-        del (kwargs['data'])
-        kwargs['filesize'] = fileobject.size
+        fileobject = ContentFile(kwargs["data"], kwargs["filename"])
+        del kwargs["data"]
+        kwargs["filesize"] = fileobject.size
 
         self.comment_file = CommentFile.objects.create(**kwargs)
         self.comment_file.file = fileobject
@@ -170,30 +162,32 @@ class CommentFileBuilder(CoreBuilderBase):
 
 
 class GroupCommentBuilder(CoreBuilderBase):
-    object_attribute_name = 'groupcomment'
+    object_attribute_name = "groupcomment"
 
     @classmethod
-    def quickadd_ducku_duck1010_active_assignment1_group_feedbackset_groupcomment(cls, studentuser=None, examiner=None,
-                                                                                  comment=None):
+    def quickadd_ducku_duck1010_active_assignment1_group_feedbackset_groupcomment(
+        cls, studentuser=None, examiner=None, comment=None
+    ):
         students = []
         if studentuser:
             students.append(studentuser)
-        return FeedbackSetBuilder \
-            .quickadd_ducku_duck1010_active_assignment1_group_feedbackset(studentuser=studentuser, examiner=examiner) \
-            .add_groupcomment(
-                user=studentuser,
-                user_role='student',
-                instant_publish=True,
-                visible_for_students=True,
-                text=comment if comment is not None else 'Lorem ipsum I dont know it from memory bla bla bla..',
-                published_datetime=arrow.get(timezone.now()).replace(weeks=-4, days=-3, hours=-10).datetime)
+        return FeedbackSetBuilder.quickadd_ducku_duck1010_active_assignment1_group_feedbackset(
+            studentuser=studentuser, examiner=examiner
+        ).add_groupcomment(
+            user=studentuser,
+            user_role="student",
+            instant_publish=True,
+            visible_for_students=True,
+            text=comment if comment is not None else "Lorem ipsum I dont know it from memory bla bla bla..",
+            published_datetime=arrow.get(timezone.now()).replace(weeks=-4, days=-3, hours=-10).datetime,
+        )
 
     def __init__(self, **kwargs):
-        kwargs['comment_type'] = 'groupcomment'
-        self.groupcomment = baker.make('devilry_group.GroupComment', **kwargs)
+        kwargs["comment_type"] = "groupcomment"
+        self.groupcomment = baker.make("devilry_group.GroupComment", **kwargs)
 
     def add_file(self, **kwargs):
-        kwargs['comment'] = self.groupcomment
+        kwargs["comment"] = self.groupcomment
         return CommentFileBuilder(**kwargs)
 
     def add_files(self, files):
@@ -205,32 +199,34 @@ class GroupCommentBuilder(CoreBuilderBase):
     def make(cls, **kwargs):
         feedbacksetbuilder_kwargs = {}
         for key in list(kwargs.keys()):
-            if key.startswith('feedback_set__'):
-                feedbacksetbuilder_kwargs[key[len('feedback_set__'):]] = kwargs.pop(key)
+            if key.startswith("feedback_set__"):
+                feedbacksetbuilder_kwargs[key[len("feedback_set__") :]] = kwargs.pop(key)
         groupbuilder = FeedbackSetBuilder.make(**feedbacksetbuilder_kwargs)
         return cls(feedback_set=groupbuilder.feedback_set, **kwargs)
 
 
 class FeedbackSetBuilder(CoreBuilderBase):
-    object_attribute_name = 'feedback_set'
+    object_attribute_name = "feedback_set"
 
     @classmethod
     def quickadd_ducku_duck1010_active_assignment1_group_feedbackset(cls, studentuser=None, examiner=None):
         students = []
         if studentuser:
             students.append(studentuser)
-        return AssignmentGroupBuilder \
-            .quickadd_ducku_duck1010_active_assignment1_group(studentuser=studentuser) \
-            .add_feedback_set(points=10,
-                              published_by=examiner,
-                              created_by=examiner,
-                              deadline_datetime=arrow.get(timezone.now()).replace(weeks=-4).datetime)
+        return AssignmentGroupBuilder.quickadd_ducku_duck1010_active_assignment1_group(
+            studentuser=studentuser
+        ).add_feedback_set(
+            points=10,
+            published_by=examiner,
+            created_by=examiner,
+            deadline_datetime=arrow.get(timezone.now()).replace(weeks=-4).datetime,
+        )
 
     def __init__(self, **kwargs):
-        self.feedback_set = baker.make('devilry_group.FeedbackSet', **kwargs)
+        self.feedback_set = baker.make("devilry_group.FeedbackSet", **kwargs)
 
     def add_groupcomment(self, files=[], **kwargs):
-        kwargs['feedback_set'] = self.feedback_set
+        kwargs["feedback_set"] = self.feedback_set
         groupcomment = GroupCommentBuilder(**kwargs)
         groupcomment.add_files(files)
         return groupcomment.groupcomment
@@ -239,23 +235,21 @@ class FeedbackSetBuilder(CoreBuilderBase):
     def make(cls, **kwargs):
         groupbuilder_kwargs = {}
         for key in list(kwargs.keys()):
-            if key.startswith('group__'):
-                groupbuilder_kwargs[key[len('group__'):]] = kwargs.pop(key)
+            if key.startswith("group__"):
+                groupbuilder_kwargs[key[len("group__") :]] = kwargs.pop(key)
         groupbuilder = AssignmentGroupBuilder.make(**groupbuilder_kwargs)
         return cls(group=groupbuilder.group, **kwargs)
 
 
 class AssignmentGroupBuilder(CoreBuilderBase):
-    object_attribute_name = 'group'
+    object_attribute_name = "group"
 
     @classmethod
     def quickadd_ducku_duck1010_active_assignment1_group(cls, studentuser=None):
         students = []
         if studentuser:
             students.append(studentuser)
-        return AssignmentBuilder \
-            .quickadd_ducku_duck1010_active_assignment1() \
-            .add_group(students=students)
+        return AssignmentBuilder.quickadd_ducku_duck1010_active_assignment1().add_group(students=students)
 
     def __init__(self, students=[], candidates=[], examiners=[], relatedstudents=[], **kwargs):
         self.group = AssignmentGroup.objects.create(**kwargs)
@@ -266,14 +260,12 @@ class AssignmentGroupBuilder(CoreBuilderBase):
 
     def add_candidates_from_relatedstudents(self, *relatedstudents):
         for relatedstudent in relatedstudents:
-            self.group.candidates.create(relatedstudent=relatedstudent,
-                                         student_id=relatedstudent.user_id)
+            self.group.candidates.create(relatedstudent=relatedstudent, student_id=relatedstudent.user_id)
 
     def add_students(self, *users):
         for user in users:
             period = self.group.period
-            relatedstudent = RelatedStudent.objects.get_or_create(user=user,
-                                                                  period=period)[0]
+            relatedstudent = RelatedStudent.objects.get_or_create(user=user, period=period)[0]
             self.group.candidates.create(relatedstudent=relatedstudent)
         return self
 
@@ -290,69 +282,69 @@ class AssignmentGroupBuilder(CoreBuilderBase):
         return self
 
     def add_deadline(self, **kwargs):
-        kwargs['assignment_group'] = self.group
+        kwargs["assignment_group"] = self.group
         return DeadlineBuilder(**kwargs)
 
     def add_deadline_in_x_weeks(self, weeks, **kwargs):
-        if 'deadline' in kwargs:
-            raise ValueError('add_deadline_in_x_weeks does not accept ``deadline`` as kwarg, it sets it automatically.')
-        kwargs['deadline'] = arrow.get(timezone.now()).replace(weeks=+weeks).datetime
+        if "deadline" in kwargs:
+            raise ValueError("add_deadline_in_x_weeks does not accept ``deadline`` as kwarg, it sets it automatically.")
+        kwargs["deadline"] = arrow.get(timezone.now()).replace(weeks=+weeks).datetime
         return self.add_deadline(**kwargs)
 
     def add_deadline_x_weeks_ago(self, weeks, **kwargs):
-        if 'deadline' in kwargs:
+        if "deadline" in kwargs:
             raise ValueError(
-                'add_deadline_x_weeks_ago does not accept ``deadline`` as kwarg, it sets it automatically.')
-        kwargs['deadline'] = arrow.get(timezone.now()).replace(weeks=-weeks).datetime
+                "add_deadline_x_weeks_ago does not accept ``deadline`` as kwarg, it sets it automatically."
+            )
+        kwargs["deadline"] = arrow.get(timezone.now()).replace(weeks=-weeks).datetime
         return self.add_deadline(**kwargs)
 
     def add_feedback_set(self, **kwargs):
-        kwargs['group'] = self.group
+        kwargs["group"] = self.group
         return FeedbackSetBuilder(**kwargs)
 
     @classmethod
     def make(cls, **kwargs):
         assignmentbuilder_kwargs = {}
         for key in list(kwargs.keys()):
-            if key.startswith('assignment__'):
-                assignmentbuilder_kwargs[key[len('assignment__'):]] = kwargs.pop(key)
+            if key.startswith("assignment__"):
+                assignmentbuilder_kwargs[key[len("assignment__") :]] = kwargs.pop(key)
         assignmentbuilder = AssignmentBuilder.make(**assignmentbuilder_kwargs)
         return cls(parentnode=assignmentbuilder.assignment, **kwargs)
 
 
 class AssignmentBuilder(BaseNodeBuilderBase):
-    object_attribute_name = 'assignment'
+    object_attribute_name = "assignment"
     modelcls = Assignment
 
     @classmethod
     def quickadd_ducku_duck1010_active_assignment1(cls):
-        return PeriodBuilder.quickadd_ducku_duck1010_active() \
-            .add_assignment('assignment1')
+        return PeriodBuilder.quickadd_ducku_duck1010_active().add_assignment("assignment1")
 
     def __init__(self, *args, **kwargs):
-        if not 'publishing_time' in kwargs:
-            kwargs['publishing_time'] = timezone.now()
+        if not "publishing_time" in kwargs:
+            kwargs["publishing_time"] = timezone.now()
         super(AssignmentBuilder, self).__init__(*args, **kwargs)
 
     def add_group(self, *args, **kwargs):
-        kwargs['parentnode'] = self.assignment
+        kwargs["parentnode"] = self.assignment
         return AssignmentGroupBuilder(*args, **kwargs)
 
     @classmethod
     def make(cls, **kwargs):
-        if 'publishing_time' in kwargs:
+        if "publishing_time" in kwargs:
             return PeriodBuilder.make().add_assignment(**kwargs)
         else:
             return PeriodBuilder.make().add_assignment_in_x_weeks(weeks=1, **kwargs)
 
 
 class PeriodBuilder(BaseNodeBuilderBase):
-    object_attribute_name = 'period'
+    object_attribute_name = "period"
     modelcls = Period
 
     def __init__(self, *args, **kwargs):
-        relatedstudents = kwargs.pop('relatedstudents', None)
-        relatedexaminers = kwargs.pop('relatedexaminers', None)
+        relatedstudents = kwargs.pop("relatedstudents", None)
+        relatedexaminers = kwargs.pop("relatedexaminers", None)
         super(PeriodBuilder, self).__init__(*args, **kwargs)
         if relatedstudents:
             self.add_relatedstudents(*relatedstudents)
@@ -361,21 +353,20 @@ class PeriodBuilder(BaseNodeBuilderBase):
 
     @classmethod
     def quickadd_ducku_duck1010_active(cls):
-        return SubjectBuilder.quickadd_ducku_duck1010() \
-            .add_6month_active_period()
+        return SubjectBuilder.quickadd_ducku_duck1010().add_6month_active_period()
 
     def add_assignment(self, *args, **kwargs):
-        kwargs['parentnode'] = self.period
-        if 'first_deadline' not in kwargs:
-            kwargs['first_deadline'] = timezone.now()
+        kwargs["parentnode"] = self.period
+        if "first_deadline" not in kwargs:
+            kwargs["first_deadline"] = timezone.now()
         return AssignmentBuilder(*args, **kwargs)
 
     def add_assignment_x_weeks_ago(self, weeks, **kwargs):
-        kwargs['publishing_time'] = arrow.get(timezone.now()).replace(weeks=-weeks).datetime
+        kwargs["publishing_time"] = arrow.get(timezone.now()).replace(weeks=-weeks).datetime
         return self.add_assignment(**kwargs)
 
     def add_assignment_in_x_weeks(self, weeks, **kwargs):
-        kwargs['publishing_time'] = arrow.get(timezone.now()).replace(weeks=+weeks).datetime
+        kwargs["publishing_time"] = arrow.get(timezone.now()).replace(weeks=+weeks).datetime
         return self.add_assignment(**kwargs)
 
     def add_relatedstudents(self, *users):
@@ -384,8 +375,7 @@ class PeriodBuilder(BaseNodeBuilderBase):
             if isinstance(user, RelatedStudent):
                 relatedstudent = user
             else:
-                relatedstudent = RelatedStudent(
-                    user=user)
+                relatedstudent = RelatedStudent(user=user)
             relatedstudent.period = self.period
             relatedstudents.append(relatedstudent)
         RelatedStudent.objects.bulk_create(relatedstudents)
@@ -397,8 +387,7 @@ class PeriodBuilder(BaseNodeBuilderBase):
             if isinstance(user, RelatedExaminer):
                 relatedexaminer = user
             else:
-                relatedexaminer = RelatedExaminer(
-                    user=user)
+                relatedexaminer = RelatedExaminer(user=user)
             relatedexaminer.period = self.period
             relatedexaminers.append(relatedexaminer)
         RelatedExaminer.objects.bulk_create(relatedexaminers)
@@ -410,52 +399,55 @@ class PeriodBuilder(BaseNodeBuilderBase):
 
 
 class SubjectBuilder(BaseNodeBuilderBase):
-    object_attribute_name = 'subject'
+    object_attribute_name = "subject"
     modelcls = Subject
 
     @classmethod
     def quickadd_ducku_duck1010(cls, **kwargs):
-        return SubjectBuilder('duck1010', **kwargs)
+        return SubjectBuilder("duck1010", **kwargs)
 
     def add_period(self, *args, **kwargs):
-        kwargs['parentnode'] = self.subject
-        if 'start_time' not in kwargs:
-            kwargs['start_time'] = arrow.get(timezone.now()).replace(days=-(30 * 3)).datetime
-        if 'end_time' not in kwargs:
-            kwargs['end_time'] = arrow.get(timezone.now()).replace(days=30 * 3).datetime
+        kwargs["parentnode"] = self.subject
+        if "start_time" not in kwargs:
+            kwargs["start_time"] = arrow.get(timezone.now()).replace(days=-(30 * 3)).datetime
+        if "end_time" not in kwargs:
+            kwargs["end_time"] = arrow.get(timezone.now()).replace(days=30 * 3).datetime
         return PeriodBuilder(*args, **kwargs)
 
     def add_6month_active_period(self, **kwargs):
-        kwargs['parentnode'] = self.subject
-        if 'start_time' in kwargs or 'end_time' in kwargs:
+        kwargs["parentnode"] = self.subject
+        if "start_time" in kwargs or "end_time" in kwargs:
             raise ValueError(
-                'add_6month_active_period does not accept ``start_time`` or ``end_time`` as kwargs, it sets them automatically.')
-        kwargs['start_time'] = arrow.get(timezone.now()).replace(days=-(30 * 3)).datetime
-        kwargs['end_time'] = arrow.get(timezone.now()).replace(days=30 * 3).datetime
-        if not 'short_name' in kwargs:
-            kwargs['short_name'] = 'active'
+                "add_6month_active_period does not accept ``start_time`` or ``end_time`` as kwargs, it sets them automatically."
+            )
+        kwargs["start_time"] = arrow.get(timezone.now()).replace(days=-(30 * 3)).datetime
+        kwargs["end_time"] = arrow.get(timezone.now()).replace(days=30 * 3).datetime
+        if not "short_name" in kwargs:
+            kwargs["short_name"] = "active"
         return self.add_period(**kwargs)
 
     def add_6month_lastyear_period(self, **kwargs):
-        kwargs['parentnode'] = self.subject
-        if 'start_time' in kwargs or 'end_time' in kwargs:
+        kwargs["parentnode"] = self.subject
+        if "start_time" in kwargs or "end_time" in kwargs:
             raise ValueError(
-                'add_6month_lastyear_period does not accept ``start_time`` or ``end_time`` as kwargs, it sets them automatically.')
-        kwargs['start_time'] = arrow.get(timezone.now()).replace(days=-(365 + 30 * 3)).datetime
-        kwargs['end_time'] = arrow.get(timezone.now()).replace(days=-(365 - 30 * 3)).datetime
-        if not 'short_name' in kwargs:
-            kwargs['short_name'] = 'lastyear'
+                "add_6month_lastyear_period does not accept ``start_time`` or ``end_time`` as kwargs, it sets them automatically."
+            )
+        kwargs["start_time"] = arrow.get(timezone.now()).replace(days=-(365 + 30 * 3)).datetime
+        kwargs["end_time"] = arrow.get(timezone.now()).replace(days=-(365 - 30 * 3)).datetime
+        if not "short_name" in kwargs:
+            kwargs["short_name"] = "lastyear"
         return self.add_period(**kwargs)
 
     def add_6month_nextyear_period(self, **kwargs):
-        kwargs['parentnode'] = self.subject
-        if 'start_time' in kwargs or 'end_time' in kwargs:
+        kwargs["parentnode"] = self.subject
+        if "start_time" in kwargs or "end_time" in kwargs:
             raise ValueError(
-                'add_6month_nextyear_period does not accept ``start_time`` or ``end_time`` as kwargs, it sets them automatically.')
-        kwargs['start_time'] = arrow.get(timezone.now()).replace(days=365 - 30 * 3).datetime
-        kwargs['end_time'] = arrow.get(timezone.now()).replace(days=365 + 30 * 3).datetime
-        if not 'short_name' in kwargs:
-            kwargs['short_name'] = 'nextyear'
+                "add_6month_nextyear_period does not accept ``start_time`` or ``end_time`` as kwargs, it sets them automatically."
+            )
+        kwargs["start_time"] = arrow.get(timezone.now()).replace(days=365 - 30 * 3).datetime
+        kwargs["end_time"] = arrow.get(timezone.now()).replace(days=365 + 30 * 3).datetime
+        if not "short_name" in kwargs:
+            kwargs["short_name"] = "nextyear"
         return self.add_period(**kwargs)
 
     @classmethod

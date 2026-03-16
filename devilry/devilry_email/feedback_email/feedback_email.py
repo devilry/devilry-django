@@ -16,13 +16,13 @@ class FeedbackSubjectTextGenerator(SubjectTextGenerator):
 
     def get_subject_text(self):
         if not self.feedback_type:
-            raise ValueError('Missing mailtype')
-        if self.feedback_type == 'feedback_created':
-            return gettext_lazy('Feedback for %(assignment_name)s') % {
-                'assignment_name': self.assignment.long_name}
-        if self.feedback_type == 'feedback_edited':
-            return gettext_lazy('Feedback updated for %(assignment_name)s') % {
-                'assignment_name': self.assignment.long_name}
+            raise ValueError("Missing mailtype")
+        if self.feedback_type == "feedback_created":
+            return gettext_lazy("Feedback for %(assignment_name)s") % {"assignment_name": self.assignment.long_name}
+        if self.feedback_type == "feedback_edited":
+            return gettext_lazy("Feedback updated for %(assignment_name)s") % {
+                "assignment_name": self.assignment.long_name
+            }
 
 
 def send_feedback_email(assignment, feedback_sets, domain_url_start, feedback_type):
@@ -46,20 +46,18 @@ def send_feedback_email(assignment, feedback_sets, domain_url_start, feedback_ty
 
     """
     from devilry.apps.core.models import Assignment
-    template_name = 'devilry_email/feedback_email/assignment_feedback_student.txt'
 
-    if feedback_type == 'feedback_created':
+    template_name = "devilry_email/feedback_email/assignment_feedback_student.txt"
+
+    if feedback_type == "feedback_created":
         message_context_type = Message.CONTEXT_TYPE_CHOICES.FEEDBACK.value
-    elif feedback_type == 'feedback_edited':
+    elif feedback_type == "feedback_edited":
         message_context_type = Message.CONTEXT_TYPE_CHOICES.FEEDBACK_UPDATED.value
     else:
         message_context_type = Message.CONTEXT_TYPE_CHOICES.OTHER.value
     subject_generator = FeedbackSubjectTextGenerator(assignment=assignment, feedback_type=feedback_type)
 
-    assignment = Assignment.objects \
-        .prefetch_point_to_grade_map() \
-        .filter(id=assignment.id)\
-        .get()
+    assignment = Assignment.objects.prefetch_point_to_grade_map().filter(id=assignment.id).get()
 
     for feedback_set in feedback_sets:
         student_users = list(get_student_users_in_group(feedback_set.group))
@@ -68,43 +66,42 @@ def send_feedback_email(assignment, feedback_sets, domain_url_start, feedback_ty
         user_ids = [user.id for user in student_users]
 
         # Build absolute url
-        domain_url_start = domain_url_start.rstrip('/')
-        absolute_url = '{}{}'.format(
+        domain_url_start = domain_url_start.rstrip("/")
+        absolute_url = "{}{}".format(
             domain_url_start,
             reverse_cradmin_url(
-                instanceid='devilry_group_student',
-                appname='feedbackfeed',
-                roleid=feedback_set.group_id))
+                instanceid="devilry_group_student", appname="feedbackfeed", roleid=feedback_set.group_id
+            ),
+        )
         template_dictionary = {
-            'assignment': assignment,
-            'devilryrole': 'student',
-            'points': feedback_set.grading_points,
-            'deadline_datetime': feedback_set.deadline_datetime,
-            'corrected_datetime': feedback_set.grading_published_datetime,
-            'url': absolute_url
+            "assignment": assignment,
+            "devilryrole": "student",
+            "points": feedback_set.grading_points,
+            "deadline_datetime": feedback_set.deadline_datetime,
+            "corrected_datetime": feedback_set.grading_published_datetime,
+            "url": absolute_url,
         }
 
         # Create message object and save it.
         message = Message(
-            virtual_message_receivers={'user_ids': user_ids},
+            virtual_message_receivers={"user_ids": user_ids},
             context_type=message_context_type,
             metadata={
-                'points': feedback_set.grading_points,
-                'grading_published_atetime': feedback_set.grading_published_datetime.isoformat(),
-                'feedbackset_id': feedback_set.id,
-                'assignment_group_id': feedback_set.group_id,
-                'assignment_id': feedback_set.group.parentnode_id
+                "points": feedback_set.grading_points,
+                "grading_published_atetime": feedback_set.grading_published_datetime.isoformat(),
+                "feedbackset_id": feedback_set.id,
+                "assignment_group_id": feedback_set.group_id,
+                "assignment_id": feedback_set.group.parentnode_id,
             },
-            message_type=['email']
+            message_type=["email"],
         )
         message.full_clean()
         message.save()
 
         # Prepare receivers and send.
         message.prepare_and_send(
-            subject_generator=subject_generator,
-            template_name=template_name,
-            template_context=template_dictionary)
+            subject_generator=subject_generator, template_name=template_name, template_context=template_dictionary
+        )
 
 
 def bulk_feedback_mail(assignment_id, feedbackset_id_list, domain_url_start, feedback_type=None):
@@ -120,15 +117,16 @@ def bulk_feedback_mail(assignment_id, feedbackset_id_list, domain_url_start, fee
     """
     from devilry.devilry_group.models import FeedbackSet
     from devilry.apps.core.models import Assignment
-    feedbackset_queryset = FeedbackSet.objects\
-        .select_related('group', 'group__parentnode', 'group__parentnode__parentnode')\
-        .filter(id__in=feedbackset_id_list)
+
+    feedbackset_queryset = FeedbackSet.objects.select_related(
+        "group", "group__parentnode", "group__parentnode__parentnode"
+    ).filter(id__in=feedbackset_id_list)
     assignment = Assignment.objects.get(id=assignment_id)
     send_feedback_email(
         assignment=assignment,
         feedback_sets=feedbackset_queryset,
         domain_url_start=domain_url_start,
-        feedback_type=feedback_type
+        feedback_type=feedback_type,
     )
 
 
@@ -139,10 +137,8 @@ def bulk_send_feedback_created_email(**kwargs):
 
     Adds :meth:`bulk_feedback_mail` to the RQ-queue.
     """
-    kwargs.update({
-        'feedback_type': 'feedback_created'
-    })
-    queue = django_rq.get_queue(name='email')
+    kwargs.update({"feedback_type": "feedback_created"})
+    queue = django_rq.get_queue(name="email")
     queue.enqueue(bulk_feedback_mail, **kwargs)
 
 
@@ -153,8 +149,6 @@ def bulk_send_feedback_edited_email(**kwargs):
 
     Adds :meth:`bulk_feedback_mail` to the RQ-queue.
     """
-    kwargs.update({
-        'feedback_type': 'feedback_edited'
-    })
-    queue = django_rq.get_queue(name='email')
+    kwargs.update({"feedback_type": "feedback_edited"})
+    queue = django_rq.get_queue(name="email")
     queue.enqueue(bulk_feedback_mail, **kwargs)

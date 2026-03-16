@@ -17,70 +17,64 @@ from devilry.devilry_deadlinemanagement.views import viewutils
 class SelectedAssignmentGroupForm(forms.Form):
     qualification_modelclass = core_models.AssignmentGroup
     invalid_qualification_item_message = gettext_lazy(
-        'Something went wrong. This may happen if someone else performed a similar operation '
-        'while you where selecting. Refresh the page and try again')
+        "Something went wrong. This may happen if someone else performed a similar operation "
+        "while you where selecting. Refresh the page and try again"
+    )
 
     #: The items selected as ModelMultipleChoiceField.
     #: If some or all items should be selected by default, override this.
     selected_items = forms.ModelMultipleChoiceField(
-
         # No items are selectable by default.
         queryset=None,
-
         # Used if the object to select for some reason does
         # not exist(has been deleted or altered in some way)
         error_messages={
-            'invalid_choice': invalid_qualification_item_message,
-        }
+            "invalid_choice": invalid_qualification_item_message,
+        },
     )
 
     def __init__(self, *args, **kwargs):
-        selectable_qualification_items_queryset = kwargs.pop('selectable_items_queryset')
-        self.assignment = kwargs.pop('assignment')
+        selectable_qualification_items_queryset = kwargs.pop("selectable_items_queryset")
+        self.assignment = kwargs.pop("assignment")
         super(SelectedAssignmentGroupForm, self).__init__(*args, **kwargs)
-        self.fields['selected_items'].queryset = selectable_qualification_items_queryset
+        self.fields["selected_items"].queryset = selectable_qualification_items_queryset
 
 
 class AssignmentGroupTargetRenderer(multiselect2.target_renderer.Target):
-
     #: The selected item as it is shown when selected.
     #: By default this is :class:`.SelectedQualificationItem`.
     selected_target_renderer = devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue
 
     #: A descriptive name for the items selected.
-    descriptive_item_name = gettext_lazy('groups')
+    descriptive_item_name = gettext_lazy("groups")
 
     def get_move_deadline_text(self):
         return pgettext_lazy(
-            'assignment_group_target_renderer move_dealine_text',
-            'Move deadline for selected %(what)s'
-        ) % {'what': self.descriptive_item_name}
+            "assignment_group_target_renderer move_dealine_text", "Move deadline for selected %(what)s"
+        ) % {"what": self.descriptive_item_name}
 
     def get_submit_button_text(self):
         return pgettext_lazy(
-            'assignment_group_target_renderer submit_button_text',
-            'Continue with selected %(what)s'
-        ) % {'what': self.descriptive_item_name}
+            "assignment_group_target_renderer submit_button_text", "Continue with selected %(what)s"
+        ) % {"what": self.descriptive_item_name}
 
     def get_with_items_title(self):
-        return pgettext_lazy(
-            'assignment_group_target_renderer with_items_title',
-            'Selected %(what)s'
-        ) % {'what': self.descriptive_item_name}
+        return pgettext_lazy("assignment_group_target_renderer with_items_title", "Selected %(what)s") % {
+            "what": self.descriptive_item_name
+        }
 
     def get_without_items_text(self):
-        return pgettext_lazy(
-            'assignment_group_target_renderer without_items_text',
-            'No %(what)s selected'
-        ) % {'what': self.descriptive_item_name}
+        return pgettext_lazy("assignment_group_target_renderer without_items_text", "No %(what)s selected") % {
+            "what": self.descriptive_item_name
+        }
 
     def get_hidden_fields(self):
-        return [
-            layout.Hidden(name='post_type_received_data', value='')
-        ]
+        return [layout.Hidden(name="post_type_received_data", value="")]
 
 
-class AssignmentGroupMultiSelectListFilterView(viewutils.DeadlineManagementMixin, multiselect2view.ListbuilderFilterView):
+class AssignmentGroupMultiSelectListFilterView(
+    viewutils.DeadlineManagementMixin, multiselect2view.ListbuilderFilterView
+):
     """
     Abstract class that implements ``ListbuilderFilterView``.
 
@@ -88,22 +82,23 @@ class AssignmentGroupMultiSelectListFilterView(viewutils.DeadlineManagementMixin
     Fetches the ``AssignmentGroups`` through :meth:`~.get_unfiltered_queryset_for_role` and joins
     necessary tables used for anonymzation and annotations used by viewfilters.
     """
+
     model = core_models.AssignmentGroup
     value_renderer_class = devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue
-    template_name = 'devilry_deadlinemanagement/deadline-bulk-multiselect-filterlistview.django.html'
+    template_name = "devilry_deadlinemanagement/deadline-bulk-multiselect-filterlistview.django.html"
     handle_deadline_type = None
 
     def get_pagetitle(self):
-        return pgettext_lazy('assignment_group_multiselect_list_filter_view pagetitle',
-                             'Select groups')
+        return pgettext_lazy("assignment_group_multiselect_list_filter_view pagetitle", "Select groups")
 
     def get_pageheading(self):
-        return pgettext_lazy('assignment_group_multiselect_list_filter_view pageheading',
-                             'Select groups')
+        return pgettext_lazy("assignment_group_multiselect_list_filter_view pageheading", "Select groups")
 
     def get_page_subheading(self):
-        return pgettext_lazy('assignment_group_multiselect_list_filter_view page_subheading',
-                             'Select the groups you want to manage the deadline for.')
+        return pgettext_lazy(
+            "assignment_group_multiselect_list_filter_view page_subheading",
+            "Select the groups you want to manage the deadline for.",
+        )
 
     def get_default_paginate_by(self, queryset):
         return 5
@@ -150,28 +145,27 @@ class AssignmentGroupMultiSelectListFilterView(viewutils.DeadlineManagementMixin
         return SelectedAssignmentGroupForm
 
     def get_value_and_frame_renderer_kwargs(self):
-        return {
-            'assignment': self.assignment
-        }
+        return {"assignment": self.assignment}
 
     def get_form_kwargs(self):
         kwargs = super(AssignmentGroupMultiSelectListFilterView, self).get_form_kwargs()
-        kwargs['selectable_items_queryset'] = self.get_unfiltered_queryset_for_role(self.assignment)
-        kwargs['assignment'] = self.assignment
+        kwargs["selectable_items_queryset"] = self.get_unfiltered_queryset_for_role(self.assignment)
+        kwargs["assignment"] = self.assignment
         return kwargs
 
     def get_target_renderer_kwargs(self):
         kwargs = super(AssignmentGroupMultiSelectListFilterView, self).get_target_renderer_kwargs()
-        kwargs['form_action'] = self.request.cradmin_app.reverse_appurl(
-            viewname='manage-deadline-post',
+        kwargs["form_action"] = self.request.cradmin_app.reverse_appurl(
+            viewname="manage-deadline-post",
             kwargs={
-                'deadline': datetimeutils.datetime_to_url_string(self.deadline),
-                'handle_deadline': self.handle_deadline_type
-            })
+                "deadline": datetimeutils.datetime_to_url_string(self.deadline),
+                "handle_deadline": self.handle_deadline_type,
+            },
+        )
         return kwargs
 
     def get_selected_groupids(self, posted_form):
-        return [item.id for item in posted_form.cleaned_data['selected_items']]
+        return [item.id for item in posted_form.cleaned_data["selected_items"]]
 
     def get_group_anonymous_displaynames(self, form):
         """
@@ -183,10 +177,8 @@ class AssignmentGroupMultiSelectListFilterView(viewutils.DeadlineManagementMixin
         Returns:
             (list): list of anonymized displaynames for the groups
         """
-        groups = form.cleaned_data['selected_items']
-        anonymous_display_names = [
-            str(group.get_anonymous_displayname(assignment=self.assignment))
-            for group in groups]
+        groups = form.cleaned_data["selected_items"]
+        anonymous_display_names = [str(group.get_anonymous_displayname(assignment=self.assignment)) for group in groups]
         return anonymous_display_names
 
     def get_success_url(self):
@@ -197,8 +189,10 @@ class AssignmentGroupMultiSelectListFilterView(viewutils.DeadlineManagementMixin
 
     def get_filterlist_url(self, filters_string):
         return self.request.cradmin_app.reverse_appurl(
-            'select-groups-manually-filter', kwargs={
-                'deadline': datetimeutils.datetime_to_url_string(self.deadline),
-                'handle_deadline': self.handle_deadline_type,
-                'filters_string': filters_string
-            })
+            "select-groups-manually-filter",
+            kwargs={
+                "deadline": datetimeutils.datetime_to_url_string(self.deadline),
+                "handle_deadline": self.handle_deadline_type,
+                "filters_string": filters_string,
+            },
+        )

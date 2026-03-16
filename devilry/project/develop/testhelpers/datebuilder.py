@@ -1,11 +1,11 @@
 from datetime import datetime
 from datetime import timedelta
 
-DJANGO_ISODATETIMEFORMAT = 'Y-m-d H:i'
+DJANGO_ISODATETIMEFORMAT = "Y-m-d H:i"
 
 
 def isoformat_datetime(datetimeobj):
-    return datetimeobj.strftime('%Y-%m-%d %H:%M')
+    return datetimeobj.strftime("%Y-%m-%d %H:%M")
 
 
 class DateTimeBuilder(datetime):
@@ -17,6 +17,7 @@ class DateTimeBuilder(datetime):
         tomorrow = DateTimeBuilder.now().plus(days=1)
         yesterday_startofday = DateTimeBuilder.now().daystart().minus(days=1)
     """
+
     def minus(self, weeks=0, days=0, hours=0, minutes=0, seconds=0):
         self -= timedelta(weeks=weeks, days=days, hours=hours, minutes=minutes, seconds=seconds)
         return self

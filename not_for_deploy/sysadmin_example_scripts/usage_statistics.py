@@ -20,9 +20,9 @@ def get_number_of_deliveries(from_datetime, to_datetime):
     from devilry.devilry_group.models import GroupComment, FeedbackSet
 
     #: Get all `FeedbackSets` with deadlines within the from and to datetime range.
-    feedbackset_queryset = FeedbackSet.objects\
-        .filter(deadline_datetime__gte=from_datetime,
-                deadline_datetime__lte=to_datetime)
+    feedbackset_queryset = FeedbackSet.objects.filter(
+        deadline_datetime__gte=from_datetime, deadline_datetime__lte=to_datetime
+    )
 
     #: UNCOMMENT THIS IF YOU WANT TO:
     #:
@@ -32,9 +32,9 @@ def get_number_of_deliveries(from_datetime, to_datetime):
 
     # Get all comments for all `FeedbackSet`s with deadline within the
     # from and to datetime posted by a student.
-    group_comment_queryset = GroupComment.objects\
-        .filter(user_role=GroupComment.USER_ROLE_STUDENT)\
-        .filter(feedback_set_id__in=feedbackset_queryset.values_list('id', flat=True))
+    group_comment_queryset = GroupComment.objects.filter(user_role=GroupComment.USER_ROLE_STUDENT).filter(
+        feedback_set_id__in=feedbackset_queryset.values_list("id", flat=True)
+    )
 
     #: UNCOMMENT THIS IF YOU WANT TO:
     #:
@@ -44,7 +44,7 @@ def get_number_of_deliveries(from_datetime, to_datetime):
     #     .filter(published_datetime__gte=models.F('feedback_set__deadline_datetime'))
 
     #: Annotate with file count on each comment (a delivery).
-    group_comment_queryset = group_comment_queryset.annotate(file_num=Count('commentfile'))
+    group_comment_queryset = group_comment_queryset.annotate(file_num=Count("commentfile"))
 
     return group_comment_queryset.filter(file_num__gt=0).count()
 
@@ -53,29 +53,30 @@ def get_unique_logins(from_datetime):
     """
     Get the number of unique logins since a specified datetime.
     """
-    unique_logins = get_user_model().objects\
-        .filter(last_login__gte=from_datetime)
+    unique_logins = get_user_model().objects.filter(last_login__gte=from_datetime)
     return unique_logins.count()
 
 
 def populate_arguments_and_get_parser():
-    parser = argparse.ArgumentParser(description='Set up department permission groups for missing subjects.')
+    parser = argparse.ArgumentParser(description="Set up department permission groups for missing subjects.")
     parser.add_argument(
-        '--from-date',
-        dest='from_date',
-        default='1900-01-01',
-        help='A %%Y-%%m-%%d formatted from-date. Defaults to 1900-01-01.')
+        "--from-date",
+        dest="from_date",
+        default="1900-01-01",
+        help="A %%Y-%%m-%%d formatted from-date. Defaults to 1900-01-01.",
+    )
     parser.add_argument(
-        '--to-date',
-        dest='to_date',
-        default='5999-12-31',
-        help='A %%Y-%%m-%%d formatted to-date. Defaults to 5999-12-31.')
+        "--to-date",
+        dest="to_date",
+        default="5999-12-31",
+        help="A %%Y-%%m-%%d formatted to-date. Defaults to 5999-12-31.",
+    )
     return parser
 
 
 if __name__ == "__main__":
     # For development:
-    os.environ.setdefault('DJANGOENV', 'develop')
+    os.environ.setdefault("DJANGOENV", "develop")
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "devilry.project.settingsproxy")
     django.setup()
 
@@ -87,21 +88,25 @@ if __name__ == "__main__":
     args = parser.parse_args()
     arguments_dict = vars(args)
 
-    from_datetime = timezone.make_aware(datetime.strptime(arguments_dict['from_date'], '%Y-%m-%d')).replace(
-        hour=0, minute=0, second=0)
-    to_datetime = timezone.make_aware(datetime.strptime(arguments_dict['to_date'], '%Y-%m-%d')).replace(
-        hour=23, minute=59, second=59)
+    from_datetime = timezone.make_aware(datetime.strptime(arguments_dict["from_date"], "%Y-%m-%d")).replace(
+        hour=0, minute=0, second=0
+    )
+    to_datetime = timezone.make_aware(datetime.strptime(arguments_dict["to_date"], "%Y-%m-%d")).replace(
+        hour=23, minute=59, second=59
+    )
 
     # Get unique logins
     unique_login_count = get_unique_logins(from_datetime=from_datetime)
-    print('Unique logins since {}: {}'.format(
-        arrow.get(from_datetime).format('MMM D. YYYY HH:mm:ss'),
-        unique_login_count))
+    print(
+        "Unique logins since {}: {}".format(arrow.get(from_datetime).format("MMM D. YYYY HH:mm:ss"), unique_login_count)
+    )
 
     # Get number of deliveries
     delivery_count = get_number_of_deliveries(from_datetime, to_datetime)
-    print('Deliveries made between {} and {}: {}'.format(
-        arrow.get(from_datetime).format('MMM D. YYYY HH:mm:ss'),
-        arrow.get(to_datetime).format('MMM D. YYYY HH:mm:ss'),
-        delivery_count
-    ))
+    print(
+        "Deliveries made between {} and {}: {}".format(
+            arrow.get(from_datetime).format("MMM D. YYYY HH:mm:ss"),
+            arrow.get(to_datetime).format("MMM D. YYYY HH:mm:ss"),
+            delivery_count,
+        )
+    )

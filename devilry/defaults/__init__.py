@@ -1,1 +1,1 @@
-""" Default settings for Devilry. """
+"""Default settings for Devilry."""

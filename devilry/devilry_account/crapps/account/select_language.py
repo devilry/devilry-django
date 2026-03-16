@@ -9,7 +9,6 @@ from devilry.devilry_account.models import User
 
 
 class LanguageInfo(object):
-
     def __init__(self, languagecode, language=None):
         self.languagecode = languagecode
         self.language = language or self.__get_language()
@@ -19,16 +18,16 @@ class LanguageInfo(object):
 
 
 class SelectLanguageView(TemplateView):
-    template_name = 'devilry_account/crapps/account/select_language.django.html'
+    template_name = "devilry_account/crapps/account/select_language.django.html"
 
     def post(self, request, *args, **kwargs):
         selected_languagecode = self.__get_selected_languagecode(data=request.POST)
         if request.user.is_authenticated:
             self.__update_user_language_code(request=request, languagecode=selected_languagecode)
-            request.session['SELECTED_LANGUAGE_CODE'] = selected_languagecode
+            request.session["SELECTED_LANGUAGE_CODE"] = selected_languagecode
         else:
-            request.session['SELECTED_LANGUAGE_CODE'] = selected_languagecode
-        return HttpResponseRedirect('/account/')
+            request.session["SELECTED_LANGUAGE_CODE"] = selected_languagecode
+        return HttpResponseRedirect("/account/")
 
     def __update_user_language_code(self, request, languagecode):
         try:
@@ -41,7 +40,7 @@ class SelectLanguageView(TemplateView):
             user.save()
 
     def __get_selected_languagecode(self, data):
-        selected_languagecode = data.get('selected_language', None)
+        selected_languagecode = data.get("selected_language", None)
         if not selected_languagecode:
             return translation.get_language()
 
@@ -53,16 +52,13 @@ class SelectLanguageView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(SelectLanguageView, self).get_context_data(**kwargs)
-        context['languages'] = self.__get_languages_info()
+        context["languages"] = self.__get_languages_info()
         return context
 
     def __get_languages_info(self):
         language_objects_info_list = []
         for language in settings.LANGUAGES:
-            language_info = LanguageInfo(
-                languagecode=language[0],
-                language=language[1]
-            )
+            language_info = LanguageInfo(languagecode=language[0], language=language[1])
             if language[0] == translation.get_language():
                 language_objects_info_list.insert(0, language_info)
             else:

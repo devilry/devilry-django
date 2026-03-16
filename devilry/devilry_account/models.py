@@ -25,9 +25,12 @@ class UserQuerySet(models.QuerySet):
         strings.
         """
         return self.prefetch_related(
-                models.Prefetch('useremail_set',
-                                queryset=UserEmail.objects.filter(use_for_notifications=True),
-                                to_attr='notification_useremail_objects'))
+            models.Prefetch(
+                "useremail_set",
+                queryset=UserEmail.objects.filter(use_for_notifications=True),
+                to_attr="notification_useremail_objects",
+            )
+        )
 
     def prefetch_related_primary_email(self):
         """
@@ -39,9 +42,10 @@ class UserQuerySet(models.QuerySet):
         :meth:`.User.primary_email` to access the primary email.
         """
         return self.prefetch_related(
-                models.Prefetch('useremail_set',
-                                queryset=UserEmail.objects.filter(is_primary=True),
-                                to_attr='primary_useremail_objects'))
+            models.Prefetch(
+                "useremail_set", queryset=UserEmail.objects.filter(is_primary=True), to_attr="primary_useremail_objects"
+            )
+        )
 
     def prefetch_related_primary_username(self):
         """
@@ -53,9 +57,10 @@ class UserQuerySet(models.QuerySet):
         :meth:`.User.primary_username` to access the primary username.
         """
         return self.prefetch_related(
-                models.Prefetch('username_set',
-                                queryset=UserName.objects.filter(is_primary=True),
-                                to_attr='primary_username_objects'))
+            models.Prefetch(
+                "username_set", queryset=UserName.objects.filter(is_primary=True), to_attr="primary_username_objects"
+            )
+        )
 
     def filter_by_emails(self, emails):
         """
@@ -76,6 +81,7 @@ class UserManager(BaseUserManager):
     """
     Manager for :class:`User`.
     """
+
     use_for_related_fields = True
 
     def get_queryset(self):
@@ -158,24 +164,25 @@ class UserManager(BaseUserManager):
         Returns ``True`` if the given ``user`` is examiner on any AssignmentGroup.
         """
         from devilry.apps.core.models.assignment_group import AssignmentGroup
+
         return AssignmentGroup.objects.filter_examiner_has_access(user).exists()
 
     def user_is_examiner_or_can_selfassign_as_examiner(self, user):
         from devilry.devilry_examiner.views.selfassign import utils as selfassign_utils
+
         if self.user_is_examiner(user):
             return True
-        return selfassign_utils\
-            .selfassign_available_periods(user=user)\
-            .exists()
+        return selfassign_utils.selfassign_available_periods(user=user).exists()
 
     def user_is_student(self, user):
         """
         Returns ``True`` if the given ``user`` is candidate on any AssignmentGroup.
         """
         from devilry.apps.core.models.assignment_group import AssignmentGroup
+
         return AssignmentGroup.objects.filter_student_has_access(user).exists()
 
-    def create_user(self, username='', email='', password=None, **kwargs):
+    def create_user(self, username="", email="", password=None, **kwargs):
         """
         Create a new user.
 
@@ -191,8 +198,9 @@ class UserManager(BaseUserManager):
         ``shortname``. ``shortname`` is created from username or email (in that order).
         """
         if settings.CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND and username:
-            raise IllegalOperationError('Can not create user with username when the '
-                                        'CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND-setting is True')
+            raise IllegalOperationError(
+                "Can not create user with username when the CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND-setting is True"
+            )
         shortname = username or email
         user = self.model(shortname=shortname, **kwargs)
         if password:
@@ -205,28 +213,27 @@ class UserManager(BaseUserManager):
             user.username_set.create(username=username, is_primary=True)
 
         if username and not email:
-            email_username_suffix = getattr(settings, 'DEVILRY_DEFAULT_EMAIL_USERNAME_SUFFIX', None)
+            email_username_suffix = getattr(settings, "DEVILRY_DEFAULT_EMAIL_USERNAME_SUFFIX", None)
             if email_username_suffix:
-                if '@' not in email_username_suffix:
-                    email_username_suffix = '@{}'.format(email_username_suffix)
-                email = '{}{}'.format(username, email_username_suffix)
+                if "@" not in email_username_suffix:
+                    email_username_suffix = "@{}".format(email_username_suffix)
+                email = "{}{}".format(username, email_username_suffix)
 
         if email:
-            user.useremail_set.create(email=email, is_primary=True,
-                                      use_for_notifications=True)
+            user.useremail_set.create(email=email, is_primary=True, use_for_notifications=True)
         return user
 
-    def get_user(self, username='', email=''):
+    def get_user(self, username="", email=""):
         if not username and not email:
-            raise ValueError('username or email must be supplied')
+            raise ValueError("username or email must be supplied")
         if username:
             return self.get_by_username(username=username)
         else:
             return self.get_by_email(email=email)
 
-    def get_or_create_user(self, username='', email='', password=None, **kwargs):
+    def get_or_create_user(self, username="", email="", password=None, **kwargs):
         if not username and not email:
-            raise ValueError('username or email must be supplied')
+            raise ValueError("username or email must be supplied")
         try:
             user = self.get_user(username=username, email=email)
         except self.model.DoesNotExist:
@@ -264,11 +271,7 @@ class UserManager(BaseUserManager):
         Returns:
             User: The user object.
         """
-        return self.get_queryset()\
-            .filter(
-                models.Q(username__username=username) |
-                models.Q(shortname=username))\
-            .get()
+        return self.get_queryset().filter(models.Q(username__username=username) | models.Q(shortname=username)).get()
 
     def __create_primary_useremail_objects_from_users(self, users):
         """
@@ -281,10 +284,9 @@ class UserManager(BaseUserManager):
         """
         new_useremail_objects = []
         for user in users:
-            new_username_object = UserEmail(user=user,
-                                            email=user.shortname,
-                                            is_primary=True,
-                                            use_for_notifications=True)
+            new_username_object = UserEmail(
+                user=user, email=user.shortname, is_primary=True, use_for_notifications=True
+            )
             new_useremail_objects.append(new_username_object)
         UserEmail.objects.bulk_create(new_useremail_objects)
 
@@ -310,10 +312,11 @@ class UserManager(BaseUserManager):
             ``excluded_emails`` is a set of the emails that already existed.
         """
         if not settings.CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND:
-            raise IllegalOperationError('You can not use bulk_create_from_emails() when '
-                                        'CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND is False.')
-        existing_emails = set(UserEmail.objects.filter(email__in=emails).values_list('email', flat=True))
-        existing_shortnames = set(User.objects.filter(shortname__in=emails).values_list('shortname', flat=True))
+            raise IllegalOperationError(
+                "You can not use bulk_create_from_emails() when CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND is False."
+            )
+        existing_emails = set(UserEmail.objects.filter(email__in=emails).values_list("email", flat=True))
+        existing_shortnames = set(User.objects.filter(shortname__in=emails).values_list("shortname", flat=True))
         existing_emails = existing_emails.union(existing_shortnames)
 
         all_emails_set = set(emails)
@@ -357,10 +360,11 @@ class UserManager(BaseUserManager):
         new_useremail_objects = []
         for user in users:
             new_username_object = UserEmail(
-                    user=user,
-                    email='{}{}'.format(user.shortname, settings.DEVILRY_DEFAULT_EMAIL_SUFFIX),
-                    is_primary=True,
-                    use_for_notifications=True)
+                user=user,
+                email="{}{}".format(user.shortname, settings.DEVILRY_DEFAULT_EMAIL_SUFFIX),
+                is_primary=True,
+                use_for_notifications=True,
+            )
             new_useremail_objects.append(new_username_object)
         UserEmail.objects.bulk_create(new_useremail_objects)
 
@@ -386,10 +390,11 @@ class UserManager(BaseUserManager):
             ``excluded_usernames`` is a set of the usernames that already existed.
         """
         if settings.CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND:
-            raise IllegalOperationError('You can not use bulk_create_from_usernames() when '
-                                        'CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND is True.')
-        existing_usernames = set(UserName.objects.filter(username__in=usernames).values_list('username', flat=True))
-        existing_shortnames = set(User.objects.filter(shortname__in=usernames).values_list('shortname', flat=True))
+            raise IllegalOperationError(
+                "You can not use bulk_create_from_usernames() when CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND is True."
+            )
+        existing_usernames = set(UserName.objects.filter(username__in=usernames).values_list("username", flat=True))
+        existing_shortnames = set(User.objects.filter(shortname__in=usernames).values_list("shortname", flat=True))
         existing_usernames = existing_usernames.union(existing_shortnames)
 
         all_usernames_set = set(usernames)
@@ -414,68 +419,64 @@ class User(AbstractBaseUser):
     """
     User model for Devilry.
     """
+
     objects = UserManager()
 
     #: Is this user a superuser?
     is_superuser = models.BooleanField(
-            verbose_name=gettext_lazy('superuser status'),
-            default=False,
-            help_text=gettext_lazy('Designates that this user has all permissions without '
-                        'explicitly assigning them.'))
+        verbose_name=gettext_lazy("superuser status"),
+        default=False,
+        help_text=gettext_lazy("Designates that this user has all permissions without explicitly assigning them."),
+    )
 
     #: Short name for the user.
     #: This will be set to the primary email address or to the primary username
     #: depending on the auth backend.
     #: Must be unique.
     shortname = models.CharField(
-            max_length=255,
-            blank=False, null=False,
-            editable=True,
-            unique=True,
-            help_text=gettext_lazy('The short name for the user. This is set automatically to the '
-                        'email or username depending on the method used for authentication.')
+        max_length=255,
+        blank=False,
+        null=False,
+        editable=True,
+        unique=True,
+        help_text=gettext_lazy(
+            "The short name for the user. This is set automatically to the "
+            "email or username depending on the method used for authentication."
+        ),
     )
 
     #: Full name of the user. Optional.
-    fullname = models.TextField(
-            verbose_name=gettext_lazy('Full name'),
-            blank=True, default="", null=False)
+    fullname = models.TextField(verbose_name=gettext_lazy("Full name"), blank=True, default="", null=False)
 
     #: The last name of the user. Optional.
     #: Used to sort by last name.
-    lastname = models.TextField(
-            verbose_name=gettext_lazy('Last name'),
-            blank=True, default="", null=False)
+    lastname = models.TextField(verbose_name=gettext_lazy("Last name"), blank=True, default="", null=False)
 
     #: The datetime the user was created.
-    datetime_joined = models.DateTimeField(
-            verbose_name=gettext_lazy('date joined'),
-            default=timezone.now)
+    datetime_joined = models.DateTimeField(verbose_name=gettext_lazy("date joined"), default=timezone.now)
 
     #: Datetime when this account was suspended.
     suspended_datetime = models.DateTimeField(
-            null=True, blank=True,
-            verbose_name=gettext_lazy('Suspension time'),
-            help_text=gettext_lazy('Time when the account was suspended'))
+        null=True,
+        blank=True,
+        verbose_name=gettext_lazy("Suspension time"),
+        help_text=gettext_lazy("Time when the account was suspended"),
+    )
 
     #: Reason why the account is suspended.
-    suspended_reason = models.TextField(
-            blank=True, default='',
-            verbose_name=gettext_lazy('Reason for suspension'))
+    suspended_reason = models.TextField(blank=True, default="", verbose_name=gettext_lazy("Reason for suspension"))
 
     #: The language code for the preferred language for the user.
     languagecode = models.CharField(
-            max_length=10, blank=True, null=False,
-            default='',
-            verbose_name=gettext_lazy('Preferred language')
+        max_length=10, blank=True, null=False, default="", verbose_name=gettext_lazy("Preferred language")
     )
 
-    USERNAME_FIELD = 'shortname'
+    USERNAME_FIELD = "shortname"
     REQUIRED_FIELDS = []
 
     class Meta:
-        verbose_name = gettext_lazy('User')
-        verbose_name_plural = gettext_lazy('Users')
+        verbose_name = gettext_lazy("User")
+        verbose_name_plural = gettext_lazy("Users")
 
     @property
     def is_staff(self):
@@ -505,7 +506,7 @@ class User(AbstractBaseUser):
         fullname, return ``<fullname> (<shortname>)``.
         """
         if self.fullname:
-            return '{} ({})'.format(self.fullname, self.shortname)
+            return "{} ({})".format(self.fullname, self.shortname)
         else:
             return self.shortname
 
@@ -514,7 +515,7 @@ class User(AbstractBaseUser):
         Get the initials of the users name.
         """
         if self.fullname:
-            return ''.join(word[0].upper() for word in self.fullname.split())
+            return "".join(word[0].upper() for word in self.fullname.split())
         else:
             return self.shortname[0].upper()
 
@@ -537,10 +538,12 @@ class User(AbstractBaseUser):
         return self.shortname
 
     def clean(self):
-        if self.suspended_datetime is None and self.suspended_reason != '':
-            raise ValidationError(gettext_lazy('Can not provide a reason for suspension when suspension time is blank.'))
+        if self.suspended_datetime is None and self.suspended_reason != "":
+            raise ValidationError(
+                gettext_lazy("Can not provide a reason for suspension when suspension time is blank.")
+            )
         if not self.shortname:
-            raise ValidationError(gettext_lazy('Short name is required.'))
+            raise ValidationError(gettext_lazy("Short name is required."))
         if self.fullname:
             self.lastname = self.fullname.split()[-1]
 
@@ -623,14 +626,14 @@ class MergedUser(models.Model):
     by `devilry.devilry_account.user_merger.UserMerger`.
     """
 
-    source_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='+')
+    source_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="+")
     """
     The user we merged from. This user will have
     lost most of their data after the merge, but some foreign keys
     like created_by etc. will still remain.
     """
-    
-    target_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='+')
+
+    target_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="+")
     """
     The target of the merge. Most foreign keys previously pointing
     to `MergedUser.source_user` will have been moved to this user. This
@@ -648,9 +651,7 @@ class MergedUser(models.Model):
     def short_summary_json(self):
         short_summary = {}
         for modelname, info in self.summary_json.items():
-            short_info = {
-                key:value for key, value in info.items() if key != 'details'
-            }
+            short_info = {key: value for key, value in info.items() if key != "details"}
             short_summary[modelname] = short_info
         return short_summary
 
@@ -667,16 +668,10 @@ class AbstractUserIdentity(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     #: The datetime when this was created.
-    created_datetime = models.DateTimeField(
-            default=timezone.now,
-            editable=False,
-            null=False, blank=False)
+    created_datetime = models.DateTimeField(default=timezone.now, editable=False, null=False, blank=False)
 
     #: The datetime when this was last updated.
-    last_updated_datetime = models.DateTimeField(
-            default=timezone.now,
-            editable=False,
-            null=False, blank=False)
+    last_updated_datetime = models.DateTimeField(default=timezone.now, editable=False, null=False, blank=False)
 
     def clean(self):
         self.last_updated_datetime = timezone.now()
@@ -688,42 +683,36 @@ class UserEmail(AbstractUserIdentity):
     """
 
     class Meta:
-        verbose_name = gettext_lazy('Email address')
-        verbose_name_plural = gettext_lazy('Email addresses')
-        unique_together = [
-            ('user', 'is_primary')
-        ]
+        verbose_name = gettext_lazy("Email address")
+        verbose_name_plural = gettext_lazy("Email addresses")
+        unique_together = [("user", "is_primary")]
 
     #: The email address of the user.
     #: Must be unique.
-    email = models.EmailField(
-            verbose_name=gettext_lazy('Email'),
-            unique=True,
-            max_length=255)
+    email = models.EmailField(verbose_name=gettext_lazy("Email"), unique=True, max_length=255)
 
     #: Is this a notification email for the user?
     #: A user can have multiple notification emails.
     use_for_notifications = models.BooleanField(
-            default=True,
-            verbose_name=gettext_lazy('Send notifications to this email address?'))
+        default=True, verbose_name=gettext_lazy("Send notifications to this email address?")
+    )
 
     #: Is this the primary email for the user?
     #: Valid values are: ``None`` and ``True``, and only
     #: one UserEmail per user can have ``is_primary=True``.
     is_primary = models.BooleanField(
-            null=True, blank=True,
-            verbose_name=gettext_lazy('Is this your primary email?'),
-            choices=[
-                (None, gettext_lazy('No')),
-                (True, gettext_lazy('Yes'))
-            ],
-            help_text=gettext_lazy('Your primary email is the email address used when we '
-                        'need to display a single email address.')
+        null=True,
+        blank=True,
+        verbose_name=gettext_lazy("Is this your primary email?"),
+        choices=[(None, gettext_lazy("No")), (True, gettext_lazy("Yes"))],
+        help_text=gettext_lazy(
+            "Your primary email is the email address used when we need to display a single email address."
+        ),
     )
 
     def clean(self):
         if self.is_primary is False:
-            raise ValidationError('is_primary can not be False. Valid values are: True, None.')
+            raise ValidationError("is_primary can not be False. Valid values are: True, None.")
         if self.is_primary:
             other_useremails = UserEmail.objects.filter(user=self.user)
             if self.id is not None:
@@ -737,10 +726,10 @@ class UserEmail(AbstractUserIdentity):
             #         user.save()
 
     def __str__(self):
-        return gettext_lazy('%(email)s - User%(userid)s#%(userhortname)s') % {
-            'email': self.email,
-            'userid': self.user_id,
-            'userhortname': self.user.shortname
+        return gettext_lazy("%(email)s - User%(userid)s#%(userhortname)s") % {
+            "email": self.email,
+            "userid": self.user_id,
+            "userhortname": self.user.shortname,
         }
 
 
@@ -753,40 +742,36 @@ class UserName(AbstractUserIdentity):
     """
 
     class Meta:
-        verbose_name = gettext_lazy('Username')
-        verbose_name_plural = gettext_lazy('Usernames')
-        unique_together = [
-            ('user', 'is_primary')
-        ]
+        verbose_name = gettext_lazy("Username")
+        verbose_name_plural = gettext_lazy("Usernames")
+        unique_together = [("user", "is_primary")]
 
     #: The username of the user.
     #: Must be unique.
-    username = models.CharField(
-            verbose_name=gettext_lazy('Username'),
-            unique=True,
-            max_length=255)
+    username = models.CharField(verbose_name=gettext_lazy("Username"), unique=True, max_length=255)
 
     #: Is this the primary username for the user?
     #: Valid values are: ``None`` and ``True``, and only
     #: one UserName per user can have ``is_primary=True``.
     is_primary = models.BooleanField(
-            null=True, blank=True,
-            verbose_name=gettext_lazy('Is this your primary username?'),
-            choices=[
-                (None, gettext_lazy('No')),
-                (True, gettext_lazy('Yes'))
-            ],
-            help_text=gettext_lazy('Your primary username is shown alongside your full '
-                        'name to identify you to teachers, examiners and '
-                        'other students.')
+        null=True,
+        blank=True,
+        verbose_name=gettext_lazy("Is this your primary username?"),
+        choices=[(None, gettext_lazy("No")), (True, gettext_lazy("Yes"))],
+        help_text=gettext_lazy(
+            "Your primary username is shown alongside your full "
+            "name to identify you to teachers, examiners and "
+            "other students."
+        ),
     )
 
     def clean(self):
         if settings.CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND:
-            raise ValidationError('Can not create UserName objects when the '
-                                  'CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND is True.')
+            raise ValidationError(
+                "Can not create UserName objects when the CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND is True."
+            )
         if self.is_primary is False:
-            raise ValidationError('is_primary can not be False. Valid values are: True, None.')
+            raise ValidationError("is_primary can not be False. Valid values are: True, None.")
         if self.is_primary:
             other_usernames = UserName.objects.filter(user=self.user)
             if self.id is not None:
@@ -799,10 +784,7 @@ class UserName(AbstractUserIdentity):
             #     user.save()
 
     def __str__(self):
-        return gettext_lazy('%(username)s - User%(userid)s') % {
-            'username': self.username,
-            'userid': self.user_id
-        }
+        return gettext_lazy("%(username)s - User%(userid)s") % {"username": self.username, "userid": self.user_id}
 
 
 class PermissionGroupUser(models.Model):
@@ -812,84 +794,60 @@ class PermissionGroupUser(models.Model):
     """
 
     class Meta:
-        verbose_name = gettext_lazy('Permission group user')
-        verbose_name_plural = gettext_lazy('Permission group users')
-        unique_together = (
-            ('permissiongroup', 'user'),
-        )
+        verbose_name = gettext_lazy("Permission group user")
+        verbose_name_plural = gettext_lazy("Permission group users")
+        unique_together = (("permissiongroup", "user"),)
 
     #: The group.
-    permissiongroup = models.ForeignKey('devilry_account.PermissionGroup', on_delete=models.CASCADE)
+    permissiongroup = models.ForeignKey("devilry_account.PermissionGroup", on_delete=models.CASCADE)
 
     #: The user.
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return gettext_lazy('%(user)s in group %(permissiongroup)s') % {
-            'user': self.user.shortname,
-            'permissiongroup': self.permissiongroup.name,
+        return gettext_lazy("%(user)s in group %(permissiongroup)s") % {
+            "user": self.user.shortname,
+            "permissiongroup": self.permissiongroup.name,
         }
 
 
 class PermissionGroupQuerySet(models.QuerySet):
     def get_name_prefix_from_syncsystem(self, grouptype, basenode):
-        return '{prefix}-{grouptype}-#{id}-'.format(
-            prefix=settings.DEVILRY_SYNCSYSTEM_SHORTNAME,
-            grouptype=grouptype,
-            id=basenode.id)
+        return "{prefix}-{grouptype}-#{id}-".format(
+            prefix=settings.DEVILRY_SYNCSYSTEM_SHORTNAME, grouptype=grouptype, id=basenode.id
+        )
 
     def get_name_from_syncsystem(self, grouptype, basenode):
-        return '{}({})'.format(
-            self.get_name_prefix_from_syncsystem(grouptype=grouptype,
-                                                  basenode=basenode),
-            basenode.get_path())
+        return "{}({})".format(
+            self.get_name_prefix_from_syncsystem(grouptype=grouptype, basenode=basenode), basenode.get_path()
+        )
 
-    def create_permissiongroup(self, grouptype, basenode,
-                               name, is_custom_manageable=False):
-        permissiongroup = self.model(
-            name=name,
-            grouptype=grouptype,
-            is_custom_manageable=is_custom_manageable)
+    def create_permissiongroup(self, grouptype, basenode, name, is_custom_manageable=False):
+        permissiongroup = self.model(name=name, grouptype=grouptype, is_custom_manageable=is_custom_manageable)
         permissiongroup.full_clean()
         permissiongroup.save()
         if grouptype == PermissionGroup.GROUPTYPE_PERIODADMIN:
-            period_permissiongroup = PeriodPermissionGroup(
-                period=basenode,
-                permissiongroup=permissiongroup)
+            period_permissiongroup = PeriodPermissionGroup(period=basenode, permissiongroup=permissiongroup)
             period_permissiongroup.full_clean()
             period_permissiongroup.save()
         else:
-            subject_permissiongroup = SubjectPermissionGroup(
-                subject=basenode,
-                permissiongroup=permissiongroup)
+            subject_permissiongroup = SubjectPermissionGroup(subject=basenode, permissiongroup=permissiongroup)
             subject_permissiongroup.full_clean()
             subject_permissiongroup.save()
         return permissiongroup
 
     def get_syncsystem_permissiongroup(self, grouptype, basenode):
-        name_prefix = self.get_name_prefix_from_syncsystem(
-            grouptype=grouptype,
-            basenode=basenode)
-        return PermissionGroup.objects \
-            .filter(name__startswith=name_prefix,
-                    grouptype=grouptype) \
-            .get()
+        name_prefix = self.get_name_prefix_from_syncsystem(grouptype=grouptype, basenode=basenode)
+        return PermissionGroup.objects.filter(name__startswith=name_prefix, grouptype=grouptype).get()
 
-    def create_or_update_syncsystem_permissiongroup(
-            self, grouptype, basenode):
+    def create_or_update_syncsystem_permissiongroup(self, grouptype, basenode):
         try:
-            permissiongroup = self.get_syncsystem_permissiongroup(
-                grouptype=grouptype,
-                basenode=basenode)
+            permissiongroup = self.get_syncsystem_permissiongroup(grouptype=grouptype, basenode=basenode)
         except PermissionGroup.DoesNotExist:
-            name = self.get_name_from_syncsystem(
-                grouptype=grouptype,
-                basenode=basenode)
+            name = self.get_name_from_syncsystem(grouptype=grouptype, basenode=basenode)
             permissiongroup = self.create_permissiongroup(
-                basenode=basenode,
-                grouptype=grouptype,
-                name=name,
-                is_custom_manageable=False)
+                basenode=basenode, grouptype=grouptype, name=name, is_custom_manageable=False
+            )
             return permissiongroup, True
         else:
             return permissiongroup, False
@@ -902,58 +860,67 @@ class PermissionGroup(models.Model):
     Each group has a :obj:`~.PermissionGroup.grouptype` which determines
     the type of objects it can be added to.
     """
+
     objects = PermissionGroupQuerySet.as_manager()
 
     #: The value for :obj:`~.PermissionGroup.grouptype` that identifies the group as
     #: a departmentadmin permission group.
-    GROUPTYPE_DEPARTMENTADMIN = 'departmentadmin'
+    GROUPTYPE_DEPARTMENTADMIN = "departmentadmin"
 
     #: The value for :obj:`~.PermissionGroup.grouptype` that identifies the group as
     #: a subjectadmin permission group.
-    GROUPTYPE_SUBJECTADMIN = 'subjectadmin'
+    GROUPTYPE_SUBJECTADMIN = "subjectadmin"
 
     #: The value for :obj:`~.PermissionGroup.grouptype` that identifies the group as
     #: a periodadmin permission group.
-    GROUPTYPE_PERIODADMIN = 'periodadmin'
+    GROUPTYPE_PERIODADMIN = "periodadmin"
 
     #: Choices for :obj:`~.PermissionGroup.grouptype`.
     GROUPTYPE_CHOICES = (
-        (GROUPTYPE_DEPARTMENTADMIN, gettext_lazy('Department administrator group')),
-        (GROUPTYPE_SUBJECTADMIN, gettext_lazy('Course administrator group')),
-        (GROUPTYPE_PERIODADMIN, gettext_lazy('Semester administrator group')),
+        (GROUPTYPE_DEPARTMENTADMIN, gettext_lazy("Department administrator group")),
+        (GROUPTYPE_SUBJECTADMIN, gettext_lazy("Course administrator group")),
+        (GROUPTYPE_PERIODADMIN, gettext_lazy("Semester administrator group")),
     )
 
     class Meta:
-        verbose_name = gettext_lazy('Permission group')
-        verbose_name_plural = gettext_lazy('Permission group')
+        verbose_name = gettext_lazy("Permission group")
+        verbose_name_plural = gettext_lazy("Permission group")
 
     #: The name of the group. Must be unique.
     name = models.CharField(
-            max_length=255,
-            null=False, blank=False, unique=True,
-            verbose_name=gettext_lazy('Name'),
-            help_text=gettext_lazy('A unique name for this group.'))
+        max_length=255,
+        null=False,
+        blank=False,
+        unique=True,
+        verbose_name=gettext_lazy("Name"),
+        help_text=gettext_lazy("A unique name for this group."),
+    )
 
     #: The time this group was created.
     created_datetime = models.DateTimeField(
-            null=False, auto_now_add=True,
-            editable=False,
-            verbose_name=gettext_lazy('Created time'),
-            help_text=gettext_lazy('The time when this group was created.'))
+        null=False,
+        auto_now_add=True,
+        editable=False,
+        verbose_name=gettext_lazy("Created time"),
+        help_text=gettext_lazy("The time when this group was created."),
+    )
 
     #: Last time this group was updated.
     updated_datetime = models.DateTimeField(
-            null=False, auto_now=True,
-            editable=False,
-            verbose_name=gettext_lazy('Last updated time'),
-            help_text=gettext_lazy('The time when this group last updated.'))
+        null=False,
+        auto_now=True,
+        editable=False,
+        verbose_name=gettext_lazy("Last updated time"),
+        help_text=gettext_lazy("The time when this group last updated."),
+    )
 
     #: Last time this group was updated from a third party sync system.
     syncsystem_update_datetime = models.DateTimeField(
-            null=True,
-            editable=False,
-            verbose_name=gettext_lazy('Last updated from syncsystem time'),
-            help_text=gettext_lazy('The time when this group last updated from a third party sync system.'))
+        null=True,
+        editable=False,
+        verbose_name=gettext_lazy("Last updated from syncsystem time"),
+        help_text=gettext_lazy("The time when this group last updated from a third party sync system."),
+    )
 
     #: The grouptype determines what kind of object a group can be added to:
     #:
@@ -961,13 +928,16 @@ class PermissionGroup(models.Model):
     #: - ``periodadmin``: Can be assigned to **a single** :class:`devilry.apps.core.models.Period`.
     #: - ``departmentadmin``: Can be assigned to multiple :class:`devilry.apps.core.models.Subject`.
     grouptype = models.CharField(
-            max_length=30,
-            choices=GROUPTYPE_CHOICES,
-            null=False, blank=False,
-            verbose_name=gettext_lazy('Permission group type'),
-            help_text=gettext_lazy('Course and semester administrator groups can only be assigned to a single '
-                        'course or semester. Department administrator groups can be assigned to multiple '
-                        'courses. You can not change this for existing permission groups.')
+        max_length=30,
+        choices=GROUPTYPE_CHOICES,
+        null=False,
+        blank=False,
+        verbose_name=gettext_lazy("Permission group type"),
+        help_text=gettext_lazy(
+            "Course and semester administrator groups can only be assigned to a single "
+            "course or semester. Department administrator groups can be assigned to multiple "
+            "courses. You can not change this for existing permission groups."
+        ),
     )
 
     #: Is this group manageable by normal admins?
@@ -980,39 +950,35 @@ class PermissionGroup(models.Model):
     #:
     #: If grouptype is ``departmentadmin``, this can not be ``True``.
     is_custom_manageable = models.BooleanField(
-            default=False,
-            verbose_name=gettext_lazy('Custom manageable?'),
-            help_text=gettext_lazy('Is this group mageable by non-superusers. Can not be enabled for '
-                        'department administrator groups.')
+        default=False,
+        verbose_name=gettext_lazy("Custom manageable?"),
+        help_text=gettext_lazy(
+            "Is this group mageable by non-superusers. Can not be enabled for department administrator groups."
+        ),
     )
 
     #: Users belonging to this group.
     users = models.ManyToManyField(
-            through=PermissionGroupUser,
-            to=User,
-            verbose_name=gettext_lazy('Users in this group'),
-            blank=True)
+        through=PermissionGroupUser, to=User, verbose_name=gettext_lazy("Users in this group"), blank=True
+    )
 
     def __str__(self):
-        return '{name} ({grouptype})'.format(
-            name=self.name,
-            grouptype=self.get_grouptype_display()
-        )
+        return "{name} ({grouptype})".format(name=self.name, grouptype=self.get_grouptype_display())
 
     def clean(self):
         if self.grouptype == self.GROUPTYPE_DEPARTMENTADMIN and self.is_custom_manageable:
-            raise ValidationError(gettext_lazy('Department administrator groups can not be '
-                                    'custom manageable.'))
+            raise ValidationError(gettext_lazy("Department administrator groups can not be custom manageable."))
         if self.id is not None:
             currently_stored_group = PermissionGroup.objects.get(id=self.id)
             if currently_stored_group.grouptype != self.grouptype:
-                raise ValidationError(gettext_lazy('Permission group type can not be changed.'))
+                raise ValidationError(gettext_lazy("Permission group type can not be changed."))
 
 
 class PeriodPermissionGroupQuerySet(models.QuerySet):
     """
     QuerySet for :class:`.PeriodPermission`.
     """
+
     def user_is_periodadmin_for_period(self, user, period):
         """
         Find out if the given ``user`` is ``"periodadmin"`` on the given ``period``.
@@ -1027,10 +993,7 @@ class PeriodPermissionGroupQuerySet(models.QuerySet):
             bool: ``True`` if the given user is periodadmin on the given period,
             otherwise it returns ``False``.
         """
-        return PeriodPermissionGroup.objects \
-            .filter(permissiongroup__users=user,
-                    period=period)\
-            .exists()
+        return PeriodPermissionGroup.objects.filter(permissiongroup__users=user, period=period).exists()
 
     def get_devilryrole_for_user_on_period(self, user, period):
         """
@@ -1056,11 +1019,12 @@ class PeriodPermissionGroupQuerySet(models.QuerySet):
             - ``None``: If no of the conditions listed above is met.
         """
         devilryrole = SubjectPermissionGroup.objects.get_devilryrole_for_user_on_subject(
-            user=user, subject=period.subject)
+            user=user, subject=period.subject
+        )
         if devilryrole:
             return devilryrole
         elif self.user_is_periodadmin_for_period(user=user, period=period):
-            return 'periodadmin'
+            return "periodadmin"
         else:
             return None
 
@@ -1084,9 +1048,11 @@ class PeriodPermissionGroupQuerySet(models.QuerySet):
             PeriodPermissionGroup.DoesNotExist: If no custom managable PermissionGroup exists for
                 the given period.
         """
-        return self.filter(period=period, permissiongroup__is_custom_manageable=True)\
-            .select_related('permissiongroup')\
+        return (
+            self.filter(period=period, permissiongroup__is_custom_manageable=True)
+            .select_related("permissiongroup")
             .get()
+        )
 
 
 class PeriodPermissionGroup(models.Model):
@@ -1094,41 +1060,41 @@ class PeriodPermissionGroup(models.Model):
     Defines the many-to-many relationship between
     :class:`devilry.apps.core.Period` and :class:`.PermissionGroup`.
     """
+
     objects = PeriodPermissionGroupQuerySet.as_manager()
 
     class Meta:
-        verbose_name = gettext_lazy('Semester permission group')
-        verbose_name_plural = gettext_lazy('Semester permission groups')
-        unique_together = (
-            ('permissiongroup', 'period'),
-        )
+        verbose_name = gettext_lazy("Semester permission group")
+        verbose_name_plural = gettext_lazy("Semester permission groups")
+        unique_together = (("permissiongroup", "period"),)
 
     #: The group.
-    permissiongroup = models.ForeignKey('devilry_account.PermissionGroup', on_delete=models.CASCADE)
+    permissiongroup = models.ForeignKey("devilry_account.PermissionGroup", on_delete=models.CASCADE)
 
     #: The :class:`devilry.apps.core.Period`.
-    period = models.ForeignKey('core.Period', on_delete=models.CASCADE)
+    period = models.ForeignKey("core.Period", on_delete=models.CASCADE)
 
     def __str__(self):
         if self.permissiongroup.is_custom_manageable:
-            return gettext_lazy('Semester administrators for %(period)s') % {
-                'period': self.period.get_path(),
+            return gettext_lazy("Semester administrators for %(period)s") % {
+                "period": self.period.get_path(),
             }
         else:
             return self.permissiongroup.name
 
     def clean(self):
         if self.permissiongroup.grouptype != PermissionGroup.GROUPTYPE_PERIODADMIN:
-            raise ValidationError(gettext_lazy(
-                    'Only semesters can be added to semester administrator permission groups.'))
+            raise ValidationError(
+                gettext_lazy("Only semesters can be added to semester administrator permission groups.")
+            )
         if self.permissiongroup.is_custom_manageable:
-            queryset = PeriodPermissionGroup.objects \
-                .filter(permissiongroup=self.permissiongroup)
+            queryset = PeriodPermissionGroup.objects.filter(permissiongroup=self.permissiongroup)
             if self.id is not None:
                 queryset = queryset.exclude(id=self.id)
             if queryset.exists():
-                raise ValidationError(gettext_lazy('Only a single editable permission group '
-                                        'is allowed for a semester.'))
+                raise ValidationError(
+                    gettext_lazy("Only a single editable permission group is allowed for a semester.")
+                )
 
 
 class SubjectPermissionGroupQuerySet(models.QuerySet):
@@ -1137,11 +1103,9 @@ class SubjectPermissionGroupQuerySet(models.QuerySet):
     """
 
     def __user_is_admin_on_subjectpermissiongroup(self, user, subject, grouptype):
-        return SubjectPermissionGroup.objects \
-            .filter(permissiongroup__users=user,
-                    permissiongroup__grouptype=grouptype,
-                    subject=subject)\
-            .exists()
+        return SubjectPermissionGroup.objects.filter(
+            permissiongroup__users=user, permissiongroup__grouptype=grouptype, subject=subject
+        ).exists()
 
     def user_is_departmentadmin_for_subject(self, user, subject):
         """
@@ -1158,9 +1122,7 @@ class SubjectPermissionGroupQuerySet(models.QuerySet):
             otherwise it returns ``False``.
         """
         return self.__user_is_admin_on_subjectpermissiongroup(
-            user=user,
-            subject=subject,
-            grouptype=PermissionGroup.GROUPTYPE_DEPARTMENTADMIN
+            user=user, subject=subject, grouptype=PermissionGroup.GROUPTYPE_DEPARTMENTADMIN
         )
 
     def user_is_subjectadmin_for_subject(self, user, subject):
@@ -1182,9 +1144,7 @@ class SubjectPermissionGroupQuerySet(models.QuerySet):
             otherwise it returns ``False``.
         """
         return self.__user_is_admin_on_subjectpermissiongroup(
-            user=user,
-            subject=subject,
-            grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN
+            user=user, subject=subject, grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN
         )
 
     def get_devilryrole_for_user_on_subject(self, user, subject):
@@ -1210,9 +1170,9 @@ class SubjectPermissionGroupQuerySet(models.QuerySet):
             - ``None``: If no of the conditions listed above is met.
         """
         if user.is_superuser or self.user_is_departmentadmin_for_subject(user=user, subject=subject):
-            return 'departmentadmin'
+            return "departmentadmin"
         elif self.user_is_subjectadmin_for_subject(user=user, subject=subject):
-            return 'subjectadmin'
+            return "subjectadmin"
         else:
             return None
 
@@ -1236,9 +1196,11 @@ class SubjectPermissionGroupQuerySet(models.QuerySet):
             SubjectPermissionGroup.DoesNotExist: If no custom managable PermissionGroup exists for
                 the given subject.
         """
-        return self.filter(subject=subject, permissiongroup__is_custom_manageable=True)\
-            .select_related('permissiongroup')\
+        return (
+            self.filter(subject=subject, permissiongroup__is_custom_manageable=True)
+            .select_related("permissiongroup")
             .get()
+        )
 
 
 class SubjectPermissionGroup(models.Model):
@@ -1246,42 +1208,42 @@ class SubjectPermissionGroup(models.Model):
     Defines the many-to-many relationship between
     :class:`devilry.apps.core.Subject` and :class:`.PermissionGroup`.
     """
+
     objects = SubjectPermissionGroupQuerySet.as_manager()
 
     class Meta:
-        verbose_name = gettext_lazy('Course permission group')
-        verbose_name_plural = gettext_lazy('Course permission groups')
-        unique_together = (
-            ('permissiongroup', 'subject'),
-        )
+        verbose_name = gettext_lazy("Course permission group")
+        verbose_name_plural = gettext_lazy("Course permission groups")
+        unique_together = (("permissiongroup", "subject"),)
 
     #: The permissiongroup.
-    permissiongroup = models.ForeignKey('devilry_account.PermissionGroup', on_delete=models.CASCADE)
+    permissiongroup = models.ForeignKey("devilry_account.PermissionGroup", on_delete=models.CASCADE)
 
     #: The :class:`devilry.apps.core.Subject`.
-    subject = models.ForeignKey('core.Subject', on_delete=models.CASCADE)
+    subject = models.ForeignKey("core.Subject", on_delete=models.CASCADE)
 
     def __str__(self):
         if self.permissiongroup.is_custom_manageable:
-            return gettext_lazy('Course administrators for %(subject)s') % {
-                'subject': self.subject.short_name,
+            return gettext_lazy("Course administrators for %(subject)s") % {
+                "subject": self.subject.short_name,
             }
         else:
             return self.permissiongroup.name
 
     def clean(self):
-        if self.permissiongroup.grouptype not in [PermissionGroup.GROUPTYPE_SUBJECTADMIN,
-                                                  PermissionGroup.GROUPTYPE_DEPARTMENTADMIN]:
-            raise ValidationError(gettext_lazy(
-                    'Courses can only be added to course and department administrator permission groups.'))
+        if self.permissiongroup.grouptype not in [
+            PermissionGroup.GROUPTYPE_SUBJECTADMIN,
+            PermissionGroup.GROUPTYPE_DEPARTMENTADMIN,
+        ]:
+            raise ValidationError(
+                gettext_lazy("Courses can only be added to course and department administrator permission groups.")
+            )
         if self.permissiongroup.is_custom_manageable:
-            queryset = SubjectPermissionGroup.objects \
-                .filter(permissiongroup=self.permissiongroup)
+            queryset = SubjectPermissionGroup.objects.filter(permissiongroup=self.permissiongroup)
             if self.id is not None:
                 queryset = queryset.exclude(id=self.id)
             if queryset.exists():
-                raise ValidationError(gettext_lazy(
-                    'Only a single editable permission group is allowed for a course.'))
+                raise ValidationError(gettext_lazy("Only a single editable permission group is allowed for a course."))
 
 
 class AssignmentGuidelinesLookupError(Exception):
@@ -1289,37 +1251,36 @@ class AssignmentGuidelinesLookupError(Exception):
 
 
 class PeriodUserGuidelineAcceptanceQuerySet(models.QuerySet):
-    def get_guidelines(self, period: 'Period', devilryrole: str) -> dict:
-        guidelines_spec = getattr(settings, 'DEVILRY_ASSIGNMENT_GUIDELINES', None)
+    def get_guidelines(self, period: "Period", devilryrole: str) -> dict:
+        guidelines_spec = getattr(settings, "DEVILRY_ASSIGNMENT_GUIDELINES", None)
         period_path = period.get_path()
         if not guidelines_spec:
-            raise AssignmentGuidelinesLookupError('The DEVILRY_ASSIGNMENT_GUIDELINES setting is blank or not set.')
+            raise AssignmentGuidelinesLookupError("The DEVILRY_ASSIGNMENT_GUIDELINES setting is blank or not set.")
         guidelines_role_spec = guidelines_spec.get(devilryrole, None)
         if not guidelines_role_spec:
-            raise AssignmentGuidelinesLookupError(f'The DEVILRY_ASSIGNMENT_GUIDELINES setting does not contain a {devilryrole!r} key.')
+            raise AssignmentGuidelinesLookupError(
+                f"The DEVILRY_ASSIGNMENT_GUIDELINES setting does not contain a {devilryrole!r} key."
+            )
         for regex, guidelines_dict in guidelines_role_spec:
             if re.fullmatch(regex, period_path):
-                return dict(
-                    __matched_regex__=regex,
-                    **guidelines_dict
-                )
+                return dict(__matched_regex__=regex, **guidelines_dict)
         raise AssignmentGuidelinesLookupError(
-            f'The DEVILRY_ASSIGNMENT_GUIDELINES setting does not contain any matches for the {devilryrole!r} role for period {period_path!r}.')
+            f"The DEVILRY_ASSIGNMENT_GUIDELINES setting does not contain any matches for the {devilryrole!r} role for period {period_path!r}."
+        )
 
-    def get_guidelines_if_not_accepted(self, user: User, period: 'Period', devilryrole: str) -> dict:
+    def get_guidelines_if_not_accepted(self, user: User, period: "Period", devilryrole: str) -> dict:
         try:
             guidelines_dict = self.get_guidelines(period=period, devilryrole=devilryrole)
         except AssignmentGuidelinesLookupError:
             return None
         if guidelines_dict:
             if not PeriodUserGuidelineAcceptance.objects.filter(
-                user=user, period=period, devilryrole=devilryrole,
-                guidelines_version=guidelines_dict['__version__']
+                user=user, period=period, devilryrole=devilryrole, guidelines_version=guidelines_dict["__version__"]
             ).exists():
                 return guidelines_dict
         return None
 
-    def mark_guidelines_as_accepted(self, user: User, period: 'Period', devilryrole: str) -> bool:
+    def mark_guidelines_as_accepted(self, user: User, period: "Period", devilryrole: str) -> bool:
         """
         Mark guidelines as accepted unless they already are for the given user, period and devilryrole.
 
@@ -1332,8 +1293,8 @@ class PeriodUserGuidelineAcceptanceQuerySet(models.QuerySet):
                 user=user,
                 period=period,
                 devilryrole=devilryrole,
-                matched_regex=guidelines_dict['__matched_regex__'],
-                guidelines_version=guidelines_dict['__version__']
+                matched_regex=guidelines_dict["__matched_regex__"],
+                guidelines_version=guidelines_dict["__version__"],
             )
             return True
         return False
@@ -1341,13 +1302,8 @@ class PeriodUserGuidelineAcceptanceQuerySet(models.QuerySet):
 
 class PeriodUserGuidelineAcceptance(models.Model):
     objects = PeriodUserGuidelineAcceptanceQuerySet.as_manager()
-    user = models.ForeignKey(
-        to=User,
-        on_delete=models.CASCADE)
-    period = models.ForeignKey(
-        to='core.Period',
-        on_delete=models.CASCADE
-    )
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    period = models.ForeignKey(to="core.Period", on_delete=models.CASCADE)
     devilryrole = models.CharField(max_length=20, db_index=True)
     accepted_datetime = models.DateTimeField(auto_now_add=True, db_index=True)
     guidelines_version = models.CharField(max_length=20, db_index=True)
@@ -1355,8 +1311,10 @@ class PeriodUserGuidelineAcceptance(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['user', 'period', 'devilryrole', 'guidelines_version'], name='unique_user_period_role_version'),
+            models.UniqueConstraint(
+                fields=["user", "period", "devilryrole", "guidelines_version"], name="unique_user_period_role_version"
+            ),
         ]
 
     def __str__(self):
-        return f'{self.user}:{self.period} ({self.devilryrole})'
+        return f"{self.user}:{self.period} ({self.devilryrole})"

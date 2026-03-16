@@ -9,13 +9,13 @@ from model_bakery import baker
 
 class TestQualifiedForFinalExamMerge(test.TestCase):
     def test_merge_relatedstudent_objects(self):
-        user_a = baker.make(settings.AUTH_USER_MODEL, shortname='user_a')
-        user_b = baker.make(settings.AUTH_USER_MODEL, shortname='user_b')
-        subject1 = baker.make(Subject, short_name='subject1')
-        period1 = baker.make(Period, short_name='period1', parentnode=subject1)
-        period2 = baker.make(Period, short_name='period2', parentnode=subject1)
-        period3 = baker.make(Period, short_name='period3', parentnode=subject1)
-        period4 = baker.make(Period, short_name='period4', parentnode=subject1)
+        user_a = baker.make(settings.AUTH_USER_MODEL, shortname="user_a")
+        user_b = baker.make(settings.AUTH_USER_MODEL, shortname="user_b")
+        subject1 = baker.make(Subject, short_name="subject1")
+        period1 = baker.make(Period, short_name="period1", parentnode=subject1)
+        period2 = baker.make(Period, short_name="period2", parentnode=subject1)
+        period3 = baker.make(Period, short_name="period3", parentnode=subject1)
+        period4 = baker.make(Period, short_name="period4", parentnode=subject1)
         relatedstudent_a_1 = baker.make(RelatedStudent, user=user_a, period=period1)
         relatedstudent_a_2 = baker.make(RelatedStudent, user=user_a, period=period2)
         relatedstudent_a_3 = baker.make(RelatedStudent, user=user_a, period=period3)
@@ -34,11 +34,15 @@ class TestQualifiedForFinalExamMerge(test.TestCase):
         self.assertEqual(QualifiesForFinalExam.objects.filter(relatedstudent__user=user_b).count(), 3)
 
         delete_users = [user_a, user_b]
+
         def select_username_to_delete_mock(user_a, user_b, period):
             return delete_users.pop(0)
 
-        with mock.patch('devilry.devilry_superadmin.management.commands.devilry_qualifiedforfinalexam_delete_duplicates.select_username_to_delete', select_username_to_delete_mock):
-            call_command('devilry_qualifiedforfinalexam_delete_duplicates', '--user-a', 'user_a', '--user-b', 'user_b')
+        with mock.patch(
+            "devilry.devilry_superadmin.management.commands.devilry_qualifiedforfinalexam_delete_duplicates.select_username_to_delete",
+            select_username_to_delete_mock,
+        ):
+            call_command("devilry_qualifiedforfinalexam_delete_duplicates", "--user-a", "user_a", "--user-b", "user_b")
 
         self.assertEqual(QualifiesForFinalExam.objects.filter(relatedstudent__user=user_a).count(), 2)
         self.assertEqual(QualifiesForFinalExam.objects.filter(relatedstudent__user=user_b).count(), 2)

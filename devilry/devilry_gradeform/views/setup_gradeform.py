@@ -9,11 +9,10 @@ from markdown import serializers
 
 
 class SetupGradeForm(renderable.AbstractRenderable, create.CreateView):
-    """
+    """ """
 
-    """
     template_name = "devilry_gradeform/setup.gradeform.django.html"
-    fields=['text']
+    fields = ["text"]
 
     def __init__(self, assignment):
         self.assignment = assignment
@@ -25,9 +24,9 @@ class SetupGradeForm(renderable.AbstractRenderable, create.CreateView):
         :return:
         """
         context = super(SetupGradeForm, self).get_context_data()
-        context['test'] = 'a test context object'
+        context["test"] = "a test context object"
 
-        context['gradeform_json'] = json.loads(self.assignment.gradeform_setup_json)
+        context["gradeform_json"] = json.loads(self.assignment.gradeform_setup_json)
         # context['gradeform_json'] = self.get_json_iterable()
 
         return context
@@ -39,19 +38,16 @@ class SetupGradeForm(renderable.AbstractRenderable, create.CreateView):
         """
         return [
             layout.Fieldset(
-                '',
+                "",
                 layout.Div(
                     layout.Div(
-                        'text',
+                        "text",
                         # css_class='panel-body'
                     ),
                     # css_class='panel panel-default'
                 ),
-                layout.Div(
-                    layout.Div(*self.get_buttons()),
-                    css_class="col-xs-12 text-right"
-                ),
-                css_class='comment-form-container'
+                layout.Div(layout.Div(*self.get_buttons()), css_class="col-xs-12 text-right"),
+                css_class="comment-form-container",
             )
         ]
 
@@ -60,9 +56,4 @@ class SetupGradeForm(renderable.AbstractRenderable, create.CreateView):
 
         :return:
         """
-        return [
-            layout.Submit(
-                'student_add_comment',
-                _('Add comment'),
-                css_class='btn btn-success')
-        ]
+        return [layout.Submit("student_add_comment", _("Add comment"), css_class="btn btn-success")]

@@ -1,4 +1,3 @@
-
 from cradmin_legacy.viewhelpers import listbuilder
 from cradmin_legacy.viewhelpers import listbuilderview
 
@@ -18,8 +17,8 @@ class ListViewBase(AddFilterListItemsMixin, listbuilderview.FilterListMixin, lis
 
 class VerticalFilterListView(ListViewBase):
     def get_filterlist_position(self):
-        return 'right'
+        return "right"
 
 
 class AssignmentGroupItemValueTitleDescription(listbuilder.itemvalue.TitleDescription):
-    valuealias = 'assignment_group'
+    valuealias = "assignment_group"

@@ -17,6 +17,7 @@ class Registry(Singleton):
     Registry for subclasses of
     :class:`~devilry.devilry_ziputil.backends.backends_base.PythonZipFileBackend`.
     """
+
     def __init__(self):
         super(Registry, self).__init__()
         self._backendclasses = {}
@@ -28,7 +29,7 @@ class Registry(Singleton):
         Returns:
             Classpath.
         """
-        return '{}.{}'.format(self.__module__, self.__class__.__name__)
+        return "{}.{}".format(self.__module__, self.__class__.__name__)
 
     def add(self, backend: "BaseArchiveBackend"):
         """
@@ -38,9 +39,9 @@ class Registry(Singleton):
             backend: backend class.
         """
         if backend.backend_id in self._backendclasses:
-            raise DuplicateBackendTypeError('Duplicate backend id in {}: {}'.format(
-                self.__get_class_path(), backend.backend_id
-            ))
+            raise DuplicateBackendTypeError(
+                "Duplicate backend id in {}: {}".format(self.__get_class_path(), backend.backend_id)
+            )
         self._backendclasses[backend.backend_id] = backend
 
     def get(self, backend_id: str) -> typing.Type["BaseArchiveBackend"]:

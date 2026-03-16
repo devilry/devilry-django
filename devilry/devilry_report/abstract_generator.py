@@ -7,6 +7,7 @@ class AbstractReportGenerator(object):
     Abstract generator class that generators must inherit from. Provides an interface for
     generators used by :class:`devilry.devilry_report.models.DevilryReport`.
     """
+
     def __init__(self, devilry_report):
         self.devilry_report = devilry_report
 
@@ -27,7 +28,7 @@ class AbstractReportGenerator(object):
         Returns:
             str: Output filename prefix.
         """
-        return 'report'
+        return "report"
 
     def get_output_file_extension(self):
         """
@@ -78,6 +79,7 @@ class AbstractExcelReportGenerator(AbstractReportGenerator):
     """
     Abstract generator class for generating an Excel worksheet with the xlsxwriter library.
     """
+
     def __init__(self, row=1, column=0, *args, **kwargs):
         super(AbstractExcelReportGenerator, self).__init__(*args, **kwargs)
         self.row = row
@@ -85,10 +87,10 @@ class AbstractExcelReportGenerator(AbstractReportGenerator):
         self.workbook = None
 
     def get_output_file_extension(self):
-        return 'xlsx'
+        return "xlsx"
 
     def get_content_type(self):
-        return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
     def add_worksheet_headers(self, worksheet):
         """
@@ -119,9 +121,7 @@ class AbstractExcelReportGenerator(AbstractReportGenerator):
 
         Must return a list of `xlsx.Worksheet`.
         """
-        return [
-            ('default', self.workbook.add_worksheet())
-        ]
+        return [("default", self.workbook.add_worksheet())]
 
     def make_header_format(self):
         cell_format = self.workbook.add_format()
@@ -129,22 +129,24 @@ class AbstractExcelReportGenerator(AbstractReportGenerator):
         return cell_format
 
     def make_date_cell_format(self):
-        return self.workbook.add_format({'num_format': 'dd/mm/yyyy'})
+        return self.workbook.add_format({"num_format": "dd/mm/yyyy"})
 
     def make_datetime_cell_format(self):
-        return self.workbook.add_format({'num_format': 'dd/mm/yyyy h:mm'})
+        return self.workbook.add_format({"num_format": "dd/mm/yyyy h:mm"})
 
     def write_datetime_cell(self, worksheet, row, column, datetime_object):
         if datetime_object:
-            return worksheet.write_datetime(row, column, self.__make_excel_friendly_datetime(datetime_object),
-                                            self.datetime_cell_format)
-        return worksheet.write(row, column, '')
+            return worksheet.write_datetime(
+                row, column, self.__make_excel_friendly_datetime(datetime_object), self.datetime_cell_format
+            )
+        return worksheet.write(row, column, "")
 
     def write_date_cell(self, worksheet, row, column, datetime_object):
         if datetime_object:
-            return worksheet.write_datetime(row, column, self.__make_excel_friendly_datetime(datetime_object),
-                                            self.date_cell_format)
-        return worksheet.write(row, column, '')
+            return worksheet.write_datetime(
+                row, column, self.__make_excel_friendly_datetime(datetime_object), self.date_cell_format
+            )
+        return worksheet.write(row, column, "")
 
     def __make_excel_friendly_datetime(self, datetime_object):
         datetime_object = timezone.localtime(datetime_object)
@@ -152,7 +154,7 @@ class AbstractExcelReportGenerator(AbstractReportGenerator):
         return datetime_object
 
     def initialize_workbook(self, file_like_object):
-        self.workbook = xlsxwriter.Workbook(file_like_object, {'in_memory': True})
+        self.workbook = xlsxwriter.Workbook(file_like_object, {"in_memory": True})
         self.header_cell_format = self.make_header_format()
         self.date_cell_format = self.make_date_cell_format()
         self.datetime_cell_format = self.make_datetime_cell_format()
@@ -164,12 +166,7 @@ class AbstractExcelReportGenerator(AbstractReportGenerator):
         for worksheet in self.get_work_sheets():
             self.add_worksheet_headers(worksheet=worksheet[1])
             for obj in self.get_object_iterable():
-                self.write_data_to_worksheet(
-                    worksheet_tuple=worksheet,
-                    row=row,
-                    column=column,
-                    obj=obj
-                )
+                self.write_data_to_worksheet(worksheet_tuple=worksheet, row=row, column=column, obj=obj)
                 row += 1
             row = 1
         self.workbook.close()

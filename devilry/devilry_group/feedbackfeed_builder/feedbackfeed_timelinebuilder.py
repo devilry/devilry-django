@@ -32,7 +32,7 @@ class AbstractTimelineBuilder(object):
             return
         if datetime_obj not in self.time_line:
             self.time_line[datetime_obj] = []
-        event_dict['ordering_datetime'] = datetime_obj
+        event_dict["ordering_datetime"] = datetime_obj
         self.time_line[datetime_obj].append(event_dict)
 
     def get_as_list(self):
@@ -55,6 +55,7 @@ class AbstractTimelineBuilder(object):
         Args:
             dictionary (dict): Dictionary of item with datetime keys.
         """
+
         def compare_items(item_a, item_b):
             datetime_a = item_a[0]
             datetime_b = item_b[0]
@@ -63,6 +64,7 @@ class AbstractTimelineBuilder(object):
             if datetime_b is None:
                 datetime_b = datetime.datetime(1970, 1, 1)
             return (datetime_a > datetime_b) - (datetime_a < datetime_b)
+
         return collections.OrderedDict(sorted(list(dictionary.items()), key=functools.cmp_to_key(compare_items)))
 
 
@@ -71,6 +73,7 @@ class FeedbackFeedTimelineBuilder(AbstractTimelineBuilder, builder_base.Feedback
     Builds a sorted timeline of events that occur in the feedbackfeed.
     Generates a dictionary of events such as comments, new deadlines, expired deadlines and grading.
     """
+
     def __init__(self, **kwargs):
         """
         Initialize instance of :class:`~FeedbackFeedTimelineBuilder`.
@@ -79,7 +82,7 @@ class FeedbackFeedTimelineBuilder(AbstractTimelineBuilder, builder_base.Feedback
             group: An :obj:`~devilry.apps.core.AssignmentGroup` object.
             feedbacksets: Fetched feedbacksets, comments and files.
         """
-        super(FeedbackFeedTimelineBuilder, self). __init__(**kwargs)
+        super(FeedbackFeedTimelineBuilder, self).__init__(**kwargs)
         self.time_line = {}
 
     def get_as_list_flat(self):
@@ -87,7 +90,7 @@ class FeedbackFeedTimelineBuilder(AbstractTimelineBuilder, builder_base.Feedback
         for datetime_obj in sorted(self.time_line.keys()):
             for event_dict in self.time_line[datetime_obj]:
                 timeline_list.append(event_dict)
-                for feedbackset_event_dict in event_dict['feedbackset_events']:
+                for feedbackset_event_dict in event_dict["feedbackset_events"]:
                     timeline_list.append(feedbackset_event_dict)
         return timeline_list
 
@@ -139,23 +142,18 @@ class FeedbackFeedTimelineBuilder(AbstractTimelineBuilder, builder_base.Feedback
         for feedback_set in self.feedbacksets:
             if self.__should_skip_feedback_set(feedback_set=feedback_set):
                 continue
-            feedback_set_event = FeedbackSetEventTimeLine(
-                feedback_set=feedback_set,
-                assignment=self.assignment)
+            feedback_set_event = FeedbackSetEventTimeLine(feedback_set=feedback_set, assignment=self.assignment)
             feedback_set_event.build()
             self._add_event_item_to_timeline(
                 datetime_obj=self.__get_order_feedback_set_by_deadline_datetime(feedback_set=feedback_set),
-                event_dict={
-                    'feedbackset': feedback_set,
-                    'feedbackset_events': feedback_set_event.get_as_list()
-                }
+                event_dict={"feedbackset": feedback_set, "feedbackset_events": feedback_set_event.get_as_list()},
             )
         self.time_line = self.sort_dict(self.time_line)
 
 
 class FeedbackSetEventTimeLine(AbstractTimelineBuilder):
-    """
-    """
+    """ """
+
     def __init__(self, feedback_set, assignment):
         super(FeedbackSetEventTimeLine, self).__init__()
         self.feedback_set = feedback_set
@@ -173,12 +171,13 @@ class FeedbackSetEventTimeLine(AbstractTimelineBuilder):
             return
         if current_deadline <= timezone.now():
             self._add_event_item_to_timeline(
-                    datetime_obj=current_deadline,
-                    event_dict={
-                        "type": "deadline_expired",
-                        "deadline_datetime": current_deadline,
-                        "feedbackset": self.feedback_set
-                    })
+                datetime_obj=current_deadline,
+                event_dict={
+                    "type": "deadline_expired",
+                    "deadline_datetime": current_deadline,
+                    "feedbackset": self.feedback_set,
+                },
+            )
 
     def __add_grade_to_timeline_if_published(self):
         """
@@ -191,11 +190,11 @@ class FeedbackSetEventTimeLine(AbstractTimelineBuilder):
         self._add_event_item_to_timeline(
             datetime_obj=self.feedback_set.grading_published_datetime,
             event_dict={
-                'type': 'grade',
-                'feedbackset': self.feedback_set,
-                'grade_points': grade_points,
-                'assignment': self.assignment
-            }
+                "type": "grade",
+                "feedbackset": self.feedback_set,
+                "grade_points": grade_points,
+                "assignment": self.assignment,
+            },
         )
 
     def __add_comment_to_timeline(self, group_comment):
@@ -210,10 +209,7 @@ class FeedbackSetEventTimeLine(AbstractTimelineBuilder):
             "obj": group_comment,
             "related_deadline": self.feedback_set.current_deadline(assignment=self.assignment),
         }
-        self._add_event_item_to_timeline(
-            datetime_obj=group_comment.published_datetime,
-            event_dict=event_dict
-        )
+        self._add_event_item_to_timeline(datetime_obj=group_comment.published_datetime, event_dict=event_dict)
 
     def __add_comments_to_timeline(self):
         """
@@ -227,8 +223,7 @@ class FeedbackSetEventTimeLine(AbstractTimelineBuilder):
         Iterates through the log entries for changes in the :obj:`~.devilry.devilry_group.models.FeedbackSet`s
         deadline_datetime and adds them to the time-line.
         """
-        deadline_history_queryset = self.feedback_set.feedbacksetdeadlinehistory_set \
-            .order_by('-changed_datetime')
+        deadline_history_queryset = self.feedback_set.feedbacksetdeadlinehistory_set.order_by("-changed_datetime")
         last_deadline_history = None
         if deadline_history_queryset.count() > 0:
             last_deadline_history = deadline_history_queryset[0]
@@ -239,11 +234,11 @@ class FeedbackSetEventTimeLine(AbstractTimelineBuilder):
             self._add_event_item_to_timeline(
                 datetime_obj=deadline_history.changed_datetime,
                 event_dict={
-                    'type': 'deadline_moved',
-                    'is_last': is_last,
-                    'obj': deadline_history,
-                    'feedbackset': self.feedback_set
-                }
+                    "type": "deadline_moved",
+                    "is_last": is_last,
+                    "obj": deadline_history,
+                    "feedbackset": self.feedback_set,
+                },
             )
 
     def __add_grading_updated_event(self):
@@ -252,18 +247,18 @@ class FeedbackSetEventTimeLine(AbstractTimelineBuilder):
         """
         grading_updates_length = len(self.feedback_set.grading_updates)
         for index, grading_updated in enumerate(self.feedback_set.grading_updates):
-            if index+1 == grading_updates_length:
+            if index + 1 == grading_updates_length:
                 next_grading_points = self.feedback_set.grading_points
             else:
-                next_grading_points = self.feedback_set.grading_updates[index+1].old_grading_points
+                next_grading_points = self.feedback_set.grading_updates[index + 1].old_grading_points
             self._add_event_item_to_timeline(
                 datetime_obj=grading_updated.updated_datetime,
                 event_dict={
-                    'type': 'grading_updated',
-                    'obj': grading_updated,
-                    'next_grading_points': next_grading_points,
-                    'feedbackset': self.feedback_set
-                }
+                    "type": "grading_updated",
+                    "obj": grading_updated,
+                    "next_grading_points": next_grading_points,
+                    "feedbackset": self.feedback_set,
+                },
             )
 
     def build(self):

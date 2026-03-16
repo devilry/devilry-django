@@ -15,15 +15,15 @@ class LoginTestCaseMixin(object):
                 response = self.get_as(someuser, '/some/url')
 
     """
-    def login(self, user, password='test'):
+
+    def login(self, user, password="test"):
         """
         Login the given ``user``.
         """
         self.client.login(username=user.shortname, password=password)
 
     def get_as(self, user, *args, **kwargs):
-        """
-        """
+        """ """
         self.login(user)
         return self.client.get(*args, **kwargs)
 

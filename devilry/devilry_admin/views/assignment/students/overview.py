@@ -13,33 +13,27 @@ from devilry.devilry_cradmin.devilry_listfilter.utils import WithResultValueRend
 
 
 class NonAnonymousGroupItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
-    valuealias = 'group'
+    valuealias = "group"
 
     def get_url(self):
-        return reverse_cradmin_url(
-            instanceid='devilry_group_admin',
-            roleid=self.group.id,
-            appname='feedbackfeed'
-        )
+        return reverse_cradmin_url(instanceid="devilry_group_admin", roleid=self.group.id, appname="feedbackfeed")
 
     def get_extra_css_classes_list(self):
-        return ['devilry-admin-assignment-students-overview-group-linkframe']
+        return ["devilry-admin-assignment-students-overview-group-linkframe"]
 
 
 class StudentGroupListMatchResultRenderable(WithResultValueRenderable):
     def get_object_name_singular(self, num_matches):
-        return gettext_lazy('group')
+        return gettext_lazy("group")
 
     def get_object_name_plural(self, num_matches):
-        return gettext_lazy('groups')
+        return gettext_lazy("groups")
 
 
 class RowListWithMatchResults(RowList):
     def append_results_renderable(self):
         result_info_renderable = StudentGroupListMatchResultRenderable(
-            value=None,
-            num_matches=self.num_matches,
-            num_total=self.num_total
+            value=None, num_matches=self.num_matches, num_total=self.num_total
         )
         self.renderable_list.insert(0, DefaultSpacingItemFrame(inneritem=result_info_renderable))
 
@@ -54,13 +48,13 @@ class RowListWithMatchResults(RowList):
 
 
 class Overview(groupview_base.BaseInfoView):
-    filterview_name = 'filter'
-    template_name = 'devilry_admin/assignment/students/overview.django.html'
+    filterview_name = "filter"
+    template_name = "devilry_admin/assignment/students/overview.django.html"
     listbuilder_class = RowListWithMatchResults
 
     def get_frame_renderer_class(self):
         devilryrole = self.request.cradmin_instance.get_devilryrole_for_requestuser()
-        if self.assignment.is_fully_anonymous and devilryrole != 'departmentadmin':
+        if self.assignment.is_fully_anonymous and devilryrole != "departmentadmin":
             return None
         else:
             return NonAnonymousGroupItemFrame
@@ -70,9 +64,9 @@ class Overview(groupview_base.BaseInfoView):
     #
     def get_listbuilder_list_kwargs(self):
         kwargs = super(Overview, self).get_listbuilder_list_kwargs()
-        kwargs['num_matches'] = self.num_matches or 0
-        kwargs['num_total'] = self.num_total or 0
-        kwargs['page'] = self.request.GET.get('page', 1)
+        kwargs["num_matches"] = self.num_matches or 0
+        kwargs["num_total"] = self.num_total or 0
+        kwargs["page"] = self.request.GET.get("page", 1)
         return kwargs
 
     def get_unfiltered_queryset_for_role(self, role):
@@ -92,10 +86,6 @@ class Overview(groupview_base.BaseInfoView):
 
 class App(crapp.App):
     appurls = [
-        crapp.Url(r'^$',
-                  Overview.as_view(),
-                  name=crapp.INDEXVIEW_NAME),
-        crapp.Url(r'^filter/(?P<filters_string>.+)?$',
-                  Overview.as_view(),
-                  name='filter'),
+        crapp.Url(r"^$", Overview.as_view(), name=crapp.INDEXVIEW_NAME),
+        crapp.Url(r"^filter/(?P<filters_string>.+)?$", Overview.as_view(), name="filter"),
     ]

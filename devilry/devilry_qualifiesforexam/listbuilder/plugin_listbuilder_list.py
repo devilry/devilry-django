@@ -11,7 +11,6 @@ from devilry.devilry_cradmin.devilry_listbuilder import period
 
 
 class PluginListBuilderList(listbuilder.base.List):
-
     @classmethod
     def from_plugin_registry(cls, pluginregistry, roleid):
         """
@@ -51,7 +50,8 @@ class PluginItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
 
     :obj:`PluginItemFrame.value` is the same as :obj:`PluginItemFrame.inneritem.value`
     """
-    valuealias = 'plugin'
+
+    valuealias = "plugin"
 
     def __init__(self, roleid, *args, **kwargs):
         """
@@ -63,24 +63,26 @@ class PluginItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
 
     def get_url(self):
         return reverse_cradmin_url(
-            instanceid='devilry_admin_periodadmin',
-            appname='qualifiesforexam',
+            instanceid="devilry_admin_periodadmin",
+            appname="qualifiesforexam",
             roleid=self.roleid,
-            viewname='configure-plugin',
+            viewname="configure-plugin",
             kwargs={
-                'plugintypeid': self.plugin.get_plugintypeid(),
-            }
+                "plugintypeid": self.plugin.get_plugintypeid(),
+            },
         )
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(PluginItemFrame, self).get_extra_css_classes_list()
         # css_classes_list.append('cradmin-legacy-listbuilder-itemframe-link')
-        css_classes_list.append('devilry-qualifiesforexam-plugin-spacing')
-        css_classes_list.append('cradmin-legacy-listbuilder-itemvalue'
-                                ' cradmin-legacy-listbuilder-itemvalue-focusbox'
-                                ' cradmin-legacy-listbuilder-itemvalue-titledescription'
-                                ' devilry-frontpage-listbuilder-roleselect-itemvalue'
-                                ' devilry-frontpage-listbuilder-roleselect-itemvalue-anyadmin')
+        css_classes_list.append("devilry-qualifiesforexam-plugin-spacing")
+        css_classes_list.append(
+            "cradmin-legacy-listbuilder-itemvalue"
+            " cradmin-legacy-listbuilder-itemvalue-focusbox"
+            " cradmin-legacy-listbuilder-itemvalue-titledescription"
+            " devilry-frontpage-listbuilder-roleselect-itemvalue"
+            " devilry-frontpage-listbuilder-roleselect-itemvalue-anyadmin"
+        )
         # css_classes_list.append('devilry-frontpage-listbuilder-roleselect-itemframe-anyadmin')
         return css_classes_list
 
@@ -91,10 +93,11 @@ class PluginItemValue(listbuilder.base.ItemValueRenderer):
 
     This is the inner item Renderable for :class:`PluginItemFrame`
     """
-    valuealias = 'plugin'
-    template_name = 'devilry_qualifiesforexam/listbuilder/plugin_item_value.django.html'
+
+    valuealias = "plugin"
+    template_name = "devilry_qualifiesforexam/listbuilder/plugin_item_value.django.html"
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(PluginItemValue, self).get_extra_css_classes_list()
-        css_classes_list.append('devilry-cradmin-perioditemvalue-admin')
+        css_classes_list.append("devilry-cradmin-perioditemvalue-admin")
         return css_classes_list

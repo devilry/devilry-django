@@ -16,12 +16,12 @@ class Menu(devilry_crmenu_admin.Menu):
 class CrAdminInstance(devilry_crinstance.BaseCrInstanceAdmin):
     menuclass = Menu
     apps = [
-        ('overview', overview.App),
-        ('createsubject', createsubject.App),
-        ('studentfeedbackfeedwizard', student_feedbackfeed_wizard.App)
+        ("overview", overview.App),
+        ("createsubject", createsubject.App),
+        ("studentfeedbackfeedwizard", student_feedbackfeed_wizard.App),
     ]
-    id = 'devilry_admin'
-    rolefrontpage_appname = 'overview'
+    id = "devilry_admin"
+    rolefrontpage_appname = "overview"
     flatten_rolefrontpage_url = True
 
     def has_access(self):
@@ -39,4 +39,4 @@ class CrAdminInstance(devilry_crinstance.BaseCrInstanceAdmin):
 
     @classmethod
     def matches_urlpath(cls, urlpath):
-        return re.match('/devilry_admin/', urlpath)
+        return re.match("/devilry_admin/", urlpath)

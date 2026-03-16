@@ -6,12 +6,13 @@ from devilry.devilry_student.views.group.projectgroupapp import GroupInviteRespo
 from devilry.devilry_student.views.period import crinstance_period
 
 urlpatterns = [
-    re_path(r'^groupinvite/respond/(?P<invite_id>\d+)$',
+    re_path(
+        r"^groupinvite/respond/(?P<invite_id>\d+)$",
         login_required(GroupInviteRespondViewStandalone.as_view()),
-        name='devilry_student_groupinvite_respond'),
-
-    path('period/', include(crinstance_period.CrAdminInstance.urls())),
-    path('', include(crinstance_dashboard.CrAdminInstance.urls()))
+        name="devilry_student_groupinvite_respond",
+    ),
+    path("period/", include(crinstance_period.CrAdminInstance.urls())),
+    path("", include(crinstance_dashboard.CrAdminInstance.urls())),
 ]
 
 # from django.conf.urls import include, url

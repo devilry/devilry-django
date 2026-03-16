@@ -13,17 +13,17 @@ def get_installed_apps():
     installed_apps = []
     checked = set()
     for app in settings.INSTALLED_APPS:
-        if not app.startswith('django.') and not app in checked:
+        if not app.startswith("django.") and not app in checked:
             mod = import_module(app)
             checked.add(app)
             if exists(mod.__file__) and isdir(dirname(mod.__file__)):
                 appdir = dirname(mod.__file__)
-                installed_apps.append((appdir, mod, mod.__name__.split('.')[-1]))
+                installed_apps.append((appdir, mod, mod.__name__.split(".")[-1]))
     return installed_apps
 
 
 def get_staticdir(appdir, appname):
-    return join(appdir, 'static', appname)
+    return join(appdir, "static", appname)
 
 
 def get_staticdir_from_appname(appname, installed_apps=None):
@@ -39,4 +39,4 @@ def get_staticdir_from_appname(appname, installed_apps=None):
     for appdir, mod, name in installed_apps:
         if name == appname:
             return get_staticdir(appdir, appname)
-    raise ValueError('{0} is not in installed_apps.'.format(appname))
+    raise ValueError("{0} is not in installed_apps.".format(appname))

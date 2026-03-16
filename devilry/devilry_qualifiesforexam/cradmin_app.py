@@ -13,49 +13,33 @@ from .views import qualification_preview_view
 
 class App(crapp.App):
     appurls = [
+        crapp.Url(r"^$", list_statuses_view.ListStatusesView.as_view(), name=crapp.INDEXVIEW_NAME),
+        crapp.Url(r"^filter/(?P<filters_string>.+)?$", list_statuses_view.ListStatusesView.as_view(), name="filter"),
+        crapp.Url(r"^select-plugin$", pluginselection_view.SelectPluginView.as_view(), name="select-plugin"),
         crapp.Url(
-            r'^$',
-            list_statuses_view.ListStatusesView.as_view(),
-            name=crapp.INDEXVIEW_NAME
-        ),
-        crapp.Url(
-            r'^filter/(?P<filters_string>.+)?$',
-            list_statuses_view.ListStatusesView.as_view(),
-            name='filter'
-        ),
-        crapp.Url(
-            r'^select-plugin$',
-            pluginselection_view.SelectPluginView.as_view(),
-            name='select-plugin'
-        ),
-        crapp.Url(
-            r'^configure-plugin/(?P<plugintypeid>[a-z0-9._]+)$',
+            r"^configure-plugin/(?P<plugintypeid>[a-z0-9._]+)$",
             proxyview.PluginProxyView.as_view(),
-            name='configure-plugin'
+            name="configure-plugin",
         ),
+        crapp.Url(r"preview$", qualification_preview_view.QualificationPreviewView.as_view(), name="preview"),
         crapp.Url(
-            r'preview$',
-            qualification_preview_view.QualificationPreviewView.as_view(),
-            name='preview'
-        ),
-        crapp.Url(
-            r'showstatus/(?P<statusid>\d+)$',
+            r"showstatus/(?P<statusid>\d+)$",
             qualification_preview_view.QualificationStatusView.as_view(),
-            name='show-status'
+            name="show-status",
         ),
         crapp.Url(
-            r'print-status/(?P<statusid>\d+)$',
+            r"print-status/(?P<statusid>\d+)$",
             qualification_preview_view.PrintStatusView.as_view(),
-            name='print-status'
+            name="print-status",
         ),
         crapp.Url(
-            r'download-status-csv/(?P<statusid>\d+)$',
+            r"download-status-csv/(?P<statusid>\d+)$",
             qualification_preview_view.DownloadCsvView.as_view(),
-            name='download-status-csv'
+            name="download-status-csv",
         ),
         crapp.Url(
-            r'^retract-status/(?P<statusid>\d+)$',
+            r"^retract-status/(?P<statusid>\d+)$",
             qualification_preview_view.StatusRetractView.as_view(),
-            name='retract-status'
-        )
+            name="retract-status",
+        ),
     ]

@@ -9,6 +9,6 @@ class TestOverviewAppUpdateFirstDeadline(TestCase, cradmin_testhelpers.TestCaseM
     viewclass = long_and_shortname.AssignmentLongAndShortNameUpdateView
 
     def test_h1(self):
-        assignment = baker.make('core.Assignment')
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment, viewkwargs={'pk':assignment.id})
-        self.assertEqual(mockresponse.selector.one('h1').alltext_normalized, 'Edit assignment')
+        assignment = baker.make("core.Assignment")
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment, viewkwargs={"pk": assignment.id})
+        self.assertEqual(mockresponse.selector.one("h1").alltext_normalized, "Edit assignment")

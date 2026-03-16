@@ -1,4 +1,3 @@
-
 from cradmin_legacy.viewhelpers import listbuilder
 
 
@@ -6,8 +5,9 @@ class AdminItemValueMixin(object):
     """
     Item value for a Subject in the admin UI.
     """
-    valuealias = 'subject'
-    template_name = 'devilry_cradmin/devilry_listbuilder/subject/admin-itemvalue.django.html'
+
+    valuealias = "subject"
+    template_name = "devilry_cradmin/devilry_listbuilder/subject/admin-itemvalue.django.html"
 
     def get_title(self):
         return self.subject.long_name
@@ -23,5 +23,5 @@ class AdminItemValue(AdminItemValueMixin, listbuilder.itemvalue.TitleDescription
 
     def get_base_css_classes_list(self):
         cssclasses = super(AdminItemValue, self).get_base_css_classes_list()
-        cssclasses.append('devilry-cradmin-subjectitemvalue-admin')
+        cssclasses.append("devilry-cradmin-subjectitemvalue-admin")
         return cssclasses

@@ -12,8 +12,9 @@ class BaseDevilryCrInstance(crinstance.BaseCrAdminInstance):
         BaseCrInstanceExaminer
         BaseCrInstanceStudent
     """
+
     def add_extra_instance_variables_to_request(self, request):
-        setattr(request, 'devilryrole_type', self.get_devilryrole_type())
+        setattr(request, "devilryrole_type", self.get_devilryrole_type())
 
     def get_devilryrole_type(self):
         raise NotImplementedError()
@@ -24,20 +25,20 @@ class BaseDevilryCrInstance(crinstance.BaseCrAdminInstance):
 
 class BaseCrInstanceAdmin(BaseDevilryCrInstance):
     def get_devilryrole_type(self):
-        return 'admin'
+        return "admin"
 
 
 class BaseCrInstanceExaminer(BaseDevilryCrInstance):
     def get_devilryrole_type(self):
-        return 'examiner'
+        return "examiner"
 
     def get_devilryrole_for_requestuser(self):
-        return 'examiner'
+        return "examiner"
 
 
 class BaseCrInstanceStudent(BaseDevilryCrInstance):
     def get_devilryrole_type(self):
-        return 'student'
+        return "student"
 
     def get_devilryrole_for_requestuser(self):
-        return 'student'
+        return "student"

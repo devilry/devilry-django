@@ -18,7 +18,7 @@ from devilry.devilry_group.models import GroupComment, ImageAnnotationComment
 
 
 class ZipBuffer(object):
-    """ A file-like object for zipfile.ZipFile to write into. """
+    """A file-like object for zipfile.ZipFile to write into."""
 
     def __init__(self):
         self.data = []
@@ -59,10 +59,11 @@ class BulkFileDownloadBaseView(generic.View):
             A string like: "duck1010.spring2015.oblig1.donald.dolly/"
         """
         return "{}.{}.{}.{}/".format(
-                feedbackset.group.assignment.period.subject.short_name,
-                feedbackset.group.assignment.period.short_name,
-                feedbackset.group.assignment.short_name,
-                ".".join(feedbackset.group.short_displayname.split(', ')))
+            feedbackset.group.assignment.period.subject.short_name,
+            feedbackset.group.assignment.period.short_name,
+            feedbackset.group.assignment.short_name,
+            ".".join(feedbackset.group.short_displayname.split(", ")),
+        )
 
     def __get_attemptlabel(self, feedbackset, attemptcounter):
         """
@@ -100,9 +101,11 @@ class BulkFileDownloadBaseView(generic.View):
         :return:
             None if user is not student or examiner (this commentfile will then be ignored for zip..)
         """
-        if commentfile.comment.user_role == commentfile.comment.USER_ROLE_STUDENT and \
-                        commentfile.comment.created_datetime > feedbackset.deadline_datetime:
-                return "not_part_of_delivery/"
+        if (
+            commentfile.comment.user_role == commentfile.comment.USER_ROLE_STUDENT
+            and commentfile.comment.created_datetime > feedbackset.deadline_datetime
+        ):
+            return "not_part_of_delivery/"
 
         elif commentfile.comment.user_role == commentfile.comment.USER_ROLE_EXAMINER:
             return "from_examiner/"
@@ -128,28 +131,24 @@ class BulkFileDownloadBaseView(generic.View):
         archivename = "{}{}".format(archivebasename, commentfile.filename)
         while archivename in list(files.keys()):
             identical_filenames_counter += 1
-            archivename = "{}{}-{}{}".format(archivebasename,
-                                             split_filename[0],
-                                             identical_filenames_counter,
-                                             split_filename[1])
+            archivename = "{}{}-{}{}".format(
+                archivebasename, split_filename[0], identical_filenames_counter, split_filename[1]
+            )
         return archivename
 
     def __optimize_queryset(self, queryset):
-        commentfile_queryset = CommentFile.objects.order_by('created_datetime')
-        groupcomment_queryset = GroupComment.objects\
-            .order_by('created_datetime')\
-            .prefetch_related(models.Prefetch('commentfile_set',
-                                              queryset=commentfile_queryset))
-        imageannotationcomment_queryset = ImageAnnotationComment.objects\
-            .order_by('created_datetime')\
-            .prefetch_related(models.Prefetch('commentfile_set',
-                                              queryset=commentfile_queryset))
-        return queryset\
-            .order_by('group_id', 'created_datetime')\
-            .prefetch_related(models.Prefetch('groupcomment_set',
-                                              queryset=groupcomment_queryset))\
-            .prefetch_related(models.Prefetch('imageannotationcomment_set',
-                                              queryset=imageannotationcomment_queryset))
+        commentfile_queryset = CommentFile.objects.order_by("created_datetime")
+        groupcomment_queryset = GroupComment.objects.order_by("created_datetime").prefetch_related(
+            models.Prefetch("commentfile_set", queryset=commentfile_queryset)
+        )
+        imageannotationcomment_queryset = ImageAnnotationComment.objects.order_by("created_datetime").prefetch_related(
+            models.Prefetch("commentfile_set", queryset=commentfile_queryset)
+        )
+        return (
+            queryset.order_by("group_id", "created_datetime")
+            .prefetch_related(models.Prefetch("groupcomment_set", queryset=groupcomment_queryset))
+            .prefetch_related(models.Prefetch("imageannotationcomment_set", queryset=imageannotationcomment_queryset))
+        )
 
     def get_filestructure(self, queryset):
         """
@@ -231,7 +230,7 @@ class BulkFileDownloadBaseView(generic.View):
         if not queryset.exists():
             return http.Http404()  # TODO: fitting errmsg
         response = http.HttpResponse(self.generate_zipped_stream(queryset), content_type="application/zip")
-        response['Content-Disposition'] = "attachment; filename={}".format(self.get_zipfilename(request))
+        response["Content-Disposition"] = "attachment; filename={}".format(self.get_zipfilename(request))
         return response
 
 
@@ -240,17 +239,15 @@ class FeedbackfeedBulkFileDownload(BulkFileDownloadBaseView):
     View that implements :class:`~.BulkFileDownloadBaseView` for downloading all files
     for an :class:`~devilry.apps.core.models.AssignmentGroup`.
     """
+
     def get_queryset(self, request):
         return group_models.FeedbackSet.objects.filter(group=request.cradmin_role)
 
     def get_zipfilename(self, request):
-        return 'deliveryfile.zip'
+        return "deliveryfile.zip"
 
 
 class App(crapp.App):
     appurls = [
-        crapp.Url(
-            r'^bulk-filedownload$',
-            FeedbackfeedBulkFileDownload.as_view(),
-            name='bulk-filedownload'),
+        crapp.Url(r"^bulk-filedownload$", FeedbackfeedBulkFileDownload.as_view(), name="bulk-filedownload"),
     ]

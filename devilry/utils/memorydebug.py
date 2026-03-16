@@ -1,4 +1,3 @@
-
 import logging
 import resource
 from django.conf import settings
@@ -26,17 +25,17 @@ def print_memory_usage(label: str):
       to know what they actually used if you print before and after them
       (ref: https://docs.python.org/3/library/resource.html#resource.getrusage)
     """
-    if not getattr(settings, 'DEVILRY_MEMORY_DEBUG_ENABLED', False):
+    if not getattr(settings, "DEVILRY_MEMORY_DEBUG_ENABLED", False):
         return
     # NOTE: These imports are here on purpuse - they are ONLY needed if DEVILRY_MEMORY_DEBUG_ENABLED is True,
     #       so we do not need them as required packages.
     import humanize
     import psutil
+
     uss = humanize.naturalsize(psutil.Process().memory_full_info().uss)
     ru_maxrss = humanize.naturalsize(
-        (
-            resource.getrusage(resource.RUSAGE_SELF).ru_maxrss + resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss
-        ) * 1024
+        (resource.getrusage(resource.RUSAGE_SELF).ru_maxrss + resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss)
+        * 1024
     )
     rss = humanize.naturalsize(psutil.Process().memory_info().rss)
-    logger.info(f'{label}: uss={uss}, rss={rss}, ru_maxrss={ru_maxrss}')
+    logger.info(f"{label}: uss={uss}, rss={rss}, ru_maxrss={ru_maxrss}")

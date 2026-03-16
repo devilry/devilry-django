@@ -26,7 +26,7 @@ class TimeExecution(object):
         end_time = timezone.now()
         duration = (end_time - self.start_time).total_seconds()
         print()
-        print('{}: {}s'.format(self.label, duration))
+        print("{}: {}s".format(self.label, duration))
         print()
 
 
@@ -50,35 +50,46 @@ def _remove_triggers():
     """)
 
 
-@unittest.skip('Bechmark - should just be enabled when debugging performance')
+@unittest.skip("Bechmark - should just be enabled when debugging performance")
 class TestBenchMarkAssignmentGroupFileUploadCountTrigger(test.TestCase):
-
     def setUp(self):
         _remove_triggers()
 
     def __create_distinct_comments(self, label):
-        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        group = baker.make('core.AssignmentGroup', parentnode=assignment)
-        feedbackset = baker.make('devilry_group.FeedbackSet', group=group)
+        assignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        group = baker.make("core.AssignmentGroup", parentnode=assignment)
+        feedbackset = baker.make("devilry_group.FeedbackSet", group=group)
 
-        examiner = baker.make('core.Examiner',
-                              assignmentgroup=group,
-                              relatedexaminer__user=baker.make(settings.AUTH_USER_MODEL))
+        examiner = baker.make(
+            "core.Examiner", assignmentgroup=group, relatedexaminer__user=baker.make(settings.AUTH_USER_MODEL)
+        )
 
-        baker.make(GroupComment, user=examiner.relatedexaminer.user, feedback_set=feedbackset,
-                   user_role=GroupComment.USER_ROLE_ADMIN)
-        comment_student = baker.make(GroupComment, user=examiner.relatedexaminer.user, feedback_set=feedbackset,
-                                     user_role=GroupComment.USER_ROLE_STUDENT)
-        comment_examiner = baker.make(GroupComment, user=examiner.relatedexaminer.user, feedback_set=feedbackset,
-                                      user_role=GroupComment.USER_ROLE_EXAMINER)
+        baker.make(
+            GroupComment,
+            user=examiner.relatedexaminer.user,
+            feedback_set=feedbackset,
+            user_role=GroupComment.USER_ROLE_ADMIN,
+        )
+        comment_student = baker.make(
+            GroupComment,
+            user=examiner.relatedexaminer.user,
+            feedback_set=feedbackset,
+            user_role=GroupComment.USER_ROLE_STUDENT,
+        )
+        comment_examiner = baker.make(
+            GroupComment,
+            user=examiner.relatedexaminer.user,
+            feedback_set=feedbackset,
+            user_role=GroupComment.USER_ROLE_EXAMINER,
+        )
 
         count = 1000
-        with TimeExecution('{} ({})'.format(label, count)):
+        with TimeExecution("{} ({})".format(label, count)):
             for x in range(count):
                 student_file = baker.make(CommentFile, comment=comment_student)
-                student_file.file.save('testfile.txt', ContentFile('test'))
+                student_file.file.save("testfile.txt", ContentFile("test"))
                 examiner_file = baker.make(CommentFile, comment=comment_examiner)
-                examiner_file.file.save('testfile.txt', ContentFile('test'))
+                examiner_file.file.save("testfile.txt", ContentFile("test"))
                 # student_file.delete()
 
                 # f or c in comments:
@@ -100,27 +111,26 @@ class TestBenchMarkAssignmentGroupFileUploadCountTrigger(test.TestCase):
                 # print "file_upload_count_examiner:", cached_data.file_upload_count_examiner
 
     def test_create_in_distinct_groups_without_triggers(self):
-        self.__create_distinct_comments('file upload: no triggers')
+        self.__create_distinct_comments("file upload: no triggers")
 
     def test_create_in_distinct_groups_with_triggers(self):
         AssignmentGroupDbCacheCustomSql().initialize()
-        self.__create_distinct_comments('file upload: with triggers')
+        self.__create_distinct_comments("file upload: with triggers")
 
 
-@unittest.skip('Bechmark - should just be enabled when debugging performance')
+@unittest.skip("Bechmark - should just be enabled when debugging performance")
 class TestBenchMarkFeedbackSetTrigger(test.TestCase):
-
     def setUp(self):
         _remove_triggers()
 
     def __create_in_distinct_groups_feedbacksets(self, label):
         count = 10000
-        assignment = baker.make('core.Assignment')
+        assignment = baker.make("core.Assignment")
         created_by = baker.make(settings.AUTH_USER_MODEL)
 
         groups = []
         for x in range(count):
-            groups.append(baker.prepare('core.AssignmentGroup', parentnode=assignment))
+            groups.append(baker.prepare("core.AssignmentGroup", parentnode=assignment))
         AssignmentGroup.objects.bulk_create(groups)
 
         feedbacksets = []
@@ -128,88 +138,106 @@ class TestBenchMarkFeedbackSetTrigger(test.TestCase):
             feedbackset = baker.prepare(FeedbackSet, group=group, created_by=created_by, is_last_in_group=None)
             feedbacksets.append(feedbackset)
 
-        with TimeExecution('{} ({})'.format(label, count)):
+        with TimeExecution("{} ({})".format(label, count)):
             FeedbackSet.objects.bulk_create(feedbacksets)
 
     def test_create_feedbacksets_in_distinct_groups_without_triggers(self):
-        self.__create_in_distinct_groups_feedbacksets('feedbacksets distinct groups: no triggers')
+        self.__create_in_distinct_groups_feedbacksets("feedbacksets distinct groups: no triggers")
 
     def test_create_feedbacksets_in_distinct_groups_with_triggers(self):
         AssignmentGroupDbCacheCustomSql().initialize()
-        self.__create_in_distinct_groups_feedbacksets('feedbacksets distinct groups: with triggers')
+        self.__create_in_distinct_groups_feedbacksets("feedbacksets distinct groups: with triggers")
 
     def __create_in_same_group_feedbacksets(self, label):
         count = 1000
-        assignment = baker.make('core.Assignment')
+        assignment = baker.make("core.Assignment")
         created_by = baker.make(settings.AUTH_USER_MODEL)
-        group = baker.make('core.AssignmentGroup', parentnode=assignment)
+        group = baker.make("core.AssignmentGroup", parentnode=assignment)
 
         feedbacksets = []
         for x in range(count):
             feedbackset = baker.prepare(FeedbackSet, group=group, created_by=created_by, is_last_in_group=None)
             feedbacksets.append(feedbackset)
 
-        with TimeExecution('{} ({})'.format(label, count)):
+        with TimeExecution("{} ({})".format(label, count)):
             FeedbackSet.objects.bulk_create(feedbacksets)
 
     def test_create_feedbacksets_in_same_group_without_triggers(self):
-        self.__create_in_same_group_feedbacksets('feedbacksets same group: no triggers')
+        self.__create_in_same_group_feedbacksets("feedbacksets same group: no triggers")
 
     def test_create_feedbacksets_in_same_group_with_triggers(self):
         AssignmentGroupDbCacheCustomSql().initialize()
         # This should have some overhead because we need to UPDATE the AssignmentGroupCachedData
         # for each INSERT
-        self.__create_in_same_group_feedbacksets('feedbacksets same group: with triggers')
+        self.__create_in_same_group_feedbacksets("feedbacksets same group: with triggers")
 
 
-@unittest.skip('Bechmark - should just be enabled when debugging performance')
+@unittest.skip("Bechmark - should just be enabled when debugging performance")
 class TestBenchMarkAssignmentGroupTrigger(test.TestCase):
     def setUp(self):
         _remove_triggers()
 
     def __create_distinct_groups(self, label):
         count = 10000
-        assignment = baker.make('core.Assignment')
+        assignment = baker.make("core.Assignment")
         groups = []
         for x in range(count):
-            groups.append(baker.prepare('core.AssignmentGroup', parentnode=assignment))
+            groups.append(baker.prepare("core.AssignmentGroup", parentnode=assignment))
 
-        with TimeExecution('{} ({})'.format(label, count)):
+        with TimeExecution("{} ({})".format(label, count)):
             AssignmentGroup.objects.bulk_create(groups)
 
     def test_create_in_distinct_groups_without_triggers(self):
-        self.__create_distinct_groups('assignment groups: no triggers')
+        self.__create_distinct_groups("assignment groups: no triggers")
 
     def test_create_in_distinct_groups_with_triggers(self):
         AssignmentGroupDbCacheCustomSql().initialize()
-        self.__create_distinct_groups('assignment groups: with triggers')
+        self.__create_distinct_groups("assignment groups: with triggers")
 
 
-@unittest.skip('Bechmark - should just be enabled when debugging performance')
+@unittest.skip("Bechmark - should just be enabled when debugging performance")
 class TestBenchMarkAssignmentGroupCommentCountTrigger(test.TestCase):
     def setUp(self):
         _remove_triggers()
 
     def __create_distinct_comments(self, label):
-        assignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        group = baker.make('core.AssignmentGroup', parentnode=assignment)
-        feedbackset = baker.make('devilry_group.FeedbackSet', group=group)
+        assignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        group = baker.make("core.AssignmentGroup", parentnode=assignment)
+        feedbackset = baker.make("devilry_group.FeedbackSet", group=group)
 
-        examiner = baker.make('core.Examiner',
-                              assignmentgroup=group,
-                              relatedexaminer__user=baker.make(settings.AUTH_USER_MODEL))
+        examiner = baker.make(
+            "core.Examiner", assignmentgroup=group, relatedexaminer__user=baker.make(settings.AUTH_USER_MODEL)
+        )
 
         count = 100
         comments = []
         for x in range(count):
-            comments.append(baker.prepare(GroupComment, user=examiner.relatedexaminer.user, feedback_set=feedbackset,
-                                          user_role=GroupComment.USER_ROLE_ADMIN))
-            comments.append(baker.prepare(GroupComment, user=examiner.relatedexaminer.user, feedback_set=feedbackset,
-                                          user_role=GroupComment.USER_ROLE_STUDENT))
-            comments.append(baker.prepare(GroupComment, user=examiner.relatedexaminer.user, feedback_set=feedbackset,
-                                          user_role=GroupComment.USER_ROLE_EXAMINER))
+            comments.append(
+                baker.prepare(
+                    GroupComment,
+                    user=examiner.relatedexaminer.user,
+                    feedback_set=feedbackset,
+                    user_role=GroupComment.USER_ROLE_ADMIN,
+                )
+            )
+            comments.append(
+                baker.prepare(
+                    GroupComment,
+                    user=examiner.relatedexaminer.user,
+                    feedback_set=feedbackset,
+                    user_role=GroupComment.USER_ROLE_STUDENT,
+                )
+            )
+            comments.append(
+                baker.prepare(
+                    GroupComment,
+                    user=examiner.relatedexaminer.user,
+                    feedback_set=feedbackset,
+                    user_role=GroupComment.USER_ROLE_EXAMINER,
+                )
+            )
 
-        with TimeExecution('{} ({})'.format(label, count)):
+        with TimeExecution("{} ({})".format(label, count)):
             for c in comments:
                 c.save()
 
@@ -219,11 +247,11 @@ class TestBenchMarkAssignmentGroupCommentCountTrigger(test.TestCase):
         return group
 
     def test_create_in_distinct_groups_without_triggers(self):
-        self.__create_distinct_comments('assignment groups comments: no triggers')
+        self.__create_distinct_comments("assignment groups comments: no triggers")
 
     def test_create_in_distinct_groups_with_triggers(self):
         AssignmentGroupDbCacheCustomSql().initialize()
-        group = self.__create_distinct_comments('assignment groups comments: with triggers')
+        group = self.__create_distinct_comments("assignment groups comments: with triggers")
         cached_data = AssignmentGroupCachedData.objects.get(group=group)
         print("feedbackset_count:", cached_data.feedbackset_count)
         print("public_total_comment_count:", cached_data.public_total_comment_count)

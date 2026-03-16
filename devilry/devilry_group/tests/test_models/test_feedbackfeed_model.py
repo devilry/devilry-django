@@ -14,36 +14,30 @@ class TestFeedbackfeedModel(TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_delete_deletes_comment_files(self):
-        testfeedbackset = baker.make('devilry_group.FeedbackSet')
-        testcomment = baker.make('devilry_group.GroupComment',
-                                 feedback_set=testfeedbackset)
-        testcommentfile = baker.make('devilry_comment.CommentFile',
-                                     comment=testcomment)
-        testcommentfile.file.save('testfile.txt', ContentFile('test'))
+        testfeedbackset = baker.make("devilry_group.FeedbackSet")
+        testcomment = baker.make("devilry_group.GroupComment", feedback_set=testfeedbackset)
+        testcommentfile = baker.make("devilry_comment.CommentFile", comment=testcomment)
+        testcommentfile.file.save("testfile.txt", ContentFile("test"))
         filepath = testcommentfile.file.path
         self.assertTrue(os.path.exists(filepath))
         testfeedbackset.delete()
         self.assertFalse(os.path.exists(filepath))
 
     def test_bulk_delete_deletes_comment_files(self):
-        testfeedbackset = baker.make('devilry_group.FeedbackSet')
-        testcomment = baker.make('devilry_group.GroupComment',
-                                 feedback_set=testfeedbackset)
-        testcommentfile = baker.make('devilry_comment.CommentFile',
-                                     comment=testcomment)
-        testcommentfile.file.save('testfile.txt', ContentFile('test'))
+        testfeedbackset = baker.make("devilry_group.FeedbackSet")
+        testcomment = baker.make("devilry_group.GroupComment", feedback_set=testfeedbackset)
+        testcommentfile = baker.make("devilry_comment.CommentFile", comment=testcomment)
+        testcommentfile.file.save("testfile.txt", ContentFile("test"))
         filepath = testcommentfile.file.path
         self.assertTrue(os.path.exists(filepath))
         FeedbackSet.objects.all().delete()
         self.assertFalse(os.path.exists(filepath))
 
     def test_bulk_delete_assignmentgroup_deletes_comment_files(self):
-        testfeedbackset = baker.make('devilry_group.FeedbackSet')
-        testcomment = baker.make('devilry_group.GroupComment',
-                                 feedback_set=testfeedbackset)
-        testcommentfile = baker.make('devilry_comment.CommentFile',
-                                     comment=testcomment)
-        testcommentfile.file.save('testfile.txt', ContentFile('test'))
+        testfeedbackset = baker.make("devilry_group.FeedbackSet")
+        testcomment = baker.make("devilry_group.GroupComment", feedback_set=testfeedbackset)
+        testcommentfile = baker.make("devilry_comment.CommentFile", comment=testcomment)
+        testcommentfile.file.save("testfile.txt", ContentFile("test"))
         filepath = testcommentfile.file.path
         self.assertTrue(os.path.exists(filepath))
         AssignmentGroup.objects.all().delete()

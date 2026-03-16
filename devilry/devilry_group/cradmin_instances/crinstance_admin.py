@@ -27,18 +27,19 @@ class AdminCrInstance(crinstance_base.DevilryGroupCrInstanceMixin, devilry_crins
     """
     CrInstance class for admins.
     """
+
     menuclass = Menu
     apps = [
-        ('feedbackfeed', feedbackfeed_admin.App),
-        ('download', batch_download_files.App),
-        ('commenthistory', group_comment_history.App),
-        ('manage-deadline', manage_deadline.App)
+        ("feedbackfeed", feedbackfeed_admin.App),
+        ("download", batch_download_files.App),
+        ("commenthistory", group_comment_history.App),
+        ("manage-deadline", manage_deadline.App),
     ]
-    id = 'devilry_group_admin'
+    id = "devilry_group_admin"
 
     @classmethod
     def matches_urlpath(cls, urlpath):
-        return urlpath.startswith('/devilry_group/admin')
+        return urlpath.startswith("/devilry_group/admin")
 
     @property
     def assignment(self):
@@ -53,8 +54,7 @@ class AdminCrInstance(crinstance_base.DevilryGroupCrInstanceMixin, devilry_crins
             QuerySet: A queryset of :class:`~devilry.apps.core.models.AssignmentGroup`s
                 the ``request.user`` is admin on.
         """
-        return self._get_base_rolequeryset()\
-            .filter_user_is_admin(user=self.request.user)
+        return self._get_base_rolequeryset().filter_user_is_admin(user=self.request.user)
 
     def __get_devilryrole_for_requestuser(self):
         """
@@ -68,8 +68,7 @@ class AdminCrInstance(crinstance_base.DevilryGroupCrInstanceMixin, devilry_crins
         """
         assignment = self.request.cradmin_role.assignment
         devilryrole = PeriodPermissionGroup.objects.get_devilryrole_for_user_on_period(
-            user=self.request.user,
-            period=assignment.period
+            user=self.request.user, period=assignment.period
         )
         if devilryrole is None:
             raise Http404
@@ -82,6 +81,6 @@ class AdminCrInstance(crinstance_base.DevilryGroupCrInstanceMixin, devilry_crins
         Returns:
             str: ``departmentadmin``, ``subjectadmin`` or ``periodadmin`` as devilryrole.
         """
-        if not hasattr(self, '_devilryrole_for_requestuser'):
+        if not hasattr(self, "_devilryrole_for_requestuser"):
             self._devilryrole_for_requestuser = self.__get_devilryrole_for_requestuser()
         return self._devilryrole_for_requestuser

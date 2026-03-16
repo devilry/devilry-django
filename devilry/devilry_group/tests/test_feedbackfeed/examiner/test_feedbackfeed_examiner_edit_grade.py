@@ -24,146 +24,120 @@ class TestEditGradeView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_raises_404_feedbackset_is_not_last_feedbackset(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_published(group=testgroup)
         group_baker.feedbackset_new_attempt_published(group=testgroup, deadline_datetime=timezone.now())
 
-        self.mock_http302_getrequest(
-            cradmin_role=testgroup,
-            viewkwargs={
-                'pk': testfeedbackset.id
-            })
+        self.mock_http302_getrequest(cradmin_role=testgroup, viewkwargs={"pk": testfeedbackset.id})
 
     def test_raises_404_one_feedbackset_unpublished(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_unpublished(group=testgroup)
 
-        self.mock_http302_getrequest(
-            cradmin_role=testgroup,
-            viewkwargs={
-                'pk': testfeedbackset.id
-            })
+        self.mock_http302_getrequest(cradmin_role=testgroup, viewkwargs={"pk": testfeedbackset.id})
 
     def test_raises_404_last_feedbackset_is_not_last_published_feedbackset(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         group_baker.feedbackset_first_attempt_published(group=testgroup)
-        unpublished_feedbackset = group_baker.feedbackset_new_attempt_unpublished(group=testgroup, deadline_datetime=timezone.now())
+        unpublished_feedbackset = group_baker.feedbackset_new_attempt_unpublished(
+            group=testgroup, deadline_datetime=timezone.now()
+        )
 
-        self.mock_http302_getrequest(
-            cradmin_role=testgroup,
-            viewkwargs={
-                'pk': unpublished_feedbackset.id
-            })
+        self.mock_http302_getrequest(cradmin_role=testgroup, viewkwargs={"pk": unpublished_feedbackset.id})
 
     def test_points_plugin_help_text(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS,
-                                           max_points=100,
-                                           passing_grade_min_points=40)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start",
+            grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS,
+            max_points=100,
+            passing_grade_min_points=40,
+        )
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_published(group=testgroup, grading_points=70)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup,
-            viewkwargs={
-                'pk': testfeedbackset.id
-            })
-        self.assertEqual(mockresponse.selector.one('#hint_id_grading_points').alltext_normalized,
-                          'Give a score between 0 to 100 where 40 is the minimum amount of points needed to pass.')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup, viewkwargs={"pk": testfeedbackset.id})
+        self.assertEqual(
+            mockresponse.selector.one("#hint_id_grading_points").alltext_normalized,
+            "Give a score between 0 to 100 where 40 is the minimum amount of points needed to pass.",
+        )
 
     def test_points_plugin_initial_is_current_grade(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS,
-                                           max_points=100)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start",
+            grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS,
+            max_points=100,
+        )
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_published(group=testgroup, grading_points=70)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup,
-            viewkwargs={
-                'pk': testfeedbackset.id
-            })
-        input_element = mockresponse.selector.one('#id_grading_points')
-        self.assertEqual(int(input_element.get('max')), 100)
-        self.assertEqual(int(input_element.get('value')), 70)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup, viewkwargs={"pk": testfeedbackset.id})
+        input_element = mockresponse.selector.one("#id_grading_points")
+        self.assertEqual(int(input_element.get("max")), 100)
+        self.assertEqual(int(input_element.get("value")), 70)
 
     def test_passed_failed_plugin_help_text(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           passing_grade_min_points=1)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start", passing_grade_min_points=1
+        )
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_published(group=testgroup, grading_points=0)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup,
-            viewkwargs={
-                'pk': testfeedbackset.id
-            })
-        self.assertEqual(mockresponse.selector.one('#hint_id_grading_points').alltext_normalized,
-                          'Check the box to give a passing grade')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup, viewkwargs={"pk": testfeedbackset.id})
+        self.assertEqual(
+            mockresponse.selector.one("#hint_id_grading_points").alltext_normalized,
+            "Check the box to give a passing grade",
+        )
 
     def test_passed_failed_choices(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           passing_grade_min_points=1)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start", passing_grade_min_points=1
+        )
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_published(group=testgroup, grading_points=0)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup,
-            viewkwargs={
-                'pk': testfeedbackset.id
-            })
-        input_element = mockresponse.selector.list('option')
-        self.assertEqual(input_element[0].get('value'), 'Passed')
-        self.assertEqual(input_element[1].get('value'), 'Failed')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup, viewkwargs={"pk": testfeedbackset.id})
+        input_element = mockresponse.selector.list("option")
+        self.assertEqual(input_element[0].get("value"), "Passed")
+        self.assertEqual(input_element[1].get("value"), "Failed")
 
     def test_passed_failed_plugin_initial_failed_if_failed(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           passing_grade_min_points=1)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start", passing_grade_min_points=1
+        )
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_published(group=testgroup, grading_points=0)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup,
-            viewkwargs={
-                'pk': testfeedbackset.id
-            })
-        input_element = mockresponse.selector.list('option')
-        self.assertEqual(input_element[0].get('value'), 'Passed')
-        self.assertFalse(input_element[0].hasattribute('selected'))
-        self.assertEqual(input_element[1].get('value'), 'Failed')
-        self.assertTrue(input_element[1].hasattribute('selected'))
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup, viewkwargs={"pk": testfeedbackset.id})
+        input_element = mockresponse.selector.list("option")
+        self.assertEqual(input_element[0].get("value"), "Passed")
+        self.assertFalse(input_element[0].hasattribute("selected"))
+        self.assertEqual(input_element[1].get("value"), "Failed")
+        self.assertTrue(input_element[1].hasattribute("selected"))
 
     def test_passed_failed_plugin_initial_passed_if_passed(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           passing_grade_min_points=1)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start", passing_grade_min_points=1
+        )
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_published(group=testgroup, grading_points=1)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup,
-            viewkwargs={
-                'pk': testfeedbackset.id
-            })
-        input_element = mockresponse.selector.list('option')
-        self.assertEqual(input_element[0].get('value'), 'Passed')
-        self.assertTrue(input_element[0].hasattribute('selected'))
-        self.assertEqual(input_element[1].get('value'), 'Failed')
-        self.assertFalse(input_element[1].hasattribute('selected'))
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup, viewkwargs={"pk": testfeedbackset.id})
+        input_element = mockresponse.selector.list("option")
+        self.assertEqual(input_element[0].get("value"), "Passed")
+        self.assertTrue(input_element[0].hasattribute("selected"))
+        self.assertEqual(input_element[1].get("value"), "Failed")
+        self.assertFalse(input_element[1].hasattribute("selected"))
 
     def test_post_points_plugin(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS,
-                                           passing_grade_min_points=60,
-                                           max_points=100)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start",
+            grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS,
+            passing_grade_min_points=60,
+            max_points=100,
+        )
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_published(group=testgroup, grading_points=10)
         self.mock_http302_postrequest(
             cradmin_role=testgroup,
-            viewkwargs={
-                'pk': testfeedbackset.id
-            },
-            requestkwargs={
-                'data': {
-                    'grading_points': 70
-                }
-            }
+            viewkwargs={"pk": testfeedbackset.id},
+            requestkwargs={"data": {"grading_points": 70}},
         )
         feedbackset = FeedbackSet.objects.get(id=testfeedbackset.id)
         self.assertEqual(feedbackset.grading_points, 70)
@@ -172,88 +146,72 @@ class TestEditGradeView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         """
         Creates a student user with email. We the mail sending to work.
         """
-        student_user = baker.make(settings.AUTH_USER_MODEL, shortname='student')
-        user_email = baker.make('devilry_account.UserEmail', email='student@example.com', user=student_user)
-        baker.make('core.Candidate', assignment_group=group,
-                   relatedstudent=baker.make('core.RelatedStudent', user=student_user))
+        student_user = baker.make(settings.AUTH_USER_MODEL, shortname="student")
+        user_email = baker.make("devilry_account.UserEmail", email="student@example.com", user=student_user)
+        baker.make(
+            "core.Candidate",
+            assignment_group=group,
+            relatedstudent=baker.make("core.RelatedStudent", user=student_user),
+        )
         return user_email
 
     def test_post_points_plugin_mail_sent(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS,
-                                           passing_grade_min_points=60,
-                                           max_points=100)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start",
+            grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS,
+            passing_grade_min_points=60,
+            max_points=100,
+        )
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         user_email = self.__create_student_user_with_email_for_group(group=testgroup)
         testfeedbackset = group_baker.feedbackset_first_attempt_published(group=testgroup, grading_points=10)
         self.mock_http302_postrequest(
             cradmin_role=testgroup,
-            viewkwargs={
-                'pk': testfeedbackset.id
-            },
-            requestkwargs={
-                'data': {
-                    'grading_points': 70
-                }
-            }
+            viewkwargs={"pk": testfeedbackset.id},
+            requestkwargs={"data": {"grading_points": 70}},
         )
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].recipients(), [user_email.email])
 
     def test_post_passed_plugin_passed_failed(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           passing_grade_min_points=1)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start", passing_grade_min_points=1
+        )
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_published(group=testgroup, grading_points=0)
         self.mock_http302_postrequest(
             cradmin_role=testgroup,
-            viewkwargs={
-                'pk': testfeedbackset.id
-            },
-            requestkwargs={
-                'data': {
-                    'grading_points': 'Passed'
-                }
-            }
+            viewkwargs={"pk": testfeedbackset.id},
+            requestkwargs={"data": {"grading_points": "Passed"}},
         )
         feedbackset = FeedbackSet.objects.get(id=testfeedbackset.id)
         self.assertEqual(feedbackset.grading_points, 1)
 
     def test_post_failed_plugin_passed_failed(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           passing_grade_min_points=1)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start", passing_grade_min_points=1
+        )
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         testfeedbackset = group_baker.feedbackset_first_attempt_published(group=testgroup, grading_points=1)
         self.mock_http302_postrequest(
             cradmin_role=testgroup,
-            viewkwargs={
-                'pk': testfeedbackset.id
-            },
-            requestkwargs={
-                'data': {
-                    'grading_points': 'Failed'
-                }
-            }
+            viewkwargs={"pk": testfeedbackset.id},
+            requestkwargs={"data": {"grading_points": "Failed"}},
         )
         feedbackset = FeedbackSet.objects.get(id=testfeedbackset.id)
         self.assertEqual(feedbackset.grading_points, 0)
 
     def test_post_failed_plugin_mail_sent(self):
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           passing_grade_min_points=1)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start", passing_grade_min_points=1
+        )
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         user_email = self.__create_student_user_with_email_for_group(group=testgroup)
         testfeedbackset = group_baker.feedbackset_first_attempt_published(group=testgroup, grading_points=1)
         self.mock_http302_postrequest(
             cradmin_role=testgroup,
-            viewkwargs={
-                'pk': testfeedbackset.id
-            },
-            requestkwargs={
-                'data': {
-                    'grading_points': 'Failed'
-                }
-            }
+            viewkwargs={"pk": testfeedbackset.id},
+            requestkwargs={"data": {"grading_points": "Failed"}},
         )
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].recipients(), [user_email.email])

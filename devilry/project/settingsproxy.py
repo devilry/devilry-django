@@ -12,13 +12,13 @@ Defaults to the ``develop`` enviroment, so developers can use ``python
 manage.py`` without anything extra during development.
 """
 
-DJANGOENV = os.environ.get('DJANGOENV', 'develop')
+DJANGOENV = os.environ.get("DJANGOENV", "develop")
 
-if DJANGOENV == 'develop':  # Used for local development
+if DJANGOENV == "develop":  # Used for local development
     from devilry.project.develop.settings.develop import *
-elif DJANGOENV == 'test':  # Used when running the Django tests
+elif DJANGOENV == "test":  # Used when running the Django tests
     from devilry.project.develop.settings.test import *
-elif DJANGOENV == 'codeship_test':  # Used when running the Django tests on CodeShip
+elif DJANGOENV == "codeship_test":  # Used when running the Django tests on CodeShip
     from devilry.project.develop.settings.codeship_test import *
 else:
-    raise ValueError('Invalid value for the DJANGOENV environment variable: {!r}'.format(DJANGOENV))
+    raise ValueError("Invalid value for the DJANGOENV environment variable: {!r}".format(DJANGOENV))

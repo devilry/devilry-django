@@ -5,6 +5,7 @@ from devilry.devilry_gradeform.views import grade_form
 
 register = template.Library()
 
+
 @register.simple_tag(name="devilry_gradeform_editable_advanced")
 def devilry_gradeform_editable_advanced(assignment, feedbackset):
     """

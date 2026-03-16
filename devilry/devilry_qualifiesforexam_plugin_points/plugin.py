@@ -9,11 +9,11 @@ from .views import select_assignment_and_points
 
 
 class PointsPlugin(PluginType):
-    plugintypeid = 'devilry_qualifiesforexam_plugin_points.plugin_points'
-    human_readable_name = gettext_lazy('Points to achieve on selected assignments')
+    plugintypeid = "devilry_qualifiesforexam_plugin_points.plugin_points"
+    human_readable_name = gettext_lazy("Points to achieve on selected assignments")
     description = gettext_lazy(
-        'Choose the total sum of points that needs to be achieved for the '
-        'selected assignments. All assignments are selected by default.'
+        "Choose the total sum of points that needs to be achieved for the "
+        "selected assignments. All assignments are selected by default."
     )
 
     def get_plugin_view_class(self):

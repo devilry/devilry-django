@@ -4,16 +4,18 @@ from django.db import transaction
 from django.conf import settings
 from django.core import exceptions
 
+
 class BulkCreateUsers(object):
     """
     Allow bulk-creation of :class:`User`\s from a list of usernames or emails.
     """
+
     def __init__(self):
         self.__parsed_userdata = {}
         self.__conflicting_users = {}
         self.__created_users = []
 
-    def __add_raw_data(self, raw_data, regexp_for_split=r'[\s;:,]+'):
+    def __add_raw_data(self, raw_data, regexp_for_split=r"[\s;:,]+"):
         """
         Add raw, unparsed data to be created in bulk.
         This data can be a combination of usernames and emails.
@@ -38,16 +40,16 @@ class BulkCreateUsers(object):
 
         for value in values:
             value = value.strip()
-            if value == '':
+            if value == "":
                 continue
-            split_email = value.split('@')
+            split_email = value.split("@")
 
             if len(split_email) == 2:
                 username = split_email[0]
                 email = value
             else:
                 username = value
-                email = '{}{}'.format(value, email_domain)
+                email = "{}{}".format(value, email_domain)
 
             self.__parsed_userdata[username] = email
 
@@ -67,7 +69,7 @@ class BulkCreateUsers(object):
 
         for user in conflicting_users:
             self.__conflicting_users[user.username] = user.email
-            del(self.__parsed_userdata[user.username])
+            del self.__parsed_userdata[user.username]
 
     def add_userdata(self, userdata, parse_data=True):
         """

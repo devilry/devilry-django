@@ -13,7 +13,6 @@ from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 
 
 class TestFeedbackfeedSidebarBuilder(TestCase):
-
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
@@ -21,25 +20,22 @@ class TestFeedbackfeedSidebarBuilder(TestCase):
         # Must be refactored
         # Test that the number of queries performed is manageable
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testgroup = baker.make('core.AssignmentGroup')
+        testgroup = baker.make("core.AssignmentGroup")
         testassignment = testgroup.assignment
         testfeedbackset = devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup)
-        candidate = baker.make('core.Candidate', assignment_group=testgroup)
-        baker.make('core.Candidate', assignment_group=testgroup, _quantity=100)
-        baker.make('core.Examiner', assignmentgroup=testgroup, _quantity=100)
-        testcomment = baker.make('devilry_group.GroupComment',
-                                 feedback_set=testfeedbackset,
-                                 user=candidate.relatedstudent.user)
-        baker.make('devilry_comment.CommentFile',
-                   comment=testcomment,
-                   _quantity=100)
+        candidate = baker.make("core.Candidate", assignment_group=testgroup)
+        baker.make("core.Candidate", assignment_group=testgroup, _quantity=100)
+        baker.make("core.Examiner", assignmentgroup=testgroup, _quantity=100)
+        testcomment = baker.make(
+            "devilry_group.GroupComment", feedback_set=testfeedbackset, user=candidate.relatedstudent.user
+        )
+        baker.make("devilry_comment.CommentFile", comment=testcomment, _quantity=100)
 
         with self.assertNumQueries(5):
-            feedbackset_queryset = builder_base.get_feedbackfeed_builder_queryset(testgroup, testuser, 'unused')
+            feedbackset_queryset = builder_base.get_feedbackfeed_builder_queryset(testgroup, testuser, "unused")
             sidebarbuilder = FeedbackFeedSidebarBuilder(
-                assignment=testassignment,
-                group=testgroup,
-                feedbacksets=feedbackset_queryset)
+                assignment=testassignment, group=testgroup, feedbacksets=feedbackset_queryset
+            )
             sidebarbuilder.build()
             sidebarbuilder.get_as_list()
         self.assertEqual(1, group_models.FeedbackSet.objects.count())

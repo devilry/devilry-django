@@ -10,9 +10,8 @@ from devilry.utils import datetimeutils
 
 
 class TestURLDatetime(test.TestCase):
-
     def test_url_patternmatcher(self):
-        self.assertIsNotNone(re.match(r'\w+', datetimeutils.datetime_to_url_string(timezone.now())))
+        self.assertIsNotNone(re.match(r"\w+", datetimeutils.datetime_to_url_string(timezone.now())))
 
     def test_url_convert_to_string_and_back(self):
         datetime_original = timezone.now().replace(microsecond=0)

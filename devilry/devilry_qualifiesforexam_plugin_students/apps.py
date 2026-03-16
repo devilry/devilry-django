@@ -6,10 +6,11 @@ from django.apps import AppConfig
 
 
 class DevilryQualifiesForExamStudentSelectAppConfig(AppConfig):
-    name = 'devilry.devilry_qualifiesforexam_plugin_students'
-    verbose_name = 'Devilry qualifies for exam plugin students'
+    name = "devilry.devilry_qualifiesforexam_plugin_students"
+    verbose_name = "Devilry qualifies for exam plugin students"
 
     def ready(self):
         from devilry.devilry_qualifiesforexam import plugintyperegistry
         from . import plugin
+
         plugintyperegistry.Registry.get_instance().add(plugin.StudentSelectPlugin)

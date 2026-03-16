@@ -19,6 +19,6 @@ class MarkdownPreviewApi(APIView):
     def post(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             raise PermissionDenied()
-        markdown_text = request.data.get('markdown_text', None)
+        markdown_text = request.data.get("markdown_text", None)
         markdown_result = parse_markdown.markdown_full(markdown_text)
-        return Response({'markdown_result': mark_safe(markdown_result)}, status=status.HTTP_200_OK)
+        return Response({"markdown_result": mark_safe(markdown_result)}, status=status.HTTP_200_OK)

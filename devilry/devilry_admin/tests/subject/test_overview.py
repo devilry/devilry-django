@@ -11,69 +11,71 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = overview.Overview
 
     def test_title(self):
-        testsubject = baker.make('core.Subject',
-                                 short_name='testsubject')
+        testsubject = baker.make("core.Subject", short_name="testsubject")
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
-        self.assertEqual('testsubject',
-                         mockresponse.selector.one('title').alltext_normalized)
+        self.assertEqual("testsubject", mockresponse.selector.one("title").alltext_normalized)
 
     def test_h1(self):
-        testsubject = baker.make('core.Subject',
-                                 long_name='Test Subject')
+        testsubject = baker.make("core.Subject", long_name="Test Subject")
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
-        self.assertEqual('Test Subject',
-                         mockresponse.selector.one('h1').alltext_normalized)
+        self.assertEqual("Test Subject", mockresponse.selector.one("h1").alltext_normalized)
 
     def test_createperiod_link_text(self):
-        testsubject = baker.make('core.Subject')
+        testsubject = baker.make("core.Subject")
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
-        self.assertEqual('Create new semester',
-                         mockresponse.selector.one(
-                             '#devilry_admin_period_createperiod_link').alltext_normalized)
+        self.assertEqual(
+            "Create new semester",
+            mockresponse.selector.one("#devilry_admin_period_createperiod_link").alltext_normalized,
+        )
 
     def test_link_urls(self):
-        testsubject = baker.make('core.Subject')
+        testsubject = baker.make("core.Subject")
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
         self.assertEqual(3, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
         self.assertEqual(
-                mock.call(appname='edit', args=(), viewname='INDEX', kwargs={}),
-                mockresponse.request.cradmin_instance.reverse_url.call_args_list[0])
+            mock.call(appname="edit", args=(), viewname="INDEX", kwargs={}),
+            mockresponse.request.cradmin_instance.reverse_url.call_args_list[0],
+        )
         self.assertEqual(
-                mock.call(appname='createperiod', args=(), viewname='INDEX', kwargs={}),
-                mockresponse.request.cradmin_instance.reverse_url.call_args_list[1])
+            mock.call(appname="createperiod", args=(), viewname="INDEX", kwargs={}),
+            mockresponse.request.cradmin_instance.reverse_url.call_args_list[1],
+        )
         self.assertEqual(
-                mock.call(appname='admins', args=(), viewname='INDEX', kwargs={}),
-                mockresponse.request.cradmin_instance.reverse_url.call_args_list[2])
+            mock.call(appname="admins", args=(), viewname="INDEX", kwargs={}),
+            mockresponse.request.cradmin_instance.reverse_url.call_args_list[2],
+        )
 
     def test_periodlist_no_periods(self):
-        testsubject = baker.make('core.Subject')
+        testsubject = baker.make("core.Subject")
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
-        self.assertFalse(mockresponse.selector.exists('#devilry_admin_period_overview_periodlist'))
+        self.assertFalse(mockresponse.selector.exists("#devilry_admin_period_overview_periodlist"))
 
     def test_periodlist_itemrendering_name(self):
-        testsubject = baker.make('core.Subject')
-        baker.make_recipe('devilry.apps.core.period_active',
-                          parentnode=testsubject,
-                          long_name='Test Period')
+        testsubject = baker.make("core.Subject")
+        baker.make_recipe("devilry.apps.core.period_active", parentnode=testsubject, long_name="Test Period")
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
-        self.assertEqual('Test Period',
-                         mockresponse.selector.one(
-                             '.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+        self.assertEqual(
+            "Test Period",
+            mockresponse.selector.one(
+                ".cradmin-legacy-listbuilder-itemvalue-titledescription-title"
+            ).alltext_normalized,
+        )
 
     def test_periodlist_itemrendering_url(self):
-        testsubject = baker.make('core.Subject')
-        testperiod = baker.make_recipe('devilry.apps.core.period_active',
-                                       parentnode=testsubject,
-                                       long_name='Test Period')
+        testsubject = baker.make("core.Subject")
+        testperiod = baker.make_recipe(
+            "devilry.apps.core.period_active", parentnode=testsubject, long_name="Test Period"
+        )
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
-        self.assertEqual(crinstance.reverse_cradmin_url(instanceid='devilry_admin_periodadmin',
-                                                        appname='overview',
-                                                        roleid=testperiod.id),
-                         mockresponse.selector.one(
-                             '.devilry-admin-period-overview-perioditemframe')['href'])
+        self.assertEqual(
+            crinstance.reverse_cradmin_url(
+                instanceid="devilry_admin_periodadmin", appname="overview", roleid=testperiod.id
+            ),
+            mockresponse.selector.one(".devilry-admin-period-overview-perioditemframe")["href"],
+        )
 
     def test_periodlist_itemrendering_start_time(self):
-        testsubject = baker.make('core.Subject')
+        testsubject = baker.make("core.Subject")
         baker.make_recipe("devilry.apps.core.period_active", parentnode=testsubject)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
         self.assertEqual(
@@ -82,7 +84,7 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
 
     def test_periodlist_itemrendering_end_time(self):
-        testsubject = baker.make('core.Subject')
+        testsubject = baker.make("core.Subject")
         baker.make_recipe("devilry.apps.core.period_active", parentnode=testsubject)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
         self.assertEqual(
@@ -91,43 +93,34 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
 
     def test_periodlist_ordering(self):
-        testsubject = baker.make('core.Subject')
-        baker.make_recipe('devilry.apps.core.period_active',
-                          parentnode=testsubject,
-                          long_name='Period 2')
-        baker.make_recipe('devilry.apps.core.period_old',
-                          parentnode=testsubject,
-                          long_name='Period 1')
-        baker.make_recipe('devilry.apps.core.period_future',
-                          parentnode=testsubject,
-                          long_name='Period 3')
+        testsubject = baker.make("core.Subject")
+        baker.make_recipe("devilry.apps.core.period_active", parentnode=testsubject, long_name="Period 2")
+        baker.make_recipe("devilry.apps.core.period_old", parentnode=testsubject, long_name="Period 1")
+        baker.make_recipe("devilry.apps.core.period_future", parentnode=testsubject, long_name="Period 3")
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
         periodnames = [
             element.alltext_normalized
-            for element in mockresponse.selector.list(
-                    '.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
-        self.assertEqual([
-            'Period 3',
-            'Period 2',
-            'Period 1',
-        ], periodnames)
+            for element in mockresponse.selector.list(".cradmin-legacy-listbuilder-itemvalue-titledescription-title")
+        ]
+        self.assertEqual(
+            [
+                "Period 3",
+                "Period 2",
+                "Period 1",
+            ],
+            periodnames,
+        )
 
     def test_periodlist_only_periods_in_subject(self):
-        testsubject = baker.make('core.Subject')
-        othersubject = baker.make('core.Subject')
-        baker.make_recipe('devilry.apps.core.period_active',
-                          parentnode=testsubject,
-                          long_name='Testsubject Period 1')
-        baker.make_recipe('devilry.apps.core.period_active',
-                          parentnode=othersubject,
-                          long_name='Othersubject Period 1')
+        testsubject = baker.make("core.Subject")
+        othersubject = baker.make("core.Subject")
+        baker.make_recipe("devilry.apps.core.period_active", parentnode=testsubject, long_name="Testsubject Period 1")
+        baker.make_recipe("devilry.apps.core.period_active", parentnode=othersubject, long_name="Othersubject Period 1")
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
+        self.assertEqual(1, mockresponse.selector.count(".cradmin-legacy-listbuilder-itemvalue-titledescription-title"))
         self.assertEqual(
-            1,
-            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue-titledescription-title')
-        )
-        self.assertEqual(
-            'Testsubject Period 1',
+            "Testsubject Period 1",
             mockresponse.selector.one(
-                    '.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized
+                ".cradmin-legacy-listbuilder-itemvalue-titledescription-title"
+            ).alltext_normalized,
         )

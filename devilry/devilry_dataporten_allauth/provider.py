@@ -2,8 +2,7 @@ from allauth.socialaccount.providers.dataporten.provider import DataportenProvid
 
 
 class DevilryDataportenProvider(DataportenProvider):
-    """
-    """
+    """ """
 
 
 provider_classes = [DevilryDataportenProvider]

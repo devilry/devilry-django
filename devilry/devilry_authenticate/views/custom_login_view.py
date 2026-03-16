@@ -11,6 +11,6 @@ class DevilryUsernameLoginForm(UsernameLoginForm):
 
 class CustomLoginView(LoginView):
     def get_form_class(self):
-        if not getattr(settings, 'CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND', False):
+        if not getattr(settings, "CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND", False):
             return DevilryUsernameLoginForm
         return super(CustomLoginView, self).get_form_class()

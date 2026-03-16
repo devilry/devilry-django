@@ -22,19 +22,16 @@ class CrAdminInstance(devilry_crinstance.BaseCrInstanceExaminer):
     menuclass = Menu
     roleclass = Assignment
     apps = [
-        ('grouplist', grouplist.App),
-        ('download', download_archive.App),
-        ('manage-deadlines', bulk_manage_deadline.App)
+        ("grouplist", grouplist.App),
+        ("download", download_archive.App),
+        ("manage-deadlines", bulk_manage_deadline.App),
     ]
-    id = 'devilry_examiner_assignment'
-    rolefrontpage_appname = 'grouplist'
+    id = "devilry_examiner_assignment"
+    rolefrontpage_appname = "grouplist"
     flatten_rolefrontpage_url = True
 
     def get_rolequeryset(self):
-        return Assignment.objects\
-            .filter_examiner_has_access(self.request.user)\
-            .prefetch_point_to_grade_map()\
-            .distinct()
+        return Assignment.objects.filter_examiner_has_access(self.request.user).prefetch_point_to_grade_map().distinct()
 
     def get_titletext_for_role(self, role):
         """
@@ -50,4 +47,4 @@ class CrAdminInstance(devilry_crinstance.BaseCrInstanceExaminer):
 
     @classmethod
     def matches_urlpath(cls, urlpath):
-        return re.match('^/devilry_examiner/assignment/.*$', urlpath)
+        return re.match("^/devilry_examiner/assignment/.*$", urlpath)

@@ -29,6 +29,7 @@ def get_assignments_with_matching_shortname_in_previous_periods(subject, assignm
     E.g. oblig1 - 2019 matches oblig1 - 2020
     """
     from devilry.apps.core.models import Assignment
+
     short_name = assignment.short_name
     assignments = Assignment.objects.none()
     for period in subject.periods.exclude(id=assignment.period.id):
@@ -50,52 +51,58 @@ def print_assignment_statistics(assignment):
     - The total number of new attempts with deliveries within all feedbackset across all groups within assignment
     - The total number of moved deadlines with no deliveries in feedbackset across all groups within assignment
     """
-    from devilry.devilry_group.models import (FeedbackSet,
-                                              FeedbackSetDeadlineHistory,
-                                              GroupComment)
+    from devilry.devilry_group.models import FeedbackSet, FeedbackSetDeadlineHistory, GroupComment
     from django.db.models import F
+
     statistics = {
-        'assignment': assignment,
-        'number_of_groups': assignment.assignmentgroups.all().count(),
-        'number_of_firstattempts': 0,
-        'number_of_newattempts': 0,
-        'number_of_firstattempts_with_no_delivery': 0,
-        'number_of_newattempts_with_no_delivery': 0,
-        'number_of_firstattempts_with_deliveries': 0,
-        'number_of_newattempts_with_deliveries': 0,
-        'number_of_moved_deadlines_with_no_delivery': 0
+        "assignment": assignment,
+        "number_of_groups": assignment.assignmentgroups.all().count(),
+        "number_of_firstattempts": 0,
+        "number_of_newattempts": 0,
+        "number_of_firstattempts_with_no_delivery": 0,
+        "number_of_newattempts_with_no_delivery": 0,
+        "number_of_firstattempts_with_deliveries": 0,
+        "number_of_newattempts_with_deliveries": 0,
+        "number_of_moved_deadlines_with_no_delivery": 0,
     }
     for group in assignment.assignmentgroups.all():
-        feedbackset_queryset = FeedbackSet.objects\
-            .filter(group=group)
+        feedbackset_queryset = FeedbackSet.objects.filter(group=group)
         for feedbackset in feedbackset_queryset:
-            number_of_group_comment_from_student = GroupComment.objects\
-                .filter(user_role=GroupComment.USER_ROLE_STUDENT)\
-                .filter(feedback_set=feedbackset).count()
+            number_of_group_comment_from_student = (
+                GroupComment.objects.filter(user_role=GroupComment.USER_ROLE_STUDENT)
+                .filter(feedback_set=feedbackset)
+                .count()
+            )
             if feedbackset.feedbackset_type == FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT:
-                statistics['number_of_newattempts'] += 1
+                statistics["number_of_newattempts"] += 1
                 if number_of_group_comment_from_student == 0:
-                    statistics['number_of_newattempts_with_no_delivery'] += 1
+                    statistics["number_of_newattempts_with_no_delivery"] += 1
                 else:
-                    statistics['number_of_newattempts_with_deliveries'] += 1
+                    statistics["number_of_newattempts_with_deliveries"] += 1
             elif feedbackset.feedbackset_type == FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT:
-                statistics['number_of_firstattempts'] += 1
+                statistics["number_of_firstattempts"] += 1
                 if number_of_group_comment_from_student == 0:
-                    statistics['number_of_firstattempts_with_no_delivery'] += 1
+                    statistics["number_of_firstattempts_with_no_delivery"] += 1
                 else:
-                    statistics['number_of_firstattempts_with_deliveries'] += 1
-            feedbackset_deadline_edit_count = FeedbackSetDeadlineHistory.objects.filter(
-                            feedback_set=feedbackset).filter(deadline_old__lt=F('deadline_new')).count()
-            statistics['number_of_moved_deadlines_with_no_delivery'] += feedbackset_deadline_edit_count
+                    statistics["number_of_firstattempts_with_deliveries"] += 1
+            feedbackset_deadline_edit_count = (
+                FeedbackSetDeadlineHistory.objects.filter(feedback_set=feedbackset)
+                .filter(deadline_old__lt=F("deadline_new"))
+                .count()
+            )
+            statistics["number_of_moved_deadlines_with_no_delivery"] += feedbackset_deadline_edit_count
 
-    print("{assignment},{number_of_groups},{number_of_firstattempts},{number_of_newattempts},{number_of_firstattempts_with_no_delivery},{number_of_newattempts_with_no_delivery},{number_of_firstattempts_with_deliveries},{number_of_newattempts_with_deliveries},{number_of_moved_deadlines_with_no_delivery}".format(
-                        **statistics))
+    print(
+        "{assignment},{number_of_groups},{number_of_firstattempts},{number_of_newattempts},{number_of_firstattempts_with_no_delivery},{number_of_newattempts_with_no_delivery},{number_of_firstattempts_with_deliveries},{number_of_newattempts_with_deliveries},{number_of_moved_deadlines_with_no_delivery}".format(
+            **statistics
+        )
+    )
     return statistics
 
 
 if __name__ == "__main__":
     # For development:
-    os.environ.setdefault('DJANGOENV', 'develop')
+    os.environ.setdefault("DJANGOENV", "develop")
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "devilry.project.settingsproxy")
     django.setup()
 
@@ -105,12 +112,15 @@ if __name__ == "__main__":
 
     # Get number of deliveries
     subject_set = get_all_subjects()
-    print("'assignment', 'number_of_groups', 'number_of_firstattempts', 'number_of_newattempts', 'number_of_firstattempts_with_no_delivery', 'number_of_newattempts_with_no_delivery', 'number_of_firstattempts_with_deliveries', 'number_of_newattempts_with_deliveries', 'number_of_moved_deadlines_with_no_delivery'")
+    print(
+        "'assignment', 'number_of_groups', 'number_of_firstattempts', 'number_of_newattempts', 'number_of_firstattempts_with_no_delivery', 'number_of_newattempts_with_no_delivery', 'number_of_firstattempts_with_deliveries', 'number_of_newattempts_with_deliveries', 'number_of_moved_deadlines_with_no_delivery'"
+    )
     for subject in subject_set:
         for period in subject.active_period_objects:
             for assignment in get_all_assignments_in_period(period):
                 print_assignment_statistics(assignment)
                 assignments_with_similar_shortname = get_assignments_with_matching_shortname_in_previous_periods(
-                    subject, assignment)
+                    subject, assignment
+                )
                 for assignment_with_similar_shortname in assignments_with_similar_shortname:
                     print_assignment_statistics(assignment_with_similar_shortname)

@@ -14,8 +14,8 @@ from devilry.utils import datetimeutils
 
 
 class SelectDeadlineItemValue(listbuilder.itemvalue.TitleDescription):
-    template_name = 'devilry_deadlinemanagement/select-deadline-item-value.django.html'
-    valuealias = 'deadline'
+    template_name = "devilry_deadlinemanagement/select-deadline-item-value.django.html"
+    valuealias = "deadline"
 
     def __init__(self, assignment_groups, assignment, devilryrole, **kwargs):
         super(SelectDeadlineItemValue, self).__init__(**kwargs)
@@ -35,33 +35,31 @@ class SelectDeadlineItemValue(listbuilder.itemvalue.TitleDescription):
 
     def get_cradmin_instance_id_for_feedbackfeed(self):
         from devilry.devilry_group.cradmin_instances import crinstance_admin, crinstance_examiner
-        if self.devilryrole.endswith('admin'):
+
+        if self.devilryrole.endswith("admin"):
             return crinstance_admin.AdminCrInstance.id
         return crinstance_examiner.ExaminerCrInstance.id
 
     def get_title(self):
-        formatted_deadline = defaultfilters.date(timezone.localtime(self.value), 'DATETIME_FORMAT')
+        formatted_deadline = defaultfilters.date(timezone.localtime(self.value), "DATETIME_FORMAT")
         if self.value == self.assignment.first_deadline:
-            return gettext_lazy('%(deadline)s (Assignment first deadline)') % {
-                'deadline': formatted_deadline
-            }
+            return gettext_lazy("%(deadline)s (Assignment first deadline)") % {"deadline": formatted_deadline}
         return formatted_deadline
 
 
 class DeadlineListView(viewutils.DeadlineManagementMixin, TemplateView):
-    template_name = 'devilry_deadlinemanagement/select-deadline.django.html'
+    template_name = "devilry_deadlinemanagement/select-deadline.django.html"
 
     def get_pagetitle(self):
-        return pgettext_lazy('deadline_list_view select_deadline',
-                             'Select deadline to manage')
+        return pgettext_lazy("deadline_list_view select_deadline", "Select deadline to manage")
 
     def get_pageheading(self):
-        return pgettext_lazy('deadline_list_view select_deadline',
-                             'Select deadline')
+        return pgettext_lazy("deadline_list_view select_deadline", "Select deadline")
 
     def get_page_subheading(self):
-        return pgettext_lazy('deadline_list_view select_deadline',
-                             'Please choose how you would like to manage the deadline.')
+        return pgettext_lazy(
+            "deadline_list_view select_deadline", "Please choose how you would like to manage the deadline."
+        )
 
     def get_queryset_for_role(self, role):
         """
@@ -71,8 +69,9 @@ class DeadlineListView(viewutils.DeadlineManagementMixin, TemplateView):
             role: :class:`.Assignment`.
         """
         queryset = self.get_queryset_for_role_filtered(role=role)
-        return self.get_annotations_for_queryset(queryset=queryset) \
-            .order_by('cached_data__last_feedbackset__deadline_datetime')
+        return self.get_annotations_for_queryset(queryset=queryset).order_by(
+            "cached_data__last_feedbackset__deadline_datetime"
+        )
 
     def get_distinct_deadlines_with_groups(self):
         """
@@ -109,12 +108,13 @@ class DeadlineListView(viewutils.DeadlineManagementMixin, TemplateView):
                         assignment_groups=group_list,
                         assignment=self.assignment,
                         devilryrole=self.request.cradmin_instance.get_devilryrole_for_requestuser(),
-                        value=deadline)
+                        value=deadline,
+                    )
                 )
             )
         return listbuilder_list
 
     def get_context_data(self, **kwargs):
         context_data = super(DeadlineListView, self).get_context_data(**kwargs)
-        context_data['listbuilder_list'] = self.__make_listbuilder_list()
+        context_data["listbuilder_list"] = self.__make_listbuilder_list()
         return context_data

@@ -26,6 +26,7 @@ class ProgressPrintIterator:
             # including the last iteration (which may be less than 500 items),
             # use ``if is_end_of_group``
     """
+
     def __init__(self, iterator, total_count, what, items_per_group=500, log_function=None):
         """
 
@@ -55,10 +56,11 @@ class ProgressPrintIterator:
                     estimated_end_delta = time_used / progress_percent * (100 - progress_percent)
                     estimated_end_minutes = round(estimated_end_delta.total_seconds() / 60, 2)
                 else:
-                    estimated_end_minutes = 'UNKNOWN'
+                    estimated_end_minutes = "UNKNOWN"
                 self.log_function(
-                    f'{round(progress_percent, 1)}% [{index}/{self.total_count}]: {self.what}. '
-                    f'Est. minutes remaining: {estimated_end_minutes}')
+                    f"{round(progress_percent, 1)}% [{index}/{self.total_count}]: {self.what}. "
+                    f"Est. minutes remaining: {estimated_end_minutes}"
+                )
 
 
 def update_notifications_for_user(user):
@@ -67,15 +69,16 @@ def update_notifications_for_user(user):
     email to the email address maching the new suffix.
     """
     from devilry.devilry_account.models import UserEmail, UserName
-    from_email_suffixes = ['@old.shit.example.com', '@oldstuff.example.com', '@superoldstuff.example.com']
-    new_primary_email_suffix = '@example.com'
+
+    from_email_suffixes = ["@old.shit.example.com", "@oldstuff.example.com", "@superoldstuff.example.com"]
+    new_primary_email_suffix = "@example.com"
 
     # Convert from old to new primary
     for from_email_suffix in from_email_suffixes:
         if user.useremail_set.filter(email__endswith=from_email_suffix).exists():
             matched_email = user.useremail_set.filter(email__endswith=from_email_suffix).first()
             username = user.shortname
-            new_email = f'{username}{new_primary_email_suffix}'
+            new_email = f"{username}{new_primary_email_suffix}"
 
             # Prevent generating duplicates (which is an IntegrityError enforced by the unique constraint in the database)
             if not UserEmail.objects.filter(email=new_email).exists():
@@ -94,7 +97,7 @@ def update_notifications_for_user(user):
 
 if __name__ == "__main__":
     # For development:
-    os.environ.setdefault('DJANGOENV', 'develop')
+    os.environ.setdefault("DJANGOENV", "develop")
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "devilry.project.settingsproxy")
     django.setup()
 
@@ -104,9 +107,10 @@ if __name__ == "__main__":
 
     user_queryset = get_user_model().objects
     for user, is_end_of_group in ProgressPrintIterator(
-            iterator=user_queryset.iterator(),
-            total_count=user_queryset.count(),
-            what='Processing users',
-            items_per_group=300):
+        iterator=user_queryset.iterator(),
+        total_count=user_queryset.count(),
+        what="Processing users",
+        items_per_group=300,
+    ):
         with transaction.atomic():
             update_notifications_for_user(user=user)

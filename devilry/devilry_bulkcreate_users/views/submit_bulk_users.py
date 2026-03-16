@@ -20,19 +20,14 @@ class EmailListForm(forms.Form):
         self.helper = helper.FormHelper(self)
         self.helper.form_action = ""
         self.helper.layout = layout.Layout(
-            layout.Fieldset(
-                gettext_lazy('Enter list of e-mails for new users'),
-                'email_list'
-            ),
-            layout.Div(
-                layout.Submit('submit', gettext_lazy('Submit'), css_class='btn btn-primary')
-            )
+            layout.Fieldset(gettext_lazy("Enter list of e-mails for new users"), "email_list"),
+            layout.Div(layout.Submit("submit", gettext_lazy("Submit"), css_class="btn btn-primary")),
         )
 
     def validate_userdata(self):
         bulkcreator = create_users.BulkCreateUsers()
-        bulkcreator.add_userdata(self.cleaned_data['email_list'])
-        return {'valid': bulkcreator.get_userdata(), 'conflicting': bulkcreator.get_conflicting_users()}
+        bulkcreator.add_userdata(self.cleaned_data["email_list"])
+        return {"valid": bulkcreator.get_userdata(), "conflicting": bulkcreator.get_conflicting_users()}
 
 
 class IsSuperuserPermissionMixin(object):
@@ -42,6 +37,7 @@ class IsSuperuserPermissionMixin(object):
 
     TODO: There is probably something like this class somewhere else, that should rather be used?
     """
+
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_superuser:
             raise exceptions.PermissionDenied("This view is only available for superusers")
@@ -57,8 +53,9 @@ class SubmitUsers(IsSuperuserPermissionMixin, edit.FormView):
 
     The validated result will be displayed and stored in other views.
     """
+
     form_class = EmailListForm
-    template_name = 'devilry_bulkcreate_users/submit_bulkcreate_users.django.html'
+    template_name = "devilry_bulkcreate_users/submit_bulkcreate_users.django.html"
 
     def __init__(self):
         super(SubmitUsers, self).__init__()
@@ -73,8 +70,8 @@ class SubmitUsers(IsSuperuserPermissionMixin, edit.FormView):
         :return: result from superclass
         """
         status = form.validate_userdata()
-        self.conflicting_users = status['conflicting']
-        self.valid_users = status['valid']
+        self.conflicting_users = status["conflicting"]
+        self.valid_users = status["valid"]
         return super(SubmitUsers, self).form_valid(form)
 
     def get_form(self, form_class):
@@ -89,9 +86,9 @@ class SubmitUsers(IsSuperuserPermissionMixin, edit.FormView):
         """
         :return: url to `confirm_bulkcreated_users` with json dump of valid and conflicting users from validation
         """
-        return '{}?valid_users={}&conflicting_users={}'.format(
-                urls.reverse('confirm_bulkcreated_users'),
-                json.dumps(self.valid_users), json.dumps(self.conflicting_users))
+        return "{}?valid_users={}&conflicting_users={}".format(
+            urls.reverse("confirm_bulkcreated_users"), json.dumps(self.valid_users), json.dumps(self.conflicting_users)
+        )
 
 
 class ConfirmUsers(IsSuperuserPermissionMixin, base.TemplateView):
@@ -99,20 +96,21 @@ class ConfirmUsers(IsSuperuserPermissionMixin, base.TemplateView):
     Display results from validation performed in :class:`SubmitUsers`, and allow current user
     to confirm bulkcreation
     """
-    template_name = 'devilry_bulkcreate_users/confirm_bulkcreated_users.django.html'
+
+    template_name = "devilry_bulkcreate_users/confirm_bulkcreated_users.django.html"
 
     def get_context_data(self, **kwargs):
         """
         fetch json-encoded validationresult from queryparams and pass them along to the view
         """
         context = super(ConfirmUsers, self).get_context_data(**kwargs)
-        json_valid_users = self.request.GET.get('valid_users', {})
+        json_valid_users = self.request.GET.get("valid_users", {})
         valid_users = json.loads(json_valid_users)
-        conflicting_users = json.loads(self.request.GET.get('conflicting_users', {}))
-        context['valid_users'] = valid_users
-        context['conflicting_users'] = conflicting_users
-        context['confirmation_url'] = urls.reverse('save_bulkcreated_users', kwargs={'userdata': json_valid_users})
-        context['cancel_url'] = urls.reverse('bulkcreate_users_by_email')
+        conflicting_users = json.loads(self.request.GET.get("conflicting_users", {}))
+        context["valid_users"] = valid_users
+        context["conflicting_users"] = conflicting_users
+        context["confirmation_url"] = urls.reverse("save_bulkcreated_users", kwargs={"userdata": json_valid_users})
+        context["cancel_url"] = urls.reverse("bulkcreate_users_by_email")
         print(context)
         return context
 
@@ -121,9 +119,10 @@ class SaveConfirmedUsers(IsSuperuserPermissionMixin, base.RedirectView):
     """
     Save validated and confirmed userdata as new :class:`User`\s, then redirect to :class:`DisplayCreatedUsers`
     """
+
     permanent = True
     query_string = True
-    pattern_name = 'display_bulkcreated_users'
+    pattern_name = "display_bulkcreated_users"
 
     def __save_users(self, userdata):
         """
@@ -144,11 +143,11 @@ class SaveConfirmedUsers(IsSuperuserPermissionMixin, base.RedirectView):
         """
         Load userdata from kwargs and save the users (using `__save_users`)
         """
-        userdata = json.loads(kwargs.get('userdata', "{}"))
-        del(kwargs['userdata'])
+        userdata = json.loads(kwargs.get("userdata", "{}"))
+        del kwargs["userdata"]
 
         created_users = json.dumps(self.__save_users(userdata))
-        kwargs['created_users'] = created_users
+        kwargs["created_users"] = created_users
         return super(SaveConfirmedUsers, self).get_redirect_url(*args, **kwargs)
 
 
@@ -156,12 +155,13 @@ class DisplayCreatedUsers(IsSuperuserPermissionMixin, base.TemplateView):
     """
     Display list of newly created :class:`User`\s
     """
-    template_name = 'devilry_bulkcreate_users/show_bulkcreated_users.django.html'
+
+    template_name = "devilry_bulkcreate_users/show_bulkcreated_users.django.html"
 
     def get_context_data(self, **kwargs):
         """
         load created users from `kwargs` and present them in template (via context).
         """
         context = super(DisplayCreatedUsers, self).get_context_data(**kwargs)
-        context['created_users'] = json.loads(kwargs.get('created_users', "[]"))
+        context["created_users"] = json.loads(kwargs.get("created_users", "[]"))
         return context

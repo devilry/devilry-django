@@ -4,6 +4,4 @@ ALIAS = 2
 
 
 def as_choices_tuple():
-    return ((ELECTRONIC, 'Electronic'),
-            (NON_ELECTRONIC, 'Non electronic'),
-            (ALIAS, 'Alias'))
+    return ((ELECTRONIC, "Electronic"), (NON_ELECTRONIC, "Non electronic"), (ALIAS, "Alias"))

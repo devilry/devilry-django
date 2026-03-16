@@ -26,2304 +26,2056 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def test_title(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           long_name='Assignment One')
-        baker.make('core.Examiner', relatedexaminer__user=testuser,
-                   assignmentgroup__parentnode=testassignment)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
-                                                          requestuser=testuser)
-        self.assertIn(
-            'Assignment One',
-            mockresponse.selector.one('title').alltext_normalized)
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start", long_name="Assignment One"
+        )
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup__parentnode=testassignment)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
+        self.assertIn("Assignment One", mockresponse.selector.one("title").alltext_normalized)
 
     def test_h1(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           long_name='Assignment One')
-        baker.make('core.Examiner', relatedexaminer__user=testuser,
-                   assignmentgroup__parentnode=testassignment)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
-                                                          requestuser=testuser)
-        self.assertEqual(
-            'Assignment One',
-            mockresponse.selector.one('h1').alltext_normalized)
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start", long_name="Assignment One"
+        )
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup__parentnode=testassignment)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
+        self.assertEqual("Assignment One", mockresponse.selector.one("h1").alltext_normalized)
 
     def test_not_groups_where_not_examiner(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        baker.make('core.Examiner',
-                   assignmentgroup__parentnode=testassignment)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
-                                                          requestuser=testuser)
-        self.assertEqual(
-            0,
-            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        baker.make("core.Examiner", assignmentgroup__parentnode=testassignment)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
+        self.assertEqual(0, mockresponse.selector.count(".cradmin-legacy-listbuilder-itemvalue"))
 
     def test_groups_sanity(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        baker.make('core.Examiner', relatedexaminer__user=testuser,
-                   assignmentgroup__parentnode=testassignment)
-        baker.make('core.Examiner', relatedexaminer__user=testuser,
-                   assignmentgroup__parentnode=testassignment)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
-                                                          requestuser=testuser)
-        self.assertEqual(
-            2,
-            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup__parentnode=testassignment)
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup__parentnode=testassignment)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
+        self.assertEqual(2, mockresponse.selector.count(".cradmin-legacy-listbuilder-itemvalue"))
 
     def test_anonymizationmode_off_candidates(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testgroup = baker.make('core.AssignmentGroup',
-                               parentnode=baker.make_recipe(
-                                   'devilry.apps.core.assignment_activeperiod_start',
-                                   anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF))
-        baker.make('core.Candidate',
-                   assignment_group=testgroup,
-                   relatedstudent__user__shortname='unanonymizedfullname',
-                   relatedstudent__user__fullname='A un-anonymized fullname',
-                   relatedstudent__automatic_anonymous_id='MyAnonymousID')
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup.assignment,
-                                                          requestuser=testuser)
-        self.assertContains(mockresponse.response, 'unanonymizedfullname')
-        self.assertContains(mockresponse.response, 'A un-anonymized fullname')
-        self.assertNotContains(mockresponse.response, 'MyAnonymousID')
+        testgroup = baker.make(
+            "core.AssignmentGroup",
+            parentnode=baker.make_recipe(
+                "devilry.apps.core.assignment_activeperiod_start", anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF
+            ),
+        )
+        baker.make(
+            "core.Candidate",
+            assignment_group=testgroup,
+            relatedstudent__user__shortname="unanonymizedfullname",
+            relatedstudent__user__fullname="A un-anonymized fullname",
+            relatedstudent__automatic_anonymous_id="MyAnonymousID",
+        )
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup.assignment, requestuser=testuser)
+        self.assertContains(mockresponse.response, "unanonymizedfullname")
+        self.assertContains(mockresponse.response, "A un-anonymized fullname")
+        self.assertNotContains(mockresponse.response, "MyAnonymousID")
 
     def test_anonymizationmode_semi_anonymous_candidates(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testgroup = baker.make('core.AssignmentGroup',
-                               parentnode=baker.make_recipe(
-                                   'devilry.apps.core.assignment_activeperiod_start',
-                                   anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS))
-        baker.make('core.Candidate',
-                   assignment_group=testgroup,
-                   relatedstudent__user__shortname='unanonymizedfullname',
-                   relatedstudent__user__fullname='A un-anonymized fullname',
-                   relatedstudent__automatic_anonymous_id='MyAnonymousID')
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup.assignment,
-                                                          requestuser=testuser)
-        self.assertNotContains(mockresponse.response, 'unanonymizedfullname')
-        self.assertNotContains(mockresponse.response, 'A un-anonymized fullname')
-        self.assertContains(mockresponse.response, 'MyAnonymousID')
+        testgroup = baker.make(
+            "core.AssignmentGroup",
+            parentnode=baker.make_recipe(
+                "devilry.apps.core.assignment_activeperiod_start",
+                anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS,
+            ),
+        )
+        baker.make(
+            "core.Candidate",
+            assignment_group=testgroup,
+            relatedstudent__user__shortname="unanonymizedfullname",
+            relatedstudent__user__fullname="A un-anonymized fullname",
+            relatedstudent__automatic_anonymous_id="MyAnonymousID",
+        )
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup.assignment, requestuser=testuser)
+        self.assertNotContains(mockresponse.response, "unanonymizedfullname")
+        self.assertNotContains(mockresponse.response, "A un-anonymized fullname")
+        self.assertContains(mockresponse.response, "MyAnonymousID")
 
     def test_anonymizationmode_fully_anonymous_candidates(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testgroup = baker.make('core.AssignmentGroup',
-                               parentnode=baker.make_recipe(
-                                   'devilry.apps.core.assignment_activeperiod_start',
-                                   anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS))
-        baker.make('core.Candidate',
-                   assignment_group=testgroup,
-                   relatedstudent__user__shortname='unanonymizedfullname',
-                   relatedstudent__user__fullname='A un-anonymized fullname',
-                   relatedstudent__automatic_anonymous_id='MyAnonymousID')
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup.assignment,
-                                                          requestuser=testuser)
-        self.assertNotContains(mockresponse.response, 'unanonymizedfullname')
-        self.assertNotContains(mockresponse.response, 'A un-anonymized fullname')
-        self.assertContains(mockresponse.response, 'MyAnonymousID')
+        testgroup = baker.make(
+            "core.AssignmentGroup",
+            parentnode=baker.make_recipe(
+                "devilry.apps.core.assignment_activeperiod_start",
+                anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS,
+            ),
+        )
+        baker.make(
+            "core.Candidate",
+            assignment_group=testgroup,
+            relatedstudent__user__shortname="unanonymizedfullname",
+            relatedstudent__user__fullname="A un-anonymized fullname",
+            relatedstudent__automatic_anonymous_id="MyAnonymousID",
+        )
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup.assignment, requestuser=testuser)
+        self.assertNotContains(mockresponse.response, "unanonymizedfullname")
+        self.assertNotContains(mockresponse.response, "A un-anonymized fullname")
+        self.assertContains(mockresponse.response, "MyAnonymousID")
 
     def test_querycount(self):
-        testuser = baker.make(settings.AUTH_USER_MODEL,
-                              fullname='testuser')
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testuser = baker.make(settings.AUTH_USER_MODEL, fullname="testuser")
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
         for number in range(30):
-            group = baker.make('core.AssignmentGroup', parentnode=testassignment)
-            baker.make('core.Examiner',
-                       relatedexaminer__user=testuser,
-                       assignmentgroup=group)
-            baker.make('core.Examiner',
-                       relatedexaminer__user__fullname='examiner{}'.format(number),
-                       assignmentgroup=group)
-            baker.make('core.Candidate',
-                       relatedstudent__user__fullname='candidate{}'.format(number),
-                       assignment_group=group)
+            group = baker.make("core.AssignmentGroup", parentnode=testassignment)
+            baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=group)
+            baker.make(
+                "core.Examiner", relatedexaminer__user__fullname="examiner{}".format(number), assignmentgroup=group
+            )
+            baker.make(
+                "core.Candidate", relatedstudent__user__fullname="candidate{}".format(number), assignment_group=group
+            )
         with self.assertNumQueries(15):
-            self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
-                                               requestuser=testuser)
+            self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
 
     def test_querycount_anonymous(self):
-        testuser = baker.make(settings.AUTH_USER_MODEL,
-                              fullname='testuser')
+        testuser = baker.make(settings.AUTH_USER_MODEL, fullname="testuser")
         testassignment = baker.make_recipe(
-            'devilry.apps.core.assignment_activeperiod_start',
-            anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+            "devilry.apps.core.assignment_activeperiod_start",
+            anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS,
+        )
         for number in range(30):
-            group = baker.make('core.AssignmentGroup', parentnode=testassignment)
-            baker.make('core.Examiner',
-                       relatedexaminer__user=testuser,
-                       assignmentgroup=group)
-            baker.make('core.Examiner',
-                       relatedexaminer__user__fullname='examiner{}'.format(number),
-                       assignmentgroup=group)
-            baker.make('core.Candidate',
-                       relatedstudent__user__fullname='candidate{}'.format(number),
-                       assignment_group=group)
+            group = baker.make("core.AssignmentGroup", parentnode=testassignment)
+            baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=group)
+            baker.make(
+                "core.Examiner", relatedexaminer__user__fullname="examiner{}".format(number), assignmentgroup=group
+            )
+            baker.make(
+                "core.Candidate", relatedstudent__user__fullname="candidate{}".format(number), assignment_group=group
+            )
         with self.assertNumQueries(15):
-            self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
-                                               requestuser=testuser)
+            self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
 
     def test_querycount_points_to_grade_mapper_custom_table(self):
-        testuser = baker.make(settings.AUTH_USER_MODEL,
-                              fullname='testuser')
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE)
-        point_to_grade_map = baker.make('core.PointToGradeMap',
-                                        assignment=testassignment, invalid=False)
-        baker.make('core.PointRangeToGrade',
-                   point_to_grade_map=point_to_grade_map,
-                   minimum_points=0,
-                   maximum_points=10,
-                   grade='Bad')
-        baker.make('core.PointRangeToGrade',
-                   point_to_grade_map=point_to_grade_map,
-                   minimum_points=11,
-                   maximum_points=70,
-                   grade='Ok')
-        baker.make('core.PointRangeToGrade',
-                   point_to_grade_map=point_to_grade_map,
-                   minimum_points=71,
-                   maximum_points=100,
-                   grade='Best')
+        testuser = baker.make(settings.AUTH_USER_MODEL, fullname="testuser")
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start",
+            points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE,
+        )
+        point_to_grade_map = baker.make("core.PointToGradeMap", assignment=testassignment, invalid=False)
+        baker.make(
+            "core.PointRangeToGrade",
+            point_to_grade_map=point_to_grade_map,
+            minimum_points=0,
+            maximum_points=10,
+            grade="Bad",
+        )
+        baker.make(
+            "core.PointRangeToGrade",
+            point_to_grade_map=point_to_grade_map,
+            minimum_points=11,
+            maximum_points=70,
+            grade="Ok",
+        )
+        baker.make(
+            "core.PointRangeToGrade",
+            point_to_grade_map=point_to_grade_map,
+            minimum_points=71,
+            maximum_points=100,
+            grade="Best",
+        )
         for number in range(30):
-            group = baker.make('core.AssignmentGroup', parentnode=testassignment)
-            baker.make('core.Examiner',
-                       relatedexaminer__user=testuser,
-                       assignmentgroup=group)
-            baker.make('core.Candidate',
-                       relatedstudent__user__fullname='candidate{}'.format(number),
-                       assignment_group=group)
-            devilry_group_baker_factories.feedbackset_first_attempt_published(
-                group=group, grading_points=3)
+            group = baker.make("core.AssignmentGroup", parentnode=testassignment)
+            baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=group)
+            baker.make(
+                "core.Candidate", relatedstudent__user__fullname="candidate{}".format(number), assignment_group=group
+            )
+            devilry_group_baker_factories.feedbackset_first_attempt_published(group=group, grading_points=3)
         prefetched_assignment = Assignment.objects.prefetch_point_to_grade_map().get(id=testassignment.id)
         with self.assertNumQueries(16):
-            self.mock_http200_getrequest_htmls(cradmin_role=prefetched_assignment,
-                                               requestuser=testuser)
+            self.mock_http200_getrequest_htmls(cradmin_role=prefetched_assignment, requestuser=testuser)
 
     def test_group_render_title_name_order(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup)
-        baker.make('core.Candidate',
-                   assignment_group=testgroup,
-                   relatedstudent__user__shortname='userb')
-        baker.make('core.Candidate',
-                   assignment_group=testgroup,
-                   relatedstudent__user__shortname='usera')
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
-                                                          requestuser=testuser)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup)
+        baker.make("core.Candidate", assignment_group=testgroup, relatedstudent__user__shortname="userb")
+        baker.make("core.Candidate", assignment_group=testgroup, relatedstudent__user__shortname="usera")
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
         self.assertEqual(
-            'usera , userb',
+            "usera , userb",
             mockresponse.selector.one(
-                '.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+                ".cradmin-legacy-listbuilder-itemvalue-titledescription-title"
+            ).alltext_normalized,
+        )
 
     def test_group_render_title_name_order_fullname(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup)
-        baker.make('core.Candidate',
-                   assignment_group=testgroup,
-                   relatedstudent__user__shortname='userb')
-        baker.make('core.Candidate',
-                   assignment_group=testgroup,
-                   relatedstudent__user__shortname='userc',
-                   relatedstudent__user__fullname='A user')
-        baker.make('core.Candidate',
-                   assignment_group=testgroup,
-                   relatedstudent__user__shortname='usera')
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
-                                                          requestuser=testuser)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup)
+        baker.make("core.Candidate", assignment_group=testgroup, relatedstudent__user__shortname="userb")
+        baker.make(
+            "core.Candidate",
+            assignment_group=testgroup,
+            relatedstudent__user__shortname="userc",
+            relatedstudent__user__fullname="A user",
+        )
+        baker.make("core.Candidate", assignment_group=testgroup, relatedstudent__user__shortname="usera")
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
         self.assertEqual(
-            'A user(userc) , usera , userb',
+            "A user(userc) , usera , userb",
             mockresponse.selector.one(
-                '.cradmin-legacy-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+                ".cradmin-legacy-listbuilder-itemvalue-titledescription-title"
+            ).alltext_normalized,
+        )
 
     def test_group_render_group_url(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
-                                                          requestuser=testuser)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
         self.assertEqual(
             reverse_cradmin_url(
-                instanceid='devilry_group_examiner',
-                appname='feedbackfeed',
+                instanceid="devilry_group_examiner",
+                appname="feedbackfeed",
                 roleid=testgroup.id,
                 viewname=crapp.INDEXVIEW_NAME,
             ),
-            mockresponse.selector.one('a.cradmin-legacy-listbuilder-itemframe')['href'])
+            mockresponse.selector.one("a.cradmin-legacy-listbuilder-itemframe")["href"],
+        )
 
     def test_search_nomatch(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testgroup = baker.make('core.AssignmentGroup',
-                               parentnode=baker.make_recipe(
-                                   'devilry.apps.core.assignment_activeperiod_start'))
-        baker.make('core.Candidate',
-                   assignment_group=testgroup,
-                   relatedstudent__user__shortname='testuser')
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup)
+        testgroup = baker.make(
+            "core.AssignmentGroup", parentnode=baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        )
+        baker.make("core.Candidate", assignment_group=testgroup, relatedstudent__user__shortname="testuser")
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
-                cradmin_role=testgroup.assignment,
-                viewkwargs={'filters_string': 'search-nomatch'},
-                requestuser=testuser)
-        self.assertEqual(
-            0,
-            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
+            cradmin_role=testgroup.assignment, viewkwargs={"filters_string": "search-nomatch"}, requestuser=testuser
+        )
+        self.assertEqual(0, mockresponse.selector.count(".cradmin-legacy-listbuilder-itemvalue"))
 
     def test_search_match_fullname(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testgroup = baker.make('core.AssignmentGroup',
-                               parentnode=baker.make_recipe(
-                                   'devilry.apps.core.assignment_activeperiod_start'))
-        baker.make('core.Candidate',
-                   assignment_group=testgroup,
-                   relatedstudent__user__fullname='TestUser')
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup)
+        testgroup = baker.make(
+            "core.AssignmentGroup", parentnode=baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        )
+        baker.make("core.Candidate", assignment_group=testgroup, relatedstudent__user__fullname="TestUser")
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
-                cradmin_role=testgroup.assignment,
-                viewkwargs={'filters_string': 'search-TestUser'},
-                requestuser=testuser)
-        self.assertEqual(
-            1,
-            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
+            cradmin_role=testgroup.assignment, viewkwargs={"filters_string": "search-TestUser"}, requestuser=testuser
+        )
+        self.assertEqual(1, mockresponse.selector.count(".cradmin-legacy-listbuilder-itemvalue"))
 
     def test_search_match_shortname(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testgroup = baker.make('core.AssignmentGroup',
-                               parentnode=baker.make_recipe(
-                                   'devilry.apps.core.assignment_activeperiod_start'))
-        baker.make('core.Candidate',
-                   assignment_group=testgroup,
-                   relatedstudent__user__shortname='testuser')
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup)
+        testgroup = baker.make(
+            "core.AssignmentGroup", parentnode=baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        )
+        baker.make("core.Candidate", assignment_group=testgroup, relatedstudent__user__shortname="testuser")
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
-                cradmin_role=testgroup.assignment,
-                viewkwargs={'filters_string': 'search-testuser'},
-                requestuser=testuser)
-        self.assertEqual(
-            1,
-            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
+            cradmin_role=testgroup.assignment, viewkwargs={"filters_string": "search-testuser"}, requestuser=testuser
+        )
+        self.assertEqual(1, mockresponse.selector.count(".cradmin-legacy-listbuilder-itemvalue"))
 
     def test_search_anonymous_nomatch_fullname(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testgroup = baker.make('core.AssignmentGroup',
-                               parentnode=baker.make_recipe(
-                                   'devilry.apps.core.assignment_activeperiod_start',
-                                   anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS))
-        baker.make('core.Candidate',
-                   assignment_group=testgroup,
-                   relatedstudent__user__fullname='TestUser')
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup)
+        testgroup = baker.make(
+            "core.AssignmentGroup",
+            parentnode=baker.make_recipe(
+                "devilry.apps.core.assignment_activeperiod_start",
+                anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS,
+            ),
+        )
+        baker.make("core.Candidate", assignment_group=testgroup, relatedstudent__user__fullname="TestUser")
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
-                cradmin_role=testgroup.assignment,
-                viewkwargs={'filters_string': 'search-TestUser'},
-                requestuser=testuser)
-        self.assertEqual(
-            0,
-            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
+            cradmin_role=testgroup.assignment, viewkwargs={"filters_string": "search-TestUser"}, requestuser=testuser
+        )
+        self.assertEqual(0, mockresponse.selector.count(".cradmin-legacy-listbuilder-itemvalue"))
 
     def test_search_anonymous_nomatch_shortname(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testgroup = baker.make('core.AssignmentGroup',
-                               parentnode=baker.make_recipe(
-                                   'devilry.apps.core.assignment_activeperiod_start',
-                                   anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS))
-        baker.make('core.Candidate',
-                   assignment_group=testgroup,
-                   relatedstudent__user__shortname='testuser')
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup)
+        testgroup = baker.make(
+            "core.AssignmentGroup",
+            parentnode=baker.make_recipe(
+                "devilry.apps.core.assignment_activeperiod_start",
+                anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS,
+            ),
+        )
+        baker.make("core.Candidate", assignment_group=testgroup, relatedstudent__user__shortname="testuser")
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
-                cradmin_role=testgroup.assignment,
-                viewkwargs={'filters_string': 'search-testuser'},
-                requestuser=testuser)
-        self.assertEqual(
-            0,
-            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
+            cradmin_role=testgroup.assignment, viewkwargs={"filters_string": "search-testuser"}, requestuser=testuser
+        )
+        self.assertEqual(0, mockresponse.selector.count(".cradmin-legacy-listbuilder-itemvalue"))
 
     def test_search_anonymous_nomatch_candidate_id_from_candidate(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testgroup = baker.make('core.AssignmentGroup',
-                               parentnode=baker.make_recipe(
-                                   'devilry.apps.core.assignment_activeperiod_start',
-                                   anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS))
-        baker.make('core.Candidate',
-                   assignment_group=testgroup,
-                   candidate_id='MyCandidateID')
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup)
+        testgroup = baker.make(
+            "core.AssignmentGroup",
+            parentnode=baker.make_recipe(
+                "devilry.apps.core.assignment_activeperiod_start",
+                anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS,
+            ),
+        )
+        baker.make("core.Candidate", assignment_group=testgroup, candidate_id="MyCandidateID")
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
-                cradmin_role=testgroup.assignment,
-                viewkwargs={'filters_string': 'search-MyCandidateID'},
-                requestuser=testuser)
-        self.assertEqual(
-            0,
-            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
+            cradmin_role=testgroup.assignment,
+            viewkwargs={"filters_string": "search-MyCandidateID"},
+            requestuser=testuser,
+        )
+        self.assertEqual(0, mockresponse.selector.count(".cradmin-legacy-listbuilder-itemvalue"))
 
     def test_search_anonymous_match_automatic_candidate_id_from_relatedstudent(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testgroup = baker.make('core.AssignmentGroup',
-                               parentnode=baker.make_recipe(
-                                   'devilry.apps.core.assignment_activeperiod_start',
-                                   anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS))
-        baker.make('core.Candidate',
-                   assignment_group=testgroup,
-                   relatedstudent__user__fullname='TestUser',
-                   relatedstudent__candidate_id='MyCandidateID')
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup)
+        testgroup = baker.make(
+            "core.AssignmentGroup",
+            parentnode=baker.make_recipe(
+                "devilry.apps.core.assignment_activeperiod_start",
+                anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS,
+            ),
+        )
+        baker.make(
+            "core.Candidate",
+            assignment_group=testgroup,
+            relatedstudent__user__fullname="TestUser",
+            relatedstudent__candidate_id="MyCandidateID",
+        )
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
-                cradmin_role=testgroup.assignment,
-                viewkwargs={'filters_string': 'search-MyCandidateID'},
-                requestuser=testuser)
-        self.assertEqual(
-            1,
-            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
+            cradmin_role=testgroup.assignment,
+            viewkwargs={"filters_string": "search-MyCandidateID"},
+            requestuser=testuser,
+        )
+        self.assertEqual(1, mockresponse.selector.count(".cradmin-legacy-listbuilder-itemvalue"))
 
     def test_search_anonymous_match_automatic_anonymous_id(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testgroup = baker.make('core.AssignmentGroup',
-                               parentnode=baker.make_recipe(
-                                   'devilry.apps.core.assignment_activeperiod_start',
-                                   anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS))
-        baker.make('core.Candidate',
-                   assignment_group=testgroup,
-                   relatedstudent__user__fullname='TestUser',
-                   relatedstudent__automatic_anonymous_id='MyAnonymousID')
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup)
+        testgroup = baker.make(
+            "core.AssignmentGroup",
+            parentnode=baker.make_recipe(
+                "devilry.apps.core.assignment_activeperiod_start",
+                anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS,
+            ),
+        )
+        baker.make(
+            "core.Candidate",
+            assignment_group=testgroup,
+            relatedstudent__user__fullname="TestUser",
+            relatedstudent__automatic_anonymous_id="MyAnonymousID",
+        )
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
-                cradmin_role=testgroup.assignment,
-                viewkwargs={'filters_string': 'search-MyAnonymousID'},
-                requestuser=testuser)
-        self.assertEqual(
-            1,
-            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
+            cradmin_role=testgroup.assignment,
+            viewkwargs={"filters_string": "search-MyAnonymousID"},
+            requestuser=testuser,
+        )
+        self.assertEqual(1, mockresponse.selector.count(".cradmin-legacy-listbuilder-itemvalue"))
 
     def test_search_anonymous_uses_custom_candidate_ids_nomatch_fullname(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testgroup = baker.make('core.AssignmentGroup',
-                               parentnode=baker.make_recipe(
-                                   'devilry.apps.core.assignment_activeperiod_start',
-                                   uses_custom_candidate_ids=True,
-                                   anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS))
-        baker.make('core.Candidate',
-                   assignment_group=testgroup,
-                   relatedstudent__user__fullname='TestUser')
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup)
+        testgroup = baker.make(
+            "core.AssignmentGroup",
+            parentnode=baker.make_recipe(
+                "devilry.apps.core.assignment_activeperiod_start",
+                uses_custom_candidate_ids=True,
+                anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS,
+            ),
+        )
+        baker.make("core.Candidate", assignment_group=testgroup, relatedstudent__user__fullname="TestUser")
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
-                cradmin_role=testgroup.assignment,
-                viewkwargs={'filters_string': 'search-TestUser'},
-                requestuser=testuser)
-        self.assertEqual(
-            0,
-            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
+            cradmin_role=testgroup.assignment, viewkwargs={"filters_string": "search-TestUser"}, requestuser=testuser
+        )
+        self.assertEqual(0, mockresponse.selector.count(".cradmin-legacy-listbuilder-itemvalue"))
 
     def test_search_anonymous_uses_custom_candidate_ids_nomatch_shortname(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testgroup = baker.make('core.AssignmentGroup',
-                               parentnode=baker.make_recipe(
-                                   'devilry.apps.core.assignment_activeperiod_start',
-                                   uses_custom_candidate_ids=True,
-                                   anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS))
-        baker.make('core.Candidate',
-                   assignment_group=testgroup,
-                   relatedstudent__user__shortname='testuser')
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup)
+        testgroup = baker.make(
+            "core.AssignmentGroup",
+            parentnode=baker.make_recipe(
+                "devilry.apps.core.assignment_activeperiod_start",
+                uses_custom_candidate_ids=True,
+                anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS,
+            ),
+        )
+        baker.make("core.Candidate", assignment_group=testgroup, relatedstudent__user__shortname="testuser")
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
-                cradmin_role=testgroup.assignment,
-                viewkwargs={'filters_string': 'search-testuser'},
-                requestuser=testuser)
-        self.assertEqual(
-            0,
-            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
+            cradmin_role=testgroup.assignment, viewkwargs={"filters_string": "search-testuser"}, requestuser=testuser
+        )
+        self.assertEqual(0, mockresponse.selector.count(".cradmin-legacy-listbuilder-itemvalue"))
 
     def test_search_anonymous_uses_custom_candidate_ids_nomatch_automatic_candidate_id_from_relatedstudent(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testgroup = baker.make('core.AssignmentGroup',
-                               parentnode=baker.make_recipe(
-                                   'devilry.apps.core.assignment_activeperiod_start',
-                                   uses_custom_candidate_ids=True,
-                                   anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS))
-        baker.make('core.Candidate',
-                   assignment_group=testgroup,
-                   relatedstudent__user__fullname='TestUser',
-                   relatedstudent__candidate_id='MyCandidateID')
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup)
+        testgroup = baker.make(
+            "core.AssignmentGroup",
+            parentnode=baker.make_recipe(
+                "devilry.apps.core.assignment_activeperiod_start",
+                uses_custom_candidate_ids=True,
+                anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS,
+            ),
+        )
+        baker.make(
+            "core.Candidate",
+            assignment_group=testgroup,
+            relatedstudent__user__fullname="TestUser",
+            relatedstudent__candidate_id="MyCandidateID",
+        )
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
-                cradmin_role=testgroup.assignment,
-                viewkwargs={'filters_string': 'search-MyCandidateID'},
-                requestuser=testuser)
-        self.assertEqual(
-            0,
-            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
+            cradmin_role=testgroup.assignment,
+            viewkwargs={"filters_string": "search-MyCandidateID"},
+            requestuser=testuser,
+        )
+        self.assertEqual(0, mockresponse.selector.count(".cradmin-legacy-listbuilder-itemvalue"))
 
     def test_search_anonymous_uses_custom_candidate_ids_nomatch_automatic_anonymous_id(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testgroup = baker.make('core.AssignmentGroup',
-                               parentnode=baker.make_recipe(
-                                   'devilry.apps.core.assignment_activeperiod_start',
-                                   uses_custom_candidate_ids=True,
-                                   anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS))
-        baker.make('core.Candidate',
-                   assignment_group=testgroup,
-                   relatedstudent__user__fullname='TestUser',
-                   relatedstudent__automatic_anonymous_id='MyAnonymousID')
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup)
+        testgroup = baker.make(
+            "core.AssignmentGroup",
+            parentnode=baker.make_recipe(
+                "devilry.apps.core.assignment_activeperiod_start",
+                uses_custom_candidate_ids=True,
+                anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS,
+            ),
+        )
+        baker.make(
+            "core.Candidate",
+            assignment_group=testgroup,
+            relatedstudent__user__fullname="TestUser",
+            relatedstudent__automatic_anonymous_id="MyAnonymousID",
+        )
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
-                cradmin_role=testgroup.assignment,
-                viewkwargs={'filters_string': 'search-MyAnonymousID'},
-                requestuser=testuser)
-        self.assertEqual(
-            0,
-            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
+            cradmin_role=testgroup.assignment,
+            viewkwargs={"filters_string": "search-MyAnonymousID"},
+            requestuser=testuser,
+        )
+        self.assertEqual(0, mockresponse.selector.count(".cradmin-legacy-listbuilder-itemvalue"))
 
     def test_search_anonymous_uses_custom_candidate_ids_match_candidate_id_from_candidate(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testgroup = baker.make('core.AssignmentGroup',
-                               parentnode=baker.make_recipe(
-                                   'devilry.apps.core.assignment_activeperiod_start',
-                                   uses_custom_candidate_ids=True,
-                                   anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS))
-        baker.make('core.Candidate',
-                   assignment_group=testgroup,
-                   candidate_id='MyCandidateID')
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup)
+        testgroup = baker.make(
+            "core.AssignmentGroup",
+            parentnode=baker.make_recipe(
+                "devilry.apps.core.assignment_activeperiod_start",
+                uses_custom_candidate_ids=True,
+                anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS,
+            ),
+        )
+        baker.make("core.Candidate", assignment_group=testgroup, candidate_id="MyCandidateID")
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
-                cradmin_role=testgroup.assignment,
-                viewkwargs={'filters_string': 'search-MyCandidateID'},
-                requestuser=testuser)
-        self.assertEqual(
-            1,
-            mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
+            cradmin_role=testgroup.assignment,
+            viewkwargs={"filters_string": "search-MyCandidateID"},
+            requestuser=testuser,
+        )
+        self.assertEqual(1, mockresponse.selector.count(".cradmin-legacy-listbuilder-itemvalue"))
 
     def __get_titles(self, selector):
         return [
             element.alltext_normalized
-            for element in selector.list(
-                '.cradmin-legacy-listbuilder-itemvalue-titledescription-title')]
+            for element in selector.list(".cradmin-legacy-listbuilder-itemvalue-titledescription-title")
+        ]
 
     def test_orderby_default(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Candidate',
-                   assignment_group=testgroup1,
-                   relatedstudent__user__shortname='b',
-                   relatedstudent__user__fullname='A')
-        baker.make('core.Candidate',
-                   assignment_group=testgroup2,
-                   relatedstudent__user__shortname='a',
-                   relatedstudent__user__fullname='B')
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup1)
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup2)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            requestuser=testuser)
-        self.assertEqual(
-            ['A(b)', 'B(a)'],
-            self.__get_titles(mockresponse.selector))
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make(
+            "core.Candidate",
+            assignment_group=testgroup1,
+            relatedstudent__user__shortname="b",
+            relatedstudent__user__fullname="A",
+        )
+        baker.make(
+            "core.Candidate",
+            assignment_group=testgroup2,
+            relatedstudent__user__shortname="a",
+            relatedstudent__user__fullname="B",
+        )
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup1)
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup2)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
+        self.assertEqual(["A(b)", "B(a)"], self.__get_titles(mockresponse.selector))
 
     def test_orderby_name_descending(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Candidate',
-                   assignment_group=testgroup1,
-                   relatedstudent__user__shortname='b',
-                   relatedstudent__user__fullname='A')
-        baker.make('core.Candidate',
-                   assignment_group=testgroup2,
-                   relatedstudent__user__shortname='a',
-                   relatedstudent__user__fullname='B')
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup1)
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup2)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make(
+            "core.Candidate",
+            assignment_group=testgroup1,
+            relatedstudent__user__shortname="b",
+            relatedstudent__user__fullname="A",
+        )
+        baker.make(
+            "core.Candidate",
+            assignment_group=testgroup2,
+            relatedstudent__user__shortname="a",
+            relatedstudent__user__fullname="B",
+        )
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup1)
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup2)
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'orderby-name_descending'},
-            requestuser=testuser)
-        self.assertEqual(
-            ['B(a)', 'A(b)'],
-            self.__get_titles(mockresponse.selector))
+            cradmin_role=testassignment, viewkwargs={"filters_string": "orderby-name_descending"}, requestuser=testuser
+        )
+        self.assertEqual(["B(a)", "A(b)"], self.__get_titles(mockresponse.selector))
 
     def test_orderby_default_anonymous(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Candidate',
-                   assignment_group=testgroup1,
-                   relatedstudent__automatic_anonymous_id='c')
-        baker.make('core.Candidate',
-                   assignment_group=testgroup2,
-                   relatedstudent__automatic_anonymous_id='b',
-                   relatedstudent__candidate_id='A')
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup1)
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup2)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            requestuser=testuser)
-        self.assertEqual(
-            ['A', 'c'],
-            self.__get_titles(mockresponse.selector))
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start",
+            anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS,
+        )
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Candidate", assignment_group=testgroup1, relatedstudent__automatic_anonymous_id="c")
+        baker.make(
+            "core.Candidate",
+            assignment_group=testgroup2,
+            relatedstudent__automatic_anonymous_id="b",
+            relatedstudent__candidate_id="A",
+        )
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup1)
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup2)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
+        self.assertEqual(["A", "c"], self.__get_titles(mockresponse.selector))
 
     def test_orderby_name_descending_anonymous(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Candidate',
-                   assignment_group=testgroup1,
-                   relatedstudent__automatic_anonymous_id='c')
-        baker.make('core.Candidate',
-                   assignment_group=testgroup2,
-                   relatedstudent__automatic_anonymous_id='b',
-                   relatedstudent__candidate_id='A')
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup1)
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup2)
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start",
+            anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS,
+        )
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Candidate", assignment_group=testgroup1, relatedstudent__automatic_anonymous_id="c")
+        baker.make(
+            "core.Candidate",
+            assignment_group=testgroup2,
+            relatedstudent__automatic_anonymous_id="b",
+            relatedstudent__candidate_id="A",
+        )
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup1)
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup2)
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'orderby-name_descending'},
-            requestuser=testuser)
-        self.assertEqual(
-            ['c', 'A'],
-            self.__get_titles(mockresponse.selector))
+            cradmin_role=testassignment, viewkwargs={"filters_string": "orderby-name_descending"}, requestuser=testuser
+        )
+        self.assertEqual(["c", "A"], self.__get_titles(mockresponse.selector))
 
     def test_orderby_default_anonymous_uses_custom_candidate_ids(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           uses_custom_candidate_ids=True,
-                                           anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Candidate',
-                   assignment_group=testgroup1,
-                   candidate_id='b')
-        baker.make('core.Candidate',
-                   assignment_group=testgroup2,
-                   candidate_id='a')
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup1)
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup2)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            requestuser=testuser)
-        self.assertEqual(
-            ['a', 'b'],
-            self.__get_titles(mockresponse.selector))
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start",
+            uses_custom_candidate_ids=True,
+            anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS,
+        )
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Candidate", assignment_group=testgroup1, candidate_id="b")
+        baker.make("core.Candidate", assignment_group=testgroup2, candidate_id="a")
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup1)
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup2)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
+        self.assertEqual(["a", "b"], self.__get_titles(mockresponse.selector))
 
     def test_orderby_name_descending_anonymous_uses_custom_candidate_ids(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           uses_custom_candidate_ids=True,
-                                           anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Candidate',
-                   assignment_group=testgroup1,
-                   candidate_id='b')
-        baker.make('core.Candidate',
-                   assignment_group=testgroup2,
-                   candidate_id='a')
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup1)
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup2)
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start",
+            uses_custom_candidate_ids=True,
+            anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS,
+        )
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Candidate", assignment_group=testgroup1, candidate_id="b")
+        baker.make("core.Candidate", assignment_group=testgroup2, candidate_id="a")
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup1)
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup2)
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'orderby-name_descending'},
-            requestuser=testuser)
-        self.assertEqual(
-            ['b', 'a'],
-            self.__get_titles(mockresponse.selector))
+            cradmin_role=testassignment, viewkwargs={"filters_string": "orderby-name_descending"}, requestuser=testuser
+        )
+        self.assertEqual(["b", "a"], self.__get_titles(mockresponse.selector))
 
     def __has_orderby_option_label(self, selector, orderby_option_label):
-        order_by_labels = {element.alltext_normalized
-                           for element in selector.list('#cradmin_legacy_listfilter_orderby option')}
+        order_by_labels = {
+            element.alltext_normalized for element in selector.list("#cradmin_legacy_listfilter_orderby option")
+        }
         return orderby_option_label in order_by_labels
 
     def test_orderby_shortname_ascending_rendered_in_nonanonymous_email(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup__parentnode=testassignment)
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start", anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF
+        )
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup__parentnode=testassignment)
         with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
-            mockresponse = self.mock_http200_getrequest_htmls(
-                cradmin_role=testassignment,
-                requestuser=testuser)
-        self.assertTrue(self.__has_orderby_option_label(
-            selector=mockresponse.selector, orderby_option_label='Email'))
-        self.assertFalse(self.__has_orderby_option_label(
-            selector=mockresponse.selector, orderby_option_label='Username'))
+            mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
+        self.assertTrue(self.__has_orderby_option_label(selector=mockresponse.selector, orderby_option_label="Email"))
+        self.assertFalse(
+            self.__has_orderby_option_label(selector=mockresponse.selector, orderby_option_label="Username")
+        )
 
     def test_orderby_shortname_ascending_rendered_in_nonanonymous_username(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup__parentnode=testassignment)
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start", anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF
+        )
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup__parentnode=testassignment)
         with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=False):
-            mockresponse = self.mock_http200_getrequest_htmls(
-                cradmin_role=testassignment,
-                requestuser=testuser)
-        self.assertFalse(self.__has_orderby_option_label(
-            selector=mockresponse.selector, orderby_option_label='Email'))
-        self.assertTrue(self.__has_orderby_option_label(
-            selector=mockresponse.selector, orderby_option_label='Username'))
+            mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
+        self.assertFalse(self.__has_orderby_option_label(selector=mockresponse.selector, orderby_option_label="Email"))
+        self.assertTrue(
+            self.__has_orderby_option_label(selector=mockresponse.selector, orderby_option_label="Username")
+        )
 
     def test_orderby_shortname_ascending_not_rendered_in_anonymous(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup__parentnode=testassignment)
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start",
+            anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS,
+        )
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup__parentnode=testassignment)
         with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
-            mockresponse = self.mock_http200_getrequest_htmls(
-                cradmin_role=testassignment,
-                requestuser=testuser)
-        self.assertFalse(self.__has_orderby_option_label(
-            selector=mockresponse.selector, orderby_option_label='Email'))
+            mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
+        self.assertFalse(self.__has_orderby_option_label(selector=mockresponse.selector, orderby_option_label="Email"))
 
     def test_orderby_shortname_ascending_not_rendered_in_anonymous_uses_custom_candidate_ids(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           uses_custom_candidate_ids=True,
-                                           anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup__parentnode=testassignment)
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start",
+            uses_custom_candidate_ids=True,
+            anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS,
+        )
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup__parentnode=testassignment)
         with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
-            mockresponse = self.mock_http200_getrequest_htmls(
-                cradmin_role=testassignment,
-                requestuser=testuser)
-        self.assertFalse(self.__has_orderby_option_label(
-            selector=mockresponse.selector, orderby_option_label='Email'))
+            mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
+        self.assertFalse(self.__has_orderby_option_label(selector=mockresponse.selector, orderby_option_label="Email"))
 
     def test_orderby_shortname_ascending(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Candidate',
-                   assignment_group=testgroup1,
-                   relatedstudent__user__shortname='b')
-        baker.make('core.Candidate',
-                   assignment_group=testgroup2,
-                   relatedstudent__user__shortname='a')
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup1)
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup2)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Candidate", assignment_group=testgroup1, relatedstudent__user__shortname="b")
+        baker.make("core.Candidate", assignment_group=testgroup2, relatedstudent__user__shortname="a")
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup1)
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup2)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'orderby-shortname_ascending'},
-            requestuser=testuser)
-        self.assertEqual(
-            ['a', 'b'],
-            self.__get_titles(mockresponse.selector))
+            viewkwargs={"filters_string": "orderby-shortname_ascending"},
+            requestuser=testuser,
+        )
+        self.assertEqual(["a", "b"], self.__get_titles(mockresponse.selector))
 
     def test_orderby_shortname_descending_rendered_in_nonanonymous(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup__parentnode=testassignment)
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start", anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF
+        )
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup__parentnode=testassignment)
         with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
-            mockresponse = self.mock_http200_getrequest_htmls(
-                cradmin_role=testassignment,
-                requestuser=testuser)
-        self.assertTrue(self.__has_orderby_option_label(
-            selector=mockresponse.selector, orderby_option_label='Email (descending)'))
+            mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
+        self.assertTrue(
+            self.__has_orderby_option_label(selector=mockresponse.selector, orderby_option_label="Email (descending)")
+        )
 
     def test_orderby_shortname_descending_not_rendered_in_anonymous(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup__parentnode=testassignment)
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start",
+            anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS,
+        )
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup__parentnode=testassignment)
         with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
-            mockresponse = self.mock_http200_getrequest_htmls(
-                cradmin_role=testassignment,
-                requestuser=testuser)
-        self.assertFalse(self.__has_orderby_option_label(
-            selector=mockresponse.selector, orderby_option_label='Email (descending)'))
+            mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
+        self.assertFalse(
+            self.__has_orderby_option_label(selector=mockresponse.selector, orderby_option_label="Email (descending)")
+        )
 
     def test_orderby_shortname_descending_not_rendered_in_anonymous_uses_custom_candidate_ids(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           uses_custom_candidate_ids=True,
-                                           anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup__parentnode=testassignment)
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start",
+            uses_custom_candidate_ids=True,
+            anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS,
+        )
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup__parentnode=testassignment)
         with self.settings(CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND=True):
-            mockresponse = self.mock_http200_getrequest_htmls(
-                cradmin_role=testassignment,
-                requestuser=testuser)
-        self.assertFalse(self.__has_orderby_option_label(
-            selector=mockresponse.selector, orderby_option_label='Email (descending)'))
+            mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
+        self.assertFalse(
+            self.__has_orderby_option_label(selector=mockresponse.selector, orderby_option_label="Email (descending)")
+        )
 
     def test_orderby_shortname_descending(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Candidate',
-                   assignment_group=testgroup1,
-                   relatedstudent__user__shortname='b')
-        baker.make('core.Candidate',
-                   assignment_group=testgroup2,
-                   relatedstudent__user__shortname='a')
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup1)
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup2)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Candidate", assignment_group=testgroup1, relatedstudent__user__shortname="b")
+        baker.make("core.Candidate", assignment_group=testgroup2, relatedstudent__user__shortname="a")
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup1)
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup2)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'orderby-shortname_descending'},
-            requestuser=testuser)
-        self.assertEqual(
-            ['b', 'a'],
-            self.__get_titles(mockresponse.selector))
+            viewkwargs={"filters_string": "orderby-shortname_descending"},
+            requestuser=testuser,
+        )
+        self.assertEqual(["b", "a"], self.__get_titles(mockresponse.selector))
 
     def test_orderby_lastname_ascending_rendered_in_nonanonymous(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup__parentnode=testassignment)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            requestuser=testuser)
-        self.assertTrue(self.__has_orderby_option_label(
-            selector=mockresponse.selector, orderby_option_label='Last name'))
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start", anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF
+        )
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup__parentnode=testassignment)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
+        self.assertTrue(
+            self.__has_orderby_option_label(selector=mockresponse.selector, orderby_option_label="Last name")
+        )
 
     def test_orderby_lastname_ascending_not_rendered_in_anonymous(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup__parentnode=testassignment)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            requestuser=testuser)
-        self.assertFalse(self.__has_orderby_option_label(
-            selector=mockresponse.selector, orderby_option_label='Last name'))
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start",
+            anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS,
+        )
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup__parentnode=testassignment)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
+        self.assertFalse(
+            self.__has_orderby_option_label(selector=mockresponse.selector, orderby_option_label="Last name")
+        )
 
     def test_orderby_lastname_ascending_not_rendered_in_anonymous_uses_custom_candidate_ids(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           uses_custom_candidate_ids=True,
-                                           anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup__parentnode=testassignment)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            requestuser=testuser)
-        self.assertFalse(self.__has_orderby_option_label(
-            selector=mockresponse.selector, orderby_option_label='Last name'))
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start",
+            uses_custom_candidate_ids=True,
+            anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS,
+        )
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup__parentnode=testassignment)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
+        self.assertFalse(
+            self.__has_orderby_option_label(selector=mockresponse.selector, orderby_option_label="Last name")
+        )
 
     def test_orderby_lastname_ascending(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Candidate',
-                   assignment_group=testgroup1,
-                   relatedstudent__user__shortname='user1',
-                   relatedstudent__user__lastname='b')
-        baker.make('core.Candidate',
-                   assignment_group=testgroup2,
-                   relatedstudent__user__shortname='user2',
-                   relatedstudent__user__lastname='a')
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup1)
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup2)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make(
+            "core.Candidate",
+            assignment_group=testgroup1,
+            relatedstudent__user__shortname="user1",
+            relatedstudent__user__lastname="b",
+        )
+        baker.make(
+            "core.Candidate",
+            assignment_group=testgroup2,
+            relatedstudent__user__shortname="user2",
+            relatedstudent__user__lastname="a",
+        )
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup1)
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup2)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'orderby-lastname_ascending'},
-            requestuser=testuser)
-        self.assertEqual(
-            ['user2', 'user1'],
-            self.__get_titles(mockresponse.selector))
+            viewkwargs={"filters_string": "orderby-lastname_ascending"},
+            requestuser=testuser,
+        )
+        self.assertEqual(["user2", "user1"], self.__get_titles(mockresponse.selector))
 
     def test_orderby_lastname_descending_rendered_in_nonanonymous(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup__parentnode=testassignment)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            requestuser=testuser)
-        self.assertTrue(self.__has_orderby_option_label(
-            selector=mockresponse.selector, orderby_option_label='Last name (descending)'))
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start", anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF
+        )
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup__parentnode=testassignment)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
+        self.assertTrue(
+            self.__has_orderby_option_label(
+                selector=mockresponse.selector, orderby_option_label="Last name (descending)"
+            )
+        )
 
     def test_orderby_lastname_descending_not_rendered_in_anonymous(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup__parentnode=testassignment)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            requestuser=testuser)
-        self.assertFalse(self.__has_orderby_option_label(
-            selector=mockresponse.selector, orderby_option_label='Last name (descending)'))
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start",
+            anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS,
+        )
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup__parentnode=testassignment)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
+        self.assertFalse(
+            self.__has_orderby_option_label(
+                selector=mockresponse.selector, orderby_option_label="Last name (descending)"
+            )
+        )
 
     def test_orderby_lastname_descending_not_rendered_in_anonymous_uses_custom_candidate_ids(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           uses_custom_candidate_ids=True,
-                                           anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup__parentnode=testassignment)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            requestuser=testuser)
-        self.assertFalse(self.__has_orderby_option_label(
-            selector=mockresponse.selector, orderby_option_label='Last name (descending)'))
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start",
+            uses_custom_candidate_ids=True,
+            anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS,
+        )
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup__parentnode=testassignment)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
+        self.assertFalse(
+            self.__has_orderby_option_label(
+                selector=mockresponse.selector, orderby_option_label="Last name (descending)"
+            )
+        )
 
     def test_orderby_lastname_descending(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Candidate',
-                   assignment_group=testgroup1,
-                   relatedstudent__user__shortname='user1',
-                   relatedstudent__user__lastname='b')
-        baker.make('core.Candidate',
-                   assignment_group=testgroup2,
-                   relatedstudent__user__shortname='user2',
-                   relatedstudent__user__lastname='a')
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup1)
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup2)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make(
+            "core.Candidate",
+            assignment_group=testgroup1,
+            relatedstudent__user__shortname="user1",
+            relatedstudent__user__lastname="b",
+        )
+        baker.make(
+            "core.Candidate",
+            assignment_group=testgroup2,
+            relatedstudent__user__shortname="user2",
+            relatedstudent__user__lastname="a",
+        )
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup1)
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup2)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'orderby-lastname_descending'},
-            requestuser=testuser)
-        self.assertEqual(
-            ['user1', 'user2'],
-            self.__get_titles(mockresponse.selector))
+            viewkwargs={"filters_string": "orderby-lastname_descending"},
+            requestuser=testuser,
+        )
+        self.assertEqual(["user1", "user2"], self.__get_titles(mockresponse.selector))
 
     def test_orderby_points_ascending(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_core_baker_factories.candidate(group=testgroup1, shortname='user1')
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_core_baker_factories.candidate(group=testgroup2, shortname='user2')
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
-        testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_core_baker_factories.candidate(group=testgroup3, shortname='user3')
-        baker.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=testuser)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        devilry_core_baker_factories.candidate(group=testgroup1, shortname="user1")
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        devilry_core_baker_factories.candidate(group=testgroup2, shortname="user2")
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        testgroup3 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        devilry_core_baker_factories.candidate(group=testgroup3, shortname="user3")
+        baker.make("core.Examiner", assignmentgroup=testgroup3, relatedexaminer__user=testuser)
 
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=testgroup1, grading_points=3)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=testgroup2, grading_points=10)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=testgroup3, grading_points=2)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup1, grading_points=3)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup2, grading_points=10)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup3, grading_points=2)
 
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'orderby-points_ascending'},
-            requestuser=testuser)
-        self.assertEqual(
-            ['user3', 'user1', 'user2'],
-            self.__get_titles(mockresponse.selector))
+            cradmin_role=testassignment, viewkwargs={"filters_string": "orderby-points_ascending"}, requestuser=testuser
+        )
+        self.assertEqual(["user3", "user1", "user2"], self.__get_titles(mockresponse.selector))
 
     def test_orderby_points_descending(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_core_baker_factories.candidate(group=testgroup1, shortname='user1')
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_core_baker_factories.candidate(group=testgroup2, shortname='user2')
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
-        testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_core_baker_factories.candidate(group=testgroup3, shortname='user3')
-        baker.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=testuser)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        devilry_core_baker_factories.candidate(group=testgroup1, shortname="user1")
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        devilry_core_baker_factories.candidate(group=testgroup2, shortname="user2")
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        testgroup3 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        devilry_core_baker_factories.candidate(group=testgroup3, shortname="user3")
+        baker.make("core.Examiner", assignmentgroup=testgroup3, relatedexaminer__user=testuser)
 
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=testgroup1, grading_points=3)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=testgroup2, grading_points=10)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=testgroup3, grading_points=2)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup1, grading_points=3)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup2, grading_points=10)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup3, grading_points=2)
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'orderby-points_descending'},
-            requestuser=testuser)
-        self.assertEqual(
-            ['user2', 'user1', 'user3'],
-            self.__get_titles(mockresponse.selector))
+            viewkwargs={"filters_string": "orderby-points_descending"},
+            requestuser=testuser,
+        )
+        self.assertEqual(["user2", "user1", "user3"], self.__get_titles(mockresponse.selector))
 
     def test_orderby_last_commented_by_student_ascending(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup1, shortname='user1')
-        baker.make('devilry_group.GroupComment',
-                   feedback_set=testgroup1.feedbackset_set.first(),
-                   user_role=Comment.USER_ROLE_STUDENT,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   published_datetime=datetime(2011, 12, 24, 0, 0))
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup1, shortname="user1")
+        baker.make(
+            "devilry_group.GroupComment",
+            feedback_set=testgroup1.feedbackset_set.first(),
+            user_role=Comment.USER_ROLE_STUDENT,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            published_datetime=datetime(2011, 12, 24, 0, 0),
+        )
 
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_core_baker_factories.candidate(group=testgroup2, shortname='user2')
-        baker.make('devilry_group.GroupComment',
-                   feedback_set=testgroup2.feedbackset_set.first(),
-                   user_role=Comment.USER_ROLE_STUDENT,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   published_datetime=datetime(2010, 12, 24, 0, 0))
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        devilry_core_baker_factories.candidate(group=testgroup2, shortname="user2")
+        baker.make(
+            "devilry_group.GroupComment",
+            feedback_set=testgroup2.feedbackset_set.first(),
+            user_role=Comment.USER_ROLE_STUDENT,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            published_datetime=datetime(2010, 12, 24, 0, 0),
+        )
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'orderby-last_commented_by_student_ascending'},
-            requestuser=testuser)
-        self.assertEqual(
-            ['user2', 'user1'],
-            self.__get_titles(mockresponse.selector))
+            viewkwargs={"filters_string": "orderby-last_commented_by_student_ascending"},
+            requestuser=testuser,
+        )
+        self.assertEqual(["user2", "user1"], self.__get_titles(mockresponse.selector))
 
     def test_orderby_last_commented_by_student_descending(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup1, shortname='user1')
-        baker.make('devilry_group.GroupComment',
-                   feedback_set=testgroup1.feedbackset_set.first(),
-                   user_role=Comment.USER_ROLE_STUDENT,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   published_datetime=datetime(2011, 12, 24, 0, 0))
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup1, shortname="user1")
+        baker.make(
+            "devilry_group.GroupComment",
+            feedback_set=testgroup1.feedbackset_set.first(),
+            user_role=Comment.USER_ROLE_STUDENT,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            published_datetime=datetime(2011, 12, 24, 0, 0),
+        )
 
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_core_baker_factories.candidate(group=testgroup2, shortname='user2')
-        baker.make('devilry_group.GroupComment',
-                   feedback_set=testgroup2.feedbackset_set.first(),
-                   user_role=Comment.USER_ROLE_STUDENT,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   published_datetime=datetime(2010, 12, 24, 0, 0))
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        devilry_core_baker_factories.candidate(group=testgroup2, shortname="user2")
+        baker.make(
+            "devilry_group.GroupComment",
+            feedback_set=testgroup2.feedbackset_set.first(),
+            user_role=Comment.USER_ROLE_STUDENT,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            published_datetime=datetime(2010, 12, 24, 0, 0),
+        )
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'orderby-last_commented_by_student_descending'},
-            requestuser=testuser)
-        self.assertEqual(
-            ['user1', 'user2'],
-            self.__get_titles(mockresponse.selector))
+            viewkwargs={"filters_string": "orderby-last_commented_by_student_descending"},
+            requestuser=testuser,
+        )
+        self.assertEqual(["user1", "user2"], self.__get_titles(mockresponse.selector))
 
     def test_orderby_last_commented_by_examiner_ascending(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup1, shortname='user1')
-        baker.make('devilry_group.GroupComment',
-                   feedback_set=testgroup1.feedbackset_set.first(),
-                   user_role=Comment.USER_ROLE_EXAMINER,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   published_datetime=datetime(2011, 12, 24, 0, 0))
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup1, shortname="user1")
+        baker.make(
+            "devilry_group.GroupComment",
+            feedback_set=testgroup1.feedbackset_set.first(),
+            user_role=Comment.USER_ROLE_EXAMINER,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            published_datetime=datetime(2011, 12, 24, 0, 0),
+        )
 
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_core_baker_factories.candidate(group=testgroup2, shortname='user2')
-        baker.make('devilry_group.GroupComment',
-                   feedback_set=testgroup2.feedbackset_set.first(),
-                   user_role=Comment.USER_ROLE_EXAMINER,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   published_datetime=datetime(2010, 12, 24, 0, 0))
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        devilry_core_baker_factories.candidate(group=testgroup2, shortname="user2")
+        baker.make(
+            "devilry_group.GroupComment",
+            feedback_set=testgroup2.feedbackset_set.first(),
+            user_role=Comment.USER_ROLE_EXAMINER,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            published_datetime=datetime(2010, 12, 24, 0, 0),
+        )
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'orderby-last_commented_by_examiner_ascending'},
-            requestuser=testuser)
-        self.assertEqual(
-            ['user2', 'user1'],
-            self.__get_titles(mockresponse.selector))
+            viewkwargs={"filters_string": "orderby-last_commented_by_examiner_ascending"},
+            requestuser=testuser,
+        )
+        self.assertEqual(["user2", "user1"], self.__get_titles(mockresponse.selector))
 
     def test_orderby_last_commented_by_examiner_descending(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup1, shortname='user1')
-        baker.make('devilry_group.GroupComment',
-                   feedback_set=testgroup1.feedbackset_set.first(),
-                   user_role=Comment.USER_ROLE_EXAMINER,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   published_datetime=datetime(2011, 12, 24, 0, 0))
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup1, shortname="user1")
+        baker.make(
+            "devilry_group.GroupComment",
+            feedback_set=testgroup1.feedbackset_set.first(),
+            user_role=Comment.USER_ROLE_EXAMINER,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            published_datetime=datetime(2011, 12, 24, 0, 0),
+        )
 
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_core_baker_factories.candidate(group=testgroup2, shortname='user2')
-        baker.make('devilry_group.GroupComment',
-                   feedback_set=testgroup2.feedbackset_set.first(),
-                   user_role=Comment.USER_ROLE_EXAMINER,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   published_datetime=datetime(2010, 12, 24, 0, 0))
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        devilry_core_baker_factories.candidate(group=testgroup2, shortname="user2")
+        baker.make(
+            "devilry_group.GroupComment",
+            feedback_set=testgroup2.feedbackset_set.first(),
+            user_role=Comment.USER_ROLE_EXAMINER,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            published_datetime=datetime(2010, 12, 24, 0, 0),
+        )
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'orderby-last_commented_by_examiner_descending'},
-            requestuser=testuser)
-        self.assertEqual(
-            ['user1', 'user2'],
-            self.__get_titles(mockresponse.selector))
+            viewkwargs={"filters_string": "orderby-last_commented_by_examiner_descending"},
+            requestuser=testuser,
+        )
+        self.assertEqual(["user1", "user2"], self.__get_titles(mockresponse.selector))
 
     def test_filter_status_all(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup1, shortname='user1')
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup1, shortname="user1")
 
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_core_baker_factories.candidate(group=testgroup2, shortname='user2')
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        devilry_core_baker_factories.candidate(group=testgroup2, shortname="user2")
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
 
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            requestuser=testuser)
-        self.assertEqual(
-            {'user1', 'user2'},
-            set(self.__get_titles(mockresponse.selector)))
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
+        self.assertEqual({"user1", "user2"}, set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_status_waiting_for_feedback(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
         testassignment = baker.make_recipe(
-                'devilry.apps.core.assignment_activeperiod_start',
-                first_deadline=timezone.now() - timedelta(days=2))
+            "devilry.apps.core.assignment_activeperiod_start", first_deadline=timezone.now() - timedelta(days=2)
+        )
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup1, shortname='user1')
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=testgroup1, grading_points=1)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup1, shortname="user1")
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup1, grading_points=1)
 
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_core_baker_factories.candidate(group=testgroup2, shortname='user2')
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
-        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(
-            group=testgroup2)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        devilry_core_baker_factories.candidate(group=testgroup2, shortname="user2")
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup2)
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'status-waiting-for-feedback'},
-            requestuser=testuser)
-        self.assertEqual(
-            {'user2'},
-            set(self.__get_titles(mockresponse.selector)))
+            viewkwargs={"filters_string": "status-waiting-for-feedback"},
+            requestuser=testuser,
+        )
+        self.assertEqual({"user2"}, set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_status_waiting_for_feedback_new_attempt_also_waiting_for_feedback(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
         testassignment = baker.make_recipe(
-                'devilry.apps.core.assignment_activeperiod_start',
-                first_deadline=timezone.now() - timedelta(days=2))
+            "devilry.apps.core.assignment_activeperiod_start", first_deadline=timezone.now() - timedelta(days=2)
+        )
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup1, shortname='user1')
-        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(
-            group=testgroup1, grading_points=1)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup1, shortname="user1")
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1, grading_points=1)
 
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_core_baker_factories.candidate(group=testgroup2, shortname='user2')
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=testgroup2)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        devilry_core_baker_factories.candidate(group=testgroup2, shortname="user2")
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup2)
         devilry_group_baker_factories.feedbackset_new_attempt_unpublished(
-            group=testgroup2,
-            deadline_datetime=timezone.now() - timedelta(days=1))
+            group=testgroup2, deadline_datetime=timezone.now() - timedelta(days=1)
+        )
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'status-waiting-for-feedback'},
-            requestuser=testuser)
-        self.assertEqual(
-            {'user1', 'user2'},
-            set(self.__get_titles(mockresponse.selector)))
+            viewkwargs={"filters_string": "status-waiting-for-feedback"},
+            requestuser=testuser,
+        )
+        self.assertEqual({"user1", "user2"}, set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_status_waiting_for_deliveries(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
         testassignment = baker.make_recipe(
-                'devilry.apps.core.assignment_activeperiod_start',
-                first_deadline=timezone.now() + timedelta(days=2))
+            "devilry.apps.core.assignment_activeperiod_start", first_deadline=timezone.now() + timedelta(days=2)
+        )
 
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_core_baker_factories.candidate(group=testgroup, shortname='user')
-        baker.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=testuser)
-        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(
-            group=testgroup)
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        devilry_core_baker_factories.candidate(group=testgroup, shortname="user")
+        baker.make("core.Examiner", assignmentgroup=testgroup, relatedexaminer__user=testuser)
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup)
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'status-waiting-for-deliveries'},
-            requestuser=testuser)
-        self.assertEqual(
-            {'user'},
-            set(self.__get_titles(mockresponse.selector)))
+            viewkwargs={"filters_string": "status-waiting-for-deliveries"},
+            requestuser=testuser,
+        )
+        self.assertEqual({"user"}, set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_status_waiting_for_deliveries_corrected_but_deadline_not_expired(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
         testassignment = baker.make_recipe(
-                'devilry.apps.core.assignment_activeperiod_start',
-                first_deadline=timezone.now() + timedelta(days=2))
+            "devilry.apps.core.assignment_activeperiod_start", first_deadline=timezone.now() + timedelta(days=2)
+        )
 
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_core_baker_factories.candidate(group=testgroup, shortname='user')
-        baker.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=testuser)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=testgroup, grading_points=1)
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        devilry_core_baker_factories.candidate(group=testgroup, shortname="user")
+        baker.make("core.Examiner", assignmentgroup=testgroup, relatedexaminer__user=testuser)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup, grading_points=1)
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'status-waiting-for-deliveries'},
-            requestuser=testuser)
-        self.assertEqual(
-            {'user'},
-            set(self.__get_titles(mockresponse.selector)))
+            viewkwargs={"filters_string": "status-waiting-for-deliveries"},
+            requestuser=testuser,
+        )
+        self.assertEqual({"user"}, set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_status_waiting_for_deliveries_corrected_and_deadline_expired(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
         testassignment = baker.make_recipe(
-                'devilry.apps.core.assignment_activeperiod_start',
-                first_deadline=timezone.now() - timedelta(days=2))
+            "devilry.apps.core.assignment_activeperiod_start", first_deadline=timezone.now() - timedelta(days=2)
+        )
 
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_core_baker_factories.candidate(group=testgroup, shortname='user')
-        baker.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=testuser)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=testgroup, grading_points=1)
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        devilry_core_baker_factories.candidate(group=testgroup, shortname="user")
+        baker.make("core.Examiner", assignmentgroup=testgroup, relatedexaminer__user=testuser)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup, grading_points=1)
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'status-waiting-for-deliveries'},
-            requestuser=testuser)
+            viewkwargs={"filters_string": "status-waiting-for-deliveries"},
+            requestuser=testuser,
+        )
         self.assertEqual(len(set(self.__get_titles(mockresponse.selector))), 0)
 
     def test_filter_status_waiting_for_deliveries_new_attempt_also_waiting_for_deliveries(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
         testassignment = baker.make_recipe(
-                'devilry.apps.core.assignment_activeperiod_start',
-                first_deadline=timezone.now() + timedelta(days=2))
+            "devilry.apps.core.assignment_activeperiod_start", first_deadline=timezone.now() + timedelta(days=2)
+        )
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup1, shortname='user1')
-        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(
-            group=testgroup1)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup1, shortname="user1")
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1)
 
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_core_baker_factories.candidate(group=testgroup2, shortname='user2')
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=testgroup2, grading_points=1)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        devilry_core_baker_factories.candidate(group=testgroup2, shortname="user2")
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup2, grading_points=1)
         devilry_group_baker_factories.feedbackset_new_attempt_unpublished(
-            group=testgroup2,
-            deadline_datetime=timezone.now() + timedelta(days=3))
+            group=testgroup2, deadline_datetime=timezone.now() + timedelta(days=3)
+        )
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'status-waiting-for-deliveries'},
-            requestuser=testuser)
-        self.assertEqual(
-            {'user1', 'user2'},
-            set(self.__get_titles(mockresponse.selector)))
+            viewkwargs={"filters_string": "status-waiting-for-deliveries"},
+            requestuser=testuser,
+        )
+        self.assertEqual({"user1", "user2"}, set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_status_corrected(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe(
-                'devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup1, shortname='user1')
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=testgroup1, grading_points=1)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup1, shortname="user1")
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup1, grading_points=1)
 
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_core_baker_factories.candidate(group=testgroup2, shortname='user2')
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
-        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(
-            group=testgroup2)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        devilry_core_baker_factories.candidate(group=testgroup2, shortname="user2")
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup2)
 
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'status-corrected'},
-            requestuser=testuser)
-        self.assertEqual(
-            {'user1'},
-            set(self.__get_titles(mockresponse.selector)))
+            cradmin_role=testassignment, viewkwargs={"filters_string": "status-corrected"}, requestuser=testuser
+        )
+        self.assertEqual({"user1"}, set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_status_corrected_new_attempt_corrected(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe(
-            'devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup1, shortname='user1')
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=testgroup1, grading_points=1)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup1, shortname="user1")
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup1, grading_points=1)
 
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_core_baker_factories.candidate(group=testgroup2, shortname='user2')
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=testgroup2)
-        devilry_group_baker_factories.feedbackset_new_attempt_published(
-            group=testgroup2)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        devilry_core_baker_factories.candidate(group=testgroup2, shortname="user2")
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup2)
+        devilry_group_baker_factories.feedbackset_new_attempt_published(group=testgroup2)
 
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'status-corrected'},
-            requestuser=testuser)
-        self.assertEqual(
-            {'user1', 'user2'},
-            set(self.__get_titles(mockresponse.selector)))
-
-
-
-
+            cradmin_role=testassignment, viewkwargs={"filters_string": "status-corrected"}, requestuser=testuser
+        )
+        self.assertEqual({"user1", "user2"}, set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_student_tag_match_sanity(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe(
-            'devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
 
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=testuser)
-        candidate = devilry_core_baker_factories.candidate(group=testgroup, shortname='user1')
-        testperiodtag = baker.make('core.PeriodTag', period=testassignment.parentnode, tag='aaa')
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup, relatedexaminer__user=testuser)
+        candidate = devilry_core_baker_factories.candidate(group=testgroup, shortname="user1")
+        testperiodtag = baker.make("core.PeriodTag", period=testassignment.parentnode, tag="aaa")
         testperiodtag.relatedstudents.add(candidate.relatedstudent)
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            viewkwargs={'filters_string': f'stag-{testperiodtag.id}'},
-            requestuser=testuser)
-        self.assertEqual(
-            {'user1'},
-            set(self.__get_titles(mockresponse.selector)))
+            cradmin_role=testassignment, viewkwargs={"filters_string": f"stag-{testperiodtag.id}"}, requestuser=testuser
+        )
+        self.assertEqual({"user1"}, set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_student_tag_one_match_one_excluded_sanity(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe(
-            'devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
-        candidate1 = devilry_core_baker_factories.candidate(group=testgroup1, shortname='user1')
-        candidate2 = devilry_core_baker_factories.candidate(group=testgroup2, shortname='user2')
-        testperiodtag1 = baker.make('core.PeriodTag', period=testassignment.parentnode, tag='aaa')
-        testperiodtag2 = baker.make('core.PeriodTag', period=testassignment.parentnode, tag='bbb')
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        candidate1 = devilry_core_baker_factories.candidate(group=testgroup1, shortname="user1")
+        candidate2 = devilry_core_baker_factories.candidate(group=testgroup2, shortname="user2")
+        testperiodtag1 = baker.make("core.PeriodTag", period=testassignment.parentnode, tag="aaa")
+        testperiodtag2 = baker.make("core.PeriodTag", period=testassignment.parentnode, tag="bbb")
         testperiodtag1.relatedstudents.add(candidate1.relatedstudent)
         testperiodtag2.relatedstudents.add(candidate2.relatedstudent)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'filters_string': f'stag-{testperiodtag1.id}'},
-            requestuser=testuser)
-        self.assertNotEqual(
-            {'user2'},
-            set(self.__get_titles(mockresponse.selector)))
-        self.assertEqual(
-            {'user1'},
-            set(self.__get_titles(mockresponse.selector)))
-    
+            viewkwargs={"filters_string": f"stag-{testperiodtag1.id}"},
+            requestuser=testuser,
+        )
+        self.assertNotEqual({"user2"}, set(self.__get_titles(mockresponse.selector)))
+        self.assertEqual({"user1"}, set(self.__get_titles(mockresponse.selector)))
+
     def test_filter_student_tag_multiple_matches_sanity(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe(
-            'devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
-        candidate1 = devilry_core_baker_factories.candidate(group=testgroup1, shortname='user1')
-        candidate2 = devilry_core_baker_factories.candidate(group=testgroup2, shortname='user2')
-        testperiodtag = baker.make('core.PeriodTag', period=testassignment.parentnode, tag='aaa')
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        candidate1 = devilry_core_baker_factories.candidate(group=testgroup1, shortname="user1")
+        candidate2 = devilry_core_baker_factories.candidate(group=testgroup2, shortname="user2")
+        testperiodtag = baker.make("core.PeriodTag", period=testassignment.parentnode, tag="aaa")
         testperiodtag.relatedstudents.add(candidate1.relatedstudent)
         testperiodtag.relatedstudents.add(candidate2.relatedstudent)
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            viewkwargs={'filters_string': f'stag-{testperiodtag.id}'},
-            requestuser=testuser)
-        self.assertEqual(
-            {'user1', 'user2'},
-            set(self.__get_titles(mockresponse.selector)))
-
-
-
-
-
-
-
-
+            cradmin_role=testassignment, viewkwargs={"filters_string": f"stag-{testperiodtag.id}"}, requestuser=testuser
+        )
+        self.assertEqual({"user1", "user2"}, set(self.__get_titles(mockresponse.selector)))
 
     def test_render_status_all_label(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
         devilry_core_baker_factories.candidate(group=testgroup1)
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         devilry_core_baker_factories.candidate(group=testgroup2)
-        testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=testuser)
+        testgroup3 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup3, relatedexaminer__user=testuser)
         devilry_core_baker_factories.candidate(group=testgroup3)
 
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            requestuser=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
         self.assertEqual(
-            'all students 3',
-            mockresponse.selector.one(
-                '#cradmin_legacy_listfilter_status_input__label').alltext_normalized)
+            "all students 3",
+            mockresponse.selector.one("#cradmin_legacy_listfilter_status_input__label").alltext_normalized,
+        )
 
     def test_render_status_waiting_for_feedback_label(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
         testassignment = baker.make_recipe(
-                'devilry.apps.core.assignment_activeperiod_start',
-                first_deadline=timezone.now() - timedelta(days=2))
+            "devilry.apps.core.assignment_activeperiod_start", first_deadline=timezone.now() - timedelta(days=2)
+        )
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
         devilry_core_baker_factories.candidate(group=testgroup1)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(
-            group=testgroup1)
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
         devilry_core_baker_factories.candidate(group=testgroup2)
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
-        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(
-            group=testgroup2)
-        testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=testuser)
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup2)
+        testgroup3 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup3, relatedexaminer__user=testuser)
         devilry_core_baker_factories.candidate(group=testgroup3)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=testgroup3)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup3)
 
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            requestuser=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
         self.assertEqual(
-            'waiting for feedback 2',
+            "waiting for feedback 2",
             mockresponse.selector.one(
-                '#cradmin_legacy_listfilter_status_input_waiting-for-feedback_label').alltext_normalized)
+                "#cradmin_legacy_listfilter_status_input_waiting-for-feedback_label"
+            ).alltext_normalized,
+        )
 
     def test_render_status_waiting_for_feedback_label_with_new_attempt(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
         testassignment = baker.make_recipe(
-            'devilry.apps.core.assignment_activeperiod_start',
-            first_deadline=timezone.now() - timedelta(days=2))
+            "devilry.apps.core.assignment_activeperiod_start", first_deadline=timezone.now() - timedelta(days=2)
+        )
 
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         devilry_core_baker_factories.candidate(group=testgroup)
-        baker.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=testuser)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=testgroup)
+        baker.make("core.Examiner", assignmentgroup=testgroup, relatedexaminer__user=testuser)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup)
         devilry_group_baker_factories.feedbackset_new_attempt_unpublished(
-            group=testgroup,
-            deadline_datetime=timezone.now() - timedelta(days=1))
+            group=testgroup, deadline_datetime=timezone.now() - timedelta(days=1)
+        )
 
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            requestuser=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
         self.assertEqual(
-            'waiting for feedback 1',
+            "waiting for feedback 1",
             mockresponse.selector.one(
-                '#cradmin_legacy_listfilter_status_input_waiting-for-feedback_label').alltext_normalized)
+                "#cradmin_legacy_listfilter_status_input_waiting-for-feedback_label"
+            ).alltext_normalized,
+        )
 
     def test_render_status_waiting_for_deliveries_label(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
         testassignment = baker.make_recipe(
-                'devilry.apps.core.assignment_activeperiod_start',
-                first_deadline=timezone.now() + timedelta(days=2))
+            "devilry.apps.core.assignment_activeperiod_start", first_deadline=timezone.now() + timedelta(days=2)
+        )
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
         devilry_core_baker_factories.candidate(group=testgroup1)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(
-            group=testgroup1)
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
         devilry_core_baker_factories.candidate(group=testgroup2)
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
-        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(
-            group=testgroup2)
-        testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=testuser)
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup2)
+        testgroup3 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup3, relatedexaminer__user=testuser)
         devilry_core_baker_factories.candidate(group=testgroup3)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=testgroup3, grading_points=1)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup3, grading_points=1)
 
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            requestuser=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
         self.assertEqual(
-            'waiting for deliveries 3',
+            "waiting for deliveries 3",
             mockresponse.selector.one(
-                '#cradmin_legacy_listfilter_status_input_waiting-for-deliveries_label').alltext_normalized)
+                "#cradmin_legacy_listfilter_status_input_waiting-for-deliveries_label"
+            ).alltext_normalized,
+        )
 
     def test_render_status_waiting_for_deliveries_label_with_new_attempt(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe(
-            'devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
 
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
         devilry_core_baker_factories.candidate(group=testgroup)
-        baker.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=testuser)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=testgroup)
+        baker.make("core.Examiner", assignmentgroup=testgroup, relatedexaminer__user=testuser)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup)
         devilry_group_baker_factories.feedbackset_new_attempt_unpublished(
-            group=testgroup,
-            deadline_datetime=timezone.now() + timezone.timedelta(days=1))
+            group=testgroup, deadline_datetime=timezone.now() + timezone.timedelta(days=1)
+        )
 
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            requestuser=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
         self.assertEqual(
-            'waiting for deliveries 1',
+            "waiting for deliveries 1",
             mockresponse.selector.one(
-                '#cradmin_legacy_listfilter_status_input_waiting-for-deliveries_label').alltext_normalized)
+                "#cradmin_legacy_listfilter_status_input_waiting-for-deliveries_label"
+            ).alltext_normalized,
+        )
 
     def test_render_status_corrected_label(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
         testassignment = baker.make_recipe(
-                'devilry.apps.core.assignment_activeperiod_start',
-                first_deadline=timezone.now() - timedelta(days=2))
+            "devilry.apps.core.assignment_activeperiod_start", first_deadline=timezone.now() - timedelta(days=2)
+        )
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
         devilry_core_baker_factories.candidate(group=testgroup1)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(
-            group=testgroup1)
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
         devilry_core_baker_factories.candidate(group=testgroup2)
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=testgroup2)
-        testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=testuser)
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup2)
+        testgroup3 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup3, relatedexaminer__user=testuser)
         devilry_core_baker_factories.candidate(group=testgroup3)
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=testgroup3)
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup3)
 
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            requestuser=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
         self.assertEqual(
-            'corrected 2',
-            mockresponse.selector.one(
-                '#cradmin_legacy_listfilter_status_input_corrected_label').alltext_normalized)
+            "corrected 2",
+            mockresponse.selector.one("#cradmin_legacy_listfilter_status_input_corrected_label").alltext_normalized,
+        )
 
     def test_filter_is_passing_grade_true(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
         testassignment = baker.make_recipe(
-            'devilry.apps.core.assignment_activeperiod_start',
-            passing_grade_min_points=1)
+            "devilry.apps.core.assignment_activeperiod_start", passing_grade_min_points=1
+        )
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup1, shortname='user1')
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=testgroup1, grading_points=0)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup1, shortname="user1")
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup1, grading_points=0)
 
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_core_baker_factories.candidate(group=testgroup2, shortname='user2')
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
-        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(
-            group=testgroup2)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        devilry_core_baker_factories.candidate(group=testgroup2, shortname="user2")
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup2)
 
-        testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup3, shortname='user3')
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=testgroup3, grading_points=1)
+        testgroup3 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup3, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup3, shortname="user3")
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup3, grading_points=1)
 
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'is_passing_grade-true'},
-            requestuser=testuser)
-        self.assertEqual(
-            {'user3'},
-            set(self.__get_titles(mockresponse.selector)))
+            cradmin_role=testassignment, viewkwargs={"filters_string": "is_passing_grade-true"}, requestuser=testuser
+        )
+        self.assertEqual({"user3"}, set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_is_passing_grade_false(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
         testassignment = baker.make_recipe(
-            'devilry.apps.core.assignment_activeperiod_start',
-            passing_grade_min_points=1)
+            "devilry.apps.core.assignment_activeperiod_start", passing_grade_min_points=1
+        )
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup1, shortname='user1')
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=testgroup1, grading_points=0)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup1, shortname="user1")
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup1, grading_points=0)
 
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_core_baker_factories.candidate(group=testgroup2, shortname='user2')
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
-        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(
-            group=testgroup2)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        devilry_core_baker_factories.candidate(group=testgroup2, shortname="user2")
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup2)
 
-        testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup3, shortname='user3')
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=testgroup3, grading_points=1)
+        testgroup3 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup3, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup3, shortname="user3")
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup3, grading_points=1)
 
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'is_passing_grade-false'},
-            requestuser=testuser)
-        self.assertEqual(
-            {'user1', 'user2'},
-            set(self.__get_titles(mockresponse.selector)))
+            cradmin_role=testassignment, viewkwargs={"filters_string": "is_passing_grade-false"}, requestuser=testuser
+        )
+        self.assertEqual({"user1", "user2"}, set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_points_zero(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup1, shortname='user1')
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=testgroup1, grading_points=0)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup1, shortname="user1")
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup1, grading_points=0)
 
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_core_baker_factories.candidate(group=testgroup2, shortname='user2')
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
-        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(
-            group=testgroup2)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        devilry_core_baker_factories.candidate(group=testgroup2, shortname="user2")
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup2)
 
-        testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup3, shortname='user3')
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=testgroup3, grading_points=10)
+        testgroup3 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup3, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup3, shortname="user3")
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup3, grading_points=10)
 
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'points-0'},
-            requestuser=testuser)
-        self.assertEqual(
-            {'user1'},
-            set(self.__get_titles(mockresponse.selector)))
+            cradmin_role=testassignment, viewkwargs={"filters_string": "points-0"}, requestuser=testuser
+        )
+        self.assertEqual({"user1"}, set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_points_nonzero(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup1, shortname='user1')
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=testgroup1, grading_points=0)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup1, shortname="user1")
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup1, grading_points=0)
 
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_core_baker_factories.candidate(group=testgroup2, shortname='user2')
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
-        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(
-            group=testgroup2)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        devilry_core_baker_factories.candidate(group=testgroup2, shortname="user2")
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup2)
 
-        testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup3, shortname='user3')
-        devilry_group_baker_factories.feedbackset_first_attempt_published(
-            group=testgroup3, grading_points=10)
+        testgroup3 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup3, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup3, shortname="user3")
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup3, grading_points=10)
 
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'points-10'},
-            requestuser=testuser)
-        self.assertEqual(
-            {'user3'},
-            set(self.__get_titles(mockresponse.selector)))
+            cradmin_role=testassignment, viewkwargs={"filters_string": "points-10"}, requestuser=testuser
+        )
+        self.assertEqual({"user3"}, set(self.__get_titles(mockresponse.selector)))
 
     def test_render_examiner_filter_if_multiple_examiners(self):
         testuser1 = baker.make(settings.AUTH_USER_MODEL)
         testuser2 = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
 
-        relatedexaminer1 = baker.make('core.RelatedExaminer', user=testuser1)
-        relatedexaminer2 = baker.make('core.RelatedExaminer', user=testuser2)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer=relatedexaminer1)
-        baker.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer=relatedexaminer2)
+        relatedexaminer1 = baker.make("core.RelatedExaminer", user=testuser1)
+        relatedexaminer2 = baker.make("core.RelatedExaminer", user=testuser2)
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup, relatedexaminer=relatedexaminer1)
+        baker.make("core.Examiner", assignmentgroup=testgroup, relatedexaminer=relatedexaminer2)
 
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            requestuser=testuser1)
-        self.assertTrue(mockresponse.selector.exists('#cradmin_legacy_listfilter_examiner_input'))
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser1)
+        self.assertTrue(mockresponse.selector.exists("#cradmin_legacy_listfilter_examiner_input"))
 
     def test_do_not_render_examiner_filter_if_single_examiner(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
 
-        relatedexaminer = baker.make('core.RelatedExaminer', user=testuser)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer=relatedexaminer)
+        relatedexaminer = baker.make("core.RelatedExaminer", user=testuser)
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup, relatedexaminer=relatedexaminer)
 
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            requestuser=testuser)
-        self.assertFalse(mockresponse.selector.exists('#cradmin_legacy_listfilter_examiner_input'))
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
+        self.assertFalse(mockresponse.selector.exists("#cradmin_legacy_listfilter_examiner_input"))
 
     def test_render_examiner_filter_choices(self):
-        testuser1 = baker.make(settings.AUTH_USER_MODEL, fullname='A')
-        testuser2 = baker.make(settings.AUTH_USER_MODEL, shortname='c')
-        testuser3 = baker.make(settings.AUTH_USER_MODEL, fullname='B')
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testuser1 = baker.make(settings.AUTH_USER_MODEL, fullname="A")
+        testuser2 = baker.make(settings.AUTH_USER_MODEL, shortname="c")
+        testuser3 = baker.make(settings.AUTH_USER_MODEL, fullname="B")
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
 
-        relatedexaminer1 = baker.make('core.RelatedExaminer', user=testuser1)
-        relatedexaminer2 = baker.make('core.RelatedExaminer', user=testuser2)
-        relatedexaminer3 = baker.make('core.RelatedExaminer', user=testuser3)
-        testgroup = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer=relatedexaminer1)
-        baker.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer=relatedexaminer2)
-        baker.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer=relatedexaminer3)
+        relatedexaminer1 = baker.make("core.RelatedExaminer", user=testuser1)
+        relatedexaminer2 = baker.make("core.RelatedExaminer", user=testuser2)
+        relatedexaminer3 = baker.make("core.RelatedExaminer", user=testuser3)
+        testgroup = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup, relatedexaminer=relatedexaminer1)
+        baker.make("core.Examiner", assignmentgroup=testgroup, relatedexaminer=relatedexaminer2)
+        baker.make("core.Examiner", assignmentgroup=testgroup, relatedexaminer=relatedexaminer3)
 
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            requestuser=testuser1)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser1)
         choices_labels = [
             element.alltext_normalized
-            for element in mockresponse.selector.list('#cradmin_legacy_listfilter_examiner_input option')]
-        self.assertEqual(
-            ['Any', 'A', 'B', 'c'],
-            choices_labels)
+            for element in mockresponse.selector.list("#cradmin_legacy_listfilter_examiner_input option")
+        ]
+        self.assertEqual(["Any", "A", "B", "c"], choices_labels)
 
     def test_filter_examiner(self):
         testuser1 = baker.make(settings.AUTH_USER_MODEL)
         testuser2 = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
 
-        relatedexaminer1 = baker.make('core.RelatedExaminer', user=testuser1)
-        relatedexaminer2 = baker.make('core.RelatedExaminer', user=testuser2)
+        relatedexaminer1 = baker.make("core.RelatedExaminer", user=testuser1)
+        relatedexaminer2 = baker.make("core.RelatedExaminer", user=testuser2)
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer=relatedexaminer1)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer=relatedexaminer2)
-        devilry_core_baker_factories.candidate(group=testgroup1, shortname='user1')
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer=relatedexaminer1)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer=relatedexaminer2)
+        devilry_core_baker_factories.candidate(group=testgroup1, shortname="user1")
 
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer=relatedexaminer1)
-        devilry_core_baker_factories.candidate(group=testgroup2, shortname='user2')
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer=relatedexaminer1)
+        devilry_core_baker_factories.candidate(group=testgroup2, shortname="user2")
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'examiner-{}'.format(relatedexaminer2.id)},
-            requestuser=testuser1)
-        self.assertEqual(
-            {'user1'},
-            set(self.__get_titles(mockresponse.selector)))
+            viewkwargs={"filters_string": "examiner-{}".format(relatedexaminer2.id)},
+            requestuser=testuser1,
+        )
+        self.assertEqual({"user1"}, set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_activity_studentfile(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup1, shortname='user1')
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup1, shortname="user1")
         comment = baker.make(
-            'devilry_group.GroupComment',
+            "devilry_group.GroupComment",
             feedback_set=devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
             comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
             user_role=Comment.USER_ROLE_STUDENT,
-            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        baker.make('devilry_comment.CommentFile', comment=comment)
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
+        baker.make("devilry_comment.CommentFile", comment=comment)
 
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup2, shortname='user2')
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup2, shortname="user2")
 
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'activity-studentfile'},
-            requestuser=testuser)
-        self.assertEqual(
-            {'user1'},
-            set(self.__get_titles(mockresponse.selector)))
+            cradmin_role=testassignment, viewkwargs={"filters_string": "activity-studentfile"}, requestuser=testuser
+        )
+        self.assertEqual({"user1"}, set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_activity_no_studentfile(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup1, shortname='user1')
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup1, shortname="user1")
         comment = baker.make(
-            'devilry_group.GroupComment',
+            "devilry_group.GroupComment",
             feedback_set=devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
             comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
             user_role=Comment.USER_ROLE_STUDENT,
-            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        baker.make('devilry_comment.CommentFile', comment=comment)
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
+        baker.make("devilry_comment.CommentFile", comment=comment)
 
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup2, shortname='user2')
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup2, shortname="user2")
 
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'activity-no-studentfile'},
-            requestuser=testuser)
-        self.assertEqual(
-            {'user2'},
-            set(self.__get_titles(mockresponse.selector)))
+            cradmin_role=testassignment, viewkwargs={"filters_string": "activity-no-studentfile"}, requestuser=testuser
+        )
+        self.assertEqual({"user2"}, set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_activity_studentcomment_groupcomment(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup1, shortname='user1')
-        baker.make('devilry_group.GroupComment',
-                   feedback_set=devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
-                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
-                   user_role=Comment.USER_ROLE_STUDENT,
-                   text='asd',
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup1, shortname="user1")
+        baker.make(
+            "devilry_group.GroupComment",
+            feedback_set=devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+            comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+            user_role=Comment.USER_ROLE_STUDENT,
+            text="asd",
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
 
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup2, shortname='user2')
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup2, shortname="user2")
 
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'activity-studentcomment'},
-            requestuser=testuser)
-        self.assertEqual(
-            {'user1'},
-            set(self.__get_titles(mockresponse.selector)))
+            cradmin_role=testassignment, viewkwargs={"filters_string": "activity-studentcomment"}, requestuser=testuser
+        )
+        self.assertEqual({"user1"}, set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_activity_studentcomment_imageannotationcomment(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup1, shortname='user1')
-        baker.make('devilry_group.ImageAnnotationComment',
-                   feedback_set=devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
-                   comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
-                   user_role=Comment.USER_ROLE_STUDENT,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup1, shortname="user1")
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            feedback_set=devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+            comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
+            user_role=Comment.USER_ROLE_STUDENT,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
 
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup2, shortname='user2')
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup2, shortname="user2")
 
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'activity-studentcomment'},
-            requestuser=testuser)
-        self.assertEqual(
-            {'user1'},
-            set(self.__get_titles(mockresponse.selector)))
+            cradmin_role=testassignment, viewkwargs={"filters_string": "activity-studentcomment"}, requestuser=testuser
+        )
+        self.assertEqual({"user1"}, set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_activity_no_studentcomment(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup1, shortname='user1')
-        baker.make('devilry_group.GroupComment',
-                   feedback_set=devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
-                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
-                   user_role=Comment.USER_ROLE_STUDENT,
-                   text='asd',
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup1, shortname="user1")
+        baker.make(
+            "devilry_group.GroupComment",
+            feedback_set=devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+            comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+            user_role=Comment.USER_ROLE_STUDENT,
+            text="asd",
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
 
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup2, shortname='user2')
-        baker.make('devilry_group.ImageAnnotationComment',
-                   feedback_set=devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup2),
-                   comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
-                   user_role=Comment.USER_ROLE_STUDENT,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup2, shortname="user2")
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            feedback_set=devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup2),
+            comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
+            user_role=Comment.USER_ROLE_STUDENT,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
 
-        testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup3, shortname='user3')
+        testgroup3 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup3, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup3, shortname="user3")
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'activity-no-studentcomment'},
-            requestuser=testuser)
-        self.assertEqual(
-            {'user3'},
-            set(self.__get_titles(mockresponse.selector)))
+            viewkwargs={"filters_string": "activity-no-studentcomment"},
+            requestuser=testuser,
+        )
+        self.assertEqual({"user3"}, set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_activity_examinercomment_groupcomment(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup1, shortname='user1')
-        baker.make('devilry_group.GroupComment',
-                   feedback_set=devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
-                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
-                   user_role=Comment.USER_ROLE_EXAMINER,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup1, shortname="user1")
+        baker.make(
+            "devilry_group.GroupComment",
+            feedback_set=devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+            comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+            user_role=Comment.USER_ROLE_EXAMINER,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
 
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup2, shortname='user2')
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup2, shortname="user2")
 
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'activity-examinercomment'},
-            requestuser=testuser)
-        self.assertEqual(
-            {'user1'},
-            set(self.__get_titles(mockresponse.selector)))
+            cradmin_role=testassignment, viewkwargs={"filters_string": "activity-examinercomment"}, requestuser=testuser
+        )
+        self.assertEqual({"user1"}, set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_activity_examinercomment_imageannotationcomment(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup1, shortname='user1')
-        baker.make('devilry_group.ImageAnnotationComment',
-                   feedback_set=devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
-                   comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
-                   user_role=Comment.USER_ROLE_EXAMINER,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup1, shortname="user1")
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            feedback_set=devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+            comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
+            user_role=Comment.USER_ROLE_EXAMINER,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
 
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup2, shortname='user2')
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup2, shortname="user2")
 
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'activity-examinercomment'},
-            requestuser=testuser)
-        self.assertEqual(
-            {'user1'},
-            set(self.__get_titles(mockresponse.selector)))
+            cradmin_role=testassignment, viewkwargs={"filters_string": "activity-examinercomment"}, requestuser=testuser
+        )
+        self.assertEqual({"user1"}, set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_activity_no_examinercomment(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup1, shortname='user1')
-        baker.make('devilry_group.GroupComment',
-                   feedback_set=devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
-                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
-                   user_role=Comment.USER_ROLE_EXAMINER,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup1, shortname="user1")
+        baker.make(
+            "devilry_group.GroupComment",
+            feedback_set=devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+            comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+            user_role=Comment.USER_ROLE_EXAMINER,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
 
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup2, shortname='user2')
-        baker.make('devilry_group.ImageAnnotationComment',
-                   feedback_set=devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup2),
-                   comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
-                   user_role=Comment.USER_ROLE_EXAMINER,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup2, shortname="user2")
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            feedback_set=devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup2),
+            comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
+            user_role=Comment.USER_ROLE_EXAMINER,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
 
-        testgroup3 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup3, shortname='user3')
+        testgroup3 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup3, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup3, shortname="user3")
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'activity-no-examinercomment'},
-            requestuser=testuser)
-        self.assertEqual(
-            {'user3'},
-            set(self.__get_titles(mockresponse.selector)))
+            viewkwargs={"filters_string": "activity-no-examinercomment"},
+            requestuser=testuser,
+        )
+        self.assertEqual({"user3"}, set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_activity_admincomment_groupcomment(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup1, shortname='user1')
-        baker.make('devilry_group.GroupComment',
-                   feedback_set=devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
-                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
-                   user_role=Comment.USER_ROLE_ADMIN,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup1, shortname="user1")
+        baker.make(
+            "devilry_group.GroupComment",
+            feedback_set=devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+            comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+            user_role=Comment.USER_ROLE_ADMIN,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
 
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup2, shortname='user2')
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup2, shortname="user2")
 
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'activity-admincomment'},
-            requestuser=testuser)
-        self.assertEqual(
-            {'user1'},
-            set(self.__get_titles(mockresponse.selector)))
+            cradmin_role=testassignment, viewkwargs={"filters_string": "activity-admincomment"}, requestuser=testuser
+        )
+        self.assertEqual({"user1"}, set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_activity_admincomment_imageannotationcomment(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup1, shortname='user1')
-        baker.make('devilry_group.ImageAnnotationComment',
-                   feedback_set=devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
-                   comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
-                   user_role=Comment.USER_ROLE_ADMIN,
-                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup1, shortname="user1")
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            feedback_set=devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+            comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
+            user_role=Comment.USER_ROLE_ADMIN,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
 
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup2, shortname='user2')
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup2, shortname="user2")
 
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'activity-admincomment'},
-            requestuser=testuser)
-        self.assertEqual(
-            {'user1'},
-            set(self.__get_titles(mockresponse.selector)))
+            cradmin_role=testassignment, viewkwargs={"filters_string": "activity-admincomment"}, requestuser=testuser
+        )
+        self.assertEqual({"user1"}, set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_activity_unpublishedfeedback(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup1, shortname='user1')
-        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(
-            group=testgroup1, grading_points=1),
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup1, shortname="user1")
+        (devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1, grading_points=1),)
 
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup2, shortname='user2')
-        devilry_group_baker_factories.feedbackset_first_attempt_unpublished(
-            group=testgroup2),
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup2, shortname="user2")
+        (devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup2),)
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'activity-unpublishedfeedback'},
-            requestuser=testuser)
-        self.assertEqual(
-            {'user1'},
-            set(self.__get_titles(mockresponse.selector)))
+            viewkwargs={"filters_string": "activity-unpublishedfeedback"},
+            requestuser=testuser,
+        )
+        self.assertEqual({"user1"}, set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_activity_private_comment_groupcomment(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup1, shortname='user1')
-        baker.make('devilry_group.GroupComment',
-                   feedback_set=devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
-                   user=testuser,
-                   visibility=GroupComment.VISIBILITY_PRIVATE)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup1, shortname="user1")
+        baker.make(
+            "devilry_group.GroupComment",
+            feedback_set=devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+            user=testuser,
+            visibility=GroupComment.VISIBILITY_PRIVATE,
+        )
 
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup2, shortname='user2')
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup2, shortname="user2")
 
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'activity-privatecomment'},
-            requestuser=testuser)
-        self.assertEqual(
-            {'user1'},
-            set(self.__get_titles(mockresponse.selector)))
+            cradmin_role=testassignment, viewkwargs={"filters_string": "activity-privatecomment"}, requestuser=testuser
+        )
+        self.assertEqual({"user1"}, set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_activity_private_comment_imageannotationcomment(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup1, shortname='user1')
-        baker.make('devilry_group.ImageAnnotationComment',
-                   feedback_set=devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
-                   user=testuser,
-                   visibility=ImageAnnotationComment.VISIBILITY_PRIVATE)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup1, shortname="user1")
+        baker.make(
+            "devilry_group.ImageAnnotationComment",
+            feedback_set=devilry_group_baker_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+            user=testuser,
+            visibility=ImageAnnotationComment.VISIBILITY_PRIVATE,
+        )
 
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
-        devilry_core_baker_factories.candidate(group=testgroup2, shortname='user2')
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_core_baker_factories.candidate(group=testgroup2, shortname="user2")
 
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'activity-privatecomment'},
-            requestuser=testuser)
-        self.assertEqual(
-            {'user1'},
-            set(self.__get_titles(mockresponse.selector)))
+            cradmin_role=testassignment, viewkwargs={"filters_string": "activity-privatecomment"}, requestuser=testuser
+        )
+        self.assertEqual({"user1"}, set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_no_result_message(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testgroup = baker.make('core.AssignmentGroup',
-                               parentnode=baker.make_recipe(
-                                   'devilry.apps.core.assignment_activeperiod_start'))
-        baker.make('core.Candidate',
-                   assignment_group=testgroup,
-                   relatedstudent__user__shortname='testuser')
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup)
+        testgroup = baker.make(
+            "core.AssignmentGroup", parentnode=baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        )
+        baker.make("core.Candidate", assignment_group=testgroup, relatedstudent__user__shortname="testuser")
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
-                cradmin_role=testgroup.assignment,
-                viewkwargs={'filters_string': 'search-nomatch'},
-                requestuser=testuser)
+            cradmin_role=testgroup.assignment, viewkwargs={"filters_string": "search-nomatch"}, requestuser=testuser
+        )
         self.assertEqual(
-            'No students found matching your filters/search.',
-            mockresponse.selector.one('.cradmin-legacy-listing-no-items-message').alltext_normalized)
+            "No students found matching your filters/search.",
+            mockresponse.selector.one(".cradmin-legacy-listing-no-items-message").alltext_normalized,
+        )
 
     def test_filter_waiting_for_feedback_empty(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
         testassignment = baker.make_recipe(
-            'devilry.apps.core.assignment_activeperiod_start',
-            first_deadline=ACTIVE_PERIOD_END)
+            "devilry.apps.core.assignment_activeperiod_start", first_deadline=ACTIVE_PERIOD_END
+        )
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'status-waiting-for-feedback'},
-            requestuser=testuser)
+            viewkwargs={"filters_string": "status-waiting-for-feedback"},
+            requestuser=testuser,
+        )
         self.assertEqual(
-            'You have no students waiting for feedback.',
-            mockresponse.selector.one('.devilry-examiner-grouplist-empty').alltext_normalized)
+            "You have no students waiting for feedback.",
+            mockresponse.selector.one(".devilry-examiner-grouplist-empty").alltext_normalized,
+        )
         self.assertTrue(
-            mockresponse.selector.one('.devilry-examiner-grouplist-empty').hasclass(
-                'devilry-examiner-grouplist-empty-waiting-for-feedback'))
+            mockresponse.selector.one(".devilry-examiner-grouplist-empty").hasclass(
+                "devilry-examiner-grouplist-empty-waiting-for-feedback"
+            )
+        )
 
     def test_filter_waiting_for_deliveries_empty(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
         testassignment = baker.make_recipe(
-            'devilry.apps.core.assignment_activeperiod_start',
-            first_deadline=ACTIVE_PERIOD_START)
+            "devilry.apps.core.assignment_activeperiod_start", first_deadline=ACTIVE_PERIOD_START
+        )
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'status-waiting-for-deliveries'},
-            requestuser=testuser)
+            viewkwargs={"filters_string": "status-waiting-for-deliveries"},
+            requestuser=testuser,
+        )
         self.assertEqual(
-            'You are currently not expecting new deliveries from any students.',
-            mockresponse.selector.one('.devilry-examiner-grouplist-empty').alltext_normalized)
+            "You are currently not expecting new deliveries from any students.",
+            mockresponse.selector.one(".devilry-examiner-grouplist-empty").alltext_normalized,
+        )
         self.assertTrue(
-            mockresponse.selector.one('.devilry-examiner-grouplist-empty').hasclass(
-                'devilry-examiner-grouplist-empty-waiting-for-deliveries'))
+            mockresponse.selector.one(".devilry-examiner-grouplist-empty").hasclass(
+                "devilry-examiner-grouplist-empty-waiting-for-deliveries"
+            )
+        )
 
     def test_filter_corrected_empty(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
 
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", assignmentgroup=testgroup1, relatedexaminer__user=testuser)
 
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'status-corrected'},
-            requestuser=testuser)
+            cradmin_role=testassignment, viewkwargs={"filters_string": "status-corrected"}, requestuser=testuser
+        )
         self.assertEqual(
-            'You have not finished correcting any students yet.',
-            mockresponse.selector.one('.devilry-examiner-grouplist-empty').alltext_normalized)
+            "You have not finished correcting any students yet.",
+            mockresponse.selector.one(".devilry-examiner-grouplist-empty").alltext_normalized,
+        )
         self.assertTrue(
-            mockresponse.selector.one('.devilry-examiner-grouplist-empty').hasclass(
-                'devilry-examiner-grouplist-empty-corrected'))
+            mockresponse.selector.one(".devilry-examiner-grouplist-empty").hasclass(
+                "devilry-examiner-grouplist-empty-corrected"
+            )
+        )
 
     def test_bulk_feedback_choices_not_rendered_no_groups_waiting_for_feedback(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testgroup = baker.make('core.AssignmentGroup',
-                               parentnode=baker.make_recipe(
-                                   'devilry.apps.core.assignment_activeperiod_start'))
-        devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup)
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup.parentnode,
-            requestuser=testuser
+        testgroup = baker.make(
+            "core.AssignmentGroup", parentnode=baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
         )
-        self.assertFalse(mockresponse.selector.exists('#devilry-examiner-bulk-feedback-button'))
-        self.assertFalse(mockresponse.selector.exists('#devilry-examiner-simple-bulk-feedback-button'))
+        devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup)
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup.parentnode, requestuser=testuser)
+        self.assertFalse(mockresponse.selector.exists("#devilry-examiner-bulk-feedback-button"))
+        self.assertFalse(mockresponse.selector.exists("#devilry-examiner-simple-bulk-feedback-button"))
 
     def test_bulk_feedback_choices_rendered_group_waiting_for_feedback(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testgroup = baker.make('core.AssignmentGroup',
-                               parentnode=baker.make_recipe(
-                                   'devilry.apps.core.assignment_activeperiod_start',
-                                   first_deadline=timezone.now() - timezone.timedelta(days=1)))
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup.parentnode,
-            requestuser=testuser
+        testgroup = baker.make(
+            "core.AssignmentGroup",
+            parentnode=baker.make_recipe(
+                "devilry.apps.core.assignment_activeperiod_start",
+                first_deadline=timezone.now() - timezone.timedelta(days=1),
+            ),
         )
-        self.assertTrue(mockresponse.selector.exists('#devilry-examiner-bulk-feedback-button'))
-        self.assertTrue(mockresponse.selector.exists('#devilry-examiner-simple-bulk-feedback-button'))
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup.parentnode, requestuser=testuser)
+        self.assertTrue(mockresponse.selector.exists("#devilry-examiner-bulk-feedback-button"))
+        self.assertTrue(mockresponse.selector.exists("#devilry-examiner-simple-bulk-feedback-button"))
 
     def test_bulk_feedback_button_text(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testgroup = baker.make('core.AssignmentGroup',
-                               parentnode=baker.make_recipe(
-                                   'devilry.apps.core.assignment_activeperiod_start',
-                                   first_deadline=timezone.now() - timezone.timedelta(days=1)))
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup.parentnode,
-            requestuser=testuser
+        testgroup = baker.make(
+            "core.AssignmentGroup",
+            parentnode=baker.make_recipe(
+                "devilry.apps.core.assignment_activeperiod_start",
+                first_deadline=timezone.now() - timezone.timedelta(days=1),
+            ),
         )
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup.parentnode, requestuser=testuser)
         self.assertEqual(
-            'Bulk feedback',
-            mockresponse.selector.one('#devilry-examiner-bulk-feedback-button').alltext_normalized)
+            "Bulk feedback", mockresponse.selector.one("#devilry-examiner-bulk-feedback-button").alltext_normalized
+        )
 
     def test_simple_bulk_feedback_button_text(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testgroup = baker.make('core.AssignmentGroup',
-                               parentnode=baker.make_recipe(
-                                   'devilry.apps.core.assignment_activeperiod_start',
-                                   first_deadline=timezone.now() - timezone.timedelta(days=1)))
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup.parentnode,
-            requestuser=testuser
+        testgroup = baker.make(
+            "core.AssignmentGroup",
+            parentnode=baker.make_recipe(
+                "devilry.apps.core.assignment_activeperiod_start",
+                first_deadline=timezone.now() - timezone.timedelta(days=1),
+            ),
         )
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup.parentnode, requestuser=testuser)
         self.assertEqual(
-            'Simple bulk feedback',
-            mockresponse.selector.one('#devilry-examiner-simple-bulk-feedback-button').alltext_normalized)
+            "Simple bulk feedback",
+            mockresponse.selector.one("#devilry-examiner-simple-bulk-feedback-button").alltext_normalized,
+        )
 
     def test_new_attempt_box_rendered_button_text(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup1 = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = baker.make('core.AssignmentGroup', parentnode=testassignment)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
         devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup1)
         devilry_group_baker_factories.feedbackset_first_attempt_published(group=testgroup2)
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup1)
-        baker.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup2)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            requestuser=testuser
-        )
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup1)
+        baker.make("core.Examiner", relatedexaminer__user=testuser, assignmentgroup=testgroup2)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
         self.assertEqual(
-            'Manage deadlines',
-            mockresponse.selector.one('#devilry-examiner-bulk-new-attempt-button').alltext_normalized)
+            "Manage deadlines",
+            mockresponse.selector.one("#devilry-examiner-bulk-new-attempt-button").alltext_normalized,
+        )

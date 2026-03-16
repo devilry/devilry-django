@@ -14,36 +14,24 @@ class TestDevilryStudentFeedbackTags(TestCase):
 
     def test_passed_with_grade(self):
         feedback = Mock()
-        feedback.grade = 'A'
+        feedback.grade = "A"
         feedback.is_passing_grade = True
-        self.assertEqual(
-            normalize_whitespace(BeautifulSoup(devilry_student_shortgrade(feedback)).text),
-            'A (Passed)'
-        )
+        self.assertEqual(normalize_whitespace(BeautifulSoup(devilry_student_shortgrade(feedback)).text), "A (Passed)")
 
     def test_failed_with_grade(self):
         feedback = Mock()
-        feedback.grade = 'F'
+        feedback.grade = "F"
         feedback.is_passing_grade = False
-        self.assertEqual(
-            normalize_whitespace(BeautifulSoup(devilry_student_shortgrade(feedback)).text),
-            'F (Failed)'
-        )
+        self.assertEqual(normalize_whitespace(BeautifulSoup(devilry_student_shortgrade(feedback)).text), "F (Failed)")
 
     def test_passed(self):
         feedback = Mock()
-        feedback.grade = 'Passed'
+        feedback.grade = "Passed"
         feedback.is_passing_grade = True
-        self.assertEqual(
-            normalize_whitespace(BeautifulSoup(devilry_student_shortgrade(feedback)).text),
-            'Passed'
-        )
+        self.assertEqual(normalize_whitespace(BeautifulSoup(devilry_student_shortgrade(feedback)).text), "Passed")
 
     def test_failed(self):
         feedback = Mock()
-        feedback.grade = 'Failed'
+        feedback.grade = "Failed"
         feedback.is_passing_grade = False
-        self.assertEqual(
-            normalize_whitespace(BeautifulSoup(devilry_student_shortgrade(feedback)).text),
-            'Failed'
-        )
+        self.assertEqual(normalize_whitespace(BeautifulSoup(devilry_student_shortgrade(feedback)).text), "Failed")

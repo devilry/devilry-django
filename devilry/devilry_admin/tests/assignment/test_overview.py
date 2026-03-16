@@ -137,7 +137,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one(
-                "#devilry_admin_assignment_overview_gradingconfiguration_information " "dl:nth-child(1) dt:nth-child(1)"
+                "#devilry_admin_assignment_overview_gradingconfiguration_information dl:nth-child(1) dt:nth-child(1)"
             ).alltext_normalized,
             "Examiner chooses",
         )
@@ -147,7 +147,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one(
-                "#devilry_admin_assignment_overview_gradingconfiguration_information " "dl:nth-child(1) dd:nth-child(2)"
+                "#devilry_admin_assignment_overview_gradingconfiguration_information dl:nth-child(1) dd:nth-child(2)"
             ).alltext_normalized,
             str(Assignment.GRADING_SYSTEM_PLUGIN_ID_CHOICES_DICT.get(Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)),
         )
@@ -157,7 +157,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one(
-                "#devilry_admin_assignment_overview_gradingconfiguration_information " "dl:nth-child(1) dd:nth-child(2)"
+                "#devilry_admin_assignment_overview_gradingconfiguration_information dl:nth-child(1) dd:nth-child(2)"
             ).alltext_normalized,
             str(Assignment.GRADING_SYSTEM_PLUGIN_ID_CHOICES_DICT.get(Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS)),
         )
@@ -167,7 +167,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one(
-                "#devilry_admin_assignment_overview_gradingconfiguration_information " "dl:nth-child(1) dt:nth-child(3)"
+                "#devilry_admin_assignment_overview_gradingconfiguration_information dl:nth-child(1) dt:nth-child(3)"
             ).alltext_normalized,
             "Students see",
         )
@@ -177,7 +177,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one(
-                "#devilry_admin_assignment_overview_gradingconfiguration_information " "dl:nth-child(1) dd:nth-child(4)"
+                "#devilry_admin_assignment_overview_gradingconfiguration_information dl:nth-child(1) dd:nth-child(4)"
             ).alltext_normalized,
             str(Assignment.POINTS_TO_GRADE_MAPPER_CHOICES_DICT.get(Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED)),
         )
@@ -187,7 +187,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one(
-                "#devilry_admin_assignment_overview_gradingconfiguration_information " "dl:nth-child(1) dd:nth-child(4)"
+                "#devilry_admin_assignment_overview_gradingconfiguration_information dl:nth-child(1) dd:nth-child(4)"
             ).alltext_normalized,
             str(Assignment.POINTS_TO_GRADE_MAPPER_CHOICES_DICT.get(Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS)),
         )
@@ -242,7 +242,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one(
-                "#devilry_admin_assignment_overview_gradingconfiguration_information " "dl:nth-child(1) dd:nth-child(4)"
+                "#devilry_admin_assignment_overview_gradingconfiguration_information dl:nth-child(1) dd:nth-child(4)"
             ).alltext_normalized,
             "F, E, D, C, B or A",
         )
@@ -252,7 +252,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one(
-                "#devilry_admin_assignment_overview_gradingconfiguration_information " "dl:nth-child(1) dt:nth-child(5)"
+                "#devilry_admin_assignment_overview_gradingconfiguration_information dl:nth-child(1) dt:nth-child(5)"
             ).alltext_normalized,
             "Maximum number of points achievable",
         )
@@ -264,7 +264,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one(
-                "#devilry_admin_assignment_overview_gradingconfiguration_information " "dl:nth-child(1) dd:nth-child(6)"
+                "#devilry_admin_assignment_overview_gradingconfiguration_information dl:nth-child(1) dd:nth-child(6)"
             ).alltext_normalized,
             "100",
         )
@@ -274,7 +274,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one(
-                "#devilry_admin_assignment_overview_gradingconfiguration_information " "dl:nth-child(1) dt:nth-child(7)"
+                "#devilry_admin_assignment_overview_gradingconfiguration_information dl:nth-child(1) dt:nth-child(7)"
             ).alltext_normalized,
             "Minimum number of points required to pass",
         )
@@ -288,7 +288,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
             mockresponse.selector.one(
-                "#devilry_admin_assignment_overview_gradingconfiguration_information " "dl:nth-child(1) dd:nth-child(8)"
+                "#devilry_admin_assignment_overview_gradingconfiguration_information dl:nth-child(1) dd:nth-child(8)"
             ).alltext_normalized,
             "0",
         )

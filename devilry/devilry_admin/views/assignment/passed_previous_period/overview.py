@@ -25,63 +25,69 @@ class ItemFrameMixin(object):
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(ItemFrameMixin, self).get_extra_css_classes_list()
-        css_classes_list.append('devilry-qualifiesforexam-plugin-spacing')
-        css_classes_list.append('cradmin-legacy-listbuilder-itemvalue'
-                                ' devilry-frontpage-listbuilder-roleselect-itemvalue'
-                                ' devilry-frontpage-listbuilder-roleselect-itemvalue-anyadmin'
-                                ' devilry-passed-previous-semester-mode-item-value')
+        css_classes_list.append("devilry-qualifiesforexam-plugin-spacing")
+        css_classes_list.append(
+            "cradmin-legacy-listbuilder-itemvalue"
+            " devilry-frontpage-listbuilder-roleselect-itemvalue"
+            " devilry-frontpage-listbuilder-roleselect-itemvalue-anyadmin"
+            " devilry-passed-previous-semester-mode-item-value"
+        )
         return css_classes_list
 
 
 class ManualPassModeItemFrame(ItemFrameMixin, devilry_listbuilder.common.GoForwardLinkItemFrame):
-    """
-    """
+    """ """
+
     def get_url(self):
         return reverse_cradmin_url(
-            instanceid='devilry_admin_assignmentadmin',
-            appname='passed_previous_period',
+            instanceid="devilry_admin_assignmentadmin",
+            appname="passed_previous_period",
             roleid=self.roleid,
-            viewname='manually_select_groups'
+            viewname="manually_select_groups",
         )
 
 
 class ManualPassModeItemValue(listbuilder.itemvalue.TitleDescription):
     def get_title(self):
-        return gettext('Manually pass students')
+        return gettext("Manually pass students")
 
     def get_description(self):
-        return gettext('Manually select students that has passed this assignment, or it\'s equivalent, on a previous '
-                        'semester. This is for simplifying bulk-passing students on an assignment for an admin, '
-                        'you don\'t actually select a semester.')
+        return gettext(
+            "Manually select students that has passed this assignment, or it's equivalent, on a previous "
+            "semester. This is for simplifying bulk-passing students on an assignment for an admin, "
+            "you don't actually select a semester."
+        )
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(ManualPassModeItemValue, self).get_extra_css_classes_list()
-        css_classes_list.append('devilry-passed-previous-semester-mode-auto-item-value')
+        css_classes_list.append("devilry-passed-previous-semester-mode-auto-item-value")
         return css_classes_list
 
 
 class AutoPassPreviousPeriodItemFrame(ItemFrameMixin, devilry_listbuilder.common.GoForwardLinkItemFrame):
     def get_url(self):
         return reverse_cradmin_url(
-            instanceid='devilry_admin_assignmentadmin',
-            appname='passed_previous_period',
+            instanceid="devilry_admin_assignmentadmin",
+            appname="passed_previous_period",
             roleid=self.roleid,
-            viewname='select_period'
+            viewname="select_period",
         )
 
 
 class AutoPassPreviousPeriodItemValue(listbuilder.itemvalue.TitleDescription):
     def get_title(self):
-        return gettext('Automatically pass students from an earlier semester')
+        return gettext("Automatically pass students from an earlier semester")
 
     def get_description(self):
-        return gettext('Automatically pass students from earlier semester by selecting the semester you want to '
-                        'get the results from. This requires that the assignment has the same shortname as the '
-                        'previous assignment.')
+        return gettext(
+            "Automatically pass students from earlier semester by selecting the semester you want to "
+            "get the results from. This requires that the assignment has the same shortname as the "
+            "previous assignment."
+        )
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(AutoPassPreviousPeriodItemValue, self).get_extra_css_classes_list()
-        css_classes_list.append('devilry-passed-previous-semester-mode-auto-item-value')
+        css_classes_list.append("devilry-passed-previous-semester-mode-auto-item-value")
         return css_classes_list
 
 
@@ -92,21 +98,18 @@ class Overview(TemplateView):
     If a :class:`~.devilry.devilry_qualifiesforexam.models.Status` already exists for this period,
     the request will be redirected to a show status view.
     """
-    template_name = 'devilry_admin/assignment/passed_previous_period/overview.django.html'
+
+    template_name = "devilry_admin/assignment/passed_previous_period/overview.django.html"
 
     def dispatch(self, request, *args, **kwargs):
         return super(Overview, self).dispatch(request=request, *args, **kwargs)
 
     def get_mode_renderables(self):
         return [
-            ManualPassModeItemFrame(
-                inneritem=ManualPassModeItemValue(value=None),
-                roleid=self.request.cradmin_role.id
-            ),
+            ManualPassModeItemFrame(inneritem=ManualPassModeItemValue(value=None), roleid=self.request.cradmin_role.id),
             AutoPassPreviousPeriodItemFrame(
-                inneritem=AutoPassPreviousPeriodItemValue(value=None),
-                roleid=self.request.cradmin_role.id
-            )
+                inneritem=AutoPassPreviousPeriodItemValue(value=None), roleid=self.request.cradmin_role.id
+            ),
         ]
 
     def __get_mode_listbuilder_list(self):
@@ -128,7 +131,7 @@ class Overview(TemplateView):
         context_data = super(Overview, self).get_context_data(**kwargs)
         assignment = self.request.cradmin_role
         if assignment.grading_system_plugin_id != Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED:
-            context_data['unsupported_grading_plugin'] = True
+            context_data["unsupported_grading_plugin"] = True
         else:
-            context_data['mode_listbuilder_list'] = self.__get_mode_listbuilder_list()
+            context_data["mode_listbuilder_list"] = self.__get_mode_listbuilder_list()
         return context_data

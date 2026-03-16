@@ -19,182 +19,195 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         return mockinstance
 
     def test_title(self):
-        testassignment = baker.make('core.Assignment', long_name='Test Assignment')
+        testassignment = baker.make("core.Assignment", long_name="Test Assignment")
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
-        self.assertIn(
-            'Examiners on Test Assignment',
-            mockresponse.selector.one('title').alltext_normalized)
+            cradmin_role=testassignment, cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin")
+        )
+        self.assertIn("Examiners on Test Assignment", mockresponse.selector.one("title").alltext_normalized)
 
     def test_h1(self):
-        testassignment = baker.make('core.Assignment', long_name='Test Assignment')
+        testassignment = baker.make("core.Assignment", long_name="Test Assignment")
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
-        self.assertEqual(
-            'Examiners on Test Assignment',
-            mockresponse.selector.one('h1').alltext_normalized)
+            cradmin_role=testassignment, cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin")
+        )
+        self.assertEqual("Examiners on Test Assignment", mockresponse.selector.one("h1").alltext_normalized)
 
     def test_buttonbar_sanity(self):
-        testassignment = baker.make('core.Assignment')
-        baker.make('core.RelatedExaminer', period=testassignment.period)
+        testassignment = baker.make("core.Assignment")
+        baker.make("core.RelatedExaminer", period=testassignment.period)
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
-        self.assertEqual(
-            1,
-            mockresponse.selector.count(
-                '#devilry_admin_assignment_examiners_overview_buttonbar .btn'))
+            cradmin_role=testassignment, cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin")
+        )
+        self.assertEqual(1, mockresponse.selector.count("#devilry_admin_assignment_examiners_overview_buttonbar .btn"))
 
     def test_buttonbar_organize_examiners_link(self):
-        testassignment = baker.make('core.Assignment')
-        baker.make('core.RelatedExaminer', period=testassignment.period)
-        mock_cradmin_instance = self.__mockinstance_with_devilryrole('departmentadmin')
+        testassignment = baker.make("core.Assignment")
+        baker.make("core.RelatedExaminer", period=testassignment.period)
+        mock_cradmin_instance = self.__mockinstance_with_devilryrole("departmentadmin")
 
         def mock_reverse_url(appname, viewname, **kwargs):
-            return '/{}/{}'.format(appname, viewname)
+            return "/{}/{}".format(appname, viewname)
 
         mock_cradmin_instance.reverse_url = mock_reverse_url
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=mock_cradmin_instance)
+            cradmin_role=testassignment, cradmin_instance=mock_cradmin_instance
+        )
         self.assertEqual(
-            '/bulk_organize_examiners/INDEX',
-            mockresponse.selector
-            .one('#devilry_admin_assignment_examiners_overview_button_bulk_organize_examiners')['href'])
+            "/bulk_organize_examiners/INDEX",
+            mockresponse.selector.one("#devilry_admin_assignment_examiners_overview_button_bulk_organize_examiners")[
+                "href"
+            ],
+        )
 
     def test_buttonbar_organize_examiners_text(self):
-        testassignment = baker.make('core.Assignment')
-        baker.make('core.RelatedExaminer', period=testassignment.period)
+        testassignment = baker.make("core.Assignment")
+        baker.make("core.RelatedExaminer", period=testassignment.period)
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
+            cradmin_role=testassignment, cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin")
+        )
         self.assertEqual(
-            'Bulk-organize examiners',
-            mockresponse.selector
-            .one('#devilry_admin_assignment_examiners_overview_button_bulk_organize_examiners')
-            .alltext_normalized)
+            "Bulk-organize examiners",
+            mockresponse.selector.one(
+                "#devilry_admin_assignment_examiners_overview_button_bulk_organize_examiners"
+            ).alltext_normalized,
+        )
 
     def test_examinerlist_no_relatedexaminers_sanity(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
-            requestuser=testuser)
-        self.assertTrue(mockresponse.selector.exists(
-            '#devilry_admin_assignment_examiners_overview_no_relatedexaminers'))
-        self.assertFalse(mockresponse.selector.exists('#cradmin_legacy_listbuilderview_listwrapper'))
+            cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
+            requestuser=testuser,
+        )
+        self.assertTrue(
+            mockresponse.selector.exists("#devilry_admin_assignment_examiners_overview_no_relatedexaminers")
+        )
+        self.assertFalse(mockresponse.selector.exists("#cradmin_legacy_listbuilderview_listwrapper"))
 
     def test_examinerlist_no_relatedexaminers_text(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           parentnode__parentnode__short_name='testsubject',
-                                           parentnode__short_name='testperiod')
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start",
+            parentnode__parentnode__short_name="testsubject",
+            parentnode__short_name="testperiod",
+        )
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
-            requestuser=testuser)
+            cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
+            requestuser=testuser,
+        )
         self.assertEqual(
-            'You have no users registered as examiner for testsubject.testperiod. You need to '
-            'add users as examiners on the semester page for the course before you can use '
-            'them as examiners for assignments.',
+            "You have no users registered as examiner for testsubject.testperiod. You need to "
+            "add users as examiners on the semester page for the course before you can use "
+            "them as examiners for assignments.",
             mockresponse.selector.one(
-                '#devilry_admin_assignment_examiners_overview_no_relatedexaminers p').alltext_normalized)
+                "#devilry_admin_assignment_examiners_overview_no_relatedexaminers p"
+            ).alltext_normalized,
+        )
         self.assertEqual(
-            'Add examiners',
+            "Add examiners",
             mockresponse.selector.one(
-                '#devilry_admin_assignment_examiners_overview_no_relatedexaminers a').alltext_normalized)
+                "#devilry_admin_assignment_examiners_overview_no_relatedexaminers a"
+            ).alltext_normalized,
+        )
 
     def test_examinerlist_no_relatedexaminers_url(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
-            requestuser=testuser)
+            cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
+            requestuser=testuser,
+        )
         self.assertEqual(
             reverse_cradmin_url(
-                instanceid='devilry_admin_periodadmin',
-                appname='examiners',
-                roleid=testassignment.period.id),
-            mockresponse.selector.one(
-                '#devilry_admin_assignment_examiners_overview_no_relatedexaminers a')['href'])
+                instanceid="devilry_admin_periodadmin", appname="examiners", roleid=testassignment.period.id
+            ),
+            mockresponse.selector.one("#devilry_admin_assignment_examiners_overview_no_relatedexaminers a")["href"],
+        )
 
     def test_exclude_inactive_relatedexaminers(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        baker.make('core.RelatedExaminer', period=testassignment.period, active=False)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        baker.make("core.RelatedExaminer", period=testassignment.period, active=False)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
-            requestuser=testuser)
-        self.assertFalse(mockresponse.selector.exists('#cradmin_legacy_listbuilderview_listwrapper'))
+            cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
+            requestuser=testuser,
+        )
+        self.assertFalse(mockresponse.selector.exists("#cradmin_legacy_listbuilderview_listwrapper"))
 
     def test_has_relatedexaminers_sanity(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        baker.make('core.RelatedExaminer', period=testassignment.period, _quantity=5)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        baker.make("core.RelatedExaminer", period=testassignment.period, _quantity=5)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
-            requestuser=testuser)
-        self.assertTrue(mockresponse.selector.exists('#cradmin_legacy_listbuilderview_listwrapper'))
-        self.assertEqual(5, mockresponse.selector.count('.cradmin-legacy-listbuilder-itemvalue'))
-        self.assertFalse(mockresponse.selector.exists(
-            '#devilry_admin_assignment_examiners_overview_no_relatedexaminers'))
+            cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
+            requestuser=testuser,
+        )
+        self.assertTrue(mockresponse.selector.exists("#cradmin_legacy_listbuilderview_listwrapper"))
+        self.assertEqual(5, mockresponse.selector.count(".cradmin-legacy-listbuilder-itemvalue"))
+        self.assertFalse(
+            mockresponse.selector.exists("#devilry_admin_assignment_examiners_overview_no_relatedexaminers")
+        )
 
     def test_listbuilderlist_footer_text(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           parentnode__parentnode__short_name='testsubject',
-                                           parentnode__short_name='testperiod')
-        baker.make('core.RelatedExaminer', period=testassignment.period)
+        testassignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start",
+            parentnode__parentnode__short_name="testsubject",
+            parentnode__short_name="testperiod",
+        )
+        baker.make("core.RelatedExaminer", period=testassignment.period)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
-            requestuser=testuser)
+            cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
+            requestuser=testuser,
+        )
         self.assertEqual(
-            'Only users registered as examiner for testsubject.testperiod is available '
-            'as examiners for assignments. Add more examiners.',
-            mockresponse.selector.one(
-                '.devilry-listbuilderlist-footer').alltext_normalized)
+            "Only users registered as examiner for testsubject.testperiod is available "
+            "as examiners for assignments. Add more examiners.",
+            mockresponse.selector.one(".devilry-listbuilderlist-footer").alltext_normalized,
+        )
 
     def test_listbuilderlist_footer_url(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        baker.make('core.RelatedExaminer', period=testassignment.period)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        baker.make("core.RelatedExaminer", period=testassignment.period)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
-            requestuser=testuser)
+            cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
+            requestuser=testuser,
+        )
         self.assertEqual(
             reverse_cradmin_url(
-                instanceid='devilry_admin_periodadmin',
-                appname='examiners',
-                roleid=testassignment.period.id),
-            mockresponse.selector.one(
-                '.devilry-listbuilderlist-footer a')['href'])
+                instanceid="devilry_admin_periodadmin", appname="examiners", roleid=testassignment.period.id
+            ),
+            mockresponse.selector.one(".devilry-listbuilderlist-footer a")["href"],
+        )
 
     def test_students_without_examiners_warning(self):
-        testassignment = baker.make('core.Assignment')
-        baker.make('core.Candidate', assignment_group__parentnode=testassignment)
-        baker.make('core.RelatedExaminer', period=testassignment.period)
+        testassignment = baker.make("core.Assignment")
+        baker.make("core.Candidate", assignment_group__parentnode=testassignment)
+        baker.make("core.RelatedExaminer", period=testassignment.period)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
-        self.assertTrue(mockresponse.selector.exists('#id_devilry_admin_assignment_examineroverview'))
+        self.assertTrue(mockresponse.selector.exists("#id_devilry_admin_assignment_examineroverview"))
         self.assertEqual(
-            mockresponse.selector.one('#id_devilry_admin_assignment_examineroverview').alltext_normalized,
-            'warning: There are still students on the assignment with no examiners assigned to them')
+            mockresponse.selector.one("#id_devilry_admin_assignment_examineroverview").alltext_normalized,
+            "warning: There are still students on the assignment with no examiners assigned to them",
+        )
 
     def test_students_all_students_are_assigned_examiners_warning_not_rendered(self):
-        testassignment = baker.make('core.Assignment')
-        assignment_group = baker.make('core.AssignmentGroup', parentnode=testassignment)
-        baker.make('core.Candidate', assignment_group=assignment_group)
-        baker.make('core.Examiner', related_examiner__period=testassignment.parentnode,
-                   assignmentgroup=assignment_group)
+        testassignment = baker.make("core.Assignment")
+        assignment_group = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Candidate", assignment_group=assignment_group)
+        baker.make(
+            "core.Examiner", related_examiner__period=testassignment.parentnode, assignmentgroup=assignment_group
+        )
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
-        self.assertFalse(mockresponse.selector.exists('#id_devilry_admin_assignment_examineroverview'))
+        self.assertFalse(mockresponse.selector.exists("#id_devilry_admin_assignment_examineroverview"))
 
     #
     #
@@ -204,35 +217,48 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def test_anonymizationmode_fully_anonymous_subjectadmin_404(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testgroup = baker.make('core.AssignmentGroup',
-                               parentnode=baker.make_recipe(
-                                   'devilry.apps.core.assignment_activeperiod_start',
-                                   anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS))
-        with self.assertRaisesMessage(Http404, 'Only department admins have permission to edit examiners '
-                                               'for fully anonymous assignments.'):
+        testgroup = baker.make(
+            "core.AssignmentGroup",
+            parentnode=baker.make_recipe(
+                "devilry.apps.core.assignment_activeperiod_start",
+                anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS,
+            ),
+        )
+        with self.assertRaisesMessage(
+            Http404, "Only department admins have permission to edit examiners for fully anonymous assignments."
+        ):
             self.mock_getrequest(
                 cradmin_role=testgroup.assignment,
-                cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'),
-                requestuser=testuser)
+                cradmin_instance=self.__mockinstance_with_devilryrole("subjectadmin"),
+                requestuser=testuser,
+            )
 
     def test_anonymizationmode_fully_anonymous_departmentadmin_no_404(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testgroup = baker.make('core.AssignmentGroup',
-                               parentnode=baker.make_recipe(
-                                   'devilry.apps.core.assignment_activeperiod_start',
-                                   anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS))
+        testgroup = baker.make(
+            "core.AssignmentGroup",
+            parentnode=baker.make_recipe(
+                "devilry.apps.core.assignment_activeperiod_start",
+                anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS,
+            ),
+        )
         self.mock_http200_getrequest_htmls(
-                cradmin_role=testgroup.assignment,
-                cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
-                requestuser=testuser)  # No Http404 exception raised!
+            cradmin_role=testgroup.assignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
+            requestuser=testuser,
+        )  # No Http404 exception raised!
 
     def test_anonymizationmode_semi_anonymous_subjectadmin_no_404(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
-        testgroup = baker.make('core.AssignmentGroup',
-                               parentnode=baker.make_recipe(
-                                   'devilry.apps.core.assignment_activeperiod_start',
-                                   anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS))
+        testgroup = baker.make(
+            "core.AssignmentGroup",
+            parentnode=baker.make_recipe(
+                "devilry.apps.core.assignment_activeperiod_start",
+                anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS,
+            ),
+        )
         self.mock_http200_getrequest_htmls(
-                cradmin_role=testgroup.assignment,
-                cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'),
-                requestuser=testuser)  # No Http404 exception raised!
+            cradmin_role=testgroup.assignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole("subjectadmin"),
+            requestuser=testuser,
+        )  # No Http404 exception raised!

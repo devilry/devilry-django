@@ -1,5 +1,3 @@
-
-
 from collections import OrderedDict
 
 from django.db import models
@@ -12,6 +10,7 @@ class RelatedStudentResults(object):
     """
     Class encapsulates grading results for a RelatedStudent.
     """
+
     def __init__(self, relatedstudent, cached_data_dict):
         #: The RelatedStudent
         self.relatedstudent = relatedstudent
@@ -50,9 +49,11 @@ class RelatedStudentResults(object):
             (ValueError): If the student is not registered on the ``Assignment``.
         """
         if not self.student_is_registered_on_assignment(assignment_id=assignment_id):
-            raise ValueError('You are checking if the student is waiting for feedback when the student is not '
-                             'registered on the assignment. Maybe you should call '
-                             'student_is_registered_on_assignment(assignment_id=) first?')
+            raise ValueError(
+                "You are checking if the student is waiting for feedback when the student is not "
+                "registered on the assignment. Maybe you should call "
+                "student_is_registered_on_assignment(assignment_id=) first?"
+            )
         cached_data = self.cached_data_dict[assignment_id]
         if cached_data.last_published_feedbackset_is_last_feedbackset:
             return False
@@ -78,9 +79,11 @@ class RelatedStudentResults(object):
             return False
 
         if not self.student_is_registered_on_assignment(assignment_id=assignment.id):
-            raise ValueError('You are checking if the student is waiting for deliveries when the student is not '
-                             'registered on the assignment. Maybe you should call '
-                             'student_is_registered_on_assignment(assignment_id=) first?')
+            raise ValueError(
+                "You are checking if the student is waiting for deliveries when the student is not "
+                "registered on the assignment. Maybe you should call "
+                "student_is_registered_on_assignment(assignment_id=) first?"
+            )
         cached_data = self.cached_data_dict[assignment.id]
         if self.is_waiting_for_feedback(assignment_id=assignment.id):
             if cached_data.public_student_comment_count == 0 and cached_data.public_student_file_upload_count == 0:
@@ -102,9 +105,11 @@ class RelatedStudentResults(object):
 
         """
         if not self.student_is_registered_on_assignment(assignment_id=assignment_id):
-            raise ValueError('You are checking if the student is waiting for deliveries when the student is not '
-                             'registered on the assignment. Maybe you should call '
-                             'student_is_registered_on_assignment(assignment_id=) first?')
+            raise ValueError(
+                "You are checking if the student is waiting for deliveries when the student is not "
+                "registered on the assignment. Maybe you should call "
+                "student_is_registered_on_assignment(assignment_id=) first?"
+            )
         cached_data = self.cached_data_dict[assignment_id]
         if cached_data.last_published_feedbackset_is_last_feedbackset:
             return False
@@ -134,7 +139,7 @@ class RelatedStudentResults(object):
         if not cached_data.last_published_feedbackset_is_last_feedbackset:
             return 0
         return cached_data.last_published_feedbackset.grading_points
-    
+
     def get_number_of_attempts_for_assignment(self, assignment_id):
         """
         Get the number of attempts the student has made on the assignment.
@@ -182,26 +187,21 @@ class RelatedStudentResults(object):
 
     def __serialize_user(self):
         user = self.relatedstudent.user
-        return {
-            'id': user.id,
-            'shortname': user.shortname,
-            'fullname': user.fullname
-        }
+        return {"id": user.id, "shortname": user.shortname, "fullname": user.fullname}
 
     def __serialize_assignment_results(self):
         assignment_result_list = []
         for assignment_id in list(self.cached_data_dict.keys()):
-            assignment_result_list.append({
-                'id': assignment_id,
-                'result': self.get_result_for_assignment(assignment_id=assignment_id)
-            })
+            assignment_result_list.append(
+                {"id": assignment_id, "result": self.get_result_for_assignment(assignment_id=assignment_id)}
+            )
         return assignment_result_list
 
     def serialize(self):
         return {
-            'relatedstudent_id': self.relatedstudent.id,
-            'user': self.__serialize_user(),
-            'assignments': self.__serialize_assignment_results()
+            "relatedstudent_id": self.relatedstudent.id,
+            "user": self.__serialize_user(),
+            "assignments": self.__serialize_assignment_results(),
         }
 
     def prettyprint_results(self):
@@ -212,13 +212,15 @@ class RelatedStudentResults(object):
         for assignment_id, cached_data in list(self.cached_data_dict.items()):
             published_feedbackset = cached_data.last_published_feedbackset
             passing_grade = cached_data.group.parentnode.points_is_passing_grade(published_feedbackset.grading_points)
-            print('    - Assignment {} ({}):\n        * Points: {}/{} (passed: {})'.format(
-                assignment_id,
-                cached_data.group.parentnode,
-                cached_data.last_published_feedbackset.grading_points,
-                cached_data.group.parentnode.max_points,
-                passing_grade
-            ))
+            print(
+                "    - Assignment {} ({}):\n        * Points: {}/{} (passed: {})".format(
+                    assignment_id,
+                    cached_data.group.parentnode,
+                    cached_data.last_published_feedbackset.grading_points,
+                    cached_data.group.parentnode.max_points,
+                    passing_grade,
+                )
+            )
 
 
 class PeriodAllResultsCollector(object):
@@ -235,6 +237,7 @@ class PeriodAllResultsCollector(object):
         results (dict): Dictionary with :attr:`~.devilry.apps.core.RelatedStudent.id` as keys and an instance of
         :class:`~.RelatedStudentResults` as value for each key.
     """
+
     def __init__(self, period, related_student_ids):
         #: The period the result info gathering is for.
         self.period = period
@@ -255,17 +258,16 @@ class PeriodAllResultsCollector(object):
         Returns:
             (QuerySet): a QuerySet of :class:`~.devilry.apps.core.models.Candidate`.
         """
-        return core_models.Candidate.objects\
-            .select_related(
-                'assignment_group',
-                'assignment_group__parentnode',
-                'assignment_group__parentnode__parentnode',
-                'assignment_group__parentnode__parentnode__parentnode',
-                'assignment_group__cached_data__last_feedbackset__group',
-                'assignment_group__cached_data__last_feedbackset__group__parentnode',
-                'assignment_group__cached_data__last_feedbackset',
-                'assignment_group__cached_data__last_published_feedbackset'
-            )
+        return core_models.Candidate.objects.select_related(
+            "assignment_group",
+            "assignment_group__parentnode",
+            "assignment_group__parentnode__parentnode",
+            "assignment_group__parentnode__parentnode__parentnode",
+            "assignment_group__cached_data__last_feedbackset__group",
+            "assignment_group__cached_data__last_feedbackset__group__parentnode",
+            "assignment_group__cached_data__last_feedbackset",
+            "assignment_group__cached_data__last_published_feedbackset",
+        )
 
     def __get_relatedstudents(self):
         """
@@ -274,14 +276,12 @@ class PeriodAllResultsCollector(object):
         Returns:
             (QuerySet): QuerySet of :class:`~.devilry.apps.core.models.RelatedStudents`.
         """
-        relatedstudent_queryset = core_models.RelatedStudent.objects\
-            .filter(period=self.period)\
-            .filter(id__in=self.related_student_ids)\
-            .select_related('period', 'period__parentnode', 'user')\
-            .prefetch_related(
-                models.Prefetch(
-                    'candidate_set',
-                    queryset=self.__get_candidate_queryset()))
+        relatedstudent_queryset = (
+            core_models.RelatedStudent.objects.filter(period=self.period)
+            .filter(id__in=self.related_student_ids)
+            .select_related("period", "period__parentnode", "user")
+            .prefetch_related(models.Prefetch("candidate_set", queryset=self.__get_candidate_queryset()))
+        )
         return relatedstudent_queryset
 
     def __get_cached_data_dict_for_candidates(self, candidates_list):
@@ -307,9 +307,7 @@ class PeriodAllResultsCollector(object):
         for relatedstudent in self.__get_relatedstudents():
             self.results[relatedstudent.id] = RelatedStudentResults(
                 relatedstudent=relatedstudent,
-                cached_data_dict=self.__get_cached_data_dict_for_candidates(
-                    list(relatedstudent.candidate_set.all())
-                )
+                cached_data_dict=self.__get_cached_data_dict_for_candidates(list(relatedstudent.candidate_set.all())),
             )
 
     def has_students(self):
@@ -333,9 +331,7 @@ class PeriodAllResultsCollector(object):
         return iter(self.results.values())
 
     def serialize_all_results(self):
-        serialized = {
-            'relatedstudents': [result_info.serialize() for result_info in self.results.values()]
-        }
+        serialized = {"relatedstudents": [result_info.serialize() for result_info in self.results.values()]}
         return serialized
 
     def prettyprint_all_results(self):
@@ -344,4 +340,4 @@ class PeriodAllResultsCollector(object):
         """
         for relatedstudent_id, relatedstudent_results in list(self.results.items()):
             relatedstudent_results.prettyprint_results()
-            print('\n')
+            print("\n")

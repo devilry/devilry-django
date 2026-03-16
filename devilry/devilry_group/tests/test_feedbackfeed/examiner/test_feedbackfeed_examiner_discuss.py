@@ -20,7 +20,6 @@ from devilry.devilry_group.views.examiner import feedbackfeed_examiner
 
 
 class MixinTestFeedbackfeedExaminerDiscuss(mixin_feedbackfeed_examiner.MixinTestFeedbackfeedExaminer):
-
     def test_get_examiner_first_attempt_feedback_tab_does_not_exist_if_last_feedbackset_is_published(self):
         testgroup = baker.make("core.AssignmentGroup")
         group_baker.feedbackset_first_attempt_published(group=testgroup)

@@ -5,8 +5,8 @@ from django.apps import AppConfig
 
 
 class DevilryExaminerAppConfig(AppConfig):
-    name = 'devilry.devilry_examiner'
-    verbose_name = 'Devilry examiner'
+    name = "devilry.devilry_examiner"
+    verbose_name = "Devilry examiner"
 
     def ready(self):
         from devilry.devilry_examiner.views.assignment.download_files import backends
@@ -19,8 +19,8 @@ class DevilryExaminerAppConfig(AppConfig):
         # Add zip backend to registry
         batchregistry.Registry.get_instance().add_actiongroup(
             batchregistry.ActionGroup(
-                name='batchframework_examiner_compress_assignment',
+                name="batchframework_examiner_compress_assignment",
                 mode=batchregistry.ActionGroup.MODE_ASYNCHRONOUS,
-                actions=[
-                    tasks.AssignmentCompressAction
-                ]))
+                actions=[tasks.AssignmentCompressAction],
+            )
+        )

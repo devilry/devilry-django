@@ -16,13 +16,13 @@ class DeadlineSubjectTextGenerator(SubjectTextGenerator):
 
     def get_subject_text(self):
         if not self.deadline_type:
-            raise ValueError('Missing mailtype')
-        if self.deadline_type == 'new_attempt':
-            return gettext_lazy('New attempt for %(assignment_name)s') % {
-                'assignment_name': self.assignment.long_name}
-        if self.deadline_type == 'moved':
-            return gettext_lazy('Deadline moved for %(assignment_name)s') % {
-                'assignment_name': self.assignment.long_name}
+            raise ValueError("Missing mailtype")
+        if self.deadline_type == "new_attempt":
+            return gettext_lazy("New attempt for %(assignment_name)s") % {"assignment_name": self.assignment.long_name}
+        if self.deadline_type == "moved":
+            return gettext_lazy("Deadline moved for %(assignment_name)s") % {
+                "assignment_name": self.assignment.long_name
+            }
 
 
 def send_deadline_email(assignment, feedback_sets, domain_url_start, deadline_type, template_name):
@@ -45,9 +45,9 @@ def send_deadline_email(assignment, feedback_sets, domain_url_start, deadline_ty
         template_name: Name (path) to template the message should be generated from.
         deadline_type: The type of deadline change (moved deadline or a new attempt).
     """
-    if deadline_type == 'new_attempt':
+    if deadline_type == "new_attempt":
         message_context_type = Message.CONTEXT_TYPE_CHOICES.NEW_ATTEMPT.value
-    elif deadline_type == 'moved':
+    elif deadline_type == "moved":
         message_context_type = Message.CONTEXT_TYPE_CHOICES.DEADLINE_MOVED.value
     else:
         message_context_type = Message.CONTEXT_TYPE_CHOICES.OTHER.value
@@ -59,37 +59,37 @@ def send_deadline_email(assignment, feedback_sets, domain_url_start, deadline_ty
             return
         user_ids = [user.id for user in student_users]
 
-        domain_url_start = domain_url_start.rstrip('/')
-        absolute_url = '{}{}'.format(
+        domain_url_start = domain_url_start.rstrip("/")
+        absolute_url = "{}{}".format(
             domain_url_start,
-            reverse_cradmin_url(instanceid='devilry_group_student', appname='feedbackfeed', roleid=feedback_set.group_id)
+            reverse_cradmin_url(
+                instanceid="devilry_group_student", appname="feedbackfeed", roleid=feedback_set.group_id
+            ),
         )
         template_dictionary = {
-            'assignment_name': assignment.long_name,
-            'deadline': feedback_set.deadline_datetime,
-            'url': absolute_url
+            "assignment_name": assignment.long_name,
+            "deadline": feedback_set.deadline_datetime,
+            "url": absolute_url,
         }
 
         # Create message object and save it.
         message = Message(
-            virtual_message_receivers={'user_ids': user_ids},
+            virtual_message_receivers={"user_ids": user_ids},
             context_type=message_context_type,
             metadata={
-                'deadline': feedback_set.deadline_datetime.isoformat(),
-                'feedbackset_id': feedback_set.id,
-                'assignment_group_id': feedback_set.group_id,
-                'assignment_id': assignment.id
+                "deadline": feedback_set.deadline_datetime.isoformat(),
+                "feedbackset_id": feedback_set.id,
+                "assignment_group_id": feedback_set.group_id,
+                "assignment_id": assignment.id,
             },
-            message_type=['email']
+            message_type=["email"],
         )
         message.full_clean()
         message.save()
 
         # Prepare receivers and send.
         message.prepare_and_send(
-            subject_generator=subject_generator,
-            template_name=template_name,
-            template_context=template_dictionary
+            subject_generator=subject_generator, template_name=template_name, template_context=template_dictionary
         )
 
 
@@ -109,16 +109,17 @@ def bulk_deadline_email(assignment_id, feedbackset_id_list, domain_url_start, te
     """
     from devilry.devilry_group.models import FeedbackSet
     from devilry.apps.core.models import Assignment
+
     assignment = Assignment.objects.get(id=assignment_id)
-    feedbackset_queryset = FeedbackSet.objects \
-        .select_related('group', 'group__parentnode', 'group__parentnode__parentnode') \
-        .filter(id__in=feedbackset_id_list)
+    feedbackset_queryset = FeedbackSet.objects.select_related(
+        "group", "group__parentnode", "group__parentnode__parentnode"
+    ).filter(id__in=feedbackset_id_list)
     send_deadline_email(
         assignment=assignment,
         feedback_sets=feedbackset_queryset,
         domain_url_start=domain_url_start,
         template_name=template_name,
-        deadline_type=deadline_type
+        deadline_type=deadline_type,
     )
 
 
@@ -129,11 +130,8 @@ def bulk_send_new_attempt_email(**kwargs):
 
     Adds :meth:`bulk_deadline_email` to the RQ-queue.
     """
-    kwargs.update({
-        'template_name': 'devilry_email/deadline_email/new_attempt.txt',
-        'deadline_type': 'new_attempt'
-    })
-    queue = django_rq.get_queue(name='email')
+    kwargs.update({"template_name": "devilry_email/deadline_email/new_attempt.txt", "deadline_type": "new_attempt"})
+    queue = django_rq.get_queue(name="email")
     queue.enqueue(bulk_deadline_email, **kwargs)
 
 
@@ -144,9 +142,6 @@ def bulk_send_deadline_moved_email(**kwargs):
 
     Adds :meth:`bulk_deadline_email` to the RQ-queue.
     """
-    kwargs.update({
-        'template_name': 'devilry_email/deadline_email/deadline_moved.txt',
-        'deadline_type': 'moved'
-    })
-    queue = django_rq.get_queue(name='email')
+    kwargs.update({"template_name": "devilry_email/deadline_email/deadline_moved.txt", "deadline_type": "moved"})
+    queue = django_rq.get_queue(name="email")
     queue.enqueue(bulk_deadline_email, **kwargs)

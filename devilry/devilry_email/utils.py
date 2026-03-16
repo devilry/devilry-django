@@ -9,8 +9,10 @@ def get_student_users_in_group(group):
         QuerySet: QuerySet of ``User``-objects.
     """
     from django.contrib.auth import get_user_model
-    user_queryset = get_user_model().objects \
-        .filter(id__in=group.candidates.values_list('relatedstudent__user', flat=True))
+
+    user_queryset = get_user_model().objects.filter(
+        id__in=group.candidates.values_list("relatedstudent__user", flat=True)
+    )
     return user_queryset
 
 
@@ -25,8 +27,10 @@ def get_examiner_users_in_group(group):
         QuerySet: QuerySet of ``User``-objects.
     """
     from django.contrib.auth import get_user_model
-    user_queryset = get_user_model().objects \
-        .filter(id__in=group.examiners.values_list('relatedexaminer__user', flat=True))
+
+    user_queryset = get_user_model().objects.filter(
+        id__in=group.examiners.values_list("relatedexaminer__user", flat=True)
+    )
     return user_queryset
 
 
@@ -41,11 +45,8 @@ def build_absolute_url_for_email(domain_url_start: str, urlpath: str):
     Returns:
         str: Absolute url to feedbackfeed.
     """
-    domain_url_start = domain_url_start.rstrip('/')
-    absolute_url = '{}{}'.format(
-        domain_url_start,
-        urlpath
-    )
+    domain_url_start = domain_url_start.rstrip("/")
+    absolute_url = "{}{}".format(domain_url_start, urlpath)
     return absolute_url
 
 
@@ -59,6 +60,7 @@ def activate_translation_for_user(user):
         Remember to always user translation.deactivate() after using this function!
     """
     from django.utils import translation
+
     if user.languagecode:
         if translation.check_for_language(user.languagecode):
             translation.activate(user.languagecode)

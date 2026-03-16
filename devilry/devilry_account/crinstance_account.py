@@ -14,11 +14,11 @@ class Menu(devilry_crmenu_account.Menu):
 class CrAdminInstance(devilry_crinstance.BaseDevilryCrInstance):
     menuclass = Menu
     roleclass = None
-    id = 'devilry_account'
-    rolefrontpage_appname = 'account'
+    id = "devilry_account"
+    rolefrontpage_appname = "account"
     flatten_rolefrontpage_url = True
     apps = [
-        ('account', account.App),
+        ("account", account.App),
     ]
 
     def get_devilryrole_type(self):
@@ -32,4 +32,4 @@ class CrAdminInstance(devilry_crinstance.BaseDevilryCrInstance):
 
     @classmethod
     def matches_urlpath(cls, urlpath):
-        return re.match('^/account/.*$', urlpath)
+        return re.match("^/account/.*$", urlpath)

@@ -17,33 +17,29 @@ from devilry.devilry_cradmin.devilry_listfilter.utils import WithResultValueRend
 
 
 class UserItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
-    valuealias = 'user'
+    valuealias = "user"
 
     def get_url(self):
         return reverse_cradmin_url(
-            instanceid='devilry_admin',
-            appname='studentfeedbackfeedwizard',
-            viewname='student_groups',
-            kwargs={
-                'user_id': self.user.id
-            }
+            instanceid="devilry_admin",
+            appname="studentfeedbackfeedwizard",
+            viewname="student_groups",
+            kwargs={"user_id": self.user.id},
         )
 
 
 class StudentUserListMatchResultRenderable(WithResultValueRenderable):
     def get_object_name_singular(self, num_matches):
-        return gettext_lazy('student')
+        return gettext_lazy("student")
 
     def get_object_name_plural(self, num_matches):
-        return gettext_lazy('students')
+        return gettext_lazy("students")
 
 
 class RowListWithMatchResults(RowList):
     def append_results_renderable(self):
         result_info_renderable = StudentUserListMatchResultRenderable(
-            value=None,
-            num_matches=self.num_matches,
-            num_total=self.num_total
+            value=None, num_matches=self.num_matches, num_total=self.num_total
         )
         self.renderable_list.insert(0, DefaultSpacingItemFrame(inneritem=result_info_renderable))
 
@@ -58,41 +54,36 @@ class RowListWithMatchResults(RowList):
 
 
 class UserListView(listbuilderview.FilterListMixin, listbuilderview.View):
-    template_name = 'devilry_admin/dashboard/student_feedbackfeed_wizard/student_feedbackfeed_list_users.django.html'
+    template_name = "devilry_admin/dashboard/student_feedbackfeed_wizard/student_feedbackfeed_list_users.django.html"
     model = get_user_model()
     listbuilder_class = RowListWithMatchResults
     frame_renderer_class = UserItemFrame
-    filterview_name = 'user_filter'
+    filterview_name = "user_filter"
     value_renderer_class = user.ItemValue
     paginate_by = 35
 
     def get_pagetitle(self):
-        return gettext_lazy('Select a student')
+        return gettext_lazy("Select a student")
 
     def get_filterlist_url(self, filters_string):
-        return self.request.cradmin_app.reverse_appurl(
-            self.filterview_name,
-            kwargs={'filters_string': filters_string})
+        return self.request.cradmin_app.reverse_appurl(self.filterview_name, kwargs={"filters_string": filters_string})
 
     #
     # Add support for showing results on the top of list.
     #
     def get_listbuilder_list_kwargs(self):
         kwargs = super(UserListView, self).get_listbuilder_list_kwargs()
-        kwargs['num_matches'] = self.num_matches or 0
-        kwargs['num_total'] = self.num_total or 0
-        kwargs['page'] = self.request.GET.get('page', 1)
+        kwargs["num_matches"] = self.num_matches or 0
+        kwargs["num_total"] = self.num_total or 0
+        kwargs["page"] = self.request.GET.get("page", 1)
         return kwargs
 
     def add_filterlist_items(self, filterlist):
         filterlist.append(filters.UserSearchExtension())
 
     def get_unfiltered_queryset_for_role(self, role):
-        relatedstudent_ids = RelatedStudent.objects.all()\
-            .values_list('user_id', flat=True)
-        queryset = get_user_model().objects\
-            .filter(id__in=relatedstudent_ids)\
-            .order_by('username')
+        relatedstudent_ids = RelatedStudent.objects.all().values_list("user_id", flat=True)
+        queryset = get_user_model().objects.filter(id__in=relatedstudent_ids).order_by("username")
 
         # Set unfiltered count on self.
         self.num_total = queryset.count()

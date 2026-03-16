@@ -12,20 +12,20 @@ from devilry.devilry_deadlinemanagement.views import manage_deadline_view
 class AdminDeadlineListView(deadline_listview.DeadlineListView):
     def get_backlink_url(self):
         return reverse_cradmin_url(
-            instanceid='devilry_admin_assignmentadmin',
-            appname='studentoverview',
+            instanceid="devilry_admin_assignmentadmin",
+            appname="studentoverview",
             roleid=self.request.cradmin_instance.assignment.id,
-            viewname=crapp.INDEXVIEW_NAME
+            viewname=crapp.INDEXVIEW_NAME,
         )
 
 
 class AdminManageDeadlineFromPreviousView(manage_deadline_view.ManageDeadlineFromPreviousView):
     def get_success_url(self):
         return reverse_cradmin_url(
-            instanceid='devilry_admin_assignmentadmin',
-            appname='studentoverview',
+            instanceid="devilry_admin_assignmentadmin",
+            appname="studentoverview",
             roleid=self.request.cradmin_instance.assignment.id,
-            viewname=crapp.INDEXVIEW_NAME
+            viewname=crapp.INDEXVIEW_NAME,
         )
 
 

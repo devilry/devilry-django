@@ -220,9 +220,9 @@ class StreamZipBackend(BaseArchiveBackend):
         """
         if self.save_to_disk:
             self.archive_path = os.path.join(self.get_storage_location(), self.archive_path)
-        if not self.archive_path.endswith('.zip'):
-            self.archive_name += '.zip'
-            self.archive_path += '.zip'
+        if not self.archive_path.endswith(".zip"):
+            self.archive_name += ".zip"
+            self.archive_path += ".zip"
 
     def archive_size(self):
         """
@@ -235,7 +235,7 @@ class StreamZipBackend(BaseArchiveBackend):
             ValueError: If not in ``readmode``.
         """
         if not self.readmode:
-            raise ValueError('Must be in readmode')
+            raise ValueError("Must be in readmode")
         return 0
 
     def add_file(self, path, filelike_obj):
@@ -248,7 +248,7 @@ class StreamZipBackend(BaseArchiveBackend):
 
         """
         if self.readmode is True:
-            raise ValueError('readmode must be False to add files.')
+            raise ValueError("readmode must be False to add files.")
 
         self.files.append((path, filelike_obj))
 
@@ -260,10 +260,10 @@ class StreamZipBackend(BaseArchiveBackend):
             ZipFile: The zipped archive.
         """
         if not self.readmode:
-            raise ValueError('Must be in readmode')
+            raise ValueError("Must be in readmode")
         if not self.zipped_chunks:
-            raise ValueError('Archive has not been created yet')
-        return zipfile.ZipFile(io.BytesIO(b''.join(self.zipped_chunks)))
+            raise ValueError("Archive has not been created yet")
+        return zipfile.ZipFile(io.BytesIO(b"".join(self.zipped_chunks)))
 
     def get_archive(self):
         """
@@ -284,9 +284,8 @@ class StreamZipBackend(BaseArchiveBackend):
                 while chunk := f.read(self.chunk_size):
                     yield chunk
 
-        for (path, filelike_obj) in self.files:
+        for path, filelike_obj in self.files:
             yield (path, now, mode, ZIP_AUTO(filelike_obj.file.size), contents(filelike_obj))
-
 
     def close(self):
         """
@@ -299,7 +298,7 @@ class StreamZipBackend(BaseArchiveBackend):
         self.readmode = True
 
         if self.save_to_disk:
-            self.archive = open(self.archive_path, 'wb')
+            self.archive = open(self.archive_path, "wb")
             for chunk in self.zipped_chunks:
                 self.archive.write(chunk)
 

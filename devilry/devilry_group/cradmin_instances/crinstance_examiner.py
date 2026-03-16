@@ -10,7 +10,7 @@ from devilry.devilry_group.views.examiner import manage_deadline, group_comment_
 
 
 class Menu(devilry_crmenu_examiner.Menu):
-    devilryrole = 'examiner'
+    devilryrole = "examiner"
 
     def build_menu(self):
         super(Menu, self).build_menu()
@@ -24,14 +24,15 @@ class ExaminerCrInstance(crinstance_base.DevilryGroupCrInstanceMixin, devilry_cr
     """
     CrInstance class for examiners.
     """
+
     menuclass = Menu
     apps = [
-        ('feedbackfeed', feedbackfeed_examiner.App),
-        ('download', batch_download_files.App),
-        ('commenthistory', group_comment_history.App),
-        ('manage-deadline', manage_deadline.App)
+        ("feedbackfeed", feedbackfeed_examiner.App),
+        ("download", batch_download_files.App),
+        ("commenthistory", group_comment_history.App),
+        ("manage-deadline", manage_deadline.App),
     ]
-    id = 'devilry_group_examiner'
+    id = "devilry_group_examiner"
 
     @property
     def assignment(self):
@@ -39,7 +40,7 @@ class ExaminerCrInstance(crinstance_base.DevilryGroupCrInstanceMixin, devilry_cr
 
     @classmethod
     def matches_urlpath(cls, urlpath):
-        return urlpath.startswith('/devilry_group/examiner')
+        return urlpath.startswith("/devilry_group/examiner")
 
     def get_rolequeryset(self):
         """
@@ -50,5 +51,4 @@ class ExaminerCrInstance(crinstance_base.DevilryGroupCrInstanceMixin, devilry_cr
             QuerySet: A queryset of :class:`~devilry.apps.core.models.AssignmentGroup`s
                 the ``request.user`` is examiner on.
         """
-        return self._get_base_rolequeryset()\
-            .filter_examiner_has_access(self.request.user)
+        return self._get_base_rolequeryset().filter_examiner_has_access(self.request.user)

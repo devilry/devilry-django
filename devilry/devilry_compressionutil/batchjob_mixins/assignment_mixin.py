@@ -15,6 +15,7 @@ class AssignmentBatchMixin(feedbackset_mixin.FeedbackSetBatchMixin):
     Must be included in class together with
     :class:`devilry.devilry_compressionutil.batchjob_mixins.feedbackset_mixin.FeedbackSetBatchMixin`.
     """
+
     def get_assignment_group_queryset(self, assignment, user):
         """
         Must be overriden in subclass.
@@ -33,11 +34,13 @@ class AssignmentBatchMixin(feedbackset_mixin.FeedbackSetBatchMixin):
 
     def add_assignment_groups(self, user, zipfile_backend, assignment):
         for group in self.get_assignment_group_queryset(assignment=assignment, user=user):
-            group_path = '{}'.format(group.get_short_displayname())
+            group_path = "{}".format(group.get_short_displayname())
             for feedback_set in group.feedbackset_set.all():
-                feedback_set_path = 'deadline-{}'.format(defaultfilters.date(feedback_set.current_deadline(), 'Y-m-d-Hi'))
+                feedback_set_path = "deadline-{}".format(
+                    defaultfilters.date(feedback_set.current_deadline(), "Y-m-d-Hi")
+                )
                 self.zipfile_add_feedbackset(
                     zipfile_backend=zipfile_backend,
                     feedback_set=feedback_set,
-                    sub_path=os.path.join(group_path, feedback_set_path)
+                    sub_path=os.path.join(group_path, feedback_set_path),
                 )

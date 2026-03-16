@@ -9,16 +9,11 @@ class AbstractIsCandidate(object):
 
     @classmethod
     def where_is_candidate(cls, user_obj):
-        return cls.objects.filter(
-            cls.q_is_candidate(user_obj)
-        ).distinct()
+        return cls.objects.filter(cls.q_is_candidate(user_obj)).distinct()
 
     @classmethod
     def published_where_is_candidate(cls, user_obj, old=True, active=True):
-        return cls.objects.filter(
-            cls.q_published(old=old, active=active) &
-            cls.q_is_candidate(user_obj)
-        ).distinct()
+        return cls.objects.filter(cls.q_published(old=old, active=active) & cls.q_is_candidate(user_obj)).distinct()
 
     @classmethod
     def active_where_is_candidate(cls, user_obj):

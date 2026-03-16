@@ -6,10 +6,10 @@ from django.conf import settings
 from django.utils import timezone
 
 #: Django datetime formatting string for ``YYYY-MM-DD hh:mm``.
-ISODATETIME_DJANGOFORMAT = 'Y-m-d H:i'
+ISODATETIME_DJANGOFORMAT = "Y-m-d H:i"
 
-ARROW_ISOFORMAT_NOSECONDS = 'YYYY-MM-DD HH:mm'
-ARROW_ISOFORMAT_WITHSECONDS = 'YYYY-MM-DD HH:mm:ss'
+ARROW_ISOFORMAT_NOSECONDS = "YYYY-MM-DD HH:mm"
+ARROW_ISOFORMAT_WITHSECONDS = "YYYY-MM-DD HH:mm:ss"
 
 
 def get_current_datetime():
@@ -24,9 +24,7 @@ def get_current_datetime():
 
 def make_timezone_aware_in_default_timezone(datetimeobject):
     if settings.USE_TZ:
-        return timezone.make_aware(
-            datetimeobject,
-            timezone.get_default_timezone())
+        return timezone.make_aware(datetimeobject, timezone.get_default_timezone())
     else:
         return datetimeobject
 
@@ -56,21 +54,19 @@ def isoformat_withseconds(datetimeobject):
 
 
 def from_isoformat_noseconds(datetimestring):
-    return arrow.get(datetimestring, ARROW_ISOFORMAT_NOSECONDS,
-                     tzinfo=timezone.get_current_timezone_name()).datetime
+    return arrow.get(datetimestring, ARROW_ISOFORMAT_NOSECONDS, tzinfo=timezone.get_current_timezone_name()).datetime
 
 
 def from_isoformat(datetimestring):
     formats = [
-        'YYYY-MM-DD HH:mm:ss:S',
-        'YYYY-MM-DDTHH:mm:ss:S',
-        'YYYY-MM-DD HH:mm:ss',
-        'YYYY-MM-DDTHH:mm:ss',
-        'YYYY-MM-DD HH:mm',
-        'YYYY-MM-DDTHH:mm',
+        "YYYY-MM-DD HH:mm:ss:S",
+        "YYYY-MM-DDTHH:mm:ss:S",
+        "YYYY-MM-DD HH:mm:ss",
+        "YYYY-MM-DDTHH:mm:ss",
+        "YYYY-MM-DD HH:mm",
+        "YYYY-MM-DDTHH:mm",
     ]
-    return arrow.get(datetimestring, formats,
-                     tzinfo=timezone.get_current_timezone_name()).datetime
+    return arrow.get(datetimestring, formats, tzinfo=timezone.get_current_timezone_name()).datetime
 
 
 def datetime_with_same_day_of_week_and_time(weekdayandtimesource_datetime, target_datetime):
@@ -93,14 +89,16 @@ def datetime_with_same_day_of_week_and_time(weekdayandtimesource_datetime, targe
     else:
         added_days = 7 - target_weekday + weekdayandtimesource_weekday
     new_datetimeobject = target_datetime + datetime.timedelta(days=added_days)
-    new_datetimeobject = new_datetimeobject.replace(hour=weekdayandtimesource_datetime.hour,
-                                                    minute=weekdayandtimesource_datetime.minute,
-                                                    second=weekdayandtimesource_datetime.second,
-                                                    microsecond=weekdayandtimesource_datetime.microsecond)
+    new_datetimeobject = new_datetimeobject.replace(
+        hour=weekdayandtimesource_datetime.hour,
+        minute=weekdayandtimesource_datetime.minute,
+        second=weekdayandtimesource_datetime.second,
+        microsecond=weekdayandtimesource_datetime.microsecond,
+    )
     return new_datetimeobject
 
 
-URL_DATETIME_FORMAT = 'X'
+URL_DATETIME_FORMAT = "X"
 
 
 def datetime_to_url_string(datetime_obj):

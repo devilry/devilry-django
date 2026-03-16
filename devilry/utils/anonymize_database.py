@@ -55,10 +55,11 @@ class AnonymizeDatabase(object):
     Args:
         unanonymized_string: The string to anonymize.
     """
-    FALLBACK = 'empty'
-    LETTERS = 'abcdefghijklmnopqrstuvwxyz'
-    DIGITS = '0123456789'
-    NOOP_CHARACTERS = [' ', '_', '@', '-', '"']
+
+    FALLBACK = "empty"
+    LETTERS = "abcdefghijklmnopqrstuvwxyz"
+    DIGITS = "0123456789"
+    NOOP_CHARACTERS = [" ", "_", "@", "-", '"']
 
     def __init__(self, fast=True):
         self.fast = fast
@@ -92,13 +93,12 @@ class AnonymizeDatabase(object):
         """
         if len(unanonymized_string) == 0 or unanonymized_string is None:
             return self.FALLBACK
-        anonymized_string = ''
+        anonymized_string = ""
         for character in list(unanonymized_string):
             if character in self.NOOP_CHARACTERS:
                 anonymized_string += character
             else:
-                anonymized_string += self.get_random_character(
-                    exclude_character=character)
+                anonymized_string += self.get_random_character(exclude_character=character)
         return anonymized_string
 
     def __anonymize_user_data_fast(self):
@@ -107,26 +107,34 @@ class AnonymizeDatabase(object):
         """
         if settings.CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND:
             get_user_model().objects.update(
-                fullname='Full Name',
-                lastname='Lastname',
-                shortname=Concat(models.F('id'), models.Value('@example.com'), output_field=CharField()))
+                fullname="Full Name",
+                lastname="Lastname",
+                shortname=Concat(models.F("id"), models.Value("@example.com"), output_field=CharField()),
+            )
         else:
             get_user_model().objects.update(
-                fullname='Full Name',
-                lastname='Lastname',
-                shortname=Concat(models.F('id'), models.Value(''), output_field=CharField()))
+                fullname="Full Name",
+                lastname="Lastname",
+                shortname=Concat(models.F("id"), models.Value(""), output_field=CharField()),
+            )
         UserEmail.objects.update(
-            email=Concat(models.F('user_id'), models.Value('_'), models.F('id'),
-                         models.Value('@example.com'), output_field=CharField()))
+            email=Concat(
+                models.F("user_id"),
+                models.Value("_"),
+                models.F("id"),
+                models.Value("@example.com"),
+                output_field=CharField(),
+            )
+        )
         UserName.objects.update(
-            username=Concat(models.F('user_id'), models.Value('_'),
-                            models.F('id'), output_field=CharField()))
+            username=Concat(models.F("user_id"), models.Value("_"), models.F("id"), output_field=CharField())
+        )
 
     def __anonymize_user_emails(self, user):
         for user_email in UserEmail.objects.filter(user_id=user.id):
-            email_prefix = user_email.email.split('@')[0]
+            email_prefix = user_email.email.split("@")[0]
             anonymized_email_prefix = self.randomize_string(unanonymized_string=email_prefix)
-            user_email.email = '{}@example.com'.format(anonymized_email_prefix)
+            user_email.email = "{}@example.com".format(anonymized_email_prefix)
             user_email.save()
 
     def __anonymize_user_names(self, user):
@@ -138,11 +146,11 @@ class AnonymizeDatabase(object):
     def __anonymize_user_data(self):
         for user in get_user_model().objects.all():
             shortname = user.shortname
-            if '@' in shortname:
-                shortname = shortname.split('@')[0]
+            if "@" in shortname:
+                shortname = shortname.split("@")[0]
             anonymized_shortname = self.randomize_string(unanonymized_string=shortname)
             if settings.CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND:
-                anonymized_shortname += '@example.com'
+                anonymized_shortname += "@example.com"
             user.shortname = anonymized_shortname
             user.fullname = self.randomize_string(unanonymized_string=user.fullname)
             user.lastname = self.randomize_string(unanonymized_string=user.lastname)
@@ -163,7 +171,7 @@ class AnonymizeDatabase(object):
         """
         Comment.objects.update(text=lorem_ipsum)
         CommentEditHistory.objects.update(post_edit_text=lorem_ipsum, pre_edit_text=lorem_ipsum)
-        CommentFile.objects.update(filename=Concat(models.F('id'), models.Value(''), output_field=CharField()))
+        CommentFile.objects.update(filename=Concat(models.F("id"), models.Value(""), output_field=CharField()))
 
     def anonymize_comments(self):
         self.__anonymize_comments_fast()

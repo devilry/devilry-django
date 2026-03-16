@@ -5,6 +5,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 def rq_timeout_exception_handler(job: Job, *exc_info):
     """
     Handles RQ job timeout exceptions by reporting them (e.g., to Sentry) and printing diagnostic information.
@@ -18,9 +19,6 @@ def rq_timeout_exception_handler(job: Job, *exc_info):
         - Prints job timeout details for debugging purposes.
     """
     if isinstance(exc_info[1], JobTimeoutException):
-        logger.error(
-            'Failed to execute RQ task due to timeout Job id: %s, Exception: %s',
-            job.id, exc_info[1]
-        )
-        
+        logger.error("Failed to execute RQ task due to timeout Job id: %s, Exception: %s", job.id, exc_info[1])
+
     return True

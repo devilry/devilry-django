@@ -3,14 +3,15 @@ from cradmin_legacy.viewhelpers import listbuilder
 
 
 class ItemValueMixin(object):
-    valuealias = 'assignment'
+    valuealias = "assignment"
 
     def get_title(self):
         return self.assignment.long_name
 
     def get_description(self):
-        return render_to_string('devilry_cradmin/devilry_listbuilder/assignment/description.django.html',
-                                self.get_context_data())
+        return render_to_string(
+            "devilry_cradmin/devilry_listbuilder/assignment/description.django.html", self.get_context_data()
+        )
 
 
 class ItemValue(ItemValueMixin, listbuilder.itemvalue.TitleDescription):

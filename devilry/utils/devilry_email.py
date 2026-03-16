@@ -21,7 +21,7 @@ def convert_html_to_plaintext(html):
 
 
 def send_message(subject, message, *user_objects_to_send_to, **kwargs):
-    is_html = kwargs.get('is_html')
+    is_html = kwargs.get("is_html")
     if not settings.DEVILRY_SEND_EMAIL_TO_USERS:
         return
     if is_html:
@@ -33,7 +33,7 @@ def send_message(subject, message, *user_objects_to_send_to, **kwargs):
     send_mail_kwargs = {}
     if is_html:
         plain_message = convert_html_to_plaintext(message)
-        send_mail_kwargs['html_message'] = message
+        send_mail_kwargs["html_message"] = message
     else:
         plain_message = message
 
@@ -51,19 +51,23 @@ def send_message(subject, message, *user_objects_to_send_to, **kwargs):
         debug_error_trigger(user=user, context="send_message()")
     subject = settings.EMAIL_SUBJECT_PREFIX + subject
     try:
-        send_mail(subject, plain_message, settings.DEVILRY_EMAIL_DEFAULT_FROM,
-                  emails, fail_silently=False, **send_mail_kwargs)
+        send_mail(
+            subject, plain_message, settings.DEVILRY_EMAIL_DEFAULT_FROM, emails, fail_silently=False, **send_mail_kwargs
+        )
     except SMTPException as e:
-        errormsg = ('SMTPException when sending email to users {users} on addresses {emails}. '
-                    'Exception: {exception}'.format(users=','.join([user.shortname for user in user_objects_to_send_to]),
-                                                    exception=e))
+        errormsg = (
+            "SMTPException when sending email to users {users} on addresses {emails}. Exception: {exception}".format(
+                users=",".join([user.shortname for user in user_objects_to_send_to]), exception=e
+            )
+        )
         logger.error(errormsg)
     else:
         if settings.DEBUG:
-            logger.debug('Email sent to: {emails}\nSubject: {subject}\n'
-                         'Body:\n{message}'.format(emails=','.join(emails),
-                                                   subject=subject,
-                                                   message=plain_message))
+            logger.debug(
+                "Email sent to: {emails}\nSubject: {subject}\nBody:\n{message}".format(
+                    emails=",".join(emails), subject=subject, message=plain_message
+                )
+            )
 
 
 def send_templated_message(subject, template_name, template_dictionary, *user_objects_to_send_to, **kwargs):

@@ -8,4 +8,4 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         user_model = get_user_model()
-        user_model.objects.all().update(password=make_password('test'))
+        user_model.objects.all().update(password=make_password("test"))

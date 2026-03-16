@@ -20,12 +20,12 @@ from devilry.devilry_group.models import GroupComment
 
 class AbstractExaminerCell(base_new.AbstractCellRenderer):
     def get_base_css_classes_list(self):
-        return ['devilry-tabulardata-list__cell-examiner']
+        return ["devilry-tabulardata-list__cell-examiner"]
 
 
 class GroupItemValue(AbstractExaminerCell):
-    template_name = 'devilry_examiner/assignment/simple_group_bulk_feedback/group_cell_value.django.html'
-    valuealias = 'assignment_group'
+    template_name = "devilry_examiner/assignment/simple_group_bulk_feedback/group_cell_value.django.html"
+    valuealias = "assignment_group"
 
     def __init__(self, assignment_group):
         self.assignment_group = assignment_group
@@ -35,31 +35,32 @@ class GroupItemValue(AbstractExaminerCell):
 
 
 class GradeFormFieldItemValue(AbstractExaminerCell):
-    template_name = 'devilry_examiner/assignment/simple_group_bulk_feedback/grade_cell_value.django.html'
+    template_name = "devilry_examiner/assignment/simple_group_bulk_feedback/grade_cell_value.django.html"
 
     def __init__(self, assignment_group):
         self.assignment = assignment_group.parentnode
-        self.field_name = 'grade_{}'.format(assignment_group.id)
+        self.field_name = "grade_{}".format(assignment_group.id)
         super(GradeFormFieldItemValue, self).__init__()
 
     def get_context_data(self, request=None):
         context_data = super(GradeFormFieldItemValue, self).get_context_data(request=request)
-        context_data['assignment'] = self.assignment
-        context_data['assignment_uses_passed_failed_plugin'] = \
+        context_data["assignment"] = self.assignment
+        context_data["assignment_uses_passed_failed_plugin"] = (
             self.assignment.grading_system_plugin_id == self.assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED
+        )
         return context_data
 
 
 class CommentTextFormFieldItemValue(AbstractExaminerCell):
-    template_name = 'devilry_examiner/assignment/simple_group_bulk_feedback/text_cell_value.django.html'
+    template_name = "devilry_examiner/assignment/simple_group_bulk_feedback/text_cell_value.django.html"
 
     def __init__(self, assignment_group_id):
-        self.field_name = 'comment_text_{}'.format(assignment_group_id)
+        self.field_name = "comment_text_{}".format(assignment_group_id)
         super(CommentTextFormFieldItemValue, self).__init__()
 
 
 class ColumnHeader(AbstractExaminerCell):
-    template_name = 'devilry_examiner/assignment/simple_group_bulk_feedback/column_header_item.django.html'
+    template_name = "devilry_examiner/assignment/simple_group_bulk_feedback/column_header_item.django.html"
 
     def __init__(self, header_text):
         self.header_text = header_text
@@ -67,7 +68,7 @@ class ColumnHeader(AbstractExaminerCell):
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(ColumnHeader, self).get_extra_css_classes_list()
-        css_classes_list.append('devilry-tabulardata-list__cell-examiner--columnheader')
+        css_classes_list.append("devilry-tabulardata-list__cell-examiner--columnheader")
         return css_classes_list
 
 
@@ -87,9 +88,9 @@ class ListAsTable(base_new.AbstractListAsTable):
         super(ListAsTable, self).__init__(**kwargs)
 
     def add_header(self):
-        self.append_header_renderable(ColumnHeader(header_text=gettext_lazy('Students in groups')))
-        self.append_header_renderable(ColumnHeader(header_text=gettext_lazy('Grading')))
-        self.append_header_renderable(ColumnHeader(header_text=gettext_lazy('Comment text')))
+        self.append_header_renderable(ColumnHeader(header_text=gettext_lazy("Students in groups")))
+        self.append_header_renderable(ColumnHeader(header_text=gettext_lazy("Grading")))
+        self.append_header_renderable(ColumnHeader(header_text=gettext_lazy("Comment text")))
 
     def add_rows(self):
         for group in self.assignment_groups:
@@ -98,55 +99,54 @@ class ListAsTable(base_new.AbstractListAsTable):
 
 class SimpleGroupBulkFeedbackView(listbuilderview.View):
     model = core_models.AssignmentGroup
-    template_name = 'devilry_examiner/assignment/simple_group_bulk_feedback/simple_group_bulk_feedbackview.django.html'
+    template_name = "devilry_examiner/assignment/simple_group_bulk_feedback/simple_group_bulk_feedbackview.django.html"
 
     def dispatch(self, request, *args, **kwargs):
         self.assignment = self.request.cradmin_role
         return super(SimpleGroupBulkFeedbackView, self).dispatch(request, *args, **kwargs)
 
     def __get_candidate_queryset(self):
-        return core_models.Candidate.objects\
-            .select_related('relatedstudent__user')\
+        return (
+            core_models.Candidate.objects.select_related("relatedstudent__user")
             .only(
-                'candidate_id',
-                'assignment_group',
-                'relatedstudent__candidate_id',
-                'relatedstudent__automatic_anonymous_id',
-                'relatedstudent__active',
-                'relatedstudent__user__shortname',
-                'relatedstudent__user__fullname'
-            )\
+                "candidate_id",
+                "assignment_group",
+                "relatedstudent__candidate_id",
+                "relatedstudent__automatic_anonymous_id",
+                "relatedstudent__active",
+                "relatedstudent__user__shortname",
+                "relatedstudent__user__fullname",
+            )
             .order_by(
                 Lower(
                     Concat(
-                        'relatedstudent__user__fullname',
-                        'relatedstudent__user__shortname',
-                        output_field=models.CharField()
-                    )))
+                        "relatedstudent__user__fullname",
+                        "relatedstudent__user__shortname",
+                        output_field=models.CharField(),
+                    )
+                )
+            )
+        )
 
     def get_queryset_for_role(self, role):
-        return core_models.AssignmentGroup.objects\
-            .filter_examiner_has_access(user=self.request.user)\
-            .filter(parentnode=role)\
-            .exclude(cached_data__last_published_feedbackset=models.F('cached_data__last_feedbackset'))\
-            .prefetch_related(
-                models.Prefetch('candidates',
-                                queryset=self.__get_candidate_queryset()))\
+        return (
+            core_models.AssignmentGroup.objects.filter_examiner_has_access(user=self.request.user)
+            .filter(parentnode=role)
+            .exclude(cached_data__last_published_feedbackset=models.F("cached_data__last_feedbackset"))
+            .prefetch_related(models.Prefetch("candidates", queryset=self.__get_candidate_queryset()))
             .select_related(
-                'cached_data__last_published_feedbackset',
-                'cached_data__last_feedbackset',
-                'cached_data__first_feedbackset',
-                'parentnode',
-                'parentnode__parentnode',
-                'parentnode__parentnode__parentnode'
+                "cached_data__last_published_feedbackset",
+                "cached_data__last_feedbackset",
+                "cached_data__first_feedbackset",
+                "parentnode",
+                "parentnode__parentnode",
+                "parentnode__parentnode__parentnode",
             )
+        )
 
     def get_listbuilder_list(self, context):
         queryset = self.get_queryset_for_role(role=self.request.cradmin_role)
-        return ListAsTable(
-            assignment_groups=queryset,
-            assignment=self.assignment
-        )
+        return ListAsTable(assignment_groups=queryset, assignment=self.assignment)
 
     def convert_grading_from_form_value(self, assignment, grade_from_form):
         """
@@ -160,7 +160,7 @@ class SimpleGroupBulkFeedbackView(listbuilderview.View):
             (int): grading as an integer.
         """
         if assignment.grading_system_plugin_id == assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED:
-            if grade_from_form == 'Failed':
+            if grade_from_form == "Failed":
                 return 0
             return assignment.max_points
         if assignment.grading_system_plugin_id == assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS:
@@ -179,13 +179,13 @@ class SimpleGroupBulkFeedbackView(listbuilderview.View):
         queryset = self.get_queryset()
         feedbackset_dict = {}
         for group in queryset:
-            grade = posted_data.get('grade_{}'.format(group.id))
-            comment_text = posted_data.get('comment_text_{}'.format(group.id))
+            grade = posted_data.get("grade_{}".format(group.id))
+            comment_text = posted_data.get("comment_text_{}".format(group.id))
             if len(grade) > 0:
                 grade = self.convert_grading_from_form_value(assignment=self.assignment, grade_from_form=grade)
                 feedbackset_dict[group.cached_data.last_feedbackset] = {
-                    'grading_points': grade,
-                    'comment_text': comment_text
+                    "grading_points": grade,
+                    "comment_text": comment_text,
                 }
         return feedbackset_dict
 
@@ -206,7 +206,7 @@ class SimpleGroupBulkFeedbackView(listbuilderview.View):
             user_role=GroupComment.USER_ROLE_EXAMINER,
             text=text,
             comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
-            published_datetime=published_time
+            published_datetime=published_time,
         )
 
     def __publish(self, feedbackset_data_dict):
@@ -225,41 +225,44 @@ class SimpleGroupBulkFeedbackView(listbuilderview.View):
         feedbackset_id_list = []
         with transaction.atomic():
             for feedbackset, data in feedbackset_data_dict.items():
-                text = data['comment_text']
+                text = data["comment_text"]
                 if len(text) > 0:
                     self.__create_grading_groupcomment(feedbackset.id, now_without_microseconds, text)
                 feedbackset.grading_published_by = self.request.user
                 feedbackset.grading_published_datetime = now_without_microseconds + timezone.timedelta(microseconds=1)
-                feedbackset.grading_points = data['grading_points']
-                feedbackset.save(update_fields=['grading_published_by', 'grading_published_datetime', 'grading_points'])
+                feedbackset.grading_points = data["grading_points"]
+                feedbackset.save(update_fields=["grading_published_by", "grading_published_datetime", "grading_points"])
                 feedbackset_id_list.append(feedbackset.id)
             feedback_email.bulk_send_feedback_created_email(
                 assignment_id=self.assignment.id,
                 feedbackset_id_list=feedbackset_id_list,
-                domain_url_start=self.request.build_absolute_uri('/'))
+                domain_url_start=self.request.build_absolute_uri("/"),
+            )
 
     def post(self, request, *args, **kwargs):
         feedbackset_data_dict = self.__collect_data_for_groups(posted_data=request.POST)
         if feedbackset_data_dict:
             self.__publish(feedbackset_data_dict)
-            messages.success(request,
-                             message=gettext_lazy('Feedback published for {} groups').format(
-                                 len(list(feedbackset_data_dict.keys()))))
+            messages.success(
+                request,
+                message=gettext_lazy("Feedback published for {} groups").format(
+                    len(list(feedbackset_data_dict.keys()))
+                ),
+            )
         else:
-            messages.warning(request, message=gettext_lazy('You must set a grade for at least one group.'))
-        return http.HttpResponseRedirect(str(
-            self.request.cradmin_app.reverse_appurl(viewname='bulk-feedback-simple')
-        ))
+            messages.warning(request, message=gettext_lazy("You must set a grade for at least one group."))
+        return http.HttpResponseRedirect(str(self.request.cradmin_app.reverse_appurl(viewname="bulk-feedback-simple")))
 
     def get_context_data(self, **kwargs):
         context_data = super(SimpleGroupBulkFeedbackView, self).get_context_data(**kwargs)
-        context_data['assignment'] = self.assignment
-        context_data['assignment_uses_passed_failed_plugin'] = \
+        context_data["assignment"] = self.assignment
+        context_data["assignment_uses_passed_failed_plugin"] = (
             self.assignment.grading_system_plugin_id == self.assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED
+        )
         return context_data
 
     def get_pagetitle(self):
-        return gettext_lazy('Simple bulk feedback')
+        return gettext_lazy("Simple bulk feedback")
 
     def get_no_items_message(self):
-        return gettext_lazy('No groups to receive feedback')
+        return gettext_lazy("No groups to receive feedback")

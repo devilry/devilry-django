@@ -5,13 +5,7 @@ from cradmin_legacy.apps.cradmin_resetpassword.views.reset import ResetPasswordV
 
 
 urlpatterns = [
-    path('begin',
-        BeginPasswordResetView.as_view(),
-        name="cradmin-resetpassword-begin"),
-    path('email-sent',
-        EmailSentView.as_view(),
-        name="cradmin-resetpassword-email-sent"),
-    re_path(r'^reset/(?P<token>.+)',
-        ResetPasswordView.as_view(),
-        name="cradmin-resetpassword-reset"),
+    path("begin", BeginPasswordResetView.as_view(), name="cradmin-resetpassword-begin"),
+    path("email-sent", EmailSentView.as_view(), name="cradmin-resetpassword-email-sent"),
+    re_path(r"^reset/(?P<token>.+)", ResetPasswordView.as_view(), name="cradmin-resetpassword-reset"),
 ]

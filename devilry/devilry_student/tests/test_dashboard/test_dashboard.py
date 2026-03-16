@@ -118,7 +118,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         selector = htmls.S(mockresponse.selector.one(".devilry-student-dashboard-upcoming-assignments").__str__())
         self.assertEqual(
             selector.one(
-                ".devilry-cradmin-groupitemvalue " ".cradmin-legacy-listbuilder-itemvalue-titledescription-title"
+                ".devilry-cradmin-groupitemvalue .cradmin-legacy-listbuilder-itemvalue-titledescription-title"
             ).alltext_normalized,
             "testsubject.testperiod - Test Assignment 1",
         )
@@ -145,7 +145,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         assignment_name_list = [
             element.alltext_normalized
             for element in selector.list(
-                ".devilry-cradmin-groupitemvalue " ".cradmin-legacy-listbuilder-itemvalue-titledescription-title"
+                ".devilry-cradmin-groupitemvalue .cradmin-legacy-listbuilder-itemvalue-titledescription-title"
             )
         ]
         self.assertEqual(assignment_name_list[0], "testsubject.testperiod1 - Test Assignment 1")
@@ -174,7 +174,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         assignment_name_list = [
             element.alltext_normalized
             for element in selector.list(
-                ".devilry-cradmin-groupitemvalue " ".cradmin-legacy-listbuilder-itemvalue-titledescription-title"
+                ".devilry-cradmin-groupitemvalue .cradmin-legacy-listbuilder-itemvalue-titledescription-title"
             )
         ]
         self.assertEqual(assignment_name_list[0], "testsubject1.testperiod1 - Test Assignment 1")
@@ -203,7 +203,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         assignment_name_list = [
             element.alltext_normalized
             for element in selector.list(
-                ".devilry-cradmin-groupitemvalue " ".cradmin-legacy-listbuilder-itemvalue-titledescription-title"
+                ".devilry-cradmin-groupitemvalue .cradmin-legacy-listbuilder-itemvalue-titledescription-title"
             )
         ]
         self.assertEqual(assignment_name_list[0], "testsubject.testperiod - Test Assignment 1")
@@ -228,7 +228,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         selector = htmls.S(mockresponse.selector.one(".devilry-student-dashboard-upcoming-assignments").__str__())
         self.assertEqual(
             selector.one(
-                ".devilry-cradmin-groupitemvalue " ".cradmin-legacy-listbuilder-itemvalue-titledescription-title"
+                ".devilry-cradmin-groupitemvalue .cradmin-legacy-listbuilder-itemvalue-titledescription-title"
             ).alltext_normalized,
             "testsubject.testperiod - Test Assignment 1",
         )
@@ -252,7 +252,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         selector = htmls.S(mockresponse.selector.one(".devilry-student-dashboard-upcoming-assignments").__str__())
         self.assertEqual(
             selector.one(
-                ".devilry-cradmin-groupitemvalue " ".cradmin-legacy-listbuilder-itemvalue-titledescription-title"
+                ".devilry-cradmin-groupitemvalue .cradmin-legacy-listbuilder-itemvalue-titledescription-title"
             ).alltext_normalized,
             "testsubject.testperiod - Test Assignment 1",
         )
@@ -300,7 +300,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testuser = baker.make(settings.AUTH_USER_MODEL)
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
-            "You have no active assignments. Use the button below to browse " "inactive assignments and courses.",
+            "You have no active assignments. Use the button below to browse inactive assignments and courses.",
             mockresponse.selector.one(".cradmin-legacy-listing-no-items-message").alltext_normalized,
         )
 
@@ -421,7 +421,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         return [
             element.alltext_normalized
             for element in selector.list(
-                ".devilry-cradmin-groupitemvalue " ".cradmin-legacy-listbuilder-itemvalue-titledescription-title"
+                ".devilry-cradmin-groupitemvalue .cradmin-legacy-listbuilder-itemvalue-titledescription-title"
             )
         ]
 
@@ -489,7 +489,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             "testsubject.testperiod - Test Assignment",
             mockresponse.selector.one(
-                ".devilry-cradmin-groupitemvalue " ".cradmin-legacy-listbuilder-itemvalue-titledescription-title"
+                ".devilry-cradmin-groupitemvalue .cradmin-legacy-listbuilder-itemvalue-titledescription-title"
             ).alltext_normalized,
         )
 
@@ -531,12 +531,10 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         )
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         selector = htmls.S(mockresponse.selector.one(".devilry-student-dashboard-all-assignments").__str__())
-        self.assertFalse(selector.exists(".devilry-cradmin-groupitemvalue " ".devilry-cradmin-groupitemvalue-grade"))
+        self.assertFalse(selector.exists(".devilry-cradmin-groupitemvalue .devilry-cradmin-groupitemvalue-grade"))
         self.assertEqual(
             "Status: waiting for deliveries",
-            selector.one(
-                ".devilry-cradmin-groupitemvalue " ".devilry-cradmin-groupitemvalue-status"
-            ).alltext_normalized,
+            selector.one(".devilry-cradmin-groupitemvalue .devilry-cradmin-groupitemvalue-status").alltext_normalized,
         )
 
     def test_grouplist_status_waiting_for_feedback_sanity(self):
@@ -551,12 +549,12 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         )
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertFalse(
-            mockresponse.selector.exists(".devilry-cradmin-groupitemvalue " ".devilry-cradmin-groupitemvalue-grade")
+            mockresponse.selector.exists(".devilry-cradmin-groupitemvalue .devilry-cradmin-groupitemvalue-grade")
         )
         self.assertEqual(
             "Status: waiting for feedback",
             mockresponse.selector.one(
-                ".devilry-cradmin-groupitemvalue " ".devilry-cradmin-groupitemvalue-status"
+                ".devilry-cradmin-groupitemvalue .devilry-cradmin-groupitemvalue-status"
             ).alltext_normalized,
         )
 
@@ -570,12 +568,12 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_group_baker_factories.feedbackset_new_attempt_published(group=testgroup, grading_points=2)
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertFalse(
-            mockresponse.selector.exists(".devilry-cradmin-groupitemvalue " ".devilry-cradmin-groupitemvalue-status")
+            mockresponse.selector.exists(".devilry-cradmin-groupitemvalue .devilry-cradmin-groupitemvalue-status")
         )
         self.assertEqual(
             "Grade: passed",
             mockresponse.selector.one(
-                ".devilry-cradmin-groupitemvalue " ".devilry-cradmin-groupitemvalue-grade"
+                ".devilry-cradmin-groupitemvalue .devilry-cradmin-groupitemvalue-grade"
             ).alltext_normalized,
         )
 
@@ -624,7 +622,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             "2 comments from student. 1 file from student. 5 comments from examiner.",
             mockresponse.selector.one(
-                ".devilry-cradmin-groupitemvalue " ".devilry-cradmin-groupitemvalue-comments"
+                ".devilry-cradmin-groupitemvalue .devilry-cradmin-groupitemvalue-comments"
             ).alltext_normalized,
         )
 

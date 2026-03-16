@@ -3,9 +3,7 @@ from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_group.models import FeedbackSet
 
 
-
 class FeedbackSetList(list):
-
     def append(self, p_object):
         """
 
@@ -16,7 +14,7 @@ class FeedbackSetList(list):
 
         """
         if not isinstance(p_object, FeedbackSet):
-            raise ValueError('Appended object must be instance of FeedbackSet')
+            raise ValueError("Appended object must be instance of FeedbackSet")
         super(FeedbackSetList, self).append(p_object)
 
     def get_feedbackset_with_most_points(self):
@@ -43,6 +41,7 @@ class GroupFeedbackSetList(list):
     The ``FeedbackSet`` is associated with the AssignmentGroup in the tuple by its foreignkey(``FeedbackSet.group``)
     and is the last ``FeedbackSet`` for the group(``FeedbackSet.is_last_in_group == True``).
     """
+
     def append(self, p_object):
         """
         Overrides append for errorhandling. Make object to add is a tuple of :class:`~devilry.apps.core.models.AssignmentGroup`
@@ -56,10 +55,10 @@ class GroupFeedbackSetList(list):
                 ``AssignmentGroup`` or ``FeedbackSet``.
         """
         if not isinstance(p_object, tuple):
-            raise ValueError('Appended object must be a tuple of objects (AssignmentGroup, FeedbackSet).')
+            raise ValueError("Appended object must be a tuple of objects (AssignmentGroup, FeedbackSet).")
         group, feedbackset = p_object
         if not isinstance(group, AssignmentGroup) or not isinstance(feedbackset, FeedbackSet):
-            raise ValueError('Objects in tuple must be of (AssignmentGroup, FeedbackSet) in that order.')
+            raise ValueError("Objects in tuple must be of (AssignmentGroup, FeedbackSet) in that order.")
         super(GroupFeedbackSetList, self).append(p_object)
 
     def get_feedbackset_with_most_points(self):
@@ -88,12 +87,14 @@ class GroupFeedbackSetList(list):
             dict: Serialized dictionary of ``feedbackset``, or 'None' if ``feedbackset`` is 'None'
         """
         if feedbackset:
-            return {'id': feedbackset.id,
-                    'grade': 'NA',
-                    'points': feedbackset.grading_points,
-                    'published_by': feedbackset.grading_published_by,
-                    'published': feedbackset.grading_published_datetime,
-                    'deadline': feedbackset.current_deadline()}
+            return {
+                "id": feedbackset.id,
+                "grade": "NA",
+                "points": feedbackset.grading_points,
+                "published_by": feedbackset.grading_published_by,
+                "published": feedbackset.grading_published_datetime,
+                "deadline": feedbackset.current_deadline(),
+            }
         else:
             return None
 
@@ -107,8 +108,7 @@ class GroupFeedbackSetList(list):
         Returns:
 
         """
-        return {'id': group.id,
-                'feedbackset': self._serialize_feedbackset(feedbackset)}
+        return {"id": group.id, "feedbackset": self._serialize_feedbackset(feedbackset)}
 
     def serialize(self):
         return [self._serialize_group(group, feedbackset) for group, feedbackset in self]
@@ -119,6 +119,7 @@ class AggregatedRelatedStudentInfo(object):
     Used by :class:`.GroupsGroupedByRelatedStudentAndAssignment` to store all results for a
     single student on a period.
     """
+
     def __init__(self, user, assignments, relatedstudent=None):
         #: The Django user object for the student.
         self.user = user
@@ -181,10 +182,10 @@ class AggregatedRelatedStudentInfo(object):
         Uses FeedbackSet to fetch grading results.
         """
         qualifies = True
-        print('\n{}\n{}'.format(self.user.fullname, self.user))
+        print("\n{}\n{}".format(self.user.fullname, self.user))
         for assignmentid, groups_fbsets in self.assignments.items():
-            print('  - Assignment ID: {}'.format(assignmentid))
-            print('     - Groups: {}'.format(len(groups_fbsets)))
+            print("  - Assignment ID: {}".format(assignmentid))
+            print("     - Groups: {}".format(len(groups_fbsets)))
             if len(groups_fbsets) == 0:
                 qualifies = False
             for group, fbset in groups_fbsets:
@@ -192,73 +193,71 @@ class AggregatedRelatedStudentInfo(object):
                     assignment_is_passed = fbset.grading_points >= group.parentnode.passing_grade_min_points
                     if not assignment_is_passed:
                         qualifies = False
-                    grade = 'passed: {} (points:{}/{})'.format(
-                            assignment_is_passed,
-                            fbset.grading_points, group.parentnode.max_points)
+                    grade = "passed: {} (points:{}/{})".format(
+                        assignment_is_passed, fbset.grading_points, group.parentnode.max_points
+                    )
                 else:
-                    grade = 'Grade not published'
-                print('    - {}: {}'.format(group, grade))
-                print('Qualifies: YES' if qualifies else 'Qualifies: NO')
+                    grade = "Grade not published"
+                print("    - {}: {}".format(group, grade))
+                print("Qualifies: YES" if qualifies else "Qualifies: NO")
 
     def prettyprint(self):
         """
         Prettyprint for debugging.
         """
-        print('{}:'.format(self.user))
+        print("{}:".format(self.user))
         for assignmentid, groups in self.assignments.items():
-            print('  - Assignment ID: {}'.format(assignmentid))
-            print('     - Groups: {}'.format(len(groups)))
+            print("  - Assignment ID: {}".format(assignmentid))
+            print("     - Groups: {}".format(len(groups)))
             for group in groups:
                 if group.feedback:
-                    grade = '{} (points:{},passed:{})'.format(
-                            group.feedback.grade,
-                            group.feedback.points, group.feedback.is_passing_grade)
+                    grade = "{} (points:{},passed:{})".format(
+                        group.feedback.grade, group.feedback.points, group.feedback.is_passing_grade
+                    )
                 else:
                     grade = None
-                print('    - {}: {}'.format(group, grade))
+                print("    - {}: {}".format(group, grade))
 
     def __str__(self):
         """
         Returns a short representation of the object that should be useful when debugging.
         """
-        results = ''
+        results = ""
         for group_feedbackset_list in self.iter_groups_feedbacksets_by_assignment():
             for group, feedbackset in group_feedbackset_list:
-                results += '\n\t\t{}: {}'.format(group.parentnode, feedbackset.grading_points)
-        return 'AggregatedRelatedStudentInfo\n\tUser: {}\n\tAssignmentscount: {}\n\tResults: {}'.format(
-            self.user.shortname,
-            len(self.assignments),
-            results
+                results += "\n\t\t{}: {}".format(group.parentnode, feedbackset.grading_points)
+        return "AggregatedRelatedStudentInfo\n\tUser: {}\n\tAssignmentscount: {}\n\tResults: {}".format(
+            self.user.shortname, len(self.assignments), results
         )
 
     def _serialize_user(self):
-        return {'id': self.user.id,
-                'username': self.user.shortname,
-                'fullname': self.user.fullname}
+        return {"id": self.user.id, "username": self.user.shortname, "fullname": self.user.fullname}
 
     def _serialize_relatedstudent(self):
-        return{
-            'id': self.relatedstudent.id,
-            'tags': self.relatedstudent.tags,
-            'candidate_id': self.relatedstudent.candidate_id
+        return {
+            "id": self.relatedstudent.id,
+            "tags": self.relatedstudent.tags,
+            "candidate_id": self.relatedstudent.candidate_id,
         }
 
     def _serialize_groups_by_assignment(self):
         groups_by_assignment_list = []
         for assignmentid, group_feedbackset in self.assignments.items():
             groups_by_assignment_list.append(
-                    {'assignmentid': assignmentid,
-                     'group_feedbackset_list': group_feedbackset.serialize()})
+                {"assignmentid": assignmentid, "group_feedbackset_list": group_feedbackset.serialize()}
+            )
         return groups_by_assignment_list
 
     def serialize(self):
-        out = {'id': self.user.id, # NOTE: This is added to support stupid datamodel layers, like ExtJS, which does not support the ID of a record to be within an attribute
-               'user': self._serialize_user(),
-               'groups_by_assignment': [],
-               'relatedstudent': None}
+        out = {
+            "id": self.user.id,  # NOTE: This is added to support stupid datamodel layers, like ExtJS, which does not support the ID of a record to be within an attribute
+            "user": self._serialize_user(),
+            "groups_by_assignment": [],
+            "relatedstudent": None,
+        }
         if self.relatedstudent:
-            out['relatedstudent'] = self._serialize_relatedstudent()
-        out['groups_by_assignment'] = self._serialize_groups_by_assignment()
+            out["relatedstudent"] = self._serialize_relatedstudent()
+        out["groups_by_assignment"] = self._serialize_groups_by_assignment()
         return out
 
 
@@ -267,6 +266,7 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
     Provides an easy-to-use API for overviews over the results of all students
     in a period.
     """
+
     def __init__(self, period):
         #: The period the result info gathering is for.
         self.period = period
@@ -307,7 +307,7 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
         #         .filter(id__in=self.qualifying_assignment_ids)\
         #         .order_by('publishing_time')
         # return assignment_queryset
-        return self.period.assignments.all().order_by('publishing_time')
+        return self.period.assignments.all().order_by("publishing_time")
 
     def get_relatedstudents_queryset(self):
         """
@@ -315,7 +315,7 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
         Override if you need to optimize the query for your usecase
         (``select_related``, ``prefetch_related``, etc.)
         """
-        return self.period.relatedstudent_set.all().select_related('user')
+        return self.period.relatedstudent_set.all().select_related("user")
 
     def get_groups_queryset(self):
         """
@@ -324,8 +324,8 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
         (``select_related``, ``prefetch_related``, etc.)
         """
         groupqry = AssignmentGroup.objects.filter(parentnode__parentnode=self.period)
-        groupqry = groupqry.select_related('parentnode', 'parentnode__parentnode', 'feedback')
-        groupqry = groupqry.prefetch_related('candidates', 'candidates__relatedstudent', 'deadlines')
+        groupqry = groupqry.select_related("parentnode", "parentnode__parentnode", "feedback")
+        groupqry = groupqry.prefetch_related("candidates", "candidates__relatedstudent", "deadlines")
         return groupqry
 
     def get_groups_queryset_with_prefetched_feedbacksets(self):
@@ -342,8 +342,8 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
         groupqry = AssignmentGroup.objects.filter(parentnode__parentnode=self.period)
         # if self.qualifying_assignment_ids is not None:
         #     groupqry = groupqry.filter(parentnode__id__in=self.qualifying_assignment_ids)
-        groupqry = groupqry.select_related('parentnode', 'parentnode__parentnode')
-        groupqry = groupqry.prefetch_related('candidates', 'candidates__relatedstudent', 'feedbackset_set')
+        groupqry = groupqry.select_related("parentnode", "parentnode__parentnode")
+        groupqry = groupqry.prefetch_related("candidates", "candidates__relatedstudent", "feedbackset_set")
         return groupqry
 
     def _collect_assignments(self):
@@ -373,16 +373,13 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
         """
         for relatedstudent in self.get_relatedstudents_queryset():
             self.result[relatedstudent.id] = AggregatedRelatedStudentInfo(
-                user=relatedstudent.user,
-                assignments=self._create_assignmentsdict(),
-                relatedstudent=relatedstudent
+                user=relatedstudent.user, assignments=self._create_assignmentsdict(), relatedstudent=relatedstudent
             )
 
     def _create_or_add_ignoredgroup(self, ignoreddict, candidate):
         if candidate.candidate_id not in ignoreddict:
             ignoreddict[candidate.candidate_id] = AggregatedRelatedStudentInfo(
-                user=candidate.relatedstudent,
-                assignments=self._create_assignmentsdict()
+                user=candidate.relatedstudent, assignments=self._create_assignmentsdict()
             )
         return ignoreddict[candidate.candidate_id]
 
@@ -396,8 +393,7 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
                 if candidate.relatedstudent.id in self.result:
                     self.result[candidate.relatedstudent.id].add_group_with_feedbackset(group)
                 else:
-                    self._create_or_add_ignoredgroup(self.ignored_students, candidate).\
-                        add_group_with_feedbackset(group)
+                    self._create_or_add_ignoredgroup(self.ignored_students, candidate).add_group_with_feedbackset(group)
                     if group.feedback:
                         self.ignored_students_with_results.add(candidate.candidate_id)
 
@@ -457,22 +453,20 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
                 yield aggregatedgroupinfo
 
     def _serialize_assignment(self, basenode):
-        return {'id': basenode.id,
-                'short_name': basenode.short_name,
-                'long_name': basenode.long_name}
+        return {"id": basenode.id, "short_name": basenode.short_name, "long_name": basenode.long_name}
 
     def serialize(self):
         """
         Serialize all the collected data as plain python objects.
         """
         out = {
-            'relatedstudents':
-                [r.serialize() for r in self.iter_relatedstudents_with_results()],
-            'students_with_no_feedback_that_is_candidate_but_not_in_related':
-                [r.serialize() for r in self.iter_students_with_no_feedback_that_is_candidate_but_not_in_related()],
-            'students_with_feedback_that_is_candidate_but_not_in_related':
-                [r.serialize() for r in self.iter_students_with_feedback_that_is_candidate_but_not_in_related()],
-            'assignments':
-                [self._serialize_assignment(a) for a in self.iter_assignments()]
+            "relatedstudents": [r.serialize() for r in self.iter_relatedstudents_with_results()],
+            "students_with_no_feedback_that_is_candidate_but_not_in_related": [
+                r.serialize() for r in self.iter_students_with_no_feedback_that_is_candidate_but_not_in_related()
+            ],
+            "students_with_feedback_that_is_candidate_but_not_in_related": [
+                r.serialize() for r in self.iter_students_with_feedback_that_is_candidate_but_not_in_related()
+            ],
+            "assignments": [self._serialize_assignment(a) for a in self.iter_assignments()],
         }
         return out
