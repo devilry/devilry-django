@@ -73,6 +73,8 @@ dev = [
     "django-silk",
     "humanize",  # DEVILRY_MEMORY_DEBUG_ENABLED=True
     "psutil",   # Only used when DEVILRY_MEMORY_DEBUG_ENABLED=True
+    "ruff",
+    "django-types",  # Helps LSPs like pyright to understand the types of Django objects better, and thus provide better type checking and autocompletion
 ]
 test = [
     "htmls",
@@ -108,10 +110,6 @@ tag_format = "$version"
 update_changelog_on_bump = true
 
 
-[tool.black]
+[tool.ruff]
 line-length = 120
-
-[tool.isort]
-profile = "black"
-line_length = 120
-
+extend-exclude = ["migrations", "node_modules", "static"]
