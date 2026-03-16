@@ -106,14 +106,14 @@ class TestManageDeadlineNewAttemptAllGroupsView(AdminTestCaseMixin):
                 'handle_deadline': self.handle_deadline
             }
         )
-        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_0').__str__().decode('utf-8'))
-        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_1').__str__().decode('utf-8'))
-        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_2').__str__().decode('utf-8'))
-        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_3').__str__().decode('utf-8'))
-        self.assertIn('value="{}"'.format(testgroup1.id), mockresponse.selector.one('#id_selected_items_0').__str__().decode('utf-8'))
-        self.assertIn('value="{}"'.format(testgroup2.id), mockresponse.selector.one('#id_selected_items_1').__str__().decode('utf-8'))
-        self.assertIn('value="{}"'.format(testgroup3.id), mockresponse.selector.one('#id_selected_items_2').__str__().decode('utf-8'))
-        self.assertIn('value="{}"'.format(testgroup4.id), mockresponse.selector.one('#id_selected_items_3').__str__().decode('utf-8'))
+        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_0').__str__())
+        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_1').__str__())
+        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_2').__str__())
+        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_3').__str__())
+        self.assertIn('value="{}"'.format(testgroup1.id), mockresponse.selector.one('#id_selected_items_0').__str__())
+        self.assertIn('value="{}"'.format(testgroup2.id), mockresponse.selector.one('#id_selected_items_1').__str__())
+        self.assertIn('value="{}"'.format(testgroup3.id), mockresponse.selector.one('#id_selected_items_2').__str__())
+        self.assertIn('value="{}"'.format(testgroup4.id), mockresponse.selector.one('#id_selected_items_3').__str__())
 
     def test_all_only_one_group_added_to_form_hidden(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -132,8 +132,8 @@ class TestManageDeadlineNewAttemptAllGroupsView(AdminTestCaseMixin):
                 'handle_deadline': self.handle_deadline
             }
         )
-        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_0').__str__().decode('utf-8'))
-        self.assertIn('value="{}"'.format(testgroup1.id), mockresponse.selector.one('#id_selected_items_0').__str__().decode('utf-8'))
+        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_0').__str__())
+        self.assertIn('value="{}"'.format(testgroup1.id), mockresponse.selector.one('#id_selected_items_0').__str__())
 
     def test_post_only_groups_added_as_form_hidden_input(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -234,14 +234,14 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(AdminTestCaseMixin):
                 'handle_deadline': self.handle_deadline
             }
         )
-        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_0').__str__().decode('utf-8'))
-        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_1').__str__().decode('utf-8'))
-        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_2').__str__().decode('utf-8'))
-        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_3').__str__().decode('utf-8'))
-        self.assertIn('value="{}"'.format(testgroup1.id), mockresponse.selector.one('#id_selected_items_0').__str__().decode('utf-8'))
-        self.assertIn('value="{}"'.format(testgroup2.id), mockresponse.selector.one('#id_selected_items_1').__str__().decode('utf-8'))
-        self.assertIn('value="{}"'.format(testgroup3.id), mockresponse.selector.one('#id_selected_items_2').__str__().decode('utf-8'))
-        self.assertIn('value="{}"'.format(testgroup4.id), mockresponse.selector.one('#id_selected_items_3').__str__().decode('utf-8'))
+        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_0').__str__())
+        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_1').__str__())
+        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_2').__str__())
+        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_3').__str__())
+        self.assertIn('value="{}"'.format(testgroup1.id), mockresponse.selector.one('#id_selected_items_0').__str__())
+        self.assertIn('value="{}"'.format(testgroup2.id), mockresponse.selector.one('#id_selected_items_1').__str__())
+        self.assertIn('value="{}"'.format(testgroup3.id), mockresponse.selector.one('#id_selected_items_2').__str__())
+        self.assertIn('value="{}"'.format(testgroup4.id), mockresponse.selector.one('#id_selected_items_3').__str__())
 
     def test_all_only_one_group_added_to_form_hidden(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -260,8 +260,8 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(AdminTestCaseMixin):
                 'handle_deadline': self.handle_deadline
             }
         )
-        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_0').__str__().decode('utf-8'))
-        self.assertIn('value="{}"'.format(testgroup1.id), mockresponse.selector.one('#id_selected_items_0').__str__().decode('utf-8'))
+        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_0').__str__())
+        self.assertIn('value="{}"'.format(testgroup1.id), mockresponse.selector.one('#id_selected_items_0').__str__())
 
     def test_post_only_groups_added_as_form_hidden_input(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -370,10 +370,10 @@ class TestManageDeadlineNewAttemptFromPreviousView(AdminTestCaseMixin):
                 }
             }
         )
-        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_0').__str__().decode('utf-8'))
-        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_1').__str__().decode('utf-8'))
-        self.assertIn('value="{}"'.format(testgroup1.id), mockresponse.selector.one('#id_selected_items_0').__str__().decode('utf-8'))
-        self.assertIn('value="{}"'.format(testgroup2.id), mockresponse.selector.one('#id_selected_items_1').__str__().decode('utf-8'))
+        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_0').__str__())
+        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_1').__str__())
+        self.assertIn('value="{}"'.format(testgroup1.id), mockresponse.selector.one('#id_selected_items_0').__str__())
+        self.assertIn('value="{}"'.format(testgroup2.id), mockresponse.selector.one('#id_selected_items_1').__str__())
 
     def test_post_new_attempt(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -483,10 +483,10 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(AdminTestCaseMixin):
                 }
             }
         )
-        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_0').__str__().decode('utf-8'))
-        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_1').__str__().decode('utf-8'))
-        self.assertIn('value="{}"'.format(testgroup1.id), mockresponse.selector.one('#id_selected_items_0').__str__().decode('utf-8'))
-        self.assertIn('value="{}"'.format(testgroup2.id), mockresponse.selector.one('#id_selected_items_1').__str__().decode('utf-8'))
+        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_0').__str__())
+        self.assertIn('type="hidden"', mockresponse.selector.one('#id_selected_items_1').__str__())
+        self.assertIn('value="{}"'.format(testgroup1.id), mockresponse.selector.one('#id_selected_items_0').__str__())
+        self.assertIn('value="{}"'.format(testgroup2.id), mockresponse.selector.one('#id_selected_items_1').__str__())
 
     def test_post_new_attempt(self):
         testassignment = baker.make_recipe('devilry.apps.core.assignment_activeperiod_start')
