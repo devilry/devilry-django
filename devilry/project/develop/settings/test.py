@@ -80,6 +80,10 @@ RQ_QUEUES['default']['ASYNC'] = False
 RQ_QUEUES['email']['ASYNC'] = False
 RQ_QUEUES['highpriority']['ASYNC'] = False
 
+RQ = {
+    'COMMIT_MODE': 'auto',
+}
+
 
 STORAGES = {
     'devilry_delivery_storage': {
