@@ -96,6 +96,12 @@ EMAIL_BACKEND = "ievv_opensource.ievv_developemail.email_backend.DevelopEmailBac
 
 LANGUAGE_CODE = "nb"
 
+
+class LessBuildPlugin(ievvbuildstatic.lessbuild.Plugin):
+    def get_less_version(self):
+        return "~4.5.1"
+
+
 IEVVTASKS_BUILDSTATIC_APPS = ievvbuildstatic.config.Apps(
     ievvbuildstatic.config.App(
         appname="devilry_theme3",
@@ -107,7 +113,7 @@ IEVVTASKS_BUILDSTATIC_APPS = ievvbuildstatic.config.Apps(
                     "fontawesome": "~4.3.0",
                 }
             ),
-            ievvbuildstatic.lessbuild.Plugin(
+            LessBuildPlugin(
                 sourcefolder="styles/cradmin_theme_devilry_mainpages",
                 sourcefile="theme.less",
                 other_sourcefolders=[
@@ -119,7 +125,7 @@ IEVVTASKS_BUILDSTATIC_APPS = ievvbuildstatic.config.Apps(
                     "bower_components",
                 ],
             ),
-            ievvbuildstatic.lessbuild.Plugin(
+            LessBuildPlugin(
                 sourcefolder="styles/cradmin_theme_devilry_superuserui",
                 sourcefile="theme.less",
                 other_sourcefolders=[
