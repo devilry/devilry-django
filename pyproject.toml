@@ -38,7 +38,7 @@ dependencies = [
     "django-crispy-forms>=1.14.0,<1.15.0",
     "django-rq",
     "psycopg",
-    "cradmin_legacy>=6.1.0,<7.0.0",
+    "cradmin_legacy>=6.2.0,<7.0.0",
     "ievv_opensource>=12.0.0,<13.0.0",
     "xlsxwriter",
     "arrow>=0.12.0,<0.13.0",
@@ -104,7 +104,7 @@ exclude = [
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "6.5.0"
+version = "6.5.1"
 version_files = ["devilry/__init__.py:__version__"]
 tag_format = "$version"
 update_changelog_on_bump = true
