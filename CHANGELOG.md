@@ -1,3 +1,9 @@
+## 6.5.1 (2026-03-17)
+
+### Fix
+
+- Update to cradmin_legacy>=6.2.0,<7.0.0 - removes dependency on future library
+
 ## 6.5.0 (2025-12-09)
 
 ### Feat
