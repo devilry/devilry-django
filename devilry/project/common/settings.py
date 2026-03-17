@@ -197,7 +197,7 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = "shortname"
 
 # Since email is saved in UserEmail model this has to be set to ''
 ACCOUNT_USER_MODEL_EMAIL_FIELD = ""
-ACCOUNT_AUTHENTICATION_METHOD = "username"
+ACCOUNT_LOGIN_METHODS = {"username"}
 
 DATAPORTEN_LOGOUT_URL = "https://auth.dataporten.no/logout"
 
