@@ -1,3 +1,9 @@
+## 6.5.2 (2026-03-18)
+
+### Fix
+
+- Fix buildstatic error caused by unusable less version.
+
 ## 6.5.1 (2026-03-17)
 
 ### Fix
