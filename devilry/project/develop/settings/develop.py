@@ -37,6 +37,7 @@ MIDDLEWARE = (
 #
 ######################
 INSTALLED_APPS += ["silk"]
+MIDDLEWARE.insert(0, "silk.middleware.SilkyMiddleware")
 
 
 #######################################################

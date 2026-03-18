@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.staticfiles.urls import urlpatterns as staticfiles_urlpatterns
 from django.urls import include, path
 
@@ -8,6 +9,9 @@ urlpatterns = [
     # path('devilry_sandbox/', include('devilry.devilry_sandbox.urls')),
     path("devilry_theme/", include("devilry.devilry_theme3.urls")),
 ]
+
+if "silk" in settings.INSTALLED_APPS:
+    urlpatterns = [path("silk/", include("silk.urls", namespace="silk"))] + urlpatterns
 
 # if settings.DEBUG:
 #     import debug_toolbar
