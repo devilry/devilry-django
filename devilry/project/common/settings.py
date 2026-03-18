@@ -32,6 +32,8 @@ AUTH_USER_MODEL = "devilry_account.User"
 LOGIN_REDIRECT_URL = "/"
 CRISPY_TEMPLATE_PACK = "bootstrap3"
 
+CRADMIN_LEGACY_DJANGOADMIN_USER_SEARCH_FIELDS = ["=shortname", "=id"]
+
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 
