@@ -277,6 +277,7 @@ forwarded to the `cz bump` command, so to do an RC release use:
 tools/release/prepare-release.py prepare --prerelease rc --apply
 ```
 
+
 ### NOTE (release):
 
 - `cz bump` automatically updates CHANGELOG.md, updates version file(s), commits the change and tags the release commit.
