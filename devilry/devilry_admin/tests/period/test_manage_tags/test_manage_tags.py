@@ -1,19 +1,17 @@
 # -*- coding: utf-8 -*-
 
 
-from django import test
-from django.contrib import messages
-from django.conf import settings
-from django.http import Http404
+from unittest import mock
 
 from cradmin_legacy import cradmin_testhelpers
-
-from unittest import mock
+from django import test
+from django.conf import settings
+from django.contrib import messages
+from django.http import Http404
 from model_bakery import baker
 
-from devilry.apps.core.models import RelatedExaminer
+from devilry.apps.core.models import PeriodTag, RelatedExaminer
 from devilry.devilry_admin.views.period.manage_tags import manage_tags
-from devilry.apps.core.models import PeriodTag
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 
 
@@ -418,7 +416,7 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         testperiodtag1.relatedexaminers.add(baker.make("core.RelatedExaminer", period=testperiod))
         testperiodtag2.relatedexaminers.add(baker.make("core.RelatedExaminer", period=testperiod))
         testperiodtag3.relatedexaminers.add(baker.make("core.RelatedExaminer", period=testperiod))
-        with self.assertNumQueries(4):
+        with self.assertNumQueries(6):
             self.mock_http200_getrequest_htmls(cradmin_role=testperiod, requestuser=testuser)
 
 

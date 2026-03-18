@@ -1,35 +1,34 @@
 # -*- coding: utf-8 -*-
 
 
-import re
-
-from django import forms
-from django.db import models
-from django.contrib import messages
-from django.core.exceptions import ValidationError
-from django.db import transaction
-from django.http import Http404
-from django.http import HttpResponseRedirect
-from django.utils import timezone
-from django.utils.translation import gettext_lazy, pgettext_lazy
-from django.views.generic import TemplateView
-from django.views.generic import View
-
-from crispy_forms import layout
-
 from cradmin_legacy import crapp
 from cradmin_legacy.crinstance import reverse_cradmin_url
 from cradmin_legacy.crispylayouts import PrimarySubmit
-from cradmin_legacy.viewhelpers import formbase
-from cradmin_legacy.viewhelpers import update, delete, crudbase
-from cradmin_legacy.viewhelpers import listbuilderview
+from cradmin_legacy.viewhelpers import (
+    crudbase,
+    delete,
+    formbase,
+    listbuilderview,
+    multiselect2,
+    multiselect2view,
+    update,
+)
 from cradmin_legacy.viewhelpers.listbuilder import itemvalue
-from cradmin_legacy.viewhelpers import multiselect2view
-from cradmin_legacy.viewhelpers import multiselect2
+from cradmin_legacy.viewhelpers.listbuilder.itemframe import DefaultSpacingItemFrame
+from cradmin_legacy.viewhelpers.listbuilder.lists import RowList
+from crispy_forms import layout
+from django import forms
+from django.contrib import messages
+from django.core.exceptions import ValidationError
+from django.db import models, transaction
+from django.http import Http404, HttpResponseRedirect
+from django.utils import timezone
+from django.utils.translation import gettext_lazy, pgettext_lazy
+from django.views.generic import TemplateView, View
 
-from devilry.apps.core.models import PeriodTag
-from devilry.apps.core.models import RelatedStudent, RelatedExaminer
-from devilry.devilry_admin.cradminextensions.listfilter import listfilter_tags, listfilter_relateduser
+from devilry.apps.core.models import PeriodTag, RelatedExaminer, RelatedStudent
+from devilry.devilry_admin.cradminextensions.listfilter import listfilter_relateduser, listfilter_tags
+from devilry.devilry_cradmin.devilry_listfilter.utils import WithResultValueRenderable
 
 
 class TagItemValue(itemvalue.EditDelete):
@@ -65,10 +64,34 @@ class HideShowPeriodTag(TemplateView):
         return period_tag
 
 
-class TagListBuilderListView(listbuilderview.FilterListMixin, listbuilderview.View):
-    """ """
+class TagListMatchResultRenderable(WithResultValueRenderable):
+    def get_object_name_singular(self, num_matches):
+        return gettext_lazy("tag")
 
+    def get_object_name_plural(self, num_matches):
+        return gettext_lazy("tags")
+
+
+class RowListWithMatchResults(RowList):
+    def append_results_renderable(self):
+        result_info_renderable = TagListMatchResultRenderable(
+            value=None, num_matches=self.num_matches, num_total=self.num_total
+        )
+        self.renderable_list.insert(0, DefaultSpacingItemFrame(inneritem=result_info_renderable))
+
+    def __init__(self, num_matches, num_total, page):
+        self.num_matches = num_matches
+        self.num_total = num_total
+        self.page = page
+        super().__init__()
+
+        if page == 1:
+            self.append_results_renderable()
+
+
+class TagListBuilderListView(listbuilderview.FilterListMixin, listbuilderview.View):
     template_name = "devilry_admin/period/manage_tags/manage-tags-list-view.django.html"
+    listbuilder_class = RowListWithMatchResults
     model = PeriodTag
     value_renderer_class = TagItemValue
     paginate_by = 10
@@ -83,6 +106,20 @@ class TagListBuilderListView(listbuilderview.FilterListMixin, listbuilderview.Vi
 
     def get_filterlist_url(self, filters_string):
         return self.request.cradmin_app.reverse_appurl("filter", kwargs={"filters_string": filters_string})
+
+    def get_listbuilder_list_kwargs(self):
+        kwargs = super().get_listbuilder_list_kwargs()
+        kwargs["num_matches"] = self.num_matches or 0
+        kwargs["num_total"] = self.num_total or 0
+        kwargs["page"] = self.request.GET.get("page", 1)
+        return kwargs
+
+    def get_queryset_for_role(self, role):
+        queryset = super().get_queryset_for_role(role=role)
+
+        # Set filtered count on self.
+        self.num_matches = queryset.count()
+        return queryset
 
     def get_unfiltered_queryset_for_role(self, role):
         queryset = (
@@ -100,6 +137,7 @@ class TagListBuilderListView(listbuilderview.FilterListMixin, listbuilderview.Vi
                 )
             )
         )
+        self.num_total = queryset.count()
         return queryset
 
     def get_no_items_message(self):
