@@ -2,12 +2,14 @@
 
 
 # Django imports
-from django.http import HttpResponseRedirect
 
 # Devilry imports
 from devilry.apps.core import models as core_models
 from devilry.devilry_qualifiesforexam.views import plugin_mixin
-from devilry.devilry_qualifiesforexam.views.plugin_base_views import base_multiselect_view
+from devilry.devilry_qualifiesforexam.views.plugin_base_views import (
+    base_multiselect_view,
+)
+from devilry.devilry_qualifiesforexam_plugin_students import resultscollector
 
 
 class StudentQualificationForm(base_multiselect_view.SelectedQualificationForm):
@@ -49,7 +51,12 @@ class PluginSelectStudentsView(base_multiselect_view.QualificationItemListView, 
     value_renderer_class = SelectableStudentQualificationItem
 
     def get_period_result_collector_class(self):
-        pass
+        return resultscollector.PeriodResultSetCollector
+
+    def get_collector_kwargs(self, form, **kwargs):
+        return {
+            "qualifying_student_ids": self.get_qualifying_itemids(posted_form=form)
+        }
 
     def get_queryset_for_role(self, role):
         return self.model.objects.filter(period__id=role.id)
@@ -65,8 +72,3 @@ class PluginSelectStudentsView(base_multiselect_view.QualificationItemListView, 
 
     def get_pagetitle(self):
         return "Select students"
-
-    def form_valid(self, form):
-        self.request.session["passing_relatedstudentids"] = self.get_qualifying_itemids(posted_form=form)
-        self.request.session["plugintypeid"] = PluginSelectStudentsView.plugintypeid
-        return HttpResponseRedirect(str(self.request.cradmin_app.reverse_appurl("preview")))

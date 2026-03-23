@@ -9,27 +9,65 @@
             <h1>
                 {% trans 'Students on' %} {{ period }}
             </h1>
-            <h2>
-                {% trans 'Preview and confirm' %}
-            </h2>
-            <p> {% trans 'This table shows the result of your choices' %}</p>
+            {% if draft_status.processing_status == "completed" %}
+                <h2>
+                    {% trans 'Preview and confirm' %}
+                </h2>
+                <p> {% trans 'This table shows the result of your choices' %}</p>
+            {% endif %}
+
+            <h2>{% trans "Preview status" %}</h2>
+            <p style="margin-bottom: 0;">
+                <strong>{% trans "Status" %}:</strong> {{ draft_status.status_label }}
+            </p>
+            <p style="margin-bottom: 0;">
+                <strong>{% trans "Started" %}:</strong>
+                {% if draft_status.processing_started_datetime %}
+                    {{ draft_status.processing_started_datetime|date:"DATETIME_FORMAT" }}
+                {% else %}
+                    --
+                {% endif %}
+            </p>
+            <p>
+                <strong>{% trans "Completed" %}:</strong>
+                {% if draft_status.processing_completed_datetime %}
+                    {{ draft_status.processing_completed_datetime|date:"DATETIME_FORMAT" }}
+                {% else %}
+                    --
+                {% endif %}
+            </p>
+            {% if draft_status.processing_status == "not_started" or draft_status.processing_status == "in_progress" %}
+                <p>
+                    {% blocktrans trimmed %}
+                        The preview is being generated in the background and may take a while to complete. Keep refreshing the page to see the latest status. When the 
+                        preview is ready, you can click on the "Save" button to save your changes.
+                    {% endblocktrans %}
+                </p>
+                <a href="javascript:location.reload()">{% trans 'Refresh page' %}</a>
+            {% elif draft_status.processing_status == "error" %}
+                <p>
+                    {% blocktrans trimmed %}
+                        An error occurred while generating the preview. Click on the "Back"-button and try to 
+                        generate a new preview. If the problem persists, please contact support.
+                    {% endblocktrans %}
+                </p>
+            {% endif %}
         </div>
 
         <p class="devilry-buttonbar">
-            {# Add back button #}
             <form action="" method="post">
                 {% csrf_token %}
                 <a id="devilry_qualifiesforexam_back_index_button" class="btn btn-primary"
                    href="{% cradmin_instance_url appname='qualifiesforexam' viewname='configure-plugin' plugintypeid=plugintypeid %}">
                     {% trans "Back" %}
                 </a>
-                <button id="devilry_qualifiesforexam_save_button" type="submit" value="Save" name="save" class="btn btn-primary">
+                <button id="devilry_qualifiesforexam_save_button" type="submit" value="Save" name="save" class="btn btn-primary" {% if draft_status.processing_status != "completed" %}disabled{% endif %}>
                     {% trans "Save" %}
                 </button>
             </form>
         </p>
-
-        {% cradmin_render_renderable table %}
-{#        {% include "devilry_qualifiesforexam/includes/qualification_table.django.html" %}#}
+        {% if draft_status.processing_status == "completed" %}
+            {% cradmin_render_renderable table %}
+        {% endif %}
     </div>
 {% endblock content %}

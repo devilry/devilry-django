@@ -2,19 +2,19 @@
 
 
 # 3rd party imports
-from unittest import skip
-from model_bakery import baker
-
-# Django imports
-from django import test
 
 # CrAdmin imports
 from cradmin_legacy import cradmin_testhelpers
 
+# Django imports
+from django import test
+from model_bakery import baker
+
+from devilry.devilry_qualifiesforexam import models as status_models
+from devilry.devilry_qualifiesforexam.views import qualification_preview_view
+
 # Devilry imports
 from devilry.project.common import settings
-from devilry.devilry_qualifiesforexam.views import qualification_preview_view
-from devilry.devilry_qualifiesforexam import models as status_models
 
 
 class TestQualificationStatusView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -97,7 +97,7 @@ class TestQualificationStatusView(test.TestCase, cradmin_testhelpers.TestCaseMix
         )
         baker.make("devilry_qualifiesforexam.QualifiesForFinalExam", status=teststatus, qualifies=True, _quantity=10)
         baker.make("devilry_qualifiesforexam.QualifiesForFinalExam", status=teststatus, qualifies=False, _quantity=10)
-        with self.assertNumQueries(4):
+        with self.assertNumQueries(5):
             self.mock_http200_getrequest_htmls(
                 cradmin_role=testperiod,
                 requestuser=admin_user,
@@ -115,75 +115,55 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             viewkwargs={"statusid": teststatus.id},
-            sessionmock={
-                "qualifying_assignmentids": [],
-                "passing_relatedstudentids": [],
-                "plugintypeid": "someplugin_id",
-            },
         )
         self.assertTrue(mockresponse.selector.exists(".devilry-qualifiesforexam-table"))
 
     def test_table_row_is_rendered(self):
         # Tests that two rows are rendered, on for the header and one for the student
         testperiod = baker.make("core.Period")
-        baker.make("core.RelatedStudent", period=testperiod)
-        teststatus = baker.make("devilry_qualifiesforexam.Status", period=testperiod)
+        relatedstudent = baker.make("core.RelatedStudent", period=testperiod)
+        status = baker.make("devilry_qualifiesforexam.Status", period=testperiod)
+        self.__make_qualification_item(status=status, relatedstudent=relatedstudent)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
-            viewkwargs={"statusid": teststatus.id},
-            sessionmock={
-                "qualifying_assignmentids": [],
-                "passing_relatedstudentids": [],
-                "plugintypeid": "someplugin_id",
-            },
+            viewkwargs={"statusid": status.id},
         )
         self.assertEqual(len(mockresponse.selector.list(".devilry-qualifiesforexam-tr")), 2)
 
     def test_table_row_is_rendered_multiple_students(self):
         # Tests that 21 rows are rendered, one for the table header and twenty(one for each student)
         testperiod = baker.make("core.Period")
-        baker.make("core.RelatedStudent", period=testperiod, _quantity=20)
-        teststatus = baker.make("devilry_qualifiesforexam.Status", period=testperiod)
+        relatedstudents = baker.make("core.RelatedStudent", period=testperiod, _quantity=20)
+        status = baker.make("devilry_qualifiesforexam.Status", period=testperiod)
+        for relatedstudent in relatedstudents:
+            self.__make_qualification_item(status=status, relatedstudent=relatedstudent)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
-            viewkwargs={"statusid": teststatus.id},
-            sessionmock={
-                "qualifying_assignmentids": [],
-                "passing_relatedstudentids": [],
-                "plugintypeid": "someplugin_id",
-            },
+            viewkwargs={"statusid": status.id},
         )
         self.assertEqual(len(mockresponse.selector.list(".devilry-qualifiesforexam-tr")), 21)
 
     def test_table_data_studentinfo_is_rendered(self):
         # Tests that a td element of class 'devilry-qualifiesforexam-cell-studentinfo' is rendered.
         testperiod = baker.make("core.Period")
-        baker.make("core.RelatedStudent", period=testperiod)
-        teststatus = baker.make("devilry_qualifiesforexam.Status", period=testperiod)
+        relatedstudent = baker.make("core.RelatedStudent", period=testperiod)
+        status = baker.make("devilry_qualifiesforexam.Status", period=testperiod)
+        self.__make_qualification_item(status=status, relatedstudent=relatedstudent)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
-            viewkwargs={"statusid": teststatus.id},
-            sessionmock={
-                "qualifying_assignmentids": [],
-                "passing_relatedstudentids": [],
-                "plugintypeid": "someplugin_id",
-            },
+            viewkwargs={"statusid": status.id},
         )
         self.assertEqual(len(mockresponse.selector.list(".devilry-qualifiesforexam-cell-studentinfo")), 1)
 
     def test_table_data_qualify_result_is_rendered(self):
         # Tests that a td element of class 'devilry-qualifiesforexam-cell-qualify' is rendered.
         testperiod = baker.make("core.Period")
-        baker.make("core.RelatedStudent", period=testperiod)
-        teststatus = baker.make("devilry_qualifiesforexam.Status", period=testperiod)
+        relatedstudent = baker.make("core.RelatedStudent", period=testperiod)
+        status = baker.make("devilry_qualifiesforexam.Status", period=testperiod)
+        self.__make_qualification_item(status=status, relatedstudent=relatedstudent)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
-            viewkwargs={"statusid": teststatus.id},
-            sessionmock={
-                "qualifying_assignmentids": [],
-                "passing_relatedstudentids": [],
-                "plugintypeid": "someplugin_id",
-            },
+            viewkwargs={"statusid": status.id},
         )
         self.assertEqual(len(mockresponse.selector.list(".devilry-qualifiesforexam-cell-qualify")), 1)
 
@@ -195,11 +175,6 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             viewkwargs={"statusid": teststatus.id},
-            sessionmock={
-                "qualifying_assignmentids": [],
-                "passing_relatedstudentids": [],
-                "plugintypeid": "someplugin_id",
-            },
         )
         table_headers = mockresponse.selector.list(".devilry-qualifiesforexam-th")
         self.assertEqual(table_headers[0].alltext_normalized, "Student")
@@ -213,21 +188,11 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
             period=testperiod,
             user=baker.make(settings.AUTH_USER_MODEL, fullname="Jane Doe", shortname="janedoe"),
         )
-        teststatus = baker.make("devilry_qualifiesforexam.Status", period=testperiod)
-        baker.make(
-            "devilry_qualifiesforexam.QualifiesForFinalExam",
-            status=teststatus,
-            relatedstudent=relatedstudent,
-            qualifies=False,
-        )
+        status = baker.make("devilry_qualifiesforexam.Status", period=testperiod)
+        self.__make_qualification_item(status=status, relatedstudent=relatedstudent, qualifies=False)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
-            viewkwargs={"statusid": teststatus.id},
-            sessionmock={
-                "qualifying_assignmentids": [],
-                "passing_relatedstudentids": [],
-                "plugintypeid": "someplugin_id",
-            },
+            viewkwargs={"statusid": status.id},
         )
         studentinfo = mockresponse.selector.one(".devilry-qualifiesforexam-cell-studentinfo")
         self.assertEqual(
@@ -243,21 +208,11 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
             period=testperiod,
             user=baker.make(settings.AUTH_USER_MODEL, fullname="Jane Doe", shortname="janedoe"),
         )
-        teststatus = baker.make("devilry_qualifiesforexam.Status", period=testperiod)
-        baker.make(
-            "devilry_qualifiesforexam.QualifiesForFinalExam",
-            status=teststatus,
-            relatedstudent=relatedstudent,
-            qualifies=True,
-        )
+        status = baker.make("devilry_qualifiesforexam.Status", period=testperiod)
+        self.__make_qualification_item(status=status, relatedstudent=relatedstudent)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
-            viewkwargs={"statusid": teststatus.id},
-            sessionmock={
-                "qualifying_assignmentids": [],
-                "passing_relatedstudentids": [relatedstudent.id],
-                "plugintypeid": "someplugin_id",
-            },
+            viewkwargs={"statusid": status.id},
         )
         studentinfo = mockresponse.selector.one(".devilry-qualifiesforexam-cell-studentinfo")
         self.assertEqual(
@@ -408,31 +363,3 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
         self.assertEqual(student_list[0].alltext_normalized, "A C c@example.com")
         self.assertEqual(student_list[1].alltext_normalized, "B B b@example.com")
         self.assertEqual(student_list[2].alltext_normalized, "C A a@example.com")
-
-    @skip
-    def test_table_order_by_candidate_id(self):
-        testperiod = baker.make("core.Period")
-        relatedstudent1 = self.__make_related_student(
-            period=testperiod, fullname="C C", lastname="C", shortname="c@example.com", candidate_id="1"
-        )
-        relatedstudent2 = self.__make_related_student(
-            period=testperiod, fullname="B B", lastname="B", shortname="b@example.com", candidate_id="3"
-        )
-        relatedstudent3 = self.__make_related_student(
-            period=testperiod, fullname="A A", lastname="A", shortname="a@example.com", candidate_id="2"
-        )
-
-        teststatus = baker.make("devilry_qualifiesforexam.Status", period=testperiod)
-        self.__make_qualification_item(teststatus, relatedstudent1)
-        self.__make_qualification_item(teststatus, relatedstudent2)
-        self.__make_qualification_item(teststatus, relatedstudent3)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testperiod,
-            viewkwargs={"statusid": teststatus.id},
-            requestkwargs={"data": {"order_by": "candidateid"}},
-        )
-        student_list = mockresponse.selector.list(".devilry-qualifiesforexam-cell-studentinfo")
-        self.assertEqual(len(student_list), 3)
-        self.assertEqual(student_list[0].alltext_normalized, "C C c@example.com")
-        self.assertEqual(student_list[1].alltext_normalized, "A A a@example.com")
-        self.assertEqual(student_list[2].alltext_normalized, "B B b@example.com")

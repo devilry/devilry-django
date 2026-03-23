@@ -5,10 +5,7 @@
 from cradmin_legacy import crapp
 
 # Devilry imports
-from .views import pluginselection_view
-from .views import list_statuses_view
-from .views import proxyview
-from .views import qualification_preview_view
+from .views import list_statuses_view, pluginselection_view, proxyview, qualification_preview_view
 
 
 class App(crapp.App):
@@ -21,7 +18,7 @@ class App(crapp.App):
             proxyview.PluginProxyView.as_view(),
             name="configure-plugin",
         ),
-        crapp.Url(r"preview$", qualification_preview_view.QualificationPreviewView.as_view(), name="preview"),
+        crapp.Url(r"preview/(?P<draft_statusid>\d+)$", qualification_preview_view.QualificationPreviewView.as_view(), name="preview"),
         crapp.Url(
             r"showstatus/(?P<statusid>\d+)$",
             qualification_preview_view.QualificationStatusView.as_view(),

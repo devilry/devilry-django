@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
 
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy
-from django.core.exceptions import ValidationError
 
-from devilry.apps.core.models import RelatedStudent
-from devilry.apps.core.models import Period
+from devilry.apps.core.models import Period, RelatedStudent
 from devilry.devilry_account.models import User
 
 
@@ -54,12 +53,18 @@ class StatusQuerySet(models.QuerySet):
         if prefetch_relations:
             latest_status = (
                 period.qualifiedforexams_status.select_related("period")
-                .prefetch_related(models.Prefetch("students", queryset=self._get_qualifiesforexam_queryset()))
+                .prefetch_related(
+                    models.Prefetch(
+                        "students", queryset=self._get_qualifiesforexam_queryset()
+                    )
+                )
                 .order_by("-createtime")
                 .first()
             )
         else:
-            latest_status = period.qualifiedforexams_status.order_by("-createtime").first()
+            latest_status = period.qualifiedforexams_status.order_by(
+                "-createtime"
+            ).first()
         return latest_status
 
 
@@ -98,7 +103,9 @@ class Status(models.Model):
     status = models.CharField(max_length=30, blank=False, choices=STATUS_CHOICES)
 
     #: Period the qualifications are for.
-    period = models.ForeignKey(Period, related_name="qualifiedforexams_status", on_delete=models.CASCADE)
+    period = models.ForeignKey(
+        Period, related_name="qualifiedforexams_status", on_delete=models.CASCADE
+    )
 
     #: Status created datetime. This is changed if the list updated.
     createtime = models.DateTimeField(default=timezone.now)
@@ -130,7 +137,9 @@ class Status(models.Model):
 
     def clean(self):
         if self.status == "notready" and not self.message:
-            raise ValidationError("Message can not be empty when status is ``notready``.")
+            raise ValidationError(
+                "Message can not be empty when status is ``notready``."
+            )
         if self.status != "notready":
             if not self.plugin and not self.message:
                 raise ValidationError(
@@ -139,7 +148,9 @@ class Status(models.Model):
                 )
         if self.status == "notready":
             if self.plugin:
-                raise ValidationError("``plugin`` is not allowed when status is ``notready``.")
+                raise ValidationError(
+                    "``plugin`` is not allowed when status is ``notready``."
+                )
 
     def get_qualified_students(self):
         return self.students.filter(qualifies=True)
@@ -155,7 +166,9 @@ class QualifiesForFinalExam(models.Model):
     relatedstudent = models.ForeignKey(RelatedStudent, on_delete=models.CASCADE)
 
     #: The related :obj:`~.Status` for this student.
-    status = models.ForeignKey(Status, related_name="students", on_delete=models.CASCADE)
+    status = models.ForeignKey(
+        Status, related_name="students", on_delete=models.CASCADE
+    )
 
     #: ``True`` if the student qualifies for the exam, else ``False``.
     qualifies = models.BooleanField(null=True)
@@ -165,16 +178,22 @@ class QualifiesForFinalExam(models.Model):
 
     def clean(self):
         if self.qualifies is None and self.status.status != "almostready":
-            raise ValidationError("Only the ``almostready`` status allows marking students as not ready for export.")
+            raise ValidationError(
+                "Only the ``almostready`` status allows marking students as not ready for export."
+            )
         if self.status.status == "notready":
-            raise ValidationError("Status ``notready`` does not allow marking qualified students.")
+            raise ValidationError(
+                "Status ``notready`` does not allow marking qualified students."
+            )
 
     def __str__(self):
         return "{}-{}-{}".format(self.relatedstudent, self.status, self.qualifies)
 
     def smart_delete(self):
         DeletedQualifiesForFinalExam.objects.create(
-            relatedstudent=self.relatedstudent, status=self.status, qualifies=self.qualifies
+            relatedstudent=self.relatedstudent,
+            status=self.status,
+            qualifies=self.qualifies,
         )
         self.delete()
 
@@ -188,3 +207,54 @@ class DeletedQualifiesForFinalExam(models.Model):
 
     #: ``True`` if the student qualifies for the exam, else ``False``.
     qualifies = models.BooleanField(null=True)
+
+
+class DraftStatus(models.Model):
+    """
+    A model used for drafting results.
+
+    This is used for storing the results of a plugin before it's saved as a :class:`~.Status`. This allows 
+    us to run the plugin-processing of students in a background task to scale with large courses and/or demanding 
+    result collection. 
+    """
+    class ProcessingStatusChoices(models.TextChoices):
+        NOT_STARTED = ("not_started", gettext_lazy("Not started"))
+        IN_PROGRESS = ("in_progress", gettext_lazy("In progress"))
+        COMPLETED = ("completed", gettext_lazy("Completed"))
+        ERROR = ("error", gettext_lazy("Error"))
+
+    created_datetime = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    period = models.ForeignKey(Period, on_delete=models.CASCADE)
+    plugin = models.CharField(max_length=500, null=True, blank=True)
+    plugin_data = models.JSONField(null=True, blank=True, default=dict)
+    processing_started_datetime = models.DateTimeField(
+        blank=True, null=True, default=None
+    )
+    processing_completed_datetime = models.DateTimeField(blank=True, null=True, default=None)
+    processing_status = models.CharField(
+        max_length=32,
+        choices=ProcessingStatusChoices.choices,
+        default=ProcessingStatusChoices.NOT_STARTED,
+    )
+    processing_status_data = models.JSONField(null=True, blank=True, default=dict)
+
+    @property
+    def status_label(self):
+        return self.ProcessingStatusChoices(self.processing_status).label
+
+    def __str__(self):
+        return "DraftStatus(id={id}, user={user}, plugin={plugin})".format(
+            id=self.id, user=self.user, plugin=self.plugin
+        )
+
+
+class DraftQualifiesForFinalExam(models.Model):
+    """
+    A model used for storing draft-data about a student.
+    """
+    relatedstudent = models.ForeignKey(RelatedStudent, on_delete=models.CASCADE)
+    draft_status = models.ForeignKey(
+        DraftStatus, related_name="students", on_delete=models.CASCADE
+    )
+    qualifies = models.BooleanField(default=False)
