@@ -244,9 +244,7 @@ class DraftStatus(models.Model):
         return self.ProcessingStatusChoices(self.processing_status).label
 
     def __str__(self):
-        return "DraftStatus(id={id}, user={user}, plugin={plugin})".format(
-            id=self.id, user=self.user, plugin=self.plugin
-        )
+        return f"DraftStatus(id={self.id}, created_by={self.created_by}, plugin={self.plugin})"
 
 
 class DraftQualifiesForFinalExam(models.Model):
