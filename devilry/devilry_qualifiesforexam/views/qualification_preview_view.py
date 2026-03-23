@@ -189,6 +189,15 @@ class QualificationPreviewView(AbstractQualificationPreviewView):
                 )
             )
         return super(QualificationPreviewView, self).form_valid(form)
+    
+    def get(self, request, *args, **kwargs):
+        response = super().get(request, *args, **kwargs)
+        if self.draft_status.processing_status in [
+            status_models.DraftStatus.ProcessingStatusChoices.NOT_STARTED,
+            status_models.DraftStatus.ProcessingStatusChoices.IN_PROGRESS
+        ]:
+            response["Refresh"] = "5"
+        return response
 
 
 class PrefetchStatusInfoMixin(object):

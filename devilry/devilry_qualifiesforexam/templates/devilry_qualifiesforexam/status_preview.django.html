@@ -18,7 +18,10 @@
 
             <h2>{% trans "Preview status" %}</h2>
             <p style="margin-bottom: 0;">
-                <strong>{% trans "Status" %}:</strong> {{ draft_status.status_label }}
+                <strong>{% trans "Draft ID" %}:</strong> #{{ draft_status.id }}
+            </p>
+            <p style="margin-bottom: 0;">
+                <strong>{% trans "Status" %}:</strong> {% if draft_status.status == "error" %}<strong><span style="color:#E84D3D;">{{ draft_status.status_label }}</span></strong>{% else %}{{ draft_status.status_label }}{% endif %}
             </p>
             <p style="margin-bottom: 0;">
                 <strong>{% trans "Started" %}:</strong>
@@ -43,12 +46,11 @@
                         preview is ready, you can click on the "Save" button to save your changes.
                     {% endblocktrans %}
                 </p>
-                <a href="javascript:location.reload()">{% trans 'Refresh page' %}</a>
             {% elif draft_status.processing_status == "error" %}
                 <p>
                     {% blocktrans trimmed %}
                         An error occurred while generating the preview. Click on the "Back"-button and try to 
-                        generate a new preview. If the problem persists, please contact support.
+                        generate a new preview. If the problem persists, please contact support and provided them with the info shown here.
                     {% endblocktrans %}
                 </p>
             {% endif %}
