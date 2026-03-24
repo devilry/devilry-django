@@ -1,6 +1,6 @@
-from devilry.utils import OrderedDict
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_group.models import FeedbackSet
+from devilry.utils import OrderedDict
 
 
 class FeedbackSetList(list):
@@ -301,12 +301,6 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
         Override for custom ordering or if you need to optimize the query for
         your usecase (``select_related``, ``prefetch_related``, etc.)
         """
-        # assignment_queryset = self.period.assignments.all().order_by('publishing_time')
-        # if self.qualifying_assignment_ids is not None:
-        #     assignment_queryset = assignment_queryset\
-        #         .filter(id__in=self.qualifying_assignment_ids)\
-        #         .order_by('publishing_time')
-        # return assignment_queryset
         return self.period.assignments.all().order_by("publishing_time")
 
     def get_relatedstudents_queryset(self):
@@ -340,8 +334,6 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
             QuerySet: QuerySet of AssignmentGroups.
         """
         groupqry = AssignmentGroup.objects.filter(parentnode__parentnode=self.period)
-        # if self.qualifying_assignment_ids is not None:
-        #     groupqry = groupqry.filter(parentnode__id__in=self.qualifying_assignment_ids)
         groupqry = groupqry.select_related("parentnode", "parentnode__parentnode")
         groupqry = groupqry.prefetch_related("candidates", "candidates__relatedstudent", "feedbackset_set")
         return groupqry
@@ -387,7 +379,6 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
         """
         Adds the AssignmentGroups to the result dictionary.
         """
-        # groupqry = self.get_groups_queryset_with_prefetched_feedbacksets()
         for group in self.groups:
             for candidate in group.candidates.all():
                 if candidate.relatedstudent.id in self.result:

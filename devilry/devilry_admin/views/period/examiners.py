@@ -1,15 +1,18 @@
+from cradmin_legacy import crapp
+from cradmin_legacy.crispylayouts import DangerSubmit
+from cradmin_legacy.viewhelpers.listbuilder.itemframe import DefaultSpacingItemFrame
+from cradmin_legacy.viewhelpers.listbuilder.lists import RowList
 from django.contrib import messages
 from django.http import Http404
 from django.utils.translation import gettext_lazy
-from cradmin_legacy import crapp
-from cradmin_legacy.crispylayouts import DangerSubmit
 
 from devilry.apps.core.models import RelatedExaminer
-from devilry.devilry_account.models import User, PermissionGroup
+from devilry.devilry_account.models import PermissionGroup, User
 from devilry.devilry_admin.cradminextensions.listbuilder import listbuilder_relatedexaminer
 from devilry.devilry_admin.cradminextensions.listfilter import listfilter_relateduser
 from devilry.devilry_admin.views.common import bulkimport_users_common
 from devilry.devilry_cradmin import devilry_multiselect2
+from devilry.devilry_cradmin.devilry_listfilter.utils import WithResultValueRenderable
 from devilry.devilry_cradmin.viewhelpers import devilry_confirmview
 
 
@@ -25,7 +28,33 @@ class OverviewItemValue(listbuilder_relatedexaminer.OnPeriodItemValue):
     template_name = "devilry_admin/period/examiners/overview-itemvalue.django.html"
 
 
+class ExaminerUserListMatchResultRenderable(WithResultValueRenderable):
+    def get_object_name_singular(self, num_matches):
+        return gettext_lazy("examiner")
+
+    def get_object_name_plural(self, num_matches):
+        return gettext_lazy("examiners")
+
+
+class RowListWithMatchResults(RowList):
+    def append_results_renderable(self):
+        result_info_renderable = ExaminerUserListMatchResultRenderable(
+            value=None, num_matches=self.num_matches, num_total=self.num_total
+        )
+        self.renderable_list.insert(0, DefaultSpacingItemFrame(inneritem=result_info_renderable))
+
+    def __init__(self, num_matches, num_total, page):
+        self.num_matches = num_matches
+        self.num_total = num_total
+        self.page = page
+        super().__init__()
+
+        if page == 1:
+            self.append_results_renderable()
+
+
 class Overview(listbuilder_relatedexaminer.VerticalFilterListView):
+    listbuilder_class = RowListWithMatchResults
     value_renderer_class = OverviewItemValue
     template_name = "devilry_admin/period/examiners/overview.django.html"
 
@@ -39,9 +68,25 @@ class Overview(listbuilder_relatedexaminer.VerticalFilterListView):
     def get_filterlist_url(self, filters_string):
         return self.request.cradmin_app.reverse_appurl("filter", kwargs={"filters_string": filters_string})
 
+    def get_listbuilder_list_kwargs(self):
+        kwargs = super().get_listbuilder_list_kwargs()
+        kwargs["num_matches"] = self.num_matches or 0
+        kwargs["num_total"] = self.num_total or 0
+        kwargs["page"] = self.request.GET.get("page", 1)
+        return kwargs
+
+    def get_queryset_for_role(self, role):
+        queryset = super().get_queryset_for_role(role=role)
+
+        # Set filtered count on self.
+        self.num_matches = queryset.count()
+        return queryset
+
     def get_unfiltered_queryset_for_role(self, role):
         period = role
-        return self.model.objects.filter(period=period).select_related("user")
+        queryset = self.model.objects.filter(period=period).select_related("user")
+        self.num_total = queryset.count()
+        return queryset
 
     def __user_is_department_admin(self):
         requestuser_devilryrole = self.request.cradmin_instance.get_devilryrole_for_requestuser()

@@ -1,20 +1,23 @@
 # -*- coding: utf-8 -*-
 
 
+
+
+import django_rq
+from cradmin_legacy.viewhelpers import multiselect2, multiselect2view
+
 # Django imports
 from django import forms
 from django.http import HttpResponseRedirect
 
 # CrAdmin imports
 from django.utils.translation import gettext_lazy
-from cradmin_legacy.viewhelpers import multiselect2
-from cradmin_legacy.viewhelpers import multiselect2view
+
+from devilry.apps.core import models as core_models
 
 # Devilry imports
 from devilry.devilry_qualifiesforexam import models as status_models
-from devilry.apps.core import models as core_models
-
-import json
+from devilry.devilry_qualifiesforexam.tasks import generate_draft
 
 
 class QualifiedForExamPluginViewMixin(object):
@@ -30,7 +33,9 @@ class SelectedQualificationForm(forms.Form):
     """
 
     qualification_modelclass = core_models.Assignment
-    invalid_qualification_item_message = gettext_lazy("Invalid qualification items was selected.")
+    invalid_qualification_item_message = gettext_lazy(
+        "Invalid qualification items was selected."
+    )
 
     #: The items selected as ModelMultipleChoiceField.
     #: If some or all items should be selected by default, override this.
@@ -45,7 +50,9 @@ class SelectedQualificationForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
-        selectable_qualification_items_queryset = kwargs.pop("selectable_items_queryset")
+        selectable_qualification_items_queryset = kwargs.pop(
+            "selectable_items_queryset"
+        )
         super(SelectedQualificationForm, self).__init__(*args, **kwargs)
         self.fields["selected_items"].queryset = selectable_qualification_items_queryset
 
@@ -102,7 +109,9 @@ class QualificationItemTargetRenderer(multiselect2.target_renderer.Target):
         Returns:
             str: The text that should be shown on the submit button.
         """
-        return gettext_lazy("Submit selected %(what)s") % {"what": self.descriptive_item_name}
+        return gettext_lazy("Submit selected %(what)s") % {
+            "what": self.descriptive_item_name
+        }
 
     def get_with_items_title(self):
         """
@@ -116,10 +125,14 @@ class QualificationItemTargetRenderer(multiselect2.target_renderer.Target):
         Returns:
             str: The text that should be shown when no items are selected.
         """
-        return gettext_lazy("No %(what)s selected") % {"what": self.descriptive_item_name}
+        return gettext_lazy("No %(what)s selected") % {
+            "what": self.descriptive_item_name
+        }
 
 
-class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForExamPluginViewMixin):
+class QualificationItemListView(
+    multiselect2view.ListbuilderView, QualifiedForExamPluginViewMixin
+):
     """
     This class provides a basic multiselect preset.
 
@@ -198,7 +211,11 @@ class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForEx
             return HttpResponseRedirect(
                 str(
                     self.request.cradmin_app.reverse_appurl(
-                        viewname="show-status", kwargs={"roleid": self.request.cradmin_role.id, "statusid": status.id}
+                        viewname="show-status",
+                        kwargs={
+                            "roleid": self.request.cradmin_role.id,
+                            "statusid": status.id,
+                        },
                     )
                 )
             )
@@ -272,8 +289,51 @@ class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForEx
 
     def get_form_kwargs(self):
         kwargs = super(QualificationItemListView, self).get_form_kwargs()
-        kwargs["selectable_items_queryset"] = self.get_queryset_for_role(self.request.cradmin_role)
+        kwargs["selectable_items_queryset"] = self.get_queryset_for_role(
+            self.request.cradmin_role
+        )
         return kwargs
+
+    def generate_draft(self, **collector_kwargs):
+        """
+        Create a draft status and start background task.
+
+        This method will create a draft-status with the collector kwargs as plugin 
+        data, and then start the rq-task to generate the draft+data. The rq-task will 
+        update the draft-status with the generated data when it is done.
+        """
+        draft_status = status_models.DraftStatus(
+            period=self.request.cradmin_role,
+            created_by=self.request.user,
+            plugin=self.get_plugintypeid(),
+            plugin_data=collector_kwargs,
+        )
+        draft_status.full_clean()
+        draft_status.save()
+
+        # Start rq-task here
+        django_rq.enqueue(
+            generate_draft,
+            collector_class=self.get_period_result_collector_class(),
+            draft_status_id=draft_status.id
+        )
+
+        return draft_status
+
+    def get_collector_kwargs(self, form, **kwargs):
+        """
+        Override this method to get the kwargs needed to initialize the collector class. 
+        By default, this returns the qualifying item ids, but if extra fields are added to 
+        the form, this method must be overridden to include those fields in the kwargs.
+
+        The result from this method is store in the draft-status and used to initialize 
+        the collector class in the rq-task.
+
+        The returned dict must be valid as JSON.
+        """
+        return {
+            "qualifying_assignment_ids": self.get_qualifying_itemids(posted_form=form)
+        }
 
     def form_valid(self, form):
         """
@@ -283,19 +343,9 @@ class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForEx
         Args:
             form: Posted form with ids of selected items.
         """
-        # Collect qualifying Assignment IDs
-        qualifying_assignmentids = self.get_qualifying_itemids(posted_form=form)
-
-        # Collect ids for relatedstudents that qualify
-        collector_class = self.get_period_result_collector_class()
-        passing_relatedstudentids = collector_class(
-            period=self.request.cradmin_role, qualifying_assignment_ids=qualifying_assignmentids
-        ).get_relatedstudents_that_qualify_for_exam()
-
-        # Attach collected data to session.
-        self.request.session["passing_relatedstudentids"] = passing_relatedstudentids
-        self.request.session["plugintypeid"] = self.get_plugintypeid()
-        print(json.dumps(qualifying_assignmentids))
-        self.request.session["plugindata"] = json.dumps(qualifying_assignmentids)
-
-        return HttpResponseRedirect(str(self.request.cradmin_app.reverse_appurl("preview")))
+        draft_status = self.generate_draft(
+            **self.get_collector_kwargs(form=form),
+        )
+        return HttpResponseRedirect(
+            str(self.request.cradmin_app.reverse_appurl("preview", kwargs={"draft_statusid": draft_status.id}))
+        )

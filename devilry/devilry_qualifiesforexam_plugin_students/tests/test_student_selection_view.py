@@ -2,13 +2,12 @@
 
 
 # 3rd party imports
-from model_bakery import baker
-
 # CrAdmin imports
 from cradmin_legacy import cradmin_testhelpers
 
 # Django imports
 from django import test
+from model_bakery import baker
 
 # Devilry imports
 from devilry.devilry_qualifiesforexam_plugin_students.views import select_students

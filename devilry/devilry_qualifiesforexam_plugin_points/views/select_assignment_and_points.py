@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
 
 
-# Django imports
-from django.http import HttpResponseRedirect
 from django import forms
 
+# Django imports
 # Devilry imports
 from django.utils.translation import gettext_lazy
 
-from devilry.devilry_qualifiesforexam.views.plugin_base_views import base_multiselect_view
+from devilry.devilry_qualifiesforexam.views import plugin_mixin
+from devilry.devilry_qualifiesforexam.views.plugin_base_views import (
+    base_multiselect_view,
+)
 from devilry.devilry_qualifiesforexam.views.plugin_base_views.base_multiselect_view import (
-    SelectedQualificationItem,
     SelectableQualificationItemValue,
+    SelectedQualificationItem,
 )
 from devilry.devilry_qualifiesforexam_plugin_points import resultscollector
-from devilry.devilry_qualifiesforexam.views import plugin_mixin
 
 
 class PluginSelectAssignmentsAndPoints(base_multiselect_view.SelectedQualificationForm):
@@ -69,21 +70,10 @@ class PluginSelectAssignmentsAndPointsView(base_multiselect_view.QualificationIt
     def get_pagetitle(self):
         return "Select assignments"
 
-    def form_valid(self, form):
-        # Collect qualifying Assignment IDs
-        qualifying_assignmentids = self.get_qualifying_itemids(posted_form=form)
-
-        # Points to achieve.
+    def get_collector_kwargs(self, form, **kwargs):
+        collector_kwargs = super().get_collector_kwargs(form=form, **kwargs)
         min_points_to_achieve = form.cleaned_data["min_points_to_achieve"]
-
-        collector_class = self.get_period_result_collector_class()
-        passing_relatedstudentids = collector_class(
-            custom_min_passing_score=min_points_to_achieve,
-            period=self.request.cradmin_role,
-            qualifying_assignment_ids=qualifying_assignmentids,
-        ).get_relatedstudents_that_qualify_for_exam()
-
-        # Attach collected data to session.
-        self.request.session["passing_relatedstudentids"] = passing_relatedstudentids
-        self.request.session["plugintypeid"] = PluginSelectAssignmentsAndPointsView.plugintypeid
-        return HttpResponseRedirect(str(self.request.cradmin_app.reverse_appurl("preview")))
+        collector_kwargs.update({
+            "custom_min_passing_score": min_points_to_achieve,
+        })
+        return collector_kwargs

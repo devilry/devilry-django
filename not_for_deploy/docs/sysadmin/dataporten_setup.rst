@@ -80,7 +80,7 @@ Setup your primary domain with::
 
 Setup dataporten credentials::
 
-    $ python manage.py devilry_setup_dataporten_provider <OAuth Client credentials>
+    $ python manage.py devilry_setup_dataporten_provider <OAuth Client ID>
     $ ... E.g.:
     $ python manage.py devilry_setup_dataporten_provider xxx-xxx-xxx-xxx-xxxxx
 
