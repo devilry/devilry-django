@@ -1,0 +1,21 @@
+.. _6.6.0changelog:
+
+############################
+What is new in Devilry 6.6.0
+############################
+
+
+Fixes
+#####
+- Processing of exam qualification moved to a background task
+- Fixed missing counters in period admin views
+- Better handling of filter input errors
+- Make uploaded files in admin UI searchable
+- Support for django-allauth 65+
+- Markdown version security update
+
+
+Updates/changes
+###############
+Improvements and bugfixes, no functional changes.
+

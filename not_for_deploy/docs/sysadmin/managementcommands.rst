@@ -512,3 +512,28 @@ To run the command with fast mode::
     $ cd ~/devilrydeploy/
     $ venv/bin/python manage.py devilry_anonymize_database --fast
 
+
+.. _delete_old_draft_statuses:
+
+=========================
+delete_old_draft_statuses
+=========================
+
+Deletes all qualification draft models. By default, all draft-statuses older than one hour are deleted.
+
+We recommend that you run this typicall every night to ensure these draft-models don't pile up.
+
+Will delete:
+ - `DraftStatus`
+ - `DraftQualifiesForFinalExam`
+
+Defaul behaviour (drafts older than one hour are deleted)::
+
+    $ cd ~/devilrydeploy/
+    $ venv/bin/python manage.py delete_old_draft_statuses
+
+
+Draft-statuses older that specified hours::
+
+    $ cd ~/devilrydeploy/
+    $ venv/bin/python manage.py delete_old_draft_statuses --hours-old 3
