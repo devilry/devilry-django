@@ -265,8 +265,13 @@ First make sure you have NO UNCOMITTED CHANGES!
 Release (create changelog, increment version, build staticfiles, commit and tag the change) with:
 
 ```bash
+# Make sure you have the virtualenv active:
+source .venv/bin/activate
+# Make sure you are using the correct node version:
 nvm use 14
-tools/release/prepare-release.py prepare --apply  # This will bump the version and then build and commit staticfiles.
+# This will bump the version and then build and commit staticfiles:
+tools/release/prepare-release.py prepare --apply
+# Push the changes and the tags to github:
 git push && git push --tags
 ```
 
@@ -276,6 +281,7 @@ forwarded to the `cz bump` command, so to do an RC release use:
 ```bash
 tools/release/prepare-release.py prepare --prerelease rc --apply
 ```
+
 
 ### NOTE (release):
 
@@ -305,7 +311,8 @@ See _How to revert a bump_ in the [commitizen FAQ](https://commitizen-tools.gith
 
 ```bash
 hatch build -t sdist
-hatch publish
-rm dist/*              # optional cleanup
+hatch publish -u __token__
+# optional cleanup:
+rm dist/*
 ```
 

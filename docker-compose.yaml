@@ -51,7 +51,7 @@ services:
       - 9000:9000
       - 9001:9001
     volumes:
-      - ./minio_devdata:/data
+      - ./minio_devdata:/data:Z
     environment:
       - MINIO_ROOT_USER=testuser
       - MINIO_ROOT_PASSWORD=testpassword

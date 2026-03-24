@@ -1,0 +1,14 @@
+.. _6.5.1changelog:
+
+############################
+What is new in Devilry 6.5.1
+############################
+
+
+Fixes
+#####
+- Update underlying libraries - no functional changes.
+
+Updates/changes
+###############
+No functional changes.

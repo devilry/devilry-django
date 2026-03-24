@@ -1,17 +1,18 @@
 from getpass import getpass
 
 from allauth.socialaccount.models import SocialApp
-from devilry.devilry_dataporten_allauth.provider import DevilryDataportenProvider
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core.management.base import BaseCommand
+
+from devilry.devilry_dataporten_allauth.provider import DevilryDataportenProvider
 
 
 class Command(BaseCommand):
     help = "Setup Dataporten provider for Django allauth."
 
     def add_arguments(self, parser):
-        (parser.add_argument("client_id", help="The Dataporten OAuth Client ID."),)
+        parser.add_argument("client_id", help="The Dataporten OAuth Client ID.")
 
     def handle(self, *args, **options):
         try:

@@ -1,9 +1,10 @@
 from unittest import mock
+
+from cradmin_legacy import cradmin_testhelpers
 from django import test
 from django.conf import settings
 from django.contrib import messages
 from django.http import Http404
-from cradmin_legacy import cradmin_testhelpers
 from model_bakery import baker
 
 from devilry.apps.core.models import RelatedExaminer
@@ -118,8 +119,10 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testperiod = baker.make("core.Period")
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertEqual(
-            "You have no examiners. Use the buttons above to add examiners.",
-            mockresponse.selector.one(".cradmin-legacy-listing-no-items-message").alltext_normalized,
+            "Found 0 of 0 examiners",
+            mockresponse.selector.one(
+                ".devilry-with-match-result-listbuilder-itemvalue-titledescription-title"
+            ).alltext_normalized,
         )
 
     def test_default_ordering(self):
@@ -203,7 +206,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_querycount(self):
         testperiod = baker.make("core.Period")
         baker.make("core.RelatedExaminer", period=testperiod, _quantity=30)
-        with self.assertNumQueries(4):
+        with self.assertNumQueries(6):
             self.mock_getrequest(cradmin_role=testperiod)
 
 

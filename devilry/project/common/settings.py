@@ -32,6 +32,8 @@ AUTH_USER_MODEL = "devilry_account.User"
 LOGIN_REDIRECT_URL = "/"
 CRISPY_TEMPLATE_PACK = "bootstrap3"
 
+CRADMIN_LEGACY_DJANGOADMIN_USER_SEARCH_FIELDS = ["=shortname", "=id"]
+
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 
@@ -197,7 +199,7 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = "shortname"
 
 # Since email is saved in UserEmail model this has to be set to ''
 ACCOUNT_USER_MODEL_EMAIL_FIELD = ""
-ACCOUNT_AUTHENTICATION_METHOD = "username"
+ACCOUNT_LOGIN_METHODS = {"username"}
 
 DATAPORTEN_LOGOUT_URL = "https://auth.dataporten.no/logout"
 
