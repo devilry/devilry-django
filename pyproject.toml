@@ -33,7 +33,7 @@ classifiers = [
 dependencies = [
     "Django>=5.2.3,<5.3.0",
     "gunicorn>=23.0.0",
-    "Markdown>=3.3.0,<3.4.0",
+    "Markdown",
     "Pygments>=2.15.0,<2.16.0",
     "django-crispy-forms>=1.14.0,<1.15.0",
     "django-rq",

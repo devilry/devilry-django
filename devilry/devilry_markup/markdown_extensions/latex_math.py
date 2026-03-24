@@ -1,9 +1,10 @@
 import re
-from django.template.loader import render_to_string
-from markdown.preprocessors import Preprocessor
-from markdown import Extension
-from django.utils.safestring import mark_safe
 from xml.sax.saxutils import quoteattr
+
+from django.template.loader import render_to_string
+from django.utils.safestring import mark_safe
+from markdown import Extension
+from markdown.preprocessors import Preprocessor
 
 
 class LatexMathPreprocessor(Preprocessor):
@@ -54,10 +55,10 @@ class LatexMathInlinePreprocessor(LatexMathPreprocessor):
 
 
 class LatexMathExtension(Extension):
-    def extendMarkdown(self, md, md_globals):
+    def extendMarkdown(self, md):
         md.preprocessors.register(LatexMathPreprocessor(md), "latexmath", 20)
 
 
 class LatexMathInlineExtension(Extension):
-    def extendMarkdown(self, md, md_globals):
+    def extendMarkdown(self, md):
         md.preprocessors.register(LatexMathInlinePreprocessor(md), "latexmathinline", 21)

@@ -2,9 +2,10 @@ import difflib
 import re
 import typing
 import uuid
+
 from django.template.loader import render_to_string
-from markdown.preprocessors import Preprocessor
 from markdown import Extension
+from markdown.preprocessors import Preprocessor
 
 
 class CodeDiffPreprocessor(Preprocessor):
@@ -110,6 +111,5 @@ class CodeDiffPreprocessor(Preprocessor):
 
 
 class CodeDiffExtension(Extension):
-    def extendMarkdown(self, md, md_globals):
-        # md.registerExtension(self)
+    def extendMarkdown(self, md):
         md.preprocessors.register(CodeDiffPreprocessor(md), "codediff", 25)
