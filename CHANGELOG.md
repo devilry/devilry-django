@@ -1,3 +1,14 @@
+## 6.6.0 (2026-03-25)
+
+### Feat
+
+- Milestone 6.6.0
+
+### Fix
+
+- Translations
+- Migrations
+
 ## 6.5.2 (2026-03-18)
 
 ### Fix
