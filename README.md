@@ -170,6 +170,7 @@ nvm use 14    # May need to run "nvm install 14" first
 ievv buildstatic --npm-clean-node-modules
 ```
 
+
 ### Build docs
 Docs are built on https://readthedocs.org/projects/devilry/ each time a branch is pushed,
 but if you are making larger changes or need to debug build issues, you can build it
