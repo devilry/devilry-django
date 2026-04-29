@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
 
-from django.http import Http404
-from django.utils.translation import gettext_lazy
 from cradmin_legacy import crapp
 from cradmin_legacy.crinstance import reverse_cradmin_url
 from cradmin_legacy.viewhelpers.listbuilder.itemframe import DefaultSpacingItemFrame
 from cradmin_legacy.viewhelpers.listbuilder.lists import RowList
+from django.http import Http404
+from django.utils.translation import gettext_lazy
 
-from devilry.apps.core.models import RelatedExaminer, AssignmentGroup
+from devilry.apps.core.models import AssignmentGroup, RelatedExaminer
 from devilry.devilry_admin.cradminextensions.listbuilder import listbuilder_relatedexaminer
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin.devilry_listfilter.utils import WithResultValueRenderable
@@ -84,16 +84,16 @@ class Overview(listbuilder_relatedexaminer.ListViewBase):
     def get_unfiltered_queryset_for_role(self, role):
         assignment = role
         period = assignment.period
+        all_queryset = RelatedExaminer.objects.filter(period=period, active=True)
+
         queryset = (
-            RelatedExaminer.objects.filter(period=period)
-            .select_related("user")
+            all_queryset.select_related("user")
             .annotate_with_number_of_groups_on_assignment(assignment=assignment)
             .extra_annotate_with_number_of_candidates_on_assignment(assignment=assignment)
-            .exclude(active=False)
         )
 
         # Set unfiltered count on self.
-        self.num_total = queryset.count()
+        self.num_total = all_queryset.count()
         return queryset
 
     def get_queryset_for_role(self, role):
