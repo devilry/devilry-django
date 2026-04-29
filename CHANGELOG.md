@@ -1,3 +1,10 @@
+## 6.6.1 (2026-04-29)
+
+### Fix
+
+- Migrate Status.plugin_data for "select_assignment" plugin
+- **admin...examiners**: Split up get_unfiltered_queryset_for_role to speed up the count.
+
 ## 6.6.0 (2026-03-25)
 
 ### Feat
