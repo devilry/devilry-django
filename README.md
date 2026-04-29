@@ -193,9 +193,20 @@ docker compose down -v
 
 https://devilry.readthedocs.io
 
+## Pre-release
+
+To ensure a clean commit, do the following:
+- Create a PR on GitHub from the working branch
+- Select `Squash and Merge` and update the commit-message, we use Conventional Commits to set the version later on, so start the commit with the proper keywords (i.e `feat`, `fix`, etc): https://www.conventionalcommits.org/en/v1.0.0/#specification
+- Once the PR is merged into master you can continue with the release.
+
+
+Before releasing, you should create a PR on GitHub and squash-merge it into master. Ensure the commit starts with 
+the compatible type for Conventional Commits (https://www.conventionalcommits.org/en/v1.0.0/#specification) (i.e `feat`, `fix`, etc)
+
 ## Release
 
-### Translations
+### Step 1: Translations
 
 To translate new texts, do the following:
 
@@ -205,7 +216,7 @@ To translate new texts, do the following:
 - Commit the changes
 
 
-### Update docs
+### Step 2: Update docs (for official readthedocs)
 Create a ``not_for_deploy/docs/sysadmin/migrationguides/migrate-to-<NEWVERSION>.rst``
 with update instructions for sysadmins. See the previous version for example. Skeleton:
 
@@ -259,7 +270,7 @@ Updates/changes
 ```
 
 
-### Set version and build staticfiles
+### Step 3: Set version and build staticfiles
 
 First make sure you have NO UNCOMITTED CHANGES!
 
@@ -284,7 +295,7 @@ tools/release/prepare-release.py prepare --prerelease rc --apply
 ```
 
 
-### NOTE (release):
+#### NOTE (release):
 
 - `cz bump` automatically updates CHANGELOG.md, updates version file(s), commits the change and tags the release commit.
 - If you are unsure about what `cz bump` will do, run it with `--dry-run`. You can use
@@ -299,16 +310,12 @@ tools/release/prepare-release.py prepare --prerelease rc --apply
   commit.
 - The `cz` command comes from `commitizen` (install documented above).
 
-### What if the release fails?
+#### What if the release fails?
 
 See _How to revert a bump_ in the [commitizen FAQ](https://commitizen-tools.github.io/commitizen/faq/#how-to-revert-a-bump).
 
 
-### Migrationguide and changelog (for official readthedocs)
-- Add a migration guide to not_for_deploy/docs/sysadmin/migrationguides/
-- Add a changelog to not_for_deploy/docs/user/changelog/
-
-### Release to pypi:
+### Step 4: Release to pypi
 
 ```bash
 hatch build -t sdist
