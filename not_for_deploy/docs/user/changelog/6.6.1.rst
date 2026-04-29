@@ -1,0 +1,16 @@
+.. _6.6.1changelog:
+
+############################
+What is new in Devilry 6.6.1
+############################
+
+
+Fixes
+#####
+- Bugfix: Expected format of `Status.plugin_data` caused an error when accessing the detail-view for old statuses.
+
+
+Updates/changes
+###############
+Improvements and bugfixes, no functional changes.
+
