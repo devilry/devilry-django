@@ -81,6 +81,7 @@ test = [
     "pytest",
     "pytest-django",
     "pytest-env",
+    "pytest-xdist[psutil]",
     "model-bakery",
     "coverage",
 ]
