@@ -1,3 +1,9 @@
+## 6.6.2 (2026-05-04)
+
+### Fix
+
+- Migrate Status.plugin_data JSON-string for "select_assignment" plugin
+
 ## 6.6.1 (2026-04-29)
 
 ### Fix
