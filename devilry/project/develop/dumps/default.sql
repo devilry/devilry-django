@@ -2,8 +2,10 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 14.6 (Debian 14.6-1.pgdg110+1)
--- Dumped by pg_dump version 14.6 (Debian 14.6-1.pgdg110+1)
+\restrict q9ZnIknZ5lY1dtVXTBK3YWihwfGUq5sKmjHWpdAqidSorKLZ7KP5kyoWcA4eDlh
+
+-- Dumped from database version 16.10 (Debian 16.10-1.pgdg13+1)
+-- Dumped by pg_dump version 16.10 (Debian 16.10-1.pgdg13+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -17,23 +19,30 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 ALTER TABLE ONLY public.socialaccount_socialapp_sites DROP CONSTRAINT socialaccount_socialapp_site_site_id_2579dee5_fk_django_site_id;
+ALTER TABLE ONLY public.socialaccount_socialtoken DROP CONSTRAINT socialaccount_social_app_id_636a42d7_fk_socialacc;
 ALTER TABLE ONLY public.socialaccount_socialaccount DROP CONSTRAINT socialaccount_socia_user_id_8146e70c_fk_devilry_account_user_id;
-ALTER TABLE ONLY public.socialaccount_socialtoken DROP CONSTRAINT socialaccount_soc_app_id_636a42d7_fk_socialaccount_socialapp_id;
 ALTER TABLE ONLY public.socialaccount_socialapp_sites DROP CONSTRAINT socialaccou_socialapp_id_97fb6e7d_fk_socialaccount_socialapp_id;
 ALTER TABLE ONLY public.socialaccount_socialtoken DROP CONSTRAINT socialacc_account_id_951f210e_fk_socialaccount_socialaccount_id;
+ALTER TABLE ONLY public.silk_sqlquery DROP CONSTRAINT silk_sqlquery_request_id_6f8f0527_fk_silk_request_id;
+ALTER TABLE ONLY public.silk_response DROP CONSTRAINT silk_response_request_id_1e8e2776_fk_silk_request_id;
+ALTER TABLE ONLY public.silk_profile DROP CONSTRAINT silk_profile_request_id_7b81bd69_fk_silk_request_id;
+ALTER TABLE ONLY public.silk_profile_queries DROP CONSTRAINT silk_profile_queries_sqlquery_id_155df455_fk_silk_sqlquery_id;
+ALTER TABLE ONLY public.silk_profile_queries DROP CONSTRAINT silk_profile_queries_profile_id_a3d76db8_fk_silk_profile_id;
 ALTER TABLE ONLY public.core_assignmentgroup_examiners DROP CONSTRAINT relatedexaminer_id_46b4afef8d47d182_fk_core_relatedexaminer_id;
 ALTER TABLE ONLY public.ievv_batchframework_batchoperation DROP CONSTRAINT ievv__started_by_id_453323e9bb289a44_fk_devilry_account_user_id;
 ALTER TABLE ONLY public.devilry_qualifiesforexam_periodtag DROP CONSTRAINT f2a2267fbb3f8424a3f20a79ed9ed35d;
 ALTER TABLE ONLY public.core_assignmentgroup_examiners DROP CONSTRAINT e2e901148f6cd8765ee8ce180b39118d;
 ALTER TABLE ONLY public.django_admin_log DROP CONSTRAINT django_admi_user_id_52fdd58701c5f563_fk_devilry_account_user_id;
 ALTER TABLE ONLY public.django_admin_log DROP CONSTRAINT djan_content_type_id_697914295151027a_fk_django_content_type_id;
-ALTER TABLE ONLY public.devilry_student_uploadeddeliveryfile DROP CONSTRAINT devilry_studen_deadline_id_73bb1a77ed86db5c_fk_core_deadline_id;
-ALTER TABLE ONLY public.devilry_student_uploadeddeliveryfile DROP CONSTRAINT devilry_stu_user_id_594ee6dafdf52417_fk_devilry_account_user_id;
 ALTER TABLE ONLY public.devilry_gradingsystem_feedbackdraft DROP CONSTRAINT devilry_saved_by_id_2688417740fdf346_fk_devilry_account_user_id;
 ALTER TABLE ONLY public.devilry_gradingsystem_feedbackdraftfile DROP CONSTRAINT devilry_saved_by_id_22ca281ac57fddb4_fk_devilry_account_user_id;
 ALTER TABLE ONLY public.devilry_report_devilryreport DROP CONSTRAINT devilry_report_devil_generated_by_user_id_4120a74b_fk_devilry_a;
 ALTER TABLE ONLY public.devilry_qualifiesforexam_deletedqualifiesforfinalexam DROP CONSTRAINT devilry_qualifiesfor_status_id_46f01360_fk_devilry_q;
+ALTER TABLE ONLY public.devilry_qualifiesforexam_draftqualifiesforfinalexam DROP CONSTRAINT devilry_qualifiesfor_relatedstudent_id_3045fe4c_fk_core_rela;
 ALTER TABLE ONLY public.devilry_qualifiesforexam_deletedqualifiesforfinalexam DROP CONSTRAINT devilry_qualifiesfor_relatedstudent_id_1e10750d_fk_core_rela;
+ALTER TABLE ONLY public.devilry_qualifiesforexam_draftstatus DROP CONSTRAINT devilry_qualifiesfor_period_id_e46db2ea_fk_core_peri;
+ALTER TABLE ONLY public.devilry_qualifiesforexam_draftqualifiesforfinalexam DROP CONSTRAINT devilry_qualifiesfor_draft_status_id_88c87770_fk_devilry_q;
+ALTER TABLE ONLY public.devilry_qualifiesforexam_draftstatus DROP CONSTRAINT devilry_qualifiesfor_created_by_id_d1da3e4b_fk_devilry_a;
 ALTER TABLE ONLY public.devilry_qualifiesforexam_status DROP CONSTRAINT devilry_qualifiesf_period_id_6a80472573c78154_fk_core_period_id;
 ALTER TABLE ONLY public.devilry_qualifiesforexam_periodtag DROP CONSTRAINT devilry_qualifiesf_period_id_102beba2d8031066_fk_core_period_id;
 ALTER TABLE ONLY public.devilry_qualifiesforexam_status DROP CONSTRAINT devilry_qua_user_id_522959bf05072244_fk_devilry_account_user_id;
@@ -52,8 +61,6 @@ ALTER TABLE ONLY public.devilry_group_feedbacksetgradingupdatehistory DROP CONST
 ALTER TABLE ONLY public.devilry_group_feedbacksetpassedpreviousperiod DROP CONSTRAINT devilry_group_feedba_created_by_id_b8572995_fk_devilry_a;
 ALTER TABLE ONLY public.devilry_group_feedbackset DROP CONSTRAINT devilry_group_created_by_id_650ceed9_fk_devilry_account_user_id;
 ALTER TABLE ONLY public.devilry_group_feedbacksetdeadlinehistory DROP CONSTRAINT devilry_group_changed_by_id_8dd1df9c_fk_devilry_account_user_id;
-ALTER TABLE ONLY public.devilry_gradingsystem_feedbackdraftfile DROP CONSTRAINT devilry_gradin_delivery_id_65ac58b6a461891b_fk_core_delivery_id;
-ALTER TABLE ONLY public.devilry_gradingsystem_feedbackdraft DROP CONSTRAINT devilry_gradin_delivery_id_31734762a96e190f_fk_core_delivery_id;
 ALTER TABLE ONLY public.devilry_group_feedbackset DROP CONSTRAINT devilry_gr_group_id_148fa5d5062a96f8_fk_core_assignmentgroup_id;
 ALTER TABLE ONLY public.devilry_dbcache_assignmentgroupcacheddata DROP CONSTRAINT devilry_dbcache_as_group_id_cfe8ca20_fk_core_assignmentgroup_id;
 ALTER TABLE ONLY public.devilry_compressionutil_compressedarchivemeta DROP CONSTRAINT devilry_compressionu_created_by_id_edfcbf68_fk_devilry_a;
@@ -74,7 +81,6 @@ ALTER TABLE ONLY public.devilry_comment_comment DROP CONSTRAINT devilr_parent_id
 ALTER TABLE ONLY public.devilry_group_feedbacksetdeadlinehistory DROP CONSTRAINT devilr_feedback_set_id_52741ef3_fk_devilry_group_feedbackset_id;
 ALTER TABLE ONLY public.devilry_comment_commentfile DROP CONSTRAINT devil_comment_id_2e9f77d72415c03e_fk_devilry_comment_comment_id;
 ALTER TABLE ONLY public.devilry_group_feedbackset DROP CONSTRAINT dev_grading_published_by_id_75176877_fk_devilry_account_user_id;
-ALTER TABLE ONLY public.devilry_gradingsystem_feedbackdraft DROP CONSTRAINT de_staticfeedback_id_43feb18645a3f2a4_fk_core_staticfeedback_id;
 ALTER TABLE ONLY public.devilry_qualifiesforexam_qualifiesforfinalexam DROP CONSTRAINT de_relatedstudent_id_55ab211e0e76d3c5_fk_core_relatedstudent_id;
 ALTER TABLE ONLY public.devilry_dbcache_assignmentgroupcacheddata DROP CONSTRAINT de_last_feedbackset_id_6961c179_fk_devilry_group_feedbackset_id;
 ALTER TABLE ONLY public.devilry_dbcache_assignmentgroupcacheddata DROP CONSTRAINT d_first_feedbackset_id_89c38dc7_fk_devilry_group_feedbackset_id;
@@ -85,8 +91,6 @@ ALTER TABLE ONLY public.cradmin_temporaryfileuploadstore_temporaryfilecollection
 ALTER TABLE ONLY public.cradmin_generic_token_with_metadata_generictokenwithmetadata DROP CONSTRAINT crad_content_type_id_51aea07aab3596f7_fk_django_content_type_id;
 ALTER TABLE ONLY public.core_subject_admins DROP CONSTRAINT core_subject_admi_subject_id_30074ec6a2ab50f_fk_core_subject_id;
 ALTER TABLE ONLY public.core_subject_admins DROP CONSTRAINT core_subjec_user_id_757b64082c3dd225_fk_devilry_account_user_id;
-ALTER TABLE ONLY public.core_staticfeedback DROP CONSTRAINT core_staticfee_delivery_id_76cd203e463381c6_fk_core_delivery_id;
-ALTER TABLE ONLY public.core_staticfeedback DROP CONSTRAINT core_st_saved_by_id_5c9526c62cf55415_fk_devilry_account_user_id;
 ALTER TABLE ONLY public.core_relatedstudent DROP CONSTRAINT core_relatedstuden_period_id_518a11c836f19f36_fk_core_period_id;
 ALTER TABLE ONLY public.core_relatedexaminer DROP CONSTRAINT core_relatedexamin_period_id_1608ffa9420f3529_fk_core_period_id;
 ALTER TABLE ONLY public.core_relatedstudent DROP CONSTRAINT core_related_user_id_66588181cfc595a_fk_devilry_account_user_id;
@@ -104,27 +108,17 @@ ALTER TABLE ONLY public.core_periodtag_relatedexaminers DROP CONSTRAINT core_per
 ALTER TABLE ONLY public.core_groupinvite DROP CONSTRAINT core_groupi_group_id_3650f45b11bc854_fk_core_assignmentgroup_id;
 ALTER TABLE ONLY public.core_groupinvite DROP CONSTRAINT core_gro_sent_to_id_50bd8691e6283e67_fk_devilry_account_user_id;
 ALTER TABLE ONLY public.core_groupinvite DROP CONSTRAINT core_gro_sent_by_id_1efa01196ad2f009_fk_devilry_account_user_id;
-ALTER TABLE ONLY public.core_filemeta DROP CONSTRAINT core_filemeta_delivery_id_6601bb0f5e56d9fe_fk_core_delivery_id;
 ALTER TABLE ONLY public.core_examinerassignmentgrouphistory DROP CONSTRAINT core_examinerassignm_user_id_1636fd1b_fk_devilry_a;
 ALTER TABLE ONLY public.core_examinerassignmentgrouphistory DROP CONSTRAINT core_examinerassignm_assignment_group_id_eb832a6e_fk_core_assi;
 ALTER TABLE ONLY public.core_devilryuserprofile DROP CONSTRAINT core_devilr_user_id_71c4199c1d6418ff_fk_devilry_account_user_id;
-ALTER TABLE ONLY public.core_delivery DROP CONSTRAINT core_delivery_deadline_id_3af0ef5599495505_fk_core_deadline_id;
-ALTER TABLE ONLY public.core_delivery DROP CONSTRAINT core_delivery_copy_of_id_4bdefcd646b758a3_fk_core_delivery_id;
-ALTER TABLE ONLY public.core_delivery DROP CONSTRAINT core_deli_delivered_by_id_47605050cd8092f1_fk_core_candidate_id;
-ALTER TABLE ONLY public.core_delivery DROP CONSTRAINT core_del_alias_delivery_id_58e23cdc9faaee16_fk_core_delivery_id;
-ALTER TABLE ONLY public.core_deadline DROP CONSTRAINT core_de_added_by_id_5715a513f2acd9ff_fk_devilry_account_user_id;
 ALTER TABLE ONLY public.core_assignmentgroup DROP CONSTRAINT core_copied_from_id_21e068e4666502b2_fk_core_assignmentgroup_id;
 ALTER TABLE ONLY public.core_candidateassignmentgrouphistory DROP CONSTRAINT core_candidateassign_user_id_7a3668f9_fk_devilry_a;
 ALTER TABLE ONLY public.core_candidateassignmentgrouphistory DROP CONSTRAINT core_candidateassign_assignment_group_id_98c373a5_fk_core_assi;
 ALTER TABLE ONLY public.core_assignment DROP CONSTRAINT core_assignmen_parentnode_id_7072d3388816d25c_fk_core_period_id;
 ALTER TABLE ONLY public.core_assignment_admins DROP CONSTRAINT core_assignm_user_id_51116d5a7e12d3b_fk_devilry_account_user_id;
 ALTER TABLE ONLY public.core_assignmentgroup DROP CONSTRAINT core_assig_parentnode_id_6e190fc057b9057c_fk_core_assignment_id;
-ALTER TABLE ONLY public.core_assignmentgroup DROP CONSTRAINT core_assig_last_deadline_id_946dfcf7910964c_fk_core_deadline_id;
 ALTER TABLE ONLY public.core_assignment_admins DROP CONSTRAINT core_assig_assignment_id_712ee5b81efdf7d7_fk_core_assignment_id;
-ALTER TABLE ONLY public.core_assignmentgroup DROP CONSTRAINT core_ass_feedback_id_4f3eb4317ce05ffd_fk_core_staticfeedback_id;
 ALTER TABLE ONLY public.core_assignmentgrouphistory DROP CONSTRAINT core_as_assignment_group_id_1a5bc40e_fk_core_assignmentgroup_id;
-ALTER TABLE ONLY public.core_delivery DROP CONSTRAINT cor_last_feedback_id_15c1864499fa3298_fk_core_staticfeedback_id;
-ALTER TABLE ONLY public.core_staticfeedbackfileattachment DROP CONSTRAINT co_staticfeedback_id_4a6ee82466877520_fk_core_staticfeedback_id;
 ALTER TABLE ONLY public.core_candidate DROP CONSTRAINT co_relatedstudent_id_7e66ddf8f3442b99_fk_core_relatedstudent_id;
 ALTER TABLE ONLY public.core_relatedstudentkeyvalue DROP CONSTRAINT co_relatedstudent_id_3e3e80d75676e0c9_fk_core_relatedstudent_id;
 ALTER TABLE ONLY public.devilry_comment_commentfileimage DROP CONSTRAINT c5ab7e1e9bde26caa038c76c78d6bc7c;
@@ -141,7 +135,6 @@ ALTER TABLE ONLY public.devilry_account_subjectpermissiongroup DROP CONSTRAINT a
 ALTER TABLE ONLY public.core_candidate DROP CONSTRAINT "D933fe820df1d2bd50b8cf9434debe68";
 ALTER TABLE ONLY public.cradmin_temporaryfileuploadstore_temporaryfile DROP CONSTRAINT "D8ec1ffb7a00b82f7d4d23443f299188";
 ALTER TABLE ONLY public.ievv_batchframework_batchoperation DROP CONSTRAINT "D8d96d0a9bf59345ab08863cddcf9249";
-ALTER TABLE ONLY public.core_deadline DROP CONSTRAINT "D7eb2452376d1d7e0038f38d5151e20b";
 ALTER TABLE ONLY public.devilry_group_groupcomment DROP CONSTRAINT "D79d937271caab7986ef197c606f2644";
 ALTER TABLE ONLY public.devilry_account_periodpermissiongroup DROP CONSTRAINT "D732bd61cc9e1e86d0a2745a748ae7e9";
 ALTER TABLE ONLY public.core_candidate DROP CONSTRAINT "D5fa89d5f0632cab40e16a17b5422861";
@@ -174,11 +167,27 @@ DROP TRIGGER devilry__on_candidate_delete_add_history_trigger ON public.core_can
 DROP TRIGGER devilry__on_candidate_after_insert_or_update ON public.core_candidate;
 DROP TRIGGER devilry__on_candidate_after_delete ON public.core_candidate;
 DROP TRIGGER devilry__assignment_first_deadline_update_trigger ON public.core_assignment;
+DROP INDEX public.unique_verified_email;
+DROP INDEX public.unique_primary_email;
 DROP INDEX public.socialaccount_socialtoken_f382adfe;
 DROP INDEX public.socialaccount_socialtoken_8a089c2a;
 DROP INDEX public.socialaccount_socialapp_sites_fe95b0a0;
 DROP INDEX public.socialaccount_socialapp_sites_9365d6e7;
 DROP INDEX public.socialaccount_socialaccount_e8701ad4;
+DROP INDEX public.silk_sqlquery_request_id_6f8f0527_like;
+DROP INDEX public.silk_sqlquery_request_id_6f8f0527;
+DROP INDEX public.silk_response_request_id_1e8e2776_like;
+DROP INDEX public.silk_response_id_dda88710_like;
+DROP INDEX public.silk_request_view_name_68559f7b_like;
+DROP INDEX public.silk_request_view_name_68559f7b;
+DROP INDEX public.silk_request_start_time_1300bc58;
+DROP INDEX public.silk_request_path_9f3d798e_like;
+DROP INDEX public.silk_request_path_9f3d798e;
+DROP INDEX public.silk_request_id_5a356c4f_like;
+DROP INDEX public.silk_profile_request_id_7b81bd69_like;
+DROP INDEX public.silk_profile_request_id_7b81bd69;
+DROP INDEX public.silk_profile_queries_sqlquery_id_155df455;
+DROP INDEX public.silk_profile_queries_profile_id_a3d76db8;
 DROP INDEX public.ievv_developemail_developemail_from_email_981952b3_like;
 DROP INDEX public.ievv_developemail_developemail_from_email_981952b3;
 DROP INDEX public.ievv_batchframework_batchoperation_e9e6a554;
@@ -190,16 +199,18 @@ DROP INDEX public.django_session_session_key_461cfeaa630ca218_like;
 DROP INDEX public.django_session_de54fa62;
 DROP INDEX public.django_admin_log_e8701ad4;
 DROP INDEX public.django_admin_log_417f1b1c;
-DROP INDEX public.devilry_student_uploadeddeliveryfile_e8701ad4;
-DROP INDEX public.devilry_student_uploadeddeliveryfile_13a4f9cc;
 DROP INDEX public.devilry_report_devilryreport_generated_by_user_id_4120a74b;
 DROP INDEX public.devilry_qualifiesforexam_status_e8701ad4;
 DROP INDEX public.devilry_qualifiesforexam_status_b1efa79f;
 DROP INDEX public.devilry_qualifiesforexam_qualifiesforfinalexam_dc91ed4b;
 DROP INDEX public.devilry_qualifiesforexam_qualifiesforfinalexam_39cb6676;
 DROP INDEX public.devilry_qualifiesforexam_periodtag_f2e8843d;
+DROP INDEX public.devilry_qualifiesforexam_draftstatus_period_id_e46db2ea;
+DROP INDEX public.devilry_qualifiesforexam_draftstatus_created_by_id_d1da3e4b;
 DROP INDEX public.devilry_qualifiesforexam_d_status_id_46f01360;
+DROP INDEX public.devilry_qualifiesforexam_d_relatedstudent_id_3045fe4c;
 DROP INDEX public.devilry_qualifiesforexam_d_relatedstudent_id_1e10750d;
+DROP INDEX public.devilry_qualifiesforexam_d_draft_status_id_88c87770;
 DROP INDEX public.devilry_message_messagereceiver_user_id_06b01621;
 DROP INDEX public.devilry_message_messagereceiver_message_type_c7e2d924_like;
 DROP INDEX public.devilry_message_messagereceiver_message_type_c7e2d924;
@@ -291,9 +302,6 @@ DROP INDEX public.core_subject_long_name_19cff4d64a1d8f4c_like;
 DROP INDEX public.core_subject_admins_ffaba1d1;
 DROP INDEX public.core_subject_admins_e8701ad4;
 DROP INDEX public.core_subject_2fc6351a;
-DROP INDEX public.core_staticfeedbackfileattachment_a869bd9a;
-DROP INDEX public.core_staticfeedback_bc7c970b;
-DROP INDEX public.core_staticfeedback_7c4b99fe;
 DROP INDEX public.core_relatedstudentkeyvalue_value_2e6d2220af915c34_like;
 DROP INDEX public.core_relatedstudentkeyvalue_key_4d695a35117794a4_like;
 DROP INDEX public.core_relatedstudentkeyvalue_application_485c1d338d75ced_like;
@@ -330,15 +338,8 @@ DROP INDEX public.core_period_2fc6351a;
 DROP INDEX public.core_groupinvite_d7ed4f1d;
 DROP INDEX public.core_groupinvite_a39b5ebd;
 DROP INDEX public.core_groupinvite_0e939a4f;
-DROP INDEX public.core_filemeta_7c4b99fe;
 DROP INDEX public.core_examinerassignmentgrouphistory_user_id_1636fd1b;
 DROP INDEX public.core_examinerassignmentgro_assignment_group_id_eb832a6e;
-DROP INDEX public.core_delivery_8ea1f7aa;
-DROP INDEX public.core_delivery_51ce87c1;
-DROP INDEX public.core_delivery_37b4f50c;
-DROP INDEX public.core_delivery_13a4f9cc;
-DROP INDEX public.core_deadline_3f3b3700;
-DROP INDEX public.core_deadline_0c5d7d4e;
 DROP INDEX public.core_candidateassignmentgrouphistory_user_id_7a3668f9;
 DROP INDEX public.core_candidateassignmentgr_assignment_group_id_98c373a5;
 DROP INDEX public.core_candidate_3f3b3700;
@@ -368,6 +369,7 @@ DROP INDEX public.auth_group_name_253ae2a6331666e8_like;
 DROP INDEX public.account_emailconfirmation_key_f43612bd_like;
 DROP INDEX public.account_emailconfirmation_6f1edeac;
 DROP INDEX public.account_emailaddress_email_03be32b2_like;
+DROP INDEX public.account_emailaddress_email_03be32b2;
 DROP INDEX public.account_emailaddress_e8701ad4;
 ALTER TABLE ONLY public.devilry_account_perioduserguidelineacceptance DROP CONSTRAINT unique_user_period_role_version;
 ALTER TABLE ONLY public.socialaccount_socialtoken DROP CONSTRAINT socialaccount_socialtoken_pkey;
@@ -377,6 +379,13 @@ ALTER TABLE ONLY public.socialaccount_socialapp_sites DROP CONSTRAINT socialacco
 ALTER TABLE ONLY public.socialaccount_socialapp DROP CONSTRAINT socialaccount_socialapp_pkey;
 ALTER TABLE ONLY public.socialaccount_socialaccount DROP CONSTRAINT socialaccount_socialaccount_provider_fc810c6e_uniq;
 ALTER TABLE ONLY public.socialaccount_socialaccount DROP CONSTRAINT socialaccount_socialaccount_pkey;
+ALTER TABLE ONLY public.silk_sqlquery DROP CONSTRAINT silk_sqlquery_pkey;
+ALTER TABLE ONLY public.silk_response DROP CONSTRAINT silk_response_request_id_key;
+ALTER TABLE ONLY public.silk_response DROP CONSTRAINT silk_response_pkey;
+ALTER TABLE ONLY public.silk_request DROP CONSTRAINT silk_request_pkey;
+ALTER TABLE ONLY public.silk_profile_queries DROP CONSTRAINT silk_profile_queries_profile_id_sqlquery_id_b2403d9b_uniq;
+ALTER TABLE ONLY public.silk_profile_queries DROP CONSTRAINT silk_profile_queries_pkey;
+ALTER TABLE ONLY public.silk_profile DROP CONSTRAINT silk_profile_pkey;
 ALTER TABLE ONLY public.ievv_developemail_developemail DROP CONSTRAINT ievv_developemail_developemail_pkey;
 ALTER TABLE ONLY public.ievv_batchframework_batchoperation DROP CONSTRAINT ievv_batchframework_batchoperation_pkey;
 ALTER TABLE ONLY public.django_site DROP CONSTRAINT django_site_pkey;
@@ -386,12 +395,12 @@ ALTER TABLE ONLY public.django_migrations DROP CONSTRAINT django_migrations_pkey
 ALTER TABLE ONLY public.django_content_type DROP CONSTRAINT django_content_type_pkey;
 ALTER TABLE ONLY public.django_content_type DROP CONSTRAINT django_content_type_app_label_45f3b1d93ec8c61c_uniq;
 ALTER TABLE ONLY public.django_admin_log DROP CONSTRAINT django_admin_log_pkey;
-ALTER TABLE ONLY public.devilry_student_uploadeddeliveryfile DROP CONSTRAINT devilry_student_uploadeddeliveryfile_pkey;
-ALTER TABLE ONLY public.devilry_student_uploadeddeliveryfile DROP CONSTRAINT devilry_student_uploadeddeliv_deadline_id_5ceb94959540ad73_uniq;
 ALTER TABLE ONLY public.devilry_report_devilryreport DROP CONSTRAINT devilry_report_devilryreport_pkey;
 ALTER TABLE ONLY public.devilry_qualifiesforexam_status DROP CONSTRAINT devilry_qualifiesforexam_status_pkey;
 ALTER TABLE ONLY public.devilry_qualifiesforexam_qualifiesforfinalexam DROP CONSTRAINT devilry_qualifiesforexam_qualifiesforfinalexam_pkey;
 ALTER TABLE ONLY public.devilry_qualifiesforexam_periodtag DROP CONSTRAINT devilry_qualifiesforexam_periodtag_pkey;
+ALTER TABLE ONLY public.devilry_qualifiesforexam_draftstatus DROP CONSTRAINT devilry_qualifiesforexam_draftstatus_pkey;
+ALTER TABLE ONLY public.devilry_qualifiesforexam_draftqualifiesforfinalexam DROP CONSTRAINT devilry_qualifiesforexam_draftqualifiesforfinalexam_pkey;
 ALTER TABLE ONLY public.devilry_qualifiesforexam_deletedqualifiesforfinalexam DROP CONSTRAINT devilry_qualifiesforexam_deletedqualifiesforfinalexam_pkey;
 ALTER TABLE ONLY public.devilry_qualifiesforexam_deadlinetag DROP CONSTRAINT devilry_qualifiesforexam_deadlinetag_pkey;
 ALTER TABLE ONLY public.devilry_qualifiesforexam_qualifiesforfinalexam DROP CONSTRAINT devilry_qualifiesforexa_relatedstudent_id_487c8f68cac82075_uniq;
@@ -442,8 +451,6 @@ ALTER TABLE ONLY public.core_subject DROP CONSTRAINT core_subject_short_name_key
 ALTER TABLE ONLY public.core_subject DROP CONSTRAINT core_subject_pkey;
 ALTER TABLE ONLY public.core_subject_admins DROP CONSTRAINT core_subject_admins_subject_id_user_id_key;
 ALTER TABLE ONLY public.core_subject_admins DROP CONSTRAINT core_subject_admins_pkey;
-ALTER TABLE ONLY public.core_staticfeedbackfileattachment DROP CONSTRAINT core_staticfeedbackfileattachment_pkey;
-ALTER TABLE ONLY public.core_staticfeedback DROP CONSTRAINT core_staticfeedback_pkey;
 ALTER TABLE ONLY public.core_relatedstudentkeyvalue DROP CONSTRAINT core_relatedstudentkeyvalue_pkey;
 ALTER TABLE ONLY public.core_relatedstudentkeyvalue DROP CONSTRAINT core_relatedstudentkeyv_relatedstudent_id_1b3fefef6a62d342_uniq;
 ALTER TABLE ONLY public.core_relatedstudent DROP CONSTRAINT core_relatedstudent_pkey;
@@ -467,14 +474,9 @@ ALTER TABLE ONLY public.core_period DROP CONSTRAINT core_period_pkey;
 ALTER TABLE ONLY public.core_period_admins DROP CONSTRAINT core_period_admins_pkey;
 ALTER TABLE ONLY public.core_period_admins DROP CONSTRAINT core_period_admins_period_id_user_id_key;
 ALTER TABLE ONLY public.core_groupinvite DROP CONSTRAINT core_groupinvite_pkey;
-ALTER TABLE ONLY public.core_filemeta DROP CONSTRAINT core_filemeta_pkey;
-ALTER TABLE ONLY public.core_filemeta DROP CONSTRAINT core_filemeta_delivery_id_1954e8947150727e_uniq;
 ALTER TABLE ONLY public.core_examinerassignmentgrouphistory DROP CONSTRAINT core_examinerassignmentgrouphistory_pkey;
 ALTER TABLE ONLY public.core_devilryuserprofile DROP CONSTRAINT core_devilryuserprofile_user_id_key;
 ALTER TABLE ONLY public.core_devilryuserprofile DROP CONSTRAINT core_devilryuserprofile_pkey;
-ALTER TABLE ONLY public.core_delivery DROP CONSTRAINT core_delivery_pkey;
-ALTER TABLE ONLY public.core_delivery DROP CONSTRAINT core_delivery_last_feedback_id_key;
-ALTER TABLE ONLY public.core_deadline DROP CONSTRAINT core_deadline_pkey;
 ALTER TABLE ONLY public.core_candidateassignmentgrouphistory DROP CONSTRAINT core_candidateassignmentgrouphistory_pkey;
 ALTER TABLE ONLY public.core_candidate DROP CONSTRAINT core_candidate_pkey;
 ALTER TABLE ONLY public.core_assignmentgrouptag DROP CONSTRAINT core_assignmentgrouptag_pkey;
@@ -482,8 +484,6 @@ ALTER TABLE ONLY public.core_assignmentgrouptag DROP CONSTRAINT core_assignmentg
 ALTER TABLE ONLY public.core_assignmentgrouphistory DROP CONSTRAINT core_assignmentgrouphistory_pkey;
 ALTER TABLE ONLY public.core_assignmentgrouphistory DROP CONSTRAINT core_assignmentgrouphistory_assignment_group_id_key;
 ALTER TABLE ONLY public.core_assignmentgroup DROP CONSTRAINT core_assignmentgroup_pkey;
-ALTER TABLE ONLY public.core_assignmentgroup DROP CONSTRAINT core_assignmentgroup_last_deadline_id_key;
-ALTER TABLE ONLY public.core_assignmentgroup DROP CONSTRAINT core_assignmentgroup_feedback_id_key;
 ALTER TABLE ONLY public.core_assignmentgroup_examiners DROP CONSTRAINT core_assignmentgroup_examiners_pkey;
 ALTER TABLE ONLY public.core_assignmentgroup_examiners DROP CONSTRAINT core_assignmentgroup_e_relatedexaminer_id_74db942d2f73e0d1_uniq;
 ALTER TABLE ONLY public.core_assignment DROP CONSTRAINT core_assignment_short_name_1370cecf97cfafd_uniq;
@@ -498,8 +498,8 @@ ALTER TABLE ONLY public.auth_group_permissions DROP CONSTRAINT auth_group_permis
 ALTER TABLE ONLY public.auth_group DROP CONSTRAINT auth_group_name_key;
 ALTER TABLE ONLY public.account_emailconfirmation DROP CONSTRAINT account_emailconfirmation_pkey;
 ALTER TABLE ONLY public.account_emailconfirmation DROP CONSTRAINT account_emailconfirmation_key_key;
+ALTER TABLE ONLY public.account_emailaddress DROP CONSTRAINT account_emailaddress_user_id_email_987c8728_uniq;
 ALTER TABLE ONLY public.account_emailaddress DROP CONSTRAINT account_emailaddress_pkey;
-ALTER TABLE ONLY public.account_emailaddress DROP CONSTRAINT account_emailaddress_email_key;
 ALTER TABLE public.socialaccount_socialtoken ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.socialaccount_socialapp_sites ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.socialaccount_socialapp ALTER COLUMN id DROP DEFAULT;
@@ -510,7 +510,6 @@ ALTER TABLE public.django_site ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.django_migrations ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.django_content_type ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.django_admin_log ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE public.devilry_student_uploadeddeliveryfile ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.devilry_qualifiesforexam_status ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.devilry_qualifiesforexam_qualifiesforfinalexam ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.devilry_qualifiesforexam_deadlinetag ALTER COLUMN id DROP DEFAULT;
@@ -539,8 +538,6 @@ ALTER TABLE public.cradmin_temporaryfileuploadstore_temporaryfile ALTER COLUMN i
 ALTER TABLE public.cradmin_generic_token_with_metadata_generictokenwithmetadata ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.core_subject_admins ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.core_subject ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE public.core_staticfeedbackfileattachment ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE public.core_staticfeedback ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.core_relatedstudentkeyvalue ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.core_relatedstudent ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.core_relatedexaminer ALTER COLUMN id DROP DEFAULT;
@@ -553,11 +550,8 @@ ALTER TABLE public.core_periodapplicationkeyvalue ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.core_period_admins ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.core_period ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.core_groupinvite ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE public.core_filemeta ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.core_examinerassignmentgrouphistory ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.core_devilryuserprofile ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE public.core_delivery ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE public.core_deadline ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.core_candidateassignmentgrouphistory ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.core_candidate ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.core_assignmentgrouptag ALTER COLUMN id DROP DEFAULT;
@@ -579,6 +573,11 @@ DROP SEQUENCE public.socialaccount_socialapp_id_seq;
 DROP TABLE public.socialaccount_socialapp;
 DROP SEQUENCE public.socialaccount_socialaccount_id_seq;
 DROP TABLE public.socialaccount_socialaccount;
+DROP TABLE public.silk_sqlquery;
+DROP TABLE public.silk_response;
+DROP TABLE public.silk_request;
+DROP TABLE public.silk_profile_queries;
+DROP TABLE public.silk_profile;
 DROP SEQUENCE public.ievv_developemail_developemail_id_seq;
 DROP TABLE public.ievv_developemail_developemail;
 DROP SEQUENCE public.ievv_batchframework_batchoperation_id_seq;
@@ -592,14 +591,14 @@ DROP SEQUENCE public.django_content_type_id_seq;
 DROP TABLE public.django_content_type;
 DROP SEQUENCE public.django_admin_log_id_seq;
 DROP TABLE public.django_admin_log;
-DROP SEQUENCE public.devilry_student_uploadeddeliveryfile_id_seq;
-DROP TABLE public.devilry_student_uploadeddeliveryfile;
 DROP TABLE public.devilry_report_devilryreport;
 DROP SEQUENCE public.devilry_qualifiesforexam_status_id_seq;
 DROP TABLE public.devilry_qualifiesforexam_status;
 DROP SEQUENCE public.devilry_qualifiesforexam_qualifiesforfinalexam_id_seq;
 DROP TABLE public.devilry_qualifiesforexam_qualifiesforfinalexam;
 DROP TABLE public.devilry_qualifiesforexam_periodtag;
+DROP TABLE public.devilry_qualifiesforexam_draftstatus;
+DROP TABLE public.devilry_qualifiesforexam_draftqualifiesforfinalexam;
 DROP TABLE public.devilry_qualifiesforexam_deletedqualifiesforfinalexam;
 DROP SEQUENCE public.devilry_qualifiesforexam_deadlinetag_id_seq;
 DROP TABLE public.devilry_qualifiesforexam_deadlinetag;
@@ -659,10 +658,6 @@ DROP SEQUENCE public.core_subject_id_seq;
 DROP SEQUENCE public.core_subject_admins_id_seq;
 DROP TABLE public.core_subject_admins;
 DROP TABLE public.core_subject;
-DROP SEQUENCE public.core_staticfeedbackfileattachment_id_seq;
-DROP TABLE public.core_staticfeedbackfileattachment;
-DROP SEQUENCE public.core_staticfeedback_id_seq;
-DROP TABLE public.core_staticfeedback;
 DROP SEQUENCE public.core_relatedstudentkeyvalue_id_seq;
 DROP TABLE public.core_relatedstudentkeyvalue;
 DROP SEQUENCE public.core_relatedstudent_id_seq;
@@ -687,16 +682,10 @@ DROP TABLE public.core_period_admins;
 DROP TABLE public.core_period;
 DROP SEQUENCE public.core_groupinvite_id_seq;
 DROP TABLE public.core_groupinvite;
-DROP SEQUENCE public.core_filemeta_id_seq;
-DROP TABLE public.core_filemeta;
 DROP SEQUENCE public.core_examinerassignmentgrouphistory_id_seq;
 DROP TABLE public.core_examinerassignmentgrouphistory;
 DROP SEQUENCE public.core_devilryuserprofile_id_seq;
 DROP TABLE public.core_devilryuserprofile;
-DROP SEQUENCE public.core_delivery_id_seq;
-DROP TABLE public.core_delivery;
-DROP SEQUENCE public.core_deadline_id_seq;
-DROP TABLE public.core_deadline;
 DROP SEQUENCE public.core_candidateassignmentgrouphistory_id_seq;
 DROP TABLE public.core_candidateassignmentgrouphistory;
 DROP SEQUENCE public.core_candidate_id_seq;
@@ -2171,11 +2160,8 @@ CREATE TABLE public.core_assignmentgroup (
     name character varying(30) NOT NULL,
     is_open boolean NOT NULL,
     etag timestamp with time zone NOT NULL,
-    delivery_status character varying(30),
     created_datetime timestamp with time zone NOT NULL,
     copied_from_id integer,
-    feedback_id integer,
-    last_deadline_id integer,
     parentnode_id integer NOT NULL,
     batchoperation_id integer,
     internal_is_being_deleted boolean NOT NULL
@@ -2358,79 +2344,6 @@ ALTER SEQUENCE public.core_candidateassignmentgrouphistory_id_seq OWNED BY publi
 
 
 --
--- Name: core_deadline; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.core_deadline (
-    id integer NOT NULL,
-    deadline timestamp with time zone NOT NULL,
-    text text,
-    deliveries_available_before_deadline boolean NOT NULL,
-    why_created character varying(50),
-    added_by_id integer,
-    assignment_group_id integer NOT NULL
-);
-
-
---
--- Name: core_deadline_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.core_deadline_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: core_deadline_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.core_deadline_id_seq OWNED BY public.core_deadline.id;
-
-
---
--- Name: core_delivery; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.core_delivery (
-    id integer NOT NULL,
-    delivery_type integer NOT NULL,
-    time_of_delivery timestamp with time zone NOT NULL,
-    number integer NOT NULL,
-    successful boolean NOT NULL,
-    alias_delivery_id integer,
-    copy_of_id integer,
-    deadline_id integer NOT NULL,
-    delivered_by_id integer,
-    last_feedback_id integer,
-    CONSTRAINT core_delivery_delivery_type_check CHECK ((delivery_type >= 0)),
-    CONSTRAINT core_delivery_number_check CHECK ((number >= 0))
-);
-
-
---
--- Name: core_delivery_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.core_delivery_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: core_delivery_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.core_delivery_id_seq OWNED BY public.core_delivery.id;
-
-
---
 -- Name: core_devilryuserprofile; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2492,37 +2405,6 @@ CREATE SEQUENCE public.core_examinerassignmentgrouphistory_id_seq
 --
 
 ALTER SEQUENCE public.core_examinerassignmentgrouphistory_id_seq OWNED BY public.core_examinerassignmentgrouphistory.id;
-
-
---
--- Name: core_filemeta; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.core_filemeta (
-    id integer NOT NULL,
-    filename character varying(255) NOT NULL,
-    size integer NOT NULL,
-    delivery_id integer NOT NULL
-);
-
-
---
--- Name: core_filemeta_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.core_filemeta_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: core_filemeta_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.core_filemeta_id_seq OWNED BY public.core_filemeta.id;
 
 
 --
@@ -2911,73 +2793,6 @@ CREATE SEQUENCE public.core_relatedstudentkeyvalue_id_seq
 --
 
 ALTER SEQUENCE public.core_relatedstudentkeyvalue_id_seq OWNED BY public.core_relatedstudentkeyvalue.id;
-
-
---
--- Name: core_staticfeedback; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.core_staticfeedback (
-    id integer NOT NULL,
-    rendered_view text NOT NULL,
-    grade character varying(12) NOT NULL,
-    points integer NOT NULL,
-    is_passing_grade boolean NOT NULL,
-    save_timestamp timestamp with time zone,
-    delivery_id integer NOT NULL,
-    saved_by_id integer NOT NULL,
-    CONSTRAINT core_staticfeedback_points_check CHECK ((points >= 0))
-);
-
-
---
--- Name: core_staticfeedback_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.core_staticfeedback_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: core_staticfeedback_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.core_staticfeedback_id_seq OWNED BY public.core_staticfeedback.id;
-
-
---
--- Name: core_staticfeedbackfileattachment; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.core_staticfeedbackfileattachment (
-    id integer NOT NULL,
-    filename text NOT NULL,
-    file character varying(100) NOT NULL,
-    staticfeedback_id integer NOT NULL
-);
-
-
---
--- Name: core_staticfeedbackfileattachment_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.core_staticfeedbackfileattachment_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: core_staticfeedbackfileattachment_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.core_staticfeedbackfileattachment_id_seq OWNED BY public.core_staticfeedbackfileattachment.id;
 
 
 --
@@ -3639,7 +3454,9 @@ CREATE TABLE public.devilry_dbcache_assignmentgroupcacheddata (
     last_public_comment_by_student_datetime timestamp with time zone,
     candidate_count integer NOT NULL,
     examiner_count integer NOT NULL,
+    public_student_attempts_with_delivered_files integer NOT NULL,
     CONSTRAINT devilry_dbcache_assignmentgr_public_examiner_comment_coun_check CHECK ((public_examiner_comment_count >= 0)),
+    CONSTRAINT devilry_dbcache_assignmentgr_public_student_attempts_with_check CHECK ((public_student_attempts_with_delivered_files >= 0)),
     CONSTRAINT devilry_dbcache_assignmentgr_public_student_comment_count_check CHECK ((public_student_comment_count >= 0)),
     CONSTRAINT devilry_dbcache_assignmentgr_public_student_file_upload_c_check CHECK ((public_student_file_upload_count >= 0)),
     CONSTRAINT devilry_dbcache_assignmentgrou_public_admin_comment_count_check CHECK ((public_admin_comment_count >= 0)),
@@ -4072,6 +3889,64 @@ ALTER TABLE public.devilry_qualifiesforexam_deletedqualifiesforfinalexam ALTER C
 
 
 --
+-- Name: devilry_qualifiesforexam_draftqualifiesforfinalexam; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.devilry_qualifiesforexam_draftqualifiesforfinalexam (
+    id integer NOT NULL,
+    qualifies boolean NOT NULL,
+    relatedstudent_id integer NOT NULL,
+    draft_status_id integer NOT NULL
+);
+
+
+--
+-- Name: devilry_qualifiesforexam_draftqualifiesforfinalexam_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+ALTER TABLE public.devilry_qualifiesforexam_draftqualifiesforfinalexam ALTER COLUMN id ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.devilry_qualifiesforexam_draftqualifiesforfinalexam_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: devilry_qualifiesforexam_draftstatus; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.devilry_qualifiesforexam_draftstatus (
+    id integer NOT NULL,
+    created_datetime timestamp with time zone NOT NULL,
+    plugin character varying(500),
+    plugin_data jsonb,
+    processing_started_datetime timestamp with time zone,
+    processing_completed_datetime timestamp with time zone,
+    processing_status character varying(32) NOT NULL,
+    processing_status_data jsonb,
+    created_by_id integer NOT NULL,
+    period_id integer NOT NULL
+);
+
+
+--
+-- Name: devilry_qualifiesforexam_draftstatus_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+ALTER TABLE public.devilry_qualifiesforexam_draftstatus ALTER COLUMN id ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.devilry_qualifiesforexam_draftstatus_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
 -- Name: devilry_qualifiesforexam_periodtag; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -4124,7 +3999,8 @@ CREATE TABLE public.devilry_qualifiesforexam_status (
     plugin character varying(500),
     exported_timestamp timestamp with time zone,
     period_id integer NOT NULL,
-    user_id integer NOT NULL
+    user_id integer NOT NULL,
+    plugin_data jsonb
 );
 
 
@@ -4179,39 +4055,6 @@ ALTER TABLE public.devilry_report_devilryreport ALTER COLUMN id ADD GENERATED BY
     NO MAXVALUE
     CACHE 1
 );
-
-
---
--- Name: devilry_student_uploadeddeliveryfile; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.devilry_student_uploadeddeliveryfile (
-    id integer NOT NULL,
-    uploaded_datetime timestamp with time zone NOT NULL,
-    uploaded_file character varying(100) NOT NULL,
-    filename character varying(255) NOT NULL,
-    deadline_id integer NOT NULL,
-    user_id integer NOT NULL
-);
-
-
---
--- Name: devilry_student_uploadeddeliveryfile_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.devilry_student_uploadeddeliveryfile_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: devilry_student_uploadeddeliveryfile_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.devilry_student_uploadeddeliveryfile_id_seq OWNED BY public.devilry_student_uploadeddeliveryfile.id;
 
 
 --
@@ -4428,16 +4271,145 @@ ALTER SEQUENCE public.ievv_developemail_developemail_id_seq OWNED BY public.ievv
 
 
 --
+-- Name: silk_profile; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.silk_profile (
+    id integer NOT NULL,
+    name character varying(300) NOT NULL,
+    start_time timestamp with time zone NOT NULL,
+    end_time timestamp with time zone,
+    time_taken double precision,
+    file_path character varying(300) NOT NULL,
+    line_num integer,
+    end_line_num integer,
+    func_name character varying(300) NOT NULL,
+    exception_raised boolean NOT NULL,
+    dynamic boolean NOT NULL,
+    request_id character varying(36)
+);
+
+
+--
+-- Name: silk_profile_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+ALTER TABLE public.silk_profile ALTER COLUMN id ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.silk_profile_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: silk_profile_queries; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.silk_profile_queries (
+    id integer NOT NULL,
+    profile_id integer NOT NULL,
+    sqlquery_id integer NOT NULL
+);
+
+
+--
+-- Name: silk_profile_queries_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+ALTER TABLE public.silk_profile_queries ALTER COLUMN id ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.silk_profile_queries_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: silk_request; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.silk_request (
+    id character varying(36) NOT NULL,
+    path character varying(190) NOT NULL,
+    query_params text NOT NULL,
+    raw_body text NOT NULL,
+    body text NOT NULL,
+    method character varying(10) NOT NULL,
+    start_time timestamp with time zone NOT NULL,
+    view_name character varying(190),
+    end_time timestamp with time zone,
+    time_taken double precision,
+    encoded_headers text NOT NULL,
+    meta_time double precision,
+    meta_num_queries integer,
+    meta_time_spent_queries double precision,
+    pyprofile text NOT NULL,
+    num_sql_queries integer NOT NULL,
+    prof_file character varying(300) NOT NULL
+);
+
+
+--
+-- Name: silk_response; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.silk_response (
+    id character varying(36) NOT NULL,
+    status_code integer NOT NULL,
+    raw_body text NOT NULL,
+    body text NOT NULL,
+    encoded_headers text NOT NULL,
+    request_id character varying(36) NOT NULL
+);
+
+
+--
+-- Name: silk_sqlquery; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.silk_sqlquery (
+    id integer NOT NULL,
+    query text NOT NULL,
+    start_time timestamp with time zone,
+    end_time timestamp with time zone,
+    time_taken double precision,
+    traceback text NOT NULL,
+    request_id character varying(36),
+    identifier integer NOT NULL,
+    analysis text
+);
+
+
+--
+-- Name: silk_sqlquery_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+ALTER TABLE public.silk_sqlquery ALTER COLUMN id ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.silk_sqlquery_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
 -- Name: socialaccount_socialaccount; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.socialaccount_socialaccount (
     id integer NOT NULL,
-    provider character varying(30) NOT NULL,
+    provider character varying(200) NOT NULL,
     uid character varying(191) NOT NULL,
     last_login timestamp with time zone NOT NULL,
     date_joined timestamp with time zone NOT NULL,
-    extra_data text NOT NULL,
+    extra_data jsonb NOT NULL,
     user_id integer NOT NULL
 );
 
@@ -4472,7 +4444,9 @@ CREATE TABLE public.socialaccount_socialapp (
     name character varying(40) NOT NULL,
     client_id character varying(191) NOT NULL,
     secret character varying(191) NOT NULL,
-    key character varying(191) NOT NULL
+    key character varying(191) NOT NULL,
+    provider_id character varying(200) NOT NULL,
+    settings jsonb NOT NULL
 );
 
 
@@ -4537,7 +4511,7 @@ CREATE TABLE public.socialaccount_socialtoken (
     token_secret text NOT NULL,
     expires_at timestamp with time zone,
     account_id integer NOT NULL,
-    app_id integer NOT NULL
+    app_id integer
 );
 
 
@@ -4653,20 +4627,6 @@ ALTER TABLE ONLY public.core_candidateassignmentgrouphistory ALTER COLUMN id SET
 
 
 --
--- Name: core_deadline id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.core_deadline ALTER COLUMN id SET DEFAULT nextval('public.core_deadline_id_seq'::regclass);
-
-
---
--- Name: core_delivery id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.core_delivery ALTER COLUMN id SET DEFAULT nextval('public.core_delivery_id_seq'::regclass);
-
-
---
 -- Name: core_devilryuserprofile id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -4678,13 +4638,6 @@ ALTER TABLE ONLY public.core_devilryuserprofile ALTER COLUMN id SET DEFAULT next
 --
 
 ALTER TABLE ONLY public.core_examinerassignmentgrouphistory ALTER COLUMN id SET DEFAULT nextval('public.core_examinerassignmentgrouphistory_id_seq'::regclass);
-
-
---
--- Name: core_filemeta id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.core_filemeta ALTER COLUMN id SET DEFAULT nextval('public.core_filemeta_id_seq'::regclass);
 
 
 --
@@ -4769,20 +4722,6 @@ ALTER TABLE ONLY public.core_relatedstudent ALTER COLUMN id SET DEFAULT nextval(
 --
 
 ALTER TABLE ONLY public.core_relatedstudentkeyvalue ALTER COLUMN id SET DEFAULT nextval('public.core_relatedstudentkeyvalue_id_seq'::regclass);
-
-
---
--- Name: core_staticfeedback id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.core_staticfeedback ALTER COLUMN id SET DEFAULT nextval('public.core_staticfeedback_id_seq'::regclass);
-
-
---
--- Name: core_staticfeedbackfileattachment id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.core_staticfeedbackfileattachment ALTER COLUMN id SET DEFAULT nextval('public.core_staticfeedbackfileattachment_id_seq'::regclass);
 
 
 --
@@ -4979,13 +4918,6 @@ ALTER TABLE ONLY public.devilry_qualifiesforexam_qualifiesforfinalexam ALTER COL
 --
 
 ALTER TABLE ONLY public.devilry_qualifiesforexam_status ALTER COLUMN id SET DEFAULT nextval('public.devilry_qualifiesforexam_status_id_seq'::regclass);
-
-
---
--- Name: devilry_student_uploadeddeliveryfile id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.devilry_student_uploadeddeliveryfile ALTER COLUMN id SET DEFAULT nextval('public.devilry_student_uploadeddeliveryfile_id_seq'::regclass);
 
 
 --
@@ -5403,6 +5335,31 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 315	Can view social account	68	view_socialaccount
 316	Can view social application	67	view_socialapp
 317	Can view social application token	69	view_socialtoken
+318	Access admin page	82	view
+319	Can add draft status	83	add_draftstatus
+320	Can change draft status	83	change_draftstatus
+321	Can delete draft status	83	delete_draftstatus
+322	Can view draft status	83	view_draftstatus
+323	Can add draft qualifies for final exam	84	add_draftqualifiesforfinalexam
+324	Can change draft qualifies for final exam	84	change_draftqualifiesforfinalexam
+325	Can delete draft qualifies for final exam	84	delete_draftqualifiesforfinalexam
+326	Can view draft qualifies for final exam	84	view_draftqualifiesforfinalexam
+327	Can add profile	85	add_profile
+328	Can change profile	85	change_profile
+329	Can delete profile	85	delete_profile
+330	Can view profile	85	view_profile
+331	Can add request	86	add_request
+332	Can change request	86	change_request
+333	Can delete request	86	delete_request
+334	Can view request	86	view_request
+335	Can add response	87	add_response
+336	Can change response	87	change_response
+337	Can delete response	87	delete_response
+338	Can view response	87	view_response
+339	Can add sql query	88	add_sqlquery
+340	Can change sql query	88	change_sqlquery
+341	Can delete sql query	88	delete_sqlquery
+342	Can view sql query	88	view_sqlquery
 \.
 
 
@@ -5431,29 +5388,29 @@ COPY public.core_assignment_admins (id, assignment_id, user_id) FROM stdin;
 -- Data for Name: core_assignmentgroup; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.core_assignmentgroup (id, name, is_open, etag, delivery_status, created_datetime, copied_from_id, feedback_id, last_deadline_id, parentnode_id, batchoperation_id, internal_is_being_deleted) FROM stdin;
-3		t	2016-01-20 10:17:01.689683+00	\N	2016-01-20 10:17:01.689159+00	\N	\N	\N	1	1	f
-4		t	2016-01-20 10:17:01.689714+00	\N	2016-01-20 10:17:01.689207+00	\N	\N	\N	1	1	f
-5		t	2016-01-20 10:17:01.689744+00	\N	2016-01-20 10:17:01.689254+00	\N	\N	\N	1	1	f
-6		t	2016-01-20 10:17:01.689774+00	\N	2016-01-20 10:17:01.689303+00	\N	\N	\N	1	1	f
-7		t	2016-01-20 10:17:01.689804+00	\N	2016-01-20 10:17:01.689349+00	\N	\N	\N	1	1	f
-8		t	2016-01-20 10:17:01.689833+00	\N	2016-01-20 10:17:01.689396+00	\N	\N	\N	1	1	f
-9		t	2016-02-06 13:29:23.917938+00	\N	2016-02-06 13:29:23.917324+00	\N	\N	\N	1	2	f
-10		t	2016-02-06 14:10:23.046051+00	\N	2016-02-06 14:10:23.045796+00	\N	\N	\N	2	3	f
-11		t	2016-02-06 14:10:32.178895+00	\N	2016-02-06 14:10:32.178657+00	\N	\N	\N	4	4	f
-12		t	2016-02-08 10:42:11.577236+00	\N	2016-02-08 10:42:11.576999+00	\N	\N	\N	3	5	f
-14		t	2016-02-08 19:55:47.52143+00	\N	2016-02-08 19:55:47.520825+00	\N	\N	\N	5	6	f
-15		t	2016-02-08 19:55:47.521462+00	\N	2016-02-08 19:55:47.520881+00	\N	\N	\N	5	6	f
-16		t	2016-02-08 19:55:47.521482+00	\N	2016-02-08 19:55:47.520927+00	\N	\N	\N	5	6	f
-17		t	2016-02-08 19:55:47.521501+00	\N	2016-02-08 19:55:47.520961+00	\N	\N	\N	5	6	f
-18		t	2016-02-08 19:55:47.521521+00	\N	2016-02-08 19:55:47.520993+00	\N	\N	\N	5	6	f
-19		t	2016-02-08 19:55:47.52154+00	\N	2016-02-08 19:55:47.521024+00	\N	\N	\N	5	6	f
-20		t	2016-02-08 19:55:47.521559+00	\N	2016-02-08 19:55:47.521055+00	\N	\N	\N	5	6	f
-21		t	2016-02-08 19:55:47.521578+00	\N	2016-02-08 19:55:47.521085+00	\N	\N	\N	5	6	f
-22		t	2016-02-08 19:55:47.521597+00	\N	2016-02-08 19:55:47.521115+00	\N	\N	\N	5	6	f
-23		t	2016-02-08 19:55:47.521616+00	\N	2016-02-08 19:55:47.521146+00	\N	\N	\N	5	6	f
-24		t	2016-02-08 19:55:47.521635+00	\N	2016-02-08 19:55:47.521176+00	\N	\N	\N	5	6	f
-25		t	2016-02-08 20:02:42.625796+00	\N	2016-02-08 20:02:42.625394+00	\N	\N	\N	5	7	f
+COPY public.core_assignmentgroup (id, name, is_open, etag, created_datetime, copied_from_id, parentnode_id, batchoperation_id, internal_is_being_deleted) FROM stdin;
+3		t	2016-01-20 10:17:01.689683+00	2016-01-20 10:17:01.689159+00	\N	1	1	f
+4		t	2016-01-20 10:17:01.689714+00	2016-01-20 10:17:01.689207+00	\N	1	1	f
+5		t	2016-01-20 10:17:01.689744+00	2016-01-20 10:17:01.689254+00	\N	1	1	f
+6		t	2016-01-20 10:17:01.689774+00	2016-01-20 10:17:01.689303+00	\N	1	1	f
+7		t	2016-01-20 10:17:01.689804+00	2016-01-20 10:17:01.689349+00	\N	1	1	f
+8		t	2016-01-20 10:17:01.689833+00	2016-01-20 10:17:01.689396+00	\N	1	1	f
+9		t	2016-02-06 13:29:23.917938+00	2016-02-06 13:29:23.917324+00	\N	1	2	f
+10		t	2016-02-06 14:10:23.046051+00	2016-02-06 14:10:23.045796+00	\N	2	3	f
+11		t	2016-02-06 14:10:32.178895+00	2016-02-06 14:10:32.178657+00	\N	4	4	f
+12		t	2016-02-08 10:42:11.577236+00	2016-02-08 10:42:11.576999+00	\N	3	5	f
+14		t	2016-02-08 19:55:47.52143+00	2016-02-08 19:55:47.520825+00	\N	5	6	f
+15		t	2016-02-08 19:55:47.521462+00	2016-02-08 19:55:47.520881+00	\N	5	6	f
+16		t	2016-02-08 19:55:47.521482+00	2016-02-08 19:55:47.520927+00	\N	5	6	f
+17		t	2016-02-08 19:55:47.521501+00	2016-02-08 19:55:47.520961+00	\N	5	6	f
+18		t	2016-02-08 19:55:47.521521+00	2016-02-08 19:55:47.520993+00	\N	5	6	f
+19		t	2016-02-08 19:55:47.52154+00	2016-02-08 19:55:47.521024+00	\N	5	6	f
+20		t	2016-02-08 19:55:47.521559+00	2016-02-08 19:55:47.521055+00	\N	5	6	f
+21		t	2016-02-08 19:55:47.521578+00	2016-02-08 19:55:47.521085+00	\N	5	6	f
+22		t	2016-02-08 19:55:47.521597+00	2016-02-08 19:55:47.521115+00	\N	5	6	f
+23		t	2016-02-08 19:55:47.521616+00	2016-02-08 19:55:47.521146+00	\N	5	6	f
+24		t	2016-02-08 19:55:47.521635+00	2016-02-08 19:55:47.521176+00	\N	5	6	f
+25		t	2016-02-08 20:02:42.625796+00	2016-02-08 20:02:42.625394+00	\N	5	7	f
 \.
 
 
@@ -5539,22 +5496,6 @@ COPY public.core_candidateassignmentgrouphistory (id, created_datetime, is_add, 
 
 
 --
--- Data for Name: core_deadline; Type: TABLE DATA; Schema: public; Owner: -
---
-
-COPY public.core_deadline (id, deadline, text, deliveries_available_before_deadline, why_created, added_by_id, assignment_group_id) FROM stdin;
-\.
-
-
---
--- Data for Name: core_delivery; Type: TABLE DATA; Schema: public; Owner: -
---
-
-COPY public.core_delivery (id, delivery_type, time_of_delivery, number, successful, alias_delivery_id, copy_of_id, deadline_id, delivered_by_id, last_feedback_id) FROM stdin;
-\.
-
-
---
 -- Data for Name: core_devilryuserprofile; Type: TABLE DATA; Schema: public; Owner: -
 --
 
@@ -5589,14 +5530,6 @@ COPY public.core_examinerassignmentgrouphistory (id, created_datetime, is_add, a
 20	2018-10-15 09:53:32.391664+00	t	16	14
 21	2018-10-15 09:53:32.391664+00	t	22	14
 22	2018-10-15 09:53:32.391664+00	t	23	14
-\.
-
-
---
--- Data for Name: core_filemeta; Type: TABLE DATA; Schema: public; Owner: -
---
-
-COPY public.core_filemeta (id, filename, size, delivery_id) FROM stdin;
 \.
 
 
@@ -5723,22 +5656,6 @@ COPY public.core_relatedstudent (id, tags, candidate_id, automatic_anonymous_id,
 --
 
 COPY public.core_relatedstudentkeyvalue (id, application, key, value, student_can_read, relatedstudent_id) FROM stdin;
-\.
-
-
---
--- Data for Name: core_staticfeedback; Type: TABLE DATA; Schema: public; Owner: -
---
-
-COPY public.core_staticfeedback (id, rendered_view, grade, points, is_passing_grade, save_timestamp, delivery_id, saved_by_id) FROM stdin;
-\.
-
-
---
--- Data for Name: core_staticfeedbackfileattachment; Type: TABLE DATA; Schema: public; Owner: -
---
-
-COPY public.core_staticfeedbackfileattachment (id, filename, file, staticfeedback_id) FROM stdin;
 \.
 
 
@@ -5966,29 +5883,29 @@ COPY public.devilry_compressionutil_compressedarchivemeta (id, content_object_id
 -- Data for Name: devilry_dbcache_assignmentgroupcacheddata; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.devilry_dbcache_assignmentgroupcacheddata (id, new_attempt_count, public_total_comment_count, public_student_comment_count, public_examiner_comment_count, public_admin_comment_count, public_student_file_upload_count, first_feedbackset_id, group_id, last_feedbackset_id, last_published_feedbackset_id, last_public_comment_by_examiner_datetime, last_public_comment_by_student_datetime, candidate_count, examiner_count) FROM stdin;
-181	0	0	0	0	0	0	3	3	3	\N	\N	\N	1	1
-182	0	0	0	0	0	0	4	4	4	\N	\N	\N	1	1
-183	0	0	0	0	0	0	5	5	5	\N	\N	\N	1	1
-184	0	0	0	0	0	0	6	6	6	\N	\N	\N	1	1
-185	0	0	0	0	0	0	7	7	7	\N	\N	\N	1	1
-186	0	0	0	0	0	0	8	8	8	\N	\N	\N	1	1
-187	0	2	1	1	0	0	9	9	9	9	2016-02-08 10:27:11.75299+00	2016-02-08 10:25:23.021072+00	1	1
-188	0	0	0	0	0	0	10	10	10	\N	\N	\N	1	0
-189	0	0	0	0	0	0	11	11	11	\N	\N	\N	1	0
-190	0	0	0	0	0	0	12	12	12	12	\N	\N	1	1
-191	0	1	0	1	0	0	13	14	13	13	2018-10-15 09:54:11+00	\N	1	1
-192	0	1	0	1	0	0	14	15	14	14	2018-10-15 09:55:29+00	\N	1	1
-193	0	1	0	1	0	0	15	16	15	15	2018-10-15 09:55:03+00	\N	1	1
-194	0	1	0	1	0	0	16	17	16	16	2018-10-15 09:55:29+00	\N	1	1
-195	0	1	0	1	0	0	17	18	17	17	2018-10-15 09:54:31+00	\N	1	1
-196	0	1	0	1	0	0	18	19	18	18	2018-10-15 09:55:29+00	\N	1	1
-197	0	1	0	1	0	0	19	20	19	19	2018-10-15 09:55:29+00	\N	1	1
-198	0	1	0	1	0	0	20	21	20	20	2018-10-15 09:54:21+00	\N	1	1
-199	0	1	0	1	0	0	21	22	21	21	2018-10-15 09:55:03+00	\N	1	1
-200	0	1	0	1	0	0	22	23	22	22	2018-10-15 09:55:03+00	\N	1	1
-201	0	0	0	0	0	0	23	24	23	\N	\N	\N	1	0
-202	0	1	0	1	0	0	24	25	24	24	2018-10-15 09:54:00+00	\N	1	1
+COPY public.devilry_dbcache_assignmentgroupcacheddata (id, new_attempt_count, public_total_comment_count, public_student_comment_count, public_examiner_comment_count, public_admin_comment_count, public_student_file_upload_count, first_feedbackset_id, group_id, last_feedbackset_id, last_published_feedbackset_id, last_public_comment_by_examiner_datetime, last_public_comment_by_student_datetime, candidate_count, examiner_count, public_student_attempts_with_delivered_files) FROM stdin;
+181	0	0	0	0	0	0	3	3	3	\N	\N	\N	1	1	0
+182	0	0	0	0	0	0	4	4	4	\N	\N	\N	1	1	0
+183	0	0	0	0	0	0	5	5	5	\N	\N	\N	1	1	0
+184	0	0	0	0	0	0	6	6	6	\N	\N	\N	1	1	0
+185	0	0	0	0	0	0	7	7	7	\N	\N	\N	1	1	0
+186	0	0	0	0	0	0	8	8	8	\N	\N	\N	1	1	0
+187	0	2	1	1	0	0	9	9	9	9	2016-02-08 10:27:11.75299+00	2016-02-08 10:25:23.021072+00	1	1	0
+188	0	0	0	0	0	0	10	10	10	\N	\N	\N	1	0	0
+189	0	0	0	0	0	0	11	11	11	\N	\N	\N	1	0	0
+190	0	0	0	0	0	0	12	12	12	12	\N	\N	1	1	0
+191	0	1	0	1	0	0	13	14	13	13	2018-10-15 09:54:11+00	\N	1	1	0
+192	0	1	0	1	0	0	14	15	14	14	2018-10-15 09:55:29+00	\N	1	1	0
+193	0	1	0	1	0	0	15	16	15	15	2018-10-15 09:55:03+00	\N	1	1	0
+194	0	1	0	1	0	0	16	17	16	16	2018-10-15 09:55:29+00	\N	1	1	0
+195	0	1	0	1	0	0	17	18	17	17	2018-10-15 09:54:31+00	\N	1	1	0
+196	0	1	0	1	0	0	18	19	18	18	2018-10-15 09:55:29+00	\N	1	1	0
+197	0	1	0	1	0	0	19	20	19	19	2018-10-15 09:55:29+00	\N	1	1	0
+198	0	1	0	1	0	0	20	21	20	20	2018-10-15 09:54:21+00	\N	1	1	0
+199	0	1	0	1	0	0	21	22	21	21	2018-10-15 09:55:03+00	\N	1	1	0
+200	0	1	0	1	0	0	22	23	22	22	2018-10-15 09:55:03+00	\N	1	1	0
+201	0	0	0	0	0	0	23	24	23	\N	\N	\N	1	0	0
+202	0	1	0	1	0	0	24	25	24	24	2018-10-15 09:54:00+00	\N	1	1	0
 \.
 
 
@@ -6144,6 +6061,22 @@ COPY public.devilry_qualifiesforexam_deletedqualifiesforfinalexam (id, qualifies
 
 
 --
+-- Data for Name: devilry_qualifiesforexam_draftqualifiesforfinalexam; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.devilry_qualifiesforexam_draftqualifiesforfinalexam (id, qualifies, relatedstudent_id, draft_status_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: devilry_qualifiesforexam_draftstatus; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.devilry_qualifiesforexam_draftstatus (id, created_datetime, plugin, plugin_data, processing_started_datetime, processing_completed_datetime, processing_status, processing_status_data, created_by_id, period_id) FROM stdin;
+\.
+
+
+--
 -- Data for Name: devilry_qualifiesforexam_periodtag; Type: TABLE DATA; Schema: public; Owner: -
 --
 
@@ -6163,7 +6096,7 @@ COPY public.devilry_qualifiesforexam_qualifiesforfinalexam (id, qualifies, relat
 -- Data for Name: devilry_qualifiesforexam_status; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.devilry_qualifiesforexam_status (id, status, createtime, message, plugin, exported_timestamp, period_id, user_id) FROM stdin;
+COPY public.devilry_qualifiesforexam_status (id, status, createtime, message, plugin, exported_timestamp, period_id, user_id, plugin_data) FROM stdin;
 \.
 
 
@@ -6172,14 +6105,6 @@ COPY public.devilry_qualifiesforexam_status (id, status, createtime, message, pl
 --
 
 COPY public.devilry_report_devilryreport (id, created_datetime, started_datetime, finished_datetime, generator_type, generator_options, status, status_data, output_filename, content_type, result, generated_by_user_id) FROM stdin;
-\.
-
-
---
--- Data for Name: devilry_student_uploadeddeliveryfile; Type: TABLE DATA; Schema: public; Owner: -
---
-
-COPY public.devilry_student_uploadeddeliveryfile (id, uploaded_datetime, uploaded_file, filename, deadline_id, user_id) FROM stdin;
 \.
 
 
@@ -6274,6 +6199,13 @@ COPY public.django_content_type (id, app_label, model) FROM stdin;
 79	devilry_message	message
 80	devilry_message	messagereceiver
 81	devilry_report	devilryreport
+82	django_rq	dashboard
+83	devilry_qualifiesforexam	draftstatus
+84	devilry_qualifiesforexam	draftqualifiesforfinalexam
+85	silk	profile
+86	silk	request
+87	silk	response
+88	silk	sqlquery
 \.
 
 
@@ -6449,6 +6381,37 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 165	devilry_report	0001_initial	2023-05-26 09:18:14.618173+00
 166	devilry_report	0002_auto_20210427_1350	2023-05-26 09:18:14.682827+00
 167	devilry_message	0003_alter_message_context_type	2023-07-21 12:44:58.594865+00
+168	account	0003_alter_emailaddress_create_unique_verified_email	2026-05-04 12:22:29.651915+00
+169	account	0004_alter_emailaddress_drop_unique_email	2026-05-04 12:22:29.677245+00
+170	account	0005_emailaddress_idx_upper_email	2026-05-04 12:22:29.700436+00
+171	account	0006_emailaddress_lower	2026-05-04 12:22:29.731524+00
+172	account	0007_emailaddress_idx_email	2026-05-04 12:22:29.851694+00
+173	account	0008_emailaddress_unique_primary_email_fixup	2026-05-04 12:22:29.888519+00
+174	account	0009_emailaddress_unique_primary_email	2026-05-04 12:22:29.908414+00
+175	core	0047_alter_staticfeedbackfileattachment_file	2026-05-04 12:22:29.915758+00
+176	core	0048_remove_delivery_alias_delivery_and_more	2026-05-04 12:22:30.395047+00
+177	cradmin_temporaryfileuploadstore	0005_alter_temporaryfile_file	2026-05-04 12:22:30.399857+00
+178	devilry_comment	0012_alter_commentfile_file_alter_commentfileimage_image_and_more	2026-05-04 12:22:30.413888+00
+179	devilry_dbcache	0006_assignmentgroupcacheddata_public_student_attempts_with_delivered_files	2026-05-04 12:22:30.427046+00
+180	devilry_qualifiesforexam	0006_status_plugin_data	2026-05-04 12:22:30.451144+00
+181	devilry_qualifiesforexam	0007_draftstatus_draftqualifiesforfinalexam	2026-05-04 12:22:30.516087+00
+182	devilry_student	0002_alter_uploadeddeliveryfile_uploaded_file	2026-05-04 12:22:30.661273+00
+183	devilry_student	0003_delete_uploadeddeliveryfile	2026-05-04 12:22:30.664558+00
+184	django_rq	0001_initial	2026-05-04 12:22:30.66695+00
+185	django_rq	0002_delete_queue_create_dashboard	2026-05-04 12:22:30.705956+00
+186	silk	0001_initial	2026-05-04 12:22:30.735364+00
+187	silk	0002_auto_update_uuid4_id_field	2026-05-04 12:22:30.743656+00
+188	silk	0003_request_prof_file	2026-05-04 12:22:30.748447+00
+189	silk	0004_request_prof_file_storage	2026-05-04 12:22:30.752836+00
+190	silk	0005_increase_request_prof_file_length	2026-05-04 12:22:30.758167+00
+191	silk	0006_fix_request_prof_file_blank	2026-05-04 12:22:30.765438+00
+192	silk	0007_sqlquery_identifier	2026-05-04 12:22:30.771272+00
+193	silk	0008_sqlquery_analysis	2026-05-04 12:22:30.77616+00
+194	socialaccount	0004_app_provider_id_settings	2026-05-04 12:22:30.804431+00
+195	socialaccount	0005_socialtoken_nullable_app	2026-05-04 12:22:30.838108+00
+196	socialaccount	0006_alter_socialaccount_extra_data	2026-05-04 12:22:30.859496+00
+197	devilry_qualifiesforexam	0008_auto_20260429_1435	2026-05-04 12:22:40.068701+00
+198	devilry_qualifiesforexam	0009_auto_20260504_1358	2026-05-04 12:22:40.071696+00
 \.
 
 
@@ -6520,6 +6483,46 @@ COPY public.ievv_developemail_developemail (id, created_datetime, subject, from_
 
 
 --
+-- Data for Name: silk_profile; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.silk_profile (id, name, start_time, end_time, time_taken, file_path, line_num, end_line_num, func_name, exception_raised, dynamic, request_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: silk_profile_queries; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.silk_profile_queries (id, profile_id, sqlquery_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: silk_request; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.silk_request (id, path, query_params, raw_body, body, method, start_time, view_name, end_time, time_taken, encoded_headers, meta_time, meta_num_queries, meta_time_spent_queries, pyprofile, num_sql_queries, prof_file) FROM stdin;
+\.
+
+
+--
+-- Data for Name: silk_response; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.silk_response (id, status_code, raw_body, body, encoded_headers, request_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: silk_sqlquery; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.silk_sqlquery (id, query, start_time, end_time, time_taken, traceback, request_id, identifier, analysis) FROM stdin;
+\.
+
+
+--
 -- Data for Name: socialaccount_socialaccount; Type: TABLE DATA; Schema: public; Owner: -
 --
 
@@ -6531,7 +6534,7 @@ COPY public.socialaccount_socialaccount (id, provider, uid, last_login, date_joi
 -- Data for Name: socialaccount_socialapp; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.socialaccount_socialapp (id, provider, name, client_id, secret, key) FROM stdin;
+COPY public.socialaccount_socialapp (id, provider, name, client_id, secret, key, provider_id, settings) FROM stdin;
 \.
 
 
@@ -6583,7 +6586,7 @@ SELECT pg_catalog.setval('public.auth_group_permissions_id_seq', 1, false);
 -- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.auth_permission_id_seq', 317, true);
+SELECT pg_catalog.setval('public.auth_permission_id_seq', 342, true);
 
 
 --
@@ -6643,20 +6646,6 @@ SELECT pg_catalog.setval('public.core_candidateassignmentgrouphistory_id_seq', 1
 
 
 --
--- Name: core_deadline_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('public.core_deadline_id_seq', 1, false);
-
-
---
--- Name: core_delivery_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('public.core_delivery_id_seq', 1, false);
-
-
---
 -- Name: core_devilryuserprofile_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
@@ -6668,13 +6657,6 @@ SELECT pg_catalog.setval('public.core_devilryuserprofile_id_seq', 1, false);
 --
 
 SELECT pg_catalog.setval('public.core_examinerassignmentgrouphistory_id_seq', 22, true);
-
-
---
--- Name: core_filemeta_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('public.core_filemeta_id_seq', 1, false);
 
 
 --
@@ -6759,20 +6741,6 @@ SELECT pg_catalog.setval('public.core_relatedstudent_id_seq', 14, true);
 --
 
 SELECT pg_catalog.setval('public.core_relatedstudentkeyvalue_id_seq', 1, false);
-
-
---
--- Name: core_staticfeedback_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('public.core_staticfeedback_id_seq', 1, false);
-
-
---
--- Name: core_staticfeedbackfileattachment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('public.core_staticfeedbackfileattachment_id_seq', 1, false);
 
 
 --
@@ -6993,6 +6961,20 @@ SELECT pg_catalog.setval('public.devilry_qualifiesforexam_deletedqualifiesforfin
 
 
 --
+-- Name: devilry_qualifiesforexam_draftqualifiesforfinalexam_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.devilry_qualifiesforexam_draftqualifiesforfinalexam_id_seq', 1, false);
+
+
+--
+-- Name: devilry_qualifiesforexam_draftstatus_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.devilry_qualifiesforexam_draftstatus_id_seq', 1, false);
+
+
+--
 -- Name: devilry_qualifiesforexam_qualifiesforfinalexam_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
@@ -7014,13 +6996,6 @@ SELECT pg_catalog.setval('public.devilry_report_devilryreport_id_seq', 1, false)
 
 
 --
--- Name: devilry_student_uploadeddeliveryfile_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('public.devilry_student_uploadeddeliveryfile_id_seq', 1, false);
-
-
---
 -- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
@@ -7031,14 +7006,14 @@ SELECT pg_catalog.setval('public.django_admin_log_id_seq', 1, false);
 -- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.django_content_type_id_seq', 81, true);
+SELECT pg_catalog.setval('public.django_content_type_id_seq', 88, true);
 
 
 --
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.django_migrations_id_seq', 167, true);
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 198, true);
 
 
 --
@@ -7060,6 +7035,27 @@ SELECT pg_catalog.setval('public.ievv_batchframework_batchoperation_id_seq', 7, 
 --
 
 SELECT pg_catalog.setval('public.ievv_developemail_developemail_id_seq', 11, true);
+
+
+--
+-- Name: silk_profile_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.silk_profile_id_seq', 1, false);
+
+
+--
+-- Name: silk_profile_queries_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.silk_profile_queries_id_seq', 1, false);
+
+
+--
+-- Name: silk_sqlquery_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.silk_sqlquery_id_seq', 1, false);
 
 
 --
@@ -7091,19 +7087,19 @@ SELECT pg_catalog.setval('public.socialaccount_socialtoken_id_seq', 1, false);
 
 
 --
--- Name: account_emailaddress account_emailaddress_email_key; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.account_emailaddress
-    ADD CONSTRAINT account_emailaddress_email_key UNIQUE (email);
-
-
---
 -- Name: account_emailaddress account_emailaddress_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.account_emailaddress
     ADD CONSTRAINT account_emailaddress_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: account_emailaddress account_emailaddress_user_id_email_987c8728_uniq; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.account_emailaddress
+    ADD CONSTRAINT account_emailaddress_user_id_email_987c8728_uniq UNIQUE (user_id, email);
 
 
 --
@@ -7219,22 +7215,6 @@ ALTER TABLE ONLY public.core_assignmentgroup_examiners
 
 
 --
--- Name: core_assignmentgroup core_assignmentgroup_feedback_id_key; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.core_assignmentgroup
-    ADD CONSTRAINT core_assignmentgroup_feedback_id_key UNIQUE (feedback_id);
-
-
---
--- Name: core_assignmentgroup core_assignmentgroup_last_deadline_id_key; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.core_assignmentgroup
-    ADD CONSTRAINT core_assignmentgroup_last_deadline_id_key UNIQUE (last_deadline_id);
-
-
---
 -- Name: core_assignmentgroup core_assignmentgroup_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -7291,30 +7271,6 @@ ALTER TABLE ONLY public.core_candidateassignmentgrouphistory
 
 
 --
--- Name: core_deadline core_deadline_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.core_deadline
-    ADD CONSTRAINT core_deadline_pkey PRIMARY KEY (id);
-
-
---
--- Name: core_delivery core_delivery_last_feedback_id_key; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.core_delivery
-    ADD CONSTRAINT core_delivery_last_feedback_id_key UNIQUE (last_feedback_id);
-
-
---
--- Name: core_delivery core_delivery_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.core_delivery
-    ADD CONSTRAINT core_delivery_pkey PRIMARY KEY (id);
-
-
---
 -- Name: core_devilryuserprofile core_devilryuserprofile_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -7336,22 +7292,6 @@ ALTER TABLE ONLY public.core_devilryuserprofile
 
 ALTER TABLE ONLY public.core_examinerassignmentgrouphistory
     ADD CONSTRAINT core_examinerassignmentgrouphistory_pkey PRIMARY KEY (id);
-
-
---
--- Name: core_filemeta core_filemeta_delivery_id_1954e8947150727e_uniq; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.core_filemeta
-    ADD CONSTRAINT core_filemeta_delivery_id_1954e8947150727e_uniq UNIQUE (delivery_id, filename);
-
-
---
--- Name: core_filemeta core_filemeta_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.core_filemeta
-    ADD CONSTRAINT core_filemeta_pkey PRIMARY KEY (id);
 
 
 --
@@ -7536,22 +7476,6 @@ ALTER TABLE ONLY public.core_relatedstudentkeyvalue
 
 ALTER TABLE ONLY public.core_relatedstudentkeyvalue
     ADD CONSTRAINT core_relatedstudentkeyvalue_pkey PRIMARY KEY (id);
-
-
---
--- Name: core_staticfeedback core_staticfeedback_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.core_staticfeedback
-    ADD CONSTRAINT core_staticfeedback_pkey PRIMARY KEY (id);
-
-
---
--- Name: core_staticfeedbackfileattachment core_staticfeedbackfileattachment_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.core_staticfeedbackfileattachment
-    ADD CONSTRAINT core_staticfeedbackfileattachment_pkey PRIMARY KEY (id);
 
 
 --
@@ -7955,6 +7879,22 @@ ALTER TABLE ONLY public.devilry_qualifiesforexam_deletedqualifiesforfinalexam
 
 
 --
+-- Name: devilry_qualifiesforexam_draftqualifiesforfinalexam devilry_qualifiesforexam_draftqualifiesforfinalexam_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.devilry_qualifiesforexam_draftqualifiesforfinalexam
+    ADD CONSTRAINT devilry_qualifiesforexam_draftqualifiesforfinalexam_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: devilry_qualifiesforexam_draftstatus devilry_qualifiesforexam_draftstatus_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.devilry_qualifiesforexam_draftstatus
+    ADD CONSTRAINT devilry_qualifiesforexam_draftstatus_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: devilry_qualifiesforexam_periodtag devilry_qualifiesforexam_periodtag_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -7984,22 +7924,6 @@ ALTER TABLE ONLY public.devilry_qualifiesforexam_status
 
 ALTER TABLE ONLY public.devilry_report_devilryreport
     ADD CONSTRAINT devilry_report_devilryreport_pkey PRIMARY KEY (id);
-
-
---
--- Name: devilry_student_uploadeddeliveryfile devilry_student_uploadeddeliv_deadline_id_5ceb94959540ad73_uniq; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.devilry_student_uploadeddeliveryfile
-    ADD CONSTRAINT devilry_student_uploadeddeliv_deadline_id_5ceb94959540ad73_uniq UNIQUE (deadline_id, user_id, filename);
-
-
---
--- Name: devilry_student_uploadeddeliveryfile devilry_student_uploadeddeliveryfile_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.devilry_student_uploadeddeliveryfile
-    ADD CONSTRAINT devilry_student_uploadeddeliveryfile_pkey PRIMARY KEY (id);
 
 
 --
@@ -8075,6 +7999,62 @@ ALTER TABLE ONLY public.ievv_developemail_developemail
 
 
 --
+-- Name: silk_profile silk_profile_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.silk_profile
+    ADD CONSTRAINT silk_profile_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: silk_profile_queries silk_profile_queries_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.silk_profile_queries
+    ADD CONSTRAINT silk_profile_queries_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: silk_profile_queries silk_profile_queries_profile_id_sqlquery_id_b2403d9b_uniq; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.silk_profile_queries
+    ADD CONSTRAINT silk_profile_queries_profile_id_sqlquery_id_b2403d9b_uniq UNIQUE (profile_id, sqlquery_id);
+
+
+--
+-- Name: silk_request silk_request_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.silk_request
+    ADD CONSTRAINT silk_request_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: silk_response silk_response_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.silk_response
+    ADD CONSTRAINT silk_response_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: silk_response silk_response_request_id_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.silk_response
+    ADD CONSTRAINT silk_response_request_id_key UNIQUE (request_id);
+
+
+--
+-- Name: silk_sqlquery silk_sqlquery_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.silk_sqlquery
+    ADD CONSTRAINT silk_sqlquery_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: socialaccount_socialaccount socialaccount_socialaccount_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -8143,6 +8123,13 @@ ALTER TABLE ONLY public.devilry_account_perioduserguidelineacceptance
 --
 
 CREATE INDEX account_emailaddress_e8701ad4 ON public.account_emailaddress USING btree (user_id);
+
+
+--
+-- Name: account_emailaddress_email_03be32b2; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX account_emailaddress_email_03be32b2 ON public.account_emailaddress USING btree (email);
 
 
 --
@@ -8349,48 +8336,6 @@ CREATE INDEX core_candidateassignmentgrouphistory_user_id_7a3668f9 ON public.cor
 
 
 --
--- Name: core_deadline_0c5d7d4e; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX core_deadline_0c5d7d4e ON public.core_deadline USING btree (added_by_id);
-
-
---
--- Name: core_deadline_3f3b3700; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX core_deadline_3f3b3700 ON public.core_deadline USING btree (assignment_group_id);
-
-
---
--- Name: core_delivery_13a4f9cc; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX core_delivery_13a4f9cc ON public.core_delivery USING btree (deadline_id);
-
-
---
--- Name: core_delivery_37b4f50c; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX core_delivery_37b4f50c ON public.core_delivery USING btree (delivered_by_id);
-
-
---
--- Name: core_delivery_51ce87c1; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX core_delivery_51ce87c1 ON public.core_delivery USING btree (alias_delivery_id);
-
-
---
--- Name: core_delivery_8ea1f7aa; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX core_delivery_8ea1f7aa ON public.core_delivery USING btree (copy_of_id);
-
-
---
 -- Name: core_examinerassignmentgro_assignment_group_id_eb832a6e; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -8402,13 +8347,6 @@ CREATE INDEX core_examinerassignmentgro_assignment_group_id_eb832a6e ON public.c
 --
 
 CREATE INDEX core_examinerassignmentgrouphistory_user_id_1636fd1b ON public.core_examinerassignmentgrouphistory USING btree (user_id);
-
-
---
--- Name: core_filemeta_7c4b99fe; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX core_filemeta_7c4b99fe ON public.core_filemeta USING btree (delivery_id);
 
 
 --
@@ -8661,27 +8599,6 @@ CREATE INDEX core_relatedstudentkeyvalue_key_4d695a35117794a4_like ON public.cor
 --
 
 CREATE INDEX core_relatedstudentkeyvalue_value_2e6d2220af915c34_like ON public.core_relatedstudentkeyvalue USING btree (value text_pattern_ops);
-
-
---
--- Name: core_staticfeedback_7c4b99fe; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX core_staticfeedback_7c4b99fe ON public.core_staticfeedback USING btree (delivery_id);
-
-
---
--- Name: core_staticfeedback_bc7c970b; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX core_staticfeedback_bc7c970b ON public.core_staticfeedback USING btree (saved_by_id);
-
-
---
--- Name: core_staticfeedbackfileattachment_a869bd9a; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX core_staticfeedbackfileattachment_a869bd9a ON public.core_staticfeedbackfileattachment USING btree (staticfeedback_id);
 
 
 --
@@ -9322,6 +9239,13 @@ CREATE INDEX devilry_message_messagereceiver_user_id_06b01621 ON public.devilry_
 
 
 --
+-- Name: devilry_qualifiesforexam_d_draft_status_id_88c87770; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX devilry_qualifiesforexam_d_draft_status_id_88c87770 ON public.devilry_qualifiesforexam_draftqualifiesforfinalexam USING btree (draft_status_id);
+
+
+--
 -- Name: devilry_qualifiesforexam_d_relatedstudent_id_1e10750d; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -9329,10 +9253,31 @@ CREATE INDEX devilry_qualifiesforexam_d_relatedstudent_id_1e10750d ON public.dev
 
 
 --
+-- Name: devilry_qualifiesforexam_d_relatedstudent_id_3045fe4c; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX devilry_qualifiesforexam_d_relatedstudent_id_3045fe4c ON public.devilry_qualifiesforexam_draftqualifiesforfinalexam USING btree (relatedstudent_id);
+
+
+--
 -- Name: devilry_qualifiesforexam_d_status_id_46f01360; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX devilry_qualifiesforexam_d_status_id_46f01360 ON public.devilry_qualifiesforexam_deletedqualifiesforfinalexam USING btree (status_id);
+
+
+--
+-- Name: devilry_qualifiesforexam_draftstatus_created_by_id_d1da3e4b; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX devilry_qualifiesforexam_draftstatus_created_by_id_d1da3e4b ON public.devilry_qualifiesforexam_draftstatus USING btree (created_by_id);
+
+
+--
+-- Name: devilry_qualifiesforexam_draftstatus_period_id_e46db2ea; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX devilry_qualifiesforexam_draftstatus_period_id_e46db2ea ON public.devilry_qualifiesforexam_draftstatus USING btree (period_id);
 
 
 --
@@ -9375,20 +9320,6 @@ CREATE INDEX devilry_qualifiesforexam_status_e8701ad4 ON public.devilry_qualifie
 --
 
 CREATE INDEX devilry_report_devilryreport_generated_by_user_id_4120a74b ON public.devilry_report_devilryreport USING btree (generated_by_user_id);
-
-
---
--- Name: devilry_student_uploadeddeliveryfile_13a4f9cc; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX devilry_student_uploadeddeliveryfile_13a4f9cc ON public.devilry_student_uploadeddeliveryfile USING btree (deadline_id);
-
-
---
--- Name: devilry_student_uploadeddeliveryfile_e8701ad4; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX devilry_student_uploadeddeliveryfile_e8701ad4 ON public.devilry_student_uploadeddeliveryfile USING btree (user_id);
 
 
 --
@@ -9469,6 +9400,104 @@ CREATE INDEX ievv_developemail_developemail_from_email_981952b3_like ON public.i
 
 
 --
+-- Name: silk_profile_queries_profile_id_a3d76db8; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX silk_profile_queries_profile_id_a3d76db8 ON public.silk_profile_queries USING btree (profile_id);
+
+
+--
+-- Name: silk_profile_queries_sqlquery_id_155df455; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX silk_profile_queries_sqlquery_id_155df455 ON public.silk_profile_queries USING btree (sqlquery_id);
+
+
+--
+-- Name: silk_profile_request_id_7b81bd69; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX silk_profile_request_id_7b81bd69 ON public.silk_profile USING btree (request_id);
+
+
+--
+-- Name: silk_profile_request_id_7b81bd69_like; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX silk_profile_request_id_7b81bd69_like ON public.silk_profile USING btree (request_id varchar_pattern_ops);
+
+
+--
+-- Name: silk_request_id_5a356c4f_like; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX silk_request_id_5a356c4f_like ON public.silk_request USING btree (id varchar_pattern_ops);
+
+
+--
+-- Name: silk_request_path_9f3d798e; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX silk_request_path_9f3d798e ON public.silk_request USING btree (path);
+
+
+--
+-- Name: silk_request_path_9f3d798e_like; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX silk_request_path_9f3d798e_like ON public.silk_request USING btree (path varchar_pattern_ops);
+
+
+--
+-- Name: silk_request_start_time_1300bc58; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX silk_request_start_time_1300bc58 ON public.silk_request USING btree (start_time);
+
+
+--
+-- Name: silk_request_view_name_68559f7b; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX silk_request_view_name_68559f7b ON public.silk_request USING btree (view_name);
+
+
+--
+-- Name: silk_request_view_name_68559f7b_like; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX silk_request_view_name_68559f7b_like ON public.silk_request USING btree (view_name varchar_pattern_ops);
+
+
+--
+-- Name: silk_response_id_dda88710_like; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX silk_response_id_dda88710_like ON public.silk_response USING btree (id varchar_pattern_ops);
+
+
+--
+-- Name: silk_response_request_id_1e8e2776_like; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX silk_response_request_id_1e8e2776_like ON public.silk_response USING btree (request_id varchar_pattern_ops);
+
+
+--
+-- Name: silk_sqlquery_request_id_6f8f0527; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX silk_sqlquery_request_id_6f8f0527 ON public.silk_sqlquery USING btree (request_id);
+
+
+--
+-- Name: silk_sqlquery_request_id_6f8f0527_like; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX silk_sqlquery_request_id_6f8f0527_like ON public.silk_sqlquery USING btree (request_id varchar_pattern_ops);
+
+
+--
 -- Name: socialaccount_socialaccount_e8701ad4; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -9501,6 +9530,20 @@ CREATE INDEX socialaccount_socialtoken_8a089c2a ON public.socialaccount_socialto
 --
 
 CREATE INDEX socialaccount_socialtoken_f382adfe ON public.socialaccount_socialtoken USING btree (app_id);
+
+
+--
+-- Name: unique_primary_email; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX unique_primary_email ON public.account_emailaddress USING btree (user_id, "primary") WHERE "primary";
+
+
+--
+-- Name: unique_verified_email; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX unique_verified_email ON public.account_emailaddress USING btree (email) WHERE verified;
 
 
 --
@@ -9735,14 +9778,6 @@ ALTER TABLE ONLY public.devilry_group_groupcomment
 
 
 --
--- Name: core_deadline D7eb2452376d1d7e0038f38d5151e20b; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.core_deadline
-    ADD CONSTRAINT "D7eb2452376d1d7e0038f38d5151e20b" FOREIGN KEY (assignment_group_id) REFERENCES public.core_assignmentgroup(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
 -- Name: ievv_batchframework_batchoperation D8d96d0a9bf59345ab08863cddcf9249; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -9871,22 +9906,6 @@ ALTER TABLE ONLY public.core_candidate
 
 
 --
--- Name: core_staticfeedbackfileattachment co_staticfeedback_id_4a6ee82466877520_fk_core_staticfeedback_id; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.core_staticfeedbackfileattachment
-    ADD CONSTRAINT co_staticfeedback_id_4a6ee82466877520_fk_core_staticfeedback_id FOREIGN KEY (staticfeedback_id) REFERENCES public.core_staticfeedback(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
--- Name: core_delivery cor_last_feedback_id_15c1864499fa3298_fk_core_staticfeedback_id; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.core_delivery
-    ADD CONSTRAINT cor_last_feedback_id_15c1864499fa3298_fk_core_staticfeedback_id FOREIGN KEY (last_feedback_id) REFERENCES public.core_staticfeedback(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
 -- Name: core_assignmentgrouphistory core_as_assignment_group_id_1a5bc40e_fk_core_assignmentgroup_id; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -9895,27 +9914,11 @@ ALTER TABLE ONLY public.core_assignmentgrouphistory
 
 
 --
--- Name: core_assignmentgroup core_ass_feedback_id_4f3eb4317ce05ffd_fk_core_staticfeedback_id; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.core_assignmentgroup
-    ADD CONSTRAINT core_ass_feedback_id_4f3eb4317ce05ffd_fk_core_staticfeedback_id FOREIGN KEY (feedback_id) REFERENCES public.core_staticfeedback(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
 -- Name: core_assignment_admins core_assig_assignment_id_712ee5b81efdf7d7_fk_core_assignment_id; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.core_assignment_admins
     ADD CONSTRAINT core_assig_assignment_id_712ee5b81efdf7d7_fk_core_assignment_id FOREIGN KEY (assignment_id) REFERENCES public.core_assignment(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
--- Name: core_assignmentgroup core_assig_last_deadline_id_946dfcf7910964c_fk_core_deadline_id; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.core_assignmentgroup
-    ADD CONSTRAINT core_assig_last_deadline_id_946dfcf7910964c_fk_core_deadline_id FOREIGN KEY (last_deadline_id) REFERENCES public.core_deadline(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
@@ -9967,46 +9970,6 @@ ALTER TABLE ONLY public.core_assignmentgroup
 
 
 --
--- Name: core_deadline core_de_added_by_id_5715a513f2acd9ff_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.core_deadline
-    ADD CONSTRAINT core_de_added_by_id_5715a513f2acd9ff_fk_devilry_account_user_id FOREIGN KEY (added_by_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
--- Name: core_delivery core_del_alias_delivery_id_58e23cdc9faaee16_fk_core_delivery_id; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.core_delivery
-    ADD CONSTRAINT core_del_alias_delivery_id_58e23cdc9faaee16_fk_core_delivery_id FOREIGN KEY (alias_delivery_id) REFERENCES public.core_delivery(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
--- Name: core_delivery core_deli_delivered_by_id_47605050cd8092f1_fk_core_candidate_id; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.core_delivery
-    ADD CONSTRAINT core_deli_delivered_by_id_47605050cd8092f1_fk_core_candidate_id FOREIGN KEY (delivered_by_id) REFERENCES public.core_candidate(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
--- Name: core_delivery core_delivery_copy_of_id_4bdefcd646b758a3_fk_core_delivery_id; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.core_delivery
-    ADD CONSTRAINT core_delivery_copy_of_id_4bdefcd646b758a3_fk_core_delivery_id FOREIGN KEY (copy_of_id) REFERENCES public.core_delivery(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
--- Name: core_delivery core_delivery_deadline_id_3af0ef5599495505_fk_core_deadline_id; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.core_delivery
-    ADD CONSTRAINT core_delivery_deadline_id_3af0ef5599495505_fk_core_deadline_id FOREIGN KEY (deadline_id) REFERENCES public.core_deadline(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
 -- Name: core_devilryuserprofile core_devilr_user_id_71c4199c1d6418ff_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -10028,14 +9991,6 @@ ALTER TABLE ONLY public.core_examinerassignmentgrouphistory
 
 ALTER TABLE ONLY public.core_examinerassignmentgrouphistory
     ADD CONSTRAINT core_examinerassignm_user_id_1636fd1b_fk_devilry_a FOREIGN KEY (user_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
--- Name: core_filemeta core_filemeta_delivery_id_6601bb0f5e56d9fe_fk_core_delivery_id; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.core_filemeta
-    ADD CONSTRAINT core_filemeta_delivery_id_6601bb0f5e56d9fe_fk_core_delivery_id FOREIGN KEY (delivery_id) REFERENCES public.core_delivery(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
@@ -10175,22 +10130,6 @@ ALTER TABLE ONLY public.core_relatedstudent
 
 
 --
--- Name: core_staticfeedback core_st_saved_by_id_5c9526c62cf55415_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.core_staticfeedback
-    ADD CONSTRAINT core_st_saved_by_id_5c9526c62cf55415_fk_devilry_account_user_id FOREIGN KEY (saved_by_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
--- Name: core_staticfeedback core_staticfee_delivery_id_76cd203e463381c6_fk_core_delivery_id; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.core_staticfeedback
-    ADD CONSTRAINT core_staticfee_delivery_id_76cd203e463381c6_fk_core_delivery_id FOREIGN KEY (delivery_id) REFERENCES public.core_delivery(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
 -- Name: core_subject_admins core_subjec_user_id_757b64082c3dd225_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -10268,14 +10207,6 @@ ALTER TABLE ONLY public.devilry_dbcache_assignmentgroupcacheddata
 
 ALTER TABLE ONLY public.devilry_qualifiesforexam_qualifiesforfinalexam
     ADD CONSTRAINT de_relatedstudent_id_55ab211e0e76d3c5_fk_core_relatedstudent_id FOREIGN KEY (relatedstudent_id) REFERENCES public.core_relatedstudent(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
--- Name: devilry_gradingsystem_feedbackdraft de_staticfeedback_id_43feb18645a3f2a4_fk_core_staticfeedback_id; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.devilry_gradingsystem_feedbackdraft
-    ADD CONSTRAINT de_staticfeedback_id_43feb18645a3f2a4_fk_core_staticfeedback_id FOREIGN KEY (staticfeedback_id) REFERENCES public.core_staticfeedback(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
@@ -10439,22 +10370,6 @@ ALTER TABLE ONLY public.devilry_group_feedbackset
 
 
 --
--- Name: devilry_gradingsystem_feedbackdraft devilry_gradin_delivery_id_31734762a96e190f_fk_core_delivery_id; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.devilry_gradingsystem_feedbackdraft
-    ADD CONSTRAINT devilry_gradin_delivery_id_31734762a96e190f_fk_core_delivery_id FOREIGN KEY (delivery_id) REFERENCES public.core_delivery(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
--- Name: devilry_gradingsystem_feedbackdraftfile devilry_gradin_delivery_id_65ac58b6a461891b_fk_core_delivery_id; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.devilry_gradingsystem_feedbackdraftfile
-    ADD CONSTRAINT devilry_gradin_delivery_id_65ac58b6a461891b_fk_core_delivery_id FOREIGN KEY (delivery_id) REFERENCES public.core_delivery(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
 -- Name: devilry_group_feedbacksetdeadlinehistory devilry_group_changed_by_id_8dd1df9c_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -10599,11 +10514,43 @@ ALTER TABLE ONLY public.devilry_qualifiesforexam_status
 
 
 --
+-- Name: devilry_qualifiesforexam_draftstatus devilry_qualifiesfor_created_by_id_d1da3e4b_fk_devilry_a; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.devilry_qualifiesforexam_draftstatus
+    ADD CONSTRAINT devilry_qualifiesfor_created_by_id_d1da3e4b_fk_devilry_a FOREIGN KEY (created_by_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: devilry_qualifiesforexam_draftqualifiesforfinalexam devilry_qualifiesfor_draft_status_id_88c87770_fk_devilry_q; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.devilry_qualifiesforexam_draftqualifiesforfinalexam
+    ADD CONSTRAINT devilry_qualifiesfor_draft_status_id_88c87770_fk_devilry_q FOREIGN KEY (draft_status_id) REFERENCES public.devilry_qualifiesforexam_draftstatus(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: devilry_qualifiesforexam_draftstatus devilry_qualifiesfor_period_id_e46db2ea_fk_core_peri; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.devilry_qualifiesforexam_draftstatus
+    ADD CONSTRAINT devilry_qualifiesfor_period_id_e46db2ea_fk_core_peri FOREIGN KEY (period_id) REFERENCES public.core_period(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
 -- Name: devilry_qualifiesforexam_deletedqualifiesforfinalexam devilry_qualifiesfor_relatedstudent_id_1e10750d_fk_core_rela; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.devilry_qualifiesforexam_deletedqualifiesforfinalexam
     ADD CONSTRAINT devilry_qualifiesfor_relatedstudent_id_1e10750d_fk_core_rela FOREIGN KEY (relatedstudent_id) REFERENCES public.core_relatedstudent(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: devilry_qualifiesforexam_draftqualifiesforfinalexam devilry_qualifiesfor_relatedstudent_id_3045fe4c_fk_core_rela; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.devilry_qualifiesforexam_draftqualifiesforfinalexam
+    ADD CONSTRAINT devilry_qualifiesfor_relatedstudent_id_3045fe4c_fk_core_rela FOREIGN KEY (relatedstudent_id) REFERENCES public.core_relatedstudent(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
@@ -10636,22 +10583,6 @@ ALTER TABLE ONLY public.devilry_gradingsystem_feedbackdraftfile
 
 ALTER TABLE ONLY public.devilry_gradingsystem_feedbackdraft
     ADD CONSTRAINT devilry_saved_by_id_2688417740fdf346_fk_devilry_account_user_id FOREIGN KEY (saved_by_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
--- Name: devilry_student_uploadeddeliveryfile devilry_stu_user_id_594ee6dafdf52417_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.devilry_student_uploadeddeliveryfile
-    ADD CONSTRAINT devilry_stu_user_id_594ee6dafdf52417_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
--- Name: devilry_student_uploadeddeliveryfile devilry_studen_deadline_id_73bb1a77ed86db5c_fk_core_deadline_id; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.devilry_student_uploadeddeliveryfile
-    ADD CONSTRAINT devilry_studen_deadline_id_73bb1a77ed86db5c_fk_core_deadline_id FOREIGN KEY (deadline_id) REFERENCES public.core_deadline(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
@@ -10703,6 +10634,46 @@ ALTER TABLE ONLY public.core_assignmentgroup_examiners
 
 
 --
+-- Name: silk_profile_queries silk_profile_queries_profile_id_a3d76db8_fk_silk_profile_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.silk_profile_queries
+    ADD CONSTRAINT silk_profile_queries_profile_id_a3d76db8_fk_silk_profile_id FOREIGN KEY (profile_id) REFERENCES public.silk_profile(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: silk_profile_queries silk_profile_queries_sqlquery_id_155df455_fk_silk_sqlquery_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.silk_profile_queries
+    ADD CONSTRAINT silk_profile_queries_sqlquery_id_155df455_fk_silk_sqlquery_id FOREIGN KEY (sqlquery_id) REFERENCES public.silk_sqlquery(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: silk_profile silk_profile_request_id_7b81bd69_fk_silk_request_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.silk_profile
+    ADD CONSTRAINT silk_profile_request_id_7b81bd69_fk_silk_request_id FOREIGN KEY (request_id) REFERENCES public.silk_request(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: silk_response silk_response_request_id_1e8e2776_fk_silk_request_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.silk_response
+    ADD CONSTRAINT silk_response_request_id_1e8e2776_fk_silk_request_id FOREIGN KEY (request_id) REFERENCES public.silk_request(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: silk_sqlquery silk_sqlquery_request_id_6f8f0527_fk_silk_request_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.silk_sqlquery
+    ADD CONSTRAINT silk_sqlquery_request_id_6f8f0527_fk_silk_request_id FOREIGN KEY (request_id) REFERENCES public.silk_request(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
 -- Name: socialaccount_socialtoken socialacc_account_id_951f210e_fk_socialaccount_socialaccount_id; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -10719,19 +10690,19 @@ ALTER TABLE ONLY public.socialaccount_socialapp_sites
 
 
 --
--- Name: socialaccount_socialtoken socialaccount_soc_app_id_636a42d7_fk_socialaccount_socialapp_id; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.socialaccount_socialtoken
-    ADD CONSTRAINT socialaccount_soc_app_id_636a42d7_fk_socialaccount_socialapp_id FOREIGN KEY (app_id) REFERENCES public.socialaccount_socialapp(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
 -- Name: socialaccount_socialaccount socialaccount_socia_user_id_8146e70c_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.socialaccount_socialaccount
     ADD CONSTRAINT socialaccount_socia_user_id_8146e70c_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES public.devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: socialaccount_socialtoken socialaccount_social_app_id_636a42d7_fk_socialacc; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.socialaccount_socialtoken
+    ADD CONSTRAINT socialaccount_social_app_id_636a42d7_fk_socialacc FOREIGN KEY (app_id) REFERENCES public.socialaccount_socialapp(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
@@ -10745,4 +10716,6 @@ ALTER TABLE ONLY public.socialaccount_socialapp_sites
 --
 -- PostgreSQL database dump complete
 --
+
+\unrestrict q9ZnIknZ5lY1dtVXTBK3YWihwfGUq5sKmjHWpdAqidSorKLZ7KP5kyoWcA4eDlh
 
