@@ -1,7 +1,10 @@
 import logging
 
+from allauth.core.exceptions import ImmediateHttpResponse
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
+from allauth.socialaccount.providers.base import AuthError
 from django.contrib.auth import get_user_model
+from django.http import HttpResponseRedirect
 
 from devilry.devilry_authenticate import socialaccount_user_updaters
 
@@ -10,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 class DevilrySocialAccountAdapter(DefaultSocialAccountAdapter):
     extra_data_to_keep = ["userid_sec", "userid", "email", "name", "profilephoto"]
+    benign_auth_errors = frozenset({AuthError.UNKNOWN, AuthError.CANCELLED})
 
     def clean_extra_date(self, extra_data):
         out = {}
@@ -64,12 +68,22 @@ class DevilrySocialAccountAdapter(DefaultSocialAccountAdapter):
     def populate_user(self, request, sociallogin, data):
         return sociallogin.user
 
-    def authentication_error(self, request, provider_id, error=None, exception=None, extra_context=None):
+    def on_authentication_error(self, request, provider, error=None, exception=None, extra_context=None):
         """
-        Log errors with allauth authentication.
+        Invoked by allauth when the authentication cycle fails.
         """
+        provider_id = getattr(provider, "id", provider)
+
+        if exception is None and error in self.benign_auth_errors:
+            logger.warning(
+                "Ignoring benign allauth callback (likely browser back-button or stale/cancelled login). Provider: %s. Error: %s.",
+                provider_id,
+                error,
+            )
+            raise ImmediateHttpResponse(HttpResponseRedirect("/"))
+
         logger.error(
-            "Allauth authentication failed. Provider_id: %s. Error: %s. Extra_context: %r. Exception: %s",
+            "Allauth authentication failed. Provider: %s. Error: %s. Extra_context: %r. Exception: %s",
             provider_id,
             error,
             extra_context,
