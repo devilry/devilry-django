@@ -1,3 +1,9 @@
+## 6.6.3 (2026-09-02)
+
+### Fix
+
+- Only use appresso-sphinx-extensions as a doc dependency
+
 ## 6.6.2 (2026-05-04)
 
 ### Fix
