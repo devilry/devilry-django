@@ -1,0 +1,10 @@
+.. _6.6.3changelog:
+
+############################
+What is new in Devilry 6.6.3
+############################
+
+
+Updates/changes
+###############
+Improvements to base dependencies, no functional changes.
