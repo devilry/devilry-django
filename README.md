@@ -52,7 +52,7 @@ needed, but we really recommend using pipx since that is isolated.
 
 ```bash
 uv python install 3.10
-uv venv
+uv venv --clear
 uv pip install -e ".[dev,test,docs]"
 ```
 

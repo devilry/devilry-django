@@ -64,3 +64,5 @@ dump.rdb
 /devilry_delivery_storage/
 /minio_devdata/
 /built-docs/
+# Ignore local test reports (pytest --html=testreport.ignore.html)
+*.ignore.html
