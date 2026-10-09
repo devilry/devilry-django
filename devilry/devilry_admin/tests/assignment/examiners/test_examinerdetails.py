@@ -135,3 +135,23 @@ class TestExaminerDetailsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
         )
         self.assertEqual(1, mockresponse.selector.count(".cradmin-legacy-listbuilder-itemvalue"))
+
+    def test_match_result_count(self):
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        relatedexaminer = baker.make("core.RelatedExaminer", period=testassignment.period)
+        testgroup1 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", relatedexaminer=relatedexaminer, assignmentgroup=testgroup1)
+        testgroup2 = baker.make("core.AssignmentGroup", parentnode=testassignment)
+        baker.make("core.Examiner", relatedexaminer=relatedexaminer, assignmentgroup=testgroup2)
+        baker.make("core.AssignmentGroup", parentnode=testassignment)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={"relatedexaminer_id": relatedexaminer.id},
+            cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
+        )
+        self.assertEqual(
+            "Found 2 of 2 groups",
+            mockresponse.selector.one(
+                ".devilry-with-match-result-listbuilder-itemvalue-titledescription-title"
+            ).alltext_normalized,
+        )

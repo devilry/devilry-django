@@ -20,6 +20,7 @@ from cradmin_legacy.viewhelpers import listbuilder
 
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin import devilry_listfilter
+from devilry.devilry_cradmin import devilry_multiselect2
 
 
 class AbstractDeleteMethodLinkFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
@@ -131,7 +132,9 @@ class ChooseMethod(TemplateView):
         return context
 
 
-class DeleteGroupsTargetRenderer(devilry_listbuilder.assignmentgroup.GroupTargetRenderer):
+class DeleteGroupsTargetRenderer(
+    devilry_multiselect2.target.SelectedCountTargetMixin, devilry_listbuilder.assignmentgroup.GroupTargetRenderer
+):
     def get_submit_button_text(self):
         return gettext_lazy("Delete students")
 

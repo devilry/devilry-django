@@ -1,0 +1,12 @@
+{% extends "cradmin_legacy/viewhelpers/multiselect2/target_renderer/target.django.html" %}
+{% load devilry_theme3_tags %}
+
+{% block with-items-title %}
+    <h2 class="cradmin-legacy-multiselect2-target-title">
+        {{ me.get_with_items_title }}
+        <devilry-multiselect2-selected-count></devilry-multiselect2-selected-count>
+    </h2>
+    <script type="module">
+        import '{% devilry_theme3_dist_path %}/scripts/plain_es6/multiselect2SelectedCount.js';
+    </script>
+{% endblock with-items-title %}

@@ -514,6 +514,17 @@ class TestRelatedStudentMultiselectTarget(TestCase):
         )
         self.assertEqual("Add students", selector.one('button[type="submit"]').alltext_normalized)
 
+    def test_with_items_title_selected_count(self):
+        selector = htmls.S(
+            create_groups.RelatedStudentMultiselectTarget(form=forms.Form()).render(request=mock.MagicMock())
+        )
+        self.assertEqual(
+            "Selected students", selector.one(".cradmin-legacy-multiselect2-target-title").alltext_normalized
+        )
+        self.assertTrue(
+            selector.exists(".cradmin-legacy-multiselect2-target-title devilry-multiselect2-selected-count")
+        )
+
 
 class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = create_groups.ManualSelectStudentsView

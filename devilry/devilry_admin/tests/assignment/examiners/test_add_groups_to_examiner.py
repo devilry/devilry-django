@@ -70,6 +70,21 @@ class TestAddGroupsToExaminerView(test.TestCase, cradmin_testhelpers.TestCaseMix
             mockresponse.selector.one(".cradmin-legacy-multiselect2-target-formfields .btn").alltext_normalized,
         )
 
+    def test_target_with_selected_items_title_selected_count(self):
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        relatedexaminer = baker.make("core.RelatedExaminer", period=testassignment.period)
+        baker.make("core.AssignmentGroup", parentnode=testassignment)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={"relatedexaminer_id": relatedexaminer.id},
+            cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
+        )
+        self.assertTrue(
+            mockresponse.selector.exists(
+                ".cradmin-legacy-multiselect2-target-title devilry-multiselect2-selected-count"
+            )
+        )
+
     def test_groups_sanity(self):
         testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
         relatedexaminer = baker.make("core.RelatedExaminer", period=testassignment.period)

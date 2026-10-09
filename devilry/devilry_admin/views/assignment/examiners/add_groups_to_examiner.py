@@ -7,9 +7,12 @@ from devilry.apps.core.models import Examiner
 from devilry.devilry_admin.views.assignment.examiners import base_single_examinerview
 from devilry.devilry_admin.views.assignment.students import groupview_base
 from devilry.devilry_cradmin import devilry_listbuilder
+from devilry.devilry_cradmin import devilry_multiselect2
 
 
-class TargetRenderer(devilry_listbuilder.assignmentgroup.GroupTargetRenderer):
+class TargetRenderer(
+    devilry_multiselect2.target.SelectedCountTargetMixin, devilry_listbuilder.assignmentgroup.GroupTargetRenderer
+):
     def get_submit_button_text(self):
         return gettext_lazy("Add students")
 

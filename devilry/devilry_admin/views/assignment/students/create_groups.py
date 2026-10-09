@@ -18,6 +18,7 @@ from cradmin_legacy.viewhelpers import multiselect2view
 from devilry.apps.core.models import Candidate, AssignmentGroup, RelatedStudent
 from devilry.devilry_admin.cradminextensions.listbuilder import listbuilder_relatedstudent
 from devilry.devilry_admin.cradminextensions.multiselect2 import multiselect2_relatedstudent
+from devilry.devilry_cradmin import devilry_multiselect2
 
 from devilry.devilry_admin.views.assignment.students.create_groups_accumulated_score import (
     SelectAssignmentsView,
@@ -350,7 +351,9 @@ class ConfirmView(CreateGroupsViewMixin, listbuilder_relatedstudent.VerticalFilt
         return context
 
 
-class RelatedStudentMultiselectTarget(multiselect2_relatedstudent.Target):
+class RelatedStudentMultiselectTarget(
+    devilry_multiselect2.target.SelectedCountTargetMixin, multiselect2_relatedstudent.Target
+):
     def get_submit_button_text(self):
         return pgettext_lazy("admin create_groups", "Add students")
 

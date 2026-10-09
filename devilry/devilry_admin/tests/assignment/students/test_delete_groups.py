@@ -127,6 +127,20 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one(".cradmin-legacy-multiselect2-target-title").alltext_normalized,
         )
 
+    def test_target_with_selected_items_title_selected_count(self):
+        testuser = baker.make(settings.AUTH_USER_MODEL)
+        testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole("departmentadmin"),
+            requestuser=testuser,
+        )
+        self.assertTrue(
+            mockresponse.selector.exists(
+                ".cradmin-legacy-multiselect2-target-title devilry-multiselect2-selected-count"
+            )
+        )
+
     def test_exclude_groups_with_groupcomment_from_student_if_not_departmentadmin(self):
         testuser = baker.make(settings.AUTH_USER_MODEL)
         testassignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
