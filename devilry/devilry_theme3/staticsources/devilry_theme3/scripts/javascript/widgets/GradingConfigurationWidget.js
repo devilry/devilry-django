@@ -267,8 +267,21 @@ export default class GradingConfigurationWidget extends AbstractWidget {
 
   _onPluginIdRadioChange(event) {
     const pluginId = event.target.value;
+    // Reset the plugin dependent values so that nothing configured for the
+    // previous plugin (I.E.: passing_grade_min_points=0 for points) leaks
+    // into the new configuration.
+    let maxPoints = null;
+    let passingGradeMinPoints = null;
+    if(pluginId == 'devilry_gradingsystemplugin_approved') {
+      maxPoints = 1;
+      passingGradeMinPoints = 1;
+    }
+    this.maxPointsInputElement.value = maxPoints == null ? '' : maxPoints;
+    this.passingGradeMinPointsInputElement.value = passingGradeMinPoints == null ? '' : passingGradeMinPoints;
     this._setState({
-      grading_system_plugin_id: pluginId
+      grading_system_plugin_id: pluginId,
+      passing_grade_min_points: passingGradeMinPoints,
+      max_points: maxPoints
     });
   }
 

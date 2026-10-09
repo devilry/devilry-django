@@ -104,6 +104,7 @@ class TestAssignmentGradingConfigurationUpdateView(TestCase, cradmin_testhelpers
             viewkwargs={"pk": assignment.id},
             requestkwargs={
                 "data": self.__make_postdata(
+                    grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS,
                     passing_grade_min_points=30,
                     max_points=20,
                     points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS,
@@ -147,6 +148,7 @@ class TestAssignmentGradingConfigurationUpdateView(TestCase, cradmin_testhelpers
             viewkwargs={"pk": assignment.id},
             requestkwargs={
                 "data": self.__make_postdata(
+                    grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS,
                     max_points=20,
                     points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE,
                     point_to_grade_map_json=json.dumps([[0, "F"], [80, "A"]]),
@@ -170,6 +172,7 @@ class TestAssignmentGradingConfigurationUpdateView(TestCase, cradmin_testhelpers
             viewkwargs={"pk": assignment.id},
             requestkwargs={
                 "data": self.__make_postdata(
+                    grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS,
                     max_points=20,
                     points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE,
                     point_to_grade_map_json="",
@@ -189,6 +192,7 @@ class TestAssignmentGradingConfigurationUpdateView(TestCase, cradmin_testhelpers
             viewkwargs={"pk": assignment.id},
             requestkwargs={
                 "data": self.__make_postdata(
+                    grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS,
                     max_points=20,
                     points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE,
                     point_to_grade_map_json=json.dumps([[0, "F"]]),
@@ -223,3 +227,141 @@ class TestAssignmentGradingConfigurationUpdateView(TestCase, cradmin_testhelpers
         self.assertEqual(point_to_grade_map_dict[0], "F")
         self.assertEqual(point_to_grade_map_dict[80], "A")
         self.assertFalse(assignment.pointtogrademap.invalid)
+
+    def test_post_passedfailed_ignores_leftover_passing_grade_min_points_zero(self):
+        # Reported bug: Switching from points with passing_grade_min_points=0 back to
+        # passed/failed kept 0, so failed (0 points) was treated as passed.
+        assignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start",
+            grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS,
+            points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS,
+            passing_grade_min_points=0,
+            max_points=10,
+        )
+        self.mock_http302_postrequest(
+            cradmin_role=assignment,
+            viewkwargs={"pk": assignment.id},
+            requestkwargs={
+                "data": self.__make_postdata(
+                    grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED,
+                    points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED,
+                    passing_grade_min_points=0,
+                    max_points=1,
+                )
+            },
+        )
+        assignment.refresh_from_db()
+        self.assertEqual(assignment.grading_system_plugin_id, Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
+        self.assertEqual(assignment.passing_grade_min_points, 1)
+        self.assertEqual(assignment.max_points, 1)
+        self.assertFalse(assignment.points_is_passing_grade(0))
+        self.assertTrue(assignment.points_is_passing_grade(1))
+
+    def test_post_passedfailed_passing_grade_min_points_follows_max_points(self):
+        assignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        self.mock_http302_postrequest(
+            cradmin_role=assignment,
+            viewkwargs={"pk": assignment.id},
+            requestkwargs={
+                "data": self.__make_postdata(
+                    grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED,
+                    passing_grade_min_points=3,
+                    max_points=5,
+                )
+            },
+        )
+        assignment.refresh_from_db()
+        self.assertEqual(assignment.passing_grade_min_points, 5)
+        self.assertEqual(assignment.max_points, 5)
+
+    def test_post_passedfailed_passing_grade_min_points_empty(self):
+        assignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        self.mock_http302_postrequest(
+            cradmin_role=assignment,
+            viewkwargs={"pk": assignment.id},
+            requestkwargs={
+                "data": self.__make_postdata(
+                    grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED,
+                    passing_grade_min_points="",
+                    max_points=1,
+                )
+            },
+        )
+        assignment.refresh_from_db()
+        self.assertEqual(assignment.passing_grade_min_points, 1)
+
+    def test_post_passedfailed_max_points_zero(self):
+        assignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        mockresponse = self.mock_http200_postrequest_htmls(
+            cradmin_role=assignment,
+            viewkwargs={"pk": assignment.id},
+            requestkwargs={
+                "data": self.__make_postdata(
+                    grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED,
+                    passing_grade_min_points=0,
+                    max_points=0,
+                )
+            },
+        )
+        self.assertIn(
+            str(gradingconfiguration.GradingConfigurationForm.error_messages["passedfailed_max_points_too_small"]),
+            mockresponse.selector.one("#div_id_max_points.has-error").alltext_normalized,
+        )
+
+    def test_post_passedfailed_clears_custom_table(self):
+        assignment = baker.make_recipe(
+            "devilry.apps.core.assignment_activeperiod_start",
+            grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS,
+            points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE,
+            max_points=100,
+        )
+        point_to_grade_map = baker.make("core.PointToGradeMap", assignment=assignment)
+        point_to_grade_map.create_map((0, "F"), (80, "A"))
+        self.mock_http302_postrequest(
+            cradmin_role=assignment,
+            viewkwargs={"pk": assignment.id},
+            requestkwargs={
+                "data": self.__make_postdata(
+                    grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED,
+                    points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE,
+                    point_to_grade_map_json=json.dumps([[0, "F"], [80, "A"]]),
+                    max_points=1,
+                )
+            },
+        )
+        assignment.refresh_from_db()
+        self.assertEqual(assignment.points_to_grade_mapper, Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED)
+        self.assertFalse(PointToGradeMap.objects.filter(assignment=assignment).exists())
+
+    def test_post_points_passing_grade_min_points_required(self):
+        assignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        mockresponse = self.mock_http200_postrequest_htmls(
+            cradmin_role=assignment,
+            viewkwargs={"pk": assignment.id},
+            requestkwargs={
+                "data": self.__make_postdata(
+                    grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS,
+                    points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS,
+                    passing_grade_min_points="",
+                    max_points=10,
+                )
+            },
+        )
+        self.assertTrue(mockresponse.selector.exists("#div_id_passing_grade_min_points.has-error"))
+
+    def test_post_points_passing_grade_min_points_zero_allowed(self):
+        assignment = baker.make_recipe("devilry.apps.core.assignment_activeperiod_start")
+        self.mock_http302_postrequest(
+            cradmin_role=assignment,
+            viewkwargs={"pk": assignment.id},
+            requestkwargs={
+                "data": self.__make_postdata(
+                    grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS,
+                    points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS,
+                    passing_grade_min_points=0,
+                    max_points=10,
+                )
+            },
+        )
+        assignment.refresh_from_db()
+        self.assertEqual(assignment.passing_grade_min_points, 0)

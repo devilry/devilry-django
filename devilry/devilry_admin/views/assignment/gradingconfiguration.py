@@ -26,6 +26,7 @@ class GradingConfigurationForm(forms.Form):
         "max_points_larger_than_passing_grade_min_points": gettext_lazy(
             "Must be larger than the minimum number of points required to pass."
         ),
+        "passedfailed_max_points_too_small": gettext_lazy("Points awarded for passing grade must be at least 1."),
     }
 
     grading_system_plugin_id = forms.ChoiceField(
@@ -40,8 +41,9 @@ class GradingConfigurationForm(forms.Form):
         choices=Assignment.POINTS_TO_GRADE_MAPPER_CHOICES,
         label=pgettext_lazy("assignment config", "Students see"),
     )
+    # Not required for passed/failed. Required for points is validated in clean().
     passing_grade_min_points = forms.IntegerField(
-        required=True,
+        required=False,
         min_value=0,
         label=pgettext_lazy("assignment config", "Minimum number of points required to pass"),
     )
@@ -60,9 +62,33 @@ class GradingConfigurationForm(forms.Form):
     def get_point_to_grade_map(self):
         return self.__sort_point_to_grade_map(json.loads(self.cleaned_data["point_to_grade_map_json"]))
 
+    def __clean_passedfailed(self, cleaned_data):
+        """
+        With passed/failed, examiners award either ``max_points`` (passed) or 0 (failed),
+        so the only valid configuration is ``passing_grade_min_points == max_points``.
+        The passing grade min points and custom table fields are hidden in the UI for
+        passed/failed, so we discard whatever values they contain (they may be leftovers
+        from a previous points configuration) instead of trusting them.
+        """
+        max_points = cleaned_data.get("max_points", None)
+        if max_points is not None and max_points < 1:
+            raise ValidationError({"max_points": self.error_messages["passedfailed_max_points_too_small"]})
+        if cleaned_data.get("points_to_grade_mapper") == Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE:
+            cleaned_data["points_to_grade_mapper"] = Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED
+        cleaned_data["passing_grade_min_points"] = max_points
+        cleaned_data["point_to_grade_map_json"] = ""
+        self.errors.pop("passing_grade_min_points", None)
+
     def clean(self):
         cleaned_data = super(GradingConfigurationForm, self).clean()
+        if cleaned_data.get("grading_system_plugin_id") == Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED:
+            self.__clean_passedfailed(cleaned_data)
+            return cleaned_data
         passing_grade_min_points = cleaned_data.get("passing_grade_min_points", None)
+        if passing_grade_min_points is None and "passing_grade_min_points" not in self.errors:
+            raise ValidationError(
+                {"passing_grade_min_points": self.fields["passing_grade_min_points"].error_messages["required"]}
+            )
         max_points = cleaned_data.get("max_points", None)
         points_to_grade_mapper = cleaned_data.get("points_to_grade_mapper")
         point_to_grade_map_json = cleaned_data.get("point_to_grade_map_json", "").strip()
