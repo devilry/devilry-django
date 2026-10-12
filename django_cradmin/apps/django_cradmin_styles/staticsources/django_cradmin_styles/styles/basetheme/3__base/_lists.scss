@@ -1,0 +1,411 @@
+/* Lists
+
+Unordered list styles are turned of by default. You need to add classes to style it.
+
+Example: Ordered list - Default styling
+    <ol>
+        <li>I'm number one!</li>
+        <li>Second isn't all that bad</li>
+        <li>I'm last :(</li>
+    </ol>
+
+Example: list - Default styling
+    <ul class="list">
+        <li>I'm number one!</li>
+        <li>Second isn't all that bad</li>
+        <li>I'm last :(</li>
+    </ul>
+
+Example: --no-margin
+    <ul class="list list--no-margin">
+        <li>I'm number one!</li>
+        <li>Second isn't all that bad</li>
+        <li>I'm last :(</li>
+    </ul>
+
+Example: --flat
+    <ul class="list list--flat">
+        <li>I'm number one!</li>
+        <li>Second isn't all that bad</li>
+        <li>I'm last :(</li>
+    </ul>
+
+Example: --large
+    <ul class="list  list--large">
+        <li>I'm number one!</li>
+        <li>Second isn't all that bad</li>
+        <li>I'm last :(</li>
+    </ul>
+
+Example: list--spacing-xtight
+    <ul class="list list--spacing-xtight">
+        <li>I'm number one!</li>
+        <li>Second isn't all that bad</li>
+        <li>I'm last :(</li>
+    </ul>
+
+Example: list--spacing-tight
+    <ul class="list list--spacing-tight">
+        <li>I'm number one!</li>
+        <li>Second isn't all that bad</li>
+        <li>I'm last :(</li>
+    </ul>
+
+Example: list--spacing-paragraph
+    <ul class="list list--spacing-paragraph">
+        <li>I'm number one!</li>
+        <li>Second isn't all that bad</li>
+        <li>I'm last :(</li>
+    </ul>
+
+Example: --cricon
+
+    <ul class="list list--cricon">
+        <li class="list__item">
+            <span class="cricon cricon--arrow-right" aria-hidden="true"></span>
+            A list item with icon
+        </li>
+        <li class="list__item">
+            <span class="cricon cricon--arrow-right cricon--color-primary" aria-hidden="true"></span>
+            A list item with primary colored icon
+        </li>
+        <li class="list__item">
+            <span class="cricon cricon--pencil" aria-hidden="true"></span>
+            Different icons align the same way
+        </li>
+        <li class="list__item">
+            <span class="cricon cricon--text" aria-hidden="true"></span>
+            Different icons align the same way example 2
+        </li>
+        <li class="list__item">
+            <span class="cricon cricon--phone" aria-hidden="true"></span>
+            Different icons align the same way example 3
+        </li>
+    </ul>
+
+Example: --cricon --cricon-xsmall
+
+    <ul class="list list--cricon list--cricon-xsmall">
+        <li class="list__item">
+            <span class="cricon cricon--arrow-right" aria-hidden="true"></span>
+            A list item with icon
+        </li>
+        <li class="list__item">
+            <span class="cricon cricon--arrow-right cricon--color-primary" aria-hidden="true"></span>
+            A list item with primary colored icon
+        </li>
+        <li class="list__item">
+            <span class="cricon cricon--pencil" aria-hidden="true"></span>
+            Different icons align the same way
+        </li>
+        <li class="list__item">
+            <span class="cricon cricon--text" aria-hidden="true"></span>
+            Different icons align the same way example 2
+        </li>
+        <li class="list__item">
+            <span class="cricon cricon--phone" aria-hidden="true"></span>
+            Different icons align the same way example 3
+        </li>
+    </ul>
+
+Example: --cricon --cricon-medium
+
+    <ul class="list list--cricon list--cricon-medium">
+        <li class="list__item">
+            <span class="cricon cricon--arrow-right" aria-hidden="true"></span>
+            A list item with icon
+        </li>
+        <li class="list__item">
+            <span class="cricon cricon--arrow-right cricon--color-primary" aria-hidden="true"></span>
+            A list item with primary colored icon
+        </li>
+        <li class="list__item">
+            <span class="cricon cricon--pencil" aria-hidden="true"></span>
+            Different icons align the same way
+        </li>
+        <li class="list__item">
+            <span class="cricon cricon--text" aria-hidden="true"></span>
+            Different icons align the same way example 2
+        </li>
+        <li class="list__item">
+            <span class="cricon cricon--phone" aria-hidden="true"></span>
+            Different icons align the same way example 3
+        </li>
+    </ul>
+
+Example: --cricon --cricon-large
+
+    <ul class="list list--cricon list--cricon-large">
+        <li class="list__item">
+            <span class="cricon cricon--arrow-right" aria-hidden="true"></span>
+            A list item with icon
+        </li>
+        <li class="list__item">
+            <span class="cricon cricon--arrow-right cricon--color-primary" aria-hidden="true"></span>
+            A list item with primary colored icon
+        </li>
+        <li class="list__item">
+            <span class="cricon cricon--pencil" aria-hidden="true"></span>
+            Different icons align the same way
+        </li>
+        <li class="list__item">
+            <span class="cricon cricon--text" aria-hidden="true"></span>
+            Different icons align the same way example 2
+        </li>
+        <li class="list__item">
+            <span class="cricon cricon--phone" aria-hidden="true"></span>
+            Different icons align the same way example 3
+        </li>
+    </ul>
+
+Example: --links - list of links
+    <ul class="list  list--links">
+        <li><a href="">I'm number one!</a></li>
+        <li><a href="">Second isn't all that bad</a></li>
+        <li><a href="">I'm last :(</a></li>
+    </ul>
+
+Example: --contact` - Contact list (DEPRECATED: use --cricon)
+    <ul class="list  list--contact">
+        <li class="list__item  list__item--phone">
+            <a href="tel:12345678">123 45 678</a>
+        </li>
+        <li class="list__item  list__item--email">
+            <a href="mailto:test@example.com">test@example.com</a>
+        </li>
+        <li class="list__item  list__item--address">
+            <a href="https://maps.google.no/maps?f=q&source=s_q&hl=no&geocode=&q=Stortinget&aq=&sll=59.914562,10.749653&sspn=0.036099,0.077162&vpsrc=6&ie=UTF8&hq=stortingen&hnear=&ll=59.913133,10.742043&spn=0.004513,0.009645&t=m&z=17&iwloc=A&cid=18144128272286456866">Stortinget</a>
+        </li>
+    </ul>
+
+Styleguide type.list
+*/
+
+@mixin list-cricon-size-responsive ($size, $width) {
+    @if ($width) {
+        & > li, .list__item {
+            padding-left: $width + $spacing--small;
+            min-height: $width;
+            position: relative;
+            .cricon {
+                position: absolute;
+                top: 0;
+                left: 0;
+                line-height: inherit;
+                &:before {
+                    @include cricon-size($size);
+                }
+            }
+        }
+    }
+}
+
+@mixin list-cricon-size ($size) {
+    $width-base: cricon-get-fixed-width-for-font-size($size, base);
+    $width-xs: cricon-get-fixed-width-for-font-size($size, xs);
+    $width-md: cricon-get-fixed-width-for-font-size($size, md);
+    $width-lg: cricon-get-fixed-width-for-font-size($size, lg);
+    $width-xl: cricon-get-fixed-width-for-font-size($size, xl);
+    @include list-cricon-size-responsive($size, $width-base);
+    @if ($width-xs) {
+        @include min-width(xs) {
+            @include list-cricon-size-responsive($size, $width-xs);
+        }
+    }
+    @if ($width-md) {
+        @include min-width(md) {
+            @include list-cricon-size-responsive($size, $width-md);
+        }
+    }
+    @if ($width-lg) {
+        @include min-width(lg) {
+            @include list-cricon-size-responsive($size, $width-lg);
+        }
+    }
+    @if ($width-xl) {
+        @include min-width(xl) {
+            @include list-cricon-size-responsive($size, $width-xl);
+        }
+    }
+}
+
+ol {
+    counter-reset: ol-counter;
+    text-align: left;
+    margin-bottom: $vertical-rythm--spacing;
+
+    & > li {
+        position: relative;
+        padding-left: $indention--sm;
+        margin-bottom: 0;
+        list-style-type: none;
+
+        @include min-width(md) {
+            padding-left: $indention;
+        }
+
+        &:before {
+            content: counter(ol-counter) '.';
+            counter-increment: ol-counter;
+            position: absolute;
+            left: 0;
+        }
+    }
+}
+
+@mixin unordered-list-default () {
+    margin-bottom: $vertical-rythm--spacing;
+    text-align: left;
+
+    & > li, .list__item {
+        position: relative;
+        padding-left: $indention--sm;
+        margin-bottom: 0;
+
+        @include min-width(md) {
+            padding-left: $indention;
+        }
+
+        &:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.35em;
+            height: $unit * 2 - 3;
+            width: $unit * 2 - 3;
+            border-radius: 50%;
+            background-color: color(primary, dark);
+
+            @include min-width(xs) {
+                top: 0.4em;
+            }
+        }
+    }
+}
+
+%list,
+.list {
+    @include unordered-list-default();
+
+    &--large {
+        & > li, .list__item {
+            margin-bottom: $vertical-rythm;
+
+            @include min-width(md) {
+                margin-bottom: $vertical-rythm--spacing;
+            }
+        }
+    }
+
+    &--links {
+        & > li, .list__item {
+            margin-bottom: vertical-space();
+
+            &:before {
+                background-color: transparent;
+                border-radius: 0;
+                border: 0;
+                @include cricon-size(small);
+                @include cricon-fixed-width(small);
+                @include cricon-color-primary();
+                @include cricon-icon(arrow-right);
+            }
+        }
+    }
+
+    &--contact {
+        .list__item {
+            @include hyphens;
+            margin-bottom: vertical-space();
+
+            &:before {
+                background-color: transparent;
+                border-radius: 0;
+                border: 0;
+                @include cricon-fixed-width(small);
+                @include cricon-color-primary();
+            }
+
+            &--email:before {
+                @include cricon-icon(email);
+            }
+
+            &--phone:before {
+                @include cricon-icon(phone);
+            }
+
+            &--address:before {
+                @include cricon-icon(map-marker);
+            }
+        }
+    }
+
+    &--no-margin {
+        margin-bottom: 0;
+    }
+
+    &--flat {
+        padding-left: 0;
+        list-style: none;
+        & > li, .list__item {
+            padding-left: 0;
+            &:before {
+                background-color: transparent;
+                width: 0;
+                height: 0;
+                top: 0;
+                @include min-width(xs) {
+                    top: 0;
+                }
+            }
+        }
+    }
+
+    &--cricon {
+        .list__item {
+            &:before {
+                background-color: transparent;
+                border-radius: 0;
+                border: 0;
+            }
+            // .cricon {
+            //     // margin-left:
+            //     // &:before {
+            //     //     @include cricon-size(small);
+            //     // }
+            // }
+        }
+
+        @include list-cricon-size(small);
+    }
+
+    &--cricon-xsmall {
+        @include list-cricon-size(xsmall);
+    }
+
+    &--cricon-medium {
+        @include list-cricon-size(medium);
+    }
+
+    &--cricon-large {
+        @include list-cricon-size(large);
+    }
+
+    &--spacing-xtight {
+        & > li, .list__item {
+            margin-bottom: vertical-space($unit);
+        }
+    }
+
+    &--spacing-tight {
+        & > li, .list__item {
+            margin-bottom: vertical-space($spacing--small);
+        }
+    }
+
+    &--spacing-paragraph {
+        & > li, .list__item {
+            margin-bottom: vertical-space($spacing);
+        }
+    }
+}

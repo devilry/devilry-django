@@ -1,0 +1,9 @@
+{% block outer_wrapper %}
+    {% if me.html_tag %}
+        <{{ me.html_tag }}{% block outer_wrapper_attributes %}{{ me.html_element_attributes_string }}{% endblock %}>
+    {% endif %}
+        {% block content %}
+            {% include "django_cradmin/uicontainer/includes/render_children.django.html" %}
+        {% endblock content %}
+    {% if me.html_tag_supports_children %}{% if me.html_tag %}</{{ me.html_tag }}>{% endif %}{% endif %}
+{% endblock outer_wrapper %}

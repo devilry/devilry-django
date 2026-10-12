@@ -1,0 +1,481 @@
+/*
+Select
+
+Example: Default
+    <label class="select">
+        <select aria-label="Category">
+            <option>all categories</option>
+            <option>enterprise</option>
+            <option>...</option>
+        </select>
+    </label>
+
+Example: Within a paragraph
+    <p>
+        I am within a paragraph
+        <label class="select">
+            <select select-autowidth aria-label="Category">
+                <option>all categories</option>
+                <option>enterprise</option>
+                <option>...</option>
+            </select>
+        </label>
+        ...OMG!
+    </p>
+
+Example: Block
+
+    <label class="select  select--block">
+        <select aria-label="Category">
+            <option>all categories</option>
+            <option>enterprise</option>
+            <option>...</option>
+        </select>
+    </label>
+    <p class="help-text">I am a help text</p>
+
+Example: Outlined
+    <label class="select  select--outlined">
+        <select aria-label="Category">
+            <option>all categories</option>
+            <option>enterprise</option>
+            <option>...</option>
+        </select>
+    </label>
+
+Example: --size-*
+    <div class="paragraph">
+        <p class="h4">--size-xsmall:</p>
+        <p class="paragraph paragraph--tight">
+            <label class="select select--size-xsmall">
+                <select aria-label="Category">
+                    <option>all categories</option>
+                    <option>enterprise</option>
+                    <option>...</option>
+                </select>
+            </label>
+        </p>
+        <p class="paragraph paragraph--tight">
+            <label class="select  select--outlined  select--size-xsmall">
+                <select aria-label="Category">
+                    <option>all categories</option>
+                    <option>enterprise</option>
+                    <option>...</option>
+                </select>
+            </label>
+        </p>
+        <p class="paragraph paragraph--tight">
+            <label class="select  select--outlined select--block  select--size-xsmall">
+                <select aria-label="Category">
+                    <option>all categories</option>
+                    <option>enterprise</option>
+                    <option>...</option>
+                </select>
+            </label>
+        </p>
+    </div>
+    <div class="paragraph">
+        <p class="h4">--size-small:</p>
+        <p class="paragraph paragraph--tight">
+            <label class="select select--size-small">
+                <select aria-label="Category">
+                    <option>all categories</option>
+                    <option>enterprise</option>
+                    <option>...</option>
+                </select>
+            </label>
+        </p>
+        <p class="paragraph paragraph--tight">
+            <label class="select  select--outlined  select--size-small">
+                <select aria-label="Category">
+                    <option>all categories</option>
+                    <option>enterprise</option>
+                    <option>...</option>
+                </select>
+            </label>
+        </p>
+        <p class="paragraph paragraph--tight">
+            <label class="select  select--outlined select--block  select--size-small">
+                <select aria-label="Category">
+                    <option>all categories</option>
+                    <option>enterprise</option>
+                    <option>...</option>
+                </select>
+            </label>
+        </p>
+    </div>
+    <div class="paragraph">
+        <p class="h4">Default size:</p>
+        <p class="paragraph paragraph--tight">
+            <label class="select">
+                <select aria-label="Category">
+                    <option>all categories</option>
+                    <option>enterprise</option>
+                    <option>...</option>
+                </select>
+            </label>
+        </p>
+        <p class="paragraph paragraph--tight">
+            <label class="select select--outlined">
+                <select aria-label="Category">
+                    <option>all categories</option>
+                    <option>enterprise</option>
+                    <option>...</option>
+                </select>
+            </label>
+        </p>
+        <p class="paragraph paragraph--tight">
+            <label class="select  select--outlined select--block">
+                <select aria-label="Category">
+                    <option>all categories</option>
+                    <option>enterprise</option>
+                    <option>...</option>
+                </select>
+            </label>
+        </p>
+    </div>
+    <div class="paragraph">
+        <p class="h4">--size-large:</p>
+        <p class="paragraph paragraph--tight">
+            <label class="select select--size-large">
+                <select aria-label="Category">
+                    <option>all categories</option>
+                    <option>enterprise</option>
+                    <option>...</option>
+                </select>
+            </label>
+        </p>
+        <p class="paragraph paragraph--tight">
+            <label class="select  select--outlined  select--size-large">
+                <select aria-label="Category">
+                    <option>all categories</option>
+                    <option>enterprise</option>
+                    <option>...</option>
+                </select>
+            </label>
+        </p>
+        <p class="paragraph paragraph--tight">
+            <label class="select  select--outlined select--block  select--size-large">
+                <select aria-label="Category">
+                    <option>all categories</option>
+                    <option>enterprise</option>
+                    <option>...</option>
+                </select>
+            </label>
+        </p>
+    </div>
+
+
+Example: --width-*
+    <div class="paragraph">
+        <p class="h4">--width-xxsmall:</p>
+        <p class="paragraph paragraph--tight">
+            <label class="select select--width-xxsmall">
+                <select aria-label="Category">
+                    <option>all categories</option>
+                    <option>enterprise</option>
+                    <option>...</option>
+                </select>
+            </label>
+        </p>
+        <p class="paragraph paragraph--tight">
+            <label class="select  select--outlined  select--width-xxsmall">
+                <select aria-label="Category">
+                    <option>all categories</option>
+                    <option>enterprise</option>
+                    <option>...</option>
+                </select>
+            </label>
+        </p>
+        <p class="paragraph paragraph--tight">
+            <label class="select  select--outlined select--block  select--width-xxsmall">
+                <select aria-label="Category">
+                    <option>all categories</option>
+                    <option>enterprise</option>
+                    <option>...</option>
+                </select>
+            </label>
+        </p>
+    </div>
+    <div class="paragraph">
+        <p class="h4">--width-xsmall:</p>
+        <p class="paragraph paragraph--tight">
+            <label class="select select--width-xsmall">
+                <select aria-label="Category">
+                    <option>all categories</option>
+                    <option>enterprise</option>
+                    <option>...</option>
+                </select>
+            </label>
+        </p>
+        <p class="paragraph paragraph--tight">
+            <label class="select  select--outlined  select--width-xsmall">
+                <select aria-label="Category">
+                    <option>all categories</option>
+                    <option>enterprise</option>
+                    <option>...</option>
+                </select>
+            </label>
+        </p>
+        <p class="paragraph paragraph--tight">
+            <label class="select  select--outlined select--block  select--width-xsmall">
+                <select aria-label="Category">
+                    <option>all categories</option>
+                    <option>enterprise</option>
+                    <option>...</option>
+                </select>
+            </label>
+        </p>
+    </div>
+    <div class="paragraph">
+        <p class="h4">--width-small:</p>
+        <p class="paragraph paragraph--tight">
+            <label class="select select--width-small">
+                <select aria-label="Category">
+                    <option>all categories</option>
+                    <option>enterprise</option>
+                    <option>...</option>
+                </select>
+            </label>
+        </p>
+        <p class="paragraph paragraph--tight">
+            <label class="select  select--outlined  select--width-small">
+                <select aria-label="Category">
+                    <option>all categories</option>
+                    <option>enterprise</option>
+                    <option>...</option>
+                </select>
+            </label>
+        </p>
+        <p class="paragraph paragraph--tight">
+            <label class="select  select--outlined select--block  select--width-small">
+                <select aria-label="Category">
+                    <option>all categories</option>
+                    <option>enterprise</option>
+                    <option>...</option>
+                </select>
+            </label>
+        </p>
+    </div>
+    <div class="paragraph">
+        <p class="h4">Default width (automatic for inline)</p>
+        <p class="paragraph paragraph--tight">
+            <label class="select">
+                <select aria-label="Category">
+                    <option>all categories</option>
+                    <option>enterprise</option>
+                    <option>...</option>
+                </select>
+            </label>
+        </p>
+        <p class="paragraph paragraph--tight">
+            <label class="select  select--outlined">
+                <select aria-label="Category">
+                    <option>all categories</option>
+                    <option>enterprise</option>
+                    <option>...</option>
+                </select>
+            </label>
+        </p>
+        <p class="paragraph paragraph--tight">
+            <label class="select  select--outlined select--block">
+                <select aria-label="Category">
+                    <option>all categories</option>
+                    <option>enterprise</option>
+                    <option>...</option>
+                </select>
+            </label>
+        </p>
+    </div>
+
+Example: Light
+    <div style="background-color: #000; padding: 5px;">
+        <label class="select  select--light">
+            <select aria-label="Category">
+                <option>all categories</option>
+                <option>enterprise</option>
+                <option>...</option>
+            </select>
+        </label>
+    </div>
+
+Styleguide form.5:select
+*/
+
+.select {
+    position: relative;
+    //display: inline-block;
+    max-width: 100%;
+    margin: 0;
+
+    border-bottom: $border-width solid color(primary);
+    // margin-top: -1px;
+    // margin-bottom: -($border-width);
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    //align-content: stretch;
+    overflow: hidden;
+
+    select {
+        @include font(base, bold);
+        font-size: inherit;
+        line-height: 1.2;
+
+        // Reset
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+
+        display: block;
+        cursor: pointer;
+        margin: 0;
+
+        padding: 0;
+        padding-right: 22px;
+
+        width: 100%;
+        border-radius: 0;
+        border: 0;
+
+        color: $color-text;
+        background-color: transparent;
+
+        will-change: width;
+        transition: width 100ms $swift-out;
+        flex: 1 1 auto;
+        height: 100%;
+
+        &:focus:-moz-focusring {
+            color: transparent;
+            text-shadow: 0 0 0 #000;
+        }
+
+        &::-ms-expand {
+            // Hide the arrow in IE10 and up
+            display: none;
+        }
+
+        option {
+            @include font(base, normal);
+        }
+    }
+
+    &:before {
+        @include cricon-icon(chevron-down);
+        position: absolute;
+        pointer-events: none;
+        top: 50%;
+        margin-top: -6px;
+        right: 1px; // Optical aligning
+        font-size: 16px;
+    }
+
+    &--block {
+        display: block;
+
+        select {
+            width: 100%;
+        }
+    }
+
+    &--light {
+        color: $color-light;
+        border-color: $color-light;
+
+        select {
+            color: $color-light;
+
+            &:focus {
+                color: $color-light;
+            }
+        }
+    }
+
+    &--outlined {
+        border-radius: $border-radius;
+        border: $border-width solid color(neutral, light);
+        background-color: $color-light;
+        @include form-element-mixin();
+
+        &:before {
+            right: $spacing--small;
+        }
+
+        select {
+            @include font(base, normal);
+            //@include font-size(small, $skip-line-height: true);
+            line-height: inherit;
+            padding: #{$unit + $border-width} #{$spacing--small + $border-width};
+            padding-right: 34px;
+        }
+    }
+
+    &--size-xsmall {
+        @include font-size(xsmall, $skip-line-height: true);
+        @include form-element-mixin(xsmall);
+    }
+
+    &--size-small {
+        @include font-size(small, $skip-line-height: true);
+        @include form-element-mixin(small);
+    }
+
+    &--size-large {
+        @include font-size(medium, $skip-line-height: true);
+        @include form-element-mixin(large);
+    }
+
+    &--width-xsmall {
+        width: $unit * 20;
+        min-width: $unit * 5;
+    }
+
+    &--width-xxsmall {
+        width: $unit * 16;
+        min-width: $unit * 5;
+    }
+
+    &--width-small {
+        width: $unit * 36;
+        min-width: $unit * 5;
+    }
+
+
+    &--block {
+        display: flex;
+        margin-bottom: $unit;
+    }
+}
+
+// Media query to target Firefox only
+@-moz-document url-prefix() {
+    // Firefox hack to hide the arrow
+    .select {
+        select {
+            text-indent: 0.01px;
+            text-overflow: '';
+        }
+
+        &:after {
+            content: '';
+            position: absolute;
+            pointer-events: none;
+            right: 0;
+            top: 0;
+            width: 40px;
+            height: 100%;
+            background-color: $color-background;
+        }
+
+        &:before {
+            z-index: 2;
+        }
+
+        // <option> elements inherit styles from <select>, so reset them.
+        option {
+            background-color: white;
+        }
+    }
+}

@@ -1,0 +1,53 @@
+{% extends "cradmin_legacy/viewhelpers/listbuilder/itemvalue/titledescription.django.html" %}
+{% load cradmin_legacy_tags %}
+{% load cradmin_legacy_icon_tags %}
+{% load i18n %}
+
+{% block content %}
+    <div class="cradmin-legacy-multiselect2-itemvalue-details">
+        {{ block.super }}
+    </div>
+
+    {% block buttons %}
+        <p class="cradmin-legacy-multiselect2-itemvalue-buttons">
+            {% block select-button %}
+                <button type="button"
+                        id="{{ me.get_selectbutton_dom_id }}"
+                        class="btn btn-default cradmin-legacy-multiselect2-itemvalue-button"
+                        cradmin-legacy-multiselect2-select={{ select_directive_json|safe }}
+                        aria-label='{{ me.get_selectbutton_aria_label }}'>
+                    {% block usethis-button-content %}
+                        {{ me.get_selectbutton_text }}
+                        {% block usethis-button-icon %}
+                            <span class="{% cradmin_icon 'select-left' %} hidden-xs"></span>
+                        {% endblock usethis-button-icon %}
+                    {% endblock usethis-button-content %}
+                </button>
+            {% endblock select-button %}
+        </p>
+    {% endblock buttons %}
+
+    {% block selected-summary %}
+        <div class="cradmin-legacy-multiselect2-itemvalue-selectedsummary">
+            {% block selected-summary-content %}
+                {% block selected-summary-prefix %}
+                    <span class="cradmin-legacy-multiselect2-itemvalue-selectedsummary-prefix">
+                        {% block selected-summary-prefix-content %}
+                            <span class="{% cradmin_icon "multiselect2-selected" %}
+                                         cradmin-legacy-multiselect2-itemvalue-selectedsummary-prefix-icon"
+                                aria-hidden="true"></span>
+                            <span class="sr-only">({% trans "Selected" %})</span>
+                        {% endblock selected-summary-prefix-content %}
+                    </span>
+                {% endblock selected-summary-prefix %}
+                {% block selected-summary-title %}
+                    {{ me.get_title }}
+                {% endblock %}
+            {% endblock selected-summary-content %}
+        </div>
+    {% endblock selected-summary %}
+
+    {% block preview-wrapper %}
+        {% cradmin_render_renderable me.selected_item_renderer %}
+    {% endblock preview-wrapper %}
+{% endblock content %}

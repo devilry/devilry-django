@@ -1,0 +1,34 @@
+{% load i18n %}
+{% load cradmin_tags %}
+
+<div class="datetimeinput">
+    <div class="datetimeinput__date">
+        <span data-ievv-jsbase-widget="cradmin-dateselector-day"
+             data-ievv-jsbase-widget-config={{ day_widget_config_json }}>
+        </span>
+        <span data-ievv-jsbase-widget="cradmin-dateselector-month"
+             data-ievv-jsbase-widget-config={{ month_widget_config_json }}>
+        </span>
+        <span data-ievv-jsbase-widget="cradmin-dateselector-year"
+             data-ievv-jsbase-widget-config={{ year_widget_config_json }}>
+        </span>
+    </div>
+    <div class="datetimeinput__time">
+        {% trans "Time:" %}
+        <span data-ievv-jsbase-widget="cradmin-dateselector-hour"
+             data-ievv-jsbase-widget-config={{ hour_widget_config_json }}>
+        </span>
+        :
+        <span data-ievv-jsbase-widget="cradmin-dateselector-minute"
+             data-ievv-jsbase-widget-config={{ minute_widget_config_json }}>
+        </span>
+    </div>
+</div>
+
+<span data-ievv-jsbase-widget="cradmin-dateselector-hidden-isodatetime"
+     data-ievv-jsbase-widget-config='{
+         "signalNameSpace": "{{ me.fieldname }}",
+         "inputType": "hidden",
+         "inputName": "{{ me.fieldname }}"
+     }'>
+</span>

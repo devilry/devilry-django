@@ -1,0 +1,72 @@
+/** Input group
+
+
+Example: Search
+
+    <div class="input-group">
+        <input type="text" placeholder="Search ..." class="input input-group__item" />
+        <button class="button input-group__item">
+            Search
+        </button>
+    </div>
+
+
+Example: Search and filter
+
+    <div class="input-group">
+        <input type="text" placeholder="Search" class="input input-group__item" />
+        <label class="select  select--outlined input-group__item">
+            <select aria-label="Filter">
+                <option>all</option>
+                <option>important</option>
+                <option>useless</option>
+            </select>
+        </label>
+    </div>
+
+
+Example: Search, filter and button
+
+    <div class="input-group">
+        <input type="text" placeholder="Search" class="input input-group__item" />
+        <label class="select  select--outlined input-group__item">
+            <select aria-label="Filter">
+                <option>all</option>
+                <option>important</option>
+                <option>useless</option>
+            </select>
+        </label>
+        <button class="button input-group__item">
+            Search
+        </button>
+    </div>
+
+Styleguide components.input-group
+*/
+.input-group {
+    @include min-width(md) {
+        display: flex;
+        align-items: stretch;
+        flex-direction: row;
+        margin-bottom: $unit;
+
+        .input-group__item {
+            margin: 0;
+            margin-right: -($border-width);
+            border-radius: 0;
+            &:first-child {
+                border-bottom-left-radius: $border-radius;
+                border-top-left-radius: $border-radius;
+            }
+            &:last-child {
+                border-bottom-right-radius: $border-radius;
+                border-top-right-radius: $border-radius;
+                margin-right: 0;
+            }
+
+            select {
+                height: 100%;
+            }
+        }
+    }
+}

@@ -1,0 +1,44 @@
+ <div class="adminui-page-section">
+    <div class="container">
+        <h2>Client side data</h2>
+        <div data-ievv-jsbase-widget="cradmin-search-input"
+             data-ievv-jsbase-widget-config='{
+                 "signalNameSpace": "statictest"
+             }'></div>
+        <div data-ievv-jsbase-widget="cradmin-static-data-list"
+             data-ievv-jsbase-widget-config='{
+                 "signalNameSpace": "statictest",
+                 "selectedKeys": [2],
+                 "dataList": [
+                     {
+                         "id": 1,
+                         "title": "John",
+                         "description": "The John"
+                     },
+                     {
+                         "id": 2,
+                         "title": "Peter",
+                         "description": "Peter is coool"
+                     },
+                     {
+                         "id": 3,
+                         "title": "No description"
+                     },
+                     {
+                         "id": 4,
+                         "title": "Jane",
+                         "description": "Jane is awesome, but she no longer likes Tarzan"
+                     }
+                 ]
+             }'>
+        </div>
+        <div data-ievv-jsbase-widget="cradmin-selectable-list"
+             data-ievv-jsbase-widget-config='{
+                 "signalNameSpace": "statictest",
+                 "itemComponentProps": {
+                    "renderIcon": true
+                 }
+             }'>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,28 @@
+{% extends "cradmin_legacy/viewhelpers/listbuilderview/default.django.html" %}
+{% load cradmin_legacy_tags %}
+
+{% block bodyclass %}
+    {{ block.super }}
+    cradmin-legacy-listbuilderview-filterlist-left-page
+{% endblock %}
+
+
+{% block list %}
+    <div class="row">
+        {% block filterlist-row-pre %}{% endblock %}
+        <div class="{% block filterlist-column-classes %}col-sm-4 col-lg-3{% endblock %}">
+            {% block filterlist %}
+                {% cradmin_render_renderable filterlist %}
+            {% endblock filterlist %}
+        </div>
+        {% block filterlist-row-middle %}{% endblock %}
+        <div class="{% block list-column-classes %}col-sm-8 col-lg-9{% endblock %}">
+            {% with listbuilderlist_html=block.super %}
+                {% block listbuilderlist %}
+                    {{ listbuilderlist_html }}
+                {% endblock listbuilderlist %}
+            {% endwith %}
+        </div>
+        {% block filterlist-row-post %}{% endblock %}
+    </div>
+{% endblock list %}

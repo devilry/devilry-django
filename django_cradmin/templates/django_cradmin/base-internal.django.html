@@ -1,0 +1,65 @@
+{% extends "django_cradmin/standalone-base.django.html" %}
+{% comment %}
+    Base template for all views within a role.
+
+    Examples:
+
+        Set a page title (h1 tag) and some content::
+
+            {% extends "django_cradmin/base-internal.django.html" %}
+
+            {% block page-cover-title %}
+                The heading
+            {% endblock page-cover-title %}
+
+            {% block content %}
+                Some content
+            {% endblock content %}
+
+        Add extra content below the page title::
+
+            {% extends "django_cradmin/base-internal.django.html" %}
+
+            {% block page-cover-title %}
+                The heading
+            {% endblock page-cover-title %}
+
+            {% block page-cover-content %}
+                {{ block.super }}
+                <p>Some content below the page title</p>
+            {% endblock page-cover-content %}
+
+{% endcomment %}
+{% load cradmin_tags %}
+
+{% block bodyclass %}
+    {% block cradmin-instance-bodyclass %}
+        {{ request.cradmin_instance.get_body_css_classes_string }}
+    {% endblock cradmin-instance-bodyclass %}
+
+    {% block viewspecific-bodyclass %}
+        {# Put view specific body classes here #}
+    {% endblock viewspecific-bodyclass %}
+{% endblock bodyclass %}
+
+
+{% block header %}
+    {% cradmin_render_header %}
+{% endblock header %}
+
+{% block page-cover-bem-variant %}{% endblock %}
+
+{% block footer %}
+    {% with footer_renderable=request.cradmin_instance.get_footer_renderable %}
+        {% if footer_renderable %}
+            {% cradmin_render_renderable footer_renderable %}
+        {% endif %}
+    {% endwith %}
+{% endblock footer %}
+
+
+{% block toggleable-menu %}
+    {% if request.cradmin_instance.expandable_menu_renderable %}
+        {% cradmin_render_renderable request.cradmin_instance.expandable_menu_renderable %}
+    {% endif %}
+{% endblock toggleable-menu %}

@@ -1,0 +1,15 @@
+{% extends "django_cradmin/standalone-base.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+
+{% block title %}
+    {{ pagetitle }}
+{% endblock title %}
+
+{% block page-cover-title %}
+    {{ pageheading }}
+{% endblock page-cover-title %}
+
+{% block content %}
+    {% cradmin_render_renderable form_renderable %}
+{% endblock content %}

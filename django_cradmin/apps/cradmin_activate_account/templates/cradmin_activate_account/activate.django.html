@@ -1,0 +1,25 @@
+{% extends "django_cradmin/layouts/standalone/focused.django.html" %}
+
+{% load i18n %}
+
+{% block title %}
+    {% trans "Activate account error" %}
+{% endblock title %}
+
+{% block page-cover-title %}
+    {% trans "Activate account error" %}
+{% endblock page-cover-title %}
+
+{% block content %}
+    {% if token_does_not_exist %}
+        <div id="django_cradmin_activate_account_invalid_token_message" class="alert alert-danger">
+            {% include "cradmin_activate_account/messages/activation-link-invalid.django.html" %}
+        </div>
+    {% endif %}
+
+    {% if token_expired %}
+        <div id="django_cradmin_activate_account_expired_message" class="alert alert-warning">
+            {% include "cradmin_activate_account/messages/activation-link-expired.django.html" %}
+        </div>
+    {% endif %}
+{% endblock content %}

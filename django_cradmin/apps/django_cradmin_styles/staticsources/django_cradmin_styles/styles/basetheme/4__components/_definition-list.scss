@@ -1,0 +1,271 @@
+/** Definition list
+
+Example: {type: isolated} Default style
+
+    <dl class="definition-list">
+        <dt class="definition-list__title">Email:</dt>
+        <dd class="definition-list__value">peter@example.com</dd>
+
+        <dt class="definition-list__title">Phone number:</dt>
+        <dd class="definition-list__value">123 45 678</dd>
+
+        <dt class="definition-list__title">Alternative phone number:</dt>
+        <dd class="definition-list__value">-</dd>
+    </dl>
+
+
+Example: {type: isolated} Value and title variants
+
+    <dl class="definition-list">
+        <dt class="definition-list__title definition-list__title--anonymous">Title --anonymous</dt>
+        <dd class="definition-list__value">peter@example.com</dd>
+
+        <dt class="definition-list__title definition-list__title--anonymous-small">Title --anonymous-small:</dt>
+        <dd class="definition-list__value definition-list__value--small">Value --small</dd>
+
+        <dt class="definition-list__title">Default title:</dt>
+        <dd class="definition-list__value definition-list__value--strong">Value --strong</dd>
+    </dl>
+
+
+Example: {type: isolated} --center  (do not combine this with --table - use --table-center for that)
+
+    <dl class="definition-list definition-list--center">
+        <dt class="definition-list__title">Email:</dt>
+        <dd class="definition-list__value">peter@example.com</dd>
+
+        <dt class="definition-list__title">Phone number:</dt>
+        <dd class="definition-list__value">123 45 678</dd>
+
+        <dt class="definition-list__title">Alternative phone number:</dt>
+        <dd class="definition-list__value">-</dd>
+    </dl>
+
+
+Example: {type: isolated} --table variant
+
+    <dl class="definition-list definition-list--table">
+        <dt class="definition-list__title">Email:</dt>
+        <dd class="definition-list__value">peter@example.com</dd>
+
+        <dt class="definition-list__title">Phone number:</dt>
+        <dd class="definition-list__value">123 45 678</dd>
+
+        <dt class="definition-list__title">Alternative phone number:</dt>
+        <dd class="definition-list__value">-</dd>
+    </dl>
+
+
+Example: {type: isolated} --table-center-md
+
+    <dl class="definition-list definition-list--table definition-list--table-center-md">
+        <dt class="definition-list__title">Email:</dt>
+        <dd class="definition-list__value">peter@example.com</dd>
+
+        <dt class="definition-list__title">Phone number:</dt>
+        <dd class="definition-list__value">123 45 678</dd>
+
+        <dt class="definition-list__title">Alternative phone number:</dt>
+        <dd class="definition-list__value">-</dd>
+    </dl>
+
+
+Example: {type: isolated} --table-center
+
+    <dl class="definition-list definition-list--table definition-list--table-center">
+        <dt class="definition-list__title">Email:</dt>
+        <dd class="definition-list__value">peter@example.com</dd>
+
+        <dt class="definition-list__title">Phone number:</dt>
+        <dd class="definition-list__value">123 45 678</dd>
+
+        <dt class="definition-list__title">Alternative phone number:</dt>
+        <dd class="definition-list__value">-</dd>
+    </dl>
+
+
+Example: {type: isolated} --table-bordered variant
+
+    <dl class="definition-list definition-list--table definition-list--table-bordered">
+        <dt class="definition-list__title">Email:</dt>
+        <dd class="definition-list__value">peter@example.com</dd>
+
+        <dt class="definition-list__title">Phone number:</dt>
+        <dd class="definition-list__value">123 45 678</dd>
+
+        <dt class="definition-list__title">Alternative phone number:</dt>
+        <dd class="definition-list__value">-</dd>
+    </dl>
+
+
+Example: {type: isolated} --table-30-70 variant (can also be combined with --table-bordered)
+
+    <dl class="definition-list definition-list--table definition-list--table-30-70">
+        <dt class="definition-list__title">Email:</dt>
+        <dd class="definition-list__value">peter@example.com</dd>
+
+        <dt class="definition-list__title">Phone number:</dt>
+        <dd class="definition-list__value">123 45 678</dd>
+
+        <dt class="definition-list__title">Alternative phone number:</dt>
+        <dd class="definition-list__value">-</dd>
+    </dl>
+
+
+Example: {type: isolated} --table-40-60 variant (can also be combined with --table-bordered)
+
+    <dl class="definition-list definition-list--table definition-list--table-40-60">
+        <dt class="definition-list__title">Email:</dt>
+        <dd class="definition-list__value">peter@example.com</dd>
+
+        <dt class="definition-list__title">Phone number:</dt>
+        <dd class="definition-list__value">123 45 678</dd>
+
+        <dt class="definition-list__title">Alternative phone number:</dt>
+        <dd class="definition-list__value">-</dd>
+    </dl>
+
+Styleguide components.definition-list
+ */
+.definition-list {
+    $__root: &;
+
+    &__title {
+        @include spaced-text;
+        @include font-size(smallcaps);
+        @include font(base, bold);
+        margin-top: $spacing--small;
+        &:first-child {
+            margin-top: 0;
+        }
+
+        &--anonymous {
+            @include normal-text;
+            @include font-size(small);
+            //@include font(base);
+            font-weight: normal;
+            font-style: italic;
+
+        }
+        &--anonymous-small {
+            @extend #{$__root}__title--anonymous;
+            @include font-size(xsmall);
+        }
+    }
+
+    &__value {
+        &--break-words {
+            word-break: break-all;
+        }
+
+        &--small {
+            @include font-size(xsmall);
+        }
+        &--strong {
+            @include font(base, bold);
+        }
+    }
+
+    &--center {
+        text-align: center;
+    }
+
+    &--table {
+        @include min-width(md) {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+
+        #{$__root}__title, #{$__root}__value {
+            @include min-width(md) {
+                flex: 0 0 auto;
+                width: 50%;
+                margin-top: $spacing--small;
+                &:nth-child(1), &:nth-child(2) {
+                    margin-top: 0;
+                }
+            }
+        }
+        #{$__root}__title {
+            @include min-width(md) {
+                padding-right: ($spacing--small / 2);
+            }
+        }
+        #{$__root}__value {
+            @include min-width(md) {
+                padding-left: ($spacing--small / 2);
+            }
+        }
+
+        &-bordered {
+            #{$__root}__title, #{$__root}__value {
+                @include min-width(md) {
+                    border-bottom: $border-width--small solid color(neutral, light);
+                    padding-bottom: $unit;
+                    margin-top: $unit;
+                    &:nth-child(1), &:nth-child(2) {
+                        margin-top: 0;
+                    }
+                }
+            }
+        }
+
+        &-30-70 {
+            #{$__root}__title {
+                @include min-width(md) {
+                    width: 30%;
+                }
+            }
+            #{$__root}__value {
+                @include min-width(md) {
+                    width: 70%;
+                }
+            }
+        }
+
+        &-80-20 {
+            #{$__root}__title {
+                @include min-width(md) {
+                    width: 80%;
+                }
+            }
+            #{$__root}__value {
+                @include min-width(md) {
+                    width: 20%;
+                }
+            }
+        }
+
+        &-40-60 {
+            #{$__root}__title {
+                @include min-width(md) {
+                    width: 40%;
+                }
+            }
+            #{$__root}__value {
+                @include min-width(md) {
+                    width: 60%;
+                }
+            }
+        }
+
+        &-center-md {
+            #{$__root}__title {
+                @include min-width(md) {
+                    text-align: right;
+                }
+            }
+        }
+
+        &-center {
+            text-align: center;
+            @include min-width(md) {
+                text-align: left;
+                #{$__root}__title {
+                    text-align: right;
+                }
+            }
+        }
+    }
+}

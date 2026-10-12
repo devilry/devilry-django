@@ -1,0 +1,21 @@
+{% extends "cradmin_legacy/layouts/standalone/focused.django.html" %}
+{% load i18n %}
+{% load static %}
+{% load cradmin_legacy_tags %}
+
+{% block title %}
+    {{ pagetitle }}
+{% endblock title %}
+
+{% block pageheader-inner %}
+    <h1>
+        {{ pagetitle }}
+    </h1>
+    <p>
+        {% trans "Please select what you would like to edit" %}
+    </p>
+{% endblock pageheader-inner %}
+
+{% block content %}
+    {% cradmin_render_renderable djangoapps_list %}
+{% endblock content %}

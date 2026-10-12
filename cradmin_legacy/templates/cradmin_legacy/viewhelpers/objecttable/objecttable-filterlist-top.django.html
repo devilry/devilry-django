@@ -1,0 +1,13 @@
+{% extends "cradmin_legacy/viewhelpers/objecttable/objecttable.django.html" %}
+{% load cradmin_legacy_tags %}
+
+{% block bodyclass %}
+    {{ block.super }}
+    cradmin-legacy-objecttable-filterlist-top-page
+{% endblock %}
+
+
+{% block tablewrapper %}
+    {% cradmin_render_renderable filterlist %}
+    {{ block.super }}
+{% endblock tablewrapper %}

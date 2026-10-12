@@ -1,0 +1,35 @@
+/* Print optimizations
+
+Example: {type: isolated} Hidden when printing
+
+    <span class="hidden-in-print">
+        This is not visible when printing
+    </span>
+
+
+Example: {type: isolated} Hidden when printing complete example
+    <h3>This is a print friendly page</h3>
+    <p>
+        Everything will be visible in the printed version except the "Print page" button.
+    </p>
+
+    <p>
+        Click the "Print page" button to see a preview of the printed page.
+    </p>
+    <span class="hidden-in-print">
+        <button class="button button-default" onClick="window.print()">
+            Print page
+        </button>
+    </span>
+
+
+Styleguide screen.print
+*/
+
+.hidden-in-print {
+    @include hidden-in-print;
+}
+
+.visible-only-in-print {
+    @include display-block-only-in-print;
+}

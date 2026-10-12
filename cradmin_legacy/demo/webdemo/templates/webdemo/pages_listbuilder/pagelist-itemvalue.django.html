@@ -1,0 +1,32 @@
+{% extends "cradmin_legacy/viewhelpers/listbuilder/itemvalue/edit-delete-with-archive-image.django.html" %}
+{% load cradmin_legacy_tags %}
+{% load cradmin_legacy_image_tags %}
+
+{% block description-content %}
+    {{ me.get_description|truncatechars:"100" }}
+    &mdash;
+    Published {{ me.page.publishing_time|date:"DATETIME_FORMAT" }}
+{% endblock description-content %}
+
+{% block below-description %}
+    <p>
+        <em>
+            Tags:
+            {% for pagetag in me.page.tags.all %}
+                {{ pagetag.tag }}{% if not forloop.last %},{% endif %}
+            {% empty %}
+                <small class="text-muted">(no tags)</small>
+            {% endfor %}
+        </em>
+    </p>
+    <p>
+        <em>
+            Subscribers:
+            {% for subscriber in me.page.subscribers.all %}
+                {{ subscriber }}{% if not forloop.last %},{% endif %}
+            {% empty %}
+                <small class="text-muted">(no subscribers)</small>
+            {% endfor %}
+        </em>
+    </p>
+{% endblock below-description %}

@@ -1,0 +1,12 @@
+{% if javascript_code_before_sourceurls %}
+    <script>
+        {{ javascript_code_before_sourceurls|safe }}
+    </script>
+{% endif %}
+{% include "django_cradmin/templatetags/javascriptregistry/script_tags_from_sourceurls.django.html" %}
+
+{% if javascript_code_after_sourceurls %}
+    <script>
+        {{ javascript_code_after_sourceurls|safe }}
+    </script>
+{% endif %}

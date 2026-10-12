@@ -1,0 +1,22 @@
+{% load i18n %}
+{% load cradmin_legacy_icon_tags %}
+
+<div id="id_cradmin_{{ classname_lower }}_{{ fieldname }}"
+     class="cradmin-legacy-datepicker {{ extra_css_classes }}">
+    {% include "django/forms/widgets/input.html" %}
+    <p class="cradmin-legacy-datepicker-preview-and-button-para">
+        <span id="{{ previewid }}" class="cradmin-legacy-datepicker-preview">
+            {# Contents is added by the AngularJS directive #}
+        </span>
+        <button type="button"
+                id="{{ triggerbuttonid }}"
+                class="btn btn-default cradmin-legacy-datepicker-triggerbutton">
+            {# Label is added by the AngularJS directive #}
+        </button>
+    </p>
+    <div cradmin-legacy-datetime-selector='{{ datepicker_config|safe }}'></div>
+
+    <script id="{{ previewtemplateid }}" type="text/x-angularjs-template">
+        {{ preview_angularjs_template|safe }}
+    </script>
+</div>

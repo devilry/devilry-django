@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <style type="text/css">
+            @media (max-width: 670px) {
+                #outer_wrapper_table {
+                    width: 100%;
+                    max-width: 600px;
+                    padding-left: 10px;
+                    padding-right: 10px;
+                }
+            }
+        </style>
+    </head>
+    <body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0"
+          style="{{ body_style }}">
+        <table id="outer_wrapper_table"
+               style="{{ outer_wrapper_table_style }}"
+               align="center" border="0" cellpadding="0" cellspacing="0" width="600">
+            <tr style="margin: 0;">
+                <td style="{{ common_td_style }}{{ header_td_style }}">
+                    {% block header %}
+                        {% include "cradmin_email/include/html_message_header.django.html" %}
+                    {% endblock header %}
+                </td>
+            </tr>
+            <tr>
+                <td style="{{ common_td_style }}{{ contents_td_style }}">
+                    {# Override this in your html_message_template #}
+                    {% block contents %}{% endblock contents %}
+                </td>
+            </tr>
+            <tr>
+                <td style="{{ common_td_style }}{{ footer_td_style }}">
+                    {% block footer %}
+                        {% include "cradmin_email/include/html_message_footer.django.html" %}
+                    {% endblock footer %}
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>

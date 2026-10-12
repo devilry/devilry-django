@@ -1,0 +1,24 @@
+{% extends "django_cradmin/uicontainer/container.django.html" %}
+{% load cradmin_tags %}
+
+{% block content %}
+    {% if not me.should_show_text_after_field %}
+        {% block label_text_before_field %}
+            {% include "./label_text.django.html" %}
+        {% endblock label_text_before_field %}
+    {% endif %}
+
+    {% block field %}
+        {% if me.field_renderable %}
+            {% cradmin_render_renderable me.field_renderable %}
+        {% endif %}
+    {% endblock field %}
+
+    {% if me.should_show_text_after_field %}
+        {% block label_text_after_field %}
+            {% include "./label_text.django.html" %}
+        {% endblock label_text_after_field %}
+    {% endif %}
+
+    {{ block.super }}
+{% endblock content %}

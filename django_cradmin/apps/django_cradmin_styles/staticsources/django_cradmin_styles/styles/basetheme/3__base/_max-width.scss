@@ -1,0 +1,43 @@
+/** Max-width constraints
+
+Useful to use on block elements that you do not want to use all the width.
+
+This is basically a much more lightweight version of a "container". It has no
+padding - and should normally be used within a "container" or something else that provides
+side padding.
+
+Example:: Setting max-width based on breakpoints
+
+    <div class="max-width max-width--xs" style="background-color: #22447a; color: #fff">--xs</div>
+    <div class="max-width max-width--md" style="background-color: #5f227a; color: #fff">--md</div>
+    <div class="max-width max-width--lg" style="background-color: #7a225f; color: #fff">--lg</div>
+    <div class="max-width max-width--xl" style="background-color: #227a62; color: #fff">--xl</div>
+
+Example:: --center
+
+    <div class="max-width max-width--center max-width--xs" style="background-color: #22447a; color: #fff">--xs</div>
+    <div class="max-width max-width--center max-width--md" style="background-color: #5f227a; color: #fff">--md</div>
+    <div class="max-width max-width--center max-width--lg" style="background-color: #7a225f; color: #fff">--lg</div>
+    <div class="max-width max-width--center max-width--xl" style="background-color: #227a62; color: #fff">--xl</div>
+
+Styleguide layout.max-width
+ */
+.max-width {
+    &--xs {
+        max-width: map-get($breakpoints, xs);
+    }
+    &--md {
+        max-width: map-get($breakpoints, md);
+    }
+    &--lg {
+        max-width: map-get($breakpoints, lg);
+    }
+    &--xl {
+        max-width: map-get($breakpoints, xl);
+    }
+
+    &--center {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}

@@ -1,0 +1,22 @@
+/* Help text
+
+Example:
+
+    <label class="label">
+        Standard input
+        <input type="text" class="input" placeholder="I set the standard" />
+    </label>
+    <p class="help-text">
+        Vestibulum id ligula porta felis euismod semper.
+        Nullam id dolor id nibh ultricies vehicula ut id elit.
+    </p>
+Styleguide form.6:help-text
+*/
+
+.help-text {
+    @include font(base);
+    @include font-size(xsmall);
+    color: $color-muted;
+    margin-top: vertical-space();
+    margin-bottom: vertical-space();
+}

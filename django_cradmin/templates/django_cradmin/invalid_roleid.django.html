@@ -1,0 +1,16 @@
+{% extends "django_cradmin/layouts/standalone/focused.django.html" %}
+{% load i18n %}
+
+{% block page-cover-title %}
+    {% trans "Invalid role" %}: {{ roleid }}
+{% endblock page-cover-title %}
+
+{% block content %}
+    <div class="adminui-page-section adminui-page-section--center">
+        <div class="container">
+            <p class="message message--error">
+                {% trans "The requested role does not exist." %}
+            </p>
+        </div>
+    </div>
+{% endblock content %}

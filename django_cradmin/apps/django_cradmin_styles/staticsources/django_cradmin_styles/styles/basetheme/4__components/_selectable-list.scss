@@ -1,0 +1,547 @@
+
+/* List of selectable elements
+
+Used for components that emulate the behavior of ``<select>``,
+radio button lists and checkbox button lists.
+
+Example: {type: isolated} Basics
+    <div class="container">
+        <ul class="selectable-list">
+            <li class="selectable-list__item" tabindex="0">
+                <div class="selectable-list__itemcontent">
+                    Element 1
+                </div>
+            </li>
+            <li class="selectable-list__item" tabindex="0">
+                <div class="selectable-list__itemcontent">
+                    Element 2
+                </div>
+            </li>
+            <li class="selectable-list__item" tabindex="0">
+                <div class="selectable-list__itemcontent">
+                    Element 3
+                </div>
+            </li>
+        </ul>
+    </div>
+
+Example: {type: isolated} Neutral light items
+    <div class="container">
+        <ul class="selectable-list">
+            <li class="selectable-list__item selectable-list__item--neutral-light" tabindex="0">
+                <div class="selectable-list__itemcontent">
+                    Element 1
+                </div>
+            </li>
+            <li class="selectable-list__item selectable-list__item--neutral-light" tabindex="0">
+                <div class="selectable-list__itemcontent">
+                    Element 2
+                </div>
+            </li>
+            <li class="selectable-list__item selectable-list__item--neutral-light" tabindex="0">
+                <div class="selectable-list__itemcontent">
+                    Element 3
+                </div>
+            </li>
+        </ul>
+    </div>
+
+Example: {type: isolated} Title for each item
+    <div class="container">
+        <ul class="selectable-list">
+            <li class="selectable-list__item" tabindex="0">
+                <div class="selectable-list__itemcontent">
+                    <h3 class="selectable-list__itemtitle">Element 1</h3>
+                    <p>Dolor Etiam Mattis</p>
+                </div>
+            </li>
+            <li class="selectable-list__item" tabindex="0">
+                <div class="selectable-list__itemcontent">
+                    <h3 class="selectable-list__itemtitle">Element 2</h3>
+                    <p>Commodo Vestibulum Cras</p>
+                </div>
+            </li>
+            <li class="selectable-list__item" tabindex="0">
+                <div class="selectable-list__itemcontent">
+                    <h3 class="selectable-list__itemtitle">Element 3</h3>
+                    <p>Nunquam visum advena</p>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+
+Example: {type: isolated} With border separating items
+    <div class="container">
+        <ul class="selectable-list">
+            <li class="selectable-list__item  selectable-list__item--bordered" tabindex="0">
+                <div class="selectable-list__itemcontent">
+                    Element 1
+                </div>
+            </li>
+            <li class="selectable-list__item  selectable-list__item--bordered" tabindex="0">
+                <div class="selectable-list__itemcontent">
+                    Element 2
+                </div>
+            </li>
+            <li class="selectable-list__item  selectable-list__item--bordered" tabindex="0">
+                <div class="selectable-list__itemcontent">
+                    Element 3
+                </div>
+            </li>
+        </ul>
+    </div>
+
+
+Example: {type: isolated} Outlined with a border around each item
+    <div class="container">
+        <ul class="selectable-list">
+            <li class="selectable-list__item  selectable-list__item--outlined" tabindex="0">
+                <div class="selectable-list__itemcontent">
+                    Element 1
+                </div>
+            </li>
+            <li class="selectable-list__item  selectable-list__item--outlined" tabindex="0">
+                <div class="selectable-list__itemcontent">
+                    Element 2
+                </div>
+            </li>
+            <li class="selectable-list__item  selectable-list__item--outlined" tabindex="0">
+                <div class="selectable-list__itemcontent">
+                    Element 3
+                </div>
+            </li>
+        </ul>
+    </div>
+
+
+Example: {type: isolated} With selected items
+    <div class="container">
+        <ul class="selectable-list">
+            <li class="selectable-list__item" tabindex="0">
+                <div class="selectable-list__itemcontent">
+                    Element 1
+                </div>
+            </li>
+            <li class="selectable-list__item selectable-list__item--selected" tabindex="0">
+                <div class="selectable-list__itemcontent">
+                    <h3 class="selectable-list__itemtitle">Element 2</h3>
+                    Aenean lacinia bibendum nulla sed consectetur.
+                    Praesent commodo cursus magna, vel scelerisque nisl
+                    consectetur et. Maecenas faucibus mollis interdum.
+                </div>
+            </li>
+            <li class="selectable-list__item" tabindex="0">
+                <div class="selectable-list__itemcontent">
+                    Element 3
+                </div>
+            </li>
+            <li class="selectable-list__item selectable-list__item--selected" tabindex="0">
+                <div class="selectable-list__itemcontent">
+                    Element 4
+                </div>
+            </li>
+        </ul>
+    </div>
+
+
+Example: {type: isolated} With icon
+    <div class="container">
+        <ul class="selectable-list">
+            <li class="selectable-list__item" tabindex="0">
+                <div class="selectable-list__icon"></div>
+                <div class="selectable-list__itemcontent">
+                    Element 1
+                </div>
+            </li>
+            <li class="selectable-list__item selectable-list__item--selected" tabindex="0">
+                <div class="selectable-list__icon">
+                    <span class="cricon cricon--check cricon--color-light"></span>
+                </div>
+                <div class="selectable-list__itemcontent">
+                    <h3 class="selectable-list__itemtitle">Element 2</h3>
+                    Aenean lacinia bibendum nulla sed consectetur.
+                    Praesent commodo cursus magna, vel scelerisque nisl
+                    consectetur et. Maecenas faucibus mollis interdum.
+                </div>
+            </li>
+            <li class="selectable-list__item" tabindex="0">
+                <div class="selectable-list__icon"></div>
+                <div class="selectable-list__itemcontent">
+                    Element 3
+                </div>
+            </li>
+            <li class="selectable-list__item selectable-list__item--selected" tabindex="0">
+                <div class="selectable-list__icon">
+                    <span class="cricon cricon--check cricon--color-light"></span>
+                </div>
+                <div class="selectable-list__itemcontent">
+                    Element 4
+                </div>
+            </li>
+        </ul>
+    </div>
+
+Example: {type: isolated} With icon after
+    <div class="container">
+        <ul class="selectable-list">
+            <li class="selectable-list__item" tabindex="0">
+                <div class="selectable-list__itemcontent">
+                    Element 1
+                </div>
+                <div class="selectable-list__icon"></div>
+            </li>
+            <li class="selectable-list__item selectable-list__item--selected" tabindex="0">
+                <div class="selectable-list__itemcontent">
+                    <h3 class="selectable-list__itemtitle">Element 2</h3>
+                    Aenean lacinia bibendum nulla sed consectetur.
+                    Praesent commodo cursus magna, vel scelerisque nisl
+                    consectetur et. Maecenas faucibus mollis interdum.
+                </div>
+                <div class="selectable-list__icon">
+                    <i class="cricon cricon--close cricon--color-light"></i>
+                </div>
+            </li>
+            <li class="selectable-list__item" tabindex="0">
+                <div class="selectable-list__itemcontent">
+                    Element 3
+                </div>
+                <div class="selectable-list__icon"></div>
+            </li>
+            <li class="selectable-list__item selectable-list__item--selected" tabindex="0">
+                <div class="selectable-list__itemcontent">
+                    Element 4
+                </div>
+                <div class="selectable-list__icon">
+                    <i class="cricon cricon--close cricon--color-light"></i>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+Example: {type: isolated} Inline
+    <div class="container">
+        <ul class="selectable-list selectable-list--inline">
+            <li class="selectable-list__item" tabindex="0">
+                <div class="selectable-list__itemcontent">Element 1</div>
+            </li>
+            <li class="selectable-list__item" tabindex="0">
+                <div class="selectable-list__itemcontent">Element 2</div>
+            </li>
+            <li class="selectable-list__item" tabindex="0">
+                <div class="selectable-list__itemcontent">Element 3</div>
+            </li>
+        </ul>
+    </div>
+
+Example: {type: isolated} Inline list wraps
+    <div class="container">
+        <ul class="selectable-list selectable-list--inline">
+            <li class="selectable-list__item" tabindex="0">
+                <div class="selectable-list__itemcontent">Sollicitudin Vestibulum</div>
+            </li>
+            <li class="selectable-list__item" tabindex="0">
+                <div class="selectable-list__itemcontent">Condimentum Nullam Porta</div>
+            </li>
+            <li class="selectable-list__item" tabindex="0">
+                <div class="selectable-list__itemcontent">Fermentum Ullamcorper Ligula</div>
+            </li>
+            <li class="selectable-list__item" tabindex="0">
+                <div class="selectable-list__itemcontent">Nullam Quam Dolor</div>
+            </li>
+            <li class="selectable-list__item" tabindex="0">
+                <div class="selectable-list__itemcontent">Ridiculus Quam</div>
+            </li>
+            <li class="selectable-list__item" tabindex="0">
+                <div class="selectable-list__itemcontent">Dapibus Sem Euismod</div>
+            </li>
+            <li class="selectable-list__item" tabindex="0">
+                <div class="selectable-list__itemcontent">Cursus Parturient Nibh</div>
+            </li>
+        </ul>
+    </div>
+
+
+Example: {type: isolated} Inline centered
+    <div class="container">
+        <ul class="selectable-list selectable-list--inline-center">
+            <li class="selectable-list__item" tabindex="0">
+                <div class="selectable-list__itemcontent">Sollicitudin Vestibulum</div>
+            </li>
+            <li class="selectable-list__item" tabindex="0">
+                <div class="selectable-list__itemcontent">Condimentum Nullam Porta</div>
+            </li>
+            <li class="selectable-list__item" tabindex="0">
+                <div class="selectable-list__itemcontent">Fermentum Ullamcorper Ligula</div>
+            </li>
+            <li class="selectable-list__item" tabindex="0">
+                <div class="selectable-list__itemcontent">Nullam Quam Dolor</div>
+            </li>
+            <li class="selectable-list__item" tabindex="0">
+                <div class="selectable-list__itemcontent">Ridiculus Quam</div>
+            </li>
+            <li class="selectable-list__item" tabindex="0">
+                <div class="selectable-list__itemcontent">Dapibus Sem Euismod</div>
+            </li>
+            <li class="selectable-list__item" tabindex="0">
+                <div class="selectable-list__itemcontent">Cursus Parturient Nibh</div>
+            </li>
+        </ul>
+    </div>
+
+
+Example: {type: isolated} Inline with icon
+    <div class="container">
+        <ul class="selectable-list selectable-list--inline">
+            <li class="selectable-list__item  selectable-list__item--selected" tabindex="0">
+                <div class="selectable-list__itemcontent">
+                    Element 1
+                </div>
+                <div class="selectable-list__icon">
+                    <i class="cricon cricon--close cricon--color-light"></i>
+                </div>
+            </li>
+            <li class="selectable-list__item" tabindex="0">
+                <div class="selectable-list__itemcontent">
+                    Element 2
+                </div>
+            </li>
+            <li class="selectable-list__item  selectable-list__item--selected" tabindex="0">
+                <div class="selectable-list__itemcontent">
+                    Element 3
+                </div>
+                <div class="selectable-list__icon">
+                    <i class="cricon cricon--close cricon--color-light"></i>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+
+Example: {type: isolated} Inline outlined
+    <div class="container">
+        <ul class="selectable-list selectable-list--inline">
+            <li class="selectable-list__item  selectable-list__item--outlined" tabindex="0">
+                <div class="selectable-list__itemcontent">
+                    Element 1
+                </div>
+            </li>
+            <li class="selectable-list__item  selectable-list__item--outlined  selectable-list__item--selected" tabindex="0">
+                <div class="selectable-list__itemcontent">
+                    Element 2
+                </div>
+            </li>
+            <li class="selectable-list__item  selectable-list__item--outlined" tabindex="0">
+                <div class="selectable-list__itemcontent">
+                    Element 3
+                </div>
+            </li>
+        </ul>
+    </div>
+
+Example: {type: isolated} Inline item content is always single line - ellipsis for long text
+    <div class="container">
+        <ul class="selectable-list selectable-list--inline">
+            <li class="selectable-list__item  selectable-list__item--selected" tabindex="0">
+                <div class="selectable-list__itemcontent">
+                    <h3 class="selectable-list__itemtitle">Element 1</h3>
+                    <p>Donec ullamcorper nulla non metus auctor fringilla. Vestibulum
+                    id ligula porta felis euismod semper. Curabitur blandit tempus porttitor.</p>
+                </div>
+                <div class="selectable-list__icon">
+                    <i class="cricon cricon--close cricon--color-light"></i>
+                </div>
+            </li>
+            <li class="selectable-list__item" tabindex="0">
+                <div class="selectable-list__itemcontent">
+                    <h3 class="selectable-list__itemtitle">Element 2</h3>
+                </div>
+            </li>
+            <li class="selectable-list__item" tabindex="0">
+                <div class="selectable-list__itemcontent">
+                    <h3 class="selectable-list__itemtitle">Element 3</h3>
+                    <p>Nullam id dolor id nibh ultricies vehicula ut id elit. Cum sociis natoque penatibus et magnis
+                    dis parturient montes, nascetur ridiculus mus.</>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+Styleguide components.selectable-list
+*/
+.selectable-list {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: vertical-space($spacing, 1.2);
+
+    &__item {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
+        margin: 0;
+        border: 0;
+        cursor: pointer;
+        outline: none;
+        border-radius: $border-radius;
+        background-color: $color-light;
+        text-align: left;
+
+        &--neutral-xlight {
+            background-color: color(neutral, xlight)
+        }
+
+        &--neutral-light {
+            background-color: color(neutral, light)
+        }
+
+        &--bordered {
+            border-radius: 0;
+            border-bottom: $border-width--small solid $color-text;
+
+            &:first-of-type {
+                border-top-left-radius: $border-radius;
+                border-top-right-radius: $border-radius;
+            }
+
+            &:last-of-type {
+                border: 0;
+                border-bottom-left-radius: $border-radius;
+                border-bottom-right-radius: $border-radius;
+            }
+        }
+
+        &--outlined {
+            border-radius: 0;
+            border: $border-width--small solid color(neutral, light);
+            border-top-width: 0;
+
+            &:first-of-type {
+                border-top-width: $border-width--small;
+                border-top-left-radius: $border-radius;
+                border-top-right-radius: $border-radius;
+            }
+
+            &:last-of-type {
+                border-bottom-left-radius: $border-radius;
+                border-bottom-right-radius: $border-radius;
+            }
+        }
+
+        &:hover,
+        &:focus {
+            color: $color-light;
+            background-color: $color-links--hover;
+        }
+
+        &--selected {
+            color: $color-light;
+            background-color: color(secondary, dark);
+        }
+    }
+
+    &__icon {
+        //display: inline-block;
+        flex-grow: 0;
+        flex-shrink: 0;
+        flex-basis: 15px;
+        width: 15px;
+        position: relative;
+
+        //height: 20px;
+        //overflow: visible;
+        //text-align: center;
+        ////transform: scale(0.6);
+
+        &:first-child {
+            margin-left: $spacing--small;
+        }
+
+        &:last-child {
+            margin-right: $spacing--small;
+        }
+
+        .cricon:before {
+            //@include cricon-fixed-width(xxsmall);
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            font-size: 12px;
+            margin-top: -5px;
+        }
+    }
+
+    &__itemcontent {
+        @include font-size(xsmall);
+        flex-grow: 1;
+        padding: vertical-space() $spacing--small;
+        display: block;
+
+        & > * {
+            &:first-child {
+                margin-top: 0;
+                padding-top: 0;
+            }
+
+            &:last-child {
+                padding-bottom: 0;
+                margin-bottom: 0;
+            }
+        }
+    }
+
+    &__itemtitle {
+        @include font(base, bold);
+        @include font-size(xsmall);
+        display: block;
+        margin-bottom: 0;
+    }
+
+    &--inline {
+        @include min-width(md) {
+            flex-direction: row;
+            flex-wrap: wrap;
+            margin-bottom: vertical-space($spacing--large);
+
+            .selectable-list__item {
+                margin: 0 $unit $unit 0;
+
+                &:first-child {
+                    margin-left: 0;
+                }
+
+                &--outlined {
+                    border: $border-width--small solid color(neutral, light);
+                    border-radius: $border-radius;
+                }
+            }
+
+            .selectable-list__itemcontent {
+                &,
+                & > * {
+                    white-space: nowrap;
+                    max-width: map-get($breakpoints, xs);
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+            }
+        }
+    }
+
+    &--inline-center {
+        @extend .selectable-list--inline;
+
+        @include min-width(md) {
+            justify-content: center;
+        }
+    }
+
+    &--nomargin {
+        margin-bottom: 0;
+    }
+
+    &--compact {
+        margin-bottom: vertical-space();
+    }
+}

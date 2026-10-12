@@ -1,0 +1,7 @@
+{% block outer-wrapper %}
+    <a href="{{ me.url }}" class="{{ me.css_classes }}">
+        {% block content %}
+            {{ me.label }}
+        {% endblock content %}
+    </a>
+{% endblock outer-wrapper %}

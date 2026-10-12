@@ -1,0 +1,13 @@
+{% load cradmin_legacy_tags %}
+
+{% block pre %}{% endblock pre %}
+<ol class="{{ me.get_css_classes_string }}" {% block list-element-attributes %}{% endblock %}>
+    {% for renderable in me.iter_renderables %}
+        <li>
+            {% block li-content %}
+                {% cradmin_render_renderable renderable %}
+            {% endblock li-content %}
+        </li>
+    {% endfor %}
+</ol>
+{% block post %}{% endblock post %}

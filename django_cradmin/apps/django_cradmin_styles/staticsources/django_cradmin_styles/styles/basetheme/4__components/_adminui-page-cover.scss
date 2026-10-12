@@ -1,0 +1,52 @@
+/* AdminUI page cover
+
+Example: {type: isolated} Minimal example
+
+    <header class="adminui-page-cover">
+        <h1 class="adminui-page-cover__title">The title</h1>
+    </header>
+
+Example: {type: isolated} With description
+
+    <header class="adminui-page-cover">
+        <h1 class="adminui-page-cover__title">The title</h1>
+        <p class="adminui-page-cover__description">The description</p>
+    </header>
+
+Example: {type: isolated} With large description
+
+    <header class="adminui-page-cover">
+        <h1 class="adminui-page-cover__title">The title</h1>
+        <p class="adminui-page-cover__description  adminui-page-cover__description--large">The description</p>
+    </header>
+
+Example: {type: isolated} With inline elements in description
+
+    <header class="adminui-page-cover">
+        <h1 class="adminui-page-cover__title">The title</h1>
+        <p class="adminui-page-cover__description">
+            The <strong class="adminui-page-cover__strong">awesome</strong>
+            <a class="adminui-page-cover__link">description</a>
+        </p>
+    </header>
+
+Example: {type: isolated} Buttons
+
+    <header class="adminui-page-cover">
+        <h1 class="adminui-page-cover__title">The title</h1>
+
+        <p>
+            <button type="button" class="adminui-page-cover__button">
+                Default page-cover button
+            </button>
+            <button type="button" class="adminui-page-cover__button adminui-page-cover__button--focus">
+                --focus
+            </button>
+        </p>
+    </header>
+
+Styleguide layout.adminui-page-cover
+*/
+.adminui-page-cover {
+    @include page-cover-mixin();
+}

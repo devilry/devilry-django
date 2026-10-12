@@ -1,0 +1,62 @@
+/* Fieldset and legend
+
+Fieldset and legends is a bitch. For that reason we have to have a little
+hacky code to fix them...
+
+Example: Fieldset and Legend
+    <fieldset class="fieldset">
+        <legend class="legend">I'm a legend</legend>
+    </fieldset>
+
+Example: Extra spacing below the fieldset
+    <fieldset class="fieldset  fieldset--spaced">
+        <legend class="legend">I'm a legend</legend>
+    </fieldset>
+    This extra spacing is normally not needed because the fieldset
+    will contain "fieldwrapper" or "label  label--standalone" elements
+    that provide the spacing.
+
+Styleguide form.8:fieldset
+*/
+
+
+.fieldset {
+    @extend %clearfix;
+    padding: vertical-space($spacing)  $spacing  vertical-space($spacing--small);
+    margin-bottom: vertical-space($spacing--small);
+    border-radius: $border-radius;
+    background-color: $color-light;
+    // border: $border-style;
+
+
+    &--subtle {
+        margin-bottom: 0;
+        padding: 0;
+        border-radius: 0;
+        background-color: transparent;
+    }
+
+    &--spaced {
+        margin-bottom: vertical-space($spacing);
+    }
+
+    &:not(.fieldset--subtle) {
+        .legend {
+            @include font(header, bold);
+            @include font-size(large);
+            width: 100%;
+            float: left;
+            margin-bottom: vertical-space($spacing);
+
+            & + .fieldwrapper {
+                margin-top: vertical-space($spacing, 2.2);
+            }
+        }
+    }
+}
+
+.legend {
+    @extend %clearfix;
+    @extend %h4;
+    margin-bottom: vertical-space();
+}

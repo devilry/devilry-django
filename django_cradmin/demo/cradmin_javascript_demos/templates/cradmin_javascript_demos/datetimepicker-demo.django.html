@@ -1,0 +1,274 @@
+{% extends "django_cradmin/standalone-base.django.html" %}
+{% load static %}
+
+{% block title %}
+    Datetime picker demo
+{% endblock title %}
+
+{% block page-cover-title %}
+    Datetime picker demo
+{% endblock page-cover-title %}
+
+{% block page-cover-content %}
+    {{ block.super }}
+{% endblock page-cover-content %}
+
+
+{% block content %}
+    <div class="adminui-page-section">
+        <div class="container">
+            <h2>Date example (embedded)</h2>
+
+            <div class="fieldwrapper">
+                <h3 class="h4">Without initial value</h3>
+                <input type="hidden" id="id_test100">
+                <div data-ievv-jsbase-widget="cradmin-datetimepicker-embedded-date"
+                     data-ievv-jsbase-widget-config='{"hiddenFieldId": "id_test100", "ariaLabel": "Select a date"}'></div>
+            </div>
+
+            <div class="fieldwrapper">
+                <h3 class="h4">With initial value</h3>
+                <input type="hidden" id="id_test101" value="2017-12-24">
+                <div data-ievv-jsbase-widget="cradmin-datetimepicker-embedded-date"
+                     data-ievv-jsbase-widget-config='{"hiddenFieldId": "id_test101", "ariaLabel": "Select a date"}'></div>
+            </div>
+
+            <div class="fieldwrapper">
+                <h3 class="h4">Custom props</h3>
+                <input type="hidden" id="id_test101" value="2017-12-24">
+                <div data-ievv-jsbase-widget="cradmin-datetimepicker-embedded-date"
+                     data-ievv-jsbase-widget-config='{
+                         "pickerProps": {"includeShortcuts": false},
+                         "hiddenFieldId": "id_test101",
+                         "ariaLabel": "Select a date"
+                     }'></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="adminui-page-section">
+        <div class="container">
+            <h2>Date example (modal)</h2>
+
+            <div class="fieldwrapper">
+                <h3 class="h4">Without initial value</h3>
+                <input type="hidden" id="id_test200">
+                <div data-ievv-jsbase-widget="cradmin-datetimepicker-modal-date"
+                     data-ievv-jsbase-widget-config='{
+                        "hiddenFieldId": "id_test200",
+                        "title": "Select a date"
+                     }'></div>
+            </div>
+
+            <div class="fieldwrapper">
+                <h3 class="h4">With initial value</h3>
+                <input type="hidden" id="id_test201" value="2017-12-24">
+                <div data-ievv-jsbase-widget="cradmin-datetimepicker-modal-date"
+                     data-ievv-jsbase-widget-config='{
+                        "hiddenFieldId": "id_test201",
+                        "title": "Select a date"
+                     }'></div>
+            </div>
+
+            <div class="fieldwrapper">
+                <h3 class="h4">Custom props</h3>
+                <input type="hidden" id="id_test202" value="2017-12-24">
+                <div data-ievv-jsbase-widget="cradmin-datetimepicker-modal-date"
+                     data-ievv-jsbase-widget-config='{
+                        "pickerProps": {"includeShortcuts": false},
+                        "openPickerProps": {"includeNowButton": false},
+                        "hiddenFieldId": "id_test202",
+                        "title": "Select a date"
+                     }'></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="adminui-page-section">
+        <div class="container">
+            <h2>Date example (dropdown)</h2>
+
+            <div class="fieldwrapper">
+                <h3 class="h4">Without initial value</h3>
+                <input type="hidden" id="id_test250">
+                <div data-ievv-jsbase-widget="cradmin-datetimepicker-dropdown-date"
+                     data-ievv-jsbase-widget-config='{
+                        "hiddenFieldId": "id_test250",
+                        "title": "Select a date"
+                     }'></div>
+            </div>
+
+            <div class="fieldwrapper">
+                <h3 class="h4">With initial value</h3>
+                <input type="hidden" id="id_test251" value="2017-12-24">
+                <div data-ievv-jsbase-widget="cradmin-datetimepicker-dropdown-date"
+                     data-ievv-jsbase-widget-config='{
+                        "hiddenFieldId": "id_test251",
+                        "title": "Select a date"
+                     }'></div>
+            </div>
+
+            <div class="fieldwrapper">
+                <h3 class="h4">Custom props</h3>
+                <input type="hidden" id="id_test252" value="2017-12-24">
+                <div data-ievv-jsbase-widget="cradmin-datetimepicker-dropdown-date"
+                     data-ievv-jsbase-widget-config='{
+                        "pickerProps": {"includeShortcuts": false},
+                        "openPickerProps": {"includeNowButton": false},
+                        "hiddenFieldId": "id_test252",
+                        "title": "Select a date"
+                     }'></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="adminui-page-section">
+        <div class="container">
+            <h2>DateTime example (embedded)</h2>
+
+            <div class="fieldwrapper">
+                <h3 class="h4">Without initial value</h3>
+                <input type="hidden" id="id_test300">
+                <div data-ievv-jsbase-widget="cradmin-datetimepicker-embedded-datetime"
+                     data-ievv-jsbase-widget-config='{"hiddenFieldId": "id_test300", "ariaLabel": "Select a date/time"}'></div>
+            </div>
+
+            <div class="fieldwrapper">
+                <h3 class="h4">With initial value</h3>
+                <input type="hidden" id="id_test301" value="2017-12-24 12:35">
+                <div data-ievv-jsbase-widget="cradmin-datetimepicker-embedded-datetime"
+                     data-ievv-jsbase-widget-config='{"hiddenFieldId": "id_test301", "ariaLabel": "Select a date/time"}'></div>
+            </div>
+
+            <div class="fieldwrapper">
+                <h3 class="h4">Custom props</h3>
+                <input type="hidden" id="id_test302">
+                <div data-ievv-jsbase-widget="cradmin-datetimepicker-embedded-datetime"
+                     data-ievv-jsbase-widget-config='{
+                        "pickerProps": {"showSeconds": true, "includeShortcuts": false},
+                        "hiddenFieldId": "id_test302",
+                        "ariaLabel": "Select a date/time"
+                     }'></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="adminui-page-section">
+        <div class="container">
+            <h2>DateTime example (modal)</h2>
+
+            <div class="fieldwrapper">
+                <h3 class="h4">Without initial value</h3>
+                <input type="hidden" id="id_test400">
+                <div data-ievv-jsbase-widget="cradmin-datetimepicker-modal-datetime"
+                     data-ievv-jsbase-widget-config='{
+                        "hiddenFieldId": "id_test400",
+                        "title": "Select date/time"
+                     }'></div>
+            </div>
+
+            <div class="fieldwrapper">
+                <h3 class="h4">With initial value</h3>
+                <input type="hidden" id="id_test401" value="2017-12-24 12:35">
+                <div data-ievv-jsbase-widget="cradmin-datetimepicker-modal-datetime"
+                     data-ievv-jsbase-widget-config='{
+                        "hiddenFieldId": "id_test401",
+                        "title": "Select date/time"
+                     }'></div>
+            </div>
+
+            <div class="fieldwrapper">
+                <h3 class="h4">Custom props</h3>
+                <input type="hidden" id="id_test402">
+                <div data-ievv-jsbase-widget="cradmin-datetimepicker-modal-datetime"
+                     data-ievv-jsbase-widget-config='{
+                        "pickerProps": {"showSeconds": true, "includeShortcuts": false},
+                        "openPickerProps": {"includeNowButton": false},
+                        "hiddenFieldId": "id_test402",
+                        "title": "Select date/time"
+                     }'></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="adminui-page-section">
+        <div class="container">
+            <h2>DateTime example (dropdown)</h2>
+
+            <div class="fieldwrapper">
+                <h3 class="h4">Without initial value</h3>
+                <input type="hidden" id="id_test450">
+                <div data-ievv-jsbase-widget="cradmin-datetimepicker-dropdown-datetime"
+                     data-ievv-jsbase-widget-config='{
+                        "hiddenFieldId": "id_test450",
+                        "title": "Select date/time"
+                     }'></div>
+            </div>
+
+            <div class="fieldwrapper">
+                <h3 class="h4">With initial value</h3>
+                <input type="hidden" id="id_test451" value="2017-12-24 12:35">
+                <div data-ievv-jsbase-widget="cradmin-datetimepicker-dropdown-datetime"
+                     data-ievv-jsbase-widget-config='{
+                        "hiddenFieldId": "id_test451",
+                        "title": "Select date/time"
+                     }'></div>
+            </div>
+
+            <div class="fieldwrapper">
+                <h3 class="h4">Custom props</h3>
+                <input type="hidden" id="id_test452">
+                <div data-ievv-jsbase-widget="cradmin-datetimepicker-dropdown-datetime"
+                     data-ievv-jsbase-widget-config='{
+                        "pickerProps": {"showSeconds": true, "includeShortcuts": false},
+                        "openPickerProps": {"includeNowButton": false},
+                        "hiddenFieldId": "id_test452",
+                        "title": "Select date/time"
+                     }'></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="adminui-page-section">
+        <div class="container">
+            <h2>Modal datetime picker within a modal</h2>
+            <p><em>Using dropdown style within a modal does not work well, so within a modal
+            you should use the modal or embedded styles.</em></p>
+            <button type="button" class="button" onclick="openExampleModal()">Open the modal</button>
+        </div>
+    </div>
+    <script>
+        function openExampleModal () {
+            document.getElementById('id_example_modal').style.display = 'block';
+        }
+
+        function closeExampleModal () {
+            document.getElementById('id_example_modal').style.display = 'none';
+        }
+    </script>
+    <div id="id_example_modal" class="modal modal--wide" style="display: none;">
+        <div class="modal__backdrop" onclick="closeExampleModal()"></div>
+
+        <div class="modal__content">
+            <div class="modal__close">
+                <button type="button" title="Close" onclick="closeExampleModal()">
+                    <span class="cricon cricon--close" aria-hidden="true"></span>
+                </button>
+            </div>
+
+            <div class="modal__title">
+                <h2>Edit some stuff</h2>
+            </div>
+            <div class="fieldwrapper">
+                <label class="label">Please select a date</label>
+                <input type="hidden" id="id_test450">
+                <div data-ievv-jsbase-widget="cradmin-datetimepicker-modal-datetime"
+                     data-ievv-jsbase-widget-config='{
+                        "hiddenFieldId": "id_test450",
+                        "title": "Select date/time"
+                     }'></div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

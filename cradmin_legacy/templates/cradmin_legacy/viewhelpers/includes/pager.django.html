@@ -1,0 +1,42 @@
+{% comment %}
+    Usage:
+        {% include "cradmin_legacy/viewhelpers/includes/pager.django.html" %}
+
+    Required context variables:
+
+        is_paginated
+        page_obj
+
+    These are added automatically by ListView if you specify paginate_by.
+
+    Option context variables:
+
+        extra_querystring
+            Appended to the querystring.
+        pager_extraclass
+            Extra css class(es) to add to the pager in addition to ``.cradmin-legacy-loadmorepager``.
+{% endcomment %}
+{% load i18n %}
+{% load cradmin_legacy_icon_tags %}
+
+{% if is_paginated %}
+    <div class="pager-container">
+        <ul class="pager {{ pager_extraclass }}">
+            <li class="previous {% if not page_obj.has_previous %}disabled{% endif %}">
+                <a href="?page={% if page_obj.has_previous %}{{ page_obj.previous_page_number }}{% else %}1{% endif %}&amp;{{ extra_querystring }}">
+                    <i class="{% cradmin_icon 'pager-previus-page' %}"></i>
+                    <span class="sr-only">{% trans "Previous" %}</span>
+                </a>
+            </li>
+            <li class="pager-counter">
+                {% blocktrans with number=page_obj.number total=page_obj.paginator.num_pages %}Page {{ number }} of {{ total }}{% endblocktrans %}
+            </li>
+            <li class="next {% if not page_obj.has_next %}disabled{% endif %}">
+                <a href="?page={% if page_obj.has_next %}{{ page_obj.next_page_number }}{% else %}last{% endif %}&amp;{{ extra_querystring }}">
+                    <i class="{% cradmin_icon 'pager-next-page' %}"></i>
+                    <span class="sr-only">{% trans "Next" %}</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+{% endif %}

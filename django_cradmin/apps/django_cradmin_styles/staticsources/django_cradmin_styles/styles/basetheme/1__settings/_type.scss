@@ -1,0 +1,114 @@
+
+/*
+Fonts
+
+1. Base font: <div class="sg-font-base">Fallback: </div>
+2. Header font: <div class="sg-font-header">Fallback: </div>
+2. Mono font – mostly for numbers: <div class="sg-font-mono">Fallback: </div>
+
+- Never use other fonts than these.
+- Never specify `font-family` anywhere, use the include method.
+- Never specify font-weight, use the include method.
+
+Example: {syntax: scss, preview: false} Use these includes when a font is needed
+    @include font(header);
+    @include font(header, bold);
+    @include font(base);
+    @include font(base, bold);
+    @include font(mono);
+
+Styleguide type.1:fonts
+*/
+
+// NEVER use these variables. Use the $fonts map, and override the entire
+// font map to change fonts.
+$__font-base: Roboto, "Helvetica Neue";
+$__font-monospace: "Lucida Console", "Monaco";
+
+$fonts: (
+    base: (
+        font: $__font-base,
+        fallback: sans-serif,
+        normal: 400,
+        bold: 700
+    ),
+    mono: (
+        font: $__font-monospace,
+        fallback: monospace,
+        normal: 400,
+        bold: 400
+    ),
+    header: (
+        font: Georgia,
+        fallback: sans-serif,
+        normal: 400,
+        bold: 700
+    )
+) !default;
+
+/* Font sizes
+
+Font sizes should be consistent, therefor never refer to a specific
+font size anywhere in the css.
+
+# Just refer to the following sizes:
+
+1. `xsmall` - Rare cases where the font needs tro be smaller than usual
+1. `small` - The default font size
+1. `medium` - For small headers and preamble text
+1. `large` - For headers
+1. `xlarge` - For headers
+1. `xxlarge` - For headers, use with care
+
+Styleguide type.2:font-sizes
+*/
+
+$font-size: (
+    xxsmall: (
+        base: 12px,
+        md: 13px,
+    ),
+    xsmall: (
+        base: 15px,
+        md: 16px,
+    ),
+    small: (
+        base: (19px, 1.4),
+        md: 21px,
+    ),
+    medium: (
+        base: 22px,
+        md: 24px,
+    ),
+    large: (
+        base: 26px,
+        md: 32px,
+    ),
+    xlarge: (
+        base: 34px,
+        md: 42px,
+    ),
+    xxlarge: (
+        base: 30px,
+        xs: 40px,
+        md: 47px
+    ),
+    xxxlarge: (
+        base: 38px,
+        xs: 48px,
+        md: 60px
+    ),
+    smallcaps: (
+        base: 0.78em
+    )
+) !default;
+
+/*
+Golden ratio font sizes:
+http://designmodo.com/wp-content/uploads/2015/06/readymag-hint-1113x876-99041.png
+
+18px
+29px
+47px
+76px
+*/

@@ -1,0 +1,30 @@
+{% extends "cradmin_legacy/viewhelpers/listfilter/base/abstractfilter.django.html" %}
+{% load i18n %}
+{% load cradmin_legacy_icon_tags %}
+
+{% block inputfield %}
+    <div class="cradmin-legacy-clearable-textinput">
+        <input id="{{ me.get_inputfield_dom_id }}"
+                type="{{ me.get_input_html_element_type }}"
+                class="form-control" placeholder="{{ me.get_placeholder }}"
+                value="{{ me.get_inputfield_value }}"
+                aria-controls="{{ me.get_target_dom_id }}"
+                cradmin-legacy-listfilter-urlpattern="{{ me.get_urlpattern }}"
+                cradmin-legacy-listfilter-emptyvalue-url="{{ me.get_emptyvalue_url }}"
+                cradmin-legacy-listfilter-textinput={{ me.get_angularjs_options_json|safe }}
+                {% block inputfield_extra_attributes %}{% endblock %}>
+        <button type="button" class="btn btn-link cradmin-legacy-clearable-textinput-button"
+                cradmin-legacy-clearable-textinput="#{{ me.get_inputfield_dom_id }}"
+                aria-label="
+                    {% if me.get_label %}
+                        {% blocktrans trimmed with label=me.get_label %}
+                            Clear {{ label }}
+                        {% endblocktrans %}
+                    {% else %}
+                        {% trans "Clear" %}
+                    {% endif %}
+                ">
+            <span class="{% cradmin_icon "x" %}" aria-hidden="true"></span>
+        </button>
+    </div>
+{% endblock inputfield %}

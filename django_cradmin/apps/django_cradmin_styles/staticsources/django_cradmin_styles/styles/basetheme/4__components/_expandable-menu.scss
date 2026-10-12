@@ -1,0 +1,189 @@
+/* Expandable menu
+
+
+Example: {type: isolated} Collapsed
+
+    <header class="adminui-page-header  adminui-page-header--fill">
+        <div class="adminui-page-header__content">
+            <a class="adminui-page-header__brand">
+                <span class="adminui-page-header__brandname">My brand</span>
+            </a>
+            <nav class="adminui-page-header__nav">
+                <button type="button" class="adminui-page-header__navmenutoggle"
+                        data-ievv-jsbase-widget="cradmin-menutoggle">
+                    Menu
+                    <i class="icon-hamburger" aria-hidden="true" role="presentation">
+                        <span aria-hidden="true" class="icon-hamburger__bar"></span>
+                        <span aria-hidden="true" class="icon-hamburger__bar"></span>
+                        <span aria-hidden="true" class="icon-hamburger__bar"></span>
+                    </i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="expandable-menu"
+            data-ievv-jsbase-widget="cradmin-toggleable-menu">
+        <div class="expandable-menu__backdrop"
+                data-ievv-jsbase-widget="cradmin-menutoggle"></div>
+
+        <div class="expandable-menu__content">
+            <button type="button" class="expandable-menu__close"
+                    data-ievv-jsbase-widget="cradmin-menutoggle">
+                <i class="cricon cricon--close"
+                        cradmin_menutoggle_groupid="mainmenu"
+                        aria-hidden="true" role="presentation">
+                </i>
+                <span class="screenreader-only">Close menu</span>
+            </button>
+
+            <ul class="expandable-menu__list">
+                <li class="expandable-menu__listitem">
+                    <a href="#" class="expandable-menu__link">Item 1</a>
+                </li>
+                <li class="expandable-menu__listitem">
+                    <a href="#" class="expandable-menu__link">Item 2</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
+Example: {type: isolated} Expanded
+
+    <header class="adminui-page-header  adminui-page-header--fill">
+        <div class="adminui-page-header__content">
+            <a class="adminui-page-header__brand">
+                <span class="adminui-page-header__brandname">My brand</span>
+            </a>
+            <nav class="adminui-page-header__nav">
+                <button type="button" class="adminui-page-header__navmenutoggle"
+                        data-ievv-jsbase-widget="cradmin-menutoggle">
+                    Menu
+                    <i class="icon-hamburger" aria-hidden="true" role="presentation">
+                        <span aria-hidden="true" class="icon-hamburger__bar"></span>
+                        <span aria-hidden="true" class="icon-hamburger__bar"></span>
+                        <span aria-hidden="true" class="icon-hamburger__bar"></span>
+                    </i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div style="height: 500px"></div>
+
+    <div class="expandable-menu expandable-menu--expanded"
+            data-ievv-jsbase-widget="cradmin-toggleable-menu">
+        <div class="expandable-menu__backdrop"
+                data-ievv-jsbase-widget="cradmin-menutoggle"></div>
+
+        <div class="expandable-menu__content">
+            <button type="button" class="expandable-menu__close"
+                    data-ievv-jsbase-widget="cradmin-menutoggle">
+                <i class="cricon cricon--close"
+                        cradmin_menutoggle_groupid="mainmenu"
+                        aria-hidden="true" role="presentation">
+                </i>
+                <span class="screenreader-only">Close menu</span>
+            </button>
+
+            <ul class="expandable-menu__list">
+                <li class="expandable-menu__listitem">
+                    <a href="#" class="expandable-menu__link">Item 1</a>
+                </li>
+                <li class="expandable-menu__listitem">
+                    <a href="#" class="expandable-menu__link">Item 2</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+Example: {type: isolated} Separator and headings
+
+    <header class="adminui-page-header  adminui-page-header--fill">
+        <div class="adminui-page-header__content">
+            <a class="adminui-page-header__brand">
+                <span class="adminui-page-header__brandname">My brand</span>
+            </a>
+            <nav class="adminui-page-header__nav">
+                <button type="button" class="adminui-page-header__navmenutoggle"
+                        data-ievv-jsbase-widget="cradmin-menutoggle">
+                    Menu
+                    <i class="icon-hamburger" aria-hidden="true" role="presentation">
+                        <span aria-hidden="true" class="icon-hamburger__bar"></span>
+                        <span aria-hidden="true" class="icon-hamburger__bar"></span>
+                        <span aria-hidden="true" class="icon-hamburger__bar"></span>
+                    </i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div style="height: 500px"></div>
+
+    <div class="expandable-menu expandable-menu--expanded"
+            data-ievv-jsbase-widget="cradmin-toggleable-menu">
+        <div class="expandable-menu__backdrop"
+                data-ievv-jsbase-widget="cradmin-menutoggle"></div>
+
+        <div class="expandable-menu__content">
+            <button type="button" class="expandable-menu__close"
+                    data-ievv-jsbase-widget="cradmin-menutoggle">
+                <i class="cricon cricon--close"
+                        cradmin_menutoggle_groupid="mainmenu"
+                        aria-hidden="true" role="presentation">
+                </i>
+                <span class="screenreader-only">Close menu</span>
+            </button>
+
+            <ul class="expandable-menu__list">
+                <li class="expandable-menu__heading">
+                    Some items:
+                </li>
+                <li class="expandable-menu__listitem">
+                    <a href="#" class="expandable-menu__link">Item 1</a>
+                </li>
+                <li class="expandable-menu__listitem">
+                    <a href="#" class="expandable-menu__link">Item 2</a>
+                </li>
+
+                <li class="expandable-menu__heading">
+                    More items:
+                </li>
+                <li class="expandable-menu__listitem">
+                    <a href="#" class="expandable-menu__link">Item 3</a>
+                </li>
+                <li class="expandable-menu__listitem">
+                    <a href="#" class="expandable-menu__link">Item 4</a>
+                </li>
+                <li class="expandable-menu__separator" aria-hidden="true"></li>
+                <li class="expandable-menu__listitem">
+                    <a href="#" class="expandable-menu__link">Item 5</a>
+                </li>
+                <li class="expandable-menu__listitem">
+                    <a href="#" class="expandable-menu__link">Item 6</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+Styleguide components.expandable-menu
+*/
+
+.expandable-menu {
+    @include expandable-menu-mixin ();
+}
+
+@keyframes expandable-menu-open-keyframes {
+    from {
+        transform: translateX(100%) skewX(5deg);
+        opacity: 0;
+    }
+}
+
+@keyframes expandable-menu-item-open-keyframes {
+    from {
+        transform: translateX(100px) skewX(5deg);
+        opacity: 0;
+    }
+}

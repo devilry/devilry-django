@@ -1,0 +1,34 @@
+
+/* Blocklist header
+
+
+Example: Basic block list
+    <div class="blocklist-header">
+        <h2 class="blocklist-header__title">Undersider</h2>
+        <a class="blocklist-header__action">Legg til</a>
+    </div>
+
+
+Styleguide components.blocklist-header
+*/
+.blocklist-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: vertical-space($spacing--small);
+
+    &__title {
+        @include font(base, bold);
+        @include font-size(small);
+        margin: 0;
+    }
+
+    &__action {
+        @extend .button;
+        @extend .button--secondary;
+        @extend .button--compact;
+        @include font-size(smallcaps, true);
+        margin: 0;
+        width: auto;
+    }
+}

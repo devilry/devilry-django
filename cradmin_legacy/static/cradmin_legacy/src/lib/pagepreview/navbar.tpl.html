@@ -1,0 +1,34 @@
+<nav cradmin-legacy-menu class="cradmin-legacy-menu">
+    <div class="cradmin-legacy-menu-mobileheader">
+        <a href="#" role="button"
+           class="cradmin-legacy-menu-mobiletoggle"
+           ng-click="cradminMenuTogglePressed()"
+           ng-class="{'cradmin-legacy-menu-mobile-toggle-button-expanded': cradminMenuDisplay}"
+           aria-pressed="{{ getAriaPressed() }}">
+                {{ mobileMenuHeader }}
+        </a>
+    </div>
+    <div class="cradmin-legacy-menu-content"
+             ng-class="{'cradmin-legacy-menu-content-display': cradminMenuDisplay}">
+        <ul class="cradmin-legacy-menu-content-main">
+            <li ng-repeat="urlConfig in previewConfig.urls"
+                    class="cradmin-legacy-menu-item {{urlConfig.css_classes}}"
+                    ng-class="{
+                        'cradmin-legacy-menu-activeitem': $index == activeIndex
+                    }">
+                <a href="{{ urlConfig.url }}"
+                        cradmin-legacy-menu-close-on-click
+                        ng-click="onNavlinkClick($event, $index)">
+                    {{urlConfig.label}}
+                </a>
+            </li>
+        </ul>
+        <ul class="cradmin-legacy-menu-content-footer">
+            <li>
+                <a href="{{ activeUrlConfig.url }}" target="_blank">
+                    {{ activeUrlConfig.open_label }}
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>

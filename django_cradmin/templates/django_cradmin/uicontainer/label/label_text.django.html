@@ -1,0 +1,9 @@
+{{ me.label_text|capfirst }}
+{% if not me.required and me.include_optional_text %}
+    <em>({{ me.optional_text }})</em>
+{% endif %}
+{% if me.label_text_aria_suffix %}
+    <span class="screenreader-only">
+        {{ me.label_text_aria_suffix }}
+    </span>
+{% endif %}

@@ -1,0 +1,102 @@
+/** Month-picker
+
+Example: {type: isolated}
+    <div class="container">
+    <br>
+    <div class="month-picker">
+        <div class="month-picker__month">January</div>
+        <div class="month-picker__month">February</div>
+        <div class="month-picker__month">March</div>
+        <div class="month-picker__month">April</div>
+        <div class="month-picker__month">May</div>
+        <div class="month-picker__month">June</div>
+        <div class="month-picker__month">July</div>
+        <div class="month-picker__month">August</div>
+        <div class="month-picker__month">September</div>
+        <div class="month-picker__month">October</div>
+        <div class="month-picker__month">November</div>
+        <div class="month-picker__month">December</div>
+    </div>
+    <br>
+    </div>
+
+Styleguide components.month-picker
+ */
+.month-picker {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    border: $border-style--datetimepicker;
+
+    @media (min-width: 320px) {
+        display: flex;
+        flex-wrap: wrap;
+        align-content: stretch;
+    }
+
+    &__month {
+        display: block;
+        //width: 0;
+        text-align: center;
+        padding: $unit $unit;
+        border: $border-style--datetimepicker;
+        cursor: pointer;
+        box-sizing: border-box;
+        @include font(base);
+
+        border-bottom-width: 0;
+        border-left-width: 0;
+        border-right-width: 0;
+
+        &:first-child {
+            border-top-width: 0;
+        }
+
+        @media (min-width: 320px) {
+            flex: 1 1 auto;
+            width: 50%;
+
+            &:nth-child(odd) {
+                //border-color: green;
+                border-right-width: $border-width--xsmall;
+            }
+            &:nth-child(even) {
+                //border-color: red;
+            }
+
+            &:nth-child(2) {
+                border-top-width: 0;
+            }
+
+            //&:nth-child(1) {
+            //
+            //}
+        }
+
+        &:hover,
+        &:focus,
+        &:active,
+        &--selected {
+            color: $color-light;
+            outline: none;
+        }
+
+        &:hover {
+            background-color: color(secondary);
+        }
+
+        &:focus,
+        &:active,
+        &--selected {
+            background-color: color(secondary, dark);
+        }
+
+        &--muted {
+            color: $color-muted;
+        }
+    }
+
+    &--sane-max-width {
+        max-width: map-get($breakpoints, xs);
+    }
+}

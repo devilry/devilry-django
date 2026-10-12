@@ -1,0 +1,14 @@
+/* Screen reader optimizations
+
+Example: Only visible to screenreaders
+
+    <span class="screenreader-only">
+        This is only visible to screen readers.
+    </span>
+
+Styleguide screen.screenreaders
+*/
+
+.screenreader-only {
+    @include screenreader-only;
+}

@@ -1,0 +1,46 @@
+{% comment %}
+    Renders django messages.
+
+    Used as an include template, and the include template
+    can take the css class for the wrapper via
+    the ``messages_cssclass`` attribute/parameter.
+{% endcomment %}
+{% load i18n %}
+{% load cradmin_tags %}
+
+{% if messages %}
+    <div id="id_django_cradmin_messages" role="complementary"
+            class="{% if messages_cssclass %}{{ messages_cssclass }}{% else %}global-messages{% endif %}{% cradmin_test_css_class 'djangomessages' %}">
+        {% for message in messages %}
+            <div class="box box--spacing-none-sides global-messages__message
+                            {% if message.tags == "error" %}
+                                box--warning
+                            {% elif message.tags == "warning" %}
+                                box--warning
+                            {% elif message.tags == "info" %}
+                                box--info
+                            {% elif message.tags == "success" %}
+                                box--success
+                            {% endif %}
+                            {% cradmin_test_css_class message.tags %}
+                        "
+                        role="alertdialog">
+                <div class="global-messages__messagecontent">
+                    <span class="screenreader-only">
+                        {% if message.tags == "error" %}
+                            {% trans "Error" %}
+                        {% elif message.tags == "warning" %}
+                            {% trans "Warning" %}
+                        {% elif message.tags == "info" %}
+                            {% trans "Info" %}
+                        {% elif message.tags == "success" %}
+                            {% trans "Success" %}
+                        {% endif %}
+                        :
+                    </span>
+                    {{ message }}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}

@@ -1,0 +1,21 @@
+{% extends "cradmin_legacy/viewhelpers/multiselect2view/base.django.html" %}
+{% load cradmin_legacy_tags %}
+
+{% block columnlayout_extra_cssclass %}
+    cradmin-legacy-multiselect2-columnlayout-3
+{% endblock columnlayout_extra_cssclass %}
+
+{% block columnlayoutcontainer-inner %}
+    {% block filtercolumn %}
+        <div class="cradmin-legacy-multiselect2-filtercolumn
+                    {% block filtercolumn_cssclass %}col-sm-3{% endblock %}">
+            {% block filtercolumn-inner %}
+                {% cradmin_render_renderable filterlist %}
+            {% endblock filtercolumn-inner %}
+        </div>
+    {% endblock filtercolumn %}
+    {{ block.super }}
+{% endblock columnlayoutcontainer-inner %}
+
+{% block listcolumn_cssclass %}col-sm-5{% endblock %}
+{% block targetcolumn_cssclass %}col-sm-4{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "django_cradmin/standalone-base.django.html" %}
+{% load static %}
+
+{% block title %}
+    HTML5 Date picker demo
+{% endblock title %}
+
+{% block page-cover-title %}
+    HTML5 Date picker demo
+{% endblock page-cover-title %}
+
+{% block page-cover-content %}
+    {{ block.super }}
+{% endblock page-cover-content %}
+
+
+{% block content %}
+    <div class="adminui-page-section">
+        <div class="container">
+            <h2>Date example (embedded)</h2>
+
+            <div class="fieldwrapper">
+                <h3 class="h4">Without initial value</h3>
+                <input type="hidden" id="id_test100">
+                <div data-ievv-jsbase-widget="cradmin-html5-datepicker"
+                    data-ievv-jsbase-widget-config='{"hiddenFieldId": "id_test100", "ariaLabel": "Select a date"}'></div>
+            </div>
+
+            <div class="fieldwrapper">
+                <h3 class="h4">With initial value</h3>
+                <input type="hidden" id="id_test101" value="2019-12-24">
+                <div data-ievv-jsbase-widget="cradmin-html5-datepicker"
+                    data-ievv-jsbase-widget-config='{"hiddenFieldId": "id_test101", "ariaLabel": "Select a date"}'></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="adminui-page-section">
+        <div class="container">
+            <h2>Time example (embedded)</h2>
+
+            <div class="fieldwrapper">
+                <h3 class="h4">Without initial value</h3>
+                <input type="hidden" id="id_test200">
+                <div data-ievv-jsbase-widget="cradmin-html5-timepicker"
+                    data-ievv-jsbase-widget-config='{"hiddenFieldId": "id_test200", "ariaLabel": "Select a time"}'></div>
+            </div>
+
+            <div class="fieldwrapper">
+                <h3 class="h4">With initial value</h3>
+                <input type="hidden" id="id_test201" value="22:51">
+                <div data-ievv-jsbase-widget="cradmin-html5-timepicker"
+                    data-ievv-jsbase-widget-config='{"hiddenFieldId": "id_test201", "ariaLabel": "Select a time"}'></div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

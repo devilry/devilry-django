@@ -1,0 +1,16 @@
+{% extends "django_cradmin/uicontainer/container.django.html" %}
+{% load cradmin_tags %}
+
+{% block content %}
+    {% block label %}
+        {% cradmin_render_renderable me.label_renderable %}
+    {% endblock label %}
+
+    {% if not me.field_renderable.should_render_as_child_of_label %}
+        {% block widget %}
+            {% cradmin_render_renderable me.field_renderable %}
+        {% endblock widget %}
+    {% endif %}
+
+    {{ block.super }}
+{% endblock content %}

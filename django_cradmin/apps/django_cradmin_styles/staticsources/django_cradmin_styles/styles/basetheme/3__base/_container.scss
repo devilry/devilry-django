@@ -1,0 +1,54 @@
+/* Container
+
+In most cases you shouldn't lett the content float to the full width, then you should use a containger.
+
+For text-content you shouldn't use width's larger than `.container--tight`.
+
+Example: {type: isolated} Default container
+    <div class="container">
+        <h2>Default container</h2>
+
+        <p>Lorem Ipsum's father was with Lee Harvey Oswald prior to Oswald's being, you know, shot. I think the only difference between me and the other placeholder text is that I’m more honest and my words are more beautiful. An ‘extremely credible source’ has called my office and told me that Barack Obama’s placeholder text is a fraud. I’m the best thing that ever happened to placeholder text.</p>
+    </div>
+
+Example: {type: isolated} Wide container
+    <div class="container  container--wide">
+        <h2>Wide container</h2>
+
+        <p>Lorem Ipsum's father was with Lee Harvey Oswald prior to Oswald's being, you know, shot. I think the only difference between me and the other placeholder text is that I’m more honest and my words are more beautiful. An ‘extremely credible source’ has called my office and told me that Barack Obama’s placeholder text is a fraud. I’m the best thing that ever happened to placeholder text.</p>
+    </div>
+
+Example: {type: isolated} Tight container
+    <div class="container  container--tight">
+        <h2>Tight container</h2>
+
+        <p>Lorem Ipsum's father was with Lee Harvey Oswald prior to Oswald's being, you know, shot. I think the only difference between me and the other placeholder text is that I’m more honest and my words are more beautiful. An ‘extremely credible source’ has called my office and told me that Barack Obama’s placeholder text is a fraud. I’m the best thing that ever happened to placeholder text.</p>
+    </div>
+
+Styleguide layout.container
+*/
+.container {
+    @include container;
+
+    &--xtight {
+        max-width: $container-width--xtight;
+    }
+
+    &--tight {
+        max-width: $container-width--tight;
+    }
+
+    &--wide {
+        max-width: $container-width--wide;
+    }
+
+    &--xwide {
+        max-width: $container-width--xwide;
+    }
+
+    // Remove padding from container within container
+    .container {
+        padding-left: 0;
+        padding-right: 0;
+    }
+}

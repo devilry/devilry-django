@@ -1,0 +1,135 @@
+{% comment %}
+    Base template for all cradmin_legacy templates.
+
+    You should extend this directly for standalone pages like
+    login and error pages. For pages that require a role,
+    you should extend ``base.django.html`` instead.
+{% endcomment %}{% spaceless %}
+    {% load static %}
+    {% load cradmin_legacy_tags %}
+{% endspaceless %}<!DOCTYPE html>
+<html lang="{% block html-element-lang %}en{% endblock %}" ng-app="cradminLegacyUi" class="{% block html-element-class %}{% endblock %}">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        {% block extra_meta %}{% endblock extra_meta %}
+
+        {% comment %}
+            The title tag contains two blocks:
+
+            - ``title``: Overridden per page.
+            - ``title-pre`` and ``title-post``: Typically overridden by overriding ``standalone-base.django.html``
+              to provide some common prefix/postfix for the the title tag for the entire site.
+        {% endcomment %}
+        <title>{% block title-pre %}{% endblock %}{% block title %}{% endblock %}{% block title-post %}{% endblock %}</title>
+
+        {% block styles %}
+{#            <link href='{% if crinstance_theme_path %}{% static crinstance_theme_path %}{% else %}{% static CRADMIN_LEGACY_THEME_PATH %}{% endif %}' rel="stylesheet">#}
+            <link href='{% cradmin_theme_staticpath %}' rel="stylesheet">
+        {% endblock styles %}
+        {% block iconlibrary %}
+            <link href='{% static CRADMIN_LEGACY_CSS_ICON_LIBRARY_PATH %}' rel="stylesheet">
+        {% endblock iconlibrary %}
+
+        {% block vendorjs %}
+            <script src="{% static 'cradmin_legacy/dist/vendor/cradmin-vendorjs.js' %}" type="text/javascript"></script>
+        {% endblock vendorjs %}
+
+        {% block momentjslocale %}
+            {% if CRADMIN_LEGACY_MOMENTJS_LOCALE %}
+                <script src="{{ STATIC_URL }}cradmin_legacy/dist/vendor/momentjs-locale/{{ CRADMIN_LEGACY_MOMENTJS_LOCALE }}.js" type="text/javascript"></script>
+                <script>
+                  moment.locale('{{ CRADMIN_LEGACY_MOMENTJS_LOCALE }}')
+                </script>
+            {% endif %}
+        {% endblock momentjslocale %}
+
+        {% block cradminjs %}
+            <script src="{% static 'cradmin_legacy/dist/js/cradmin.min.js' %}" type="text/javascript"></script>
+        {% endblock cradminjs %}
+
+        {% block jsimports %}
+            {# Override this to add js imports in child templates #}
+        {% endblock %}
+
+        {% comment %}
+            Send in cradmin_javascript_library_urls as context data to render
+            them as script tags.
+        {% endcomment %}
+        {% if cradmin_javascript_library_urls %}
+            {% for cradmin_javascript_library_url in cradmin_javascript_library_urls %}
+                <script type="text/javascript" src="{{ cradmin_javascript_library_url }}"></script>
+            {% endfor %}
+        {% endif %}
+    </head>
+    <body class="
+            {% block global-bodyclass %}
+                {% comment %}
+                    Use this block to set css classes for the entire site.
+                    Do not override this block in views - only override this
+                    when you override the standalone-base.django.html template.
+                {% endcomment %}
+            {% endblock global-bodyclass %}
+            {% block bodyclass %}
+                {% if cradmin_hide_menu %}
+                    cradmin-legacy-hide-menu
+                {% endif %}
+            {% endblock bodyclass %}
+            ">
+        <div id="cradmin_legacy_bodycontentwrapper">
+            {% block global-pre-body %}
+                {% comment %}
+                    This block is here to be overridden in standalone-base.django.html
+                    and base.django.html. It should be used to add some global component
+                    before the body, such as a global navigation header.
+
+                    This block is not intended to be, and should never be overridden in app views.
+                {% endcomment %}
+            {% endblock global-pre-body %}
+
+            {% block body %}{% endblock body %}
+
+            {% block global-post-body %}
+                {% comment %}
+                    This block is here to be overridden in standalone-base.django.html
+                    and base.django.html. It should be used to add some global component
+                    after the body, such as a global footer header.
+
+                    This block is not intended to be, and should never be overridden in app views.
+                {% endcomment %}
+            {% endblock global-post-body %}
+
+            {% comment %}
+                To customize the angularjs libraries available in your views,
+                you can do one of the following:
+
+                - Send in a list/iterable of angularJS libraries to load via the
+                  ``cradmin_extra_angular_libraries`` context variable.
+                - Override the ``initialize_angular`` block. This is hard to maintain
+                  because you override everything inherited from parent views.
+
+                In both cases, you also have to load the library javascript code
+                via the ``cradmin_javascript_library_urls`` template context
+                variable (documented above), or by overriding the ``jsimports`` block.
+            {% endcomment %}
+            {% block initialize_angular %}
+                <script>
+                    angular.module('cradminLegacyUi', [
+                        'cradminLegacy'
+                        {% block extra_angular_libraries %}
+                            {% if cradmin_extra_angular_libraries %}
+                                {% for library in cradmin_extra_angular_libraries %}
+                                    , '{{ library }}'
+                                {% endfor %}
+                            {% endif %}
+                        {% endblock %}
+                    ]);
+                </script>
+            {% endblock %}
+        </div>
+        {% block outside-bodycontentwrapper %}{% endblock outside-bodycontentwrapper %}
+
+        {% block end-of-body %}{% endblock end-of-body %}
+    </body>
+</html>

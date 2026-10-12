@@ -1,0 +1,45 @@
+{% extends "django_cradmin/layouts/standalone/focused.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+
+{% block title %}{{ pagetitle }}{% endblock title %}
+
+{% block page-cover-title %}
+    {{ pagetitle }}
+{% endblock page-cover-title %}
+
+{% block content %}
+    {% if rolecount > 0 %}
+        {% block has_roles_section %}
+            <div class="adminui-page-section">
+                <div class="container  container--tight">
+                    <section class="
+                            {% block list_bem_element %}blocklist{% endblock %}
+                            {% block list_bem_variant %}blocklist--tight{% endblock %}
+                            {% cradmin_test_css_class 'cradmin-roleselect-list' %}">
+                        {% for role in roles %}
+                            <a href="{% cradmin_rolefrontpage_url role %}"
+                                    class="{% block list_element_css_class %}
+                                        blocklist__item
+                                        {% block list_element_css_class_modifier %}blocklist__item--link{% endblock %}{% endblock %}
+                                        {% cradmin_test_css_class 'cradmin-roleselect-list__item' %}">
+                                <h2 class="blocklist__itemtitle{% cradmin_test_css_class 'cradmin-roleselect-list__itemtitle' %}">
+                                    {% cradmin_titletext_for_role role %}
+                                </h2>
+                                {% cradmin_descriptionhtml_for_role role as descriptionhtml %}
+                                {% if descriptionhtml %}
+                                    <div class="{% cradmin_test_css_class 'cradmin-roleselect-list__itemdescription' %}">
+                                        {{ descriptionhtml }}
+                                    </div>
+                                {% endif %}
+                            </a>
+                        {% endfor %}
+                    </section>
+                    {% include "django_cradmin/viewhelpers/includes/pager.django.html" %}
+                </div>
+            </div>
+        {% endblock has_roles_section %}
+    {% else %}
+        {% block no_roles_section %}{% endblock no_roles_section %}
+    {% endif %}
+{% endblock content %}

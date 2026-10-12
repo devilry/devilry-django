@@ -1,0 +1,82 @@
+/* Messages
+
+Example: Error
+    <p class="message message--error">Look, I'm an error message!</p>
+
+Example: Info
+    <p class="message  message--info">Look, I'm an info message!</p>
+
+Example: Success
+    <p class="message  message--success">Look, I'm a success message!</p>
+
+Example: Multiple messages
+    <p class="message  message--info">Look, I'm an info message!</p>
+    <p class="message  message--error">Look, I'm an error message!</p>
+    <p class="message  message--info">Look, I'm another info message!</p>
+    <p class="message  message--success">Look, I'm a success message!</p>
+
+Example: Within a fieldwrapper
+    <div class="fieldwrapper">
+        <label class="label">
+            Standard input
+            <input type="text" class="input">
+        </label>
+        <p class="message  message--compact  message--info">Look, I'm an info message!</p>
+        <p class="message  message--compact  message--error">Look, I'm an error message!</p>
+    </div>
+    <div class="fieldwrapper">
+        <label class="label">
+            Another input - this also has help-text
+            <input type="text" class="input">
+        </label>
+        <p class="help-text">Some help text here</p>
+        <p class="message  message--compact  message--error">Look, I'm an error message!</p>
+    </div>
+
+Styleguide form.6:messages
+*/
+.message {
+    @extend %animation-fall-down;
+    animation-delay: 150ms;
+    @include font(base);
+    @include font-size(xsmall);
+    padding-top: vertical-space();
+    margin-bottom: vertical-space($spacing);
+
+    &:before {
+        @include cricon-fixed-width(xsmall);
+        margin-right: $unit;
+    }
+
+    &--error {
+        color: color(warning, dark);
+
+        &:before {
+            @include cricon-icon(warning);
+        }
+    }
+
+    &--info {
+        color: $color-text;
+
+        &:before {
+            @include cricon-icon(info);
+        }
+    }
+
+    &--success {
+        color: color(success, dark);
+
+        &:before {
+            @include cricon-icon(check);
+        }
+    }
+
+    &--compact {
+        margin-bottom: $unit;
+    }
+
+    &.ng-leave {
+        animation: 0;
+    }
+}

@@ -1,0 +1,346 @@
+/**
+Range input
+
+Example:
+
+    <input class="range-input" type="range" min="0" max="100" value="10">
+
+Example: --large
+
+    <input class="range-input range-input--large" type="range" min="0" max="100" value="10">
+
+
+Example: --light
+
+    <div style="background-color: #000; padding: 10px;">
+        <input class="range-input range-input--light" type="range" min="0" max="100" value="10">
+    </div>
+
+
+Example: Within label
+
+    <label class="label">
+        Look, a range!
+        <input class="range-input" type="range" min="0" max="100" value="10">
+    </label>
+
+    <label class="label">
+        Look, a large range!
+        <input class="range-input range-input--large" type="range" min="0" max="100" value="10">
+    </label>
+
+
+Example: Below a label
+
+    <label class="label">Look, a range!</label>
+    <input class="range-input" type="range" min="0" max="100" value="10">
+
+    <label class="label">Look, a large range!</label>
+    <input class="range-input range-input--large" type="range" min="0" max="100" value="10">
+
+
+Example: Within a fieldwrapper
+
+    <div class="fieldwrapper">
+        <label class="label" for="id_myfield">Standard input</label>
+        <input type="text" placeholder="I set the standard"
+            id="id_myfield"
+            class="input input--fieldwrapper-item" />
+        <p class="help-text help-text--fieldwrapper-item">
+            Vestibulum id ligula porta felis euismod semper.
+            Nullam id dolor id nibh ultricies vehicula ut id elit.
+        </p>
+    </div>
+
+    <div class="fieldwrapper">
+        <label class="label">Look, a range!</label>
+        <input class="range-input" type="range" min="0" max="100" value="10">
+        <p class="help-text help-text--fieldwrapper-item">
+            Vestibulum id ligula porta felis euismod semper.
+            Nullam id dolor id nibh ultricies vehicula ut id elit.
+        </p>
+    </div>
+
+    <div class="fieldwrapper">
+        <label class="label">Standard input</label>
+        <input type="text" placeholder="I set the standard" class="input" />
+    </div>
+
+Styleguide form.6:rangeinput
+*/
+
+@mixin range-input-track-color($background, $focus-background) {
+
+    /* WebKit/Blink - and for certain styles Edge */
+    &::-webkit-slider-runnable-track {
+        background: $background;
+        border: none;
+    }
+
+
+    /* Firefox */
+    &::-moz-range-track {
+        background: $background;
+        border: none;
+    }
+
+    /* IE/Edge */
+    &::-ms-track {
+        width: 100%;
+        background: transparent;
+        border-color: transparent;
+        color: transparent;
+    }
+    &::-ms-fill-lower {
+        background: $background;
+        border: none;
+    }
+    &::-ms-fill-upper {
+        background: $background;
+        border: none;
+    }
+
+    &:focus {
+        /* WebKit/Blink - and for certain styles Edge */
+        &::-webkit-slider-runnable-track {
+            background: $focus-background;
+        }
+
+        /* Firefox */
+        &::-moz-range-track {
+            background: $focus-background;
+        }
+
+        /* IE/Edge */
+        &::-ms-fill-lower {
+            background: $focus-background;
+        }
+        &::-ms-fill-upper {
+            background: $focus-background;
+        }
+
+    }
+}
+
+
+@mixin range-input-track-size(
+    $height, $total-height,
+    $border-radius: 0
+) {
+
+    /* WebKit/Blink - and for certain styles Edge */
+    &::-webkit-slider-runnable-track {
+        height: $height;
+        border-radius: $border-radius;
+    }
+
+
+    /* Firefox */
+    &::-moz-range-track {
+        height: $height;
+        border-radius: $border-radius;
+    }
+
+    /* IE/Edge */
+    &::-ms-track {
+        height: $height;
+        border-width: ($total-height/2) 0;
+    }
+    &::-ms-fill-lower {
+        border-radius: ($border-radius * 2);
+    }
+    &::-ms-fill-upper {
+        border-radius: ($border-radius * 2);
+    }
+}
+
+
+@mixin range-input-thumb-color(
+    $border-color,
+    $background,
+    $hover-border-color,
+    $hover-background
+) {
+    /* WebKit/Blink - and for certain styles Edge */
+    &::-webkit-slider-thumb {
+        border-color: $border-color;
+        border-style: solid;
+        background: $background;
+        &:hover, &:active {
+            background: $hover-background;
+            border-color: $hover-border-color;
+        }
+    }
+
+    /* Firefox */
+    &::-moz-range-thumb {
+        border-color: $border-color;
+        border-style: solid;
+        background: $background;
+        &:hover, &:active {
+            background: $hover-background;
+            border-color: $hover-border-color;
+        }
+    }
+
+    /* IE/Edge */
+    &::-ms-thumb {
+        border-color: $border-color;
+        border-style: solid;
+        background: color(neutral, dark);
+        &:hover, &:active {
+            background: $hover-background;
+            border-color: $hover-border-color;
+        }
+    }
+
+    &:focus {
+        &::-webkit-slider-thumb {
+            background: $hover-background;
+            border-color: $hover-border-color;
+        }
+    }
+}
+
+
+@mixin range-input-thumb-size(
+    $track-height,
+    $width,
+    $height,
+    $hover-width,
+    $hover-height,
+    $border-radius: 50%,
+    $border-width: $border-width
+) {
+    /* WebKit/Blink - and for certain styles Edge */
+    &::-webkit-slider-thumb {
+        transition: all 50ms ease;
+        height: $height;
+        width: $width;
+        border-width: $border-width;
+        border-radius: $border-radius;
+        margin-top: -($height/2 - $track-height/2);
+
+        &:hover, &:active {
+            margin-top: -($hover-height/2 - $track-height/2);
+            height: $hover-height;
+            width: $hover-width;
+        }
+    }
+
+    /* Firefox */
+    &::-moz-range-thumb {
+        transition: all 50ms ease;
+        height: $height;
+        width: $width;
+        border-width: $border-width;
+        border-radius: $border-radius;
+
+        &:hover, &:active {
+            height: $hover-height;
+            width: $hover-width;
+        }
+    }
+
+    /* IE/Edge */
+    &::-ms-thumb {
+        transition: all 50ms ease;
+        height: $height;
+        width: $width;
+        border-width: $border-width;
+        border-radius: $border-radius;
+        margin-top: 0; // Unset the margin-top that Edge gets from ::-webkit-slider-thumb
+        &:hover, &:active {
+            margin-top: -(($hover-height - $height) / 2);
+            height: $hover-height;
+            width: $hover-width;
+        }
+    }
+}
+
+
+.range-input {
+    line-height: 1.6;
+    min-height: vertical-space(6);
+    display: block;
+    width: 100%;
+
+    /* WebKit/Blink - and for certain styles Edge */
+    &::-webkit-slider-thumb {
+        cursor: pointer;
+    }
+
+    /* Firefox */
+    &::-moz-range-thumb {
+        cursor: pointer;
+    }
+
+    /* IE/Edge */
+    &::-ms-thumb {
+        cursor: pointer;
+    }
+
+
+    /* WebKit/Blink - and for certain styles Edge */
+    &::-webkit-slider-runnable-track {
+        width: 100%;
+        cursor: pointer;
+    }
+
+    /* Firefox */
+    &::-moz-range-track {
+        width: 100%;
+        cursor: pointer;
+    }
+
+    /* IE/Edge */
+    &::-ms-track {
+        width: 100%;
+        cursor: pointer;
+    }
+
+    @include range-input-track-size(
+        $height: vertical-space(1),
+        $border-radius: (vertical-space(1) / 2),
+        $total-height: vertical-space(6));
+    @include range-input-thumb-size(
+        $track-height: vertical-space(1),
+        $height: vertical-space(4),
+        $width: vertical-space(4),
+        $hover-height: vertical-space(5),
+        $hover-width: vertical-space(5));
+
+    @include range-input-track-color(
+        $background: color(neutral, light),
+        $focus-background: color(neutral, light));
+    @include range-input-thumb-color(
+        $border-color: color(neutral, dark),
+        $background: color(neutral, light),
+        $hover-border-color: color(secondary, dark),
+        $hover-background: color(secondary, dark));
+
+    &.range-input--large {
+        min-height: vertical-space(7);
+        @include range-input-track-size(
+            $height: vertical-space(2),
+            $border-radius: (vertical-space(2) / 2),
+            $total-height: vertical-space(7));
+        @include range-input-thumb-size(
+            $track-height: vertical-space(2),
+            $height: vertical-space(6),
+            $width: vertical-space(6),
+            $hover-height: vertical-space(7),
+            $hover-width: vertical-space(7));
+    }
+
+    &.range-input--light {
+        @include range-input-track-color(
+            $background: color(neutral, light),
+            $focus-background: color(neutral, light));
+        @include range-input-thumb-color(
+            $border-color: $color-light,
+            $background: color(neutral, light),
+            $hover-border-color: $color-light,
+            $hover-background: $color-light);
+    }
+}

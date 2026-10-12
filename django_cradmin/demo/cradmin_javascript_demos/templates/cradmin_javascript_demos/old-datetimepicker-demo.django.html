@@ -1,0 +1,114 @@
+{% extends "django_cradmin/standalone-base.django.html" %}
+{% load static %}
+
+{% block title %}
+    Datetime picker demo
+{% endblock title %}
+
+{% block page-cover-title %}
+    Datetime picker demo
+{% endblock page-cover-title %}
+
+
+{% block content %}
+    <div class="adminui-page-section  adminui-page-section--tight  adminui-page-section--center">
+        <fieldset class="fieldset">
+            <legend class="legend">Date example</legend>
+
+            <div class="fieldwrapper">
+                <h3 class="h4">Without initial value</h3>
+                <div data-ievv-jsbase-widget="cradmin-dateselector"
+                     data-ievv-jsbase-widget-config='{
+                         "signalNameSpace": "mydatefield",
+                         "resultFieldProps": {
+                            "inputType": "hidden"
+                         }
+                     }'></div>
+            </div>
+
+            <div class="fieldwrapper">
+                <h3 class="h4">With initial value</h3>
+                <div data-ievv-jsbase-widget="cradmin-dateselector"
+                     data-ievv-jsbase-widget-config='{
+                         "signalNameSpace": "mydatefield_with_initial",
+                         "initialDay": 17,
+                         "initialMonth": 5,
+                         "initialYear": 2017,
+                         "resultFieldProps": {
+                            "inputType": "hidden"
+                         }
+                     }'></div>
+            </div>
+        </fieldset>
+    </div>
+
+    <div class="adminui-page-section  adminui-page-section--tight  adminui-page-section--center">
+        <fieldset class="fieldset">
+            <legend class="legend">Datetime example</legend>
+
+            <div class="fieldwrapper">
+                <h3 class="h4">Without initial value</h3>
+            <div data-ievv-jsbase-widget="cradmin-dateselector"
+                 data-ievv-jsbase-widget-config='{
+                     "signalNameSpace": "mydatetimefield",
+                     "includeTime": true,
+                     "resultFieldProps": {
+                        "inputType": "hidden"
+                     }
+                 }'></div>
+
+            </div>
+
+            <div class="fieldwrapper">
+                <h3 class="h4">With initial value</h3>
+                <div data-ievv-jsbase-widget="cradmin-dateselector"
+                     data-ievv-jsbase-widget-config='{
+                         "signalNameSpace": "mydatetimefield_with_initial",
+                         "includeTime": true,
+                         "initialDay": 24,
+                         "initialMonth": 12,
+                         "initialYear": 2018,
+                         "initialHour": 18,
+                         "initialMinute": 5,
+                         "resultFieldProps": {
+                            "inputType": "hidden"
+                         }
+                     }'></div>
+            </div>
+        </fieldset>
+    </div>
+
+    <div class="adminui-page-section  adminui-page-section--tight  adminui-page-section--center">
+        <div class="fieldset">
+            <h2>Time example</h2>
+
+            <div class="fieldwrapper">
+                <h3 class="h4">Without initial value</h3>
+                <div data-ievv-jsbase-widget="cradmin-dateselector"
+                     data-ievv-jsbase-widget-config='{
+                         "signalNameSpace": "mytimefield",
+                         "includeDate": false,
+                         "includeTime": true,
+                         "resultFieldProps": {
+                            "inputType": "hidden"
+                         }
+                     }'></div>
+            </div>
+
+            <div class="fieldwrapper">
+                <h3 class="h4">With initial value</h3>
+                <div data-ievv-jsbase-widget="cradmin-dateselector"
+                     data-ievv-jsbase-widget-config='{
+                         "signalNameSpace": "mytimefield_with_initial",
+                         "includeDate": false,
+                         "includeTime": true,
+                         "initialMinute": 24,
+                         "initialHour": 1,
+                         "resultFieldProps": {
+                            "inputType": "hidden"
+                         }
+                     }'></div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

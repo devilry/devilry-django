@@ -1,0 +1,25 @@
+{% extends "cradmin_legacy/base.django.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block pageheader-inner %}
+    <strong>{% trans "EDIT" %}</strong>
+    {{ pagetitle }}
+{% endblock pageheader-inner %}
+
+{% block content %}
+    {% block forms %}
+        <div class="cradmin-legacy-form-wrapper">
+            <form method="post" action="{{ request.build_absolute_uri }}" class="cradmin-legacy-form">
+                {% csrf_token %}
+                {{ selected_objects_form.as_ul }}
+                {% crispy form formhelper %}
+            </form>
+        </div>
+    {% endblock forms %}
+
+    {% comment %}
+        NOTE: This will probably break when https://github.com/maraujop/django-crispy-forms/issues/263 is fixed
+    {% endcomment %}
+    {{ form.media }}
+{% endblock content %}

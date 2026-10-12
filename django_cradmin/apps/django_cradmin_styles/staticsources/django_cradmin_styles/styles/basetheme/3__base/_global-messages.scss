@@ -1,0 +1,30 @@
+/* Global messages
+
+Used to list multiple messages, typically save success messages, and warning messages
+just below the page-cover.
+
+
+Example: {type: isolated}
+
+    <div class="global-messages" style="margin-bottom: 30px;"> <!-- the style is just for the styleguide rendering -->
+        <div class="global-messages__message box box--spacing-none-sides box--warning">
+            <div class="global-messages__messagecontent">Look, I'm a warning message!</div>
+        </div>
+        <div class="global-messages__message box box--spacing-none-sides box--success">
+            <div class="global-messages__messagecontent">Look, I'm a success message!</div>
+        </div>
+        <div class="global-messages__message box box--spacing-none-sides box--info">
+            <div class="global-messages__messagecontent">Look, I'm a info message!</div>
+        </div>
+    </div>
+
+Styleguide components.global-messages
+*/
+.global-messages {
+    padding-bottom: $spacing;
+
+    &__messagecontent {
+        @include container;
+        max-width: $container-width--wide;
+    }
+}

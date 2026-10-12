@@ -1,0 +1,16 @@
+{% block outer-wrapper %}
+    <button type="button"
+            class="{{ me.css_classes }}"
+            data-ievv-jsbase-widget="cradmin-menutoggle">
+        {% block content %}
+            {% block icon %}
+                <span class="{{ me.get_icon_css_class }}" aria-hidden="true"></span>
+            {% endblock icon %}
+            {% block label %}
+                <span class="{{ me.get_label_css_class }}">
+                    {{ me.get_label }}
+                </span>
+            {% endblock label %}
+        {% endblock content %}
+    </button>
+{% endblock outer-wrapper %}

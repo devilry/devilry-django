@@ -1,0 +1,178 @@
+/* Form layout
+
+Example: {type: isolated}
+    <form class="form">
+        <div class="form__section">
+            <p class="form__split">
+                <label class="form__item  form__item--split">
+                    First name
+                    <input
+                        type="text"
+                        class="input  input--outlined"
+                        id="first_name"
+                        name="first_name"
+                        required
+                    />
+                </label>
+                <label class="form__item  form__item--split">
+                    Last name
+                    <input
+                        type="text"
+                        class="input  input--outlined"
+                        id="last_name"
+                        name="last_name"
+                        required
+                    />
+                </label>
+            </p>
+
+            <label class="form__item">
+                Email
+                <input
+                    type="email"
+                    class="input  input--outlined"
+                    id="email"
+                    name="email"
+                    required
+                />
+            </label>
+
+            <label class="form__item">
+                Phone
+                <input
+                    type="tel"
+                    class="input  input--outlined  input--half"
+                    id="tel"
+                    name="tel"
+                    required
+                />
+            </label>
+
+            <label class="form__item">
+                ZIP-number
+                <input
+                    type="text"
+                    class="input  input--outlined  input--xsmall"
+                    id="postal"
+                    name="postal"
+                    ng-model="local.postal"
+                    pattern="\d{4}"
+                    minlength="4"
+                    maxlength="4"
+                    required
+                />
+            </label>
+        </div>
+
+        <button type="submit" class="button  button--primary-fill  button--block">
+            Join
+        </button>
+    </form>
+
+Styleguide form.formlayout
+*/
+
+.form {
+    @include container(xtight);
+    position: relative;
+    text-align: left;
+    margin-bottom: vertical-space($spacing--large); //$vertical-rythm--spacing * 2;
+    padding-top: vertical-space($spacing, 1.6);
+    padding-bottom: vertical-space($spacing, 1.6);
+    box-shadow: $shadow-level-1;
+    background-color: $color-light;
+
+    @include min-width(md) {
+        border-radius: $border-radius;
+    }
+
+    &__section {
+        margin-bottom: vertical-space($spacing, 1.2);
+    }
+
+    &__title {
+        @include font(header, bold);
+        @include font-size(xlarge);
+        display: block;
+        color: color(primary);
+
+        // Legend reset
+        // float: left;
+        width: 100%;
+
+        text-align: center;
+        margin-bottom: vertical-space($spacing);
+    }
+
+    &__sub-title {
+        @include font(base, bold);
+
+        // Legend reset
+        // float: left;
+        width: 100%;
+
+        display: block;
+        margin-bottom: vertical-space();
+    }
+
+    &__item {
+        display: block;
+        width: 100%;
+        margin-bottom: vertical-space($spacing);
+
+        &--split {
+            margin-left: $unit;
+            margin-right: $unit;
+
+            @include min-width(md) {
+                margin-left: $spacing--small;
+                margin-right: $spacing--small;
+            }
+
+            &:first-child {
+                margin-left: 0;
+            }
+
+            &:last-child {
+                margin-right: 0;
+            }
+        }
+    }
+
+    &__split {
+        display: flex;
+        width: 100%;
+        margin: 0;
+
+        &--tight {
+            .form__item--split {
+                margin-left: $unit;
+                margin-right: $unit;
+
+                &:first-child {
+                    margin-left: 0;
+                }
+
+                &:last-child {
+                    margin-right: 0;
+                }
+            }
+        }
+    }
+
+    &__message {
+        border-radius: $border-radius;
+        border: $border-width solid color(neutral, light);
+        padding: vertical-space(3) #{$spacing--small + $border-width} vertical-space();
+
+        &.ng-enter {
+            @extend %animation-fall-down;
+        }
+
+        &.ng-leave {
+            @extend %animation-fade-out-up;
+            position: absolute;
+            width: 100%;
+        }
+    }
+}

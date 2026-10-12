@@ -1,0 +1,45 @@
+{% load i18n %}
+{% load cradmin_legacy_icon_tags %}
+
+{% if messages %}
+    <ul id="cradmin_legacy_messages" role="complementary" class="list-unstyled" ng-controller="DjangoCradminMessagesCtrl">
+        {% for message in messages %}
+            <li>
+                <div class="alert-dismissable alert cradmin-legacy-alert-nomargin cradmin-legacy-alert-edge-to-edge
+                            {% if message.tags == "error" %}
+                                alert-danger
+                            {% else %}
+                                alert-{{ message.tags }}
+                            {% endif %}
+                        " ng-hide="messageIsHidden({{ forloop.counter0 }})"
+                        role="alertdialog">
+
+                    {% comment %}
+                        The spinner is only here to give the user an indication of change when they
+                        get the same error or success message each time they click a subit button.
+                    {% endcomment %}
+                    <span class="{% cradmin_icon 'loadspinner' %} pull-right cradmin-legacy-alert-loadspinner"
+                          ng-show="loading"></span>
+
+                    <button ng-show="!loading" class="close" ng-click="hideMessage({{ forloop.counter0 }})">
+                        <span class="sr-only">{% trans "Close" %}</span>
+                        <span class="{% cradmin_icon 'x' %}"></span>
+                    </button>
+                    <span class="sr-only">
+                        {% if message.tags == "error" %}
+                            {% trans "Error" %}
+                        {% elif message.tags == "warning" %}
+                            {% trans "Warning" %}
+                        {% elif message.tags == "info" %}
+                            {% trans "Info" %}
+                        {% elif message.tags == "success" %}
+                            {% trans "Success" %}
+                        {% endif %}
+                        :
+                    </span>
+                    {{ message }}
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}

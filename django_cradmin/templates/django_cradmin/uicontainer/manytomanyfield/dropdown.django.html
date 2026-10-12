@@ -1,0 +1,111 @@
+{% load cradmin_tags %}
+{% load i18n %}
+
+<div data-ievv-jsbase-widget="cradmin-api-data-list"
+     data-ievv-jsbase-widget-config='{
+         "signalNameSpace": "{{ me.fieldname }}",
+         "apiUrl": "{{ me.api_url }}",
+         "minimumSearchStringLength": 0,
+         "multiselect": true,
+         "selectedKeys": {{ me.selected_keys|cradmin_jsonencode }},
+         "filters": {{ me.filters|cradmin_jsonencode }}
+     }'>
+</div>
+<div data-ievv-jsbase-widget="cradmin-signal-router"
+     data-ievv-jsbase-widget-config='{
+         "signalNameSpace": "{{ me.fieldname }}",
+         "signalMap": {
+            "SearchDownKey": ["ShowPopup", "FocusOnFirstSelectableItem"],
+            "SearchValueChangeNotEmpty": ["ShowPopup"],
+            "SearchEnterKey": ["ShowPopup"],
+            "SearchEscapeKey": ["HidePopup"],
+            "SelectableItemEscapeKey": ["HidePopup", "FocusOnSearchField"],
+            "LoadMoreEscapeKey": ["HidePopup", "FocusOnSearchField"],
+            "SearchValueChangeEmpty": ["HidePopup"],
+            "LostFocus": ["HidePopup"],
+            "FocusBeforeFirstSelectableItem": ["FocusOnSearchField"],
+            "FocusAfterLastSelectableItem": ["FocusOnLoadMoreButton"],
+            "CouldNotFocusOnClosestSelectedItem": ["FocusOnSearchField"],
+            "CouldNotFocusOnClosestSelectableItem": ["FocusOnSearchField"],
+            "LoadMore": ["FocusOnLastSelectableItem"],
+            "LoadMoreUpKey": ["FocusOnLastSelectableItem"]
+         }
+     }'>
+</div>
+<div data-ievv-jsbase-widget="cradmin-data-list-display-by-state"
+     data-ievv-jsbase-widget-config='{
+         "signalNameSpace": "{{ me.fieldname }}",
+         "showStates": ["HasSelectedItems"]
+     }'>
+    <div data-ievv-jsbase-widget="cradmin-selected-list"
+         data-ievv-jsbase-widget-config='{
+             "signalNameSpace": "{{ me.fieldname }}",
+             "className": "selectable-list selectable-list--inline selectable-list--nomargin",
+             "itemComponentProps": {
+                "useHotKeys": true
+             }
+         }'>
+    </div>
+</div>
+{% if me.no_items_selected_message %}
+    <div data-ievv-jsbase-widget="cradmin-data-list-display-by-state"
+         data-ievv-jsbase-widget-config='{
+             "signalNameSpace": "{{ me.fieldname }}",
+             "showStates": ["HasNoSelectedItems"]
+         }'>
+        {{ no_items_selected_message }}
+    </div>
+{% endif %}
+<div data-ievv-jsbase-widget="cradmin-search-input"
+     data-ievv-jsbase-widget-config='{
+         "signalNameSpace": "{{ me.fieldname }}",
+         "placeholder": "{{ me.placeholder }}"
+     }'></div>
+<div class="dropdown">
+    <div class="dropdown__content"
+         style="display: none"
+         data-ievv-jsbase-widget="cradmin-popup"
+         data-ievv-jsbase-widget-config='{
+             "signalNameSpace": "{{ me.fieldname }}"
+         }'>
+        <div data-ievv-jsbase-widget="cradmin-selectable-list"
+             data-ievv-jsbase-widget-config='{
+                 "signalNameSpace": "{{ me.fieldname }}",
+                 "renderSelected": false,
+                 "useHotKeys": true,
+                 "itemComponentProps": {
+                    "disableTabNavigation": true,
+                    "useHotKeys": true
+                 }
+             }'></div>
+        <div data-ievv-jsbase-widget="cradmin-data-list-display-by-state"
+             style="display: none"
+             class="text-center"
+             data-ievv-jsbase-widget-config='{
+                 "signalNameSpace": "{{ me.fieldname }}",
+                 "showStates": ["HasNextPage"],
+                 "hideStates": ["IsLoading"]
+             }'>
+            <span data-ievv-jsbase-widget="cradmin-load-more-button"
+                  data-ievv-jsbase-widget-config='{
+                      "signalNameSpace": "{{ me.fieldname }}",
+                      "label": "{% trans 'Load more' %}",
+                      "useHotKeys": true,
+                      "disableTabNavigation": true
+                  }'></span>
+        </div>
+        <p data-ievv-jsbase-widget="cradmin-data-list-display-by-state"
+           style="display: none"
+           data-ievv-jsbase-widget-config='{
+             "signalNameSpace": "{{ me.fieldname }}",
+             "showStates": ["IsLoading"]
+         }'>
+            {% trans "Loading" %} ...
+        </p>
+    </div>
+</div>
+<span data-ievv-jsbase-widget="cradmin-hidden-input-list"
+     data-ievv-jsbase-widget-config='{
+                 "signalNameSpace": "{{ me.fieldname }}",
+                 "inputName": "{{ me.fieldname }}",
+                 "inputType": "hidden"}'></span>

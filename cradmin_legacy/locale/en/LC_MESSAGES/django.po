@@ -1,0 +1,1015 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-04-29 15:24+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: apps/cradmin_activate_account/templates/cradmin_activate_account/activate.django.html:7
+#: apps/cradmin_activate_account/templates/cradmin_activate_account/activate.django.html:12
+msgid "Activate account error"
+msgstr ""
+
+#: apps/cradmin_activate_account/templates/cradmin_activate_account/email/html_message.django.html:5
+#, python-format
+msgid "Click the button below to activate your %(sitename)s account, %(user)s."
+msgstr ""
+
+#: apps/cradmin_activate_account/templates/cradmin_activate_account/email/html_message.django.html:8
+msgid "Activate your account"
+msgstr ""
+
+#: apps/cradmin_activate_account/templates/cradmin_activate_account/email/subject.django.txt:2
+#, python-format
+msgid "Activate your %(sitename)s account"
+msgstr ""
+
+#: apps/cradmin_activate_account/templates/cradmin_activate_account/messages/activation-link-expired.django.html:2
+msgid "This account activation link has expired."
+msgstr ""
+
+#: apps/cradmin_activate_account/templates/cradmin_activate_account/messages/activation-link-invalid.django.html:2
+msgid ""
+"Invalid account activation URL. Are you sure you copied the entire URL from "
+"the email?"
+msgstr ""
+
+#: apps/cradmin_activate_account/templates/cradmin_activate_account/messages/success.django.html:2
+msgid "Your account is now active."
+msgstr ""
+
+#: apps/cradmin_authenticate/templates/cradmin_authenticate/login.django.html:7
+#: apps/cradmin_authenticate/templates/cradmin_authenticate/login.django.html:11
+#: apps/cradmin_authenticate/views/login.py:243
+#: apps/cradmin_invite/baseviews/accept.py:62
+msgid "Sign in"
+msgstr ""
+
+#: apps/cradmin_authenticate/templates/cradmin_authenticate/login.django.html:20
+msgid "Forgot your password?"
+msgstr ""
+
+#: apps/cradmin_authenticate/templates/cradmin_authenticate/logout.django.html:5
+#: apps/cradmin_authenticate/templates/cradmin_authenticate/logout.django.html:9
+msgid "Signed out"
+msgstr ""
+
+#: apps/cradmin_authenticate/templates/cradmin_authenticate/logout.django.html:14
+msgid "Sign back in"
+msgstr ""
+
+#: apps/cradmin_authenticate/views/login.py:36
+#: apps/cradmin_authenticate/views/login.py:46
+msgid "Password"
+msgstr ""
+
+#: apps/cradmin_authenticate/views/login.py:42
+msgid "This account is inactive."
+msgstr ""
+
+#: apps/cradmin_authenticate/views/login.py:94
+#: apps/cradmin_authenticate/views/login.py:96
+msgid "Username"
+msgstr ""
+
+#: apps/cradmin_authenticate/views/login.py:97
+msgid "Your username and password didn't match. Please try again."
+msgstr ""
+
+#: apps/cradmin_authenticate/views/login.py:122
+#: apps/cradmin_authenticate/views/login.py:124
+#: apps/cradmin_resetpassword/views/begin.py:53
+msgid "Email"
+msgstr ""
+
+#: apps/cradmin_authenticate/views/login.py:125
+msgid "Your email and password didn't match. Please try again."
+msgstr ""
+
+#: apps/cradmin_imagearchive/apps.py:7
+msgid "Image archive"
+msgstr ""
+
+#: apps/cradmin_imagearchive/cradminviews.py:36
+msgid "Set a description"
+msgstr ""
+
+#: apps/cradmin_imagearchive/cradminviews.py:38
+msgid "Edit description"
+msgstr ""
+
+#: apps/cradmin_imagearchive/cradminviews.py:44
+#: templates/cradmin_legacy/viewhelpers/listbuilder/itemvalue/edit-delete.django.html:39
+#: viewhelpers/delete.py:29
+msgid "Delete"
+msgstr ""
+
+#: apps/cradmin_imagearchive/cradminviews.py:60
+msgid "Use this"
+msgstr ""
+
+#: apps/cradmin_imagearchive/cradminviews.py:91 viewhelpers/crudbase.py:89
+msgid "Preview"
+msgstr ""
+
+#: apps/cradmin_imagearchive/cradminviews.py:123
+msgid "Upload images by dragging and dropping them here"
+msgstr ""
+
+#: apps/cradmin_imagearchive/cradminviews.py:124
+#: apps/cradmin_imagearchive/cradminviews.py:143
+msgid "Invalid filetype. You can only upload images."
+msgstr ""
+
+#: apps/cradmin_imagearchive/cradminviews.py:125
+msgid "... or select images"
+msgstr ""
+
+#: apps/cradmin_imagearchive/cradminviews.py:126
+msgid "Select images ..."
+msgstr ""
+
+#: apps/cradmin_imagearchive/cradminviews.py:128
+msgid "Upload at least one image"
+msgstr ""
+
+#: apps/cradmin_imagearchive/cradminviews.py:130
+msgid "You must upload at least one image."
+msgstr ""
+
+#: apps/cradmin_imagearchive/cradminviews.py:141
+msgid "Upload an image by dragging and dropping it here"
+msgstr ""
+
+#: apps/cradmin_imagearchive/cradminviews.py:142
+msgid "... or select an image"
+msgstr ""
+
+#: apps/cradmin_imagearchive/cradminviews.py:144
+#: templates/cradmin_legacy/filewidgets/imagewidget.django.html:41
+msgid "Select an image ..."
+msgstr ""
+
+#: apps/cradmin_imagearchive/cradminviews.py:146
+msgid "Upload an image"
+msgstr ""
+
+#: apps/cradmin_imagearchive/cradminviews.py:148
+#: apps/cradmin_imagearchive/cradminviews.py:159
+msgid "You must upload an image."
+msgstr ""
+
+#: apps/cradmin_imagearchive/cradminviews.py:163
+msgid "You must upload exactly one image."
+msgstr ""
+
+#: apps/cradmin_imagearchive/cradminviews.py:202
+msgid "Add image"
+msgstr ""
+
+#: apps/cradmin_imagearchive/cradminviews.py:247
+#, python-format
+msgid "Uploaded %(what)s."
+msgstr ""
+
+#: apps/cradmin_imagearchive/models.py:44
+msgid "role"
+msgstr ""
+
+#: apps/cradmin_imagearchive/models.py:45
+msgid "The role owning this image."
+msgstr ""
+
+#: apps/cradmin_imagearchive/models.py:56
+msgid "image"
+msgstr ""
+
+#: apps/cradmin_imagearchive/models.py:57
+msgid "Select an image to add to the archive."
+msgstr ""
+
+#: apps/cradmin_imagearchive/models.py:82
+msgid "name"
+msgstr ""
+
+#: apps/cradmin_imagearchive/models.py:90
+msgid "description"
+msgstr ""
+
+#: apps/cradmin_imagearchive/models.py:92
+msgid ""
+"An optional description of the image. Think if this as a description of the "
+"image for visually impaired users. This means that you should describe the "
+"information carried in the image (if any). A good description also helps "
+"search engines find the image."
+msgstr ""
+
+#: apps/cradmin_imagearchive/models.py:105
+msgid "archive image"
+msgstr ""
+
+#: apps/cradmin_imagearchive/models.py:106
+msgid "archive images"
+msgstr ""
+
+#: apps/cradmin_invite/baseviews/accept.py:38
+#: apps/cradmin_invite/templates/cradmin_invite/email/html_message.django.html:8
+msgid "Accept invite"
+msgstr ""
+
+#: apps/cradmin_invite/baseviews/accept.py:44
+#, python-format
+msgid "Accept as %(user)s"
+msgstr ""
+
+#: apps/cradmin_invite/baseviews/accept.py:50
+#: apps/cradmin_register_account/forms/base.py:60
+#, python-format
+msgid "Sign up for %(sitename)s"
+msgstr ""
+
+#: apps/cradmin_invite/baseviews/accept.py:56
+msgid "Sign in as another user"
+msgstr ""
+
+#: apps/cradmin_invite/templates/cradmin_invite/accept/token_error.django.html:7
+#: apps/cradmin_invite/templates/cradmin_invite/accept/token_error.django.html:12
+msgid "Invalid invite"
+msgstr ""
+
+#: apps/cradmin_invite/templates/cradmin_invite/accept/token_error.django.html:20
+msgid ""
+"Invalid invite URL. Are you sure you copied the entire URL from the email?"
+msgstr ""
+
+#: apps/cradmin_invite/templates/cradmin_invite/accept/token_error.django.html:28
+msgid "This invite link has expired."
+msgstr ""
+
+#: apps/cradmin_invite/templates/cradmin_invite/email/html_message.django.html:5
+msgid "Click the button below to accept the invite."
+msgstr ""
+
+#: apps/cradmin_invite/templates/cradmin_invite/email/subject.django.txt:2
+#, python-format
+msgid "Invitation to %(sitename)s"
+msgstr ""
+
+#: apps/cradmin_register_account/forms/auth_user.py:54
+msgid "Account with this email address already exists."
+msgstr ""
+
+#: apps/cradmin_register_account/forms/base.py:190
+msgid "Type your password"
+msgstr ""
+
+#: apps/cradmin_register_account/forms/base.py:195
+msgid "Type your password one more time"
+msgstr ""
+
+#: apps/cradmin_register_account/forms/base.py:230
+msgid "The passwords do not match."
+msgstr ""
+
+#: apps/cradmin_register_account/templates/cradmin_register_account/begin.django.html:6
+#: apps/cradmin_register_account/templates/cradmin_register_account/begin.django.html:11
+#, python-format
+msgid "Create your %(sitename)s account"
+msgstr ""
+
+#: apps/cradmin_register_account/templates/cradmin_register_account/email_sent.django.html:7
+#: apps/cradmin_register_account/templates/cradmin_register_account/email_sent.django.html:12
+#: apps/cradmin_resetpassword/templates/cradmin_resetpassword/email_sent.django.html:7
+#: apps/cradmin_resetpassword/templates/cradmin_resetpassword/email_sent.django.html:12
+msgid "Check your email"
+msgstr ""
+
+#: apps/cradmin_register_account/templates/cradmin_register_account/email_sent.django.html:18
+msgid ""
+"We have sent you an email. Click the link in the email to activate your "
+"account."
+msgstr ""
+
+#: apps/cradmin_register_account/templates/cradmin_register_account/email_sent.django.html:21
+msgid "If you do not see the email, check your junk folder."
+msgstr ""
+
+#: apps/cradmin_resetpassword/templates/cradmin_resetpassword/base.django.html:5
+#: apps/cradmin_resetpassword/views/reset.py:45
+msgid "Reset password"
+msgstr ""
+
+#: apps/cradmin_resetpassword/templates/cradmin_resetpassword/begin.django.html:6
+#: apps/cradmin_resetpassword/templates/cradmin_resetpassword/begin.django.html:10
+msgid "Find your account"
+msgstr ""
+
+#: apps/cradmin_resetpassword/templates/cradmin_resetpassword/begin.django.html:11
+msgid "Type in your email-address"
+msgstr ""
+
+#: apps/cradmin_resetpassword/templates/cradmin_resetpassword/email/html_message.django.html:5
+#, python-format
+msgid ""
+"We received a request to reset the password for your %(sitename)s account, "
+"%(user)s."
+msgstr ""
+
+#: apps/cradmin_resetpassword/templates/cradmin_resetpassword/email/html_message.django.html:7
+msgid ""
+"If you made this request, click the button below. If you did not make this "
+"request, you can ignore this email."
+msgstr ""
+
+#: apps/cradmin_resetpassword/templates/cradmin_resetpassword/email/html_message.django.html:10
+#: apps/cradmin_resetpassword/templates/cradmin_resetpassword/reset.django.html:6
+#: apps/cradmin_resetpassword/templates/cradmin_resetpassword/reset.django.html:11
+msgid "Reset your password"
+msgstr ""
+
+#: apps/cradmin_resetpassword/templates/cradmin_resetpassword/email/subject.django.txt:2
+#, python-format
+msgid "Reset your %(sitename)s password"
+msgstr ""
+
+#: apps/cradmin_resetpassword/templates/cradmin_resetpassword/email_sent.django.html:18
+msgid ""
+"We have sent you an email. Click the link in the email to reset your "
+"password."
+msgstr ""
+
+#: apps/cradmin_resetpassword/templates/cradmin_resetpassword/email_sent.django.html:21
+#, python-format
+msgid ""
+"If you do not see the email, check your junk folder or try searching for "
+"\"%(email_subject)s\"."
+msgstr ""
+
+#: apps/cradmin_resetpassword/templates/cradmin_resetpassword/messages/successmessage.django.html:2
+msgid "Your password has been updated."
+msgstr ""
+
+#: apps/cradmin_resetpassword/templates/cradmin_resetpassword/reset.django.html:22
+msgid "This password reset link has expired."
+msgstr ""
+
+#: apps/cradmin_resetpassword/templates/cradmin_resetpassword/reset.django.html:26
+msgid ""
+"Invalid password reset URL. Are you sure you copied the entire URL from the "
+"email?"
+msgstr ""
+
+#: apps/cradmin_resetpassword/views/begin.py:39
+msgid "No account with this email address found"
+msgstr ""
+
+#: apps/cradmin_resetpassword/views/begin.py:54
+#: superuserui/views/listview.py:34
+#: templates/cradmin_legacy/viewhelpers/objecttable/objecttable.django.html:48
+msgid "Search"
+msgstr ""
+
+#: apps/cradmin_resetpassword/views/reset.py:18
+msgid "Type your new password"
+msgstr ""
+
+#: apps/cradmin_resetpassword/views/reset.py:21
+msgid "Type your new password one more time"
+msgstr ""
+
+#: apps/cradmin_resetpassword/views/reset.py:31
+msgid "The passwords do not match"
+msgstr ""
+
+#: apps/cradmin_temporaryfileuploadstore/models.py:216
+#: apps/cradmin_temporaryfileuploadstore/widgets.py:78
+#, python-format
+msgid "Can not upload files larger than %(max_filesize)s."
+msgstr ""
+
+#: apps/cradmin_temporaryfileuploadstore/models.py:248
+msgid "Unsupported filetype."
+msgstr ""
+
+#: apps/cradmin_temporaryfileuploadstore/templates/cradmin_legacy/apps/cradmin_temporaryfileuploadstore/include/bulkfileupload.django.html:24
+#: apps/cradmin_temporaryfileuploadstore/templates/cradmin_legacy/apps/cradmin_temporaryfileuploadstore/include/bulkfileupload.django.html:27
+msgid "close file upload window"
+msgstr ""
+
+#: apps/cradmin_temporaryfileuploadstore/templates/cradmin_legacy/apps/cradmin_temporaryfileuploadstore/include/bulkfileupload.django.html:36
+msgid "We are uploading your file. Please do not close the browser window."
+msgstr ""
+
+#: apps/cradmin_temporaryfileuploadstore/templates/cradmin_legacy/apps/cradmin_temporaryfileuploadstore/include/bulkfileupload.django.html:38
+msgid "We are uploading your files. Please do not close the browser window."
+msgstr ""
+
+#: apps/cradmin_temporaryfileuploadstore/templates/cradmin_legacy/apps/cradmin_temporaryfileuploadstore/include/bulkfileupload.django.html:77
+msgid "Upload a file by dragging and dropping it here"
+msgstr ""
+
+#: apps/cradmin_temporaryfileuploadstore/templates/cradmin_legacy/apps/cradmin_temporaryfileuploadstore/include/bulkfileupload.django.html:79
+msgid "Upload files by dragging and dropping them here"
+msgstr ""
+
+#: apps/cradmin_temporaryfileuploadstore/templates/cradmin_legacy/apps/cradmin_temporaryfileuploadstore/include/bulkfileupload.django.html:99
+msgid "... or select a file"
+msgstr ""
+
+#: apps/cradmin_temporaryfileuploadstore/templates/cradmin_legacy/apps/cradmin_temporaryfileuploadstore/include/bulkfileupload.django.html:101
+msgid "... or select files"
+msgstr ""
+
+#: apps/cradmin_temporaryfileuploadstore/templates/cradmin_legacy/apps/cradmin_temporaryfileuploadstore/include/bulkfileupload.django.html:115
+msgid "Invalid filetype"
+msgstr ""
+
+#: apps/cradmin_temporaryfileuploadstore/templates/cradmin_legacy/apps/cradmin_temporaryfileuploadstore/include/bulkfileupload.django.html:137
+msgid "Select a file ..."
+msgstr ""
+
+#: apps/cradmin_temporaryfileuploadstore/templates/cradmin_legacy/apps/cradmin_temporaryfileuploadstore/include/bulkfileupload.django.html:139
+msgid "Select files ..."
+msgstr ""
+
+#: apps/cradmin_temporaryfileuploadstore/views/temporary_file_upload_api.py:128
+#, python-format
+msgid "%(filename)s: Unsupported filetype."
+msgstr ""
+
+#: apps/cradmin_temporaryfileuploadstore/widgets.py:94
+msgid ""
+"Server timeout while uploading the file. This may be caused by a poor upload "
+"link and/or a too large file."
+msgstr ""
+
+#: apps/cradmin_temporaryfileuploadstore/widgets.py:125
+#: templates/cradmin_legacy/include/messages.django.html:26
+msgid "Close"
+msgstr ""
+
+#: apps/cradmin_temporaryfileuploadstore/widgets.py:126
+msgid "Remove"
+msgstr ""
+
+#: apps/cradmin_temporaryfileuploadstore/widgets.py:127
+msgid "Removing ..."
+msgstr ""
+
+#: automodelform.py:112
+msgctxt "automodelform modelchoice_field no value"
+msgid "(Not selected)"
+msgstr ""
+
+#: crispylayouts.py:60
+msgid "Show"
+msgstr ""
+
+#: crispylayouts.py:61
+msgid "Hide"
+msgstr ""
+
+#: formfields/email_list.py:18 formfields/email_list.py:20
+msgid "Type email-addresses separated by newlines, whitespace or comma."
+msgstr ""
+
+#: formfields/email_list.py:64
+#, python-format
+msgid "Invalid email address: %(email)s"
+msgstr ""
+
+#: superuserui/superuserui_registry.py:147
+msgid "Superuser UI"
+msgstr ""
+
+#: templates/cradmin_legacy/acemarkdown/widget.django.html:12
+msgid "Heading 1"
+msgstr ""
+
+#: templates/cradmin_legacy/acemarkdown/widget.django.html:17
+msgid "Heading 2"
+msgstr ""
+
+#: templates/cradmin_legacy/acemarkdown/widget.django.html:22
+msgid "Heading 3"
+msgstr ""
+
+#: templates/cradmin_legacy/acemarkdown/widget.django.html:29
+msgid "Text here"
+msgstr ""
+
+#: templates/cradmin_legacy/acemarkdown/widget.django.html:31
+msgid "Bold"
+msgstr ""
+
+#: templates/cradmin_legacy/acemarkdown/widget.django.html:36
+msgid "Italic"
+msgstr ""
+
+#: templates/cradmin_legacy/acemarkdown/widget.django.html:40
+msgid ""
+"Write the URL in the field below. Make sure you include the http:// or "
+"https:// part of the URL."
+msgstr ""
+
+#: templates/cradmin_legacy/acemarkdown/widget.django.html:41
+msgid "Link title here"
+msgstr ""
+
+#: templates/cradmin_legacy/acemarkdown/widget.django.html:43
+msgid "Link"
+msgstr ""
+
+#: templates/cradmin_legacy/acemarkdown/widget.django.html:52
+msgid "Bulletlist"
+msgstr ""
+
+#: templates/cradmin_legacy/acemarkdown/widget.django.html:57
+msgid "Numbered list"
+msgstr ""
+
+#: templates/cradmin_legacy/acemarkdown/widget.django.html:65
+msgid "programminglanguage"
+msgstr ""
+
+#: templates/cradmin_legacy/acemarkdown/widget.django.html:68
+msgid "Code block"
+msgstr ""
+
+#: templates/cradmin_legacy/error.django.html:10
+#: templates/cradmin_legacy/include/messages.django.html:31
+msgid "Error"
+msgstr ""
+
+#: templates/cradmin_legacy/filewidgets/filewidget.django.html:21
+msgid "Remove file"
+msgstr ""
+
+#: templates/cradmin_legacy/filewidgets/imagewidget.django.html:27
+msgid "Remove image"
+msgstr ""
+
+#: templates/cradmin_legacy/filewidgets/imagewidget.django.html:39
+msgid "Replace image ..."
+msgstr ""
+
+#: templates/cradmin_legacy/include/messages.django.html:33
+msgid "Warning"
+msgstr ""
+
+#: templates/cradmin_legacy/include/messages.django.html:35
+msgid "Info"
+msgstr ""
+
+#: templates/cradmin_legacy/include/messages.django.html:37
+msgid "Success"
+msgstr ""
+
+#: templates/cradmin_legacy/invalid_roleid.django.html:6
+msgid "Invalid role"
+msgstr ""
+
+#: templates/cradmin_legacy/invalid_roleid.django.html:7
+msgid "The requested role does not exist."
+msgstr ""
+
+#: templates/cradmin_legacy/menu.django.html:31
+msgid "Menu"
+msgstr ""
+
+#: templates/cradmin_legacy/missing_role.django.html:6
+msgid "Permission denied"
+msgstr ""
+
+#: templates/cradmin_legacy/missing_role.django.html:8
+#, python-format
+msgid "You do not have permission to administer \"%(what)s\"."
+msgstr ""
+
+#: templates/cradmin_legacy/pagepreview/includes/pagepreview-fullsize-iframe-wrapper.django.html:25
+msgid "Close preview"
+msgstr ""
+
+#: templates/cradmin_legacy/pagepreview/includes/pagepreview-fullsize-iframe-wrapper.django.html:34
+msgid "Preview options"
+msgstr ""
+
+#: templates/cradmin_legacy/superuserui/dashboard.django.html:15
+msgid "Please select what you would like to edit"
+msgstr ""
+
+#: templates/cradmin_legacy/viewhelpers/delete.django.html:27
+msgid "Cancel"
+msgstr ""
+
+#: templates/cradmin_legacy/viewhelpers/formview_base.django.html:49
+msgid "Close window"
+msgstr ""
+
+#: templates/cradmin_legacy/viewhelpers/includes/loadmorepager-base.django.html:40
+#: templates/cradmin_legacy/viewhelpers/multiselect2view/base.django.html:37
+msgid "Loading ..."
+msgstr ""
+
+#: templates/cradmin_legacy/viewhelpers/includes/loadmorepager-base.django.html:46
+msgid "Load all"
+msgstr ""
+
+#: templates/cradmin_legacy/viewhelpers/includes/loadmorepager-base.django.html:48
+msgid "Load more"
+msgstr ""
+
+#: templates/cradmin_legacy/viewhelpers/includes/pager.django.html:28
+msgid "Previous"
+msgstr ""
+
+#: templates/cradmin_legacy/viewhelpers/includes/pager.django.html:32
+#, python-format
+msgid "Page %(number)s of %(total)s"
+msgstr ""
+
+#: templates/cradmin_legacy/viewhelpers/includes/pager.django.html:37
+msgid "Next"
+msgstr ""
+
+#: templates/cradmin_legacy/viewhelpers/listbuilder/itemvalue/edit-delete.django.html:13
+msgid "Edit"
+msgstr ""
+
+#: templates/cradmin_legacy/viewhelpers/listbuilder/itemvalue/edit-delete.django.html:29
+msgid "View"
+msgstr ""
+
+#: templates/cradmin_legacy/viewhelpers/listbuilder/itemvalue/use-this.django.html:12
+#, python-format
+msgid "Select \"%(title)s\""
+msgstr ""
+
+#: templates/cradmin_legacy/viewhelpers/listbuilder/itemvalue/use-this.django.html:14
+msgctxt "listbuilder-usethis"
+msgid "Select"
+msgstr ""
+
+#: templates/cradmin_legacy/viewhelpers/listbuilderview/includes/create-button.django.html:5
+#: viewhelpers/create.py:36
+msgid "Create"
+msgstr ""
+
+#: templates/cradmin_legacy/viewhelpers/listfilter/django/single/textinput/base.django.html:20
+#, python-format
+msgid "Clear %(label)s"
+msgstr ""
+
+#: templates/cradmin_legacy/viewhelpers/listfilter/django/single/textinput/base.django.html:24
+msgid "Clear"
+msgstr ""
+
+#: templates/cradmin_legacy/viewhelpers/multiselect/formview.django.html:6
+msgid "EDIT"
+msgstr ""
+
+#: templates/cradmin_legacy/viewhelpers/multiselect2/listbuilder_itemvalues/itemvalue.django.html:39
+msgid "Selected"
+msgstr ""
+
+#: templates/cradmin_legacy/viewhelpers/multiselect2view/base.django.html:42
+msgid "Select all"
+msgstr ""
+
+#: templates/cradmin_legacy/viewhelpers/objecttable/imagepreviewcolumn-cell.django.html:4
+#: templates/cradmin_legacy/viewhelpers/objecttable/plaintextcolumn-cell.django.html:3
+msgid "(None)"
+msgstr ""
+
+#: templates/cradmin_legacy/viewhelpers/objecttable/no-items-message.django.html:2
+#: viewhelpers/listbuilderview.py:285
+#, python-format
+msgid "No %(modelname_plural)s"
+msgstr ""
+
+#: templates/cradmin_legacy/viewhelpers/objecttable/objecttable.django.html:42
+#: viewhelpers/objecttable.py:929
+msgid "Search..."
+msgstr ""
+
+#: templates/cradmin_legacy/viewhelpers/objecttable/objecttable.django.html:125
+msgid "Ordered ascending - Click to order descending"
+msgstr ""
+
+#: templates/cradmin_legacy/viewhelpers/objecttable/objecttable.django.html:127
+msgid "Ordered descending - Click to order ascending"
+msgstr ""
+
+#: templates/cradmin_legacy/viewhelpers/objecttable/objecttable.django.html:134
+msgid "Do not order by this column"
+msgstr ""
+
+#: templates/cradmin_legacy/viewhelpers/objecttable/objecttable.django.html:139
+msgid "Ordering priority"
+msgstr ""
+
+#: templates/cradmin_legacy/viewhelpers/objecttable/objecttable.django.html:195
+msgid "Select an action"
+msgstr ""
+
+#: templates/cradmin_legacy/viewhelpers/objecttable/objecttable.django.html:198
+msgid "Go"
+msgstr ""
+
+#: templates/cradmin_legacy/widgets/modelchoice.django.html:25
+#: widgets/modelchoice.py:34
+msgid "Select ..."
+msgstr ""
+
+#: viewhelpers/create.py:33
+msgid "Back"
+msgstr ""
+
+#: viewhelpers/create.py:35
+msgid "Create and select"
+msgstr ""
+
+#: viewhelpers/create.py:37
+msgid "Create and continue editing"
+msgstr ""
+
+#: viewhelpers/create.py:45
+#, python-format
+msgid "Create %(what)s"
+msgstr ""
+
+#: viewhelpers/create.py:116
+#, python-format
+msgid "Created \"%(object)s\"."
+msgstr ""
+
+#: viewhelpers/create.py:142 viewhelpers/formbase.py:183
+msgid "Save"
+msgstr ""
+
+#: viewhelpers/create.py:143 viewhelpers/formbase.py:186
+msgid "Save and continue editing"
+msgstr ""
+
+#: viewhelpers/create.py:146 viewhelpers/update.py:39
+#, python-format
+msgid "Saved \"%(object)s\"."
+msgstr ""
+
+#: viewhelpers/crudbase.py:285
+msgid "Please fix the errors in the form below."
+msgstr ""
+
+#: viewhelpers/delete.py:20
+#, python-format
+msgid "Delete %(what)s"
+msgstr ""
+
+#: viewhelpers/delete.py:51
+#, python-format
+msgid "Are you sure you want to delete \"%(object_preview)s\"?"
+msgstr ""
+
+#: viewhelpers/delete.py:80
+#, python-format
+msgid "Deleted \"%(what)s\""
+msgstr ""
+
+#: viewhelpers/listfilter/base/abstractfilter.py:262
+msgctxt "listfilter loading message"
+msgid "Loading"
+msgstr ""
+
+#: viewhelpers/listfilter/base/abstractfilterlist.py:89
+msgid "An error occurred. Please try to reload the page."
+msgstr ""
+
+#: viewhelpers/listfilter/basefilters/single/abstractselect.py:137
+msgid "Yes"
+msgstr ""
+
+#: viewhelpers/listfilter/basefilters/single/abstractselect.py:143
+msgid "No"
+msgstr ""
+
+#: viewhelpers/listfilter/basefilters/single/abstractselect.py:176
+msgid "Today"
+msgstr ""
+
+#: viewhelpers/listfilter/basefilters/single/abstractselect.py:184
+msgid "Yesterday"
+msgstr ""
+
+#: viewhelpers/listfilter/basefilters/single/abstractselect.py:192
+msgid "Last seven days"
+msgstr ""
+
+#: viewhelpers/listfilter/basefilters/single/abstractselect.py:200
+msgid "This week"
+msgstr ""
+
+#: viewhelpers/listfilter/basefilters/single/abstractselect.py:208
+msgid "This month"
+msgstr ""
+
+#: viewhelpers/listfilter/basefilters/single/abstractselect.py:216
+msgid "This year"
+msgstr ""
+
+#: viewhelpers/listfilter/basefilters/single/abstractselect.py:232
+msgctxt "listfilter AbstractDateTime"
+msgid "Has no value"
+msgstr ""
+
+#: viewhelpers/listfilter/basefilters/single/abstractselect.py:242
+msgctxt "listfilter AbstractDateTime"
+msgid "Has value"
+msgstr ""
+
+#: viewhelpers/listfilter/basefilters/single/abstracttextinput.py:106
+msgctxt "listfilter IntInputFilterMixin"
+msgid "Type a number ..."
+msgstr ""
+
+#: viewhelpers/listfilter/basefilters/single/abstracttextinput.py:125
+msgid "Search ..."
+msgstr ""
+
+#: viewhelpers/listfilter/basefilters/single/abstracttextinput.py:128
+msgctxt "listfilter loading message"
+msgid "Searching"
+msgstr ""
+
+#: viewhelpers/multiselect.py:92
+msgid ""
+"Invalid selection. This is usually caused by someone else changing "
+"permissions while you where selecting items to edit."
+msgstr ""
+
+#: viewhelpers/multiselect2/listbuilder_itemvalues.py:91
+msgctxt "multiselect2 select button"
+msgid "Select"
+msgstr ""
+
+#: viewhelpers/multiselect2/listbuilder_itemvalues.py:100
+#, python-format
+msgctxt "multiselect2 select button"
+msgid "Select \"%(title)s\""
+msgstr ""
+
+#: viewhelpers/multiselect2/manytomanywidget.py:40
+msgctxt "multiselect2 manytomanywidget"
+msgid "Select ..."
+msgstr ""
+
+#: viewhelpers/multiselect2/selected_item_renderer.py:66
+msgctxt "multiselect2 deselect button"
+msgid "Deselect"
+msgstr ""
+
+#: viewhelpers/multiselect2/selected_item_renderer.py:75
+#, python-format
+msgctxt "multiselect2 deselect button"
+msgid "Deselect \"%(title)s\""
+msgstr ""
+
+#: viewhelpers/multiselect2/target_renderer.py:82
+msgctxt "multiselect2 target renderer"
+msgid "Selected items"
+msgstr ""
+
+#: viewhelpers/multiselect2/target_renderer.py:98
+msgctxt "multiselect2 target renderer"
+msgid "Submit selection"
+msgstr ""
+
+#: viewhelpers/multiselect2/target_renderer.py:135
+msgctxt "multiselect2 target renderer"
+msgid "(None)"
+msgstr ""
+
+#: viewhelpers/update.py:22
+#, python-format
+msgid "Edit %(what)s"
+msgstr ""
+
+#: views/roleselect.py:13
+msgid "What would you like to edit?"
+msgstr ""
+
+#: widgets/datetimepicker.py:75
+msgctxt "Has value trigger button text for date widget"
+msgid "Change date"
+msgstr ""
+
+#: widgets/datetimepicker.py:82
+msgctxt "No value trigger button text for date widget"
+msgid "Select a date"
+msgstr ""
+
+#: widgets/datetimepicker.py:89
+msgctxt "Use button text in datetime widget"
+msgid "Use"
+msgstr ""
+
+#: widgets/datetimepicker.py:123
+msgctxt "Selected label in table cell in datetime widget"
+msgid "selected"
+msgstr ""
+
+#: widgets/datetimepicker.py:131
+msgctxt "Today label in table cell in datetime widget"
+msgid "today"
+msgstr ""
+
+#: widgets/datetimepicker.py:144
+msgctxt "Datetime widget screenreader"
+msgid "Close date picker without changing the value"
+msgstr ""
+
+#: widgets/datetimepicker.py:150
+msgctxt "Datetime widget screenreader"
+msgid "Select year"
+msgstr ""
+
+#: widgets/datetimepicker.py:156
+msgctxt "Datetime widget screenreader"
+msgid "Select month"
+msgstr ""
+
+#: widgets/datetimepicker.py:162
+msgctxt "Datetime widget screenreader"
+msgid "Select day"
+msgstr ""
+
+#: widgets/datetimepicker.py:168
+msgctxt "Datetime widget screenreader"
+msgid "Select hour"
+msgstr ""
+
+#: widgets/datetimepicker.py:174
+msgctxt "Datetime widget screenreader"
+msgid "Select minute"
+msgstr ""
+
+#: widgets/datetimepicker.py:183
+msgctxt "Datetime widget screenreader"
+msgid "Confirm that you want to select"
+msgstr ""
+
+#: widgets/datetimepicker.py:198
+msgid "Return to date picker"
+msgstr ""
+
+#: widgets/datetimepicker.py:206
+msgctxt "Datetime widget screenreader"
+msgid ""
+"Select date. Navigate with the arrow keys or tab, jump up to the month "
+"selector with the page up key and back to this table with the page down key."
+msgstr ""
+
+#: widgets/datetimepicker.py:214
+msgctxt "Now button text datetime widget"
+msgid "Now"
+msgstr ""
+
+#: widgets/datetimepicker.py:220
+msgctxt "Today button text datetime widget"
+msgid "Today"
+msgstr ""
+
+#: widgets/datetimepicker.py:226
+msgctxt "Clear button text datetime widget"
+msgid "Clear"
+msgstr ""
+
+#: widgets/datetimepicker.py:246
+msgctxt "Time label datetime widget"
+msgid "Time"
+msgstr ""
+
+#: widgets/datetimepicker.py:703
+msgctxt "Has value trigger button text for date widget"
+msgid "Change date/time"
+msgstr ""
+
+#: widgets/datetimepicker.py:704
+msgctxt "No value trigger button text for date widget"
+msgid "Select a date/time"
+msgstr ""
+
+#: widgets/datetimepicker.py:725
+msgid "hh:mm"
+msgstr ""

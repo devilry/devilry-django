@@ -1,0 +1,217 @@
+/*
+Inputs
+
+Use the class `.input` to add styling to input fields
+
+Example: Standard input
+    <label class="label">
+        Standard input
+        <input type="text" placeholder="I set the standard" class="input" />
+    </label>
+
+Example: Date input
+    <label class="label">
+        Standard input
+        <input type="date" placeholder="I set the standard" class="input" value="2019-12-24" />
+    </label>
+
+Example: Error input
+    <label class="label">
+        I'm a error input!
+        <input type="text" placeholder="Omg!" class="input  input--error" />
+    </label>
+
+Example: Inline input
+    <label class="label">
+        Look,
+        <input class="input  input--inline" type="text" placeholder="I'm inline!!" />
+        Wuut?
+    </label>
+
+Example: Outlined input
+    <label class="label">
+        Outlined input
+        <input type="text" placeholder="Look at ma' outlines" class="input  input--outlined" />
+    </label>
+
+Example: Underlined input - do not combine with size adjusting variants!
+    <label class="label">
+        Underlined input
+        <input type="text" placeholder="Look at ma' underlines" class="input  input--underlined" />
+    </label>
+
+Example: Underlined input inline - do not combine with size adjusting variants!
+
+    And here we have an <label class="label label--inline">
+        inline input
+        <input type="text" placeholder="Look at ma' underlines" class="input  input--inline  input--underlined" />
+    </label>
+
+Example: Input width adjustments
+    <label class="label">
+        --width-xxsmall
+        <input type="text" placeholder="I'm xxsmall!" class="input input--width-xxsmall" />
+    </label>
+    <label class="label">
+        --width-xsmall
+        <input type="text" placeholder="I'm xsmall!" class="input input--width-xsmall" />
+    </label>
+    <label class="label">
+        --width-small
+        <input type="text" placeholder="I'm small!" class="input input--width-small" />
+    </label>
+
+Example: Input size adjustments
+    <label class="label">
+        --size-xsmall
+        <input type="text" placeholder="I'm xsmall!" class="input input--size-xsmall" />
+    </label>
+    <label class="label">
+        --size-small
+        <input type="text" placeholder="I'm small!" class="input input--size-small" />
+    </label>
+    <label class="label">
+        Default size
+        <input type="text" placeholder="I'm default sized!" class="input" />
+    </label>
+    <label class="label">
+        --size-large
+        <input type="text" placeholder="I'm large!" class="input input--size-large" />
+    </label>
+
+Example: Combining width adjustments and size adjustments
+    <label class="label">
+        Time:
+        <input type="text" placeholder="Hour" class="input input--inline input--width-xxsmall input--size-small" />
+        :
+        <input type="text" placeholder="Minute" class="input input--inline input--width-xxsmall input--size-small" />
+    </label>
+
+Example: Standard textarea
+    <label class="label">
+        I'm a textarea
+        <textarea placeholder="I more got space!" class="input"></textarea>
+    </label>
+
+Example: Textarea with error
+    <label class="label">
+        I'm a textarea with error!
+        <textarea placeholder="Why? :'('" class="input  input--error"></textarea>
+    </label>
+
+Example: Textarea with outlines
+    <label class="label">
+        I got the outlines!
+        <textarea placeholder="Look, outlines!" class="input  input--outlined"></textarea>
+    </label>
+
+Styleguide form.3:input
+*/
+
+.input {
+    @include font(base, normal);
+    @include font-size(small, $skip-line-height: true);
+
+    display: block;
+    width: 100%;
+    padding: #{$unit + $border-width} #{$spacing--small + $border-width};
+
+    color: $color-text;
+
+    border-radius: $border-radius;
+    border: $border-width solid $color-light;
+    background-color: $color-light;
+    margin-bottom: $unit;
+    outline: none;
+
+    &:focus {
+        border-color: color(secondary, dark);
+    }
+
+    &[disabled] {
+        background-color: color(neutral);
+    }
+
+    &[type='date'] {
+        -webkit-appearance: none;
+        // padding: #{$unit + $border-width} #{$spacing--small + $border-width};
+        @supports (-webkit-overflow-scrolling: touch) {
+            // IOS safari adjustment
+            padding-top: #{$unit + $border-width + 3px};
+        }
+    }
+
+    @include input-placeholder {
+        color: tint($color-muted, 20%);
+        // color: color(primary);
+    }
+
+    &--inline {
+        @include font-size(small);
+        display: inline-block;
+        width: auto;
+        min-width: 160px;
+        padding: $unit $spacing--small;
+        margin: 0;
+    }
+
+    &--outlined {
+        border: $border-width solid color(neutral, light);
+    }
+
+    &--error {
+        border-color: color(warning);
+    }
+
+    &--nomargin {
+        margin: 0;
+    }
+}
+
+input.input {
+    @include form-element-mixin();
+
+    &--width-xsmall {
+        width: $unit * 20;
+        min-width: $unit * 5;
+    }
+
+    &--width-xxsmall {
+        width: $unit * 16;
+        min-width: $unit * 5;
+    }
+
+    &--width-small {
+        width: $unit * 36;
+        min-width: $unit * 5;
+    }
+
+    &--size-xsmall {
+        @include font-size(xsmall, $skip-line-height: true);
+        @include form-element-mixin(xsmall);
+    }
+
+    &--size-small {
+        @include font-size(small, $skip-line-height: true);
+        @include form-element-mixin(small);
+    }
+
+    &--size-large {
+        @include font-size(medium, $skip-line-height: true);
+        @include form-element-mixin(large);
+    }
+
+    &--underlined {
+        @include form-element-mixin(xsmall);
+        border-width: 0 0 $border-width 0;
+        border-color: color(neutral, light);
+        border-style: solid;
+        border-radius: 0;
+        background-color: transparent;
+        padding: 0;
+
+        //&:focus {
+        //    border-color: color(primary);
+        //}
+    }
+}

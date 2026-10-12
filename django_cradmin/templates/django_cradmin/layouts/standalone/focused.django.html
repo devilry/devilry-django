@@ -1,0 +1,35 @@
+{% extends "django_cradmin/layouts/standalone/focused-internal.django.html" %}
+{% comment %}
+    You can replace this template in your own project, and
+    override stuff from focused-internal.django.html. This means
+    that you can put ``django_cradmin/layouts/standalone/focused.django.html`` in
+    your own project, and override it without having to reimplement
+    anything.
+
+    NOTE: Make sure you put the Django app overriding this template
+    after ``django_cradmin`` in ``INSTALLED_APPS``.
+
+    NOTE: We will NEVER add anything to this template by default.
+
+
+    # Use cases
+
+    Suitable for pages with a single purpose such as login,
+    reset password, accept invite, etc.
+
+
+    # Example
+
+    ```
+    {% extends "django_cradmin/focused.django.html" %}
+
+    {% block page-cover-title %}
+        My cool page
+    {% endblock page-cover-title %}
+
+    {% block content %}
+        Some content here!
+    {% endblock content %}
+    ```
+
+{% endcomment %}

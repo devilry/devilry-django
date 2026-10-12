@@ -1,0 +1,49 @@
+{% load cradmin_legacy_tags %}
+{% load crispy_forms_tags %}
+
+<form method="post" action="{{ form_action }}"
+      id="{{ me.get_dom_id }}"
+      class="
+        cradmin-legacy-multiselect2-target
+        {% if me.get_empty_selection_allowed %}
+            cradmin-legacy-multiselect2-target-empty-selection-allowed
+        {% endif %}"
+      ng-class="{'cradmin-legacy-multiselect2-target-with-items': hasItems()}"
+      cradmin-legacy-multiselect2-target={{ angularjs_directive_json|safe }}>
+    {% csrf_token %}
+
+    <div class="cradmin-legacy-multiselect2-target-with-items-content">
+        {% block with-items-content %}
+            {% block with-items-title %}
+                <h2 class="cradmin-legacy-multiselect2-target-title">
+                    {{ me.get_with_items_title }}
+                </h2>
+            {% endblock with-items-title %}
+            {% block selected-items %}
+                <div cradmin-legacy-multiselect2-target-selected-items
+                        class="cradmin-legacy-multiselect2-target-selected-items">
+                    {% comment %}
+                        The cradmin-legacy-multiselect2-select directive in
+                        the ``productlist-itemvalue.django.html`` template will
+                        add items to this element.
+                    {% endcomment %}
+                </div>
+                <div class="cradmin-legacy-multiselect2-target-no-items-selected">
+                    {% block no-items-selected-content %}
+                        {{ me.get_no_items_selected_text }}
+                    {% endblock no-items-selected-content %}
+                </div>
+            {% endblock selected-items %}
+            {% block with-items-form %}
+                <div class="cradmin-legacy-multiselect2-target-formfields">
+                    {% crispy me.form me.get_formhelper %}
+                </div>
+            {% endblock with-items-form %}
+        {% endblock with-items-content %}
+    </div>
+    <div class="cradmin-legacy-multiselect2-target-without-items-content">
+        {% block without-items-content %}
+            {{ me.get_without_items_text }}
+        {% endblock without-items-content %}
+    </div>
+</form>

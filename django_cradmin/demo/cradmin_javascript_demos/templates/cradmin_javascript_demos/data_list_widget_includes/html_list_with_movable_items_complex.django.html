@@ -1,0 +1,48 @@
+ <div class="adminui-page-section">
+    <div class="container">
+        <h2>Sortable HTML list - a more complex example</h2>
+        <p>
+            With load more, another format on the HTML in each item,
+            and A-tag for each item.
+        </p>
+        <div data-ievv-jsbase-widget="cradmin-api-data-list"
+             data-ievv-jsbase-widget-config='{
+                 "signalNameSpace": "htmllistwithmovableitems_complex",
+                 "apiUrl": "{% url 'cradmin_javascript_demos_api:fictional-figures-list' %}",
+                 "moveApiUrl": "{% url 'cradmin_move_fictional_figures_api' %}",
+                 "filters": {
+                    "html_format": "styled"
+                 }
+             }'>
+        </div>
+        <div data-ievv-jsbase-widget="cradmin-search-input"
+             data-ievv-jsbase-widget-config='{
+                 "signalNameSpace": "htmllistwithmovableitems_complex"
+             }'></div>
+        <div data-ievv-jsbase-widget="cradmin-html-list-with-movable-items"
+             data-ievv-jsbase-widget-config='{
+                 "signalNameSpace": "htmllistwithmovableitems_complex",
+                 "className": "blocklist blocklist--tight",
+                 "itemTagName": "a",
+                 "itemUrlAttribute": "url",
+                 "itemClassName": "blocklist__item blocklist__item--movable blocklist__item--link"
+             }'>
+        </div>
+        <div data-ievv-jsbase-widget="cradmin-data-list-display-by-state"
+             style="display: none"
+             class="text-center"
+             data-ievv-jsbase-widget-config='{
+                 "signalNameSpace": "htmllistwithmovableitems_complex",
+                 "showStates": ["HasNextPage"],
+                 "hideStates": ["IsLoading"]
+             }'>
+            <span data-ievv-jsbase-widget="cradmin-load-more-button"
+                  data-ievv-jsbase-widget-config='{
+                      "signalNameSpace": "htmllistwithmovableitems_complex",
+                      "label": "Load more"
+                  }'></span>
+
+        </div>
+
+    </div>
+</div>

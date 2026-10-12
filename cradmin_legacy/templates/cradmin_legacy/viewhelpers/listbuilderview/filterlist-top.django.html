@@ -1,0 +1,19 @@
+{% extends "cradmin_legacy/viewhelpers/listbuilderview/default.django.html" %}
+{% load cradmin_legacy_tags %}
+
+{% block bodyclass %}
+    {{ block.super }}
+    cradmin-legacy-listbuilderview-filterlist-top-page
+{% endblock %}
+
+
+{% block list %}
+    {% block filterlist %}
+        {% cradmin_render_renderable filterlist %}
+    {% endblock filterlist %}
+    {% with listbuilderlist_html=block.super %}
+        {% block listbuilderlist %}
+            {{ listbuilderlist_html }}
+        {% endblock listbuilderlist %}
+    {% endwith %}
+{% endblock list %}

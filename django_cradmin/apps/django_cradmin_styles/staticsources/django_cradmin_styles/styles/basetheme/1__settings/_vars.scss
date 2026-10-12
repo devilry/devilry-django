@@ -1,0 +1,181 @@
+/* Breakpoints / Media queries
+
+Media queries are **only** ment for the mobile first approach; Which means you design for mobile first, then add media queries for larger screens -- Never the other way around
+
+# These are the following breakpoints
+
+1. `xs: 400px` - Small and up
+2. `md: 720px`, - Medium and up
+3. `lg: 960px`, - Large and up
+4. `xl: 1240px` - Extra large and up
+
+Styleguide basic.2:breakpoints
+*/
+$breakpoints: (
+    xs: 440px, // Small and up
+    md: 720px, // Medium and up
+    lg: 960px, // Large and up
+    xl: 1240px // Extra large and up
+);
+
+
+// Grids max-width
+$container-width--xtight: 620px !default;
+$container-width--tight: 740px !default;
+$container-width--medium: 950px !default;
+$container-width: $container-width--tight * 1.5 !default; // TODO: Improve?
+$container-width--wide: 1400px !default;
+$container-width--xwide: 1640px !default;
+
+
+/* Spacing
+
+All the sizes are based on a unit. **The unit size is 6px.**
+
+Never refer to a pixel-size for padding, margin or simular.
+
+# Use these variables for sizes:
+- <div class="sg-size  sg-size--small"></div>
+  `$spacing--small` - 2 units
+- <div class="sg-size  sg-size--base"></div>
+  `$spacing` - 4 units
+- <div class="sg-size  sg-size--large"></div>
+  `$spacing--large` - 10 units
+- <div class="sg-size  sg-size--xlarge"></div>
+  `$spacing--xlarge` - 40 units
+
+If you space out content it's often best to use `$indention`. This way we can create consistent aligning for texts.
+
+Styleguide basic.3:spacing
+*/
+$unit: 6px !default;
+$spacing--xlarge: $unit * 40 !default; // TODO: Reduce this a bit and add a new for this big...
+$spacing--large: $unit * 10 !default;
+$spacing: $unit * 4;
+$spacing--small: $unit * 2 !default;
+
+
+// Indention
+$indention: $unit * 7 !default;
+$indention--sm: $unit * 5 !default; // TODO: Make a mixin for this?
+
+/* Vertical rhythm
+
+In order to create a vertical rhythm it's important to stick to spacings that follows the same rhythm as the text's line height.
+
+By default you should never specify heights without variables. If the spacing is vertical; stick to the vertical rhythm variables.
+
+There is a system that creates proper line heights for text. **Never interfer with line-height's neither, since they are essentials to keep a good verticla rhythm.**
+
+# Use this function for setting any vertical spacing:
+- `vertical-space(2)` – Plain numbers selects that amount of vertical spaces
+- `vertical-space(20px)` – **px**-numbers select the closest match above the number
+- `vertical-space($spacing)` – Spacing variables is perfered over pixelvalues
+- `vertical-space(20px, 1.2)` – The other argument is to add extra increment if needed _(Simular to `20px * 1.2`)_
+
+Styleguide basic.4:vertical-rhythm
+*/
+$vertical-rythm: 7px !default; // TODO: Responsive? REM?
+$vertical-rythm--medium: ($vertical-rythm * 3) !default;
+$vertical-rythm--spacing: ($vertical-rythm--medium) + $vertical-rythm !default;
+
+
+/* Borders
+
+For borders, use one of the following variables,
+and prefer the ``*-style`` variables:
+
+- `$border-width` - Default border width.
+- `$border-width--small` - Small/thin border width.
+- `$border-radius` - Use when setting border-radius.
+- `$border-style` - Default border style. Examples:
+    - ``border: $border-style;``
+    - ``border-top: $border-style;``
+- `$border-style` - Small/thin border style. Examples:
+    - ``border: $border-style--small;``
+    - ``border-top: $border-style--small;``
+
+Styleguide basic.5:borders
+*/
+$border-width: 3px !default;
+$border-width--small: 2px !default;
+$border-width--xsmall: 1px !default;
+
+$border-radius: 5px !default;
+
+
+// Border style
+$border-style: $border-width solid color(neutral, light) !default;
+$border-style--small: $border-width--small solid color(neutral, light) !default;
+$border-style--datetimepicker: $border-width--xsmall solid color(neutral, light) !default;
+
+
+// Better easing
+$swift-out: cubic-bezier(0, 0, 0.1, 1) !default;
+
+
+// Header height
+$header-height: $vertical-rythm * 7 !default;
+
+
+// Input sizes (width)
+$input-small: $unit * 38  !default;
+
+
+// Z-index levels
+$level-1: 10 !default;
+$level-2: 20 !default;
+$level-3: 30 !default;
+$level-4: 40 !default;
+
+
+// Shadow levels
+$shadow-level-1: 0 0 20px rgba($color-dark, 0.06);
+$shadow-level-2: 0 2px 15px rgba($color-dark, 0.1);
+$shadow-level-3: 0 2px 6px rgba($color-dark, 0.3);
+
+
+$sidebar-sizes: (
+    md: 250px, // Medium and up
+    lg: 270px, // Large and up
+    xl: 280px // Extra large and up
+);
+
+
+// Maps items in $breakpoints to line heights for form elements.
+// We use this to ensure form elements line up nicely horizontally
+$form-element-height-map: (
+    // "base" is the default size. You only need this in the map unless
+    // you want to make the sizes responsive.
+    base: (
+        xsmall: 42px,
+        small: 48px,
+        base: 52px,
+        large: 62px
+    ),
+
+    // The rest of the sizes must correspond to sizes in $breakpoints.
+    md: (
+        xsmall: 42px,
+        small: 48px,
+        base: 56px,
+        large: 70px
+    ),
+    lg: (
+        xsmall: 42px,
+        small: 48px,
+        base: 56px,
+        large: 70px
+    ),
+    xl: (
+        xsmall: 42px,
+        small: 48px,
+        base: 56px,
+        large: 70px
+    )
+);
+
+$media-path: '../../media' !default;  // Must NOT end with /
+
+
+$datetimepicker-max-width: 400px !default;

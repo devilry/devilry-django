@@ -1,0 +1,129 @@
+/* Anonymous buttons
+
+Example:
+
+    <button type="button" class="anonymous-button">An anonymous button</button>
+
+Example: Best suited for icons, not for text
+
+    <button type="button" class="anonymous-button" title="Edit">
+        <span class="cricon cricon--edit" aria-hidden="true"></span>
+    </button>
+
+Example: Works with links too
+
+    <a href="#" class="anonymous-button" title="Edit">
+        <span class="cricon cricon--edit" aria-hidden="true"></span>
+    </a>
+
+Example: Color variants
+
+    <p>
+        <button type="button" class="anonymous-button" title="Edit">
+            <span class="cricon cricon--edit" aria-hidden="true"></span>
+        </button> (default)
+    </p>
+
+    <p>
+        <button type="button" class="anonymous-button anonymous-button--primary" title="Edit">
+            <span class="cricon cricon--edit" aria-hidden="true"></span>
+        </button> --primary
+    </p>
+
+    <p>
+        <button type="button" class="anonymous-button anonymous-button--secondary" title="Edit">
+            <span class="cricon cricon--edit" aria-hidden="true"></span>
+        </button> --secondary
+    </p>
+
+    <p>
+        <button type="button" class="anonymous-button anonymous-button--warning" title="Edit">
+            <span class="cricon cricon--edit" aria-hidden="true"></span>
+        </button> --warning
+    </p>
+
+    <p>
+        <button type="button" class="anonymous-button anonymous-button--success" title="Edit">
+            <span class="cricon cricon--edit" aria-hidden="true"></span>
+        </button> --success
+    </p>
+
+Example: Multiple on one line using anonymous-button-list class
+
+    Some cool buttons:
+    <p class="anonymous-button-list">
+        <button type="button" class="anonymous-button anonymous-button-list__item" title="Edit">
+            <span class="cricon cricon--edit" aria-hidden="true"></span>
+        </button>
+        <button type="button" class="anonymous-button anonymous-button-list__item" title="Download">
+            <span class="cricon cricon--download" aria-hidden="true"></span>
+        </button>
+        <button type="button" class="anonymous-button anonymous-button-list__item" title="Open in new tab">
+            <span class="cricon cricon--external-link" aria-hidden="true"></span>
+        </button>
+    </p>
+
+    Some more spaced buttons:
+    <p class="anonymous-button-list">
+        <button type="button" class="anonymous-button anonymous-button--spaced anonymous-button-list__item" title="Edit">
+            <span class="cricon cricon--edit" aria-hidden="true"></span>
+        </button>
+        <button type="button" class="anonymous-button anonymous-button--spaced anonymous-button-list__item" title="Download">
+            <span class="cricon cricon--download" aria-hidden="true"></span>
+        </button>
+        <button type="button" class="anonymous-button anonymous-button--spaced anonymous-button-list__item" title="Open in new tab">
+            <span class="cricon cricon--external-link" aria-hidden="true"></span>
+        </button>
+    </p>
+
+Styleguide form.buttons.anonymous
+*/
+
+
+@mixin anonymous-button--color($name, $color, $hover-color) {
+    &--#{$name} {
+        color: $color;
+        &:hover {
+            color: $hover-color;
+        }
+    }
+}
+
+
+.anonymous-button {
+    margin-bottom: $unit;
+    margin-left: $unit;
+    margin-right: $unit;
+    color: $color-text;
+    border: none;
+    padding: 0;
+
+
+    &:focus,
+    &:hover {
+        color: $color-links--hover;
+        border: none;
+    }
+
+    &--spaced {
+        margin-bottom: $spacing--small;
+        margin-left: $spacing--small;
+        margin-right: $spacing--small;
+    }
+
+    @include anonymous-button--color(primary, $color: color(primary), $hover-color: color(primary, dark));
+    @include anonymous-button--color(secondary, $color: color(secondary), $hover-color: color(secondary, dark));
+    @include anonymous-button--color(warning, $color: color(warning), $hover-color: color(warning, dark));
+    @include anonymous-button--color(success, $color: color(success), $hover-color: color(success, dark));
+}
+
+.anonymous-button-list {
+    &__item {
+        &:first-child {
+            margin-left: 0;
+        }
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+}

@@ -1,0 +1,48 @@
+{% extends "cradmin_legacy/layouts/standalone/focused.django.html" %}
+
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block title %}
+    {{ pagetitle }}
+{% endblock title %}
+
+{% block pageheader-inner %}
+    <h1>
+        {{ pagetitle }}
+    </h1>
+{% endblock pageheader-inner %}
+
+{% block content %}
+    <div id="cradmin_legacy_invite_accept_description">
+        {% include description_template_name %}
+    </div>
+
+    <div class="cradmin-legacy-invite-accept-buttons">
+        {% if request.user.is_authenticated %}
+            <form method="post" action="{{ request.path }}">{% csrf_token %}
+                <button id="cradmin_legacy_invite_accept_as_button"
+                        type="submit" class="btn btn-lg btn-primary">
+                    {{ accept_as_button_label }}
+                </button>
+            </form>
+            <a href="{{ register_account_url }}" id="cradmin_legacy_invite_accept_register_account_button">
+                {{ register_account_button_label }}
+            </a>
+            |
+            <a href="{{ login_as_different_user_url }}"
+                    id="cradmin_legacy_invite_accept_login_as_different_user_button">
+                {{ login_as_different_user_button_label }}
+            </a>
+        {% else %}
+            <a href="{{ login_url }}" class="btn btn-lg btn-primary"
+                    id="cradmin_legacy_invite_accept_login_button">
+                {{ login_button_label }}
+            </a>
+            <a href="{{ register_account_url }}" class="btn btn-lg btn-default"
+                    id="cradmin_legacy_invite_accept_register_account_button">
+                {{ register_account_button_label }}
+            </a>
+        {% endif %}
+    </div>
+{% endblock content %}

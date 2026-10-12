@@ -1,0 +1,50 @@
+{% extends "django_cradmin/viewhelpers/uimock/base.django.html" %}
+{% load cradmin_uimock_tags %}
+
+{% block page-cover %}
+    <header class="adminui-page-cover">
+        <h1 class="adminui-page-cover__title">Justo Vulputate</h1>
+        <p class="adminui-page-cover__description">Morbi leo risus, porta ac consectetur ac, vestibulum at eros</p>
+    </header>
+{% endblock page-cover %}
+
+{% block breadcrumbs-below-page-cover %}
+    <div class="breadcrumb-item-list-wrapper">
+        <div class="container container--tight">
+            <nav class="breadcrumb-item-list">
+                <a class="breadcrumb-item-list__item" href="{% cradmin_uimock_url %}">
+                    Index
+                </a>
+                <span class="breadcrumb-item-list__separator"></span>
+                <span class="breadcrumb-item-list__item  breadcrumb-item-list__item--active">
+                    Ipsum mock
+                </span>
+            </nav>
+        </div>
+    </div>
+{% endblock breadcrumbs-below-page-cover %}
+
+{% block content %}
+    <div class="adminui-page-section">
+        <div class="container container--tight">
+            <p>Nullam quis risus eget urna mollis ornare vel eu leo. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Nulla vitae elit libero, a pharetra augue. Nullam quis risus eget urna mollis ornare vel eu leo. Cras mattis consectetur purus sit amet fermentum. Curabitur blandit tempus porttitor.</p>
+
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porta sem malesuada magna mollis euismod. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum.</p>
+
+            <p>Maecenas faucibus mollis interdum. Donec sed odio dui. Nullam quis risus eget urna mollis ornare vel eu leo. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Nullam quis risus eget urna mollis ornare vel eu leo.</p>
+
+            <p>Etiam porta sem malesuada magna mollis euismod. Donec ullamcorper nulla non metus auctor fringilla. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Sed posuere consectetur est at lobortis. Etiam porta sem malesuada magna mollis euismod. Cras mattis consectetur purus sit amet fermentum.</p>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block notes %}
+    <p>
+        This uimock example demostrates an a bit more complex example than index.django.html.
+        We have a page-cover and some breadcrumbs!
+    </p>
+
+    <p>
+        You may also want to check out <a href="{% cradmin_uimock_url mockname='form' %}">the form mock</a>.
+    </p>
+{% endblock notes %}

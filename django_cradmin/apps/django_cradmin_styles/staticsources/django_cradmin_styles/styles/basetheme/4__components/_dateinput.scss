@@ -1,0 +1,427 @@
+/* Date and time inputs
+
+
+Example: {type: isolated} Date
+    <section class="adminui-page-section  adminui-page-section--tight  adminui-page-section--center">
+        <h3>Pick a date</h3>
+
+        <div class="dateinput">
+            <div class="dateinput__group">
+                <label class="dateinput__select">
+                    <select>
+                        <option value="0" disabled selected>Day</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <!-- options for the rest of the days of a month -->
+                    </select>
+                </label>
+                <label class="dateinput__select">
+                    <select>
+                        <option value="0" disabled selected>Month</option>
+                        <option value="1">Jan</option>
+                        <option value="2">Feb</option>
+                        <option value="3">Mar</option>
+                        <!-- options for the rest of the months -->
+                    </select>
+                </label>
+                <label class="dateinput__select">
+                    <select>
+                        <option value="0" disabled selected>Year</option>
+                        <option value="1">2015</option>
+                        <option value="1">2016</option>
+                        <option value="1">2017</option>
+                        <option value="1">2018</option>
+                        <option value="1">2019</option>
+                        <option value="1">2020</option>
+                        <!-- options for more years -->
+                    </select>
+                </label>
+            </div>
+        </div>
+
+    </section>
+
+Example: {type: isolated} Datetime
+    <section class="adminui-page-section  adminui-page-section--tight  adminui-page-section--center">
+        <h3>Pick a date and time</h3>
+
+        <div class="dateinput">
+            <div class="dateinput__group">
+                <label class="dateinput__select">
+                    <select>
+                        <option value="0" disabled selected>Day</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <!-- options for the rest of the days of a month -->
+                    </select>
+                </label>
+                <label class="dateinput__select">
+                    <select>
+                        <option value="0" disabled selected>Month</option>
+                        <option value="1">Jan</option>
+                        <option value="2">Feb</option>
+                        <option value="3">Mar</option>
+                        <!-- options for the rest of the months -->
+                    </select>
+                </label>
+                <label class="dateinput__select">
+                    <select>
+                        <option value="0" disabled selected>Year</option>
+                        <option value="1">2015</option>
+                        <option value="1">2016</option>
+                        <option value="1">2017</option>
+                        <option value="1">2018</option>
+                        <option value="1">2019</option>
+                        <option value="1">2020</option>
+                        <!-- options for more years -->
+                    </select>
+                </label>
+            </div>
+
+            <label class="dateinput__group">
+                <input
+                    class="dateinput__input"
+                    type="number"
+                    min="0"
+                    max="24"
+                    step="1"
+                    placeholder="00"
+                />
+                <span class="dateinput__separator">:</span>
+                <input
+                    class="dateinput__input"
+                    type="number"
+                    min="0"
+                    max="59"
+                    step="1"
+                    placeholder="00"
+                />
+            </label>
+        </div>
+
+    </section>
+
+Example: {type: isolated} --size-xsmall
+    <section class="adminui-page-section  adminui-page-section--tight  adminui-page-section--center">
+        <div class="dateinput dateinput--size-xsmall">
+            <div class="dateinput__group">
+                <label class="dateinput__select">
+                    <select>
+                        <option value="0" disabled selected>Day</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <!-- options for the rest of the days of a month -->
+                    </select>
+                </label>
+                <label class="dateinput__select">
+                    <select>
+                        <option value="0" disabled selected>Month</option>
+                        <option value="1">Jan</option>
+                        <option value="2">Feb</option>
+                        <option value="3">Mar</option>
+                        <!-- options for the rest of the months -->
+                    </select>
+                </label>
+                <label class="dateinput__select">
+                    <select>
+                        <option value="0" disabled selected>Year</option>
+                        <option value="1">2015</option>
+                        <option value="1">2016</option>
+                        <option value="1">2017</option>
+                        <option value="1">2018</option>
+                        <option value="1">2019</option>
+                        <option value="1">2020</option>
+                        <!-- options for more years -->
+                    </select>
+                </label>
+            </div>
+
+            <label class="dateinput__group">
+                <input
+                    class="dateinput__input"
+                    type="number"
+                    min="0"
+                    max="24"
+                    step="1"
+                    placeholder="00"
+                />
+                <span class="dateinput__separator">:</span>
+                <input
+                    class="dateinput__input"
+                    type="number"
+                    min="0"
+                    max="59"
+                    step="1"
+                    placeholder="00"
+                />
+            </label>
+        </div>
+    </section>
+
+Example: {type: isolated} --size-small
+    <section class="adminui-page-section  adminui-page-section--tight  adminui-page-section--center">
+        <div class="dateinput dateinput--size-small">
+            <div class="dateinput__group">
+                <label class="dateinput__select">
+                    <select>
+                        <option value="0" disabled selected>Day</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <!-- options for the rest of the days of a month -->
+                    </select>
+                </label>
+                <label class="dateinput__select">
+                    <select>
+                        <option value="0" disabled selected>Month</option>
+                        <option value="1">Jan</option>
+                        <option value="2">Feb</option>
+                        <option value="3">Mar</option>
+                        <!-- options for the rest of the months -->
+                    </select>
+                </label>
+                <label class="dateinput__select">
+                    <select>
+                        <option value="0" disabled selected>Year</option>
+                        <option value="1">2015</option>
+                        <option value="1">2016</option>
+                        <option value="1">2017</option>
+                        <option value="1">2018</option>
+                        <option value="1">2019</option>
+                        <option value="1">2020</option>
+                        <!-- options for more years -->
+                    </select>
+                </label>
+            </div>
+
+            <label class="dateinput__group">
+                <input
+                    class="dateinput__input"
+                    type="number"
+                    min="0"
+                    max="24"
+                    step="1"
+                    placeholder="00"
+                />
+                <span class="dateinput__separator">:</span>
+                <input
+                    class="dateinput__input"
+                    type="number"
+                    min="0"
+                    max="59"
+                    step="1"
+                    placeholder="00"
+                />
+            </label>
+        </div>
+    </section>
+
+Example: {type: isolated} --size-large
+    <section class="adminui-page-section  adminui-page-section--tight  adminui-page-section--center">
+        <div class="dateinput dateinput--size-large">
+            <div class="dateinput__group">
+                <label class="dateinput__select">
+                    <select>
+                        <option value="0" disabled selected>Day</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <!-- options for the rest of the days of a month -->
+                    </select>
+                </label>
+                <label class="dateinput__select">
+                    <select>
+                        <option value="0" disabled selected>Month</option>
+                        <option value="1">Jan</option>
+                        <option value="2">Feb</option>
+                        <option value="3">Mar</option>
+                        <!-- options for the rest of the months -->
+                    </select>
+                </label>
+                <label class="dateinput__select">
+                    <select>
+                        <option value="0" disabled selected>Year</option>
+                        <option value="1">2015</option>
+                        <option value="1">2016</option>
+                        <option value="1">2017</option>
+                        <option value="1">2018</option>
+                        <option value="1">2019</option>
+                        <option value="1">2020</option>
+                        <!-- options for more years -->
+                    </select>
+                </label>
+            </div>
+
+            <label class="dateinput__group">
+                <input
+                    class="dateinput__input"
+                    type="number"
+                    min="0"
+                    max="24"
+                    step="1"
+                    placeholder="00"
+                />
+                <span class="dateinput__separator">:</span>
+                <input
+                    class="dateinput__input"
+                    type="number"
+                    min="0"
+                    max="59"
+                    step="1"
+                    placeholder="00"
+                />
+            </label>
+        </div>
+    </section>
+
+
+Styleguide components.dateinput
+*/
+
+.dateinput {
+    $root: &;
+
+    @include font(mono);
+    margin-bottom: vertical-space();
+
+    @include min-width(xs) {
+        display: inline-flex;
+    }
+
+    &__group {
+        display: flex;
+        align-items: baseline;
+        justify-content: center;
+
+        margin-bottom: vertical-space(2);
+
+        @include min-width(xs) {
+            margin-bottom: 0;
+
+            & + #{$root}__group {
+                position: relative;
+                margin-left: $indention;
+
+                &:before {
+                    content: '—';
+                    position: absolute;
+                    display: block;
+                    left: -($indention);
+                    width: $indention;
+                    text-align: center;
+                    line-height: 1;
+                    top: 50%;
+                    transform: translateY(-50%);
+                }
+            }
+        }
+    }
+
+    &__select {
+        @extend .select;
+        @extend .select--outlined;
+
+        position: relative;
+        font-family: inherit;
+        border-radius: 0;
+        margin: 0;
+        margin-left: -($border-width / 2);
+        margin-right: -($border-width / 2);
+
+        &:first-of-type {
+            margin-left: 0;
+            border-top-left-radius: $border-radius;
+            border-bottom-left-radius: $border-radius;
+        }
+
+        &:last-of-type {
+            margin-right: 0;
+            border-top-right-radius: $border-radius;
+            border-bottom-right-radius: $border-radius;
+        }
+
+        &:hover,
+        &:focus {
+            z-index: 2;
+        }
+
+        select {
+            font-size: inherit;
+        }
+    }
+
+    &__separator {
+        position: relative;
+        pointer-events: none;
+        z-index: 2;
+        width: 10px;
+        margin-left: -5px;
+        margin-right: -5px;
+        text-align: center;
+    }
+
+    &__input {
+        @extend .input;
+        @extend .input--outlined;
+
+        @include font-size(xsmall);
+
+        font-family: inherit;
+        margin: 0;
+        height: 100%;
+        padding: 0 $spacing--small;
+        width: $unit * 9;
+
+        &:first-of-type {
+            border-right: 0;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            text-align: right;
+            padding-left: 0;
+        }
+
+        &:last-of-type {
+            border-left: 0;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            padding-right: 0;
+        }
+    }
+
+    &--size-xsmall {
+        #{$root}__select {
+            @include font-size(xsmall, $skip-line-height: true);
+            @include form-element-mixin(xsmall);
+        }
+        #{$root}__input {
+            @include font-size(xsmall, $skip-line-height: true);
+            @include form-element-mixin(xsmall);
+        }
+    }
+
+    &--size-small {
+        #{$root}__select {
+            @include font-size(small, $skip-line-height: true);
+            @include form-element-mixin(small);
+        }
+
+        #{$root}__input {
+            @include font-size(small, $skip-line-height: true);
+            @include form-element-mixin(small);
+        }
+    }
+
+    &--size-large {
+        #{$root}__select {
+            @include font-size(medium, $skip-line-height: true);
+            @include form-element-mixin(large);
+        }
+        #{$root}__input {
+            @include font-size(medium, $skip-line-height: true);
+            @include form-element-mixin(large);
+        }
+    }
+}

@@ -1,0 +1,20 @@
+{% extends "cradmin_legacy/base.django.html" %}
+{% load i18n %}
+{% load static %}
+
+
+{% block pageheader-inner %}
+    <h1>
+        {% trans "Demo" %}:
+        <strong>{{ request.cradmin_role.name }}</strong>
+    </h1>
+{% endblock pageheader-inner %}
+
+{% block content %}
+    <div class="container cradmin-legacy-container-focus">
+        Welcome to the django cradmin demo!
+    </div>
+    <div class="container">
+        Welcome to the django cradmin demo!
+    </div>
+{% endblock content %}

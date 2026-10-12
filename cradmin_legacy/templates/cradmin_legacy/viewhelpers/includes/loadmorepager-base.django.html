@@ -1,0 +1,54 @@
+{% comment %}
+
+    Usage::
+
+        {% extends "cradmin_legacy/viewhelpers/includes/loadmorepager-base.django.html" %}
+
+        {% block load-more-pager-options %}
+            {
+                "targetElementCssSelector": ".the-wrapper-adound-the-paged-elements"
+            }
+        {% endblock load-more-pager-options %}
+
+    Required context variables:
+
+        is_paginated
+        page_obj
+
+    These are added automatically by ListView if you specify paginate_by.
+
+{% endcomment %}
+{% load i18n %}
+{% load cradmin_legacy_icon_tags %}
+
+{% if is_paginated and page_obj.has_next %}
+    <div class="cradmin-legacy-loadmorepager {% block wrapper-element-extra-css-classes %}{% endblock %}"
+            ng-class="{'cradmin-legacy-loadmorepager-loading': loadmorePagerIsLoading}"
+            cradmin-legacy-load-more-pager='{% block load-more-pager-options %}{
+                "targetElementCssSelector": "{% block load-more-pager-targetElementCssSelector %}{% endblock %}",
+                "nextPageNumber": {{ page_obj.next_page_number }}{% if pagination_mode_load_all %},"mode": "loadAllOnClick"{% endif %}
+            }{% endblock %}'>
+        <button type="button"
+                class="cradmin-legacy-loadmorepager-button {% block load-more-button-extra-css-classes %}btn btn-default{% endblock %}"
+                ng-click="pagerLoad()"
+                ng-disabled="loadmorePagerIsLoading">
+            <span class="{% cradmin_icon "loadspinner" %}"
+                  ng-if="loadmorePagerIsLoading"
+                  aria-hidden="true"></span>
+            <span class="cradmin-legacy-loadmorepager-loadingtext" ng-if="loadmorePagerIsLoading">
+                {% block loading-text %}
+                    {% trans "Loading ..." %}
+                {% endblock loading-text %}
+            </span>
+            <span class="cradmin-legacy-loadmorepager-not-loadingtext" ng-if="!loadmorePagerIsLoading">
+                {% block load-more-text %}
+                    {% if pagination_mode_load_all %}
+                        {% trans "Load all" %}
+                    {% else %}
+                        {% trans "Load more" %}
+                    {% endif %}
+                {% endblock load-more-text %}
+            </span>
+        </button>
+    </div>
+{% endif %}

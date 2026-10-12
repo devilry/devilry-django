@@ -1,0 +1,31 @@
+{% extends "django_cradmin/standalone-base.django.html" %}
+{% load static %}
+
+{% block title %}
+    Autosubmit form after timeout demo
+{% endblock title %}
+
+{% block page-cover-title %}
+    Autosubmit form after timeout demo
+{% endblock page-cover-title %}
+
+{% block content %}
+
+    <div class="adminui-page-section">
+        <div class="container">
+            <form method="post" action="{{ request.path }}">{% csrf_token %}
+                <p>
+                    Will autosubmit in
+                    <strong data-ievv-jsbase-widget="cradmin-auto-submit-form-after-countdown"
+                          data-ievv-jsbase-widget-config='{
+                            "timeoutSeconds": {{ timeout_seconds }}
+                          }'>
+                        {{ timeout_seconds }}
+                    </strong>
+                    seconds!
+                </p>
+            </form>
+        </div>
+    </div>
+
+{% endblock content %}

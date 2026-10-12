@@ -1,0 +1,1012 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+# Espen Angell Kristiansen <espen@appresso.no>, 2015-2017
+# espengetz <espen@inrupt.no>, 2015
+# Magne Westlie <magne@appresso.no>, 2016
+# Tor Ivar Johansen <tor@appresso.no>, 2017
+msgid ""
+msgstr ""
+"Project-Id-Version: cradmin\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-04-16 18:34+0200\n"
+"PO-Revision-Date: 2018-04-16 18:46+0200\n"
+"Last-Translator: Tor Ivar Johansen <tor@appresso.no>\n"
+"Language-Team: Norwegian Bokmål (http://www.transifex.com/appresso/cradmin/"
+"language/nb/)\n"
+"Language: nb\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.0.6\n"
+
+#: apps/cradmin_activate_account/templates/cradmin_activate_account/activate.django.html:6
+#: apps/cradmin_activate_account/templates/cradmin_activate_account/activate.django.html:10
+msgid "Activate account error"
+msgstr "Feil ved kontoaktivering"
+
+#: apps/cradmin_activate_account/templates/cradmin_activate_account/email/html_message.django.html:5
+#, python-format
+msgid "Click the button below to activate your %(sitename)s account, %(user)s."
+msgstr ""
+"Klikk knappen nedenfor for å aktivere din %(sitename)s konto, %(user)s."
+
+#: apps/cradmin_activate_account/templates/cradmin_activate_account/email/html_message.django.html:8
+msgid "Activate your account"
+msgstr "Aktiver din konto"
+
+#: apps/cradmin_activate_account/templates/cradmin_activate_account/email/subject.django.txt:2
+#, python-format
+msgid "Activate your %(sitename)s account"
+msgstr "Aktiver din %(sitename)s konto"
+
+#: apps/cradmin_activate_account/templates/cradmin_activate_account/messages/activation-link-expired.django.html:2
+msgid "This account activation link has expired."
+msgstr "Denne kontoaktiverings linken er for gammel."
+
+#: apps/cradmin_activate_account/templates/cradmin_activate_account/messages/activation-link-invalid.django.html:2
+msgid ""
+"Invalid account activation URL. Are you sure you copied the entire URL from "
+"the email?"
+msgstr ""
+"Ugyldig URL for aktivering av konto. Er du sikker på at du kopierte hele URL-"
+"en fra e-posten?"
+
+#: apps/cradmin_activate_account/templates/cradmin_activate_account/messages/success.django.html:2
+msgid "Your account is now active."
+msgstr "Din konto er nå aktiv."
+
+#: apps/cradmin_authenticate/templates/cradmin_authenticate/login.django.html:5
+#: apps/cradmin_authenticate/templates/cradmin_authenticate/login.django.html:9
+#: apps/cradmin_authenticate/views/login.py:239
+#: apps/cradmin_invite/baseviews/accept.py:63
+msgid "Sign in"
+msgstr "Logg inn"
+
+#: apps/cradmin_authenticate/templates/cradmin_authenticate/login.django.html:22
+msgid "Forgot your password?"
+msgstr "Har du glemt passordet?"
+
+#: apps/cradmin_authenticate/templates/cradmin_authenticate/logout.django.html:5
+#: apps/cradmin_authenticate/templates/cradmin_authenticate/logout.django.html:9
+msgid "Signed out"
+msgstr "Logget ut"
+
+#: apps/cradmin_authenticate/templates/cradmin_authenticate/logout.django.html:15
+msgid "Sign back in"
+msgstr "Logg inn igjen"
+
+#: apps/cradmin_authenticate/views/login.py:34
+#: apps/cradmin_authenticate/views/login.py:44
+msgid "Password"
+msgstr "Passord"
+
+#: apps/cradmin_authenticate/views/login.py:40
+msgid "This account is inactive."
+msgstr "Denne kontoen er inaktiv."
+
+#: apps/cradmin_authenticate/views/login.py:92
+#: apps/cradmin_authenticate/views/login.py:94
+msgid "Username"
+msgstr "Brukernavn"
+
+#: apps/cradmin_authenticate/views/login.py:95
+msgid "Your username and password didn't match. Please try again."
+msgstr "Ugyldig brukernavn og passord kombinasjon. Vennligst prøv igjen."
+
+#: apps/cradmin_authenticate/views/login.py:120
+#: apps/cradmin_authenticate/views/login.py:122
+#: apps/cradmin_resetpassword/views/begin.py:49
+msgid "Email"
+msgstr "E-post"
+
+#: apps/cradmin_authenticate/views/login.py:123
+msgid "Your email and password didn't match. Please try again."
+msgstr "Ugyldig e-post/passord. Vennligst prøv igjen."
+
+#: apps/cradmin_generic_token_with_metadata/models.py:224
+msgid "Created"
+msgstr "Lagt til"
+
+#: apps/cradmin_generic_token_with_metadata/models.py:230
+msgid "Expires"
+msgstr "Utgår"
+
+#: apps/cradmin_invite/baseviews/accept.py:39
+#: apps/cradmin_invite/templates/cradmin_invite/email/html_message.django.html:8
+msgid "Accept invite"
+msgstr "Aksepter invitasjon"
+
+#: apps/cradmin_invite/baseviews/accept.py:45
+#, python-format
+msgid "Accept as %(user)s"
+msgstr "Aksepter som %(user)s"
+
+#: apps/cradmin_invite/baseviews/accept.py:51
+#: apps/cradmin_register_account/forms/base.py:33
+#, python-format
+msgid "Sign up for %(sitename)s"
+msgstr "Registrer %(sitename)s konto"
+
+#: apps/cradmin_invite/baseviews/accept.py:57
+msgid "Sign in as another user"
+msgstr "Logg inn som en annen bruker"
+
+#: apps/cradmin_invite/templates/cradmin_invite/accept/token_error.django.html:5
+#: apps/cradmin_invite/templates/cradmin_invite/accept/token_error.django.html:9
+msgid "Invalid invite"
+msgstr "Ugyldig invitasjon"
+
+#: apps/cradmin_invite/templates/cradmin_invite/accept/token_error.django.html:16
+msgid ""
+"Invalid invite URL. Are you sure you copied the entire URL from the email?"
+msgstr ""
+"Ugyldig invitasjonslink. Er du sikker på at du kopierte hele URL-en fra e-"
+"posten?"
+
+#: apps/cradmin_invite/templates/cradmin_invite/accept/token_error.django.html:24
+msgid "This invite link has expired."
+msgstr "Denne invitasjonslinken er for gammel."
+
+#: apps/cradmin_invite/templates/cradmin_invite/email/html_message.django.html:5
+msgid "Click the button below to accept the invite."
+msgstr "Klikk knappen nedenfor for å akseptere invitasjonen."
+
+#: apps/cradmin_invite/templates/cradmin_invite/email/subject.django.txt:2
+#, python-format
+msgid "Invitation to %(sitename)s"
+msgstr "Invitasjon til %(sitename)s"
+
+#: apps/cradmin_kss_styleguide/templates/cradmin_kss_styleguide/templatetags/render_kss_section.django.html:57
+msgid "Example"
+msgstr "Eksempel"
+
+#: apps/cradmin_kss_styleguide/templates/cradmin_kss_styleguide/templatetags/render_kss_section.django.html:66
+msgid "Preview"
+msgstr "Forhåndsvis"
+
+#: apps/cradmin_kss_styleguide/templates/cradmin_kss_styleguide/templatetags/render_kss_section.django.html:71
+msgid "Code"
+msgstr "Kode"
+
+#: apps/cradmin_kss_styleguide/templates/cradmin_kss_styleguide/templatetags/render_kss_section.django.html:95
+msgid "Open example in new window"
+msgstr "Åpne eksempel i nytt vindu"
+
+#: apps/cradmin_register_account/forms/auth_user.py:56
+msgid "Account with this email address already exists."
+msgstr "Konto med denne e-postadressen finnes allerede."
+
+#: apps/cradmin_register_account/forms/base.py:124
+msgid "Type your password"
+msgstr "Skriv inn ditt passord"
+
+#: apps/cradmin_register_account/forms/base.py:129
+msgid "Type your password one more time"
+msgstr "Skriv passordet en gang til"
+
+#: apps/cradmin_register_account/forms/base.py:164
+msgid "The passwords do not match."
+msgstr "Passordene er ikke like."
+
+#: apps/cradmin_register_account/templates/cradmin_register_account/email_sent.django.html:7
+#: apps/cradmin_register_account/templates/cradmin_register_account/email_sent.django.html:11
+#: apps/cradmin_resetpassword/templates/cradmin_resetpassword/email_sent.django.html:6
+#: apps/cradmin_resetpassword/templates/cradmin_resetpassword/email_sent.django.html:10
+msgid "Check your email"
+msgstr "Sjekk din e-post"
+
+#: apps/cradmin_register_account/templates/cradmin_register_account/email_sent.django.html:17
+msgid ""
+"We have sent you an email. Click the link in the email to activate your "
+"account."
+msgstr ""
+"Vi har sendt deg en e-post. Klikk linken i e-posten for å aktivere din konto."
+
+#: apps/cradmin_register_account/templates/cradmin_register_account/email_sent.django.html:20
+msgid "If you do not see the email, check your junk folder."
+msgstr "Hvis du ikke ser e-posten, sjekk din spam-folder."
+
+#: apps/cradmin_register_account/templates/cradmin_register_account/register_account.django.html:6
+#: apps/cradmin_register_account/templates/cradmin_register_account/register_account.django.html:10
+#, python-format
+msgid "Create your %(sitename)s account"
+msgstr "Lag din %(sitename)s konto"
+
+#: apps/cradmin_resetpassword/templates/cradmin_resetpassword/base.django.html:5
+msgid "Reset password"
+msgstr "Nullstill passord"
+
+#: apps/cradmin_resetpassword/templates/cradmin_resetpassword/begin.django.html:6
+#: apps/cradmin_resetpassword/templates/cradmin_resetpassword/begin.django.html:10
+msgid "Find your account"
+msgstr "Hei! Hvilken konto ser du etter?"
+
+#: apps/cradmin_resetpassword/templates/cradmin_resetpassword/begin.django.html:15
+msgid "Type in your email-address"
+msgstr "Skriv inn din e-postadresse"
+
+#: apps/cradmin_resetpassword/templates/cradmin_resetpassword/email/html_message.django.html:5
+#, python-format
+msgid ""
+"We received a request to reset the password for your %(sitename)s account, "
+"%(user)s."
+msgstr ""
+"Vi mottok en forespørsel om å nullstille passordet for din %(sitename)s-"
+"konto, %(user)s."
+
+#: apps/cradmin_resetpassword/templates/cradmin_resetpassword/email/html_message.django.html:7
+msgid ""
+"If you made this request, click the button below. If you did not make this "
+"request, you can ignore this email."
+msgstr ""
+"Hvis du sendte denne forespørselen, klikk på knappen nedenfor. Hvis du ikke "
+"sendte denne forespørselen, kan du ignorere denne e-posten."
+
+#: apps/cradmin_resetpassword/templates/cradmin_resetpassword/email/html_message.django.html:10
+msgid "Reset your password"
+msgstr "Nullstill ditt passord"
+
+#: apps/cradmin_resetpassword/templates/cradmin_resetpassword/email/subject.django.txt:2
+#, python-format
+msgid "Reset your %(sitename)s password"
+msgstr "Nullstill ditt %(sitename)s passord"
+
+#: apps/cradmin_resetpassword/templates/cradmin_resetpassword/email_sent.django.html:16
+msgid ""
+"We have sent you an email. Click the link in the email to reset your "
+"password."
+msgstr ""
+"Vi har send deg en e-post. Klikk linken i e-posten for å nullstille ditt "
+"passord."
+
+#: apps/cradmin_resetpassword/templates/cradmin_resetpassword/email_sent.django.html:19
+#, python-format
+msgid ""
+"If you do not see the email, check your junk folder or try searching for "
+"\"%(email_subject)s\"."
+msgstr ""
+"Hvis du ikke ser e-posten, sjekk din spam-folder eller prøv å søke etter "
+"\"%(email_subject)s\"."
+
+#: apps/cradmin_resetpassword/templates/cradmin_resetpassword/messages/successmessage.django.html:2
+msgid "Your password has been updated."
+msgstr "Det gikk fint. Nå kan du logge inn med ditt nye passord!"
+
+#: apps/cradmin_resetpassword/templates/cradmin_resetpassword/reset.django.html:5
+#: apps/cradmin_resetpassword/templates/cradmin_resetpassword/reset.django.html:9
+msgid "Set your password"
+msgstr "Sett ditt passord"
+
+#: apps/cradmin_resetpassword/templates/cradmin_resetpassword/reset.django.html:19
+msgid "This password reset link has expired."
+msgstr "Denne nullstill passord linken er for gammel."
+
+#: apps/cradmin_resetpassword/templates/cradmin_resetpassword/reset.django.html:23
+msgid ""
+"Invalid password reset URL. Are you sure you copied the entire URL from the "
+"email?"
+msgstr ""
+"Linken for å nullstille passord er ugyldig. Er du sikker på at du kopierte "
+"hele URL-en fra e-posten."
+
+#: apps/cradmin_resetpassword/views/begin.py:35
+msgid "No account with this email address found"
+msgstr "Vi finner ingen konto tilknyttet denne e-postadressen"
+
+#: apps/cradmin_resetpassword/views/begin.py:53
+msgid "Search"
+msgstr "Søk"
+
+#: apps/cradmin_resetpassword/views/reset.py:16
+msgid "Type your new password"
+msgstr "Skriv inn ditt nye passord"
+
+#: apps/cradmin_resetpassword/views/reset.py:19
+msgid "Type your new password one more time"
+msgstr "Skriv ditt nye passord en gang til"
+
+#: apps/cradmin_resetpassword/views/reset.py:29
+msgid "The passwords do not match"
+msgstr "Passordene er ikke like"
+
+#: apps/cradmin_resetpassword/views/reset.py:48
+msgid "Set password"
+msgstr "Sett passord"
+
+#: crmenu.py:105
+msgctxt "cradmin default header menu toggle label"
+msgid "Menu"
+msgstr "Meny"
+
+#: demo/no_role_demo/cradmin.py:23
+msgid "Dashboard"
+msgstr ""
+
+#: demo/no_role_demo/templates/no_role_demo/dashboard.django.html:7
+msgid "No role demo"
+msgstr ""
+
+#: deprecated_apps/cradmin_imagearchive/models.py:53
+msgid "role"
+msgstr "rolle"
+
+#: deprecated_apps/cradmin_imagearchive/models.py:54
+msgid "The role owning this image."
+msgstr "Rollen som eier dette bildet."
+
+#: deprecated_apps/cradmin_imagearchive/models.py:61
+msgid "image"
+msgstr "bilde"
+
+#: deprecated_apps/cradmin_imagearchive/models.py:62
+msgid "Select an image to add to the archive."
+msgstr "Velg et bilde du ønsker å legge til i arkivet."
+
+#: deprecated_apps/cradmin_imagearchive/models.py:87
+msgid "name"
+msgstr "navn"
+
+#: deprecated_apps/cradmin_imagearchive/models.py:95
+msgid "description"
+msgstr "beskrivelse"
+
+#: deprecated_apps/cradmin_imagearchive/models.py:97
+msgid ""
+"An optional description of the image. Think if this as a description of the "
+"image for visually impaired users. This means that you should describe the "
+"information carried in the image (if any). A good description also helps "
+"search engines find the image."
+msgstr ""
+"En alternativ beskrivelse av dette bildet. Tenk på dette som en beskrivelse "
+"av innholdet og hva du kan se i bildet. "
+
+#: deprecated_apps/cradmin_imagearchive/models.py:110
+msgid "archive image"
+msgstr "arkivbilde"
+
+#: deprecated_apps/cradmin_imagearchive/models.py:111
+msgid "archive images"
+msgstr "arkivbilder"
+
+#: deprecated_apps/cradmin_temporaryfileuploadstore/models.py:222
+#, python-format
+msgid "Can not upload files larger than %(max_filesize)s."
+msgstr "Beklager, men bildet ditt er over maksstørrelsen på %(max_filesize)s"
+
+#: deprecated_apps/cradmin_temporaryfileuploadstore/models.py:254
+msgid "Unsupported filetype."
+msgstr "Ugyldig filtype."
+
+#: formfields/email_list.py:18 formfields/email_list.py:20
+msgid "Type email-addresses separated by newlines, whitespace or comma."
+msgstr "Skriv e-postadresser separert av linjeskift, mellomrom eller komma."
+
+#: formfields/email_list.py:64
+#, python-format
+msgid "Invalid email address: %(email)s"
+msgstr "Ugyldig e-postadresse: %(email)s"
+
+#: sortable/models.py:207
+msgid "Sort index"
+msgstr "Sorteringsnøkkel"
+
+#: templates/django_cradmin/acemarkdown/widget.django.html:12
+msgid "Heading 1"
+msgstr "Overskrift 1"
+
+#: templates/django_cradmin/acemarkdown/widget.django.html:17
+msgid "Heading 2"
+msgstr "Overskrift 2"
+
+#: templates/django_cradmin/acemarkdown/widget.django.html:22
+msgid "Heading 3"
+msgstr "Overskrift 3"
+
+#: templates/django_cradmin/acemarkdown/widget.django.html:29
+msgid "Text here"
+msgstr "Tekst her"
+
+#: templates/django_cradmin/acemarkdown/widget.django.html:31
+msgid "Bold"
+msgstr "Fet"
+
+#: templates/django_cradmin/acemarkdown/widget.django.html:36
+msgid "Italic"
+msgstr "Kursiv"
+
+#: templates/django_cradmin/acemarkdown/widget.django.html:40
+msgid ""
+"Write the URL in the field below. Make sure you include the http:// or "
+"https:// part of the URL."
+msgstr ""
+"Skriv en nettaddresse i feltet nedenfor. Du må passe på å få med http:// "
+"eller https:// delen av nettaddressen."
+
+#: templates/django_cradmin/acemarkdown/widget.django.html:41
+msgid "Link title here"
+msgstr "Linktittel her"
+
+#: templates/django_cradmin/acemarkdown/widget.django.html:43
+msgid "Link"
+msgstr "Link"
+
+#: templates/django_cradmin/acemarkdown/widget.django.html:52
+msgid "Bulletlist"
+msgstr "Punktliste"
+
+#: templates/django_cradmin/acemarkdown/widget.django.html:57
+msgid "Numbered list"
+msgstr "Nummerert liste"
+
+#: templates/django_cradmin/acemarkdown/widget.django.html:65
+msgid "programminglanguage"
+msgstr "programmeringsspråk"
+
+#: templates/django_cradmin/acemarkdown/widget.django.html:68
+msgid "Code block"
+msgstr "Kodeblokk"
+
+#: templates/django_cradmin/crmenu/menu/default-expandable.django.html:16
+msgid "Close menu"
+msgstr "Lukk meny"
+
+#: templates/django_cradmin/error.django.html:10
+#: templates/django_cradmin/include/messages.django.html:31
+msgid "Error"
+msgstr "Feil"
+
+#: templates/django_cradmin/include/messages.django.html:33
+msgid "Warning"
+msgstr "Advarsel"
+
+#: templates/django_cradmin/include/messages.django.html:35
+msgid "Info"
+msgstr "Info"
+
+#: templates/django_cradmin/include/messages.django.html:37
+msgid "Success"
+msgstr "Suksess"
+
+#: templates/django_cradmin/invalid_roleid.django.html:5
+msgid "Invalid role"
+msgstr "Ugyldig rolle"
+
+#: templates/django_cradmin/invalid_roleid.django.html:12
+msgid "The requested role does not exist."
+msgstr "Den ønskede rollen finnes ikke."
+
+#: templates/django_cradmin/missing_role.django.html:5
+msgid "Permission denied"
+msgstr "Ingen tilgang"
+
+#: templates/django_cradmin/missing_role.django.html:12
+#, python-format
+msgid "You do not have permission to administer this page."
+msgstr ""
+"Du har ikke de nødvendige rettighetene for å administrere denne siden."
+
+#: templates/django_cradmin/pagepreview/includes/pagepreview-fullsize-iframe-wrapper.django.html:25
+msgid "Close preview"
+msgstr "Lukk forhåndsvisning"
+
+#: templates/django_cradmin/pagepreview/includes/pagepreview-fullsize-iframe-wrapper.django.html:34
+msgid "Preview options"
+msgstr "Konfigurer forhåndsvisningen"
+
+#: templates/django_cradmin/uicontainer/field/datetime.django.html:17
+msgid "Time:"
+msgstr "Tid:"
+
+#: templates/django_cradmin/uicontainer/foreignkeyfield/dropdown.django.html:97
+#: templates/django_cradmin/uicontainer/manytomanyfield/dropdown.django.html:92
+#: templates/django_cradmin/viewhelpers/includes/loadmorepager-base.django.html:45
+msgid "Load more"
+msgstr "Hent flere"
+
+#: templates/django_cradmin/uicontainer/foreignkeyfield/dropdown.django.html:108
+#: templates/django_cradmin/uicontainer/manytomanyfield/dropdown.django.html:103
+msgid "Loading"
+msgstr "Laster"
+
+#: templates/django_cradmin/viewhelpers/includes/loadmorepager-base.django.html:40
+msgid "Loading ..."
+msgstr "Henter ..."
+
+#: templates/django_cradmin/viewhelpers/includes/pager.django.html:28
+msgid "Previous"
+msgstr "Forrige"
+
+#: templates/django_cradmin/viewhelpers/includes/pager.django.html:32
+#, python-format
+msgid "Page %(number)s of %(total)s"
+msgstr "Side %(number)s av %(total)s"
+
+#: templates/django_cradmin/viewhelpers/includes/pager.django.html:37
+msgid "Next"
+msgstr "Neste"
+
+#: templates/django_cradmin/viewhelpers/listbuilder/itemvalue/edit-delete.django.html:13
+msgid "Edit"
+msgstr "Rediger"
+
+#: templates/django_cradmin/viewhelpers/listbuilder/itemvalue/edit-delete.django.html:29
+msgid "View"
+msgstr "Vis"
+
+#: templates/django_cradmin/viewhelpers/listbuilder/itemvalue/edit-delete.django.html:39
+#: viewhelpers/formview/deleteview.py:30
+msgid "Delete"
+msgstr "Slett"
+
+#: templates/django_cradmin/viewhelpers/listbuilder/itemvalue/use-this.django.html:12
+#, python-format
+msgid "Select \"%(title)s\""
+msgstr "Velg \"%(title)s\""
+
+#: templates/django_cradmin/viewhelpers/listbuilder/itemvalue/use-this.django.html:14
+msgctxt "listbuilder-usethis"
+msgid "Select"
+msgstr "Velg"
+
+#: templates/django_cradmin/viewhelpers/listbuilderview/includes/create-button.django.html:6
+msgid "Create"
+msgstr "Opprett"
+
+#: uicontainer/field.py:619
+msgctxt "monthname"
+msgid "Jan"
+msgstr "Jan."
+
+#: uicontainer/field.py:620
+msgctxt "monthname"
+msgid "Feb"
+msgstr "Feb."
+
+#: uicontainer/field.py:621
+msgctxt "monthname"
+msgid "Mar"
+msgstr "Mar."
+
+#: uicontainer/field.py:622
+msgctxt "monthname"
+msgid "Apr"
+msgstr "Apr."
+
+#: uicontainer/field.py:623
+msgctxt "monthname"
+msgid "May"
+msgstr "Mai."
+
+#: uicontainer/field.py:624
+msgctxt "monthname"
+msgid "Jun"
+msgstr "Jun."
+
+#: uicontainer/field.py:625
+msgctxt "monthname"
+msgid "Jul"
+msgstr "Jul."
+
+#: uicontainer/field.py:626
+msgctxt "monthname"
+msgid "Aug"
+msgstr "Aug."
+
+#: uicontainer/field.py:627
+msgctxt "monthname"
+msgid "Sep"
+msgstr "Sep."
+
+#: uicontainer/field.py:628
+msgctxt "monthname"
+msgid "Oct"
+msgstr "Okt."
+
+#: uicontainer/field.py:629
+msgctxt "monthname"
+msgid "Nov"
+msgstr "Nov."
+
+#: uicontainer/field.py:630
+msgctxt "monthname"
+msgid "Des"
+msgstr "Des."
+
+#: uicontainer/field.py:642 uicontainer/field.py:644
+msgid "Day"
+msgstr "Dag"
+
+#: uicontainer/field.py:650 uicontainer/field.py:653
+msgid "Month"
+msgstr "Måned"
+
+#: uicontainer/field.py:659 uicontainer/field.py:661
+msgid "Year"
+msgstr "År"
+
+#: uicontainer/field.py:668
+msgid "Hour"
+msgstr "Time"
+
+#: uicontainer/field.py:675
+msgid "Minute"
+msgstr "Minutt"
+
+#: uicontainer/foreignkeyfield.py:26
+msgctxt "django_cradmin foreignkey Dropdown placeholder"
+msgid "Search to find and select an item ..."
+msgstr "Søk for å finne og velge ..."
+
+#: uicontainer/form.py:151
+msgid "Please fix the errors below."
+msgstr "Vennligst fiks feilene i skjemaet nedenfor."
+
+#: uicontainer/label.py:122
+msgctxt "django_cradmin optional form field label suffix"
+msgid "optional"
+msgstr "ikke påkrevet"
+
+#: uicontainer/label.py:164
+msgctxt "uicontainer label aria text prefix"
+msgid "Choice for"
+msgstr "Valg for"
+
+#: uicontainer/manytomanyfield.py:25
+msgctxt "django_cradmin foreignkey Dropdown placeholder"
+msgid "Search to find and select items ..."
+msgstr "Søk for å finne og velge ..."
+
+#: viewhelpers/formview/createview.py:29
+#, python-format
+msgid "Create %(what)s"
+msgstr "Legg til %(what)s"
+
+#: viewhelpers/formview/createview.py:35
+#, python-format
+msgid "Created \"%(object)s\""
+msgstr "Opprettet \"%(object)s\""
+
+#: viewhelpers/formview/deleteview.py:21
+msgid "Confirm delete"
+msgstr "Bekreft sletting"
+
+#: viewhelpers/formview/deleteview.py:46
+msgid "Cancel"
+msgstr "Avbryt"
+
+#: viewhelpers/formview/deleteview.py:60
+#, python-format
+msgid "Are you sure you want to delete \"%(object_preview)s\"?"
+msgstr "Er du sikker på at du vil slette \"%(object_preview)s\"?"
+
+#: viewhelpers/formview/deleteview.py:78
+#, python-format
+msgid "Deleted \"%(what)s\""
+msgstr "Slettet \"%(what)s\""
+
+#: viewhelpers/formview/updateview.py:24 viewhelpers/formview/updateview.py:50
+#, python-format
+msgid "Edit %(what)s"
+msgstr "Rediger %(what)s"
+
+#: viewhelpers/formview/updateview.py:27 viewhelpers/formview/updateview.py:53
+#, python-format
+msgid "Saved \"%(object)s\""
+msgstr "Lagret \"%(object)s\""
+
+#: viewhelpers/listbuilderview.py:287
+#, python-format
+msgid "No %(modelname_plural)s"
+msgstr "Ingen %(modelname_plural)s"
+
+#: views/roleselect.py:29
+msgid "What would you like to edit?"
+msgstr "Hva ønsker du å redigere?"
+
+#~ msgid "close file upload window"
+#~ msgstr "Lukk opplastingsvinduet"
+
+#~ msgid "We are uploading your file. Please do not close the browser window."
+#~ msgstr ""
+#~ "Bildet lastes opp. Vennligst ikke lukk vinduet før opplastingen er ferdig."
+
+#~ msgid "We are uploading your files. Please do not close the browser window."
+#~ msgstr ""
+#~ "Bildene lastes opp. Vennligst ikke lukk vinduet før opplastingen er "
+#~ "ferdig."
+
+#~ msgid "Upload a file by dragging and dropping it here"
+#~ msgstr "Last opp en file ved å dra og slipp den her"
+
+#~ msgid "Upload files by dragging and dropping them here"
+#~ msgstr "Last opp filer ved å dra og slipp de her"
+
+#~ msgid "... or select a file"
+#~ msgstr "... eller velg en fil"
+
+#~ msgid "... or select files"
+#~ msgstr "... eller velg filer"
+
+#~ msgid "Invalid filetype"
+#~ msgstr "Ugyldig filtype"
+
+#~ msgid "Select a file ..."
+#~ msgstr "Velg en fil..."
+
+#~ msgid "Select files ..."
+#~ msgstr "Velg filer ..."
+
+#~ msgid "%(filename)s: Unsupported filetype."
+#~ msgstr "%(filename)s: Ugyldig filetype."
+
+#~ msgid ""
+#~ "Server timeout while uploading the file. This may be caused by a poor "
+#~ "upload link and/or a too large file."
+#~ msgstr ""
+#~ "Beklager, men opplastingen stoppet. Dette er vanligvis forårsaket av at "
+#~ "bildet er for stort eller tilkoblingen for dårlig. Hvis dette ikke kan "
+#~ "stemme kan du prøve igjen."
+
+#~ msgid "Close"
+#~ msgstr "Lukk"
+
+#~ msgid "Remove"
+#~ msgstr "Fjern fil"
+
+#~ msgid "Removing ..."
+#~ msgstr "Fjerner.."
+
+#~ msgctxt "automodelform modelchoice_field no value"
+#~ msgid "(Not selected)"
+#~ msgstr "(Ikke valgt)"
+
+#~ msgid "Show"
+#~ msgstr "Vis"
+
+#~ msgid "Hide"
+#~ msgstr "Skjul"
+
+#~ msgid "Remove file"
+#~ msgstr "Fjern fil"
+
+#~ msgid "Remove image"
+#~ msgstr "Fjern bilde"
+
+#~ msgid "Replace image ..."
+#~ msgstr "Erstatt bilde ..."
+
+#~ msgid "Select an image ..."
+#~ msgstr "Velg et bilde ..."
+
+#~ msgid "Please select what you would like to edit"
+#~ msgstr "Velg hva du vil redigere"
+
+#~ msgid "Clear %(label)s"
+#~ msgstr "Nullstill %(label)s"
+
+#~ msgid "Clear"
+#~ msgstr "Nullstill"
+
+#~ msgid "EDIT"
+#~ msgstr "REDIGER"
+
+#~ msgid "Selected"
+#~ msgstr "Valgte"
+
+#~ msgid "Select all"
+#~ msgstr "Velg alle"
+
+#~ msgid "(None)"
+#~ msgstr "(Ingen)"
+
+#~ msgid "Search..."
+#~ msgstr "Søk..."
+
+#~ msgid "Ordered ascending - Click to order descending"
+#~ msgstr "Sortert stigende - klikk for å sortere synkende"
+
+#~ msgid "Ordered descending - Click to order ascending"
+#~ msgstr "Sortert synkende - klikk for å sortere stigende"
+
+#~ msgid "Do not order by this column"
+#~ msgstr "Ikke sorter etter denne kolonnen"
+
+#~ msgid "Ordering priority"
+#~ msgstr "Sorteringsprioritet"
+
+#~ msgid "Select an action"
+#~ msgstr "Velg en handling"
+
+#~ msgid "Go"
+#~ msgstr "Gå"
+
+#~ msgid "Select ..."
+#~ msgstr "Velg ..."
+
+#~ msgid "Please fix the errors in the form below."
+#~ msgstr "Vennligst fiks feilene i skjemaet nedenfor."
+
+#~ msgctxt "listfilter loading message"
+#~ msgid "Loading"
+#~ msgstr "Henter"
+
+#~ msgid "An error occurred. Please try to reload the page."
+#~ msgstr "Nå gikk noe galt dessverre. Vennligst prøv å åpne siden på nytt."
+
+#~ msgid "Yes"
+#~ msgstr "Ja"
+
+#~ msgid "No"
+#~ msgstr "Nei"
+
+#~ msgid "Today"
+#~ msgstr "I dag"
+
+#~ msgid "Yesterday"
+#~ msgstr "I går"
+
+#~ msgid "Last seven days"
+#~ msgstr "Siste syv dager"
+
+#~ msgid "This week"
+#~ msgstr "Denne uken"
+
+#~ msgid "This month"
+#~ msgstr "Denne måneden"
+
+#~ msgid "This year"
+#~ msgstr "Dette året"
+
+#~ msgctxt "listfilter AbstractDateTime"
+#~ msgid "Has no value"
+#~ msgstr "Ikke satt"
+
+#~ msgctxt "listfilter AbstractDateTime"
+#~ msgid "Has value"
+#~ msgstr "Er satt til"
+
+#~ msgctxt "listfilter IntInputFilterMixin"
+#~ msgid "Type a number ..."
+#~ msgstr "Skriv ett tall ..."
+
+#~ msgid "Search ..."
+#~ msgstr "Søk ..."
+
+#~ msgctxt "listfilter loading message"
+#~ msgid "Searching"
+#~ msgstr "Søker"
+
+#~ msgctxt "multiselect2 select button"
+#~ msgid "Select"
+#~ msgstr "Velg"
+
+#~ msgctxt "multiselect2 select button"
+#~ msgid "Select \"%(title)s\""
+#~ msgstr "Velg \"%(title)s\""
+
+#~ msgctxt "multiselect2 manytomanywidget"
+#~ msgid "Select ..."
+#~ msgstr "Velg ..."
+
+#~ msgctxt "multiselect2 deselect button"
+#~ msgid "Deselect"
+#~ msgstr "Velg bort"
+
+#~ msgctxt "multiselect2 deselect button"
+#~ msgid "Deselect \"%(title)s\""
+#~ msgstr "Velg bort \"%(title)s\""
+
+#~ msgctxt "multiselect2 target renderer"
+#~ msgid "Selected items"
+#~ msgstr "Valgte elementer"
+
+#~ msgctxt "multiselect2 target renderer"
+#~ msgid "Submit selection"
+#~ msgstr "Lagre utvalg"
+
+#~ msgctxt "multiselect2 target renderer"
+#~ msgid "(None)"
+#~ msgstr "(Tom)"
+
+#~ msgctxt "Has value trigger button text for date widget"
+#~ msgid "Change date"
+#~ msgstr "Endre dato"
+
+#~ msgctxt "No value trigger button text for date widget"
+#~ msgid "Select a date"
+#~ msgstr "Velg en dato"
+
+#~ msgctxt "Use button text in datetime widget"
+#~ msgid "Use"
+#~ msgstr "Bruk"
+
+#~ msgctxt "Selected label in table cell in datetime widget"
+#~ msgid "selected"
+#~ msgstr "valgt"
+
+#~ msgctxt "Today label in table cell in datetime widget"
+#~ msgid "today"
+#~ msgstr "i dag"
+
+#~ msgctxt "Datetime widget screenreader"
+#~ msgid "Close date picker without changing the value"
+#~ msgstr "Lukk datovelger uten å endre verdien"
+
+#~ msgctxt "Datetime widget screenreader"
+#~ msgid "Select year"
+#~ msgstr "Velg år"
+
+#~ msgctxt "Datetime widget screenreader"
+#~ msgid "Select month"
+#~ msgstr "Velg måned"
+
+#~ msgctxt "Datetime widget screenreader"
+#~ msgid "Select day"
+#~ msgstr "Velg dag"
+
+#~ msgctxt "Datetime widget screenreader"
+#~ msgid "Select hour"
+#~ msgstr "Velg time"
+
+#~ msgctxt "Datetime widget screenreader"
+#~ msgid "Select minute"
+#~ msgstr "Velg minutt"
+
+#~ msgctxt "Datetime widget screenreader"
+#~ msgid "Confirm that you want to select"
+#~ msgstr "Bekreft at du vil velge"
+
+#~ msgid "Return to date picker"
+#~ msgstr "Gå tilbake til datovelgeren"
+
+#~ msgctxt "Datetime widget screenreader"
+#~ msgid ""
+#~ "Select date. Navigate with the arrow keys or tab, jump up to the month "
+#~ "selector with the page up key and back to this table with the page down "
+#~ "key."
+#~ msgstr ""
+#~ "Velg en dato. Naviger med piltastene eller tab, hopp tilbake til "
+#~ "månedsvelgeren med page up knappen og tilbake til denne tabellen med page "
+#~ "down knappen."
+
+#~ msgctxt "Now button text datetime widget"
+#~ msgid "Now"
+#~ msgstr "Nå"
+
+#~ msgctxt "Today button text datetime widget"
+#~ msgid "Today"
+#~ msgstr "I dag"
+
+#~ msgctxt "Clear button text datetime widget"
+#~ msgid "Clear"
+#~ msgstr "Nullstill"
+
+#~ msgctxt "Time label datetime widget"
+#~ msgid "Time"
+#~ msgstr "Kl."
+
+#~ msgctxt "Has value trigger button text for date widget"
+#~ msgid "Change date/time"
+#~ msgstr "Endre tidspunkt"
+
+#~ msgctxt "No value trigger button text for date widget"
+#~ msgid "Select a date/time"
+#~ msgstr "Velg et tidspunk"
+
+#~ msgid "hh:mm"
+#~ msgstr "tt:mm"
+
+#~ msgid "Django CRadmin"
+#~ msgstr "Django CRadmin"
+
+#~ msgctxt "hour input aria label"
+#~ msgid "Hour"
+#~ msgstr "Time"
+
+#~ msgctxt "minute input aria label"
+#~ msgid "Minute"
+#~ msgstr "Minutt"

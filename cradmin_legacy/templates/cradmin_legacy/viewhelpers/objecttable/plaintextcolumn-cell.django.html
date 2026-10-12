@@ -1,0 +1,6 @@
+{% load i18n %}
+{% if value == None %}
+    <em class="text-muted">{% trans "(None)" %}</em>
+{% else %}
+    <span class="objecttable-cellvalue">{{ value }}</span>
+{% endif %}

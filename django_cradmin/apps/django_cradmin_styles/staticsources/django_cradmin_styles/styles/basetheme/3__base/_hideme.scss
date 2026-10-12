@@ -1,0 +1,9 @@
+
+// TODO: Does this belong in base?
+// TODO: Simplify naming? The file name should match it's content...
+// TODO: Remove importants? Should never use, rather use the BEM reverse pyramid way (include later for more specificy)
+// TODO: Do we really need this? Could we not just create a minor utility class for `.is-hidden` which would be a much better name. Utility classes could be a level after 4__components: 5__utilities for example.
+
+.hideme {
+    display: none !important;
+}

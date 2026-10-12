@@ -1,0 +1,77 @@
+.cradmin-legacy-form {
+  .cradmin-legacy-filewidget {
+    //padding: 10px 15px;
+
+    img {
+      max-width: 300px;
+      height: auto;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    a.cradmin-legacy-filewidget-fullviewlink {
+      display: block;
+      border: none;
+      margin-bottom: 10px;
+    }
+
+    .cradmin-legacy-filewidget-field-and-overlay-wrapper {
+      position: relative;
+
+      // Style button and file field the same size
+      input[type=file],
+      a.cradmin-legacy-filewidget-fieldoverlay {
+        width: @cradmin-filewidget-button-width;
+        height: @cradmin-filewidget-button-height;
+        border-radius: @cradmin-filewidget-button-border-radius;
+        padding: 0;
+        line-height: @cradmin-filewidget-button-height;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+
+      &.cradmin-legacy-filewidget-field-and-overlay-wrapper-hover {
+        a.btn.btn-default {
+          .btn-default-hoverstyle-mixin();
+        }
+      }
+
+      // Put the file field on top of the button, making the user click
+      // the invisible file field instead of the button.
+      input[type=file] {
+        opacity: 0 !important;
+        position: absolute;
+        top: 0;
+        left: 0;
+        overflow: hidden !important;
+        cursor: pointer;
+      }
+    }
+
+    &.cradmin-legacy-filewidget-clearable {
+      .cradmin-legacy-filewidget-clear {
+        margin: @cradmin-filewidget-clear-margin;
+      }
+    }
+  }
+
+  .cradmin-legacy-imagewidget.cradmin-legacy-filewidget {
+    &.cradmin-legacy-filewidget-clearable {
+      .cradmin-legacy-imagewidget-preview-and-clear {
+        .cradmin-legacy-imagewidget-preview-and-clear-inner {
+          display: inline-block;
+          position: relative;
+          .cradmin-legacy-filewidget-clear {
+            margin: 0;
+            display: inline-block;
+            position: absolute;
+            top: 0;
+            right: 0;
+          }
+        }
+      }
+    }
+  }
+}
+
+

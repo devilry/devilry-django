@@ -1,0 +1,36 @@
+{% extends "cradmin_email/html_message_base.django.html" %}
+{% load cradmin_email_tags %}
+{% block contents %}
+    This is a test, {{ name }}
+    <br><br>
+
+    {% cradmin_email_link "http://example.com" %}
+        A link
+    {% end_cradmin_email_link %}
+    is sometimes useful!
+    <br><br>
+
+    {% cradmin_email_primary_buttonlink "http://example.com" %}
+        Click here to visit example.com
+    {% end_cradmin_email_primary_buttonlink %}
+    <br>
+
+    Human rumours lead to the procedure.
+    Virtual, delighted processors unearthly deserve a calm, collective alien.
+    I gather this hypnosis, it's called chemical metamorphosis.
+    Red alert, hypnosis! Spheroid space suits, to the solar system.
+    <br><br>
+
+    Distant queens, to the ready room.
+    When the space suit views for hyperspace, all sensors capture proud, colorful lieutenant commanders.
+    Ancient, most unusual spaces never offer a mysterious, ugly sonic shower.
+    When the captain harvests for earth, all planets question quirky, vital ships.
+    <br><br>
+
+    {% with url="http://example.com"  %}
+        {% cradmin_email_secondary_buttonlink url %}
+            A secondary button link
+        {% end_cradmin_email_secondary_buttonlink %}
+    {% endwith %}
+
+{% endblock contents %}

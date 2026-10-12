@@ -1,0 +1,9 @@
+{% extends "django_cradmin/uicontainer/container.django.html" %}
+
+{% block outer_wrapper %}
+    <div class="adminui-page-section adminui-page-section--focus">
+        <div class="container container--tight">
+            {{ block.super }}
+        </div>
+    </div>
+{% endblock outer_wrapper %}

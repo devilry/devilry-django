@@ -1,0 +1,98 @@
+{% extends "django_cradmin/standalone-base.django.html" %}
+{% load cradmin_tags %}
+
+{% block page-cover-title %}
+    Django-cradmin demos
+{% endblock page-cover-title %}
+
+{% block page-cover-content %}
+    {{ block.super }}
+    <p class="adminui-page-cover__description">
+        The sourcecode for the demos is in
+        <a href="{{ github_base_url }}" class="adminui-page-cover__link">
+            django_cradmin/demo/
+        </a>
+    </p>
+
+    {% if request.user.is_authenticated %}
+        <p class="adminui-page-cover__description">
+            Signed in as <em>{{ request.user }}</em><br>
+        </p>
+        <a href="{% url 'cradmin-authenticate-logout' %}" class="button button--light-fill">Logout</a>
+    {% else %}
+        <a href="{% url 'cradmin-authenticate-login' %}" class="button button--light-fill">Login</a>
+    {% endif %}
+{% endblock page-cover-content %}
+
+
+{% block content %}
+    <div class="adminui-page-section adminui-page-section--tight">
+        <div class="blocklist">
+            <section class="blocklist__item">
+                <h2 class="blocklist__itemtitle"><a href="{% cradmin_instanceroot_url 'no_role_demo' %}">no_role_demo</a></h2>
+                <p>
+                    Shows how to create a cradmin instance without a role (for regular websites).
+                </p>
+                <p>
+                    <a href="{{ github_base_url }}/no_role_demo/">django_cradmin/demo/no_role_demo/</a>
+                </p>
+            </section>
+
+            <section class="blocklist__item">
+                <h2 class="blocklist__itemtitle"><a href="{% cradmin_instanceroot_url 'uicontainerdemo' %}">uicontainerdemo</a></h2>
+                <p>
+                    A demo of <em>django_cradmin.uicontainer</em>.
+                </p>
+                <p>
+                    <a href="{{ github_base_url }}/uicontainerdemo/">django_cradmin/demo/uicontainerdemo/</a>
+                </p>
+            </section>
+
+            <section class="blocklist__item">
+                <h2 class="blocklist__itemtitle"><a href="{% url 'cradmin-register-account' %}">Register account</a></h2>
+                <p>
+                    A demo of <em>the cradmin_register_account</em> app.
+                </p>
+            </section>
+
+            <section class="blocklist__item">
+                <h2 class="blocklist__itemtitle"><a href="{% url 'cradmin_javascript_demos_overview' %}">cradmin_javascript_demos</a></h2>
+                <p>
+                    Javascript components demo
+                </p>
+                <p>
+                    <a href="{{ github_base_url }}/cradmin_javascript_demos/">django_cradmin/demo/cradmin_javascript_demos/</a>
+                </p>
+            </section>
+
+            <section class="blocklist__item">
+                <h2 class="blocklist__itemtitle"><a href="{% url 'cradmin_uimock_demo' %}">uimock demo</a></h2>
+                <p>
+                    A demo of <em>django_cradmin.viewhelpers.uimock</em>
+                </p>
+                <p>
+                    <a href="{{ github_base_url }}/uimock_demo/">django_cradmin/demo/uimock_demo/</a>
+                </p>
+            </section>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block body %}
+    {{ block.super }}
+    <section class="adminui-page-section adminui-page-section--center">
+        <div class="container">
+            <a href="/styleguide/" class="button button--compact">
+                Styleguides
+            </a>
+            <a href="/djangoadmin/" class="button button--compact">
+                Django admin UI
+            </a>
+            {% if request.user.is_authenticated %}
+                <a href="{% url 'cradmin-authenticate-logout' %}?next=/" class="button button--compact button--fill">
+                    Log out
+                </a>
+            {% endif %}
+        </div>
+    </section>
+{% endblock body %}

@@ -1,0 +1,137 @@
+/*
+AdminUI page sections
+
+Most modifiers can be combined.
+Note: Be careful with combining `tight`, don't combine it with `focus`.
+
+Example: {type: isolated} Default page section - without any container
+    <section class="adminui-page-section">
+        <h2>Default page section</h2>
+        <p>As you can see, the default adminui-page-section relies on a container to provide
+        space on the sides, so do not use this example!</p>
+    </section>
+
+Example: {type: isolated} Default page section
+    <section class="adminui-page-section">
+        <div class="container  container--tight">
+            <h2>Default page section</h2>
+        </div>
+    </section>
+
+Example: {type: isolated} `tight` (DEPRECATED - use an inner container container
+    <section class="adminui-page-section  adminui-page-section--tight">
+        <h2>A tight section</h2>
+        <p>Good for pure content</p>
+    </section>
+
+Example: {type: isolated} `center`
+    <section class="adminui-page-section  adminui-page-section--center">
+        <h2>Centered content</h2>
+    </section>
+
+Example: {type: isolated} `center-lg`
+    <section class="adminui-page-section  adminui-page-section--center-lg">
+        <h2>Centered content (Only for large screens)</h2>
+    </section>
+
+Example: {type: isolated} `spaced`
+    <section class="adminui-page-section  adminui-page-section--spaced">
+        <div class="container  container--tight">
+            <h2>Spaced section</h2>
+            <p>Used to give the content more air, which gives it more focus.</p>
+        </div>
+    </section>
+
+Example: {type: isolated} `outlined`
+    <section class="adminui-page-section  adminui-page-section--outlined">
+        <div class="container  container--tight">
+            <h2>Adds a line above</h2>
+        </div>
+    </section>
+
+Example: {type: isolated} `last`
+    <section class="adminui-page-section  adminui-page-section--last">
+        <div class="container  container--tight">
+            <h2>No spacing below</h2>
+            <p>Used at the bottom of the page mostly</p>
+        </div>
+    </section>
+
+Example: {type: isolated} Collapsible on small screens - collapsed
+
+    <section class="adminui-page-section  adminui-page-section--collapsible-sm">
+        <div class="container  container--tight">
+            <h2 class="adminui-page-section__title">
+                Some more stuff
+            </h2>
+            <!--
+            You need a javascript click listener on this button that adds
+             ``adminui-page-section--expanded`` class to the section.
+             -->
+            <button type="button" class="adminui-page-section__toggle">
+                Some more stuff
+            </button>
+            <div class="adminui-page-section__content">
+                <p>Hello world</p>
+            </div>
+        </div>
+    </section>
+
+Example: {type: isolated} Collapsible on small screens - expanded
+    <section class="adminui-page-section  adminui-page-section--collapsible-sm  adminui-page-section--expanded">
+        <div class="container  container--tight">
+            <h2 class="adminui-page-section__title">
+                Some more stuff
+            </h2>
+            <!--
+            You need a javascript click listener on this button that removes
+             ``adminui-page-section--expanded`` class from the section.
+             -->
+            <button type="button" class="adminui-page-section__toggle">
+                Some more stuff
+            </button>
+            <div class="adminui-page-section__content">
+                <p>Hello world</p>
+            </div>
+        </div>
+    </section>
+
+
+Example: {type: isolated} --focus
+    <section class="adminui-page-section  adminui-page-section--focus">
+        <div class="container  container--tight">
+            <h2>Focus section</h2>
+            <p>Used for making the content stand out slightly from the rest of the page</p>
+            <p><a href="#">A link</a><p>
+            <p><a href="#" class="button button--fill">A button styled link</a><p>
+        </div>
+    </section>
+
+
+Example: {type: isolated} --primary
+    <section class="adminui-page-section  adminui-page-section--primary">
+        <div class="container  container--tight">
+            <h2>Primary section</h2>
+            <p>Used for making the content stand out slightly from the rest of the page</p>
+            <p><a href="#">A link</a><p>
+            <p><a href="#" class="button button--fill">A button styled link</a><p>
+        </div>
+    </section>
+
+
+Example: {type: isolated} --secondary
+    <section class="adminui-page-section  adminui-page-section--secondary">
+        <div class="container  container--tight">
+            <h2>Secondary section</h2>
+            <p>Used for making the content stand out slightly from the rest of the page</p>
+            <p><a href="#">A link</a><p>
+            <p><a href="#" class="button button--fill">A button styled link</a><p>
+        </div>
+    </section>
+
+Styleguide layout.adminui-page-section
+*/
+
+.adminui-page-section {
+    @include page-section-mixin();
+}

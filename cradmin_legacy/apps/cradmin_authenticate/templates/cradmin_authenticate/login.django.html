@@ -1,0 +1,24 @@
+{% extends "cradmin_legacy/layouts/standalone/focused.django.html" %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+{#{% load staticfiles %}#}
+
+{% block title %}
+    {% trans "Sign in" %}
+{% endblock title %}
+
+{% block pageheader-inner %}
+    <h1>{% trans "Sign in" %}</h1>
+{% endblock pageheader-inner %}
+
+{% block content %}
+    {% crispy form formhelper %}
+
+    {% if CRADMIN_LEGACY_FORGOTPASSWORD_URL %}
+        <p id="cradmin_authenticate_login_forgotpasswordlink">
+            <a href="{{ CRADMIN_LEGACY_FORGOTPASSWORD_URL }}">
+                {% trans "Forgot your password?" %}
+            </a>
+        </p>
+    {% endif %}
+{% endblock content %}

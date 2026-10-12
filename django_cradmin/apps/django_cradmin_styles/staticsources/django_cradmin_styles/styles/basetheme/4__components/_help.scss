@@ -1,0 +1,134 @@
+/** Help
+
+Example:
+
+    <div class="help">
+        <span class="help__icon" aria-hidden="true"></span>
+        <div class="help__content">
+            <p class="paragraph paragraph--tight">Some help here!</p>
+            <p class="paragraph paragraph--tight">Can have multiple paragraphs!</p>
+        </div>
+    </div>
+
+Example: --muted
+
+    <div class="help help--muted">
+        <span class="help__icon" aria-hidden="true"></span>
+        <div class="help__content">
+            <p class="paragraph paragraph--tight">Some help here!</p>
+            <p class="paragraph paragraph--tight">Can have multiple paragraphs!</p>
+        </div>
+    </div>
+
+Example: Warning icon
+
+    <div class="help">
+        <span class="help__icon help__icon--warning" aria-hidden="true"></span>
+        <div class="help__content">
+            <p class="paragraph paragraph--tight">Some help here!</p>
+            <p class="paragraph paragraph--tight">Can have multiple paragraphs!</p>
+        </div>
+    </div>
+
+Example: --large
+
+    <div class="help help--large">
+        <span class="help__icon" aria-hidden="true"></span>
+        <div class="help__content">
+            <p class="paragraph paragraph--tight">Some help here!</p>
+            <p class="paragraph paragraph--tight">Can have multiple paragraphs!</p>
+        </div>
+    </div>
+
+Example: --medium
+
+    <div class="help help--medium">
+        <span class="help__icon" aria-hidden="true"></span>
+        <div class="help__content">
+            <p class="paragraph paragraph--tight">Some help here!</p>
+            <p class="paragraph paragraph--tight">Can have multiple paragraphs!</p>
+        </div>
+    </div>
+
+Example: --small (basically force the default body font size)
+
+    <div class="help help--small">
+        <span class="help__icon" aria-hidden="true"></span>
+        <div class="help__content">
+            <p class="paragraph paragraph--tight">Some help here!</p>
+            <p class="paragraph paragraph--tight">Can have multiple paragraphs!</p>
+        </div>
+    </div>
+
+Example: --xsmall
+
+    <div class="help help--xsmall">
+        <span class="help__icon" aria-hidden="true"></span>
+        <div class="help__content">
+            <p class="paragraph paragraph--tight">Some help here!</p>
+            <p class="paragraph paragraph--tight">Can have multiple paragraphs!</p>
+        </div>
+    </div>
+
+Example: Combine with box
+
+    <div class="box box--info box--spacing-small">
+        <div class="help help--xsmall">
+            <span class="help__icon" aria-hidden="true"></span>
+            <div class="help__content">
+                <p class="paragraph paragraph--tight">Some help here!</p>
+                <p class="paragraph paragraph--no-margin">Can have multiple paragraphs!</p>
+            </div>
+        </div>
+    </div>
+
+Styleguide components.help
+*/
+.help {
+    $__root: &;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+
+    &__icon {
+        flex: 0 0 auto;
+        &:before {
+            @include cricon-icon(help);
+        }
+
+        &--warning {
+            &:before {
+                color: color(warning);
+                @include cricon-icon(warning);
+            }
+        }
+    }
+
+    &__content {
+        padding-left: $spacing--small;
+        flex: 0 1 auto;
+    }
+
+    &--large {
+        @include font-size(large);
+        #{$__root}__content {
+            padding-left: $spacing;
+        }
+    }
+
+    &--medium {
+        @include font-size(medium);
+    }
+
+    &--small {
+        @include font-size(small);
+    }
+
+    &--xsmall {
+        @include font-size(xsmall);
+    }
+
+    &--muted {
+        color: $color-muted;
+    }
+}

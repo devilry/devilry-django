@@ -1,0 +1,45 @@
+{% extends "django_cradmin/viewhelpers/listbuilder/itemvalue/titledescription.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+
+{% block end-of-content %}
+    {% block buttons %}
+        <p class="{% cradmin_test_css_class 'cradmin-listbuilder-edit-delete__buttons' %}">
+            {% block editbutton %}
+                <a href="{% block editbutton-url %}{% cradmin_appurl me.get_edit_viewname me.value.id %}{% endblock %}"
+                        class="button button--primary{% cradmin_test_css_class 'cradmin-listbuilder-edit-delete__editbutton' %}"
+                        aria-label='{% block editbutton-arialabel %}Edit "{{ me.get_title }}"{% endblock %}'>
+                    {% block editbutton-content %}
+                        {% trans "Edit" %}
+                    {% endblock editbutton-content %}
+                </a>
+            {% endblock editbutton %}
+            {% block previewbutton %}
+                {% if me.get_preview_viewname %}
+                    <button class="button{% cradmin_test_css_class 'cradmin-listbuilder-edit-delete__previewbutton' %}"
+                            {% block previewbutton-angularjs-directive %}
+                                django-cradmin-page-preview-open-on-click='{
+                                    "urls": [{
+                                        "label": "Unused",
+                                        "url": "{% block previewbutton-url %}{% cradmin_appurl me.get_preview_viewname me.value.id %}{% endblock %}"
+                                    }]}'
+                            {% endblock previewbutton-angularjs-directive %}
+                            aria-label='{% block previewbutton-arialabel %}View "{{ me.get_title }}"{% endblock %}'>
+                        {% block previewbutton-content %}
+                            {% trans "View" %}
+                        {% endblock previewbutton-content %}
+                    </button>
+                {% endif %}
+            {% endblock previewbutton %}
+            {% block deletebutton %}
+                <a href="{% block deletebutton-url %}{% cradmin_appurl me.get_delete_viewname me.value.id %}{% endblock %}"
+                        class="button{% cradmin_test_css_class 'cradmin-listbuilder-edit-delete__deletebutton' %}"
+                        aria-label='{% block deletebutton-arialabel %}Delete "{{ me.get_title }}"{% endblock %}'>
+                    {% block deletebutton-content %}
+                        {% trans "Delete" %}
+                    {% endblock deletebutton-content %}
+                </a>
+            {% endblock deletebutton %}
+        </p>
+    {% endblock buttons %}
+{% endblock end-of-content %}

@@ -1,0 +1,445 @@
+/* Buttonbar
+
+Example:
+    <div class="buttonbar">
+        <button class="buttonbar__button">
+            H1
+        </button>
+        <button class="buttonbar__button">
+            H2
+        </button>
+        <button class="buttonbar__button">
+            <strong>B</strong>
+        </button>
+        <button class="buttonbar__button">
+            <em>I</em>
+        </button>
+    </div>
+
+
+Example: Multiple on one line
+    <div class="buttonbar buttonbar--inline">
+        <button class="buttonbar__button">
+            H1
+        </button>
+        <button class="buttonbar__button">
+            H2
+        </button>
+        <button class="buttonbar__button">
+            <strong>B</strong>
+        </button>
+        <button class="buttonbar__button">
+            <em>I</em>
+        </button>
+    </div>
+    <div class="buttonbar buttonbar--inline">
+        <button class="buttonbar__button">
+            Left
+        </button>
+        <button class="buttonbar__button">
+            Right
+        </button>
+    </div>
+
+
+Example: Compact buttons
+    <div class="buttonbar">
+        <button class="buttonbar__button buttonbar__button--compact">
+            H1
+        </button>
+        <button class="buttonbar__button buttonbar__button--compact">
+            H2
+        </button>
+    </div>
+
+
+
+Example: Single button works too!
+    <div class="buttonbar">
+        <button class="buttonbar__button">
+            H1
+        </button>
+    </div>
+
+
+Example: {type: isolated} Center
+    <!--
+    Use a wrapper with "text-center" class combined with buttonbar--inline to center
+    -->
+    <div class="text-center">
+        <div class="buttonbar buttonbar--inline">
+            <button class="buttonbar__button">
+                Yes
+            </button>
+            <button class="buttonbar__button">
+                No
+            </button>
+        </div>
+    </div>
+
+Example: {type: isolated} Break into multiple lines on small displays
+    <!-- can also use --md --lg and --xl, or no breakpoint class at all. -->
+    <div class="container container--wide">
+        <label class="label">Select a date:</label>
+        <div class="buttonbar">
+            <div class="buttonbar__group buttonbar__group--sm">
+                <button class="buttonbar__button buttonbar__button--input-outlined buttonbar__button--grow-2" style="width: 200px;">
+                    Sunday, December 24, 2017 12:35 PM
+                </button>
+                <button class="buttonbar__button buttonbar__button--secondary-fill buttonbar__button--no-grow">
+                    Now
+                </button>
+            </div>
+            <div class="buttonbar__group buttonbar__group--sm">
+                <button class="buttonbar__button">
+                    Tomorrow
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+Styleguide components.buttonbar
+*/
+
+/** Buttonbar - button colors
+
+Example: Default and --fill
+    <div class="buttonbar">
+        <button class="buttonbar__button buttonbar__button--fill">
+            --fill
+        </button>
+        <button class="buttonbar__button buttonbar__button">
+            Default
+        </button>
+    </div>
+
+Example: --neutral-light and  --neutral-light-fill
+    <div class="buttonbar">
+        <button class="buttonbar__button buttonbar__button--neutral-light-fill">
+            --fill
+        </button>
+        <button class="buttonbar__button buttonbar__button--neutral-light">
+            Default
+        </button>
+    </div>
+
+Example: --primary and --primary-fill
+    <div class="buttonbar">
+        <button class="buttonbar__button buttonbar__button--primary-fill">
+            --primary-fill
+        </button>
+        <button class="buttonbar__button buttonbar__button--primary">
+            --primary
+        </button>
+    </div>
+
+Example: --secondary and --secondary-fill
+    <div class="buttonbar">
+        <button class="buttonbar__button buttonbar__button--secondary-fill">
+            --secondary-fill
+        </button>
+        <button class="buttonbar__button buttonbar__button--secondary">
+            --secondary
+        </button>
+    </div>
+
+Example: --warning and --warning-fill
+    <div class="buttonbar">
+        <button class="buttonbar__button buttonbar__button--warning-fill">
+            --warning-fill
+        </button>
+        <button class="buttonbar__button buttonbar__button--warning">
+            --warning
+        </button>
+    </div>
+
+Example: --success and --success-fill
+    <div class="buttonbar">
+        <button class="buttonbar__button buttonbar__button--success-fill">
+            --success-fill
+        </button>
+        <button class="buttonbar__button buttonbar__button--success">
+            --success
+        </button>
+    </div>
+
+Example: --light and --light-fill
+    <div style="background-color: #000; padding: 10px;">
+        <div class="buttonbar">
+            <button class="buttonbar__button buttonbar__button--light-fill">
+                --light-fill
+            </button>
+            <button class="buttonbar__button buttonbar__button--light">
+                --light
+            </button>
+        </div>
+    </div>
+
+
+Styleguide components.buttonbar.buttoncolor
+ */
+
+@mixin buttonbar-button-modifier($name, $border-color, $text-color, $background-color-hover, $text-color-hover: false) {
+    &--#{$name} {
+        @include button-style(
+            $border-color: $border-color,
+            $text-color: $text-color,
+            $background-color-hover: $background-color-hover,
+            $text-color-hover: $text-color-hover
+        );
+    }
+
+    &--#{$name}-fill {
+        @include button-style-fill(
+            $border-color: $background-color-hover,
+            $background-color: $background-color-hover,
+            $text-color-hover: $text-color,
+            $text-color: $text-color-hover
+        );
+    }
+}
+
+
+@mixin buttonbar-group-breakpoint ($root, $breakpoint) {
+    @include min-width($breakpoint) {
+        flex-basis: auto;
+        #{$root}__button {
+            border-radius: 0;
+        }
+        &:first-child {
+            #{$root}__button:first-child {
+                border-top-left-radius: $border-radius;
+                border-bottom-left-radius: $border-radius;
+            }
+        }
+        &:last-child {
+            #{$root}__button:last-child {
+                border-top-right-radius: $border-radius;
+                border-bottom-right-radius: $border-radius;
+            }
+        }
+    }
+}
+
+
+.buttonbar {
+    $__root: &;
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    margin-bottom: vertical-space($spacing--small);
+    align-items: stretch;
+
+    &__button {
+        @include button($responsive: false);
+
+        margin-right: -($border-width);
+        margin-bottom: 0;
+        border-radius: 0;
+        //width: auto;
+        white-space: nowrap;
+        flex-shrink: 1;
+        flex-grow: 1;
+        flex-basis: auto;
+        width: auto;
+
+        @include min-width(md) {
+            padding: #{$spacing--small - $border-width} #{$indention - $border-width};
+        }
+
+
+        &:first-child {
+            border-top-left-radius: $border-radius;
+            border-bottom-left-radius: $border-radius;
+        }
+
+        &:last-child {
+            border-top-right-radius: $border-radius;
+            border-bottom-right-radius: $border-radius;
+        }
+
+        &--fill {
+            color: $color-light;
+            border-color: color(neutral, dark);
+            background-color: color(neutral, dark);
+
+            &:hover,
+            &:focus,
+            &:active {
+                color: $color-text;
+                border-color: color(neutral, dark);
+                background-color: transparent;
+            }
+        }
+
+        @include buttonbar-button-modifier(
+            $name: 'neutral-light',
+            $border-color: color(neutral, light),
+            $text-color: $color-text,
+            $background-color-hover: color(neutral, light)
+        );
+
+        @include buttonbar-button-modifier(
+            'primary',
+            color(primary, dark),
+            color(primary, dark),
+            color(primary, dark)
+        );
+
+        @include buttonbar-button-modifier(
+            'secondary',
+            color(secondary, dark),
+            color(secondary, dark),
+            color(secondary, dark)
+        );
+
+        @include buttonbar-button-modifier(
+            'warning',
+            color(warning, dark),
+            color(warning, dark),
+            color(warning, dark)
+        );
+
+        @include buttonbar-button-modifier(
+            'success',
+            color(success, dark),
+            color(success, dark),
+            color(success, dark)
+        );
+
+        @include buttonbar-button-modifier(
+            'light',
+            $color-light,
+            $color-light,
+            $color-light,
+            color(primary)
+        );
+
+        @include buttonbar-button-modifier(
+            'primary-xlight',
+            color(primary),
+            color(primary),
+            color(primary)
+        );
+
+        &--grow-2 {
+            flex-grow: 2;
+        }
+        &--no-grow {
+            flex-grow: 0;
+        }
+
+
+        &--input {
+            @include button-style-input($outlined: false);
+        }
+
+        &--input-outlined {
+            @include button-style-input($outlined: true);
+        }
+
+        &--compact {
+            @include button--compact();
+        }
+
+        &--form-size-xsmall {
+            @include font-size(xxsmall, $skip-line-height: true);
+            padding-left: $spacing--small;
+            padding-right: $spacing--small;
+            @include form-element-mixin(xsmall);
+        }
+
+        &--form-size-small {
+            @include form-element-mixin(small);
+            padding-left: $spacing--small;
+            padding-right: $spacing--small;
+        }
+
+        &--form-size-default {
+            @include form-element-mixin();
+        }
+
+        &--form-size-large {
+            @include font-size(small, $skip-line-height: true);
+            @include form-element-mixin(large);
+        }
+
+        &--width-xsmall {
+            width: $unit * 20;
+            min-width: $unit * 5;
+        }
+
+        &--width-xxsmall {
+            width: $unit * 16;
+            min-width: $unit * 5;
+        }
+
+        &--width-small {
+            width: $unit * 36;
+            min-width: $unit * 5;
+        }
+    }
+
+    &__group {
+        display: flex;
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        flex-shrink: 1;
+        flex-grow: 1;
+        flex-basis: 100%;
+        align-items: stretch;
+        #{$__root}__button {
+            border-radius: 0;
+        }
+
+        &:first-child {
+            #{$__root}__button:first-child {
+                border-top-left-radius: $border-radius;
+            }
+            #{$__root}__button:last-child {
+                border-top-right-radius: $border-radius;
+            }
+        }
+        &:last-child {
+            #{$__root}__button:first-child {
+                border-bottom-left-radius: $border-radius;
+            }
+            #{$__root}__button:last-child {
+                border-bottom-right-radius: $border-radius;
+            }
+        }
+        &--sm {
+            @include buttonbar-group-breakpoint($__root, md);
+        }
+        &--md {
+            @include buttonbar-group-breakpoint($__root, lg);
+        }
+        &--lg {
+            @include buttonbar-group-breakpoint($__root, xl);
+        }
+    }
+
+    &--nomargin {
+        margin-bottom: 0;
+    }
+
+    &--tinymargin {
+        margin-bottom: $unit;
+    }
+
+    &--stretch {
+        //align-content: stretch;
+        #{$__root}__button {
+            flex: 1 1 auto;
+        }
+    }
+
+    &--inline {
+        display: inline-flex;
+    }
+
+    &--center {
+        justify-content: center;
+    }
+}

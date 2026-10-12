@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html ng-app="cradminLegacyExample">
+    <head>
+        <link href='../dist/css/styles.css' rel="stylesheet">
+    </head>
+
+    <body>
+        <div class="container">
+            <h1>ACE markdown editor directive example</h1>
+            <p>You must run this example on the Django server, not from the local filesystem.
+            The widget works when loaded via the local file system, but the toolbar icons do
+            not load.</p>
+
+            <div cradmin-legacy-acemarkdown="{
+                showTextarea: false,
+                theme: 'tomorrow'
+            }" class="cradmin-acemarkdown" style="background-color: #fff;">
+               
+                <div class="btn-toolbar" role="toolbar">
+                    <div class="btn-group btn-group-lg">
+                        <a class="btn btn-default" cradmin-legacy-acemarkdown-tool="{
+                                pre: '\n# ', post: '\n'}">
+                            <span class="fa fa-header fa-cradmin-legacy-h1"></span>
+                            <span class="sr-only">Heading</span>
+                        </a>
+                        <a class="btn btn-default" cradmin-legacy-acemarkdown-tool="{
+                                pre: '\n## ', post: '\n'}">
+                            <span class="fa fa-header fa-cradmin-legacy-h2"></span>
+                            <span class="sr-only">Heading</span>
+                        </a>
+                        <a class="btn btn-default" cradmin-legacy-acemarkdown-tool="{
+                                pre: '\n### ', post: '\n'}">
+                            <span class="fa fa-header fa-cradmin-legacy-h3"></span>
+                            <span class="sr-only">Heading</span>
+                        </a>
+                    </div>
+                    <div class="btn-group btn-group-lg">
+                        <a class="btn btn-default" cradmin-legacy-acemarkdown-tool="{
+                                pre: '*', post: '*', emptyText: 'Text Here'}">
+                            <span class="fa fa-bold"></span>
+                            <span class="sr-only">Bold</span>
+                        </a>
+                        <a class="btn btn-default" cradmin-legacy-acemarkdown-tool="{
+                                pre: '_', post: '_'}">
+                            <span class="fa fa-italic"></span>
+                            <span class="sr-only">Italic</span>
+                        </a>
+                    </div>
+                    <div class="btn-group btn-group-lg">
+                        <a class="btn btn-default" cradmin-legacy-acemarkdown-tool="{
+                                pre: '\n* ', post: '\n'}">
+                            <span class="fa fa-list-ul"></span>
+                            <span class="sr-only">Bulletlist</span>
+                        </a>
+                        <a class="btn btn-default" cradmin-legacy-acemarkdown-tool="{
+                                pre: '\n1. ', post: '\n'}">
+                            <span class="fa fa-list-ol"></span>
+                            <span class="sr-only">Numbered list</span>
+                        </a>
+                    </div>
+                </div>
+                <div style="width: 600px; height: 300px; border: 1px solid #999;" cradmin-legacy-acemarkdown-editor></div>
+<textarea cradmin-legacy-acemarkdown-textarea cols="70" rows="10">
+# A heading
+Check out the Ace live [demo](http://ajaxorg.github.com/ace/) or get a [Cloud9 IDE account](http://run.cloud9ide.com) to experience Ace while editing one of your own GitHub projects.
+
+
+``` python
+def sum(a, b):
+    return a + b
+```
+</textarea>
+            </div> <!-- cradmin-legacy-acemarkdown END -->
+
+        </div>
+
+        <script src="../dist/vendor/js/angular.min.js" type="text/javascript"></script>
+        <script src="../dist/js/cradmin.min.js" type="text/javascript"></script>
+
+        <script src="../dist/vendor/js/ace-editor/ace.js" type="text/javascript"></script>
+    
+        <script>
+            angular.module('cradminLegacyExample', ['cradminLegacy']);
+        </script>
+    </body>
+</html>

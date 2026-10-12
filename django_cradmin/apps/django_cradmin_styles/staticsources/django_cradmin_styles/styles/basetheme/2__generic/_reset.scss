@@ -1,0 +1,262 @@
+/*------------------------------------*\
+    Custom css reset so we don't got so much bloat that we have to reset again
+\*------------------------------------*/
+
+// Let’s make the box model all nice and sweet
+* {
+    &,
+    &:before,
+    &:after {
+        box-sizing: border-box;
+    }
+
+}
+
+// TODO: Do I need this?
+html {
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+}
+
+// The usual...
+body,
+html,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+dl,
+dd,
+ol,
+ul,
+form,
+fieldset,
+legend,
+table,
+th,
+td,
+caption,
+hr,
+figure {
+    margin: 0;
+    padding: 0;
+}
+
+// Go away border
+legend {
+    border: 0;
+}
+
+// Make it blocky
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+nav,
+section,
+summary {
+    display: block;
+}
+
+// Fix links
+a {
+    text-decoration: none;
+    background: transparent;
+
+    &:active,
+    &:hover {
+        outline: 0; // Improve readability when focused and also mouse hovered in all browsers.
+    }
+}
+
+// ...
+ul > li {
+    list-style: none;
+}
+
+// Why should a image be beyond 100%? Or have border?
+img {
+    border: 0;
+    max-width: 100%;
+}
+
+// 100% button reset
+button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    box-sizing: border-box;
+    //outline: 0; // Don't do this unless you have a fallback
+    border: 0;
+    padding: 0;
+    margin: 0;
+    background: none;
+    overflow: visible;
+    cursor: pointer;
+    font-size: inherit;
+    color: inherit;
+}
+
+// Address inconsistent `text-transform` inheritance for `button` and `select`.
+button,
+select {
+    text-transform: none;
+}
+
+// Remove inner padding and border in Firefox 4+.
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+}
+
+// Disabled shouldn't have pointer as cursor
+button[disabled],
+html input[disabled] {
+    cursor: default;
+}
+
+// Address Firefox 4+ setting `line-height` on `input` using `!important` in the UA stylesheet.
+input {
+    line-height: normal;
+}
+
+// Reset text fields
+textarea,
+input[type='text'],
+input[type='password'],
+// input[type='datetime'],
+// input[type='datetime-local'],
+// input[type='date'],
+// input[type='month'],
+// input[type='time'],
+// input[type='week'],
+input[type='number'],
+input[type='email'],
+input[type='url'],
+input[type='search'],
+input[type='tel'],
+input[type='color'] {
+    outline: 0;
+    -webkit-appearance: none;
+       -moz-appearance: none;
+            appearance: none;
+    box-sizing: border-box;
+}
+
+textarea {
+    overflow: auto;
+    resize: none;
+    word-wrap: break-word;
+}
+
+// Input type date reset
+input[type='date']::-webkit-clear-button,
+input[type='date']::-webkit-inner-spin-button {
+    display: none;
+}
+
+input[type='date']::-webkit-calendar-picker-indicator {
+    // Might need this one, if not, use display: none
+}
+
+// Input type number reset
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+    height: auto;
+    display: none;
+}
+
+// Go away...
+input[type='search']::-webkit-search-cancel-button,
+input[type='search']::-webkit-search-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+    display: none;
+}
+
+// Radio and checkbox reset
+input[type='checkbox'],
+input[type='radio'] {
+    box-sizing: border-box;
+    padding: 0;
+}
+
+// Range resets
+input[type='range'] {
+    -webkit-appearance: none;
+    width: 100%;
+    background: transparent;
+
+    &::-webkit-slider-thumb {
+        -webkit-appearance: none;
+    }
+    &:focus {
+        outline: none;
+    }
+    &::-ms-track {
+        width: 100%;
+        cursor: pointer;
+        background: transparent;
+        border-color: transparent;
+        color: transparent;
+    }
+}
+
+// TODO: Figure out if this is needed
+sub,
+sup {
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+}
+
+sup {
+    top: -0.5em;
+}
+
+sub {
+    bottom: -0.25em;
+}
+
+// Correct overflow not hidden in IE 9/10/11.
+svg:not(:root) {
+    overflow: hidden;
+}
+
+// Contain overflow in all browsers.
+pre {
+    overflow: auto;
+}
+
+// Tables <3
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+td,
+th {
+    padding: 0;
+}
+
+
+fieldset {
+    position: relative;
+    display: block;
+    border: 0;
+    margin-top: 0;
+}

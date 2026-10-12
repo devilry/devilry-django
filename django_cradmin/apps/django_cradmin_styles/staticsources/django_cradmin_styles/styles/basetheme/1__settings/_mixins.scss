@@ -1,0 +1,711 @@
+@mixin min-width($name) {
+    @if not map-has-key($breakpoints, $name) {
+        @media (min-width: $name) {
+            @content;
+        }
+    } @else {
+        @media (min-width: map-get($breakpoints, $name)) {
+            @content;
+        }
+    }
+}
+
+@mixin max-width($name) {
+    @if not map-has-key($breakpoints, $name) {
+        @media (max-width: $name) {
+            @content;
+        }
+    } @else {
+        @media (max-width: (map-get($breakpoints, $name) - 1px)) {
+            @content;
+        }
+    }
+}
+
+// $colors map lookup.
+// retrieve color from $colors map ie. `color(primary, base)`
+@function color($color-name, $color-variant: 'base') {
+    // map inception
+    $output-color: null;
+    @if ($colors) {
+        $color-variant-map: map-get($colors, $color-name);
+        @if ($color-variant-map) {
+            $output-color: map-get($color-variant-map, $color-variant);
+        }
+    }
+    @if ($output-color) {
+        @return $output-color;
+    } @else if ($default-colors) {
+        $default-color-variant-map: map-get($default-colors, $color-name);
+        @if ($default-color-variant-map) {
+            $output-color: map-get($default-color-variant-map, $color-variant);
+            @if ($output-color) {
+                @return $output-color;
+            }
+            @error "color(#{$color-name}, #{$color-variant}) failed. No entry named '#{$color-variant}' in $default-colors[#{$color-name}] or $colors[#{$color-name}].";
+        }
+        @error "color(#{$color-name}, #{$color-variant}) failed. No entry named '#{$color-name}' in $default-colors or $colors.";
+    }
+}
+
+// Get background color.
+//
+// Thin wrapper around the color() function that checks the variable
+// $use-dark-colorvariants-for-backgrounds to determine if we should
+// use the dark or the base variant of the provided $color-name.
+@function get-background-color($color-name) {
+    @if ($use-dark-colorvariants-for-backgrounds) {
+        @return color($color-name, dark);
+    } @else {
+        @return color($color-name);
+    }
+}
+
+// Deep merge two maps.
+// This merges all the keys, and keep any key that is present in any of the two maps.
+// If a key is present in both maps, the key from `$child-map` is used.
+@function deep-map-merge($parent-map, $child-map) {
+	$result: $parent-map;
+	@each $key, $value in $child-map {
+		@if (not map-has-key($result, $key)) or (type-of(map-get($result, $key)) != type-of($value)) or (not (type-of(map-get($result, $key)) == map and type-of($value) == map)) {
+			$result: map-merge($result, ($key: $value));
+		}
+		@else {
+			$result: map-merge($result, ($key: deep-map-merge(map-get($result, $key), $value)));
+		}
+	}
+	@return $result;
+}
+
+
+// Find the contrast color to any color hex
+@function color-contrast($n) {
+    $color-brightness: round((red($n) * 299) + (green($n) * 587) + (blue($n) * 114) / 1000);
+    $light-color: round((red(#fff) * 299) + (green(#fff) * 587) + (blue(#fff) * 114) / 1000);
+
+    @if abs($color-brightness) < ($light-color / 2) {
+        @return $color-light;
+    } @else {
+        @return $color-dark;
+    }
+}
+
+// Responsive font sizes with vertical rythm
+@function line-height($size, $min: 1.2) {
+    $line-height: $vertical-rythm;
+    $i: 1;
+
+    @if (unit($size) != 'px') {
+        @return inherit;
+    }
+
+    @while $line-height < ($size * $min) {
+        $line-height: $vertical-rythm * $i;
+        $i: $i + 1;
+    }
+
+    @return $line-height;
+}
+
+@mixin font-size($size: base, $skip-line-height: false) {
+    $fs-breakpoints: $breakpoints;
+    $fs-map: map-get($font-size, $size);
+
+    @each $fs-breakpoint, $fs-font-size in $fs-map {
+        @if $fs-breakpoint == base {
+            @include make-font-size($fs-font-size, $skip-line-height);
+        } @else {
+            @if map-has-key($fs-breakpoints, $fs-breakpoint) {
+                $fs-breakpoint: map-get($fs-breakpoints, $fs-breakpoint);
+            }
+            @media screen and (min-width: $fs-breakpoint) {
+                @include make-font-size($fs-font-size, $skip-line-height);
+            }
+        }
+    }
+}
+
+@mixin form-element-size ($sizemap, $size, $use-min-height: false, $line-height: 1.2) {
+    padding-top: 0;
+    padding-bottom: 0;
+    line-height: $line-height;
+    @if map-has-key($sizemap, $size) {
+        @if $use-min-height {
+            min-height: map-get($sizemap, $size);
+        } @else {
+            height: map-get($sizemap, $size);
+        }
+    }
+}
+
+@mixin form-element-mixin ($size: base, $use-min-height: false, $line-height: 1.2) {
+    box-sizing: border-box;
+    $default-sizemap: map-get($form-element-height-map, base);
+    @include form-element-size(
+        $sizemap: $default-sizemap,
+        $size: $size,
+        $use-min-height: $use-min-height,
+        $line-height: $line-height);
+
+    @each $screen-breakpoint-name, $screen-breakpoint in $breakpoints {
+        $sizemap: $default-sizemap;
+        @if map-has-key($form-element-height-map, $screen-breakpoint-name) {
+            $sizemap: map-get($form-element-height-map, $screen-breakpoint-name);
+        }
+        @media screen and (min-width: $screen-breakpoint) {
+            @include form-element-size(
+                $sizemap: $sizemap,
+                $size: $size,
+                $use-min-height: $use-min-height,
+                $line-height: $line-height);
+        }
+    }
+}
+
+@mixin make-font-size($fs-font-size, $skip-line-height: false) {
+    @if (type-of($fs-font-size) == 'list') {
+        font-size: nth($fs-font-size, 1);
+
+        @if ($skip-line-height != true) {
+            @if (length($fs-font-size) > 1) {
+                line-height: line-height(
+                    nth($fs-font-size, 1),
+                    nth($fs-font-size, 2));
+            } @else {
+                line-height: line-height($fs-font-size);
+            }
+        }
+    } @else {
+        font-size: $fs-font-size;
+
+        @if ($skip-line-height != true) {
+            line-height: line-height($fs-font-size);
+        }
+    }
+}
+
+// Font family and weights
+@mixin font($font-family: base, $weight: null) {
+    $family: map-get($fonts, $font-family);
+    @if $weight {
+        @if map-has-key($family, $weight) {
+            $f-weight: map-get($family, $weight);
+
+            @if (length($f-weight) > 1) {
+                font-family: nth($f-weight, 2), map-get($family, fallback);
+                font-weight: nth($f-weight, 1);
+            } @else {
+                font-family: map-get($family, font), map-get($family, fallback);
+                font-weight: $f-weight;
+            }
+        } @else {
+            font-family: map-get($family, font), map-get($family, fallback);
+        }
+    } @else {
+        font-family: map-get($family, font), map-get($family, fallback);
+    }
+}
+
+// Spaced text
+@mixin spaced-text {
+    @include font(base, bold);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+// Normal
+@mixin normal-text {
+    @include font(base);
+    letter-spacing: normal;
+    text-transform: none;
+}
+
+// TINT AND SHADE
+
+// Add percentage of white to a color
+@function tint($color, $percent) {
+    @return mix(white, $color, $percent);
+}
+
+// Add percentage of black to a color
+@function shade($color, $percent) {
+    @return mix(black, $color, $percent);
+}
+
+// Animation delay for childs
+@mixin animation-delay($count, $delay, $initial: 0) {
+    animation-delay: (($count + 1) * $delay) + $initial;
+
+    @for $i from 1 through $count {
+        &:nth-child(#{$i}) {
+            animation-delay: ($i * $delay) + $initial;
+        }
+    }
+}
+
+// Responsive font sizes
+@mixin responsive-font($responsive, $min, $max: false, $fallback: false) {
+    $responsive-unitless: $responsive / ($responsive - $responsive + 1);
+    $dimension: if(unit($responsive) == 'vh', 'height', 'width');
+    $min-breakpoint: $min / $responsive-unitless * 100;
+
+    @media (max-#{$dimension}: #{$min-breakpoint}) {
+        font-size: $min;
+    }
+
+    @if $max {
+        $max-breakpoint: $max / $responsive-unitless * 100;
+
+        @media (min-#{$dimension}: #{$max-breakpoint}) {
+            font-size: $max;
+        }
+    }
+
+    @if $fallback {
+        font-size: $fallback;
+    }
+
+    font-size: $responsive;
+}
+
+
+// STYLE INPUT PLACEHOLDERS
+@mixin input-placeholder {
+    &:-moz-placeholder { @content; }
+    &::-moz-placeholder { @content; }
+    &:-ms-input-placeholder { @content; }
+    &::-webkit-input-placeholder { @content; }
+}
+
+// Only visible to screen readers.
+@mixin screenreader-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+// Invisible in print.
+@mixin hidden-in-print {
+    @media print {
+        display: none !important;
+    }
+}
+
+// Only visible in print.
+@mixin display-block-only-in-print {
+    display: none !important;
+    @media print {
+        display: block;
+    }
+}
+
+// Container
+@mixin container($size: null, $no-padding: false) {
+    $width-modifier: 0;
+    margin: 0 auto;
+
+    @if ($no-padding != true) {
+        padding-left: $spacing--small;
+        padding-right: $spacing--small;
+
+        @include min-width(xs) {
+            padding-left: $spacing;
+            padding-right: $spacing;
+        }
+
+        @include min-width(md) {
+            padding-left: $spacing--large;
+            padding-right: $spacing--large;
+        }
+    } @else {
+        $width-modifier: $spacing--large;
+    }
+
+    @if ($size == xwide) {
+        max-width: $container-width--xwide - $width-modifier;
+    } @else if ($size == wide) {
+        max-width: $container-width--wide - $width-modifier;
+    } @else if ($size == medium) {
+        max-width: $container-width--medium - $width-modifier;
+    } @else if ($size == tight) {
+        max-width: $container-width--tight - $width-modifier;
+    } @else if ($size == xtight) {
+        max-width: $container-width--xtight - $width-modifier;
+    } @else {
+        max-width: $container-width - $width-modifier;
+    }
+}
+
+@function vertical-space($val: $vertical-rythm, $min: 1) {
+    $space: $vertical-rythm;
+    $i: 1;
+
+    @if (unit($val) != 'px') {
+        $space: $vertical-rythm * $val;
+    } @else {
+        @while $space < ($val * $min) {
+            $space: $vertical-rythm * $i;
+            $i: $i + 1;
+        }
+    }
+
+    @return $space;
+}
+
+// Full-width
+@mixin full-width {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+}
+
+// Hyphens
+@mixin hyphens {
+    overflow-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+}
+
+
+@function list-contains($list, $value) {
+    @return (false == index($list, $value));
+}
+
+
+$linear-channel-values:
+  0
+  .0003035269835488375
+  .000607053967097675
+  .0009105809506465125
+  .00121410793419535
+  .0015176349177441874
+  .001821161901293025
+  .0021246888848418626
+  .0024282158683907
+  .0027317428519395373
+  .003035269835488375
+  .003346535763899161
+  .003676507324047436
+  .004024717018496307
+  .004391442037410293
+  .004776953480693729
+  .005181516702338386
+  .005605391624202723
+  .006048833022857054
+  .006512090792594475
+  .006995410187265387
+  .007499032043226175
+  .008023192985384994
+  .008568125618069307
+  .009134058702220787
+  .00972121732023785
+  .010329823029626936
+  .010960094006488246
+  .011612245179743885
+  .012286488356915872
+  .012983032342173012
+  .013702083047289686
+  .014443843596092545
+  .01520851442291271
+  .01599629336550963
+  .016807375752887384
+  .017641954488384078
+  .018500220128379697
+  .019382360956935723
+  .0202885630566524
+  .021219010376003555
+  .022173884793387385
+  .02315336617811041
+  .024157632448504756
+  .02518685962736163
+  .026241221894849898
+  .027320891639074894
+  .028426039504420793
+  .0295568344378088
+  .030713443732993635
+  .03189603307301153
+  .033104766570885055
+  .03433980680868217
+  .03560131487502034
+  .03688945040110004
+  .0382043715953465
+  .03954623527673284
+  .04091519690685319
+  .042311410620809675
+  .043735029256973465
+  .04518620438567554
+  .046665086336880095
+  .04817182422688942
+  .04970656598412723
+  .05126945837404324
+  .052860647023180246
+  .05448027644244237
+  .05612849004960009
+  .05780543019106723
+  .0595112381629812
+  .06124605423161761
+  .06301001765316767
+  .06480326669290577
+  .06662593864377289
+  .06847816984440017
+  .07036009569659588
+  .07227185068231748
+  .07421356838014963
+  .07618538148130785
+  .07818742180518633
+  .08021982031446832
+  .0822827071298148
+  .08437621154414882
+  .08650046203654976
+  .08865558628577294
+  .09084171118340768
+  .09305896284668745
+  .0953074666309647
+  .09758734714186246
+  .09989872824711389
+  .10224173308810132
+  .10461648409110419
+  .10702310297826761
+  .10946171077829933
+  .1119324278369056
+  .11443537382697373
+  .11697066775851084
+  .11953842798834562
+  .12213877222960187
+  .12477181756095049
+  .12743768043564743
+  .1301364766903643
+  .13286832155381798
+  .13563332965520566
+  .13843161503245183
+  .14126329114027164
+  .14412847085805777
+  .14702726649759498
+  .14995978981060856
+  .15292615199615017
+  .1559264637078274
+  .1589608350608804
+  .162029375639111
+  .1651321945016676
+  .16826940018969075
+  .1714411007328226
+  .17464740365558504
+  .17788841598362912
+  .18116424424986022
+  .184474994500441
+  .18782077230067787
+  .19120168274079138
+  .1946178304415758
+  .19806931955994886
+  .20155625379439707
+  .20507873639031693
+  .20863687014525575
+  .21223075741405523
+  .21586050011389926
+  .2195261997292692
+  .2232279573168085
+  .22696587351009836
+  .23074004852434915
+  .23455058216100522
+  .238397573812271
+  .24228112246555486
+  .24620132670783548
+  .25015828472995344
+  .25415209433082675
+  .2581828529215958
+  .26225065752969623
+  .26635560480286247
+  .2704977910130658
+  .27467731206038465
+  .2788942634768104
+  .2831487404299921
+  .2874408377269175
+  .29177064981753587
+  .2961382707983211
+  .3005437944157765
+  .3049873140698863
+  .30946892281750854
+  .31398871337571754
+  .31854677812509186
+  .32314320911295075
+  .3277780980565422
+  .33245153634617935
+  .33716361504833037
+  .3419144249086609
+  .3467040563550296
+  .35153259950043936
+  .3564001441459435
+  .3613067797835095
+  .3662525955988395
+  .3712376804741491
+  .3762621229909065
+  .38132601143253014
+  .386429433787049
+  .39157247774972326
+  .39675523072562685
+  .4019777798321958
+  .4072402119017367
+  .41254261348390375
+  .4178850708481375
+  .4232676699860717
+  .4286904966139066
+  .43415363617474895
+  .4396571738409188
+  .44520119451622786
+  .45078578283822346
+  .45641102318040466
+  .4620769996544071
+  .467783796112159
+  .47353149614800955
+  .4793201831008268
+  .4851499400560704
+  .4910208498478356
+  .4969329950608704
+  .5028864580325687
+  .5088813208549338
+  .5149176653765214
+  .5209955732043543
+  .5271151257058131
+  .5332764040105052
+  .5394794890121072
+  .5457244613701866
+  .5520114015120001
+  .5583403896342679
+  .5647115057049292
+  .5711248294648731
+  .5775804404296506
+  .5840784178911641
+  .5906188409193369
+  .5972017883637634
+  .6038273388553378
+  .6104955708078648
+  .6172065624196511
+  .6239603916750761
+  .6307571363461468
+  .6375968739940326
+  .6444796819705821
+  .6514056374198242
+  .6583748172794485
+  .665387298282272
+  .6724431569576875
+  .6795424696330938
+  .6866853124353135
+  .6938717612919899
+  .7011018919329731
+  .7083757798916868
+  .7156935005064807
+  .7230551289219693
+  .7304607400903537
+  .7379104087727308
+  .7454042095403874
+  .7529422167760779
+  .7605245046752924
+  .768151147247507
+  .7758222183174236
+  .7835377915261935
+  .7912979403326302
+  .799102738014409
+  .8069522576692516
+  .8148465722161012
+  .8227857543962835
+  .8307698767746546
+  .83879901174074
+  .846873231509858
+  .8549926081242338
+  .8631572134541023
+  .8713671191987972
+  .8796223968878317
+  .8879231178819663
+  .8962693533742664
+  .9046611743911496
+  .9130986517934192
+  .9215818562772946
+  .9301108583754237
+  .938685728457888
+  .9473065367331999
+  .9559733532492861
+  .9646862478944651
+  .9734452903984125
+  .9822505503331171
+  .9911020971138298
+  1;
+
+/**
+* Calculate the luminance for a color.
+* See https://www.w3.org/TR/WCAG20-TECHS/G17.html#G17-tests
+*/
+@function luminance($color) {
+    $red: nth($linear-channel-values, red($color) + 1);
+    $green: nth($linear-channel-values, green($color) + 1);
+    $blue: nth($linear-channel-values, blue($color) + 1);
+
+    @return .2126 * $red + .7152 * $green + .0722 * $blue;
+}
+
+/**
+* Calculate the contrast ratio between two colors.
+* See https://www.w3.org/TR/WCAG20-TECHS/G17.html#G17-tests
+*/
+@function find-color-contrast($back, $front) {
+    $backLum: luminance($back) + .05;
+    $foreLum: luminance($front) + .05;
+
+    @return max($backLum, $foreLum) / min($backLum, $foreLum);
+}
+
+/**
+* Determine whether to use dark or light text on top of given color.
+* Returns black for dark text and white for light text.
+*
+* Credits go to https://medium.com/dev-channel/using-sass-to-automatically-pick-text-colors-4ba7645d2796.
+*/
+@function black-or-white-contrast-color($color) {
+    $lightContrast: find-color-contrast($color, white);
+    $darkContrast: find-color-contrast($color, black);
+
+    @if ($lightContrast > $darkContrast) {
+        @return color(contrast, black);
+    }
+    @else {
+        @return color(contrast, white);
+    }
+}
+
+
+@function cricon-get-fixed-width-for-font-size($size, $breakpoint, $breakpoint-fallback: false) {
+    $font-size-breakpoint-map: map-get($font-size, $size);
+    @if ($font-size-breakpoint-map == null) {
+        @error "The size '#{$size}' is not in the $font-size variable/map";
+    }
+
+    $breakpoint-font-size: map-get($font-size-breakpoint-map, $breakpoint);
+    @if $breakpoint-font-size == null {
+        @if $breakpoint == base {
+            @error "The size '#{$size}' key in the $font-size variable/map is missing the 'base' key.";
+        }
+        @if $breakpoint-fallback {
+            $fallback-breakpoint: base;
+            @if $breakpoint == xl {
+                $fallback-breakpoint: lg;
+            } @else if $breakpoint == lg {
+                $fallback-breakpoint: md;
+            }
+            @return cricon-get-fixed-width-for-font-size($size, $fallback-breakpoint);
+        } @else {
+            @return null;
+        }
+    }
+
+    @if type-of($breakpoint-font-size) == 'list' {
+        $breakpoint-font-size: nth($breakpoint-font-size, 1);
+    }
+    @return $breakpoint-font-size * 1.3;
+}

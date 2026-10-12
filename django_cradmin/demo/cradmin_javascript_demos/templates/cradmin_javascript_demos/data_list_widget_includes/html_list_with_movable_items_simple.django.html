@@ -1,0 +1,21 @@
+ <div class="adminui-page-section">
+    <div class="container">
+        <h2>Sortable HTML list</h2>
+        <div data-ievv-jsbase-widget="cradmin-api-data-list"
+             data-ievv-jsbase-widget-config='{
+                 "signalNameSpace": "htmllistwithmovableitems_simple",
+                 "apiUrl": "{% url 'cradmin_javascript_demos_api:fictional-figures-list' %}",
+                 "moveApiUrl": "{% url 'cradmin_move_fictional_figures_api' %}"
+             }'>
+        </div>
+        <div data-ievv-jsbase-widget="cradmin-search-input"
+             data-ievv-jsbase-widget-config='{
+                 "signalNameSpace": "htmllistwithmovableitems_simple"
+             }'></div>
+        <div data-ievv-jsbase-widget="cradmin-html-list-with-movable-items"
+             data-ievv-jsbase-widget-config='{
+                 "signalNameSpace": "htmllistwithmovableitems_simple"
+             }'>
+        </div>
+    </div>
+</div>

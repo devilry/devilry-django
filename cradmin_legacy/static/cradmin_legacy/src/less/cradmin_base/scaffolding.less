@@ -1,0 +1,49 @@
+#cradmin_legacy_bodycontentwrapper {
+  width: 100%;
+  height: 100%;
+}
+
+
+body {
+  background: @cradmin-bodybg;
+  color: @cradmin-bodycolor;
+
+  &.cradmin-legacy-noscroll {
+    overflow: hidden;
+  }
+}
+
+a {
+  -webkit-tap-highlight-color: @cradmin-link-tap-highlight-color;
+}
+
+
+.cradmin_legacy_container_fluid_focus_variant(@bg, @bordercolor, @color) {
+  background: @bg;
+  border-color: @bordercolor;
+  color: @color;
+  a {
+    color: inherit;
+    text-decoration: underline;
+  }
+}
+
+.cradmin-legacy-container-focus {
+  background: @cradmin-container-focus-bg;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid @cradmin-container-focus-border-bottom-color;
+
+  &.cradmin-legacy-container-focus-danger {
+    .cradmin_legacy_container_fluid_focus_variant(@alert-danger-bg, @alert-danger-border, @alert-danger-text);
+  }
+  &.cradmin-legacy-container-focus-warning {
+    .cradmin_legacy_container_fluid_focus_variant(@alert-warning-bg, @alert-warning-border, @alert-warning-text);
+  }
+  &.cradmin-legacy-container-focus-info {
+    .cradmin_legacy_container_fluid_focus_variant(@alert-info-bg, @alert-info-border, @alert-info-text);
+  }
+  &.cradmin-legacy-container-focus-success {
+    .cradmin_legacy_container_fluid_focus_variant(@alert-success-bg, @alert-success-border, @alert-success-text);
+  }
+}

@@ -1,0 +1,17 @@
+{% extends "cradmin_legacy/base.django.html" %}
+{% load i18n %}
+{% load static %}
+{% load cradmin_legacy_tags %}
+
+
+{% block pageheader-inner %}
+    <h1>
+        {{ djangoappconfig.get_menulabel }}
+    </h1>
+{% endblock pageheader-inner %}
+
+{% block content %}
+    <div class="container">
+        {% cradmin_render_renderable models_list %}
+    </div>
+{% endblock content %}

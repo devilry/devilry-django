@@ -1,0 +1,17 @@
+<div django-cradmin-collapse class="django-cradmin-form-collapsed-section">
+  <div class="django-cradmin-form-collapsed-section-header">
+      <button ng-click="toggleContentVisible()" type="button" class="btn btn-default">
+        <span ng-if="contentHidden">
+            {{ show_label }}
+            <span class="{{ show_icon }}" aria-hidden="true"></span>
+        </span>
+        <span ng-if="!contentHidden">
+            {{ hide_label }}
+            <span class="{{ hide_icon }}" aria-hidden="true"></span>
+        </span>
+      </button>
+  </div>
+  <div ng-class="{'ng-hide': contentHidden}" class="ng-hide django-cradmin-form-collapsed-section-content">
+    {{ content|safe }}
+  </div>
+</div>

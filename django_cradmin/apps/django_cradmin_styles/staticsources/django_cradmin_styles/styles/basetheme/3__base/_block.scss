@@ -1,0 +1,27 @@
+/** Block
+
+Make items become styled with ``display: block;`` or display ``inline-block``.
+Can be used on any element, but it may not take if you have more explicit display
+styles.
+
+Example: block
+
+    Some text before
+    <span class="block">a span with <code>class="block"</code></span>
+    some text after
+
+Example: block block--inline
+
+    Some text before
+    <div class="block block--inline">a div with <code>class="block block--inline"</code></div>
+    some text after
+
+Styleguide layout.block
+ */
+.block {
+    display: block;
+
+    &--inline {
+        display: inline-block;
+    }
+}

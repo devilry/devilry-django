@@ -1,0 +1,87 @@
+{% extends "cradmin_legacy/viewhelpers/listbuilderview/default.django.html" %}
+{% load i18n %}
+{% load cradmin_legacy_tags %}
+{% load cradmin_legacy_icon_tags %}
+
+{% block list %}
+    <div class="cradmin-legacy-multiselect2-columnlayout row {% block columnlayout_extra_cssclass %}{% endblock %}">
+        {% block columnlayoutcontainer-inner %}
+            {% block listcolumn %}
+                <div class="cradmin-legacy-multiselect2-listcolumn
+                            {% block listcolumn_cssclass %}col-sm-6{% endblock %}">
+                    {% block listcolumn-inner %}
+                        <div class="cradmin-legacy-listfilter-target
+                                    cradmin-legacy-loadmorepager-target
+                                    {% if must_reload_page1_on_load %}cradmin-legacy-loadmorepager-target-reloading-page1{% endif %}"
+                                 id="cradmin_legacy_listbuilderview_listwrapper"
+                                 aria-live="polite">
+
+                            {% block listcolumn-buttons %}
+                                <div class="cradmin-legacy-multiselect2-listcolumn-buttons">
+                                    {% block listcolumn-buttons-content %}
+                                        {% block selectall-button %}
+                                            {% if select_all_button_should_be_shown %}
+                                                <button class="btn btn-default btn-sm"
+                                                        cradmin-legacy-load-more-pager='{
+                                                            "targetElementCssSelector": "#cradmin_legacy_listbuilderview_listwrapper",
+                                                            "mode": "loadAllOnClick"
+                                                        }'
+                                                        cradmin-legacy-multiselect2-selectall={{ selectall_directive_json|safe }}>
+                                                    {% block selectall-button-loading-icon %}
+                                                        <span class="{% cradmin_icon "loadspinner" %}"
+                                                              ng-if="loadmorePagerIsLoading"
+                                                              aria-hidden="true"></span>
+                                                    {% endblock selectall-button-loading-icon %}
+                                                    <span class="cradmin-legacy-loadmorepager-loadingtext" ng-if="loadmorePagerIsLoading">
+                                                        {% block selectall-button-loading-text %}
+                                                            {% trans "Loading ..." %}
+                                                        {% endblock selectall-button-loading-text %}
+                                                    </span>
+                                                    <span class="cradmin-legacy-loadmorepager-not-loadingtext" ng-if="!loadmorePagerIsLoading">
+                                                        {% block selectall-button-text %}
+                                                            {% trans "Select all" %}
+                                                        {% endblock selectall-button-text %}
+                                                    </span>
+                                                </button>
+                                            {% endif %}
+                                        {% endblock selectall-button %}
+                                    {% endblock listcolumn-buttons-content %}
+                                </div>
+                            {% endblock listcolumn-buttons %}
+
+                            {% if listbuilder_list.has_items %}
+                                {% cradmin_render_renderable listbuilder_list %}
+                                {% block pager %}
+                                    {% include "cradmin_legacy/viewhelpers/listbuilderview/includes/loadmorepager.django.html" %}
+                                {% endblock pager %}
+                            {% else %}
+                                {% block no-items-wrapper %}
+                                    <p class="cradmin-legacy-listing-no-items-message cradmin-legacy-listbuilderview-no-items-message">
+                                        {% block no-items-paragraph-contents %}
+                                            {{ no_items_message }}
+                                        {% endblock no-items-paragraph-contents %}
+                                    </p>
+                                {% endblock no-items-wrapper %}
+                            {% endif %}
+                        </div>
+                    {% endblock listcolumn-inner %}
+                </div>
+            {% endblock listcolumn %}
+            {% block targetcolumn %}
+                <div class="cradmin-legacy-multiselect2-targetcolumn
+                            {% block targetcolumn_cssclass %}col-sm-6{% endblock %}">
+                    {% block targetcolumn-inner %}
+                        {% cradmin_render_renderable target_renderer %}
+                    {% endblock targetcolumn-inner %}
+                </div>
+            {% endblock targetcolumn %}
+        {% endblock columnlayoutcontainer-inner %}
+    </div>
+    {% if must_reload_page1_on_load %}
+        <div cradmin-legacy-load-more-pager='{
+            "targetElementCssSelector": "#cradmin_legacy_listbuilderview_listwrapper",
+            "mode": "reloadPageOneOnLoad"
+        }'></div>
+    {% endif %}
+
+{% endblock list %}

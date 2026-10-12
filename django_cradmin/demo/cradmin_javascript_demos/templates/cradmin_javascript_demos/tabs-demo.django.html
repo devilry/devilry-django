@@ -1,0 +1,67 @@
+{% extends "django_cradmin/standalone-base.django.html" %}
+{% load static %}
+
+{% block title %}
+    Tabs demo
+{% endblock title %}
+
+{% block page-cover-title %}
+    Tabs demo
+{% endblock page-cover-title %}
+
+{% block page-cover-content %}
+    {{ block.super }}
+{% endblock page-cover-content %}
+
+
+{% block content %}
+    <div class="adminui-page-section">
+        <div class="container">
+            <nav class="tabs__tab-list">
+                <a class="tabs__tab  tabs__tab--active"
+                   href="#ipa"
+                   id="tab-ipa"
+                   data-ievv-jsbase-widget="cradmin-tab-button">
+                    India Pale Ale (IPA)
+                </a>
+                <a class="tabs__tab"
+                   href="#gueuze"
+                   id="tab-gueuze"
+                   data-ievv-jsbase-widget="cradmin-tab-button">
+                    Gueuze
+                </a>
+                <a class="tabs__tab"
+                   href="#imperial-stout"
+                   id="tab-imperial-stout"
+                   data-ievv-jsbase-widget="cradmin-tab-button">
+                    Imperial Stout
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <section class="adminui-page-section  tabs__panel"
+             id="ipa"
+             data-ievv-jsbase-widget="cradmin-tab-panel">
+        <div class="container">
+            <h2>India Pale Ale (IPA)</h2>
+            ...
+        </div>
+    </section>
+    <section class="adminui-page-section  tabs__panel"
+             id="gueuze"
+             data-ievv-jsbase-widget="cradmin-tab-panel">
+        <div class="container">
+            <h2>Gueuze</h2>
+            ...
+        </div>
+    </section>
+    <section class="adminui-page-section  tabs__panel"
+             id="imperial-stout"
+             data-ievv-jsbase-widget="cradmin-tab-panel">
+        <div class="container">
+            <h2>Imperial Stout</h2>
+            ...
+        </div>
+    </section>
+{% endblock content %}

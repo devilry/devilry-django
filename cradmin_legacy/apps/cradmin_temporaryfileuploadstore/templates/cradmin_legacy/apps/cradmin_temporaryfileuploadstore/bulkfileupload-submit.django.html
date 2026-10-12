@@ -1,0 +1,14 @@
+{% extends "cradmin_legacy/crispylayouts/submitbutton.django.html" %}
+
+{% block label %}
+    <span ng-if="inProgress">
+        {% if input.uploading_icon_cssclass %}
+            <span class="{{ input.uploading_icon_cssclass }}"></span>
+        {% endif %}
+        {{ input.uploading_text }}
+    </span>
+    <span ng-if="!inProgress">
+        {{ block.super }}
+    </span>
+
+{% endblock label %}

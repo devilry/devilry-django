@@ -1,0 +1,9 @@
+{% extends "cradmin_legacy/standalone-base.django.html" %}
+{% load i18n %}
+
+{% block body %}
+    <div class="container">
+        <h1>{% trans "Invalid role" %}: {{ roleid }}</h1>
+        <p>{% trans "The requested role does not exist." %}</p>
+    </div>
+{% endblock body %}

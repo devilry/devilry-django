@@ -1,0 +1,17 @@
+{% extends "cradmin_legacy/viewhelpers/formview_base.django.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}
+    {% trans "Get sharable link" %}
+{% endblock title %}
+
+{% block pageheader-inner %}
+    <h1>
+        {% trans "Get sharable link" %}
+    </h1>
+    <p>
+        Anyone with the link can add themself as administrator for the site.
+        This is just a demo for a public sharing workflow. You SHOULD NOT use this to invite admins in production!
+    </p>
+{% endblock pageheader-inner %}

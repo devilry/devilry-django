@@ -1,0 +1,25 @@
+{% load i18n %}
+
+<div class="cradmin-legacy-filewidget{% if clearable %} cradmin-legacy-filewidget-clearable{% endif %}"
+        ng-controller="CradminFileFieldController">
+    {% if file_path %}
+        <a href="{{ MEDIA_URL }}{{ file_path }}" target="_blank"
+                ng-show="cradmin_filefield_has_original_value"
+                class="cradmin-legacy-filewidget-fullviewlink">
+            {{ file_name }}
+            <span class="fa fa_external_link"></span>
+        </a>
+    {% endif %}
+    {% include "django/forms/widgets/input.html" %}
+    {% if clearable %}
+        <div class="cradmin-legacy-filewidget-clear"
+               ng-show="cradmin_filefield_has_value">
+            <input type="hidden" name="{{ clear_checkbox_name }}"
+                   ng-value="cradmin_filefield_clearcheckbox_value">
+            <button type="button" class="btn btn-danger btn-sm"
+                    ng-click="cradminClearFileField()">
+                {% trans "Remove file" %}
+            </button>
+        </div>
+    {% endif %}
+</div>

@@ -1,0 +1,7 @@
+{% extends "django_cradmin/crmenu/menuitem/link.django.html" %}
+
+{% block outer-wrapper %}
+    <li class="{{ me.get_list_element_bem_element }}">
+        {{ block.super }}
+    </li>
+{% endblock outer-wrapper %}

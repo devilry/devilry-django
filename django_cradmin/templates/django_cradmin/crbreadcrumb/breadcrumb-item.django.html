@@ -1,0 +1,12 @@
+{% block outer %}
+    <{{ me.html_tag }} {{ me.html_element_attributes_string }}>
+        {% block content %}
+            <span class="{{ me.parent_bem_block }}__itemlabel-minimized" aria-hidden="true">
+                {{ me.truncated_label }}
+            </span>
+            <span class="{{ me.parent_bem_block }}__itemlabel-full">
+                {{ me.label }}
+            </span>
+        {% endblock content %}
+    </{{ me.html_tag }}>
+{% endblock outer %}

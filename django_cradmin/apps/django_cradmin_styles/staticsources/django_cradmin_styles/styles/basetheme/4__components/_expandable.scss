@@ -1,0 +1,471 @@
+/* Expandable
+
+Example: Collapsed
+
+    <div class="expandable expandable--collapsed box box--focus">
+        <div class="expandable__header">
+            <h2 class="expandable__headertitle">Filters</h2>
+        </div>
+        <div class="expandable__body">
+            <div class="fieldwrapper">
+                <p class="label">Membership type:</p>
+                <label class="select select--outlined select--block">
+                    <select aria-label="Membership type">
+                        <option>---</option>
+
+                        <!--
+                        These choices come from a membership-types/<node-id> API.
+                        -->
+                        <option>Primary</option>
+                        <option>Secondary</option>
+                        <option>Honorary</option>
+                    </select>
+                </label>
+            </div>
+
+            <div class="fieldwrapper">
+                <label class="label" for="id_filter_joined_days_ago">
+                    Joined in the last
+                    <input id="id_filter_joined_days_ago"
+                           class="input input--inline input--width-xxsmall input--size-xsmall input--outlined" type="text" placeholder="days" />
+                    days
+                </label>
+            </div>
+        </div>
+        <div class="expandable__toggle">
+            <button type="button" class="expandable__togglebutton">
+                <span class="screenreader-only">
+                    <!--
+                    You will typically change this with javascript
+                    (I.E.: "Expand <something>" or "Collapse <something>")
+                    -->
+                    Toggle
+                </span>
+            </button>
+        </div>
+    </div>
+
+Example: Expanded
+
+    <div class="expandable box box--focus">
+        <div class="expandable__header">
+            <h2 class="expandable__headertitle">Filters</h2>
+        </div>
+        <div class="expandable__body">
+            <div class="fieldwrapper">
+                <p class="label">Membership type:</p>
+                <label class="select select--outlined select--block">
+                    <select aria-label="Membership type">
+                        <option>---</option>
+
+                        <!--
+                        These choices come from a membership-types/<node-id> API.
+                        -->
+                        <option>Primary</option>
+                        <option>Secondary</option>
+                        <option>Honorary</option>
+                    </select>
+                </label>
+            </div>
+
+            <div class="fieldwrapper">
+                <label class="label" for="id_filter_joined_days_ago">
+                    Joined in the last
+                    <input id="id_filter_joined_days_ago"
+                           class="input input--inline input--width-xxsmall input--size-xsmall input--outlined" type="text" placeholder="days" />
+                    days
+                </label>
+            </div>
+        </div>
+
+        <div class="expandable__toggle">
+            <button type="button" class="expandable__togglebutton">
+                <span class="screenreader-only">
+                    <!--
+                    You will typically change this with javascript
+                    (I.E.: "Expand <something>" or "Collapse <something>")
+                    -->
+                    Toggle
+                </span>
+            </button>
+        </div>
+    </div>
+
+
+Example: {type: isolated} Expanded content modal
+
+    <div class="expandable box box--focus">
+        <div class="expandable__header">
+            <h2 class="expandable__headertitle">Filters</h2>
+        </div>
+        <div class="expandable__body">
+            <div class="expandable__bodymodal-backdrop" onclick="console.log('click backdrop')"></div>
+            <div class="expandable__bodymodal">
+                <div class="fieldwrapper">
+                    <p class="label">Membership type:</p>
+                    <label class="select select--outlined select--block">
+                        <select aria-label="Membership type">
+                            <option>---</option>
+
+                            <!--
+                            These choices come from a membership-types/<node-id> API.
+                            -->
+                            <option>Primary</option>
+                            <option>Secondary</option>
+                            <option>Honorary</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="fieldwrapper">
+                    <label class="label" for="id_filter_joined_days_ago">
+                        Joined in the last
+                        <input id="id_filter_joined_days_ago"
+                               class="input input--inline input--width-xxsmall input--size-xsmall input--outlined" type="text" placeholder="days" />
+                        days
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="expandable__toggle">
+            <button type="button" class="expandable__togglebutton">
+                <span class="screenreader-only">
+                    <!--
+                    You will typically change this with javascript
+                    (I.E.: "Expand <something>" or "Collapse <something>")
+                    -->
+                    Toggle
+                </span>
+            </button>
+        </div>
+    </div>
+
+
+Example: {type: isolated} With some simple javascript
+
+    <script>
+        function toggleExpandableExample () {
+            document.getElementById('id_expandable_example').classList.toggle('expandable--collapsed');
+        }
+    </script>
+
+    <div class="container">
+        <div id="id_expandable_example" class="expandable box box--focus">
+            <div class="expandable__header">
+                <h2 class="expandable__headertitle">Filters</h2>
+            </div>
+            <div class="expandable__body">
+                <div class="fieldwrapper">
+                    <p class="label">Membership type:</p>
+                    <label class="select select--outlined select--block">
+                        <select aria-label="Membership type">
+                            <option>---</option>
+
+                            <!--
+                            These choices come from a membership-types/<node-id> API.
+                            -->
+                            <option>Primary</option>
+                            <option>Secondary</option>
+                            <option>Honorary</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="fieldwrapper">
+                    <label class="label" for="id_filter_joined_days_ago">
+                        Joined in the last
+                        <input id="id_filter_joined_days_ago"
+                               class="input input--inline input--width-xxsmall input--size-xsmall input--outlined" type="text" placeholder="days" />
+                        days
+                    </label>
+                </div>
+            </div>
+
+            <div class="expandable__toggle">
+                <button type="button" class="expandable__togglebutton" onclick="toggleExpandableExample();">
+                    <span class="screenreader-only">
+                        <!--
+                        You will typically change this with javascript
+                        (I.E.: "Expand <something>" or "Collapse <something>")
+                        -->
+                        Toggle
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+Example: {type: isolated} You can also make the title a toggle button
+
+    <script>
+        function toggleExpandableExample () {
+            document.getElementById('id_expandable_example').classList.toggle('expandable--collapsed');
+        }
+    </script>
+
+    <div class="container">
+        <div id="id_expandable_example" class="expandable box box--focus">
+            <div class="expandable__header expandable__header--toggle" onclick="toggleExpandableExample();">
+                <h2 class="expandable__headertitle">Filters</h2>
+            </div>
+            <div class="expandable__body">
+                <div class="fieldwrapper">
+                    <p class="label">Membership type:</p>
+                    <label class="select select--outlined select--block">
+                        <select aria-label="Membership type">
+                            <option>---</option>
+
+                            <!--
+                            These choices come from a membership-types/<node-id> API.
+                            -->
+                            <option>Primary</option>
+                            <option>Secondary</option>
+                            <option>Honorary</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="fieldwrapper">
+                    <label class="label" for="id_filter_joined_days_ago">
+                        Joined in the last
+                        <input id="id_filter_joined_days_ago"
+                               class="input input--inline input--width-xxsmall input--size-xsmall input--outlined" type="text" placeholder="days" />
+                        days
+                    </label>
+                </div>
+            </div>
+
+            <div class="expandable__toggle">
+                <button type="button" class="expandable__togglebutton" onclick="toggleExpandableExample();">
+                    <span class="screenreader-only">
+                        <!--
+                        You will typically change this with javascript
+                        (I.E.: "Expand <something>" or "Collapse <something>")
+                        -->
+                        Toggle
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+
+Example: {type: isolated} Expanded header content
+
+    <script>
+        function toggleExpandableExample () {
+            document.getElementById('id_expandable_example').classList.toggle('expandable--collapsed');
+        }
+    </script>
+
+    <div class="container">
+        <div id="id_expandable_example" class="expandable box box--focus">
+            <div class="expandable__header">
+                <h2 class="expandable__headertitle">Filters</h2>
+                <div class="expandable__expanded-header-content">
+                    Only visible when expanded!
+                </div>
+            </div>
+            <div class="expandable__body">
+                The body!
+            </div>
+
+            <div class="expandable__toggle">
+                <button type="button" class="expandable__togglebutton" onclick="toggleExpandableExample();">
+                    <span class="screenreader-only">
+                        <!--
+                        You will typically change this with javascript
+                        (I.E.: "Expand <something>" or "Collapse <something>")
+                        -->
+                        Toggle
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+Example: {type: isolated} --outlined
+
+    <script>
+        function toggleExpandableExample () {
+            document.getElementById('id_expandable_example').classList.toggle('expandable--collapsed');
+        }
+    </script>
+
+    <div style="background-color: #fff; padding-top: 20px; padding-bottom: 20px;">
+        <div class="container">
+            <div id="id_expandable_example" class="expandable expandable--outlined box box--focus">
+                <div class="expandable__header expandable__header--toggle" onclick="toggleExpandableExample();">
+                    <h2 class="expandable__headertitle">Filters</h2>
+                </div>
+                <div class="expandable__body">
+                    <div class="fieldwrapper">
+                        <p class="label">Membership type:</p>
+                        <label class="select select--outlined select--block">
+                            <select aria-label="Membership type">
+                                <option>---</option>
+
+                                <!--
+                                These choices come from a membership-types/<node-id> API.
+                                -->
+                                <option>Primary</option>
+                                <option>Secondary</option>
+                                <option>Honorary</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="fieldwrapper">
+                        <label class="label" for="id_filter_joined_days_ago">
+                            Joined in the last
+                            <input id="id_filter_joined_days_ago"
+                                   class="input input--inline input--width-xxsmall input--size-xsmall input--outlined" type="text" placeholder="days" />
+                            days
+                        </label>
+                    </div>
+                </div>
+
+                <div class="expandable__toggle">
+                    <button type="button" class="expandable__togglebutton" onclick="toggleExpandableExample();">
+                        <span class="screenreader-only">
+                            <!--
+                            You will typically change this with javascript
+                            (I.E.: "Expand <something>" or "Collapse <something>")
+                            -->
+                            Toggle
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+Styleguide components.expandable
+*/
+
+.expandable {
+    $__root: &;
+    position: relative;
+    border-radius: $border-radius;
+
+    &__header {
+        margin-bottom: vertical-space($spacing);
+
+        &--toggle {
+            user-select: none;
+            &:hover {
+                cursor: pointer;
+                color: $color-links--hover;
+            }
+        }
+    }
+
+    &__headertitle {
+        margin: 0;
+        @include font(base, bold);
+        @include font-size(small);
+    }
+
+    &__expanded-header-content {
+        display: block;
+    }
+
+    &__body {
+    }
+
+    &__bodymodal-backdrop {
+        @extend .backdrop;
+        @extend %animation-fade-in;
+    }
+
+    &__bodymodal {
+        position: relative;
+        z-index: $level-3;
+        box-shadow: $shadow-level-3;
+        background-color: $color-light;
+        padding: $spacing--small;
+        @include min-width(md) {
+            padding: $spacing;
+        }
+    }
+
+    &__toggle {
+        margin-top: $unit * 6;
+    }
+
+    &__togglebutton {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        //text-align: center;
+        position: absolute;
+        overflow: hidden;
+        left: 50%;
+        bottom: vertical-space();
+        width: $unit * 6;
+        height: $unit * 6;
+        margin-left: -(($unit * 6) / 2);
+        border-radius: 50%;
+        color: $color-light;
+        background-color: color(secondary, dark);
+        //box-shadow: 0 0 20px 8px $color-light;
+        //outline: 0;
+
+        &:hover,
+        &:focus {
+            background-color: color(primary);
+            color: $color-light;
+        }
+
+        &:before {
+            @include cricon-size(xsmall);
+            @include cricon-icon(chevron-up);
+        }
+    }
+
+    &--collapsed {
+        #{$__root}__header {
+            margin-bottom: 0;
+            margin-right: ($spacing--small + $unit * 6);
+
+            &>*:last-child {
+                margin-bottom: 0;
+            }
+        }
+        #{$__root}__expanded-header-content {
+            display: none;
+        }
+        #{$__root}__body {
+            display: none;
+        }
+
+        #{$__root}__toggle {
+            margin: 0;
+        }
+        #{$__root}__togglebutton {
+            bottom: auto;
+            left: auto;
+            top: 50%;
+            right: $spacing--small;
+            margin-left: 0;
+            margin-top: -(($unit * 6) / 2);
+
+            &:before {
+                @include cricon-icon(chevron-down);
+            }
+
+            @include min-width (md) {
+                right: $spacing;
+            }
+        }
+    }
+
+    &--outlined {
+        border: $border-width solid color(neutral, light);
+    }
+}

@@ -1,0 +1,10 @@
+{% extends "cradmin_email/html_message_base.django.html" %}
+{% load i18n %}
+{% load cradmin_email_tags %}
+{% block contents %}
+    {% trans "Click the button below to accept the invite." %}<br><br>
+
+    {% cradmin_email_primary_buttonlink confirm_invite_url %}
+        {% trans "Accept invite" %}
+    {% end_cradmin_email_primary_buttonlink %}
+{% endblock contents %}

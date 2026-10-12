@@ -1,0 +1,26 @@
+{% extends "django_cradmin/standalone-base.django.html" %}
+{% load static %}
+
+{% block title %}
+    Print on click widget demo
+{% endblock title %}
+
+{% block page-cover-title %}
+    Print on click widget demo
+{% endblock page-cover-title %}
+
+
+{% block content %}
+    <div class="adminui-page-section">
+        <div class="container container--tight">
+            <button type="button" class="button"
+                    data-ievv-jsbase-widget="cradmin-print-on-click">
+                Print
+            </button>
+
+            <p>Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Aenean lacinia bibendum nulla sed consectetur. Sed posuere consectetur est at lobortis. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p>
+
+            <p>Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Maecenas sed diam eget risus varius blandit sit amet non magna. Maecenas sed diam eget risus varius blandit sit amet non magna. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p>
+        </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,76 @@
+{% extends "cradmin_legacy/base.django.html" %}
+{% load i18n %}
+{% load cradmin_legacy_tags %}
+
+{% block bodyclass %}
+    {{ block.super }}
+    cradmin-legacy-listbuilderview-page
+{% endblock %}
+
+{% block title %}
+    {{ pagetitle }}
+{% endblock title %}
+
+{% block pageheader-inner %}
+    <h1>
+        {% block heading %}
+            {{ pageheading }}
+        {% endblock heading %}
+    </h1>
+{% endblock pageheader-inner %}
+
+{% block content %}
+    {% block listbuilderview_pre %}
+        {% if pre_include_template %}
+            {% include pre_include_template %}
+        {% endif %}
+    {% endblock listbuilderview_pre %}
+    <div class="container">
+        {% block listbuilderview_buttons %}
+            {% if buttons_include_template %}
+                <p class="cradmin-legacy-listbuilderview-buttons">
+                    {% include buttons_include_template %}
+                </p>
+            {% endif %}
+        {% endblock listbuilderview_buttons %}
+
+        {% block list %}
+            <div class="cradmin-legacy-listfilter-target"
+                     id="cradmin_legacy_listbuilderview_listwrapper"
+                     aria-live="polite">
+                {% block listbuilder_list_live_area %}
+                    {% if listbuilder_list.has_items %}
+                        {% block listbuilder_list_live_area_has_items %}
+                            {% cradmin_render_renderable listbuilder_list %}
+                            {% block pager %}
+                                {% include "cradmin_legacy/viewhelpers/listbuilderview/includes/loadmorepager.django.html" %}
+                            {% endblock pager %}
+                        {% endblock listbuilder_list_live_area_has_items %}
+                    {% else %}
+                        {% block no-items-wrapper %}
+                            <p class="cradmin-legacy-listing-no-items-message cradmin-legacy-listbuilderview-no-items-message">
+                                {% block no-items-paragraph-contents %}
+                                    {{ no_items_message }}
+                                {% endblock no-items-paragraph-contents %}
+                            </p>
+                        {% endblock no-items-wrapper %}
+                    {% endif %}
+                {% endblock listbuilder_list_live_area %}
+            </div>
+        {% endblock list %}
+    </div>
+    {% block listbuilderview_post %}
+        {% if post_include_template %}
+            {% include post_include_template %}
+        {% endif %}
+    {% endblock listbuilderview_post %}
+{% endblock content %}
+
+{% block outside-bodycontentwrapper %}
+    {{ block.super }}
+    {% if enable_previews %}
+        <div cradmin-legacy-page-preview-wrapper>
+            {% include "cradmin_legacy/pagepreview/includes/pagepreview-fullsize-iframe-wrapper.django.html" %}
+        </div>
+    {% endif %}
+{% endblock outside-bodycontentwrapper %}

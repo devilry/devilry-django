@@ -1,0 +1,22 @@
+{% extends "django_cradmin/standalone-base.django.html" %}
+{% load static %}
+
+{% block title %}
+    Geolocation widget demo
+{% endblock title %}
+
+{% block page-cover-title %}
+    Geolocation widget demo
+{% endblock page-cover-title %}
+
+
+{% block content %}
+    <div class="adminui-page-section">
+        <div class="container container--tight">
+            <span data-ievv-jsbase-widget="cradmin-geolocation"
+                  data-ievv-jsbase-widget-config='{"signalNameSpace": "geolocationdemo"}'></span>
+            <strong data-ievv-jsbase-widget="cradmin-geolocation-debug"
+                    data-ievv-jsbase-widget-config='{"signalNameSpace": "geolocationdemo"}'></strong>
+        </div>
+    </div>
+{% endblock content %}

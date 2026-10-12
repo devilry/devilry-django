@@ -1,0 +1,28 @@
+{% extends "cradmin_legacy/layouts/standalone/focused.django.html" %}
+
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block title %}
+    {% trans "Activate account error" %}
+{% endblock title %}
+
+{% block pageheader-inner %}
+    <h1>
+        {% trans "Activate account error" %}
+    </h1>
+{% endblock pageheader-inner %}
+
+{% block content %}
+    {% if token_does_not_exist %}
+        <div id="cradmin_legacy_activate_account_invalid_token_message" class="alert alert-danger">
+            {% include "cradmin_activate_account/messages/activation-link-invalid.django.html" %}
+        </div>
+    {% endif %}
+
+    {% if token_expired %}
+        <div id="cradmin_legacy_activate_account_expired_message" class="alert alert-warning">
+            {% include "cradmin_activate_account/messages/activation-link-expired.django.html" %}
+        </div>
+    {% endif %}
+{% endblock content %}

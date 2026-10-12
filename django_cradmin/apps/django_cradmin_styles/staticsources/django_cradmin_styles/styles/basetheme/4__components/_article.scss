@@ -1,0 +1,52 @@
+/** Article
+
+Article provides sane default styles to its child elements. It styles
+elements - it DOES NOT override CSS classes.
+
+Article is a wrapper class that is used when you want to style
+some extra things that normally does not have a default style,
+like <ul>.
+
+Example:
+
+    <section class="article">
+        <p>Facilis sit laboriosam officiis sunt quidem asperiores. Id odit et sunt esse sapiente et nam occaecati a. Perferendis fugiat itaque deleniti consequatur nesciunt et explicabo quos quae. Amet itaque consequatur nobis dolor consectetur exercitationem distinctio ea tempore.</p>
+
+        <p>A <a href="#">link here</a>, some <strong>strong text here</strong>, and some <em>emphasized text here</em></p>
+
+        <ul>
+            <li>Item 1</li>
+            <li>Item 2</li>
+            <li>
+                Item 3
+                <ul>
+                    <li>Item 3.1</li>
+                    <li>Item 3.2</li>
+                </ul>
+            </li>
+            <li>Item 4</li>
+        </ul>
+
+        <p><strong>A large list</strong> - styles are not affected since it has a css class - the inner list in item 3 is
+        affected though - it has no class:</p>
+        <ul class="list list--large">
+            <li>Item 1</li>
+            <li>Item 2</li>
+            <li>
+                Item 3
+                <ul>
+                    <li>Item 3.1</li>
+                    <li>Item 3.2</li>
+                </ul>
+            </li>
+            <li>Item 4</li>
+        </ul>
+    </section>
+
+Styleguide components.article
+*/
+.article {
+    ul:not([class]) {
+        @include unordered-list-default();
+    }
+}

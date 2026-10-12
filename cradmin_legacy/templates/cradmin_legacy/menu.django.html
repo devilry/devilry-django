@@ -1,0 +1,70 @@
+{% comment %}
+    Includes the cradmin menu. You can make your view not render the menu by
+    setting the ``cradmin_hide_menu`` context variable to ``True``.
+{% endcomment %}
+{% load i18n %}
+{% load cradmin_legacy_tags %}
+
+{% if not cradmin_hide_menu %}
+    <div id="cradmin_legacy_mainmenu_backdrop"></div>
+    {% block pre-menunav %}{% endblock pre-menunav %}
+    <nav id="cradmin_legacy_mainmenu"
+            cradmin-legacy-menu
+            cradmin-legacy-menu-autodetect-overflow-y="cradmin-legacy-menu-overflow-y"
+            {% block scrollfixed %}
+                {% if CRADMIN_LEGACY_MENU_SCROLL_TOP_FIXED %}
+                    cradmin-legacy-scroll-top-fixed='{{ CRADMIN_LEGACY_MENU_SCROLL_TOP_FIXED|cradmin_jsonencode }}'
+                {% endif %}
+            {% endblock scrollfixed %}
+            class="{% block css-class %}cradmin-legacy-menu{% endblock %}">
+        {% block pre-menu %}{% endblock pre-menu %}
+
+        <div class="cradmin-legacy-menu-mobileheader">
+            {% block mobile-header %}
+                {% block mobile-header-pre %}{% endblock mobile-header-pre %}
+                    <a href="#" role="button"
+                            class="cradmin-legacy-menu-mobiletoggle"
+                            ng-click="cradminMenuTogglePressed()"
+                            ng-class="{'cradmin-legacy-menu-mobile-toggle-button-expanded': cradminMenuDisplay}"
+                            aria-pressed="{% verbatim %}{{ getAriaPressed() }}{% endverbatim %}">
+                        {% block mobile-header-menutoggle-content %}
+                            {% trans "Menu" %}
+                        {% endblock mobile-header-menutoggle-content %}
+                    </a>
+                {% block mobile-header-post %}{% endblock mobile-header-post %}
+            {% endblock mobile-header %}
+        </div>
+
+      <div class="cradmin-legacy-menu-content"
+                ng-class="{'cradmin-legacy-menu-content-display': cradminMenuDisplay}">
+            {% block menucontent %}
+                {% with menu=request.cradmin_instance.get_menu %}
+                    {% if menu.headeritems %}
+                        <ul class="cradmin-legacy-menu-content-header">
+                            {% for menuitem in menu.headeritems %}
+                                {{ menuitem.render|safe }}
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {% if menu.mainitems %}
+                        <ul class="cradmin-legacy-menu-content-main">
+                            {% for menuitem in menu.mainitems %}
+                                {{ menuitem.render|safe }}
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {% if menu.footeritems %}
+                        <ul class="cradmin-legacy-menu-content-footer">
+                            {% for menuitem in menu.footeritems %}
+                                {{ menuitem.render|safe }}
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% endwith %}
+            {% endblock menucontent %}
+        </div>
+
+        {% block post-menu %}{% endblock post-menu %}
+    </nav>
+    {% block post-menunav %}{% endblock post-menunav %}
+{% endif %}

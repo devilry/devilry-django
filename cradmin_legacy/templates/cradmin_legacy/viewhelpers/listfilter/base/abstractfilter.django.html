@@ -1,0 +1,18 @@
+{% block pre %}{% endblock pre %}
+<div id="{{ me.get_dom_id }}" class="{{ me.get_css_classes_string }}">
+    {% block content %}
+        {% block label-outer %}
+            {% if me.get_label %}
+                {% block label-inner %}
+                    <label{% block label-for %} for="{{ me.get_inputfield_dom_id }}"{% endblock %}
+                           id="{{ me.get_label_dom_id }}"
+                           {% if me.get_label_is_screenreader_only %}class="sr-only"{% endif %}>
+                        {{ me.get_label }}
+                    </label>
+                {% endblock label-inner %}
+            {% endif %}
+        {% endblock label-outer %}
+        {% block inputfield %}{% endblock inputfield %}
+    {% endblock content %}
+</div>
+{% block post %}{% endblock post %}

@@ -1,0 +1,178 @@
+/* Breadcrumb item list
+
+The basic components of a breadcrumb is:
+
+```
+.breadcrumb-item-list                  (the outer wrapper)
+    .breadcrumb-item-list__item        (an item in the breadcrumb)
+    .breadcrumb-item-list__separator   (a separator between items in the breadcrumb)
+```
+
+Example: {type: isolated} Basic example
+
+    <nav class="breadcrumb-item-list">
+        <a class="breadcrumb-item-list__item">
+            First
+        </a>
+        <span class="breadcrumb-item-list__separator"></span>
+        <a class="breadcrumb-item-list__item">
+            Second
+        </a>
+        <span class="breadcrumb-item-list__separator"></span>
+        <span class="breadcrumb-item-list__item  breadcrumb-item-list__item--active">
+            Last
+        </span>
+    </nav>
+
+Example: {type: isolated} Only two items - no arrow back before on mobile!
+
+    <nav class="breadcrumb-item-list">
+        <a class="breadcrumb-item-list__item">
+            First
+        </a>
+        <span class="breadcrumb-item-list__separator"></span>
+        <a class="breadcrumb-item-list__item breadcrumb-item-list__item--active">
+            Second
+        </a>
+    </nav>
+
+Example: {type: isolated} Expandable long item labels
+
+    <nav class="breadcrumb-item-list">
+        <a class="breadcrumb-item-list__item">
+            <span class="breadcrumb-item-list__itemlabel-minimized" aria-hidden="true">
+                The fi...
+            </span>
+            <span class="breadcrumb-item-list__itemlabel-full">
+                The first item
+            </span>
+        </a>
+        <span class="breadcrumb-item-list__separator"></span>
+        <a class="breadcrumb-item-list__item">
+            <span class="breadcrumb-item-list__itemlabel-minimized" aria-hidden="true">
+                The se...
+            </span>
+            <span class="breadcrumb-item-list__itemlabel-full">
+                The second item
+            </span>
+        </a>
+        <span class="breadcrumb-item-list__separator"></span>
+        <span class="breadcrumb-item-list__item  breadcrumb-item-list__item--active">
+            <span class="breadcrumb-item-list__itemlabel-minimized" aria-hidden="true">
+                The la...
+            </span>
+            <span class="breadcrumb-item-list__itemlabel-full">
+                The last item
+            </span>
+        </span>
+    </nav>
+
+Example: {type: isolated} Content before and after
+
+    Before the breadcrumb!
+    <nav class="breadcrumb-item-list">
+        <a class="breadcrumb-item-list__item">
+            First
+        </a>
+        <span class="breadcrumb-item-list__separator"></span>
+        <a class="breadcrumb-item-list__item">
+            Second
+        </a>
+        <span class="breadcrumb-item-list__separator"></span>
+        <span class="breadcrumb-item-list__item  breadcrumb-item-list__item--active">
+            Last
+        </span>
+    </nav>
+    After the breadcrumb!
+
+Example: {type: isolated} Light variant
+
+    <div style="background-color: #000;">
+        <nav class="breadcrumb-item-list  breadcrumb-item-list--light">
+            <a class="breadcrumb-item-list__item">
+                First
+            </a>
+            <span class="breadcrumb-item-list__separator"></span>
+            <a class="breadcrumb-item-list__item">
+                Second
+            </a>
+            <span class="breadcrumb-item-list__separator"></span>
+            <span class="breadcrumb-item-list__item breadcrumb-item-list__item--active">
+                Last
+            </span>
+        </nav>
+    </div>
+
+Styleguide components.breadcrumb-item-list
+*/
+.breadcrumb-item-list {
+    @include breadcrumb-item-list-mixin();
+}
+
+
+/* Breadcrumb item list wrapper
+
+Used to wrap a .breadcrumb-item-list when it is shown on a separate line.
+
+Example: {type: isolated} Simple
+
+    <div class="breadcrumb-item-list-wrapper">
+        <div class="container container--wide">
+            <nav class="breadcrumb-item-list">
+                <a class="breadcrumb-item-list__item">
+                    First
+                </a>
+                <span class="breadcrumb-item-list__separator"></span>
+                <a class="breadcrumb-item-list__item">
+                    Second
+                </a>
+                <span class="breadcrumb-item-list__separator"></span>
+                <span class="breadcrumb-item-list__item  breadcrumb-item-list__item--active">
+                    Last
+                </span>
+            </nav>
+        </div>
+    </div>
+
+Example: {type: isolated} With page header and content below
+
+    <header class="adminui-page-header">
+        <div class="adminui-page-header__content">
+            <a class="adminui-page-header__brand">
+                <span class="adminui-page-header__brandname">My brand</span>
+            </a>
+        </div>
+    </header>
+
+    <div class="breadcrumb-item-list-wrapper">
+        <div class="container container--wide">
+            <nav class="breadcrumb-item-list">
+                <a class="breadcrumb-item-list__item">
+                    First
+                </a>
+                <span class="breadcrumb-item-list__separator"></span>
+                <a class="breadcrumb-item-list__item">
+                    Second
+                </a>
+                <span class="breadcrumb-item-list__separator"></span>
+                <span class="breadcrumb-item-list__item  breadcrumb-item-list__item--active">
+                    Last
+                </span>
+            </nav>
+        </div>
+    </div>
+    <div class="adminui-page-section">
+        <div class="container container--tight">
+            <p>
+                Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
+            </p>
+        </div>
+    </div>
+
+Styleguide components.breadcrumb-item-list.wrapper
+*/
+.breadcrumb-item-list-wrapper {
+    background-color: $color-light;
+    padding-top: $spacing--small;
+    padding-bottom: $spacing--small;
+}

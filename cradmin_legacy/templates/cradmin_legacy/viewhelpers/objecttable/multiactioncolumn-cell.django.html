@@ -1,0 +1,8 @@
+{% if value %}
+    <p class="objecttable-cellvalue">{{ value }}</p>
+{% endif %}
+<p class="objecttable-cellbuttons">
+    {% for button in buttons %}
+        {{ button.render }}
+    {% endfor %}
+</p>

@@ -1,0 +1,7 @@
+{% load cradmin_tags %}
+
+<div class="{{ me.css_classes }}">
+    {% block content %}
+        {% cradmin_render_renderable me.inneritem %}
+    {% endblock content %}
+</div>

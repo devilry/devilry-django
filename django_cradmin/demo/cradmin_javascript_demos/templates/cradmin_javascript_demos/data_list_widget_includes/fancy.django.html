@@ -1,0 +1,163 @@
+<div class="adminui-page-section">
+    <div class="container">
+        <h2>Fancy</h2>
+        <div data-ievv-jsbase-widget="cradmin-api-data-list"
+             data-ievv-jsbase-widget-config='{
+                 "signalNameSpace": "apitest",
+                 "multiselect": true,
+                 "selectedKeys": [1],
+                 "apiUrl": "{% url 'cradmin_javascript_demos_api:fictional-figures-list' %}",
+                 "filters": {
+                    "is_godlike": "true"
+                 }
+             }'>
+        </div>
+        <div data-ievv-jsbase-widget="cradmin-signal-router"
+             data-ievv-jsbase-widget-config='{
+                 "signalNameSpace": "apitest",
+                 "signalMap": {
+                    "SearchDownKey": ["FocusOnFirstSelectableItem"],
+                    "FocusBeforeFirstSelectableItem": ["FocusOnSearchField"],
+                    "CouldNotFocusOnClosestSelectedItem": ["FocusOnSearchField"],
+                    "CouldNotFocusOnClosestSelectableItem": ["FocusOnSearchField"],
+                    "LoadMoreButtonClick": ["FocusOnLastSelectableItem"]
+                 }
+             }'>
+        </div>
+        <p data-ievv-jsbase-widget="cradmin-data-list-display-by-state"
+           data-ievv-jsbase-widget-config='{
+                 "signalNameSpace": "apitest",
+                 "showStates": ["IsInitializingDataList"]
+             }'>
+            Loading
+        </p>
+        <p data-ievv-jsbase-widget="cradmin-data-list-display-by-state"
+           style="display: none"
+           data-ievv-jsbase-widget-config='{
+                 "signalNameSpace": "apitest",
+                 "showStates": ["UnfilteredIsEmpty"]
+             }'>
+            Empty dataset!
+        </p>
+        <span data-ievv-jsbase-widget="cradmin-hidden-input-list"
+           data-ievv-jsbase-widget-config='{
+             "signalNameSpace": "apitest",
+             "inputName": "apitest"
+         }'>
+            {% comment %}
+                You can pre-render the hidden fields here to avoid
+                problems when users submit the form before the javascript
+                has finished loading.
+            {% endcomment %}
+        </span>
+
+        <div data-ievv-jsbase-widget="cradmin-data-list-display-by-state"
+             style="display: none"
+             data-ievv-jsbase-widget-config='{
+                 "signalNameSpace": "apitest",
+                 "showStates": ["IsNotInitializingDataList"],
+                 "hideStates": ["UnfilteredIsEmpty"]
+             }'>
+            <div data-ievv-jsbase-widget="cradmin-filter-checkbox"
+                 data-ievv-jsbase-widget-config='{
+                 "signalNameSpace": "apitest",
+                 "filterKey": "is_godlike",
+                 "label": "Is godlike?"
+             }'>
+            </div>
+            <div data-ievv-jsbase-widget="cradmin-filter-radio-button-with-custom-choice"
+                 data-ievv-jsbase-widget-config='{
+                     "signalNameSpace": "apitest",
+                     "filterKey": "rating",
+                     "customInputLabel": "enter rating",
+                     "inputName": "rating_radio",
+                     "initialValue": 0,
+                     "optionsList": [
+                        {
+                            "value": 0,
+                            "label": "all"
+                        }, {
+                            "value": 10,
+                            "label": "poor"
+                        }, {
+                            "value": 50,
+                            "label": "decent"
+                        }, {
+                            "value": 100,
+                            "label": "ok"
+                        }, {
+                            "value": 200,
+                            "label": "getting there"
+                        }, {
+                            "value": 300,
+                            "label": "good"
+                        }, {
+                            "value": 400,
+                            "label": "better"
+                        }, {
+                            "value": 500,
+                            "label": "awesome"
+                        }, {
+                            "value": 1000,
+                            "label": "legendary"
+                        }
+                     ]
+                 }'>
+            </div>
+            <div data-ievv-jsbase-widget="cradmin-selected-list"
+                 data-ievv-jsbase-widget-config='{
+                     "signalNameSpace": "apitest",
+                     "itemComponentProps": {
+                        "renderMode": "TitleAndDescription"
+                     }
+                 }'>
+            </div>
+            <div data-ievv-jsbase-widget="cradmin-search-input"
+                 data-ievv-jsbase-widget-config='{
+                     "signalNameSpace": "apitest"
+                 }'></div>
+            <div data-ievv-jsbase-widget="cradmin-selectable-list"
+                 data-ievv-jsbase-widget-config='{
+                     "signalNameSpace": "apitest",
+                     "renderSelected": false,
+                     "itemComponentProps": {
+                         "renderMode": "TitleAndDescription",
+                         "useHotKeys": true
+                     }
+                 }'>
+            </div>
+            <div data-ievv-jsbase-widget="cradmin-data-list-display-by-state"
+                 style="display: none"
+                 class="text-center"
+                 data-ievv-jsbase-widget-config='{
+                     "signalNameSpace": "apitest",
+                     "showStates": ["HasNextPage"],
+                     "hideStates": ["IsLoading"]
+                 }'>
+                <span data-ievv-jsbase-widget="cradmin-load-more-button"
+                      data-ievv-jsbase-widget-config='{
+                          "signalNameSpace": "apitest",
+                          "label": "Load more"
+                      }'></span>
+
+            </div>
+            <p data-ievv-jsbase-widget="cradmin-data-list-display-by-state"
+               style="display: none"
+               data-ievv-jsbase-widget-config='{
+                 "signalNameSpace": "apitest",
+                 "showStates": ["IsLoading"]
+             }'>
+                Loading...
+            </p>
+            <p data-ievv-jsbase-widget="cradmin-data-list-display-by-state"
+               style="display: none"
+               data-ievv-jsbase-widget-config='{
+                 "signalNameSpace": "apitest",
+                 "showStates": ["FilteredIsEmpty"],
+                 "hideStates": ["IsLoading"]
+             }'>
+                No matches!
+            </p>
+        </div>
+    </div>
+</div>

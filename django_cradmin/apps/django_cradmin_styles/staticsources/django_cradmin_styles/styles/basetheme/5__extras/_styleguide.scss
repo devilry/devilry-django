@@ -1,0 +1,514 @@
+@import 'pygments';
+
+$kss-header-height: vertical-space(50px);
+$kss-controls-height: vertical-space(20px);
+
+.kss-content {
+    padding-top: $kss-header-height + $kss-controls-height + $vertical-rythm--spacing;
+}
+
+.kss-header {
+    display: flex;
+    position: fixed;
+    z-index: 3;
+    padding: 0 $spacing;
+    top: 0;
+    left: 0;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    height: $kss-header-height;
+    color: $color-light;
+    background-color: $color-dark;
+    // box-shadow: $shadow--weak;
+
+    &__title {
+        @include font-size(small);
+        margin: 0;
+        color: inherit;
+    }
+
+    &__title-link {
+        color: inherit;
+        border: 0;
+    }
+
+    &__menu {
+        .icon-hamburger {
+            margin-top: 2px;
+            margin-right: $unit;
+        }
+    }
+}
+
+.kss-menu {
+    display: none;
+    position: fixed;
+    z-index: 4;
+    top: $kss-header-height;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    color: $color-light;
+    background-color: $color-dark;
+    overflow: auto;
+
+    &--show {
+        display: block;
+    }
+
+    &__content {
+        max-width: $container-width;
+        margin: 0 auto;
+        padding: $vertical-rythm--spacing $spacing;
+        column-count: 2;
+        column-gap: $spacing;
+
+        @include min-width(md) {
+            column-count: 2;
+        }
+
+        @include min-width(lg) {
+            column-count: 3;
+            column-gap: $spacing--large;
+        }
+    }
+
+    &__item {
+        break-inside: avoid-column;
+        break-after: avoid-column;
+        display: block;
+
+        &--level0 {
+            margin-top: ($vertical-rythm--spacing / 2);
+            margin-bottom: ($vertical-rythm--spacing / 2);
+        }
+
+        &--level1 {
+            @include font-size(small);
+            @include font(base, normal);
+        }
+    }
+
+    &__link {
+        @include font(base, normal);
+        color: $color-light;
+        border: 0;
+
+        // All levels except 0 and 1 uses xsmall font size
+        @include font-size(xsmall);
+
+        &--level0 {
+            @include font(header, bold);
+            @include font-size(large);
+        }
+
+        &--level1 {
+            @include font-size(small);
+        }
+
+        &:hover,
+        &:focus {
+            color: color(primary);
+        }
+    }
+
+    &__ref {
+        @include font(header, normal);
+        @include font-size(xsmall);
+        display: inline-block;
+        color: rgba($color-light, 0.7);
+        width: $indention;
+        text-align: right;
+    }
+}
+
+.kss-sizer {
+    position: fixed;
+    z-index: 3;
+    top: $kss-header-height;
+    width: 100%;
+    height: $kss-controls-height;
+    line-height: $kss-controls-height + 2;
+    background-color: color(neutral, light);
+    box-shadow: 0 1px 0 shade(color(neutral, light), 15%);
+
+    &__item {
+        position: absolute;
+        height: 0;
+        top: 0;
+        left: 0;
+        width: 100%;
+    }
+
+    &__sizer {
+        @include font(mono);
+        @include font-size(xsmall, true);
+        line-height: inherit;
+        display: flex;
+        justify-content: space-between;
+        margin: 0 auto;
+        height: $kss-controls-height;
+        padding-left: $unit;
+        padding-right: $unit;
+        border: 0;
+        border-left: 1px solid shade(color(neutral, light), 18%);
+        border-right: 1px solid shade(color(neutral, light), 18%);
+        outline: 0;
+        color: inherit;
+        background-color: transparent;
+
+        &:hover,
+        &:focus {
+            background-color: shade(color(neutral, light), 20%);
+            border-color: shade(color(neutral, light), 18%);
+        }
+
+        &--selected {
+            &,
+            &:hover,
+            &:focus {
+                background-color: shade(color(neutral, light), 10%);
+            }
+        }
+    }
+}
+
+.kss-description {
+    margin-bottom: $vertical-rythm--spacing;
+    // max-width: $container-width--tight;
+
+    code {
+        white-space: nowrap;
+    }
+
+    ul {
+        @extend %list;
+    }
+}
+
+.kss-section {
+    margin: $vertical-rythm--spacing auto;
+    padding: $vertical-rythm--spacing $spacing;
+    border-top: $border-width solid color(neutral, light);
+
+    @include min-width(lg) {
+        max-width: $container-width--tight;
+        padding: $vertical-rythm--spacing 0;
+    }
+
+    &--depth-1 {
+        border: 0;
+        margin-top: 0;
+    }
+}
+
+.kss-title {
+    &--level-1 {
+        @include font-size(xlarge);
+        border: 0;
+    }
+
+    &--level-2 {
+        @include font-size(large);
+    }
+
+    &--level-3 {
+        @include font-size(large);
+    }
+
+    &--level-4 {
+        @include font-size(small);
+    }
+}
+
+.sg-font-base {
+    &:before {
+        @include font(base, bold);
+        display: block;
+        content: '#{map-get(map-get($fonts, base), font)}';
+    }
+
+    &:after {
+        @include font(base, bold);
+        display: block;
+        content: '#{map-get(map-get($fonts, base), fallback)}';
+    }
+}
+
+.sg-font-header {
+    &:before {
+        @include font(header, bold);
+        display: block;
+        content: '#{map-get(map-get($fonts, header), font)}';
+    }
+
+    &:after {
+        @include font(header, bold);
+        display: block;
+        content: '#{map-get(map-get($fonts, header), fallback)}';
+    }
+}
+
+.sg-font-mono {
+    &:before {
+        @include font(mono, bold);
+        display: block;
+        content: '#{map-get(map-get($fonts, mono), font)}';
+    }
+
+    &:after {
+        @include font(mono, bold);
+        display: block;
+        content: '#{map-get(map-get($fonts, mono), fallback)}';
+    }
+}
+
+.sg-colors {
+    display: flex;
+
+    & > li {
+        padding: 0 !important;
+
+        &:before {
+            display: none;
+        }
+    }
+
+    &__item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100px;
+        height: 100px;
+
+        @each $item, $colorgroup in $colors {
+            @each $sub, $color in $colorgroup {
+                &--#{$item} {
+                    &--#{$sub} {
+                        @if ($color) {
+                            color: color-contrast($color);
+                        }
+                        background-color: #{$color};
+
+                        &:before {
+                            content: '#{$sub}';
+                        }
+
+                        &:after {
+                            content: '#{$color}';
+                        }
+                    }
+                }
+            }
+        }
+
+        &--info {
+            color: color-contrast($color-info);
+            background-color: $color-info;
+
+            &:before {
+                content: 'Info';
+            }
+
+            &:after {
+                content: '#{$color-info}';
+            }
+        }
+
+        &--success {
+            color: color-contrast($color-success);
+            background-color: $color-success;
+
+            &:before {
+                content: 'Success';
+            }
+
+            &:after {
+                content: '#{$color-success}';
+            }
+        }
+    }
+}
+
+.sg-size {
+    width: $spacing;
+    height: $spacing;
+    border: $border-width--small dotted color(neutral);
+
+    &--small {
+        width: $spacing--small;
+        height: $spacing--small;
+    }
+
+    &--base {
+        margin-top: $spacing + $spacing;
+        // ...
+    }
+
+    &--large {
+        margin-top: $spacing + $spacing;
+        width: $spacing--large;
+        height: $spacing--large;
+    }
+
+    &--xlarge {
+        margin-top: $spacing + $spacing;
+        width: $spacing--xlarge;
+        height: $spacing--xlarge;
+    }
+}
+
+.kss-usage__preview-wrapper {
+    @extend %full-width;
+    padding-bottom: $spacing;
+    background-color: color(neutral, light);
+}
+
+.kss-usage__preview-content {
+    margin: 0 auto;
+}
+
+.kss-usage__new-window {
+    @include font-size(xsmall);
+    position: relative;
+    top: -8px;
+    text-align: center;
+}
+
+.kss-usage__header {
+    @extend %full-width;
+    padding: $spacing $spacing $spacing--small;
+    text-align: center;
+    background-color: color(neutral, light);
+}
+
+.kss-usage__subtitle {
+    margin-bottom: $spacing--small;
+}
+
+// Code styles
+.kss-usage {
+    .kss-usage__markuptitle {
+        margin-bottom: 5px;
+    }
+
+    .kss-usage__code,
+    .kss-usage__preview {
+        padding: $spacing--small;
+        background-color: $color-background;
+        border: $border-width--small solid color(neutral);
+    }
+
+    .kss-usage__previewiframe {
+
+        iframe {
+            width: 100%;
+            border: $border-width--small solid color(neutral);
+        }
+    }
+
+    .kss-usage__example {
+        &--with-preview {
+            position: relative;
+
+            .kss-usage__code {
+                display: none;
+            }
+
+            .kss-usage__preview {
+                display: none;
+            }
+
+            .kss-usage__previewiframe {
+                display: none;
+            }
+        }
+
+        &--showcode {
+            .kss-usage__code {
+                display: block;
+            }
+
+            .kss-usage__preview {
+                display: none;
+            }
+
+            .kss-usage__previewiframe {
+                display: none;
+            }
+        }
+
+        &--showpreview {
+            .kss-usage__code {
+                display: none;
+            }
+
+            .kss-usage__preview {
+                display: block;
+            }
+
+            .kss-usage__previewiframe {
+                display: block;
+            }
+        }
+    }
+}
+
+// Code style
+.kss-description {
+    code {
+        @include font-size(xsmall);
+        font-family: Menlo, 'Ubuntu Mono', 'Lucida Console', 'Courier New', Courier, monospace;
+        // color: $color-text;
+        color: #CC315F;
+        font-weight: normal;
+        border: 1px solid color(neutral, light);
+        border-radius: 4px;
+        padding: 2px #{$unit + 2};
+        padding-right: 0; // TODO: Untill we get the extra space removed
+        // margin-right: $unit;
+        background-color: $color-light;
+
+        // &:last-child {
+        //     padding-right: $unit + 2;
+        // }
+    }
+}
+
+.kss-separator {
+    margin: $spacing 0;
+}
+
+.codehilite {
+    @include font-size(xsmall);
+    font-family: Menlo, 'Ubuntu Mono', 'Lucida Console', 'Courier New', Courier, monospace;
+    font-weight: 600;
+}
+
+.sg-icon-grid {
+    display: flex;
+    flex-wrap: wrap;
+
+    &__item {
+        padding: $spacing 0 0;
+        width: calc(25% - #{$unit});
+        text-align: center;
+        margin-bottom: $unit;
+        background-color: shade($color-background, 5%);
+        margin-right: $unit;
+
+        code {
+            display: block;
+            margin-top: $spacing--small;
+
+            font-size: 0.65em;
+
+            @include min-width(md) {
+                font-size: 0.65em;
+            }
+            // border: $border-style--small;
+        }
+    }
+}

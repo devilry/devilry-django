@@ -1,0 +1,242 @@
+<div class="cradmin-legacy-datetime-selector"
+        ng-class="{
+            'cradmin-legacy-datetime-selector-show': page != null,
+            'cradmin-legacy-datetime-selector-page1': page == 1,
+            'cradmin-legacy-datetime-selector-page2': page == 2,
+            'cradmin-legacy-datetime-selector-page3': page == 3,
+            'cradmin-legacy-datetime-selector-has-shortcuts': hasShortcuts()
+        }">
+
+    <div class="cradmin-legacy-datetime-selector-backdrop"></div>
+
+    <div class="cradmin-legacy-datetime-selector-contentwrapper">
+        <div class="cradmin-legacy-datetime-selector-closeoverlay" ng-click="hide()"></div>
+        <div class="cradmin-legacy-datetime-selector-page cradmin-legacy-datetime-selector-dateview">
+            <button type="button" class="sr-only" ng-focus="onFocusHead()"></button>
+            <button type="button"
+                    class="btn btn-link cradmin-legacy-datetime-selector-closebutton"
+                    aria-label="{{ config.close_screenreader_text }}"
+                    ng-click="hide()">
+                        <span class="{{ config.close_icon }}" aria-hidden="true"></span>
+                    </button>
+
+            <div class="cradmin-legacy-datetime-selector-selectors-wrapper">
+                <div class="cradmin-legacy-datetime-selector-selectors">
+                    <div class="cradmin-legacy-datetime-selector-dateselectors">
+                        <label class="cradmin-legacy-datetime-selector-date-label" ng-if="config.date_label_text">
+                            {{ config.date_label_text }}
+                        </label>
+                        <label for="{{ config.destinationfieldid }}_dayselect" class="sr-only">
+                            {{ config.day_screenreader_text }}
+                        </label>
+                        <select id="{{ config.destinationfieldid }}_dayselect"
+                                class="form-control cradmin-legacy-datetime-selector-dayselect"
+                                ng-model="monthlyCalendarCoordinator.currentDayObject"
+                                ng-options="dayobject.label for dayobject in monthlyCalendarCoordinator.dayobjects track by dayobject.value"
+                                ng-change="onSelectDayNumber()">
+                        </select>
+
+                        <label for="{{ config.destinationfieldid }}_monthselect" class="sr-only">
+                            {{ config.month_screenreader_text }}
+                        </label>
+                        <select id="{{ config.destinationfieldid }}_monthselect"
+                                class="form-control cradmin-legacy-datetime-selector-monthselect"
+                                ng-model="monthlyCalendarCoordinator.currentMonthObject"
+                                ng-options="monthobject.label for monthobject in monthlyCalendarCoordinator.monthselectConfig track by monthobject.value"
+                                ng-change="onSelectMonth()">
+                        </select>
+
+                        <label for="{{ config.destinationfieldid }}_yearselect" class="sr-only">
+                            {{ config.year_screenreader_text }}
+                        </label>
+                        <select id="{{ config.destinationfieldid }}_yearselect"
+                                class="form-control cradmin-legacy-datetime-selector-yearselect"
+                                ng-model="monthlyCalendarCoordinator.currentYearObject"
+                                ng-options="yearobject.label for yearobject in monthlyCalendarCoordinator.yearselectConfig track by yearobject.value"
+                                ng-change="onSelectYear()">
+                        </select>
+                    </div>
+
+                    <div class="cradmin-legacy-datetime-selector-timeselectors" ng-if="config.include_time">
+                        <label class="cradmin-legacy-datetime-selector-time-label" ng-if="config.time_label_text">
+                            {{ config.time_label_text }}
+                        </label>
+                        <label for="{{ config.destinationfieldid }}_hourselect" class="sr-only">
+                            {{ config.hour_screenreader_text }}
+                        </label>
+                        <select id="{{ config.destinationfieldid }}_hourselect"
+                                class="form-control cradmin-legacy-datetime-selector-hourselect"
+                                ng-model="monthlyCalendarCoordinator.currentHourObject"
+                                ng-options="hourobject.label for hourobject in monthlyCalendarCoordinator.hourselectConfig track by hourobject.value"
+                                ng-change="onSelectHour()">
+                        </select>
+                        :
+                        <label for="{{ config.destinationfieldid }}_minuteselect" class="sr-only">
+                            {{ config.minute_screenreader_text }}
+                        </label>
+                        <select id="{{ config.destinationfieldid }}_minuteselect"
+                                class="form-control cradmin-legacy-datetime-selector-minuteselect"
+                                ng-model="monthlyCalendarCoordinator.currentMinuteObject"
+                                ng-options="minuteobject.label for minuteobject in monthlyCalendarCoordinator.minuteselectConfig track by minuteobject.value"
+                                ng-change="onSelectMinute()">
+                        </select>
+                    </div>
+
+                    <button type="button"
+                            class="btn btn-primary cradmin-legacy-datetime-selector-use-button"
+                            ng-click="onClickUseTime()"
+                            aria-label="{{ getUseButtonAriaLabel() }}">
+                        {{ config.usebuttonlabel }}
+                    </button>
+                </div>
+            </div>
+
+            <table class="cradmin-legacy-datetime-selector-table">
+                <caption class="sr-only">
+                    {{ config.dateselector_table_screenreader_caption }}
+                </caption>
+                <thead>
+                    <tr>
+                        <th ng-repeat="weekday in monthlyCalendarCoordinator.shortWeekdays">
+                            {{ weekday }}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="calendarWeek in monthlyCalendarCoordinator.calendarMonth.calendarWeeks">
+                        <td ng-repeat="calendarDay in calendarWeek.calendarDays"
+                                class="cradmin-legacy-datetime-selector-daybuttoncell"
+                                ng-class="{
+                                    'cradmin-legacy-datetime-selector-daybuttoncell-not-in-current-month': !calendarDay.isInCurrentMonth,
+                                    'cradmin-legacy-datetime-selector-daybuttoncell-in-current-month': calendarDay.isInCurrentMonth,
+                                    'cradmin-legacy-datetime-selector-daybuttoncell-selected': calendarDay.momentObject.isSame(calendarCoordinator.selectedMomentObject, 'day'),
+                                    'cradmin-legacy-datetime-selector-daybuttoncell-lastfocused': calendarDay.momentObject.isSame(monthlyCalendarCoordinator.getLastFocusedMomentObject(), 'day'),
+                                    'cradmin-legacy-datetime-selector-daybuttoncell-today': calendarDay.isToday(),
+                                    'cradmin-legacy-datetime-selector-daybuttoncell-disabled': calendarDay.isDisabled()
+                                }">
+                            <button type="button" class="btn btn-link cradmin-legacy-datetime-selector-daybuttoncell-button"
+                                    ng-click="onClickCalendarDay(calendarDay)"
+                                    tabindex="{{ getTabindexForCalendarDay(calendarDay) }}"
+                                    ng-focus="onFocusCalendayDay(calendarDay)"
+                                    aria-label="{{ getDaybuttonAriaLabel(calendarDay) }}"
+                                    ng-disabled="{{ calendarDay.isDisabled() }}">
+                                {{ monthlyCalendarCoordinator.getDayOfMonthLabelForTableCell(calendarDay) }}
+                                <span class="cradmin-legacy-datetime-selector-daybuttoncell-label
+                                             cradmin-legacy-datetime-selector-daybuttoncell-label-today"
+                                        ng-if="config.today_label_text &amp;&amp; calendarDay.isToday()">
+                                    {{ config.today_label_text }}
+                                </span>
+                                <span class="cradmin-legacy-datetime-selector-daybuttoncell-label
+                                             cradmin-legacy-datetime-selector-daybuttoncell-label-selected"
+                                        ng-if="
+                                            config.selected_day_label_text &amp;&amp;
+                                            calendarDay.momentObject.isSame(calendarCoordinator.selectedMomentObject, 'day')">
+                                    {{ config.selected_day_label_text }}
+                                </span>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="cradmin-legacy-datetime-selector-shortcuts" ng-if="hasShortcuts()">
+                <button type="button"
+                        class="btn btn-default cradmin-legacy-datetime-selector-shortcuts-todaybutton"
+                        ng-if="calendarCoordinator.todayIsValidValue()"
+                        ng-click="onClickTodayButton()">
+                    {{ config.today_button_text }}
+                </button>
+                <button type="button"
+                        class="btn btn-default cradmin-legacy-datetime-selector-shortcuts-nowbutton"
+                        ng-if="calendarCoordinator.nowIsValidValue()"
+                        ng-click="onClickNowButton()">
+                    {{ config.now_button_text }}
+                </button>
+                <button type="button"
+                        class="btn btn-danger cradmin-legacy-datetime-selector-shortcuts-clearbutton"
+                        ng-if="!config.required"
+                        ng-click="onClickClearButton()">
+                    {{ config.clear_button_text }}
+                </button>
+            </div>
+
+            <button type="button" class="sr-only" ng-focus="onFocusTail()"></button>
+        </div>
+
+        <div class="cradmin-legacy-datetime-selector-page cradmin-legacy-datetime-selector-timeview">
+            <button type="button" class="sr-only" ng-focus="onFocusHead()"></button>
+            <button type="button"
+                    class="btn btn-link cradmin-legacy-datetime-selector-closebutton"
+                    aria-label="{{ config.close_screenreader_text }}"
+                    ng-click="hide()">
+                        <span class="{{ config.close_icon }}" aria-hidden="true"></span>
+                    </button>
+
+            <button type="button"
+                    class="btn btn-link cradmin-legacy-datetime-selector-backbutton"
+                    tabindex="0"
+                    aria-label="{{ config.back_to_datepicker_screenreader_text }}"
+                    ng-click="showPage1()">
+                <span class="cradmin-legacy-datetime-selector-backbutton-icon-outer-wrapper">
+                    <span class="cradmin-legacy-datetime-selector-backbutton-icon-inner-wrapper">
+                        <span class="cradmin-legacy-datetime-selector-backbutton-icon {{ config.back_icon }}"></span>
+                    </span>
+                </span>
+            </button>
+
+            <div class="cradmin-legacy-datetime-selector-timeview-body-wrapper">
+                <div class="cradmin-legacy-datetime-selector-timeview-body">
+                    <p class="cradmin-legacy-datetime-selector-datepreview">
+                        {{ getTimeselectorDatepreview() }}
+                    </p>
+                    <div class="cradmin-legacy-datetime-selector-timeselectors">
+                        <form class="form-inline">
+                            <label class="cradmin-legacy-datetime-selector-time-label" ng-if="config.time_label_text">
+                                {{ config.time_label_text }}
+                            </label>
+                            <label for="{{ config.destinationfieldid }}_hourselect_page2" class="sr-only">
+                                {{ config.hour_screenreader_text }}
+                            </label>
+                            <select id="{{ config.destinationfieldid }}_hourselect_page2"
+                                    class="form-control cradmin-legacy-datetime-selector-hourselect"
+                                    ng-model="monthlyCalendarCoordinator.currentHourObject"
+                                    ng-options="hourobject.label for hourobject in monthlyCalendarCoordinator.hourselectConfig track by hourobject.value"
+                                    ng-change="onSelectHour()">
+                            </select>
+                            :
+                            <label for="{{ config.destinationfieldid }}_minuteselect_page2" class="sr-only">
+                                {{ config.minute_screenreader_text }}
+                            </label>
+                            <select id="{{ config.destinationfieldid }}_minuteselect_page2"
+                                    class="form-control cradmin-legacy-datetime-selector-minuteselect"
+                                    ng-model="monthlyCalendarCoordinator.currentMinuteObject"
+                                    ng-options="minuteobject.label for minuteobject in monthlyCalendarCoordinator.minuteselectConfig track by minuteobject.value"
+                                    ng-change="onSelectMinute()">
+                            </select>
+                            <button type="button"
+                                    class="btn btn-primary cradmin-legacy-datetime-selector-use-button"
+                                    ng-click="onClickUseTime()"
+                                    aria-label="{{ getUseButtonAriaLabel() }}">
+                                {{ config.usebuttonlabel }}
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+
+                <div class="cradmin-legacy-datetime-selector-shortcuts" ng-if="hasShortcuts()">
+                    <button type="button"
+                            class="btn btn-default cradmin-legacy-datetime-selector-shortcuts-nowbutton"
+                            ng-click="onClickNowButton()"
+                            ng-if="calendarCoordinator.shownDateIsTodayAndNowIsValid()">
+                        {{ config.now_button_text }}
+                    </button>
+                </div>
+
+            </div>
+
+
+            <button type="button" class="sr-only" ng-focus="onFocusTail()"></button>
+        </div>
+    </div>
+</div>

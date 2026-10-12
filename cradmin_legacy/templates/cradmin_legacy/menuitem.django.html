@@ -1,0 +1,37 @@
+{% block contentwrapper %}
+    <li {% block extra-list-item-attributes %}{% endblock %}
+            class="
+                {% if menuitem.is_active %}cradmin-legacy-menu-activeitem{% endif %}
+                {% if menuitem.is_expanded %}cradmin-legacy-menu-expandeditem{% endif %}
+                {{ menuitem.get_item_css_class }}
+                {% block extraclasses %}{{ menuitem.extra_css_classes }}{% endblock extraclasses %}">
+        {% block list-item-content %}
+            {% if menuitem.is_active and menuitem.get_active_item_wrapper_tag %}
+                <{{ menuitem.get_active_item_wrapper_tag }} class="cradmin-legacy-menu-activeitemwrapper">
+            {% endif %}
+            <a href="{{ menuitem.url }}"
+                    title="{{ menuitem.get_title }}"
+                    class="{{ menuitem.get_link_css_class }}"
+                    {% block extra-link-attributes %}{% endblock %}
+                    {% if menuitem.open_new_window %}target="_blank"{% endif %}>
+                {% block link-label %}
+                    {{ menuitem.label }}
+                {% endblock link-label %}
+            </a>
+            {% if menuitem.is_active and menuitem.get_active_item_wrapper_tag %}
+                </{{ menuitem.get_active_item_wrapper_tag }}>
+            {% endif %}
+        {% endblock list-item-content %}
+        {% block child-items-nav %}
+            {% if menuitem.has_childitems and menuitem.is_expanded %}
+                <nav class="cradmin-legacy-menu-childitems">
+                    <ul>
+                        {% for childitem in menuitem.childitems %}
+                            {{ childitem.render|safe }}
+                        {% endfor %}
+                    </ul>
+                </nav>
+            {% endif %}
+        {% endblock child-items-nav %}
+    </li>
+{% endblock contentwrapper %}

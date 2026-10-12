@@ -1,0 +1,89 @@
+//.medium-editor-toolbar.medium-editor-toolbar {
+//    border-radius: $border-radius;
+//    background-color: color(secondary, dark);
+//}
+//
+//.medium-editor-toolbar-actions {
+//    @include font-size(small);
+//    overflow: hidden;
+//    border-radius: $border-radius;
+//    // background-color: color(secondary, dark);
+//}
+//
+//.medium-toolbar-arrow-under.medium-toolbar-arrow-under:after {
+//    border: 0;
+//    width: $unit * 2;
+//    height: $unit * 2;
+//    bottom: -($unit);
+//    background-color: color(secondary, dark);
+//
+//    transform: rotate(45deg);
+//}
+//
+//.medium-editor-action.medium-editor-action {
+//    @include font(base, bold);
+//    @include font-size(smallcaps);
+//    position: relative;
+//    z-index: 2;
+//    padding: vertical-space() $spacing--small;
+//
+//    &:hover,
+//    &:focus,
+//    &.medium-editor-button-active {
+//        background-color: color(primary);
+//    }
+//}
+//
+//.medium-editor-toolbar-form.medium-editor-toolbar-form input {
+//    @include font(base, normal);
+//    @include font-size(small);
+//    position: relative;
+//    z-index: 2;
+//    padding: vertical-space() $spacing--small;
+//    border: $border-width solid color(secondary, dark) !important;
+//    border-top-left-radius: $border-radius;
+//    border-bottom-left-radius: $border-radius;
+//}
+//
+//.medium-editor-toolbar-save,
+//.medium-editor-toolbar-close {
+//    position: relative;
+//    color: transparent !important;
+//    height: 32px;
+//}
+//
+//.medium-editor-toolbar-save {
+//    &:before {
+//        @extend .icon-check--light;
+//        content: '';
+//        position: absolute;
+//        top: 50%;
+//        left: 50%;
+//        transform: translate(-50%, -50%);
+//    }
+//
+//    &:hover,
+//    &:focus {
+//        &:before {
+//            @extend .icon-check--primary;
+//        }
+//    }
+//}
+//
+//.medium-editor-toolbar-close {
+//    &:before {
+//        @extend .icon-close--light;
+//        content: '';
+//        position: absolute;
+//        top: 50%;
+//        left: 50%;
+//        transform: translate(-50%, -50%) scale(0.8);
+//    }
+//
+//    &:hover,
+//    &:focus {
+//        &:before {
+//            @extend .icon-close--primary;
+//        }
+//    }
+//}

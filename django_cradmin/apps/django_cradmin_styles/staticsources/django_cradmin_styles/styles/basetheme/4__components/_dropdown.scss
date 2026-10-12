@@ -1,0 +1,118 @@
+/* Dropdown
+
+Example: {type: isolated}
+
+    <div class="container">
+        <input type="text" class="input input--outlined">
+        <div class="dropdown">
+            <div class="dropdown__content">
+                Floating content here.
+            </div>
+        </div>
+        <p>
+            Just some text to ensure it is floating!
+            Aenean lacinia bibendum nulla sed consectetur. Cras justo odio,
+            dapibus ac facilisis in, egestas eget quam. Vivamus sagittis
+            lacus vel augue laoreet rutrum faucibus dolor auctor. Donec
+            id elit non mi porta gravida at eget metus. Morbi leo
+            risus, porta ac consectetur ac, vestibulum at eros.
+            Vestibulum id ligula porta felis euismod semper.
+            Donec id elit non mi porta gravida at eget metus.
+        </p>
+    </div>
+
+Example: {type: isolated} --spaced
+
+    <div class="container">
+        <input type="text" class="input input--outlined">
+        <div class="dropdown">
+            <div class="dropdown__content dropdown__content--spaced">
+                Floating content here.
+            </div>
+        </div>
+        <p>
+            Just some text to ensure it is floating!
+            Aenean lacinia bibendum nulla sed consectetur. Cras justo odio,
+            dapibus ac facilisis in, egestas eget quam. Vivamus sagittis
+            lacus vel augue laoreet rutrum faucibus dolor auctor. Donec
+            id elit non mi porta gravida at eget metus. Morbi leo
+            risus, porta ac consectetur ac, vestibulum at eros.
+            Vestibulum id ligula porta felis euismod semper.
+            Donec id elit non mi porta gravida at eget metus.
+        </p>
+    </div>
+
+Example: {type: isolated} --spaced-sm
+
+    <div class="container">
+        <input type="text" class="input input--outlined">
+        <div class="dropdown">
+            <div class="dropdown__content dropdown__content--spaced-sm">
+                Floating content here.
+            </div>
+        </div>
+        <p>
+            Just some text to ensure it is floating!
+            Aenean lacinia bibendum nulla sed consectetur. Cras justo odio,
+            dapibus ac facilisis in, egestas eget quam. Vivamus sagittis
+            lacus vel augue laoreet rutrum faucibus dolor auctor. Donec
+            id elit non mi porta gravida at eget metus. Morbi leo
+            risus, porta ac consectetur ac, vestibulum at eros.
+            Vestibulum id ligula porta felis euismod semper.
+            Donec id elit non mi porta gravida at eget metus.
+        </p>
+    </div>
+
+Example: {type: isolated} --spaced-lg
+
+    <div class="container">
+        <input type="text" class="input input--outlined">
+        <div class="dropdown">
+            <div class="dropdown__content dropdown__content--spaced-lg">
+                Floating content here.
+            </div>
+        </div>
+        <p>
+            Just some text to ensure it is floating!
+            Aenean lacinia bibendum nulla sed consectetur. Cras justo odio,
+            dapibus ac facilisis in, egestas eget quam. Vivamus sagittis
+            lacus vel augue laoreet rutrum faucibus dolor auctor. Donec
+            id elit non mi porta gravida at eget metus. Morbi leo
+            risus, porta ac consectetur ac, vestibulum at eros.
+            Vestibulum id ligula porta felis euismod semper.
+            Donec id elit non mi porta gravida at eget metus.
+        </p>
+    </div>
+
+Styleguide components.dropdown
+*/
+
+.dropdown {
+    position: relative;
+    overflow: visible;
+
+    &__content {
+        position: absolute;
+        z-index: $level-1;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        margin-bottom: $spacing;
+        border-radius: $border-radius;
+        box-shadow: $shadow-level-3;
+        background-color: $color-light;
+
+        &--spaced {
+            padding: $spacing;
+        }
+
+        &--spaced-sm {
+            padding: $spacing--small;
+        }
+
+        &--spaced-lg {
+            padding: $spacing--large;
+        }
+    }
+}

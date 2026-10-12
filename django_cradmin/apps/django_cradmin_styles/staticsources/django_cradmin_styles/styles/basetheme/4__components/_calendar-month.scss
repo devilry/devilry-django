@@ -1,0 +1,253 @@
+/** Calendar month
+
+Example: {type: isolated}
+
+    <div class="calendar-month calendar-month--sane-max-width">
+        <div class="calendar-month__header">
+            <div class="calendar-month__header-row">
+                <div class="calendar-month__header-day">mon</div>
+                <div class="calendar-month__header-day">tue</div>
+                <div class="calendar-month__header-day">wed</div>
+                <div class="calendar-month__header-day">thu</div>
+                <div class="calendar-month__header-day">fri</div>
+                <div class="calendar-month__header-day">sat</div>
+                <div class="calendar-month__header-day">sun</div>
+            </div>
+        </div>
+        <div class="calendar-month__body">
+            <div class="calendar-month__week">
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton calendar-month__daybutton--muted">27</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton calendar-month__daybutton--muted">28</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton calendar-month__daybutton--muted">29</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton calendar-month__daybutton--muted">30</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton calendar-month__daybutton--muted">31</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton">1</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton">2</button>
+                </div>
+            </div>
+            <div class="calendar-month__week">
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton">3</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton">4</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton">5</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton">6</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton">7</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton">8</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton">9</button>
+                </div>
+            </div>
+            <div class="calendar-month__week">
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton">10</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton">11</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton">12</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton">13</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton">14</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton">15</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton">16</button>
+                </div>
+            </div>
+            <div class="calendar-month__week">
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton">17</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton">18</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton">19</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton">20</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton">21</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton">22</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton">23</button>
+                </div>
+            </div>
+            <div class="calendar-month__week">
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton">24</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton">25</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton">26</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton">27</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton">28</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton">29</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton">30</button>
+                </div>
+            </div>
+            <div class="calendar-month__week">
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton calendar-month__daybutton--muted">1</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton calendar-month__daybutton--muted">2</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton calendar-month__daybutton--muted">3</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton calendar-month__daybutton--muted">4</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton calendar-month__daybutton--muted">5</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton calendar-month__daybutton--muted">6</button>
+                </div>
+                <div aria-role="button" class="calendar-month__day">
+                    <button class="calendar-month__daybutton calendar-month__daybutton--muted">7</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+Styleguide components.calendar-month
+ */
+.calendar-month {
+    display: table;
+    border-collapse: collapse;
+    border-spacing: 0;
+    table-layout: fixed;
+    width: 100%;
+    margin-bottom: $unit;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+
+    &__header {
+        display: table-header-group;
+    }
+
+    &__body {
+        display: table-row-group;
+    }
+
+    &__week, &__header-row {
+        display: table-row;
+    }
+
+    &__day, &__header-day {
+        display: table-cell;
+        text-align: center;
+        border: $border-style--datetimepicker;
+    }
+
+    &__header-day {
+        padding: $unit 0;
+        @include font(base, bold);
+        @include font-size(xxsmall);
+        text-transform: uppercase;
+        @include min-width(md) {
+            @include font-size(xsmall);
+        }
+    }
+
+    &__day {
+
+    }
+
+    &__daybutton {
+        width: 100%;
+        height: 100%;
+        display: block;
+
+        padding: ($unit*2) 0;
+        cursor: pointer;
+        @include font(base);
+        color: $color-text;
+
+        &:hover,
+        &:focus,
+        &:active,
+        &--selected {
+            color: $color-light;
+            outline: none;
+        }
+
+        &:hover {
+            background-color: color(secondary);
+        }
+
+        &--today {
+            background-color: color(info, light);
+        }
+
+        &:focus,
+        &:active,
+        &--selected {
+            background-color: color(secondary, dark);
+        }
+
+        &--muted {
+            color: $color-muted;
+        }
+
+        &[disabled] {
+            &, &:focus, &:active {
+                background-color: color(neutral, light);
+                color: color(neutral, dark);
+                cursor: not-allowed;
+            }
+        }
+    }
+
+    &--sane-max-width {
+        max-width: map-get($breakpoints, xs);
+    }
+}

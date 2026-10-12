@@ -1,0 +1,22 @@
+<div class="cradmin-legacy-bulkfileupload-rejectedfiles">
+    <p ng-repeat="fileInfo in rejectedFiles"
+            class="cradmin-legacy-bulkfileupload-rejectedfile cradmin-legacy-bulkfileupload-errorparagraph">
+
+        <span class="cradmin-legacy-bulkfileupload-iteminfo">
+            <span class="cradmin-legacy-bulkfileupload-rejectedfile-filename">{{ fileInfo.name }}:</span>
+            <span ng-repeat="(errorfield,errors) in fileInfo.errors">
+                <span ng-repeat="error in errors"
+                    class="cradmin-legacy-bulkfileupload-error">
+                    {{ error.message }}
+                </span>
+            </span>
+        </span>
+
+        <button ng-click="closeMessage(fileInfo)"
+                type="button"
+                class="btn btn-link cradmin-legacy-bulkfileupload-error-closebutton">
+            <span class="fa fa-times"></span>
+            <span class="sr-only">{{fileInfo.i18nStrings.close_errormessage_label}}</span>
+        </button>
+    </p>
+</div>

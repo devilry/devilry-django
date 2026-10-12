@@ -1,0 +1,142 @@
+// TODO: Move to django-cradmin
+
+/** Text
+
+Example: Colors normal focus
+
+    <span class="text text--warning">A warning text</span><br>
+    <span class="text text--success">A success text</span><br>
+    <span class="text text--primary">A primary text</span><br>
+    <span class="text text--secondary">A secondary text</span><br>
+
+Example: Colors strong focus
+
+    <strong class="text text--strong-warning">A strong warning text</strong><br>
+    <strong class="text text--strong-success">A strong success text</strong><br>
+
+Example: You can also use the normal focus colors with strong and em tags
+
+    <strong class="text text--warning">A warning text in a strong tag</strong><br>
+    <em class="text text--warning">A warning text in a em tag</em><br>
+
+    <strong class="text text--success">A success text in a strong tag</strong><br>
+    <em class="text text--success">A success text in a em tag</em><br>
+
+Example: Colorized mixed with other text
+
+    <p>
+        Your account is <span class="text text--warning">almost empty</span>,
+        but you have <strong class="text text--strong-success">a very good credit rating</strong>.
+        This means that you are personally not in a good place, but the Bank is
+        <strong class="text text--success">very happy</strong>.
+    </p>
+
+Example: Font sizes
+
+    <p class="text-size text-size--xxsmall">A xxsmall text.</p>
+    <p class="text-size text-size--xsmall">A xsmall text.</p>
+    <p class="text-size text-size--small">A small text.</p>
+    <p>Normal paragraph without any font-size adjustments. Will normally match text--small.</p>
+    <p class="text-size text-size--medium">A medium text.</p>
+    <p class="text-size text-size--large">A large text.</p>
+    <p class="text-size text-size--xlarge">A xlarge text.</p>
+    <p class="text-size text-size--xxlarge">A xxlarge text.</p>
+    <p class="text-size text-size--xxxlarge">A xxxlarge text.</p>
+
+Styleguide components.text
+*/
+@mixin text-variant-mixin(
+    $name,
+    $text-color,
+    $strong-background-color,
+    $strong-text-color: $color-light
+) {
+    &--#{$name} {
+        color: $text-color;
+
+        a {
+            color: $text-color;
+            border-color: $text-color;
+            text-decoration: underline;
+
+            &:hover {
+                color: $text-color;
+                border-color: $text-color;
+            }
+        }
+    }
+
+    &--strong-#{$name} {
+        background-color: $strong-background-color;
+        color: $strong-text-color;
+        @include font(base, bold);
+        padding: 1px $unit;
+        margin-bottom: $border-width;
+        border-radius: $border-radius;
+
+        a {
+            color: $text-color;
+            border-color: $text-color;
+
+            &:hover {
+                color: $text-color;
+                border-color: $text-color;
+            }
+        }
+    }
+}
+
+
+.text {
+    display: inline-block;
+
+    @include text-variant-mixin(
+        $name: warning,
+        $text-color: color(warning, dark),
+        $strong-background-color: color(warning)
+    );
+
+    @include text-variant-mixin(
+        $name: success,
+        $text-color: color(success, dark),
+        $strong-background-color: color(success)
+    );
+    @include text-variant-mixin(
+        $name: primary,
+        $text-color: color(primary, dark),
+        $strong-background-color: color(primary)
+    );
+    @include text-variant-mixin(
+        $name: secondary,
+        $text-color: color(secondary, dark),
+        $strong-background-color: color(secondary)
+    );
+
+}
+
+.text-size {
+    &--xxsmall {
+        @include font-size(xxsmall);
+    }
+    &--xsmall {
+        @include font-size(xsmall);
+    }
+    &--small {
+        @include font-size(small);
+    }
+    &--medium {
+        @include font-size(medium);
+    }
+    &--large {
+        @include font-size(large);
+    }
+    &--xlarge {
+        @include font-size(xlarge);
+    }
+    &--xxlarge {
+        @include font-size(xxlarge);
+    }
+    &--xxxlarge {
+        @include font-size(xxxlarge);
+    }
+}

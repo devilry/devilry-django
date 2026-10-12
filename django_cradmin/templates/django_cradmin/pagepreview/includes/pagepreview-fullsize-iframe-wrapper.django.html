@@ -1,0 +1,41 @@
+{% load i18n %}
+{% load cradmin_icon_tags %}
+{% comment %}
+    Include template used to show an embedded iframe floating above
+    the page with a close button. This renders the
+    ``django-cradmin-floating-fullsize-iframe-wrapper`` AngularJS directive
+    components with some extra components to make it stylable and accessible.
+
+    Example::
+
+        <div django-cradmin-page-preview-wrapper>
+            {% include "django_cradmin/pagepreview/includes/pagepreview.django.html" %}
+            <div django-cradmin-page-preview-open-on-page-load="'{{ preview_url }}'"></div>
+        </div>
+
+{% endcomment %}
+
+<div class="django-cradmin-floating-fullsize-iframe-wrapper"
+     django-cradmin-page-preview-iframe-wrapper>
+    <a href="#" class="django-cradmin-floating-fullsize-iframe-closebutton"
+           django-cradmin-page-preview-iframe-closebutton>
+        <span aria-hidden="true"
+                class="{% cradmin_icon 'close-overlay-right-to-left' %}
+                    django-cradmin-floating-fullsize-iframe-closebutton-icon"></span>
+        <span class="screenreader-only">{% trans "Close preview" %}</span>
+    </a>
+    <div class="django-cradmin-floating-fullsize-content">
+        <div class="ng-hide django-cradmin-floating-fullsize-loadspinner"
+                django-cradmin-page-preview-load-spinner>
+            <span class="{% cradmin_icon 'loadspinner' %}"></span>
+        </div>
+        <nav class="django-cradmin-floating-fullsize-iframe-navbar"
+                django-cradmin-page-preview-navbar
+                django-cradmin-page-preview-navbar-mobile-menu-header="{% trans 'Preview options' %}">
+        </nav>
+        <div class="django-cradmin-floating-fullsize-iframe-inner"
+                django-cradmin-page-preview-iframe-wrapper-inner>
+            <iframe django-cradmin-page-preview-iframe></iframe>
+        </div>
+    </div>
+</div>

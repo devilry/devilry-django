@@ -1,0 +1,50 @@
+{% comment %}
+
+    Usage::
+
+        {% extends "django_cradmin/viewhelpers/includes/loadmorepager-base.django.html" %}
+
+        {% block load-more-pager-options %}
+            {
+                "targetElementCssSelector": ".the-wrapper-adound-the-paged-elements"
+            }
+        {% endblock load-more-pager-options %}
+
+    Required context variables:
+
+        is_paginated
+        page_obj
+
+    These are added automatically by ListView if you specify paginate_by.
+
+{% endcomment %}
+{% load i18n %}
+{% load cradmin_icon_tags %}
+
+{% if is_paginated and page_obj.has_next %}
+    <div class="django-cradmin-loadmorepager {% block wrapper-element-extra-css-classes %}{% endblock %}"
+            ng-class="{'django-cradmin-loadmorepager-loading': loadmorePagerIsLoading}"
+            django-cradmin-load-more-pager='{% block load-more-pager-options %}{
+                "targetElementCssSelector": "{% block load-more-pager-targetElementCssSelector %}{% endblock %}",
+                "nextPageNumber": {{ page_obj.next_page_number }}
+            }{% endblock %}'>
+        <button type="button"
+                class="django-cradmin-loadmorepager-button {% block load-more-button-extra-css-classes %}btn btn-default{% endblock %}"
+                ng-click="pagerLoad()"
+                ng-disabled="loadmorePagerIsLoading">
+            <span class="{% cradmin_icon "loadspinner" %}"
+                  ng-if="loadmorePagerIsLoading"
+                  aria-hidden="true"></span>
+            <span class="django-cradmin-loadmorepager-loadingtext" ng-if="loadmorePagerIsLoading">
+                {% block loading-text %}
+                    {% trans "Loading ..." %}
+                {% endblock loading-text %}
+            </span>
+            <span class="django-cradmin-loadmorepager-not-loadingtext" ng-if="!loadmorePagerIsLoading">
+                {% block load-more-text %}
+                    {% trans "Load more" %}
+                {% endblock load-more-text %}
+            </span>
+        </button>
+    </div>
+{% endif %}

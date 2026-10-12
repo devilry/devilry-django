@@ -1,0 +1,1041 @@
+/*
+Deprecated old style icons
+
+Warning: **This is deprecated. Use cricon instead.**
+
+All icons come in the following colors: `dark` (default), `primary`, `secondary` and `light`.
+
+Example: All the icons
+
+    <!-- Ignore the ``sg-icon-*`` wrappers - they are just for the styleguide. -->
+    <ul class="sg-icon-grid">
+        <li class="sg-icon-grid__item">
+            <span class="icon-arrow-up" aria-hidden="true"></span>
+            <code>.icon-arrow-up</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-arrow-up--primary" aria-hidden="true"></span>
+            <code>.icon-arrow-up--primary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-arrow-up--secondary" aria-hidden="true"></span>
+            <code>.icon-arrow-up--secondary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-arrow-up--light" aria-hidden="true"></span>
+            <code>.icon-arrow-up--light</code>
+        </li>
+
+        <li class="sg-icon-grid__item">
+            <span class="icon-arrow-down" aria-hidden="true"></span>
+            <code>.icon-arrow-down</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-arrow-down--primary" aria-hidden="true"></span>
+            <code>.icon-arrow-down--primary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-arrow-down--secondary" aria-hidden="true"></span>
+            <code>.icon-arrow-down--secondary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-arrow-down--light" aria-hidden="true"></span>
+            <code>.icon-arrow-down--light</code>
+        </li>
+
+        <li class="sg-icon-grid__item">
+            <span class="icon-arrow-right" aria-hidden="true"></span>
+            <code>.icon-arrow-right</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-arrow-right--primary" aria-hidden="true"></span>
+            <code>.icon-arrow-right--primary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-arrow-right--secondary" aria-hidden="true"></span>
+            <code>.icon-arrow-right--secondary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-arrow-right--light" aria-hidden="true"></span>
+            <code>.icon-arrow-right--light</code>
+        </li>
+
+        <li class="sg-icon-grid__item">
+            <span class="icon-arrow-left" aria-hidden="true"></span>
+            <code>.icon-arrow-left</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-arrow-left--primary" aria-hidden="true"></span>
+            <code>.icon-arrow-left--primary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-arrow-left--secondary" aria-hidden="true"></span>
+            <code>.icon-arrow-left--secondary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-arrow-left--light" aria-hidden="true"></span>
+            <code>.icon-arrow-left--light</code>
+        </li>
+
+        <li class="sg-icon-grid__item">
+            <span class="icon-chevron-up" aria-hidden="true"></span>
+            <code>.icon-chevron-up</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-chevron-up--primary" aria-hidden="true"></span>
+            <code>.icon-chevron-up--primary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-chevron-up--secondary" aria-hidden="true"></span>
+            <code>.icon-chevron-up--secondary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-chevron-up--light" aria-hidden="true"></span>
+            <code>.icon-chevron-up--light</code>
+        </li>
+
+        <li class="sg-icon-grid__item">
+            <span class="icon-chevron-down" aria-hidden="true"></span>
+            <code>.icon-chevron-down</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-chevron-down--primary" aria-hidden="true"></span>
+            <code>.icon-chevron-down--primary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-chevron-down--secondary" aria-hidden="true"></span>
+            <code>.icon-chevron-down--secondary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-chevron-down--light" aria-hidden="true"></span>
+            <code>.icon-chevron-down--light</code>
+        </li>
+
+        <li class="sg-icon-grid__item">
+            <span class="icon-chevron-right" aria-hidden="true"></span>
+            <code>.icon-chevron-right</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-chevron-right--primary" aria-hidden="true"></span>
+            <code>.icon-chevron-right--primary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-chevron-right--secondary" aria-hidden="true"></span>
+            <code>.icon-chevron-right--secondary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-chevron-right--light" aria-hidden="true"></span>
+            <code>.icon-chevron-right--light</code>
+        </li>
+
+        <li class="sg-icon-grid__item">
+            <span class="icon-chevron-left" aria-hidden="true"></span>
+            <code>.icon-chevron-left</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-chevron-left--primary" aria-hidden="true"></span>
+            <code>.icon-chevron-left--primary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-chevron-left--secondary" aria-hidden="true"></span>
+            <code>.icon-chevron-left--secondary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-chevron-left--light" aria-hidden="true"></span>
+            <code>.icon-chevron-left--light</code>
+        </li>
+
+        <li class="sg-icon-grid__item">
+            <span class="icon-check" aria-hidden="true"></span>
+            <code>.icon-check</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-check--primary" aria-hidden="true"></span>
+            <code>.icon-check--primary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-check--secondary" aria-hidden="true"></span>
+            <code>.icon-check--secondary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-check--light" aria-hidden="true"></span>
+            <code>.icon-check--light</code>
+        </li>
+
+        <li class="sg-icon-grid__item">
+            <span class="icon-search" aria-hidden="true"></span>
+            <code>.icon-search</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-search--primary" aria-hidden="true"></span>
+            <code>.icon-search--primary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-search--secondary" aria-hidden="true"></span>
+            <code>.icon-search--secondary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-search--light" aria-hidden="true"></span>
+            <code>.icon-search--light</code>
+        </li>
+
+        <li class="sg-icon-grid__item">
+            <span class="icon-close" aria-hidden="true"></span>
+            <code>.icon-close</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-close--primary" aria-hidden="true"></span>
+            <code>.icon-close--primary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-close--secondary" aria-hidden="true"></span>
+            <code>.icon-close--secondary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-close--light" aria-hidden="true"></span>
+            <code>.icon-close--light</code>
+        </li>
+
+        <li class="sg-icon-grid__item">
+            <span class="icon-user" aria-hidden="true"></span>
+            <code>.icon-user</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-user--primary" aria-hidden="true"></span>
+            <code>.icon-user--primary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-user--secondary" aria-hidden="true"></span>
+            <code>.icon-user--secondary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-user--light" aria-hidden="true"></span>
+            <code>.icon-user--light</code>
+        </li>
+
+        <li class="sg-icon-grid__item">
+            <span class="icon-time" aria-hidden="true"></span>
+            <code>.icon-time</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-time--primary" aria-hidden="true"></span>
+            <code>.icon-time--primary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-time--secondary" aria-hidden="true"></span>
+            <code>.icon-time--secondary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-time--light" aria-hidden="true"></span>
+            <code>.icon-time--light</code>
+        </li>
+
+        <li class="sg-icon-grid__item">
+            <span class="icon-flag" aria-hidden="true"></span>
+            <code>.icon-flag</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-flag--primary" aria-hidden="true"></span>
+            <code>.icon-flag--primary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-flag--secondary" aria-hidden="true"></span>
+            <code>.icon-flag--secondary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-flag--light" aria-hidden="true"></span>
+            <code>.icon-flag--light</code>
+        </li>
+
+        <li class="sg-icon-grid__item">
+            <span class="icon-more" aria-hidden="true"></span>
+            <code>.icon-more</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-more--primary" aria-hidden="true"></span>
+            <code>.icon-more--primary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-more--secondary" aria-hidden="true"></span>
+            <code>.icon-more--secondary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-more--light" aria-hidden="true"></span>
+            <code>.icon-more--light</code>
+        </li>
+
+        <li class="sg-icon-grid__item">
+            <span class="icon-user-small" aria-hidden="true"></span>
+            <code>.icon-user-small</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-user-small--primary" aria-hidden="true"></span>
+            <code>.icon-user-small--primary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-user-small--secondary" aria-hidden="true"></span>
+            <code>.icon-user-small--secondary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-user-small--light" aria-hidden="true"></span>
+            <code>.icon-user-small--light</code>
+        </li>
+
+        <li class="sg-icon-grid__item">
+            <span class="icon-facebook" aria-hidden="true"></span>
+            <code>.icon-facebook</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-facebook--primary" aria-hidden="true"></span>
+            <code>.icon-facebook--primary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-facebook--secondary" aria-hidden="true"></span>
+            <code>.icon-facebook--secondary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-facebook--light" aria-hidden="true"></span>
+            <code>.icon-facebook--light</code>
+        </li>
+
+        <li class="sg-icon-grid__item">
+            <span class="icon-twitter" aria-hidden="true"></span>
+            <code>.icon-twitter</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-twitter--primary" aria-hidden="true"></span>
+            <code>.icon-twitter--primary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-twitter--secondary" aria-hidden="true"></span>
+            <code>.icon-twitter--secondary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-twitter--light" aria-hidden="true"></span>
+            <code>.icon-twitter--light</code>
+        </li>
+
+        <li class="sg-icon-grid__item">
+            <span class="icon-email" aria-hidden="true"></span>
+            <code>.icon-email</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-email--primary" aria-hidden="true"></span>
+            <code>.icon-email--primary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-email--secondary" aria-hidden="true"></span>
+            <code>.icon-email--secondary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-email--light" aria-hidden="true"></span>
+            <code>.icon-email--light</code>
+        </li>
+
+        <li class="sg-icon-grid__item">
+            <span class="icon-podcast" aria-hidden="true"></span>
+            <code>.icon-podcast</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-podcast--primary" aria-hidden="true"></span>
+            <code>.icon-podcast--primary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-podcast--secondary" aria-hidden="true"></span>
+            <code>.icon-podcast--secondary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-podcast--light" aria-hidden="true"></span>
+            <code>.icon-podcast--light</code>
+        </li>
+
+        <li class="sg-icon-grid__item">
+            <span class="icon-instagram" aria-hidden="true"></span>
+            <code>.icon-instagram</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-instagram--primary" aria-hidden="true"></span>
+            <code>.icon-instagram--primary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-instagram--secondary" aria-hidden="true"></span>
+            <code>.icon-instagram--secondary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-instagram--light" aria-hidden="true"></span>
+            <code>.icon-instagram--light</code>
+        </li>
+
+        <li class="sg-icon-grid__item">
+            <span class="icon-snapchat" aria-hidden="true"></span>
+            <code>.icon-snapchat</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-snapchat--primary" aria-hidden="true"></span>
+            <code>.icon-snapchat--primary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-snapchat--secondary" aria-hidden="true"></span>
+            <code>.icon-snapchat--secondary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-snapchat--light" aria-hidden="true"></span>
+            <code>.icon-snapchat--light</code>
+        </li>
+
+        <li class="sg-icon-grid__item">
+            <span class="icon-blog" aria-hidden="true"></span>
+            <code>.icon-blog</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-blog--primary" aria-hidden="true"></span>
+            <code>.icon-blog--primary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-blog--secondary" aria-hidden="true"></span>
+            <code>.icon-blog--secondary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-blog--light" aria-hidden="true"></span>
+            <code>.icon-blog--light</code>
+        </li>
+
+        <li class="sg-icon-grid__item">
+            <span class="icon-phone" aria-hidden="true"></span>
+            <code>.icon-phone</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-phone--primary" aria-hidden="true"></span>
+            <code>.icon-phone--primary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-phone--secondary" aria-hidden="true"></span>
+            <code>.icon-phone--secondary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-phone--light" aria-hidden="true"></span>
+            <code>.icon-phone--light</code>
+        </li>
+
+        <li class="sg-icon-grid__item">
+            <span class="icon-file" aria-hidden="true"></span>
+            <code>.icon-file</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-file--primary" aria-hidden="true"></span>
+            <code>.icon-file--primary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-file--secondary" aria-hidden="true"></span>
+            <code>.icon-file--secondary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-file--light" aria-hidden="true"></span>
+            <code>.icon-file--light</code>
+        </li>
+
+        <li class="sg-icon-grid__item">
+            <span class="icon-download" aria-hidden="true"></span>
+            <code>.icon-download</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-download--primary" aria-hidden="true"></span>
+            <code>.icon-download--primary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-download--secondary" aria-hidden="true"></span>
+            <code>.icon-download--secondary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-download--light" aria-hidden="true"></span>
+            <code>.icon-download--light</code>
+        </li>
+
+        <li class="sg-icon-grid__item">
+            <span class="icon-address" aria-hidden="true"></span>
+            <code>.icon-address</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-address--primary" aria-hidden="true"></span>
+            <code>.icon-address--primary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-address--secondary" aria-hidden="true"></span>
+            <code>.icon-address--secondary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-address--light" aria-hidden="true"></span>
+            <code>.icon-address--light</code>
+        </li>
+
+        <li class="sg-icon-grid__item">
+            <span class="icon-error" aria-hidden="true"></span>
+            <code>.icon-error</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="icon-info" aria-hidden="true"></span>
+            <code>.icon-info</code>
+        </li>
+        <li class="sg-icon-grid__item">
+        </li>
+        <li class="sg-icon-grid__item">
+        </li>
+    </ul>
+
+Styleguide cricon.deprecated
+*/
+
+
+// Sprite icons
+@mixin svg-prite-icon($col, $row, $width, $height) {
+    display: inline-block;
+    vertical-align: top;
+
+    width: $width;
+    height: $height;
+
+    background-image: url('#{$media-path}/images/sprite.svg');
+    background-position: (-( ( $col - 1 ) * 100) + px ) (-( ( $row - 1 ) * 100 ) + px);
+    background-repeat: no-repeat;
+}
+
+
+// Arrow
+.icon-arrow,
+%icon-arrow {
+    &-up {
+        @include svg-prite-icon(1, 1, 15px, 15px);
+
+        &--light {
+            @include svg-prite-icon(1, 2, 15px, 15px);
+        }
+
+        &--primary {
+            @include svg-prite-icon(1, 3, 15px, 15px);
+        }
+
+        &--secondary {
+            @include svg-prite-icon(1, 4, 15px, 15px);
+        }
+    }
+
+    &-right {
+        @include svg-prite-icon(2, 1, 15px, 15px);
+
+        &--light {
+            @include svg-prite-icon(2, 2, 15px, 15px);
+        }
+
+        &--primary {
+            @include svg-prite-icon(2, 3, 15px, 15px);
+        }
+
+        &--secondary {
+            @include svg-prite-icon(2, 4, 15px, 15px);
+        }
+    }
+
+    &-down {
+        @include svg-prite-icon(3, 1, 15px, 15px);
+
+        &--light {
+            @include svg-prite-icon(3, 2, 15px, 15px);
+        }
+
+        &--primary {
+            @include svg-prite-icon(3, 3, 15px, 15px);
+        }
+
+        &--secondary {
+            @include svg-prite-icon(3, 4, 15px, 15px);
+        }
+    }
+
+    &-left {
+        @include svg-prite-icon(4, 1, 15px, 15px);
+
+        &--light {
+            @include svg-prite-icon(4, 2, 15px, 15px);
+        }
+
+        &--primary {
+            @include svg-prite-icon(4, 3, 15px, 15px);
+        }
+
+        &--secondary {
+            @include svg-prite-icon(4, 4, 15px, 15px);
+        }
+    }
+}
+
+// Chevron
+.icon-chevron,
+%icon-chevron {
+    &-up {
+        @include svg-prite-icon(5, 1, 15px, 10px);
+
+        &--light {
+            @include svg-prite-icon(5, 2, 15px, 10px);
+        }
+
+        &--primary {
+            @include svg-prite-icon(5, 3, 15px, 10px);
+        }
+
+        &--secondary {
+            @include svg-prite-icon(5, 4, 15px, 10px);
+        }
+    }
+
+    &-right {
+        @include svg-prite-icon(6, 1, 10px, 15px);
+
+        &--light {
+            @include svg-prite-icon(6, 2, 10px, 15px);
+        }
+
+        &--primary {
+            @include svg-prite-icon(6, 3, 10px, 15px);
+        }
+
+        &--secondary {
+            @include svg-prite-icon(6, 4, 10px, 15px);
+        }
+    }
+
+    &-down {
+        @include svg-prite-icon(7, 1, 15px, 10px);
+
+        &--light {
+            @include svg-prite-icon(7, 2, 15px, 10px);
+        }
+
+        &--primary {
+            @include svg-prite-icon(7, 3, 15px, 10px);
+        }
+
+        &--secondary {
+            @include svg-prite-icon(7, 4, 15px, 10px);
+        }
+    }
+
+    &-left {
+        @include svg-prite-icon(8, 1, 10px, 15px);
+
+        &--light {
+            @include svg-prite-icon(8, 2, 10px, 15px);
+        }
+
+        &--primary {
+            @include svg-prite-icon(8, 3, 10px, 15px);
+        }
+
+        &--secondary {
+            @include svg-prite-icon(8, 4, 10px, 15px);
+        }
+    }
+}
+
+.icon-check,
+%icon-check {
+    @include svg-prite-icon(10, 1, 15px, 12px);
+
+    &--light {
+        @include svg-prite-icon(10, 2, 15px, 12px);
+    }
+
+    &--primary {
+        @include svg-prite-icon(10, 3, 15px, 12px);
+    }
+
+    &--secondary {
+        @include svg-prite-icon(10, 4, 15px, 12px);
+    }
+}
+
+.icon-search,
+%icon-search {
+    @include svg-prite-icon(9, 1, 19px, 19px);
+
+    &--light {
+        @include svg-prite-icon(9, 2, 19px, 19px);
+    }
+
+    &--primary {
+        @include svg-prite-icon(9, 3, 19px, 19px);
+    }
+
+    &--secondary {
+        @include svg-prite-icon(9, 4, 19px, 19px);
+    }
+}
+
+.icon-close,
+%icon-close {
+    @include svg-prite-icon(11, 1, 15px, 15px);
+
+    &--light {
+        @include svg-prite-icon(11, 2, 15px, 15px);
+    }
+
+    &--primary {
+        @include svg-prite-icon(11, 3, 15px, 15px);
+    }
+
+    &--secondary {
+        @include svg-prite-icon(11, 4, 15px, 15px);
+    }
+}
+
+.icon-user,
+%icon-user {
+    @include svg-prite-icon(12, 1, 17px, 20px);
+
+    &--light {
+        @include svg-prite-icon(12, 2, 17px, 20px);
+    }
+
+    &--primary {
+        @include svg-prite-icon(12, 3, 17px, 20px);
+    }
+
+    &--secondary {
+        @include svg-prite-icon(12, 4, 17px, 20px);
+    }
+}
+
+.icon-time,
+%icon-time {
+    @include svg-prite-icon(13, 1, 18px, 18px);
+
+    &--light {
+        @include svg-prite-icon(13, 2, 18px, 18px);
+    }
+
+    &--primary {
+        @include svg-prite-icon(13, 3, 18px, 18px);
+    }
+
+    &--secondary {
+        @include svg-prite-icon(13, 4, 18px, 18px);
+    }
+}
+
+.icon-flag,
+%icon-flag {
+    @include svg-prite-icon(14, 1, 12px, 15px);
+
+    &--light {
+        @include svg-prite-icon(14, 2, 12px, 15px);
+    }
+
+    &--primary {
+        @include svg-prite-icon(14, 3, 12px, 15px);
+    }
+
+    &--secondary {
+        @include svg-prite-icon(14, 4, 12px, 15px);
+    }
+}
+
+.icon-more,
+%icon-more {
+    @include svg-prite-icon(15, 1, 21px, 5px);
+
+    &--light {
+        @include svg-prite-icon(15, 2, 21px, 5px);
+    }
+
+    &--primary {
+        @include svg-prite-icon(15, 3, 21px, 5px);
+    }
+
+    &--secondary {
+        @include svg-prite-icon(15, 4, 21px, 5px);
+    }
+}
+
+.icon-user-small,
+%icon-user-small {
+    @include svg-prite-icon(16, 1, 14px, 16px);
+
+    &--light {
+        @include svg-prite-icon(16, 2, 14px, 16px);
+    }
+
+    &--primary {
+        @include svg-prite-icon(16, 3, 14px, 16px);
+    }
+
+    &--secondary {
+        @include svg-prite-icon(16, 4, 14px, 16px);
+    }
+}
+
+
+.icon-facebook,
+%icon-facebook {
+    @include svg-prite-icon(1, 5, 20px, 20px);
+
+    &--light {
+        @include svg-prite-icon(1, 6, 20px, 20px);
+    }
+
+    &--primary {
+        @include svg-prite-icon(1, 7, 20px, 20px);
+    }
+
+    &--secondary {
+        @include svg-prite-icon(1, 8, 20px, 20px);
+    }
+}
+
+.icon-twitter,
+%icon-twitter {
+    @include svg-prite-icon(2, 5, 20px, 17px);
+
+    &--light {
+        @include svg-prite-icon(2, 6, 20px, 17px);
+    }
+
+    &--primary {
+        @include svg-prite-icon(2, 7, 20px, 17px);
+    }
+
+    &--secondary {
+        @include svg-prite-icon(2, 8, 20px, 17px);
+    }
+}
+
+.icon-email,
+%icon-email {
+    @include svg-prite-icon(3, 5, 18px, 13px);
+
+    &--light {
+        @include svg-prite-icon(3, 6, 18px, 13px);
+    }
+
+    &--primary {
+        @include svg-prite-icon(3, 7, 18px, 13px);
+    }
+
+    &--secondary {
+        @include svg-prite-icon(3, 8, 18px, 13px);
+    }
+}
+
+.icon-podcast,
+%icon-podcast {
+    @include svg-prite-icon(4, 5, 12px, 16px);
+
+    &--light {
+        @include svg-prite-icon(4, 6, 12px, 16px);
+    }
+
+    &--primary {
+        @include svg-prite-icon(4, 7, 12px, 16px);
+    }
+
+    &--secondary {
+        @include svg-prite-icon(4, 8, 12px, 16px);
+    }
+}
+
+.icon-instagram,
+%icon-instagram {
+    @include svg-prite-icon(5, 5, 20px, 17px);
+
+    &--light {
+        @include svg-prite-icon(5, 6, 20px, 17px);
+    }
+
+    &--primary {
+        @include svg-prite-icon(5, 7, 20px, 17px);
+    }
+
+    &--secondary {
+        @include svg-prite-icon(5, 8, 20px, 17px);
+    }
+}
+
+.icon-snapchat,
+%icon-snapchat {
+    @include svg-prite-icon(6, 5, 18px, 17px);
+
+    &--light {
+        @include svg-prite-icon(6, 6, 18px, 17px);
+    }
+
+    &--primary {
+        @include svg-prite-icon(6, 7, 18px, 17px);
+    }
+
+    &--secondary {
+        @include svg-prite-icon(6, 8, 18px, 17px);
+    }
+}
+
+.icon-blog,
+%icon-blog {
+    @include svg-prite-icon(7, 5, 16px, 16px);
+
+    &--light {
+        @include svg-prite-icon(7, 6, 16px, 16px);
+    }
+
+    &--primary {
+        @include svg-prite-icon(7, 7, 16px, 16px);
+    }
+
+    &--secondary {
+        @include svg-prite-icon(7, 8, 16px, 16px);
+    }
+}
+
+.icon-phone,
+%icon-phone {
+    @include svg-prite-icon(8, 5, 14px, 14px);
+
+    &--light {
+        @include svg-prite-icon(8, 6, 14px, 14px);
+    }
+
+    &--primary {
+        @include svg-prite-icon(8, 7, 14px, 14px);
+    }
+
+    &--secondary {
+        @include svg-prite-icon(8, 8, 14px, 14px);
+    }
+}
+
+.icon-file,
+%icon-file {
+    @include svg-prite-icon(9, 5, 39px, 47px);
+
+    &--light {
+        @include svg-prite-icon(9, 6, 39px, 47px);
+    }
+
+    &--primary {
+        @include svg-prite-icon(9, 7, 39px, 47px);
+    }
+
+    &--secondary {
+        @include svg-prite-icon(9, 8, 39px, 47px);
+    }
+}
+
+.icon-download,
+%icon-download {
+    @include svg-prite-icon(10, 5, 19px, 21px);
+
+    &--light {
+        @include svg-prite-icon(10, 6, 19px, 21px);
+    }
+
+    &--primary {
+        @include svg-prite-icon(10, 7, 19px, 21px);
+    }
+
+    &--secondary {
+        @include svg-prite-icon(10, 8, 19px, 21px);
+    }
+}
+
+.icon-address,
+%icon-address {
+    @include svg-prite-icon(11, 5, 12px, 18px);
+
+    &--light {
+        @include svg-prite-icon(11, 6, 12px, 18px);
+    }
+
+    &--primary {
+        @include svg-prite-icon(11, 7, 12px, 18px);
+    }
+
+    &--secondary {
+        @include svg-prite-icon(11, 8, 12px, 18px);
+    }
+}
+
+.icon-error,
+%icon-error {
+    @include svg-prite-icon(1, 9, 18px, 15px);
+}
+
+.icon-info,
+%icon-info {
+    @include svg-prite-icon(2, 9, 14px, 14px);
+}
+
+.icon-middle {
+    position: relative;
+    top: -0.08em;
+    vertical-align: middle;
+}
+
+.icon-bottom {
+    vertical-align: bottom;
+}
+
+
+// Custom css icons
+.icon-hamburger {
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    width: $unit * 4 + 2px;
+    margin-right: $border-width;
+    float: left;
+
+    transform-origin: center center;
+    transition: transform 0.3s $swift-out;
+
+    &__bar {
+        display: block;
+        height: $border-width;
+        border-radius: $border-radius;
+        width: 100%;
+        margin-bottom: ($border-width * 2);
+        background-color: color(primary);
+
+        transform-origin: 55% center;
+        transition: all 150ms $swift-out;
+
+        &:first-child {
+            transform-origin: right center;
+        }
+
+        &:last-child {
+            transform-origin: right center;
+            margin-bottom: 0;
+        }
+    }
+
+    &--close {
+        // transform: rotate(-360deg);
+
+        .icon-hamburger__bar {
+            background-color: $color-light;
+            transform: scale(0, 0.2);
+
+            &:first-child {
+                opacity: 1;
+                transform: rotate(-45deg); // translate(-12px, 6px);
+            }
+
+            &:last-child {
+                opacity: 1;
+                transform: rotate(45deg) translateX(0.5px); // translate(-12px, -6px);
+            }
+        }
+    }
+
+    &--light {
+        .icon-hamburger__bar {
+            background-color: $color-light;
+        }
+    }
+}

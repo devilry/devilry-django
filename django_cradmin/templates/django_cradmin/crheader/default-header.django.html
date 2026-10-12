@@ -1,0 +1,27 @@
+{% extends "django_cradmin/crheader/base.django.html" %}
+{% load cradmin_tags %}
+
+{% block content %}
+    <div class="{{ me.bem_block }}__content">
+        {% block content-inner %}
+            {% block brand %}
+                <a class="{{ me.bem_block }}__brand"
+                        href="{% cradmin_instance_rolefrontpage_url %}">
+                    {% block brand_content %}
+                        <span class="{{ me.bem_block }}__brandname">
+                            {% cradmin_titletext_for_role request.cradmin_role %}
+                        </span>
+                    {% endblock brand_content %}
+                </a>
+            {% endblock brand %}
+
+            {% block main-menu %}
+                {% with main_menu_renderable=me.get_main_menu_renderable %}
+                    {% if main_menu_renderable %}
+                        {% cradmin_render_renderable main_menu_renderable %}
+                    {% endif %}
+                {% endwith %}
+            {% endblock main-menu %}
+        {% endblock content-inner %}
+    </div>
+{% endblock content %}

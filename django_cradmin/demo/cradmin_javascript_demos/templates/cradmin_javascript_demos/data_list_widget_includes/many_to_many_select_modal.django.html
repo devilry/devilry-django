@@ -1,0 +1,93 @@
+<div class="adminui-page-section">
+    <div class="container">
+        <h2>Many-to-many select modal</h2>
+        <div data-ievv-jsbase-widget="cradmin-api-data-list"
+             data-ievv-jsbase-widget-config='{
+                 "signalNameSpace": "manytomany-modal",
+                 "apiUrl": "{% url 'cradmin_javascript_demos_api:fictional-figures-list' %}",
+                 "multiselect": true
+             }'>
+        </div>
+        <div data-ievv-jsbase-widget="cradmin-signal-router"
+             data-ievv-jsbase-widget-config='{
+                 "signalNameSpace": "manytomany-modal",
+                 "signalMap": {
+                    "SearchDownKey": ["FocusOnFirstSelectableItem"],
+                    "FocusBeforeFirstSelectableItem": ["FocusOnSearchField"],
+                    "SelectItem": ["ClearSearchField", "FocusOnSearchField"],
+                    "CouldNotFocusOnClosestSelectedItem": ["FocusOnSearchField"],
+                    "ShowPopup": ["FocusOnSearchField"]
+                 }
+             }'>
+        </div>
+
+        <div data-ievv-jsbase-widget="cradmin-selected-list"
+             data-ievv-jsbase-widget-config='{
+                 "signalNameSpace": "manytomany-modal"
+             }'>
+        </div>
+        <button type="button" class="button"
+                data-ievv-jsbase-widget="cradmin-show-popup"
+                data-ievv-jsbase-widget-config='{
+                 "signalNameSpace": "manytomany-modal"}'>
+            Select ...
+        </button>
+
+        <div style="display: none" class="modal modal--wide"
+             data-ievv-jsbase-widget="cradmin-popup"
+             data-ievv-jsbase-widget-config='{
+                         "signalNameSpace": "manytomany-modal"}'>
+            <div class="modal__backdrop"
+                 data-ievv-jsbase-widget="cradmin-hide-popup"
+                 data-ievv-jsbase-widget-config='{
+                                "signalNameSpace": "manytomany-modal"}'></div>
+            <div class="modal__content">
+                <div class="modal__close">
+                    <button type="button" aria-title="Close"
+                            data-ievv-jsbase-widget="cradmin-hide-popup"
+                            data-ievv-jsbase-widget-config='{
+                                "signalNameSpace": "manytomany-modal"}'>
+                        <i class="icon-close"></i>
+                    </button>
+                </div>
+                <div data-ievv-jsbase-widget="cradmin-selected-list"
+                     data-ievv-jsbase-widget-config='{
+                         "signalNameSpace": "manytomany-modal",
+                         "itemComponentProps": {
+                            "renderMode": "TitleOnly"
+                         }
+                     }'>
+                </div>
+                <div data-ievv-jsbase-widget="cradmin-search-input"
+                     data-ievv-jsbase-widget-config='{
+                         "signalNameSpace": "manytomany-modal"
+                     }'></div>
+
+                <div data-ievv-jsbase-widget="cradmin-selectable-list"
+                     data-ievv-jsbase-widget-config='{
+                         "signalNameSpace": "manytomany-modal",
+                         "renderSelected": false,
+                         "itemComponentProps": {
+                            "disableTabNavigation": true,
+                            "focusClosestSiblingOnSelect": false,
+                            "useHotKeys": true
+                         }
+                     }'></div>
+
+                <div class="text-center">
+                    <button type="button" class="button"
+                            data-ievv-jsbase-widget="cradmin-hide-popup"
+                            data-ievv-jsbase-widget-config='{
+                                "signalNameSpace": "manytomany-modal"}'>
+                        Ok
+                    </button>
+                </div>
+            </div>
+        </div>
+        <span data-ievv-jsbase-widget="cradmin-hidden-input-list"
+             data-ievv-jsbase-widget-config='{
+                         "signalNameSpace": "manytomany-modal",
+                         "inputName": "themanytomany_from_modal",
+                         "inputType": "hidden"}'></span>
+    </div>
+</div>

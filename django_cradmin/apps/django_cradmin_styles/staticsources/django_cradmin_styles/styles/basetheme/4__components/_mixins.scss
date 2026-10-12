@@ -1,0 +1,801 @@
+@mixin page-header-mixin (
+        $vertical-padding-base: vertical-space($spacing--small),
+        $color: $color-light,
+        $background-color: color(primary),
+        $navlink-display-breakpoint: lg,
+        $content-container-width: wide,
+        $item-margin-left: 1em,
+        $height-base: 40px) {
+    $__page-header-root: &;
+    background-color: $background-color;
+    position: relative;
+    //top: 0;
+    padding: $vertical-padding-base 0;
+    width: 100%;
+    color: $color;
+
+    &__content {
+        @if $content-container-width != null {
+            @include container($content-container-width);
+        }
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: $height-base;
+    }
+
+    &__brand,
+    &__nav {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    &__brand {
+        border: none;
+        height: 100%;
+        overflow: hidden;
+        justify-content: flex-start;
+        flex: 0 0 auto;
+        padding: 0;
+        margin: 0;
+    }
+
+    &__brandname {
+        display: inline-block;
+        fill: $color;
+        color: $color;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    &__brandimage {
+        display: inline-block;
+        border: none;
+        height: 100%;
+        width: auto;
+        object-position: left center;
+        object-fit: contain;
+    }
+
+    &__nav {
+        position: relative;
+        height: 100%;
+        justify-content: flex-end;
+    }
+
+    &__navlink {
+        $__pageheader-navlink-root: &;
+        @include font(base, bold);
+        @include font-size(xsmall);
+        position: relative;
+        margin-left: $item-margin-left;
+        color: $color;
+        border-bottom: $border-width--small solid transparent;
+        white-space: nowrap;
+
+        &--active,
+        &:hover,
+        &:focus {
+            color: $color;
+            border-color: $color;
+        }
+
+        &--large {
+            @include font-size(large);
+        }
+
+        &--button {
+            @include button($responsive: false);
+            @include font-size(xsmall);
+            color: color(primary);
+            border-color: $color;
+            background-color: $color;
+            padding: $unit $spacing--small;
+            margin-bottom: 0;
+
+            @include min-width(md) {
+                padding: $unit $spacing--small;
+            }
+
+            @at-root #{selector-append(&, selector-append($__pageheader-navlink-root, --active))},
+            &:hover,
+            &:focus,
+            &:active {
+                color: $color;
+                background-color: transparent;
+                border: $border-width solid $color;
+            }
+        }
+
+        //&, &--button {
+        //    display: none;
+        //    white-space: nowrap;
+        //    text-overflow: ellipsis;
+        //    @include min-width($navlink-display-breakpoint) {
+        //        display: inline-block;
+        //    }
+        //}
+    }
+
+    &__navmenutoggle {
+        @include font(base, bold);
+        @include font-size(xsmall);
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-content: flex-end;
+        margin-left: $item-margin-left;
+        color: $color;
+        transition: all 300ms $swift-out;
+    }
+
+
+    &__navmenutoggle-label {
+        vertical-align: middle;
+    }
+
+    &__navmenutoggle-icon {
+        margin-right: $unit;
+        &:before {
+            @include cricon-icon(bars);
+            @include cricon-size(large);
+        }
+    }
+
+    &--small {
+        padding-top: ceil($vertical-padding-base * 0.7);
+        padding-bottom: ceil($vertical-padding-base * 0.7);
+        #{$__page-header-root}__content {
+            height: ceil($height-base * .7);
+        }
+    }
+
+    &--large {
+        #{$__page-header-root}__content {
+            height: ceil($height-base * 1.4);
+        }
+    }
+
+    &--xlarge {
+        #{$__page-header-root}__content {
+            height: ceil($height-base * 1.6);
+        }
+    }
+
+    &--xxlarge {
+        #{$__page-header-root}__content {
+            height: ceil($height-base * 2.0);
+        }
+    }
+
+    &--xxxlarge {
+        #{$__page-header-root}__content {
+            height: ceil($height-base * 2.5);
+        }
+    }
+}
+
+
+@mixin page-section-background-color-variant ($bgcolor) {
+    background-color: $bgcolor;
+
+    &, a:not([class]), a:not([class]):hover {
+        color: black-or-white-contrast-color($bgcolor);
+    }
+    a:not([class]), a:not([class]):hover {
+        border-color: black-or-white-contrast-color($bgcolor);
+    }
+}
+
+@mixin page-section-mixin () {
+    $__root: &;
+    padding-top: $vertical-rythm--medium;
+    padding-bottom: $vertical-rythm--medium;
+
+    @include min-width(md) {
+        padding-top: $vertical-rythm--spacing + $unit;
+        padding-bottom: $vertical-rythm--spacing + $unit;
+    }
+
+    &--tight {
+        @include container(tight);
+    }
+
+    &--focus {
+        background-color: $color-light;
+    }
+
+    &--primary {
+        @include page-section-background-color-variant (get-background-color(primary))
+    }
+
+    &--secondary {
+        @include page-section-background-color-variant (get-background-color(secondary))
+    }
+
+    &--center {
+        text-align: center;
+    }
+
+    &--center-md {
+        @include min-width(md) {
+            text-align: center;
+        }
+    }
+
+    &--center-lg {
+        @include min-width(lg) {
+            text-align: center;
+        }
+    }
+
+    &--spaced {
+        padding-top: $vertical-rythm--spacing;
+        padding-bottom: $vertical-rythm--spacing;
+
+        @include min-width(md) {
+            padding-top: $vertical-rythm--spacing * 2;
+            padding-bottom: $vertical-rythm--spacing * 2;
+        }
+    }
+
+    &--outlined { // TODO: Better naming
+        border-top: $border-style;
+        border-color: color(neutral, light);
+    }
+
+    &--last {
+        margin-bottom: 0;
+
+        & + .care-question {
+            margin-top: 0;
+        }
+    }
+
+    // Collapsable (mobile) styles
+
+    &__toggle {
+        @extend %h3;
+        position: relative;
+        display: block;
+        width: 100%;
+        padding-right: $unit * 4;
+        margin-bottom: 0;
+
+        text-align: inherit;
+
+        &:hover,
+        &:focus {
+            color: $color-links--hover;
+        }
+
+        &:after {
+            @include cricon-icon(chevron-down);
+            @include cricon-size(small);
+            @include cricon-color-secondary();
+            position: absolute;
+            display: block;
+            right: 0;
+            top: 50%;
+            margin-top: -9px;
+            transition: all 300ms $swift-out;
+        }
+
+        @include min-width(md) { // TODO: Base this on the modifier --sm?
+            display: none;
+        }
+    }
+
+    &--collapsible-sm {
+        border-bottom: $border-style;
+        border-color: color(neutral, light);
+
+        @include min-width(md) {
+            border-bottom: 0;
+        }
+
+        #{$__root}__title,
+        #{$__root}__content {
+            @extend %animation-fall-down;
+            display: none;
+            margin-top: $vertical-rythm--medium;
+
+            @include min-width(md) {
+                display: block;
+            }
+        }
+    }
+
+    &--expanded {
+        #{$__root}__content {
+            display: block;
+        }
+
+        #{$__root}__toggle:after {
+            transform: rotate(-180deg);
+        }
+    }
+
+    &--spaced {
+        padding-top: $vertical-rythm--spacing;
+        padding-bottom: $vertical-rythm--spacing;
+
+        @include min-width(md) {
+            padding-top: $vertical-rythm--spacing * 2;
+            padding-bottom: $vertical-rythm--spacing * 2;
+        }
+    }
+
+    &--spacing-sm {
+        padding-top: vertical-space($spacing--small);
+        padding-bottom: vertical-space($spacing--small);
+
+        @include min-width(md) {
+            padding-top: vertical-space($spacing);
+            padding-bottom: vertical-space($spacing);
+        }
+    }
+
+    & > .container:last-child > p:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+}
+
+
+@mixin page-cover-mixin(
+    $vertical-padding-sm: $spacing,
+    $vertical-padding: $vertical-rythm--spacing,
+    $background-color: color(primary),
+    $color: null,
+    $emphasis-background-color: color(primary, dark),
+    $emphasis-color: null,
+    $text-align: center,
+    $title-container-width: wide,
+    $description-container-width: tight,
+    $button-border-color: null,
+    $button-text-color: null,
+    $button-text-color-hover: color(primary, dark),
+    $link-hover-color: null
+) {
+    @if (not $color) {
+        $color: black-or-white-contrast-color($background-color)
+    }
+    @if (not $emphasis-color) {
+        $emphasis-color: black-or-white-contrast-color($emphasis-background-color)
+    }
+    @if (not $button-border-color) {
+        $button-border-color: black-or-white-contrast-color($background-color)
+    }
+    @if (not $button-text-color) {
+        $button-text-color: black-or-white-contrast-color($background-color)
+    }
+    @if (not $link-hover-color) {
+        $link-hover-color: $emphasis-color;
+    }
+
+    position: relative;
+    padding-top: $vertical-padding-sm; // TODO: Vertical variables...
+    padding-bottom: $vertical-padding-sm; // TODO: Vertical variables...
+    text-align: $text-align;
+    color: $color;
+    background-color: $background-color;
+
+    @media print {
+        background-color: transparent;
+        color: #000;
+    }
+
+    @include min-width(md) {
+        padding-top: $vertical-padding;
+        padding-bottom: $vertical-padding;
+    }
+
+    &__title {
+        position: relative;
+        @include container($title-container-width);
+        z-index: 2;
+        width: 100%;
+        margin-bottom: $spacing--small;
+        @include font-size(xlarge);
+
+        &--small {
+            @include font-size(large);
+        }
+
+        &:only-child {
+            margin-bottom: 0;
+        }
+    }
+
+    &__description {
+        @include container($description-container-width);
+        @include font(base, bold);
+        @include font-size(small);
+        position: relative;
+        z-index: 2;
+        //max-width: $container-width--tight + ($spacing * 2);
+        padding: 0;
+        margin-bottom: $spacing--small;
+
+        &--large {
+            @include font-size(large);
+            @include spaced-text;
+        }
+    }
+
+    &__strong {
+        @include font(base, bold);
+        display: inline-block;
+        padding: 0 $unit 2px;
+        margin: 0 -2px;
+        color: $emphasis-color;
+        background-color: $emphasis-background-color;
+    }
+
+    &__link {
+        color: $emphasis-color;
+        border-color: $emphasis-background-color;
+        &:hover,
+        &:focus {
+            color: $link-hover-color;
+            border-color: $link-hover-color;
+        }
+
+        &--no-border {
+            border: none;
+            text-decoration: none;
+
+            &:hover {
+                border: none;
+                text-decoration: none;
+            }
+        }
+    }
+
+    &__button {
+        @include button();
+        @include button-style(
+            $border-color: $button-border-color,
+            $background-color-hover: $button-border-color,
+            $text-color: $button-text-color,
+            $text-color-hover: $button-text-color-hover
+        );
+
+        &--focus {
+            @include button-style-fill(
+                $border-color: $button-border-color,
+                $background-color: $button-border-color,
+                $text-color: $button-text-color-hover,
+                $text-color-hover: $button-text-color
+            );
+        }
+    }
+}
+
+
+@mixin breadcrumb-item-list-mixin () {
+    $__root: &;
+
+    position: relative;
+    @include font(base, normal);
+    @include font-size(xsmall);
+    display: inline-block;
+    color: $color-text;
+
+    &__itemlabel-minimized {
+        display: inline-block;
+    }
+
+    &__itemlabel-full {
+        display: none;
+    }
+
+    &__item {
+        color: inherit;
+        border-color: transparent;
+        text-decoration: none;
+        &:nth-last-child(3) {
+            &:before {
+                @include cricon-fixed-width(xsmall);
+                @include cricon-icon(arrow-left);
+                //content: "...";
+                @include min-width(md) {
+                    @include cricon-clear-icon(arrow-left);
+                }
+                //content: "...";
+                //@include min-width(md) {
+                //    content: "";
+                //}
+            }
+        }
+
+
+        &--active {
+            @include font(base, bold);
+        }
+
+        &:hover {
+            @include min-width (md) {
+                #{$__root}__itemlabel-minimized {
+                    display: none;
+                }
+
+                #{$__root}__itemlabel-full {
+                    display: inline-block;
+                }
+            }
+        }
+    }
+
+    &__separator {
+        &:before {
+            @include cricon-fixed-width(xsmall);
+            @include cricon-icon(chevron-right);
+        }
+    }
+
+    &__item, &__separator {
+        display: none;
+        &:nth-last-child(-n+3) {
+            display: inline-block;
+        }
+        @include min-width(md) {
+            display: inline-block;
+        }
+    }
+
+    &--light {
+        color: $color-light;
+        #{$__root}__item {
+            color: inherit;
+        }
+        a#{$__root}__item {
+            &:hover {
+                color: color(neutral, xlight);
+                border-color: color(neutral, xlight);
+            }
+        }
+    }
+}
+
+
+@mixin expandable-menu-mixin (
+    $backdrop-background-color: rgba(white, 0.85),
+    $background-color: color(secondary, dark),
+    $separator-color: color(secondary),
+    $separator-width: $border-width,
+    $text-color: $color-light,
+    $close-button-hover-color: color(neutral, light)
+) {
+    position: fixed;
+    display: none;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    overflow: auto;
+    z-index: $level-3;
+
+    &--expanded {
+        display: block;
+    }
+
+    &__backdrop {
+        @extend %animation-fade-in;
+        position: fixed;
+        z-index: $level-2;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background-color: $backdrop-background-color;
+    }
+
+    &__close {
+        position: absolute;
+        top: $spacing;
+        right: $spacing;
+        min-width: $unit * 14;
+        text-align: right;
+        line-height: 30px;
+        color: $text-color;
+
+        &:hover {
+            color: $close-button-hover-color;
+        }
+    }
+
+    &__content {
+        animation: expandable-menu-open-keyframes 300ms $swift-out both;
+
+        position: fixed;
+        z-index: $level-3;
+        padding-top: 80px;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 400px;
+        max-width: 100%;
+        color: $text-color;
+        background-color: $background-color;
+    }
+
+    &__list {
+        padding: 0 vertical-space($spacing);
+    }
+
+    &__listitem {
+        animation: expandable-menu-item-open-keyframes 300ms $swift-out both;
+        @include animation-delay(8, 60ms, 80ms);
+        margin-bottom: vertical-space();
+    }
+
+    &__separator {
+        height: $separator-width;
+        background-color: $separator-color;
+        margin-top: vertical-space() * 3;
+        margin-bottom: vertical-space() * 2;
+    }
+
+    &__heading {
+        margin-top: vertical-space() * 3;
+        margin-bottom: vertical-space() * 2;
+        @include font-size(xxsmall);
+        @include font(base, bold);
+        text-transform: uppercase;
+
+        &:first-child {
+            margin-top: 0;
+        }
+    }
+
+    &__link {
+        @include font(base, bold);
+        position: relative;
+        margin-left: 1em;
+        color: $text-color;
+        border-bottom: $border-width--small solid transparent;
+
+        &--active,
+        &:hover,
+        &:focus {
+            color: $text-color;
+            border-color: $text-color;
+        }
+    }
+}
+
+@mixin columnlayout__column-sm-order($order, $breakpoint) {
+    &--sm-order-#{$order} {
+        @include max-width ($breakpoint) {
+            order: $order;
+        }
+    }
+}
+
+@mixin columnlayout__column-size($name, $width, $breakpoint) {
+    &--#{$name} {
+        @include min-width ($breakpoint) {
+            flex: 0 0 auto;
+            width: $width;
+        }
+    }
+}
+
+@mixin columnlayout__column-weight($name, $weight, $breakpoint) {
+    &--weight-#{$name} {
+        @include min-width ($breakpoint) {
+            flex: 0 $weight auto;
+        }
+    }
+}
+
+@mixin columnlayout__spacing($prefix, $name, $sidemargin, $breakpoint) {
+    &--spacing-#{$name} {
+        #{$prefix}__column {
+            @include min-width ($breakpoint) {
+                margin-left: $sidemargin;
+                margin-right: $sidemargin;
+
+                &:first-child {
+                    @include min-width ($breakpoint) {
+                        margin-left: 0;
+                    }
+                }
+                &:last-child {
+                    @include min-width ($breakpoint) {
+                        margin-right: 0;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@mixin columnlayout-bem-block($breakpoint) {
+    //$__columnlayout-root: &;
+    display: flex;
+    flex-direction: column;
+    @include min-width ($breakpoint) {
+        flex-direction: row;
+    }
+    &__column {
+        order: 10;
+
+        @include min-width ($breakpoint) {
+            flex: 1;
+            margin-left: $spacing--small;
+            margin-right: $spacing--small;
+        }
+        &:first-child {
+            @include min-width ($breakpoint) {
+                margin-left: 0;
+            }
+        }
+        &:last-child {
+            @include min-width ($breakpoint) {
+                margin-right: 0;
+            }
+        }
+
+        &--vertical-center {
+            @include min-width ($breakpoint) {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+        }
+
+        @include columnlayout__column-size(border-width, $border-width, $breakpoint);
+        @include columnlayout__column-size(border-width-small, $border-width--small, $breakpoint);
+        @include columnlayout__column-size(xsmall, 15%, $breakpoint);
+        @include columnlayout__column-size(small, 20%, $breakpoint);
+        @include columnlayout__column-size(large, 25%, $breakpoint);
+        @include columnlayout__column-size(xlarge, 30%, $breakpoint);
+        @include columnlayout__column-size(xxlarge, 35%, $breakpoint);
+        @include columnlayout__column-size(xxxlarge, 40%, $breakpoint);
+        @include columnlayout__column-size(half, 50%, $breakpoint);
+
+        @include columnlayout__column-sm-order(1, $breakpoint);
+        @include columnlayout__column-sm-order(2, $breakpoint);
+        @include columnlayout__column-sm-order(3, $breakpoint);
+        @include columnlayout__column-sm-order(5, $breakpoint);
+
+        @include columnlayout__column-weight(1, 1, $breakpoint);
+        @include columnlayout__column-weight(2, 2, $breakpoint);
+        @include columnlayout__column-weight(3, 3, $breakpoint);
+        @include columnlayout__column-weight(4, 4, $breakpoint);
+
+        &--no-shrink-or-grow {
+            flex: 0 0 auto;
+        }
+
+        &--separator {
+            display: none;
+            overflow: hidden;
+            @include min-width ($breakpoint) {
+                display: block;
+                flex: 0 0 auto;
+            }
+
+        }
+        &--separator-spacing-sm {
+            display: block;
+            margin-top: $vertical-rythm--medium;
+            overflow: hidden;
+            @include min-width ($breakpoint) {
+                margin-top: 0;
+                flex: 0 0 auto;
+            }
+        }
+    }
+
+    @include columnlayout__spacing(&, none, 0, $breakpoint);
+    @include columnlayout__spacing(&, xsmall, $unit, $breakpoint);
+    @include columnlayout__spacing(&, small, $spacing--small, $breakpoint);
+    @include columnlayout__spacing(&, large, $spacing, $breakpoint);
+}

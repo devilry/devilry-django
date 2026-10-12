@@ -1,0 +1,18 @@
+{% extends "webdemo/base.django.html" %}
+{% load cradmin_legacy_image_tags %}
+
+{% block title %}{{ page.title }}{% endblock title %}
+
+{% block content %}
+    <div class="container">
+        <h1>{{ page.title }}</h1>
+        <p class="lead">{{ page.intro }}</p>
+        {% if page.image %}
+            <p>
+                <img src="{% cradmin_transform_image page.image.image.url width=400 height=300 %}"
+                     alt="{{ page.image.description }}" class="img-responsive">
+            </p>
+        {% endif %}
+        {{ page.body }}
+    </div>
+{% endblock content %}

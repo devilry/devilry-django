@@ -1,0 +1,29 @@
+{% extends "django_cradmin/viewhelpers/formview/standalone_form_view.django.html" %}
+{% load i18n %}
+
+{% block title %}
+    {% trans "Sign in" %}
+{% endblock title %}
+
+{% block page-cover-title %}
+    {% trans "Sign in" %}
+{% endblock page-cover-title %}
+
+
+{% block content %}
+    {{ block.super }}
+
+    {% block forgotpassword %}
+        {% if DJANGO_CRADMIN_FORGOTPASSWORD_URL %}
+            <div class="adminui-page-section adminui-page-section--center">
+                <div class="container">
+                    <p id="cradmin_authenticate_login_forgotpasswordlink">
+                        <a href="{{ DJANGO_CRADMIN_FORGOTPASSWORD_URL }}">
+                            {% trans "Forgot your password?" %}
+                        </a>
+                    </p>
+                </div>
+            </div>
+        {% endif %}
+    {% endblock forgotpassword %}
+{% endblock content %}

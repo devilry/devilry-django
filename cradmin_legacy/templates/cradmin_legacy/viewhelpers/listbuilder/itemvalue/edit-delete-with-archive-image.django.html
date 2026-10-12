@@ -1,0 +1,14 @@
+{% extends "cradmin_legacy/viewhelpers/listbuilder/itemvalue/edit-delete.django.html" %}
+{% load cradmin_legacy_image_tags %}
+
+{% block below-title %}
+    {% block imagewrapper %}
+        {% if me.get_archiveimage %}
+            <p class="cradmin-legacy-listbuilder-itemvalue-editdelete-imagewrapper">
+                {% block image %}
+                    {% cradmin_create_archiveimage_tag me.get_archiveimage imagetype=me.get_imagetype fallbackoptions=me.get_image_fallbackoptions css_class="img-responsive" %}
+                {% endblock image %}
+            </p>
+        {% endif %}
+    {% endblock imagewrapper %}
+{% endblock below-title %}

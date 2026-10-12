@@ -1,0 +1,90 @@
+@import "../cradmin_base/all";
+@import "variables";
+@import "menu";
+
+body {
+  background: @cradmin-bodybg;
+}
+
+#cradmin_legacy_contentwrapper {
+  background: @cradmin-bodycontent-bg;
+  padding-bottom: 15px;
+  min-height: 100%;
+  @media (min-width: @screen-md-min) {
+    padding-left: @cradmin-default-theme-mainmenu-width;
+  }
+  //max-width: @screen-lg-min;
+  @media (min-width: @screen-md-min) {
+    width: @container-md;
+  }
+  @media (min-width: @screen-lg-min) {
+    width: @container-lg;
+  }
+
+}
+
+.cradmin-legacy-focusedpage-body {
+  background: @cradmin-bodycontent-bg;
+}
+
+body.cradmin-legacy-hide-menu {
+  #cradmin_legacy_contentwrapper {
+    @media (min-width: @screen-md-min) {
+      padding-left: 0;
+    }
+  }
+}
+
+.container {
+  @media (min-width: @screen-md-min) {
+    margin-left: 0;
+    margin-right: auto;
+    width: (@container-md - @cradmin-default-theme-mainmenu-width);
+  }
+  @media (min-width: @screen-lg-min) {
+    width: (@container-lg - @cradmin-default-theme-mainmenu-width);
+  }
+
+  &.cradmin-legacy-container-focus {
+    @media (min-width: @screen-md-min) {
+      margin-left: (@grid-gutter-width/2);
+      width: (@container-md - @cradmin-default-theme-mainmenu-width - @grid-gutter-width);
+    }
+    @media (min-width: @screen-lg-min) {
+      width: (@container-lg - @cradmin-default-theme-mainmenu-width - @grid-gutter-width);
+    }
+  }
+}
+
+.cradmin-legacy-hide-menu {
+  #cradmin_legacy_contentwrapper {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .container {
+    @media (min-width: @screen-md-min) {
+      margin-left: auto;
+      margin-right: auto;
+      width: @container-md;
+    }
+    @media (min-width: @screen-lg-min) {
+      width: @container-lg;
+    }
+
+    &.cradmin-legacy-container-focus {
+      @media (min-width: @screen-md-min) {
+        width: (@container-md - @grid-gutter-width);
+      }
+      @media (min-width: @screen-lg-min) {
+        width: (@container-lg - @grid-gutter-width);
+      }
+    }
+  }
+}
+
+
+.cradmin-legacy-formsized-wrapper,
+.cradmin-legacy-form-wrapper .cradmin-legacy-form {
+  margin-left: 0;
+  margin-right: 0;
+}

@@ -1,0 +1,106 @@
+<div class="adminui-page-section">
+    <div class="container">
+        <h2>ForeignKey select</h2>
+        <div data-ievv-jsbase-widget="cradmin-api-data-list"
+             data-ievv-jsbase-widget-config='{
+                 "signalNameSpace": "foreignkey",
+                 "apiUrl": "{% url 'cradmin_javascript_demos_api:fictional-figures-list' %}",
+                 "minimumSearchStringLength": 0,
+                 "multiselect": false
+             }'>
+        </div>
+        <div data-ievv-jsbase-widget="cradmin-signal-router"
+             data-ievv-jsbase-widget-config='{
+                 "signalNameSpace": "foreignkey",
+                 "signalMap": {
+                    "SearchDownKey": ["ShowPopup", "FocusOnFirstSelectableItem"],
+                    "SearchValueChangeNotEmpty": ["ShowPopup"],
+                    "SearchEnterKey": ["ShowPopup"],
+                    "SearchEscapeKey": ["HidePopup"],
+                    "SelectableItemEscapeKey": ["HidePopup", "FocusOnSearchField"],
+                    "LoadMoreEscapeKey": ["HidePopup", "FocusOnSearchField"],
+                    "SearchValueChangeEmpty": ["HidePopup"],
+                    "LostFocus": ["HidePopup"],
+                    "FocusBeforeFirstSelectableItem": ["FocusOnSearchField"],
+                    "FocusAfterLastSelectableItem": ["FocusOnLoadMoreButton"],
+                    "SelectItem": ["FocusOnLastSelectedItem", "HidePopup", "ClearSearchField"],
+                    "CouldNotFocusOnClosestSelectedItem": ["FocusOnSearchField"],
+                    "LoadMore": ["FocusOnLastSelectableItem"],
+                    "LoadMoreUpKey": ["FocusOnLastSelectableItem"]
+                 }
+             }'>
+        </div>
+        <div data-ievv-jsbase-widget="cradmin-selected-list"
+             data-ievv-jsbase-widget-config='{
+                 "signalNameSpace": "foreignkey"
+             }'>
+        </div>
+        <div data-ievv-jsbase-widget="cradmin-data-list-display-by-state"
+             data-ievv-jsbase-widget-config='{
+                 "signalNameSpace": "foreignkey",
+                 "showStates": ["HasNoSelectedItems"]
+             }'>
+            <div data-ievv-jsbase-widget="cradmin-search-input"
+                 data-ievv-jsbase-widget-config='{
+                     "signalNameSpace": "foreignkey"
+                 }'></div>
+            <div class="dropdown">
+                <div class="dropdown__content"
+                     style="display: none"
+                     data-ievv-jsbase-widget="cradmin-popup"
+                     data-ievv-jsbase-widget-config='{
+                         "signalNameSpace": "foreignkey"
+                     }'>
+                    <div data-ievv-jsbase-widget="cradmin-selectable-list"
+                         data-ievv-jsbase-widget-config='{
+                             "signalNameSpace": "foreignkey",
+                             "renderSelected": false,
+                             "useHotKeys": true,
+                             "itemComponentProps": {
+                                "disableTabNavigation": true,
+                                "useHotKeys": true
+                             }
+                         }'></div>
+                    <div data-ievv-jsbase-widget="cradmin-data-list-display-by-state"
+                         style="display: none"
+                         class="text-center"
+                         data-ievv-jsbase-widget-config='{
+                             "signalNameSpace": "foreignkey",
+                             "showStates": ["HasNextPage"],
+                             "hideStates": ["IsLoading"]
+                         }'>
+                        <span data-ievv-jsbase-widget="cradmin-load-more-button"
+                              data-ievv-jsbase-widget-config='{
+                                  "signalNameSpace": "foreignkey",
+                                  "label": "Last flere",
+                                  "useHotKeys": true,
+                                  "disableTabNavigation": true
+                              }'></span>
+                    </div>
+                    <p data-ievv-jsbase-widget="cradmin-data-list-display-by-state"
+                       style="display: none"
+                       data-ievv-jsbase-widget-config='{
+                         "signalNameSpace": "foreignkey",
+                         "showStates": ["IsLoading"]
+                     }'>
+                        Loading...
+                    </p>
+                    <p data-ievv-jsbase-widget="cradmin-data-list-display-by-state"
+                       style="display: none"
+                       data-ievv-jsbase-widget-config='{
+                         "signalNameSpace": "foreignkey",
+                         "showStates": ["FilteredIsEmpty"],
+                         "hideStates": ["IsLoading"]
+                     }'>
+                        No matches!
+                    </p>
+                </div>
+            </div>
+        </div>
+        <span data-ievv-jsbase-widget="cradmin-hidden-input-list"
+             data-ievv-jsbase-widget-config='{
+                         "signalNameSpace": "foreignkey",
+                         "inputName": "theforeignkey",
+                         "inputType": "hidden"}'></span>
+    </div>
+</div>

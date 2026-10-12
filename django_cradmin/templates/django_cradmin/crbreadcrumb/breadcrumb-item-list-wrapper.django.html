@@ -1,0 +1,6 @@
+{% load cradmin_tags %}
+<div class="{{ me.css_classes }}">
+    <div class="{{ me.container_css_classes }}">
+        {% cradmin_render_renderable me.breadcrumb_item_list extra_context_data=me.get_breadcrumb_item_list_extra_context_data %}
+    </div>
+</div>

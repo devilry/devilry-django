@@ -1,0 +1,76 @@
+{% load i18n %}
+{% load cradmin_icon_tags %}
+
+<div django-cradmin-acemarkdown="{{ directiveconfig }}" class="cradmin-acemarkdown cradmin-div-styled-as-textarea">
+    <div class="btn-toolbar" role="toolbar">
+        {% block toolbar %}
+            {% block headerbuttons %}
+                <div class="btn-group">
+                    <a class="btn btn-default" django-cradmin-acemarkdown-tool="{
+                            pre: '\n\n# ', post: '\n'}">
+                        <span class="{% cradmin_icon 'h1' %}"></span>
+                        <span class="screenreader-only">{% trans "Heading 1" %}</span>
+                    </a>
+                    <a class="btn btn-default" django-cradmin-acemarkdown-tool="{
+                            pre: '\n\n## ', post: '\n'}">
+                        <span class="{% cradmin_icon 'h2' %}"></span>
+                        <span class="screenreader-only">{% trans "Heading 2" %}</span>
+                    </a>
+                    <a class="btn btn-default" django-cradmin-acemarkdown-tool="{
+                            pre: '\n\n### ', post: '\n'}">
+                        <span class="{% cradmin_icon 'h3' %}"></span>
+                        <span class="screenreader-only">{% trans "Heading 3" %}</span>
+                    </a>
+                </div>
+            {% endblock headerbuttons %}
+            {% block inlinestylesbuttons %}
+                <div class="btn-group">
+                    <a class="btn btn-default" django-cradmin-acemarkdown-tool="{
+                            pre: '**', post: '**', emptyText: '{% trans "Text here" %}'}">
+                        <span class="{% cradmin_icon 'bold' %}"></span>
+                        <span class="screenreader-only">{% trans "Bold" %}</span>
+                    </a>
+                    <a class="btn btn-default" django-cradmin-acemarkdown-tool="{
+                            pre: '_', post: '_'}">
+                        <span class="{% cradmin_icon 'italic' %}"></span>
+                        <span class="screenreader-only">{% trans "Italic" %}</span>
+                    </a>
+                    <a class="btn btn-default"
+                            django-cradmin-acemarkdown-link="{
+                                help: '{% trans "Write the URL in the field below. Make sure you include the http:// or https:// part of the URL." %}',
+                                emptyText: '{% trans "Link title here" %}'}">
+                        <span class="{% cradmin_icon 'link' %}"></span>
+                        <span class="screenreader-only">{% trans "Link" %}</span>
+                    </a>
+                </div>
+            {% endblock inlinestylesbuttons %}
+            {% block listbuttons %}
+                <div class="btn-group">
+                    <a class="btn btn-default" django-cradmin-acemarkdown-tool="{
+                            pre: '\n* ', post: '\n'}">
+                        <span class="{% cradmin_icon 'list-ul' %}"></span>
+                        <span class="screenreader-only">{% trans "Bulletlist" %}</span>
+                    </a>
+                    <a class="btn btn-default" django-cradmin-acemarkdown-tool="{
+                            pre: '\n1. ', post: '\n'}">
+                        <span class="{% cradmin_icon 'list-ol' %}"></span>
+                        <span class="screenreader-only">{% trans "Numbered list" %}</span>
+                    </a>
+                </div>
+            {% endblock listbuttons %}
+            {% block codebuttons %}
+                <div class="btn-group">
+                    <a class="btn btn-default" django-cradmin-acemarkdown-tool="{
+                                pre: '``` ', post: '\n\n```',
+                                emptyText: '{% trans "programminglanguage" %}'
+                            }">
+                        <span class="{% cradmin_icon 'codeblock' %}"></span>
+                        <span class="screenreader-only">{% trans "Code block" %}</span>
+                    </a>
+                </div>
+            {% endblock codebuttons %}
+        {% endblock toolbar %}
+    </div>
+    <div django-cradmin-acemarkdown-editor></div>
+    {{ textarea|safe }}
+</div>

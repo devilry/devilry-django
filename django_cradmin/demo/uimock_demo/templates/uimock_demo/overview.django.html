@@ -1,0 +1,34 @@
+{% extends "django_cradmin/standalone-base.django.html" %}
+{% load static %}
+
+{% block title %}
+    uimock demo
+{% endblock title %}
+
+{% block page-cover-title %}
+    uimock demo
+{% endblock page-cover-title %}
+
+{% block page-cover-content %}
+    {{ block.super }}
+    <p class="page-cover__description">
+        Code for these demos are in
+        <strong class="adminui-page-cover__strong">
+            django_cradmin/demo/uimock_demo/
+        </strong>
+    </p>
+{% endblock page-cover-content %}
+
+
+{% block content %}
+    <div class="adminui-page-section">
+        <div class="container container--tight">
+            <nav class="blocklist  blocklist--tight">
+                <a class="blocklist__item blocklist__item--link"
+                        href="{% url 'cradmin_uimock_demo_simple' %}">
+                    <strong>Simple demo</strong> - more or less the same as the example from the docs
+                </a>
+            </nav>
+        </div>
+    </div>
+{% endblock content %}

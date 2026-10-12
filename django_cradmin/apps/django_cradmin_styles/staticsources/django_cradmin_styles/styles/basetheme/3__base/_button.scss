@@ -1,0 +1,350 @@
+/*
+Buttons
+
+In most cases you should not use the button class for links. Use either `<button>` or `<input type="submit" />`
+when using buttons. <strong>Never</strong> use `<span>`, `<div>` or elements without a semantic meaning as buttons.
+
+Example: The default button
+    <button type="button" class="button">Button</button>
+    <button type="button" class="button  button--fill">Button</button>
+
+Example: For primary actions, use this only to separate from other actions.
+    <button type="button" class="button  button--primary">Button</button>
+    <button type="button" class="button  button--primary-fill">Button</button>
+
+Example: For secondary actions, don't overuse.
+    <button type="button" class="button  button--secondary">Button</button>
+    <button type="button" class="button  button--secondary-fill">Button</button>
+
+Example: For actions that need's to stand out on red or dark blue background.
+    <button type="button" class="button  button--light">Button</button>
+    <button type="button" class="button  button--light-fill">Button</button>
+
+Example: Button with icon
+    <button type="button" class="button">
+        <span class="cricon cricon--chevron-right" aria-hidden="true"></span>
+        Go forward!
+    </button>
+
+Example: Button styled as an input field
+    <button type="button" class="button button--block button--input button--form-size-default">
+        I am a button--input
+    </button>
+    <input type="text" class="input" value="I am an input!">
+    <button type="button" class="button button--block button--input-outlined button--form-size-default">
+        I am a button--input-outlined!
+    </button>
+    <input type="text" class="input input--outlined" value="I am an input--outlined!">
+
+Example: This is some modifiers you can add (PS: Can be combined)
+    <button type="button" class="button  button--block">
+        Make it 100% width of whatever container
+    </button>
+    <button type="button" class="button  button--compact">Compact button</button>
+    <br>
+    <button type="button" class="button  button--wider">Wider button</button>
+    <br>
+    <button type="button" class="button  button--spaced">Spaced button</button>
+    <br>
+    <button type="button" class="button" disabled>Disabled button</button>
+
+Example: Optimized for used along with form elements
+
+    <p>
+        <input type="text" class="input input--inline input--outlined input--size-xsmall">
+        <button type="button" class="button button--form-size-xsmall">--form-size-xsmall</button>
+    </p>
+    <p>
+        <input type="text" class="input input--inline input--outlined input--size-small">
+        <button type="button" class="button button--form-size-small">--form-size-small</button>
+    </p>
+    <p>
+        <input type="text" class="input input--inline input--outlined">
+        <button type="button" class="button button--form-size-default">--form-size-default</button>
+    </p>
+    <p>
+        <input type="text" class="input input--inline input--outlined input--size-large">
+        <button type="button" class="button button--form-size-large">--form-size-large</button>
+    </p>
+
+Styleguide form.2:buttons
+*/
+
+@mixin button-style ($border-color, $text-color, $background-color-hover, $background-color: transparent,
+        $text-color-hover: false, $border-color-hover: false) {
+    color: $text-color;
+    border-color: $border-color;
+    background-color: $background-color;
+
+    &:hover,
+    &:focus,
+    &:active {
+        border-color: $background-color-hover;
+        background-color: $background-color-hover;
+
+        @if ($border-color-hover) {
+            border-color: $border-color-hover;
+        }
+
+        @if ($text-color-hover) {
+            color: $text-color-hover;
+        } @else {
+            color: color-contrast($background-color-hover);
+        }
+    }
+}
+
+@mixin button-style-fill ($border-color, $background-color, $text-color-hover, $background-color-hover: transparent, $text-color: false) {
+    border-color: $border-color;
+    background-color: $background-color;
+
+    @if ($text-color) {
+        color: $text-color;
+    } @else {
+        color: color-contrast($background-color);
+    }
+
+    &:hover,
+    &:focus,
+    &:active {
+        color: $text-color-hover;
+        border-color: $border-color;
+        background-color: $background-color-hover;
+    }
+}
+
+@mixin button-style-input ($outlined: false) {
+    $border-color: $color-light;
+    @if ($outlined) {
+        $border-color: color(neutral, light);
+    }
+    @include button-style (
+        $border-color: $border-color,
+        $text-color: $color-text,
+        $background-color: $color-light,
+        $background-color-hover: $color-light,
+        $border-color-hover: color(secondary, dark),
+        $text-color-hover: false);
+    @include font(base, normal);
+    @include font-size(small);
+    text-align: left;
+    letter-spacing: normal;
+    text-transform: none;
+    padding: #{$unit + $border-width} #{$spacing--small + $border-width};
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@mixin button-modifier($name, $border-color, $text-color, $background-color-hover, $text-color-hover: false) {
+    &--#{$name} {
+        @include button-style(
+            $border-color: $border-color,
+            $text-color: $text-color,
+            $background-color-hover: $background-color-hover,
+            $text-color-hover: $text-color-hover
+        );
+    }
+
+    &--#{$name}-fill {
+        @include button-style-fill(
+            $border-color: $background-color-hover,
+            $background-color: $background-color-hover,
+            $text-color-hover: $text-color,
+            $text-color: $text-color-hover
+        );
+    }
+}
+
+
+@mixin button($responsive: true) {
+    @include spaced-text;
+    @include font(base, bold);
+    @include font-size(xsmall);
+    font-style: normal;
+    text-align: center;
+
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: $unit $spacing--small;
+    border-radius: $border-radius;
+
+    color: $color-text;
+    white-space: normal;
+
+    border: $border-width solid color(neutral, dark);
+    background-color: transparent;
+    margin-bottom: $unit;
+
+    @if $responsive {
+        @include min-width(md) {
+            display: inline-block;
+            white-space: nowrap;
+            width: auto;
+            padding: #{$spacing--small - $border-width} #{$indention - $border-width};
+        }
+    }
+
+    &[disabled] {
+        pointer-events: none;
+        opacity: 0.4;
+    }
+
+    &:hover,
+    &:focus,
+    &:active {
+        color: $color-light;
+        border-color: color(neutral, dark);
+        background-color: color(neutral, dark);
+
+        .button__icon--non-hover {
+            display: none;
+        }
+
+        .button__icon--hover {
+            display: inline-block;
+        }
+    }
+
+    &:focus {
+        z-index: 2;
+    }
+}
+
+
+@mixin button--compact() {
+    @include font-size(xsmall);
+    padding: $unit $spacing--small;
+}
+
+
+@mixin button--block() {
+    display: block;
+    width: 100%;
+}
+
+
+@mixin button--spaced() {
+    @include min-width(md) {
+        margin-left: $spacing--small;
+        margin-right: $spacing--small;
+    }
+}
+
+@mixin button__icon() {
+    position: relative;
+    vertical-align: middle;
+    top: -2px;
+    margin-right: $unit;
+
+    &--non-hover {
+        display: inline-block;
+    }
+
+    &--hover {
+        display: none;
+    }
+
+    &--first {
+        margin-left: -($unit);
+    }
+}
+
+.button {
+    @include button();
+
+    &__icon {
+        @include button__icon();
+    }
+
+    &--fill {
+        color: $color-light;
+        border-color: color(neutral, dark);
+        background-color: color(neutral, dark);
+
+        &:hover,
+        &:focus,
+        &:active {
+            color: $color-text;
+            border-color: color(neutral, dark);
+            background-color: transparent;
+        }
+    }
+
+    @include button-modifier(
+        'primary',
+        color(primary),
+        color(primary),
+        color(primary, dark)
+    );
+
+    @include button-modifier(
+        'secondary',
+        color(secondary, dark),
+        color(secondary, dark),
+        color(secondary, dark)
+    );
+
+    @include button-modifier(
+        'light',
+        $color-light,
+        $color-light,
+        $color-light,
+        color(primary)
+    );
+
+    &--input {
+        @include button-style-input($outlined: false);
+    }
+
+    &--input-outlined {
+        @include button-style-input($outlined: true);
+    }
+
+    &--wider { // TODO: Remove?
+        min-width: $unit * 30;
+    }
+
+    &--spaced {
+        @include button--spaced();
+    }
+
+    &--block {
+        @include button--block();
+    }
+
+    &--compact {
+        @include button--compact();
+    }
+
+    // TODO: Should not be here - should be a general css class just like screenreader-only!
+    &--hidden-in-print {
+        @media print {
+            display: none;
+        }
+    }
+
+    &--form-size-xsmall {
+        @include font-size(xxsmall, $skip-line-height: true);
+        padding-left: $spacing--small;
+        padding-right: $spacing--small;
+        @include form-element-mixin(xsmall);
+    }
+
+    &--form-size-small {
+        @include form-element-mixin(small);
+        padding-left: $spacing--small;
+        padding-right: $spacing--small;
+    }
+
+    &--form-size-default {
+        @include form-element-mixin();
+    }
+
+    &--form-size-large {
+        @include font-size(small, $skip-line-height: true);
+        @include form-element-mixin(large);
+    }
+
+}

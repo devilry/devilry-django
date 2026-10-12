@@ -1,0 +1,60 @@
+/*
+Links
+
+__Never__ use `<span>`, `<div>` or elements without a semantic meaning as links.
+
+Example: Link styles
+    <a href="">I'm a link</a>
+    <a href="" class="link link--light">I'm also link</a>
+
+Example: Button styled as a link
+    <button type="button" class="link">I'm a button!</a>
+    <button type="button" class="link link--light">I'm also a button!</a>
+
+Styleguide type.7:links
+*/
+a,
+.link,
+%link {
+    display: inline;
+    cursor: pointer;
+    text-decoration: none;
+
+    color: $color-links;
+    border-bottom: $border-width--small solid $color-links;
+    // border-bottom: $border-width--small solid rgba($color-links, 0.15);
+
+    &:hover,
+    &:focus {
+        color: $color-links--hover;
+        border-color: $color-links--hover;
+    }
+
+    &--light {
+        color: $color-light;
+        border-color: rgba($color-light, 0.7);
+
+        &:hover,
+        &:focus {
+            color: $color-light;
+            border-color: $color-light;
+        }
+    }
+
+    &--no-border {
+        border: none;
+        text-decoration: none;
+    }
+}
+
+.link--light,
+%link--light {
+    color: $color-light;
+    border-color: rgba($color-light, 0.7);
+
+    &:hover,
+    &:focus {
+        color: $color-light;
+        border-color: $color-light;
+    }
+}

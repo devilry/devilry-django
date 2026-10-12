@@ -38,7 +38,6 @@ dependencies = [
     "django-crispy-forms>=1.14.0,<1.15.0",
     "django-rq",
     "psycopg",
-    "cradmin_legacy>=6.3.2,<7.0.0",
     "ievv_opensource>=12.0.0,<13.0.0",
     "xlsxwriter",
     "arrow>=0.12.0,<0.13.0",
@@ -50,6 +49,7 @@ dependencies = [
     "pycountry>=18",
     "html-sanitizer",
     "whitenoise",
+    "django-multiupload",
 ]
 
 [project.optional-dependencies]
@@ -98,7 +98,7 @@ ievv = "ievv_opensource.ievvtasks_common.cli:cli"
 path = "devilry/__init__.py"
 
 [tool.hatch.build]
-packages = ["/devilry"]
+packages = ["/devilry", "/cradmin_legacy", "/django_cradmin"]
 exclude = [
     "node_modules",
     "/devilry/devilry_theme3/staticsources",

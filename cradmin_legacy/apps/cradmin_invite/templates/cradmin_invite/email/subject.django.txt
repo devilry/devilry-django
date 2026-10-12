@@ -1,0 +1,2 @@
+{% load i18n %}
+{% blocktrans with sitename=CRADMIN_LEGACY_SITENAME %}Invitation to {{ sitename }}{% endblocktrans %}

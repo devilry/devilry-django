@@ -1,0 +1,37 @@
+{% extends "django_cradmin/crmenu/base.django.html" %}
+{% load cradmin_tags %}
+{% load i18n %}
+
+{% block list-element-attributes %}
+    data-ievv-jsbase-widget="cradmin-toggleable-menu"
+    data-ievv-jsbase-widget-config='{"activeCssClass": "{{ me.get_bem_block_or_element }}--expanded"}'
+{% endblock list-element-attributes %}
+
+{% block content %}
+    <div class="{{ me.get_bem_block_or_element }}__backdrop" data-ievv-jsbase-widget="cradmin-menutoggle"></div>
+    <div class="{{ me.get_bem_block_or_element }}__content">
+        {% block inner_content %}
+            {% block inner_content_button %}
+                <button type="button" class="{{ me.get_bem_block_or_element }}__close"
+                        data-ievv-jsbase-widget="cradmin-menutoggle">
+                    <span class="cricon cricon--close" aria-hidden="true" role="presentation"></span>
+                    <span class="screenreader-only">{% trans "Close menu" %}</span>
+                </button>
+            {% endblock inner_content_button %}
+            
+            <ul class="{{ me.get_bem_block_or_element }}__list">
+                {% block inner_content_list %}
+                    <!-- <ul class="{{ me.get_bem_block_or_element }}__list"> -->
+                        <!-- {{ block.super }} -->
+                        {% for renderable in me.iter_renderables %}
+                            {% block list-item %}
+                                {% cradmin_render_renderable renderable %}
+                            {% endblock list-item %}
+                        {% endfor %}
+                    <!-- </ul> -->
+                {% endblock inner_content_list %}
+            </ul>
+
+        {% endblock inner_content %}
+    </div>
+{% endblock content %}

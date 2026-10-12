@@ -1,0 +1,12 @@
+{% extends "cradmin_legacy/viewhelpers/listbuilder/base/itemvalue.django.html" %}
+
+
+{% block outer-wrapper %}
+    {% if me.wrap_in_li_element %}
+        <li>
+    {% endif %}
+        {{ block.super }}
+    {% if me.wrap_in_li_element %}
+        </li>
+    {% endif %}
+{% endblock outer-wrapper %}

@@ -1,0 +1,11 @@
+built_docs/
+!lib/
+config/
+.editorconfig
+yarn.lock
+**/__tests__/
+esdoc.json
+esdoc/
+*.tgz
+ievv_buildstatic.appconfig.json
+.gitignore

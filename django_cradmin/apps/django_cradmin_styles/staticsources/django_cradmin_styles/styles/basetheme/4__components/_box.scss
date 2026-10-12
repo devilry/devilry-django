@@ -1,0 +1,195 @@
+@mixin box--spacing($name, $padding, $padding-md) {
+    &--spacing-#{$name} {
+        padding: $padding;
+        @include min-width (md) {
+            padding: $padding-md;
+        }
+    }
+}
+
+@mixin box--color($name, $background-color, $text-color: null) {
+    &--#{$name} {
+        background-color: $background-color;
+        color: $text-color;
+
+        a {
+            color: $text-color;
+            border-color: $text-color;
+
+            &:hover {
+                color: $text-color;
+                border-color: $text-color;
+            }
+        }
+    }
+}
+
+/* Box
+
+Example:
+    <div class="box">
+        Pol, festus buxum! Nunquam acquirere mens. Hercle, spatii nobilis!, rumor!
+        Medicinas cantare in piscinam!
+    </div>
+
+Styleguide components.box
+*/
+
+
+/* Box - colors
+
+Example: --focus
+    <div class="box box--focus">
+        Pol, festus buxum! Nunquam acquirere mens. Hercle, spatii nobilis!, rumor!
+        Medicinas cantare in piscinam!
+    </div>
+
+Example: --neutral
+    <div class="box box--neutral">
+        Pol, festus buxum! Nunquam acquirere mens. Hercle, spatii nobilis!, rumor!
+        Medicinas cantare in piscinam!
+    </div>
+
+Example: --neutral-light
+    <div class="box box--neutral-light">
+        Pol, festus buxum! Nunquam acquirere mens. Hercle, spatii nobilis!, rumor!
+        Medicinas cantare in piscinam!
+    </div>
+
+Example: --neutral-dark
+    <div class="box box--neutral-dark">
+        Pol, festus buxum! Nunquam acquirere mens. Hercle, spatii nobilis!, rumor!
+        Medicinas cantare in piscinam!
+    </div>
+
+Example: --neutral-xdark
+    <div class="box box--neutral-xdark">
+        Pol, festus buxum! Nunquam acquirere mens. Hercle, spatii nobilis!, rumor!
+        Medicinas cantare in piscinam!
+    </div>
+
+Example: --primary
+    <div class="box box--primary">
+        Pol, festus buxum! Nunquam acquirere mens. Hercle, spatii nobilis!, rumor!
+        Medicinas cantare in piscinam!
+    </div>
+
+Example: --primary-dark
+    <div class="box box--primary-dark">
+        Pol, festus buxum! Nunquam acquirere mens. Hercle, spatii nobilis!, rumor!
+        Medicinas cantare in piscinam!
+    </div>
+
+Example: --secondary
+    <div class="box box--secondary">
+        Pol, festus buxum! Nunquam acquirere mens. Hercle, spatii nobilis!, rumor!
+        Medicinas cantare in piscinam!
+    </div>
+
+Example: --secondary-dark
+    <div class="box box--secondary-dark">
+        Pol, festus buxum! Nunquam acquirere mens. Hercle, spatii nobilis!, rumor!
+        Medicinas cantare in piscinam!
+    </div>
+
+Example: --info
+    <div class="box box--info">
+        Pol, festus buxum! Nunquam acquirere mens. Hercle, spatii nobilis!, rumor!
+        Medicinas cantare in piscinam!
+    </div>
+
+Example: --success
+    <div class="box box--success">
+        Pol, festus buxum! Nunquam acquirere mens. Hercle, spatii nobilis!, rumor!
+        Medicinas cantare in piscinam!
+    </div>
+
+Example: --warning
+    <div class="box box--warning">
+        Pol, festus buxum! Nunquam acquirere mens. Hercle, spatii nobilis!, rumor!
+        Medicinas cantare in piscinam!
+    </div>
+
+Styleguide components.box.1:colors
+*/
+
+/* Box - spacing
+
+We use --warning for the examples to make it easy to see the spacing.
+
+Example: {type: isolated} Default
+    <div class="box box--warning">
+        Pol, festus buxum! Nunquam acquirere mens. Hercle, spatii nobilis!, rumor!
+        Medicinas cantare in piscinam!
+    </div>
+
+Example: {type: isolated} --none
+    <div class="box box--warning box--spacing-none">
+        Pol, festus buxum! Nunquam acquirere mens. Hercle, spatii nobilis!, rumor!
+        Medicinas cantare in piscinam!
+    </div>
+
+Example: {type: isolated} --small
+    <div class="box box--warning box--spacing-small">
+        Pol, festus buxum! Nunquam acquirere mens. Hercle, spatii nobilis!, rumor!
+        Medicinas cantare in piscinam!
+    </div>
+
+Example: {type: isolated} --large
+    <div class="box box--warning box--spacing-large">
+        Pol, festus buxum! Nunquam acquirere mens. Hercle, spatii nobilis!, rumor!
+        Medicinas cantare in piscinam!
+    </div>
+
+Example: {type: isolated} --xlarge
+    <div class="box box--warning box--spacing-xlarge">
+        Pol, festus buxum! Nunquam acquirere mens. Hercle, spatii nobilis!, rumor!
+        Medicinas cantare in piscinam!
+    </div>
+
+Example: {type: isolated} Combine with containers
+    <div class="box box--warning box--spacing-none-sides">
+        <div class="container">
+            Pol, festus buxum! Nunquam acquirere mens. Hercle, spatii nobilis!, rumor!
+            Medicinas cantare in piscinam!
+        </div>
+    </div>
+
+Example: {type: isolated} Combine with containers - --spacing-large
+    <div class="box box--warning box--spacing-none-sides box--spacing-large">
+        <div class="container">
+            Pol, festus buxum! Nunquam acquirere mens. Hercle, spatii nobilis!, rumor!
+            Medicinas cantare in piscinam!
+        </div>
+    </div>
+
+Styleguide components.box.2:spacing
+*/
+.box {
+    padding: $spacing--small;
+    @include min-width (md) {
+        padding: $spacing;
+    }
+    @include box--spacing(none, 0, 0);
+    @include box--spacing(small, ($spacing--small / 2), $spacing--small);
+    @include box--spacing(large, $spacing, $spacing--large);
+    @include box--spacing(xlarge, $spacing--large, $spacing--xlarge);
+
+    &--spacing-none-sides {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    @include box--color(focus, $color-light);
+    @include box--color(neutral-xlight, color(neutral, xlight));
+    @include box--color(neutral-light, color(neutral, light));
+    @include box--color(neutral-dark, color(neutral, dark), $color-light);
+    @include box--color(neutral-xdark, color(neutral, xdark), $color-light);
+    @include box--color(primary, color(primary), $color-light);
+    @include box--color(primary-dark, color(primary, dark), $color-light);
+    @include box--color(secondary, color(secondary), $color-light);
+    @include box--color(secondary-dark, color(secondary, dark), $color-light);
+    @include box--color(info, $color-info);
+    @include box--color(success, $color-success, $color-light);
+    @include box--color(warning, $color-warning, $color-light);
+}

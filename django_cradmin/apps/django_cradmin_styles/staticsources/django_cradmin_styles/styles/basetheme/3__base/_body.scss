@@ -1,0 +1,100 @@
+body {
+    // Type
+    @include font(base, normal);
+    @include font-size(small);
+
+    position: relative;
+
+    color: $color-text;
+    font-style: normal;
+
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+
+    background-color: $color-background;
+
+    &.overlay,
+    &.modal-open {
+        overflow: hidden;
+        position: fixed;
+
+        @include min-width(md) {
+            position: relative;
+        }
+    }
+}
+
+html,
+body {
+    overflow-x: hidden;
+}
+
+
+/*
+Workaround for javascript widgets that float elements
+on pages where the body is not as high as the actual
+view height.
+
+The widgets should add this class when shown, and remove it
+afterwards.
+ */
+body.fill-view-height {
+    min-height: 100vh;
+}
+
+
+/** Fill viewport layout
+
+A layout that ensures that we fill the entire viewport while keeping the
+footer at the bottom at the screen even if the main content is not high
+enough to push the footer to the bottom.
+
+NOTE: This does not work on IE 11, but you can make it work by adding the ``ie-hack-display-flex-wrapper``
+to ``body``.
+
+Example: {type: isolated}
+
+    <div class="fill-viewport-layout" style="background-color: blue;">
+        <main class="fill-viewport-layout__content" style="background-color: green;">
+            Main content
+        </main>
+
+        <footer class="fill-viewport-layout__footer" style="background-color: red;">
+            The footer
+        </footer>
+    </div>
+
+
+Example: {type: isolated} High main element
+
+    <div class="fill-viewport-layout" style="background-color: blue;">
+        <main class="fill-viewport-layout__content" style="background-color: green; min-height: 100vh;">
+            <p>Main content - higher than view height!</p>
+
+            <p>Aenean lacinia bibendum nulla sed consectetur. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Sed posuere consectetur est at lobortis. Etiam porta sem malesuada magna mollis euismod. Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+        </main>
+
+        <footer class="fill-viewport-layout__footer" style="background-color: red;">
+            The footer
+        </footer>
+    </div>
+
+
+Styleguide layout.fill-viewport-layout
+ */
+.fill-viewport-layout {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    &__content {
+        flex: 0 0 auto;
+    }
+
+    &__footer {
+        flex: 0 0 auto;
+    }
+}

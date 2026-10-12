@@ -1,0 +1,6 @@
+{% load cradmin_tags %}
+{% for childcontainer in me.iter_children %}
+    {% block childcontainer %}
+        {% cradmin_render_renderable childcontainer %}
+    {% endblock childcontainer %}
+{% endfor %}

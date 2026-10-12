@@ -1,0 +1,150 @@
+{% comment %}
+    Include template for bulkfileupload fields.
+
+    Template context variables:
+
+        hiddenfieldname (required)
+            Name of the hidden field used to submit the collection ID.
+        singlemode (optional)
+            If this is ``True``, we only allow a single file to be added to
+            the collection.
+        accept (optional)
+{% endcomment %}
+{% load i18n %}
+{% load cradmin_legacy_icon_tags %}
+
+<div cradmin-legacy-bulkfileupload-overlay-controls
+     class="cradmin-legacy-bulkfileupload-overlay-controls">
+    <div cradmin-legacy-bulkfileupload-hide-overlay="{{ hiddenfieldname }}"
+            class="cradmin-legacy-bulkfileupload-backdrop"></div>
+
+    <button type="button"
+            cradmin-legacy-bulkfileupload-hide-overlay="{{ hiddenfieldname }}"
+            class="btn btn-link cradmin-legacy-bulkfileupload-hide-overlay-button"
+            aria-label="{% trans 'close file upload window' %}">
+        <span class="{% cradmin_icon 'x' %}"
+              aria-hidden="true"
+              title="{% trans 'close file upload window' %}"></span>
+    </button>
+    <div cradmin-legacy-bulkfileupload-overlay-uploadingmessage
+            class="cradmin-legacy-bulkfileupload-overlay-uploadingmessage">
+        <p class="cradmin-legacy-bulkfileupload-overlay-uploadingmessage-text">
+            {% if overlaymode_autosubmit_uploading_message %}
+                {{ overlaymode_autosubmit_uploading_message }}
+            {% else %}
+                {% if singlemode %}
+                    {% trans "We are uploading your file. Please do not close the browser window." %}
+                {% else %}
+                    {% trans "We are uploading your files. Please do not close the browser window." %}
+                {% endif %}
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+
+<div cradmin-legacy-bulkfileupload={{ angularjs_directive_options|safe }} {# NOTE: The missing quotes are correct - they are added by quoteattr #}
+        class="cradmin-legacy-bulkfileupload">
+
+    <div class="cradmin-legacy-bulkfileupload-content">
+
+        <div cradmin-legacy-bulkfileupload-progress></div>
+        <div cradmin-legacy-bulkfileupload-rejected-files={{ rejected_files_errormessage_map|safe }}></div>
+
+        <div cradmin-legacy-bulkfileupload-advanced-widget>
+            {% block droparea-advanced %}
+                <div ng-file-drop
+                        ng-model="cradminLastFilesSelectedByUser"
+                        multiple="{% if singlemode %}false{% else %}true{% endif %}"
+                        {% if accept %}
+                            accept="{{ accept }}"
+                        {% endif %}
+                        allow-dir="false"
+                        class="cradmin-legacy-bulkfileupload-dropbox"
+                        ng-file-change="filesDropped($files, $event, $rejectedFiles)"
+                        drag-over-class="{
+                            accept:'cradmin-legacy-bulkfileupload-dropbox-dragover',
+                            reject:'cradmin-legacy-bulkfileupload-dropbox-dragover-error',
+                            delay:100}">
+                    {% block droparea-advanced-content %}
+                        <div class="cradmin-legacy-bulkfileupload-dropbox-text">
+                            {% block cradmin-legacy-bulkfileupload-dropbox-text %}
+                                <p>
+                                    {% if dropbox_text %}
+                                        {{ dropbox_text }}
+                                    {% else %}
+                                        {% if singlemode %}
+                                            {% trans "Upload a file by dragging and dropping it here" %}
+                                        {% else %}
+                                            {% trans "Upload files by dragging and dropping them here" %}
+                                        {% endif %}
+                                    {% endif %}
+                                </p>
+                            {% endblock cradmin-legacy-bulkfileupload-dropbox-text %}
+                            {% block fileselectbutton-advanced %}
+                                <p class="cradmin-legacy-bulkfileupload-advanced-fileselectbutton-wrapper">
+                                    <button ng-file-select
+                                            type="button"
+                                            ng-model="cradminLastFilesSelectedByUser"
+                                            multiple="{% if singlemode %}false{% else %}true{% endif %}"
+                                            {% if accept %}
+                                                accept="{{ accept }}"
+                                            {% endif %}
+                                            class="btn-link cradmin-legacy-bulkfileupload-advanced-fileselectbutton">
+                                        {% block fileselectbutton-advanced-content %}
+                                            {% if advanced_fileselectbutton_text %}
+                                                {{ advanced_fileselectbutton_text }}
+                                            {% else %}
+                                                {% if singlemode %}
+                                                    {% trans "... or select a file" %}
+                                                {% else %}
+                                                    {% trans "... or select files" %}
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endblock fileselectbutton-advanced-content %}
+                                    </button>
+                                </p>
+                            {% endblock fileselectbutton-advanced %}
+
+                        </div>
+                        <div class="cradmin-legacy-bulkfileupload-dropbox-invalid-filetype-errormessage">
+                            {% block droparea-advanced-content-invalid-filetype-errormessage %}
+                                {% if invalid_filetype_message %}
+                                    {{ invalid_filetype_message }}
+                                {% else %}
+                                    {% trans "Invalid filetype" %}
+                                {% endif %}
+                            {% endblock droparea-advanced-content-invalid-filetype-errormessage %}
+                        </div>
+                    {% endblock droparea-advanced-content %}
+                </div>
+            {% endblock droparea-advanced %}
+        </div>
+
+        <div cradmin-legacy-bulkfileupload-simple-widget>
+            {% block fileselectbutton-simple %}
+                <p class="cradmin-legacy-bulkfileupload-simple-button-wrapper">
+                    <button ng-file-select
+                            type="button"
+                            ng-model="cradminLastFilesSelectedByUser"
+                            multiple="{% if singlemode %}false{% else %}true{% endif %}"
+                            class="btn btn-default btn-block cradmin-legacy-bulkfileupload-simple-button">
+                        {% block fileselectbutton-simple-content %}
+                            {% if simple_fileselectbutton_text %}
+                                {{ simple_fileselectbutton_text }}
+                            {% else %}
+                                {% if singlemode %}
+                                    {% trans "Select a file ..." %}
+                                {% else %}
+                                    {% trans "Select files ..." %}
+                                {% endif %}
+                            {% endif %}
+                        {% endblock fileselectbutton-simple-content %}
+                    </button>
+                </p>
+            {% endblock fileselectbutton-simple %}
+        </div>
+
+        <input type="hidden" name="{{ hiddenfieldname }}" cradmin-legacy-bulkfileupload-collectionid-field>
+    </div>
+</div>

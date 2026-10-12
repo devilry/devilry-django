@@ -1,0 +1,29 @@
+{% extends "django_cradmin/viewhelpers/listbuilder/base/itemvalue.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+
+{% block content %}
+    {% block start-of-content %}{% endblock start-of-content %}
+
+    {% block title %}
+        <h2 class="blocklist__itemtitle{% cradmin_test_css_class 'cradmin-listbuilder-title-description__title' %}">
+            {% block title-content %}
+                {{ me.get_title }}
+            {% endblock title-content %}
+        </h2>
+    {% endblock title %}
+    {% block below-title %}{% endblock below-title %}
+
+    {% block description %}
+        {% if me.get_description %}
+            <p class="{% cradmin_test_css_class 'cradmin-listbuilder-title-description__description' %}">
+                {% block description-content %}
+                    {{ me.get_description }}
+                {% endblock description-content %}
+            </p>
+        {% endif %}
+    {% endblock description %}
+    {% block below-description %}{% endblock below-description %}
+
+    {% block end-of-content %}{% endblock end-of-content %}
+{% endblock content %}

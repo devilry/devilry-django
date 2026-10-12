@@ -1,0 +1,206 @@
+.scaleToScreenHeight(@size) {
+  @media (min-height: @size) {
+    height: @size - 200px;
+  }
+}
+
+
+.cradmin-legacy-formsized-wrapper,
+.cradmin-legacy-form-wrapper .cradmin-legacy-form {
+  max-width: @cradmin-form-max-width;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cradmin-legacy-form.cradmin-legacy-form-fullwidth {
+  max-width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.cradmin-legacy-form-wrapper {
+  .cradmin-legacy-form {
+    background: @cradmin-form-bg;
+    padding-bottom: 0;
+
+    label {
+      font-weight: normal;
+      &.requiredField {
+        font-weight: bold;
+      }
+      .asteriskField {
+        color: @cradmin-form-asterisk-color;
+        display: @cradmin-form-asterisk-display;
+        padding-left: 5px;
+        font-size: ceil(@font-size-base + 2px);
+        line-height: ceil(@font-size-base + 6px);
+      }
+    }
+
+    .cradmin-legacy-formfield-label-sr-only {
+      label {
+        .cradmin-sr-only();
+      }
+    }
+
+    &.cradmin-legacy-form-noasterisk {
+      label .asteriskField {
+        display: none;
+      }
+    }
+
+    fieldset legend,
+    .cradmin-focusfield label {
+      display: block;
+      margin: 0;
+      background: rgb(220, 220, 220);
+      border: none;
+      padding: 10px @cradmin-form-sidepadding-right 10px @cradmin-form-sidepadding-left;
+      font-size: ceil(@font-size-base - 2px);
+      line-height: ceil(@font-size-base + 6px);
+    }
+
+    fieldset,
+    .cradmin-globalfields {
+      margin-bottom: 30px;
+      .form-group {
+        padding: 20px @cradmin-form-sidepadding-right 4px @cradmin-form-sidepadding-left;
+        margin: 0;
+        &:last-child {
+          padding-bottom: 30px;
+        }
+      }
+    }
+
+    .cradmin-focusfield {
+      .controls {
+        padding: 20px @cradmin-form-sidepadding-right 4px @cradmin-form-sidepadding-left;
+      }
+
+      &.cradmin-focusfield-lg {
+        .form-group {
+          input[type=text],
+          input[type=email],
+          input[type=number],
+          input[type=url] {
+            font-size: ceil(@font-size-base + 8px);
+            padding: @cradmin-form-focusfield-lg-padding;
+            height: auto;
+          }
+        }
+      }
+    }
+  }
+}
+
+
+// Django crispy forms global form errors
+form .alert-block.alert-danger {
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    li {
+      margin: 0;
+    }
+  }
+}
+
+
+.cradmin-legacy-create-foreignkey-select-mode-buttonbar {
+  margin-bottom: (@grid-gutter-width/2);
+}
+
+
+.cradmin-legacy-datetimepicker {
+  max-width: 250px;
+  .clearfix();
+
+  .cradmin-legacy-datepicker {
+    float: left;
+    width: 65%;
+    padding-right: 5px;
+  }
+  .cradmin-legacy-timepicker {
+    float: right;
+    width: 35%;
+    padding-left: 5px;
+  }
+}
+
+.cradmin-legacy-form-collapsed-section {
+  .cradmin-legacy-form-collapsed-section-header {
+    padding-left: @cradmin-form-sidepadding-left;
+    padding-right: @cradmin-form-sidepadding-right;
+  }
+}
+
+.cradmin-legacy-split-timepicker {
+  .clearfix();
+  .cradmin-legacy-split-timepicker-hour,
+  .cradmin-legacy-split-timepicker-minute {
+    width: 50%;
+    float: left;
+  }
+  .cradmin-legacy-split-timepicker-hour {
+    padding-right: 5px;
+  }
+  .cradmin-legacy-split-timepicker-minute {
+    padding-left: 5px;
+  }
+}
+
+.cradmin-legacy-datetimepicker-split-time {
+  .clearfix();
+  max-width: 270px;
+
+  .cradmin-legacy-datepicker {
+    float: left;
+    width: 50%;
+    padding-right: 5px;
+  }
+  .cradmin-legacy-split-timepicker {
+    float: right;
+    width: 50%;
+    padding-left: 5px;
+  }
+
+  &.cradmin-legacy-datetimepicker-split-time-fluid {
+    max-width: none;
+  }
+}
+
+
+
+.form-control,
+.cradmin-div-styled-as-textarea {
+  .cradminFormControl();
+}
+.cradmin-div-styled-as-textarea {
+  padding: @padding-base-vertical @padding-base-horizontal;
+}
+
+
+textarea {
+  &.cradmin-textarea-small {
+    height: 60px;
+  }
+}
+
+
+.cradmin-legacy-clearable-textinput {
+  position: relative;
+  .cradmin-legacy-clearable-textinput-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: none;
+    color: @text-muted;
+    &:hover {
+      color: @link-color;
+    }
+    &.cradmin-legacy-clearable-textinput-button-visible {
+      display: inline-block;
+    }
+  }
+}

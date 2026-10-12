@@ -1,0 +1,7 @@
+{% load i18n %}
+{% load cradmin_tags %}
+
+<a href="{% cradmin_appurl "create" %}"
+        class="button  button--primary-fill{% cradmin_test_css_class 'listbuilder-create-button' %}">
+    {% trans "Create" %}
+</a>

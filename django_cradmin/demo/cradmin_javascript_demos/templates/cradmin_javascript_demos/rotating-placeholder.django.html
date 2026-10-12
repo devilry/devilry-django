@@ -1,0 +1,97 @@
+{% extends "django_cradmin/standalone-base.django.html" %}
+{% load static %}
+
+{% block title %}
+    Rotating placeholder widget demo
+{% endblock title %}
+
+{% block page-cover-title %}
+    Rotating placeholder widget demo
+{% endblock page-cover-title %}
+
+
+{% block content %}
+    <div class="adminui-page-section">
+        <div class="container container--tight">
+            <fieldset class="fieldset">
+                <legend class="legend">Basic example</legend>
+                <label class="label">
+                    <input type="text"
+                           placeholder="People, Animals, Monsters, Elves, ..."
+                           class="input  input--outlined"
+                           data-ievv-jsbase-widget="cradmin-rotating-placeholder">
+                </label>
+            </fieldset>
+
+            <fieldset class="fieldset">
+                <legend class="legend">Placeholder as config instead of an attribute</legend>
+                <label class="label">
+                    <input type="text"
+                           class="input  input--outlined"
+                           data-ievv-jsbase-widget="cradmin-rotating-placeholder"
+                           data-ievv-jsbase-widget-config='{
+                              "placeholder": "People, Animals, Monsters, Elves, ..."
+                           }'>
+                </label>
+            </fieldset>
+
+            <fieldset class="fieldset">
+                <legend class="legend">Adding a prefix</legend>
+                <label class="label">
+                    <input type="text"
+                           placeholder="People, Animals, Monsters, Elves, ..."
+                           class="input  input--outlined"
+                           data-ievv-jsbase-widget="cradmin-rotating-placeholder"
+                           data-ievv-jsbase-widget-config='{
+                             "prefix": "Search for"
+                           }'>
+                </label>
+            </fieldset>
+
+            <fieldset class="fieldset">
+                <legend class="legend">Adding a suffix</legend>
+                <label class="label">
+                    <input type="text"
+                           placeholder="People, Animals, Monsters, Elves, ..."
+                           class="input  input--outlined"
+                           data-ievv-jsbase-widget="cradmin-rotating-placeholder"
+                           data-ievv-jsbase-widget-config='{
+                             "suffix": "are awesome"
+                           }'>
+                </label>
+            </fieldset>
+
+            <fieldset class="fieldset">
+                <legend class="legend">Change the interval</legend>
+                <label class="label">
+                    <input type="text"
+                           placeholder="People, Animals, Monsters, Elves, ..."
+                           class="input  input--outlined"
+                           data-ievv-jsbase-widget="cradmin-rotating-placeholder"
+                           data-ievv-jsbase-widget-config='{
+                             "intervalMilliseconds": 500
+                           }'>
+                </label>
+            </fieldset>
+
+            <fieldset class="fieldset">
+                <legend class="legend">No placeholder is handled</legend>
+                <label class="label">
+                    <input type="text"
+                           class="input  input--outlined"
+                           data-ievv-jsbase-widget="cradmin-rotating-placeholder">
+                </label>
+            </fieldset>
+
+            <fieldset class="fieldset">
+                <legend class="legend">Single item in the placeholder list is handled</legend>
+                <label class="label">
+                    <input type="text"
+                           placeholder="People"
+                           class="input  input--outlined"
+                           data-ievv-jsbase-widget="cradmin-rotating-placeholder">
+                </label>
+            </fieldset>
+        </div>
+    </div>
+{% endblock content %}

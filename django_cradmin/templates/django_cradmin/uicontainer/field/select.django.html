@@ -1,0 +1,5 @@
+{% load cradmin_tags %}
+
+<{{ me.html_tag }}{% block outer_wrapper_attributes %}{{ me.html_element_attributes_string }}{% endblock %}>
+    {{ me.rendered_field }}
+</{{ me.html_tag }}>

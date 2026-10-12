@@ -1,0 +1,7 @@
+<span style="{{ logo_style }}" title="{{ DJANGO_CRADMIN_SITENAME }}">
+    {% if DJANGO_CRADMIN_EMAIL_LOGO_HTML %}
+            {{ DJANGO_CRADMIN_EMAIL_LOGO_HTML|safe }}
+    {% else %}
+        {{ DJANGO_CRADMIN_SITENAME }}
+    {% endif %}
+</span>

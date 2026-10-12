@@ -1,0 +1,38 @@
+/* FactBox
+
+Example: Basic factbox
+    <div class="factbox">
+        <h2 class="factbox__title">Single paragraph</h2>
+        <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Maecenas faucibus mollis interdum.</p>
+
+    </div>
+
+Example: Factbox with multiple paragraphs
+    <div class="factbox">
+        <h2 class="factbox__title">Mulitple paragraphs</h2>
+        <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Maecenas faucibus mollis interdum.</p>
+        <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Maecenas faucibus mollis interdum.</p>
+        <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Maecenas faucibus mollis interdum.</p>
+    </div>
+
+Styleguide components.factbox
+ */
+
+.factbox {
+    @include container(tight);
+    padding-top: vertical-space($spacing, 1.6);
+    padding-bottom: vertical-space($spacing, 1.6);
+    @include font-size(medium);
+    color: $color-light;
+    background-color: color(primary);
+    margin-top: vertical-space($spacing);
+    margin-bottom: vertical-space($spacing, 2);
+
+    &__title {
+        @include font-size(xxlarge);
+    }
+
+    p:last-child {
+        margin-bottom: 0;
+    }
+}

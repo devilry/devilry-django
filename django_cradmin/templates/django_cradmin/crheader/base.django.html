@@ -1,0 +1,9 @@
+{% block outer-wrapper %}
+    <{{ me.get_wrapper_htmltag }}
+            {% block outer-wrapper-element-attributes %}
+                id="{{ me.get_wrapper_htmltag_id }}"
+                class="{{ me.css_classes }}"
+            {% endblock %}>
+        {% block content %}{% endblock content %}
+    </{{ me.get_wrapper_htmltag }}>
+{% endblock outer-wrapper %}

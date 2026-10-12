@@ -1,0 +1,32 @@
+{% extends "django_cradmin/viewhelpers/uimock/base.django.html" %}
+{% load cradmin_tags %}
+
+{% block content %}
+    <div class="adminui-page-section">
+        <div class="container container--tight">
+            {% if postdata %}
+                <h2>Posted data:</h2>
+                <pre>{{ postdata|cradmin_jsonencode }}</pre>
+            {% else %}
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <label class="label">
+                        Type something
+                        <input type="text" name="something" placeholder="Type something ..." class="input  input--outlined" />
+                    </label>
+
+                    <button class="button button--primary">
+                        Submit form
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}
+
+{% block notes %}
+    <p>Here we mock a form, and when we submit the form, we show the form data a JSON in a PRE tag.</p>
+
+    <p>A starting point for mocking form flows.</p>
+{% endblock notes %}

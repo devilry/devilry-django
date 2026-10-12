@@ -1,0 +1,23 @@
+{% extends "django_cradmin/viewhelpers/uimock/base.django.html" %}
+{% load cradmin_uimock_tags %}
+
+{% block content %}
+    <div class="adminui-page-section adminui-page-section--center-md">
+        <div class="container container--tight">
+            <p>Hello uimock world</p>
+
+            <p>Here is a link to <a href="{% cradmin_uimock_url mockname='ipsum' %}">another mock</a> in the same uimock view.</p>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block notes %}
+    <h3>Some notes</h3>
+    <p>Donec sed odio dui. Aenean lacinia bibendum nulla sed consectetur.</p>
+
+    <h3>More notes</h3>
+    <p>
+        Donec sed odio dui. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh,
+        ut fermentum massa justo sit amet risus.
+    </p>
+{% endblock notes %}

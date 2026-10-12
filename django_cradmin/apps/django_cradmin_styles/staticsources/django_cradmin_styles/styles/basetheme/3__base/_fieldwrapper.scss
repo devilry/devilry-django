@@ -1,0 +1,258 @@
+/* Form field wrapper
+
+When laying out your form you have two options for spacing:
+
+- Simple fields with just a label containing an input can use ``label label--standalone``.
+- More complex fields with help text, messages and complex fields
+  need to use ``fieldwrapper``.
+
+Example: Basics
+
+    <div class="fieldwrapper">
+        <label class="label" for="id_myfield">
+            Standard input
+        </label>
+        <input type="text" placeholder="I set the standard"
+            id="id_myfield"
+            class="input" />
+        <p class="help-text">
+            Vestibulum id ligula porta felis euismod semper.
+            Nullam id dolor id nibh ultricies vehicula ut id elit.
+        </p>
+    </div>
+
+    <div class="fieldwrapper">
+        <label class="label">
+            Standard input
+            <input type="text" placeholder="I set the standard" class="input" />
+        </label>
+    </div>
+
+    <div class="fieldwrapper">
+        <label class="label">
+            I'm a textarea
+            <textarea placeholder="I more got space!" class="input"></textarea>
+        </label>
+        <p class="help-text ">
+            Donec sed odio dui.
+        </p>
+    </div>
+
+Example: {type: isolated} More complex example
+
+    <div class="container">
+        <div class="fieldwrapper">
+            <p class="label">Are you good?</p>
+            <label class="radio  radio--block">
+                <input type="radio" name="myradio">
+                <span class="radio__control-indicator"></span>
+                Yes
+            </label>
+            <label class="radio  radio--block">
+                <input type="radio" name="myradio">
+                <span class="radio__control-indicator"></span>
+                No
+            </label>
+            <label class="radio  radio--block">
+                <input type="radio" name="myradio">
+                <span class="radio__control-indicator"></span>
+                Maybe
+            </label>
+            <p class="help-text ">
+                Donec sed odio dui.
+            </p>
+        </div>
+
+        <fieldset class="fieldset">
+            <div class="fieldwrapper">
+                <legend class="legend">Which of these statements are true?</legend>
+                <label class="checkbox  checkbox--block">
+                    <input type="checkbox" />
+                    <span class="checkbox__control-indicator"></span>
+                    CSS is better than SASS
+                </label>
+                <label class="checkbox  checkbox--block">
+                    <input type="checkbox" />
+                    <span class="checkbox__control-indicator"></span>
+                    SASS is a superset of CSS
+                </label>
+                <label class="checkbox  checkbox--block">
+                    <input type="checkbox" />
+                    <span class="checkbox__control-indicator"></span>
+                    SASS is a programming language
+                </label>
+                <p class="help-text ">
+                    Donec sed odio dui.
+                </p>
+            </div>
+        </fieldset>
+
+        <div class="fieldwrapper">
+            <p class="label" id="id_the_select_label">Are you good?</p>
+            <label class="select  select--block">
+                <select aria-labelledby="id_the_select_label">
+                    <option>Yes</option>
+                    <option>No</option>
+                    <option>Maybe</option>
+                </select>
+            </label>
+            <p class="help-text ">
+                Donec sed odio dui.
+            </p>
+        </div>
+    </div>
+
+
+Example: --compact
+
+    <div class="fieldwrapper  fieldwrapper--compact">
+        <label class="label" for="id_myfield">
+            Standard input
+        </label>
+        <input type="text" placeholder="I set the standard"
+            id="id_myfield"
+            class="input" />
+        <p class="help-text">
+            Vestibulum id ligula porta felis euismod semper.
+            Nullam id dolor id nibh ultricies vehicula ut id elit.
+        </p>
+    </div>
+
+    <div class="fieldwrapper  fieldwrapper--compact">
+        <label class="label">
+            Standard input
+            <input type="text" placeholder="I set the standard" class="input" />
+        </label>
+    </div>
+
+    <div class="fieldwrapper  fieldwrapper--compact">
+        <label class="label">
+            I'm a textarea
+            <textarea placeholder="I more got space!" class="input"></textarea>
+        </label>
+        <p class="help-text ">
+            Donec sed odio dui.
+        </p>
+    </div>
+
+
+Example: {type: isolated} Multiple fieldwrappers on one line
+
+    <div class="fieldwrapper-line">
+        <div class="fieldwrapper-line__item fieldwrapper-line__item--width-small">
+            <div class="fieldwrapper  fieldwrapper--compact">
+                <label class="label">
+                    From:
+                    <input type="text" class="input input--outlined" />
+                </label>
+            </div>
+        </div>
+
+        <div class="fieldwrapper-line__item fieldwrapper-line__item--width-small">
+            <div class="fieldwrapper  fieldwrapper--compact fieldwrapper-line__item fieldwrapper-line__item--width-small">
+                <label class="label">
+                    To:
+                    <input type="text" class="input input--outlined" />
+                </label>
+                <p class="help-text ">
+                    Donec sed odio dui.
+                </p>
+            </div>
+        </div>
+    </div>
+
+
+
+Example: {type: isolated} Multiple fieldwrappers on one line - multiple sizes
+
+    <div class="container container--wide">
+        <div class="fieldwrapper-line">
+            <div class="fieldwrapper-line__item fieldwrapper-line__item--width-xxsmall">
+                <div class="fieldwrapper  fieldwrapper--compact">
+                    <label class="label">
+                        xxsmall:
+                        <input type="text" class="input input--outlined" />
+                    </label>
+                </div>
+            </div>
+            <div class="fieldwrapper-line__item fieldwrapper-line__item--width-xxsmall">
+                <div class="fieldwrapper  fieldwrapper--compact">
+                    <label class="label">
+                        xxsmall:
+                        <input type="text" class="input input--outlined" />
+                    </label>
+                </div>
+            </div>
+            <div class="fieldwrapper-line__item fieldwrapper-line__item--width-small">
+                <div class="fieldwrapper  fieldwrapper--compact">
+                    <label class="label">
+                        small:
+                        <input type="text" class="input input--outlined" />
+                    </label>
+                </div>
+            </div>
+            <div class="fieldwrapper-line__item fieldwrapper-line__item--width-medium">
+                <div class="fieldwrapper  fieldwrapper--compact">
+                    <label class="label">
+                        medium:
+                        <input type="text" class="input input--outlined" />
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+Styleguide form.7:fieldwrapper
+*/
+
+
+.fieldwrapper {
+    @extend %clearfix;
+    margin-bottom: $vertical-rythm--spacing;
+
+    &--compact {
+        margin-bottom: $vertical-rythm;
+    }
+}
+
+
+.fieldwrapper-line {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    &__item {
+        margin-right: $unit;
+        &:last-child {
+            margin-right: 0;
+        }
+        &--width-xsmall {
+            width: $unit * 20;
+            min-width: $unit * 5;
+        }
+
+        &--width-xxsmall {
+            width: $unit * 16;
+            min-width: $unit * 5;
+        }
+
+        &--width-small {
+            width: $unit * 36;
+            min-width: $unit * 5;
+        }
+
+        &--width-medium {
+            width: $unit * 46;
+            min-width: $unit * 5;
+        }
+        &--vertical-center {
+            @include min-width (md) {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+        }
+    }
+}

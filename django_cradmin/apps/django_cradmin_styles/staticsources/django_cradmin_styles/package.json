@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "autoprefixer": "^8.4.1",
+    "cssnano": "^3.10.0",
+    "postcss-cli": "^5.0.0",
+    "postcss-scss": "^1.0.5",
+    "stylelint": "^9.2.0"
+  },
+  "license": "BSD-3-Clause",
+  "name": "django_cradmin_styles",
+  "version": "1.0.0"
+}

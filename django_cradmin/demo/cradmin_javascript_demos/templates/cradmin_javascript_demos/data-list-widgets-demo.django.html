@@ -1,0 +1,25 @@
+{% extends "django_cradmin/standalone-base.django.html" %}
+{% load static %}
+
+{% block title %}
+    Data list widgets demo
+{% endblock title %}
+
+{% block page-cover-title %}
+    Data list widgets demo
+{% endblock page-cover-title %}
+
+
+{% block content %}
+    {% include 'cradmin_javascript_demos/data_list_widget_includes/simple_html_list.django.html' %}
+    {% include 'cradmin_javascript_demos/data_list_widget_includes/initial_search_string.django.html' %}
+    {% include 'cradmin_javascript_demos/data_list_widget_includes/styled_simple_html_list.django.html' %}
+    {% include 'cradmin_javascript_demos/data_list_widget_includes/html_list_with_movable_items_simple.django.html' %}
+    {% include 'cradmin_javascript_demos/data_list_widget_includes/html_list_with_movable_items_complex.django.html' %}
+    {% include 'cradmin_javascript_demos/data_list_widget_includes/foreign_key_select.django.html' %}
+    {% include 'cradmin_javascript_demos/data_list_widget_includes/many_to_many_select.django.html' %}
+    {% include 'cradmin_javascript_demos/data_list_widget_includes/many_to_many_select_modal.django.html' %}
+    {% include 'cradmin_javascript_demos/data_list_widget_includes/client_side_data.django.html' %}
+    {% include 'cradmin_javascript_demos/data_list_widget_includes/fancy.django.html' %}
+
+{% endblock content %}

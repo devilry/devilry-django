@@ -1,0 +1,63 @@
+{% extends "django_cradmin/standalone-base.django.html" %}
+{% load static %}
+
+{% block title %}
+    Filterlist demo
+{% endblock title %}
+
+{% block page-cover-title %}
+    Filterlist demo
+{% endblock page-cover-title %}
+
+{% block page-cover-content %}
+    {{ block.super }}
+{% endblock page-cover-content %}
+
+
+{% block content %}
+    <section class="adminui-page-section">
+        <div class="container container--wide">
+            <div data-ievv-jsbase-widget="cradmin-filterlist"
+                 data-ievv-jsbase-widget-config='{
+                     "getItemsApiUrl": "{% url 'cradmin_javascript_demos_api:fictional-figures-list' %}",
+                     "bindFiltersToQuerystring": true,
+                     "components": [{
+                        "component": "ThreeColumnLayout",
+                        "props": {
+                            "topBarBemVariants": ["spacing-none"]
+                        },
+                        "layout": [{
+                          "component": "SearchFilter",
+                          "props": {
+                            "name": "search",
+                            "location": "top",
+                            "placeholder": ["God", "Time", "wizard"]
+                          }
+                        }, {
+                          "component": "CheckboxBooleanFilter",
+                          "props": {
+                            "location": "top",
+                            "name": "is_godlike",
+                            "label": "Is godlike?"
+                          },
+                          "initialValue": false
+                        }, {
+                          "component": "BlockList",
+                          "itemSpec": {
+                            "component": "TitleDescriptionItem",
+                            "props": {
+                              "titleBemVariants": ["small"]
+                            }
+                          }
+                        }, {
+                          "component": "LoadMorePaginator",
+                          "props": {
+                            "label": "Load some more items!"
+                          }
+                        }]
+                     }]
+                 }'>
+            </div>
+        </div>
+    </section>
+{% endblock content %}

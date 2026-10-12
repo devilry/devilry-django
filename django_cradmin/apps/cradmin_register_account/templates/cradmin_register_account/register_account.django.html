@@ -1,0 +1,15 @@
+{% extends "cradmin_register_account/base.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+
+{% block title %}
+    {% blocktrans with sitename=DJANGO_CRADMIN_SITENAME%}Create your {{ sitename }} account{% endblocktrans %}
+{% endblock title %}
+
+{% block page-cover-title %}
+    {% blocktrans with sitename=DJANGO_CRADMIN_SITENAME%}Create your {{ sitename }} account{% endblocktrans %}
+{% endblock page-cover-title %}
+
+{% block content %}
+    {% cradmin_render_renderable form_renderable %}
+{% endblock content %}

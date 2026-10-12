@@ -1,0 +1,26 @@
+{% extends "cradmin_legacy/viewhelpers/listfilter/base/abstractfilter.django.html" %}
+
+{% block inputfield %}
+    <select id="{{ me.get_inputfield_dom_id }}"
+            class="form-control"
+            aria-controls="{{ me.get_target_dom_id }}"
+            cradmin-legacy-listfilter-select={{ me.get_angularjs_options_json|safe }}>
+        {% for choicedata in choicesdata %}
+            {% if choicedata.is_optgroup %}
+                <optgroup label="{{ choicedata.label }}">
+                    {% for child_choicedata in choicedata.child_choicesdata %}
+                        <option value="{{ child_choicedata.url }}"
+                                {% if child_choicedata.is_selected %}selected{% endif %}>
+                            {{ child_choicedata.label }}
+                        </option>
+                    {% endfor %}
+                </optgroup>
+            {% else %}
+                <option value="{{ choicedata.url }}"
+                        {% if choicedata.is_selected %}selected{% endif %}>
+                    {{ choicedata.label }}
+                </option>
+            {% endif %}
+        {% endfor %}
+    </select>
+{% endblock inputfield %}

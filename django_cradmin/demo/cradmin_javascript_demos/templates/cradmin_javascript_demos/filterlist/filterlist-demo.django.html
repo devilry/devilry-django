@@ -1,0 +1,374 @@
+{% extends "django_cradmin/standalone-base.django.html" %}
+{% load static %}
+
+{% block title %}
+    Filterlist demo
+{% endblock title %}
+
+{% block page-cover-title %}
+    Filterlist demo
+{% endblock page-cover-title %}
+
+{% block page-cover-content %}
+    {{ block.super }}
+{% endblock page-cover-content %}
+
+
+{% block content %}
+    <section class="adminui-page-section">
+        <div class="container">
+            <h2>Simple</h2>
+            <div data-ievv-jsbase-widget="cradmin-filterlist"
+                 data-ievv-jsbase-widget-config='{
+                     "getItemsApiUrl": "{% url 'cradmin_javascript_demos_api:fictional-figures-list' %}"
+                 }'>
+            </div>
+        </div>
+    </section>
+    <section class="adminui-page-section">
+        <div class="container container--wide">
+            <h2>Custom items and filters</h2>
+            <div data-ievv-jsbase-widget="cradmin-filterlist"
+                 data-ievv-jsbase-widget-config='{
+                     "getItemsApiUrl": "{% url 'cradmin_javascript_demos_api:fictional-figures-list' %}",
+                     "components": [{
+                        "component": "ThreeColumnLayout",
+                        "layout": [{
+                          "component": "SearchFilter",
+                          "props": {
+                            "name": "search",
+                            "location": "left",
+                            "placeholder": ["God", "Time", "wizard"]
+                          }
+                        }, {
+                          "component": "CheckboxBooleanFilter",
+                          "props": {
+                            "location": "left",
+                            "name": "is_godlike",
+                            "label": "Is godlike?"
+                          },
+                          "initialValue": false
+                        }, {
+                          "component": "BlockList",
+                          "itemSpec": {
+                            "component": "TitleDescriptionItem",
+                            "props": {
+                              "titleBemVariants": ["small"]
+                            }
+                          }
+                        }, {
+                          "component": "LoadMorePaginator",
+                          "props": {
+                            "label": "Load some more items!"
+                          }
+                        }]
+                     }]
+                 }'>
+            </div>
+        </div>
+    </section>
+    <section class="adminui-page-section">
+        <div class="container">
+            <h2>Dropdown list</h2>
+            <div data-ievv-jsbase-widget="cradmin-filterlist"
+                 data-ievv-jsbase-widget-config='{
+                     "getItemsApiUrl": "{% url 'cradmin_javascript_demos_api:fictional-figures-list' %}",
+                     "components": [{
+                        "component": "ThreeColumnLayout",
+                        "layout": [{
+                          "component": "DropDownSearchFilter",
+                          "props": {
+                            "name": "search",
+                            "placeholder": ["God", "Time", "wizard"]
+                          }
+                        }]
+                     }, {
+                        "component": "ThreeColumnDropDownLayout",
+                        "props": {
+                            "componentGroups": ["expandable"],
+                            "dropdownContentBemVariants": []
+                        },
+                        "layout": [{
+                          "component": "CheckboxBooleanFilter",
+                          "props": {
+                            "name": "is_godlike",
+                            "location": "top",
+                            "label": "Is godlike?"
+                          },
+                          "initialValue": false
+                        }, {
+                          "component": "SelectableList",
+                          "itemSpec": {
+                            "component": "SelectableTitleDescriptionItem",
+                            "props": {
+                              "bemVariants": ["neutral-light", "bordered"]
+                            }
+                          }
+                        }, {
+                          "component": "LoadMorePaginator",
+                          "props": {
+                            "location": "bottom"
+                          }
+                        }]
+                     }]
+                 }'>
+            </div>
+            <p>
+                Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Sed posuere consectetur est at lobortis. Nulla vitae elit libero, a pharetra augue. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
+            </p>
+        </div>
+    </section>
+    <section class="adminui-page-section">
+        <div class="container">
+            <h2>Selectable list</h2>
+            <p>
+                Here we render selected items in the right column.
+                We also render the selected items as a hidden field,
+                and wraps the entire list in a form to facilitate
+                POSTing the selected items to a view.
+            </p>
+            <p>
+                If you need to handle initially selected items,
+                you just need to provide the <code>initiallySelectedItemIds</code>
+                config as shown commented out in the source for this django
+                template.
+            </p>
+            <p>
+                To debug the hidden fields for the selected items, you
+                just have to flip the <code>debug</code> boolean
+                prop for <code>HiddenFieldRenderSelectedItems</code>.
+            </p>
+            <div data-ievv-jsbase-widget="cradmin-filterlist"
+                 data-ievv-jsbase-widget-config='{
+                     "getItemsApiUrl": "{% url 'cradmin_javascript_demos_api:fictional-figures-list' %}",
+                     "selectMode": "multi",
+                     "initiallySelectedItemIds": [2, 4, 7],
+                     "components": [{
+                        "component": "ThreeColumnLayout",
+                        "props": {
+                            "rightColumnBemVariants": ["xlarge"],
+                            "topBarBemVariants": ["spacing-none"]
+                        },
+                        "layout": [{
+                          "component": "SearchFilter",
+                          "props": {
+                            "name": "search",
+                            "placeholder": ["God", "Time", "wizard"],
+                            "label": "Search for a superhero",
+                            "labelIsScreenreaderOnly": true
+                          }
+                        }, {
+                          "component": "CheckboxBooleanFilter",
+                          "props": {
+                            "name": "is_godlike",
+                            "label": "Is godlike?"
+                          },
+                          "initialValue": false
+                        }, {
+                          "component": "SelectableList",
+                          "itemSpec": {
+                            "component": "SelectableTitleDescriptionItem"
+                          }
+                        }, {
+                          "component": "ParagraphLoadMorePaginator"
+                        }, {
+                          "component": "SelectableListRenderSelectedItems",
+                          "props": {
+                            "location": "top"
+                          }
+                        }, {
+                          "component": "SubmitSelectedItems",
+                          "props": {
+                            "location": "bottom",
+                            "formAction": "{% url 'cradmin_javascript_demos_receive_post_data' %}?redirect_url={{ request.path }}",
+                            "label": "Archive selected items",
+                            "hiddenFieldName": "selected_items_to_archive",
+                            "extraHiddenFields": {
+                                "csrfmiddlewaretoken": "{{ csrf_token }}"
+                            },
+                            "debug": false
+                          }
+                        }]
+                     }]
+                 }'>
+            </div>
+            <p>
+                Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Sed posuere consectetur est at lobortis. Nulla vitae elit libero, a pharetra augue. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
+            </p>
+        </div>
+    </section>
+
+    <section class="adminui-page-section">
+        <div class="container">
+            <h2>Selectable dropdown list with blocklist rendering</h2>
+            <p>
+                Here we render selected items in the right column.
+            </p>
+            <div data-ievv-jsbase-widget="cradmin-filterlist"
+                 data-ievv-jsbase-widget-config='{
+                     "getItemsApiUrl": "{% url 'cradmin_javascript_demos_api:fictional-figures-list' %}",
+                     "selectMode": "multi",
+                     "initiallySelectedItemIds": [2, 4, 7],
+                     "components": [{
+                        "component": "ThreeColumnLayout",
+                        "layout": [{
+                          "component": "DropDownSearchFilter",
+                          "props": {
+                            "name": "search",
+                            "placeholder": ["God", "Time", "wizard"]
+                          }
+                        }, {
+                           "component": "BlockListRenderSelectedItems",
+                           "props": {
+                             "location": "top",
+                             "itemTitleAttribute": "title",
+                             "itemDescriptionAttribute": "description"
+                           }
+                        }]
+                     }, {
+                        "component": "ThreeColumnDropDownLayout",
+                        "props": {
+                            "componentGroups": ["expandable"],
+                            "dropdownContentBemVariants": []
+                        },
+                        "layout": [{
+                          "component": "CheckboxBooleanFilter",
+                          "props": {
+                            "name": "is_godlike",
+                            "location": "top",
+                            "label": "Is godlike?"
+                          },
+                          "initialValue": false
+                        }, {
+                          "component": "SelectableList",
+                          "itemSpec": {
+                            "component": "SelectableTitleDescriptionItem",
+                            "props": {
+                              "bemVariants": ["neutral-light", "bordered"]
+                            }
+                          }
+                        }, {
+                          "component": "LoadMorePaginator",
+                          "props": {
+                            "location": "bottom"
+                          }
+                        }]
+                     }]
+                 }'>
+            </div>
+        </div>
+    </section>
+
+    <section class="adminui-page-section">
+        <div class="container">
+            <h2>Selectable dropdown list with sortable blocklist rendering</h2>
+            <div data-ievv-jsbase-widget="cradmin-filterlist"
+                 data-ievv-jsbase-widget-config='{
+                     "getItemsApiUrl": "{% url 'cradmin_javascript_demos_api:fictional-figures-list' %}",
+                     "selectMode": "multi",
+                     "initiallySelectedItemIds": [2, 4, 7],
+                     "components": [{
+                        "component": "ThreeColumnLayout",
+                        "layout": [{
+                          "component": "DropDownSearchFilter",
+                          "props": {
+                            "name": "search",
+                            "placeholder": ["God", "Time", "wizard"]
+                          }
+                        }, {
+                           "component": "BlockListRenderSortableSelectedItems",
+                           "props": {
+                             "location": "top",
+                             "itemTitleAttribute": "title",
+                             "itemDescriptionAttribute": "description",
+                             "inlineMoveIcons": true
+                           }
+                        }]
+                     }, {
+                        "component": "ThreeColumnDropDownLayout",
+                        "props": {
+                            "componentGroups": ["expandable"],
+                            "dropdownContentBemVariants": []
+                        },
+                        "layout": [{
+                          "component": "SelectableList",
+                          "itemSpec": {
+                            "component": "SelectableTitleDescriptionItem",
+                            "props": {
+                              "bemVariants": ["neutral-light", "bordered"]
+                            }
+                          }
+                        }, {
+                          "component": "LoadMorePaginator",
+                          "props": {
+                            "location": "bottom"
+                          }
+                        }]
+                     }]
+                 }'>
+            </div>
+        </div>
+    </section>
+
+    <section class="adminui-page-section">
+        <div class="container container--wide">
+            <h2>Select different componentgroups to be rendered</h2>
+            <div data-ievv-jsbase-widget="cradmin-filterlist"
+                 data-ievv-jsbase-widget-config='{
+                     "getItemsApiUrl": "{% url 'cradmin_javascript_demos_api:fictional-figures-list' %}",
+                     "components": [{
+                        "component": "ThreeColumnLayout",
+                        "layout": [{
+                          "component": "SelectComponentGroup",
+                          "props": {
+                            "initialEnabled": "selectlist",
+                            "name": "select_component_group",
+                            "selectableComponentGroups": [
+                                {
+                                    "name": "selectlist",
+                                    "label": "selectable items"
+                                }, {
+                                    "name": "blocklist",
+                                    "label": "just list items"
+                                }
+                            ]
+                          }
+                        }, {
+                          "component": "SearchFilter",
+                          "props": {
+                            "name": "search",
+                            "placeholder": ["God", "Time", "wizard"],
+                            "label": "Search for a superhero",
+                            "labelIsScreenreaderOnly": true
+                          }
+                        }, {
+                          "component": "SelectableList",
+                          "props": {
+                            "componentGroups": ["selectlist"]
+                          },
+                          "itemSpec": {
+                            "component": "SelectableTitleDescriptionItem"
+                          }
+                        }, {
+                          "component": "BlockList",
+                          "props": {
+                            "componentGroups": ["blocklist"]
+                          },
+                          "itemSpec": {
+                            "component": "TitleDescriptionItem",
+                            "props": {
+                              "titleBemVariants": ["small"]
+                            }
+                          }
+                        }, {
+                          "component": "LoadMorePaginator",
+                          "props": {
+                            "label": "Load some more items!"
+                          }
+                        }]
+                     }]
+                 }'>
+            </div>
+        </div>
+    </section>
+{% endblock content %}

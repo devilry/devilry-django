@@ -1,0 +1,35 @@
+ <div class="adminui-page-section">
+    <div class="container">
+        <h2>Styled simple HTML list</h2>
+        <div data-ievv-jsbase-widget="cradmin-api-data-list"
+             data-ievv-jsbase-widget-config='{
+                 "signalNameSpace": "styledsimplehtmllisttest",
+                 "apiUrl": "{% url 'cradmin_javascript_demos_api:fictional-figures-list' %}",
+                 "minimumSearchStringLength": 0,
+                 "multiselect": false,
+                 "filters": {
+                    "html_format": "styled"
+                 }
+             }'>
+        </div>
+        <div data-ievv-jsbase-widget="cradmin-search-input"
+             data-ievv-jsbase-widget-config='{
+                 "signalNameSpace": "styledsimplehtmllisttest"
+             }'></div>
+        <div data-ievv-jsbase-widget="cradmin-signal-router"
+             data-ievv-jsbase-widget-config='{
+                 "signalNameSpace": "styledsimplehtmllisttest",
+                 "signalMap": {
+
+                 }
+             }'>
+        </div>
+        <div class="blocklist blocklist--tight">
+            <div data-ievv-jsbase-widget="cradmin-html-list"
+                 data-ievv-jsbase-widget-config='{
+                     "signalNameSpace": "styledsimplehtmllisttest"
+                 }'>
+            </div>
+        </div>
+    </div>
+</div>

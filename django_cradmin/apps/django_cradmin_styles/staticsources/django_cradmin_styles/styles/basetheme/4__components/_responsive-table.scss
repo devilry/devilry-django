@@ -1,0 +1,925 @@
+// TODO: Move to django-cradmin
+
+/* Responsive table
+
+Example: {type: isolated}
+
+    <div class="container container--wide">
+        <div class="responsive-table">
+            <div class="responsive-table__header-row" aria-hidden="true">
+                <div class="responsive-table__cell responsive-table__cell--header responsive-table__cell--medium">
+                    Name
+                </div>
+                <div class="responsive-table__cell responsive-table__cell--header responsive-table__cell--xsmall">
+                    Age
+                </div>
+                <div class="responsive-table__cell responsive-table__cell--header responsive-table__cell--small">
+                    Joined date
+                </div>
+                <div class="responsive-table__cell responsive-table__cell--header">
+                    Email
+                </div>
+                <div class="responsive-table__cell responsive-table__cell--header">
+                    Address
+                </div>
+                <div class="responsive-table__cell responsive-table__cell--header">
+                    Actions
+                </div>
+            </div>
+            <section class="responsive-table__row">
+                <div class="responsive-table__cell">
+                    <h3 class="responsive-table__value responsive-table__value--title-sm">
+                        Peter Pan
+                    </h3>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Age
+                    </div>
+                    <div class="responsive-table__value">
+                        14
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Joined date
+                    </div>
+                    <div class="responsive-table__value">
+                        1. jan 1902
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Email
+                    </div>
+                    <div class="responsive-table__value responsive-table__value--break-words">
+                        peter@example.com
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Address
+                    </div>
+                    <div class="responsive-table__value">
+                        Neverland
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__value">
+                        <a href="#" class="responsive-table__action">
+                            <span class="responsive-table__action-icon cricon cricon--email" aria-hidden="true"></span>
+                            <span class="responsive-table__action-label">Contact</span>
+                        </a>
+                        <a href="#" class="responsive-table__action">
+                            <span class="responsive-table__action-icon cricon cricon--edit" aria-hidden="true"></span>
+                            <span class="responsive-table__action-label">Edit</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="responsive-table__row">
+                <div class="responsive-table__cell">
+                    <h3 class="responsive-table__value responsive-table__value--title-sm">
+                        Santa Claus
+                    </h3>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Age
+                    </div>
+                    <div class="responsive-table__value">
+                        250
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Joined date
+                    </div>
+                    <div class="responsive-table__value">
+                        1. jan 1739
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Email
+                    </div>
+                    <div class="responsive-table__value responsive-table__value--break-words">
+                        santa.claus.is.exceptionally.cool@example.com
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Address
+                    </div>
+                    <div class="responsive-table__value">
+                        Somewhere around the North Pole, 0000 North Pole
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__value">
+                        <a href="#" class="responsive-table__action">
+                            <span class="responsive-table__action-icon cricon cricon--email" aria-hidden="true"></span>
+                            <span class="responsive-table__action-label">Contact</span>
+                        </a>
+                        <a href="#" class="responsive-table__action">
+                            <span class="responsive-table__action-icon cricon cricon--edit" aria-hidden="true"></span>
+                            <span class="responsive-table__action-label">Edit</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="responsive-table__row">
+                <div class="responsive-table__cell">
+                    <h3 class="responsive-table__value responsive-table__value--title-sm">
+                        John Doe
+                    </h3>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Age
+                    </div>
+                    <div class="responsive-table__value">
+                        ?
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Joined date
+                    </div>
+                    <div class="responsive-table__value">
+                        ?
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Email
+                    </div>
+                    <div class="responsive-table__value responsive-table__value--break-words">
+                        johndoe@example.com
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Address
+                    </div>
+                    <div class="responsive-table__value">
+                        Unknown
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__value">
+                        <a href="#" class="responsive-table__action">
+                            <span class="responsive-table__action-icon cricon cricon--email" aria-hidden="true"></span>
+                            <span class="responsive-table__action-label">Contact</span>
+                        </a>
+                        <a href="#" class="responsive-table__action">
+                            <span class="responsive-table__action-icon cricon cricon--edit" aria-hidden="true"></span>
+                            <span class="responsive-table__action-label">Edit</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+
+Example: {type: isolated} --zebra
+
+    <div class="container container--wide">
+        <div class="responsive-table responsive-table--zebra">
+            <div class="responsive-table__header-row" aria-hidden="true">
+                <div class="responsive-table__cell responsive-table__cell--header responsive-table__cell--medium">
+                    Name
+                </div>
+                <div class="responsive-table__cell responsive-table__cell--header responsive-table__cell--xsmall">
+                    Age
+                </div>
+                <div class="responsive-table__cell responsive-table__cell--header responsive-table__cell--small">
+                    Joined date
+                </div>
+                <div class="responsive-table__cell responsive-table__cell--header">
+                    Email
+                </div>
+                <div class="responsive-table__cell responsive-table__cell--header">
+                    Address
+                </div>
+                <div class="responsive-table__cell responsive-table__cell--header">
+                    Actions
+                </div>
+            </div>
+            <section class="responsive-table__row">
+                <div class="responsive-table__cell">
+                    <h3 class="responsive-table__value responsive-table__value--title-sm">
+                        Peter Pan
+                    </h3>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Age
+                    </div>
+                    <div class="responsive-table__value">
+                        14
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Joined date
+                    </div>
+                    <div class="responsive-table__value">
+                        1. jan 1902
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Email
+                    </div>
+                    <div class="responsive-table__value responsive-table__value--break-words">
+                        peter@example.com
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Address
+                    </div>
+                    <div class="responsive-table__value">
+                        Neverland
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__value">
+                        <a href="#" class="responsive-table__action">
+                            <span class="responsive-table__action-icon cricon cricon--email" aria-hidden="true"></span>
+                            <span class="responsive-table__action-label">Contact</span>
+                        </a>
+                        <a href="#" class="responsive-table__action">
+                            <span class="responsive-table__action-icon cricon cricon--edit" aria-hidden="true"></span>
+                            <span class="responsive-table__action-label">Edit</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="responsive-table__row">
+                <div class="responsive-table__cell">
+                    <h3 class="responsive-table__value responsive-table__value--title-sm">
+                        Santa Claus
+                    </h3>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Age
+                    </div>
+                    <div class="responsive-table__value">
+                        250
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Joined date
+                    </div>
+                    <div class="responsive-table__value">
+                        1. jan 1739
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Email
+                    </div>
+                    <div class="responsive-table__value responsive-table__value--break-words">
+                        santa.claus.is.exceptionally.cool@example.com
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Address
+                    </div>
+                    <div class="responsive-table__value">
+                        Somewhere around the North Pole, 0000 North Pole
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__value">
+                        <a href="#" class="responsive-table__action">
+                            <span class="responsive-table__action-icon cricon cricon--email" aria-hidden="true"></span>
+                            <span class="responsive-table__action-label">Contact</span>
+                        </a>
+                        <a href="#" class="responsive-table__action">
+                            <span class="responsive-table__action-icon cricon cricon--edit" aria-hidden="true"></span>
+                            <span class="responsive-table__action-label">Edit</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="responsive-table__row">
+                <div class="responsive-table__cell">
+                    <h3 class="responsive-table__value responsive-table__value--title-sm">
+                        John Doe
+                    </h3>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Age
+                    </div>
+                    <div class="responsive-table__value">
+                        ?
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Joined date
+                    </div>
+                    <div class="responsive-table__value">
+                        ?
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Email
+                    </div>
+                    <div class="responsive-table__value responsive-table__value--break-words">
+                        johndoe@example.com
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Address
+                    </div>
+                    <div class="responsive-table__value">
+                        Unknown
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__value">
+                        <a href="#" class="responsive-table__action">
+                            <span class="responsive-table__action-icon cricon cricon--email" aria-hidden="true"></span>
+                            <span class="responsive-table__action-label">Contact</span>
+                        </a>
+                        <a href="#" class="responsive-table__action">
+                            <span class="responsive-table__action-icon cricon cricon--edit" aria-hidden="true"></span>
+                            <span class="responsive-table__action-label">Edit</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+
+Example: {type: isolated} --border
+
+    <div class="container container--wide">
+        <div class="responsive-table responsive-table--border">
+            <div class="responsive-table__header-row" aria-hidden="true">
+                <div class="responsive-table__cell responsive-table__cell--header responsive-table__cell--medium">
+                    Name
+                </div>
+                <div class="responsive-table__cell responsive-table__cell--header responsive-table__cell--xsmall">
+                    Age
+                </div>
+                <div class="responsive-table__cell responsive-table__cell--header responsive-table__cell--small">
+                    Joined date
+                </div>
+                <div class="responsive-table__cell responsive-table__cell--header">
+                    Email
+                </div>
+                <div class="responsive-table__cell responsive-table__cell--header">
+                    Address
+                </div>
+                <div class="responsive-table__cell responsive-table__cell--header">
+                    Actions
+                </div>
+            </div>
+            <section class="responsive-table__row">
+                <div class="responsive-table__cell">
+                    <h3 class="responsive-table__value responsive-table__value--title-sm">
+                        Peter Pan
+                    </h3>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Age
+                    </div>
+                    <div class="responsive-table__value">
+                        14
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Joined date
+                    </div>
+                    <div class="responsive-table__value">
+                        1. jan 1902
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Email
+                    </div>
+                    <div class="responsive-table__value responsive-table__value--break-words">
+                        peter@example.com
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Address
+                    </div>
+                    <div class="responsive-table__value">
+                        Neverland
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__value">
+                        <a href="#" class="responsive-table__action">
+                            <span class="responsive-table__action-icon cricon cricon--email" aria-hidden="true"></span>
+                            <span class="responsive-table__action-label">Contact</span>
+                        </a>
+                        <a href="#" class="responsive-table__action">
+                            <span class="responsive-table__action-icon cricon cricon--edit" aria-hidden="true"></span>
+                            <span class="responsive-table__action-label">Edit</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="responsive-table__row">
+                <div class="responsive-table__cell">
+                    <h3 class="responsive-table__value responsive-table__value--title-sm">
+                        Santa Claus
+                    </h3>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Age
+                    </div>
+                    <div class="responsive-table__value">
+                        250
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Joined date
+                    </div>
+                    <div class="responsive-table__value">
+                        1. jan 1739
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Email
+                    </div>
+                    <div class="responsive-table__value responsive-table__value--break-words">
+                        santa.claus.is.exceptionally.cool@example.com
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Address
+                    </div>
+                    <div class="responsive-table__value">
+                        Somewhere around the North Pole, 0000 North Pole
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__value">
+                        <a href="#" class="responsive-table__action">
+                            <span class="responsive-table__action-icon cricon cricon--email" aria-hidden="true"></span>
+                            <span class="responsive-table__action-label">Contact</span>
+                        </a>
+                        <a href="#" class="responsive-table__action">
+                            <span class="responsive-table__action-icon cricon cricon--edit" aria-hidden="true"></span>
+                            <span class="responsive-table__action-label">Edit</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="responsive-table__row">
+                <div class="responsive-table__cell">
+                    <h3 class="responsive-table__value responsive-table__value--title-sm">
+                        John Doe
+                    </h3>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Age
+                    </div>
+                    <div class="responsive-table__value">
+                        ?
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Joined date
+                    </div>
+                    <div class="responsive-table__value">
+                        ?
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Email
+                    </div>
+                    <div class="responsive-table__value responsive-table__value--break-words">
+                        johndoe@example.com
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Address
+                    </div>
+                    <div class="responsive-table__value">
+                        Unknown
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__value">
+                        <a href="#" class="responsive-table__action">
+                            <span class="responsive-table__action-icon cricon cricon--email" aria-hidden="true"></span>
+                            <span class="responsive-table__action-label">Contact</span>
+                        </a>
+                        <a href="#" class="responsive-table__action">
+                            <span class="responsive-table__action-icon cricon cricon--edit" aria-hidden="true"></span>
+                            <span class="responsive-table__action-label">Edit</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+
+Example: {type: isolated} --border-sm --zebra (can use one or both at the same time, or use --border instead of --border-sm)
+
+    <div class="container container--wide">
+        <div class="responsive-table responsive-table--border-sm responsive-table--zebra">
+            <div class="responsive-table__header-row" aria-hidden="true">
+                <div class="responsive-table__cell responsive-table__cell--header responsive-table__cell--medium">
+                    Name
+                </div>
+                <div class="responsive-table__cell responsive-table__cell--header responsive-table__cell--xsmall">
+                    Age
+                </div>
+                <div class="responsive-table__cell responsive-table__cell--header responsive-table__cell--small">
+                    Joined date
+                </div>
+                <div class="responsive-table__cell responsive-table__cell--header">
+                    Email
+                </div>
+                <div class="responsive-table__cell responsive-table__cell--header">
+                    Address
+                </div>
+                <div class="responsive-table__cell responsive-table__cell--header">
+                    Actions
+                </div>
+            </div>
+            <section class="responsive-table__row">
+                <div class="responsive-table__cell">
+                    <h3 class="responsive-table__value responsive-table__value--title-sm">
+                        Peter Pan
+                    </h3>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Age
+                    </div>
+                    <div class="responsive-table__value">
+                        14
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Joined date
+                    </div>
+                    <div class="responsive-table__value">
+                        1. jan 1902
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Email
+                    </div>
+                    <div class="responsive-table__value responsive-table__value--break-words">
+                        peter@example.com
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Address
+                    </div>
+                    <div class="responsive-table__value">
+                        Neverland
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__value">
+                        <a href="#" class="responsive-table__action">
+                            <span class="responsive-table__action-icon cricon cricon--email" aria-hidden="true"></span>
+                            <span class="responsive-table__action-label">Contact</span>
+                        </a>
+                        <a href="#" class="responsive-table__action">
+                            <span class="responsive-table__action-icon cricon cricon--edit" aria-hidden="true"></span>
+                            <span class="responsive-table__action-label">Edit</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="responsive-table__row">
+                <div class="responsive-table__cell">
+                    <h3 class="responsive-table__value responsive-table__value--title-sm">
+                        Santa Claus
+                    </h3>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Age
+                    </div>
+                    <div class="responsive-table__value">
+                        250
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Joined date
+                    </div>
+                    <div class="responsive-table__value">
+                        1. jan 1739
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Email
+                    </div>
+                    <div class="responsive-table__value responsive-table__value--break-words">
+                        santa.claus.is.exceptionally.cool@example.com
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Address
+                    </div>
+                    <div class="responsive-table__value">
+                        Somewhere around the North Pole, 0000 North Pole
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__value">
+                        <a href="#" class="responsive-table__action">
+                            <span class="responsive-table__action-icon cricon cricon--email" aria-hidden="true"></span>
+                            <span class="responsive-table__action-label">Contact</span>
+                        </a>
+                        <a href="#" class="responsive-table__action">
+                            <span class="responsive-table__action-icon cricon cricon--edit" aria-hidden="true"></span>
+                            <span class="responsive-table__action-label">Edit</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="responsive-table__row">
+                <div class="responsive-table__cell">
+                    <h3 class="responsive-table__value responsive-table__value--title-sm">
+                        John Doe
+                    </h3>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Age
+                    </div>
+                    <div class="responsive-table__value">
+                        ?
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Joined date
+                    </div>
+                    <div class="responsive-table__value">
+                        ?
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Email
+                    </div>
+                    <div class="responsive-table__value responsive-table__value--break-words">
+                        johndoe@example.com
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__label">
+                        Address
+                    </div>
+                    <div class="responsive-table__value">
+                        Unknown
+                    </div>
+                </div>
+                <div class="responsive-table__cell">
+                    <div class="responsive-table__value">
+                        <a href="#" class="responsive-table__action">
+                            <span class="responsive-table__action-icon cricon cricon--email" aria-hidden="true"></span>
+                            <span class="responsive-table__action-label">Contact</span>
+                        </a>
+                        <a href="#" class="responsive-table__action">
+                            <span class="responsive-table__action-icon cricon cricon--edit" aria-hidden="true"></span>
+                            <span class="responsive-table__action-label">Edit</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+
+Styleguide components.responsive-table
+*/
+
+.responsive-table {
+    $__root: &;
+    display: block;
+    min-width: 100%;
+    margin-bottom: $vertical-rythm--medium;
+    //@extend %animation-fade-in;
+    //@include animation-delay(3, 60ms, 60ms);
+
+    @include min-width (lg) {
+        display: table;
+    }
+
+    &__header-row {
+        display: none;
+        background-color: color(secondary, dark);
+        color: $color-light;
+        @include font-size(xsmall);
+        @include font(base, bold);
+        text-transform: uppercase;
+
+        @include min-width (lg) {
+            display: table-row;
+        }
+    }
+
+    &__row {
+        display: block;
+        padding: $spacing--small 0;
+
+        @include min-width (lg) {
+            display: table-row;
+            padding: 0;
+            margin-bottom: 0;
+        }
+    }
+
+    &__cell {
+        display: block;
+        margin-bottom: ($unit * 2);
+        text-align: left;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+
+        @include min-width (lg) {
+            display: table-cell;
+            padding: $spacing--small;
+            margin-bottom: 0;
+        }
+
+        &--text-right {
+            @include min-width (lg) {
+                text-align: right;
+            }
+        }
+
+        &--header {
+            font-weight: bold;
+            padding: $spacing--small;
+        }
+
+        &--xsmall {
+            min-width: 80px;
+        }
+        &--small {
+            min-width: 100px;
+        }
+        &--medium {
+            min-width: 160px;
+        }
+    }
+
+    &__label {
+        @include font-size(xxsmall);
+        @include font(base, bold);
+        text-transform: uppercase;
+
+        &:after {
+            content: ":";
+        }
+
+        @include min-width (lg) {
+            display: none;
+        }
+    }
+
+    &__value {
+        @include font-size(xsmall);
+
+        &--break-words {
+            word-break: break-all;
+        }
+
+        &--title-sm {
+            @include font-size(medium);
+            @include font(base, bold);
+            @include min-width (lg) {
+                @include font-size(xsmall);
+                @include font(base, normal);
+            }
+        }
+    }
+
+    &__action {
+        border: none;
+        text-decoration: none;
+        display: inline-block;
+        margin-bottom: $unit;
+        color: $color-text;
+        @include font-size(small);
+        margin-right: $spacing--small;
+
+
+        @include min-width (lg) {
+            //display: inline-block;
+            @include font-size(medium);
+            margin-right: $unit;
+        }
+
+        &:hover {
+            border: none;
+            text-decoration: none;
+            color: color(primary, dark);
+        }
+    }
+
+    &__action-icon {
+        display: inline-block;
+    }
+
+    &__action-label {
+        display: inline-block;
+        @include min-width (lg) {
+            display: none;
+        }
+    }
+
+    &--zebra {
+        #{$__root}__row {
+            padding: $spacing--small;
+            @include min-width (lg) {
+                padding: 0;
+            }
+
+            &:nth-child(even) {
+                background-color: $color-light;
+            }
+
+            //&:first-child {
+            &:nth-child(odd) {
+                background-color: color(neutral, xlight);
+            }
+            //}
+        }
+    }
+
+    &--border-sm {
+        #{$__root}__row {
+            border-bottom: $border-width solid color(neutral, light);
+            &:last-child {
+                border-bottom: none;
+            }
+            @include min-width (lg) {
+                border-bottom: none;
+            }
+        }
+    }
+
+    &--border {
+        #{$__root}__row {
+            border-bottom: $border-width solid color(neutral, light);
+            &:last-child {
+                border-bottom: none;
+            }
+            @include min-width (lg) {
+                border-bottom: none;
+            }
+            #{$__root}__cell {
+                @include min-width (lg) {
+                    border-bottom: $border-width--small solid color(neutral, light);
+                }
+            }
+        }
+    }
+}

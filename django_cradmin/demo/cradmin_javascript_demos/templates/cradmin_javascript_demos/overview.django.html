@@ -1,0 +1,91 @@
+{% extends "django_cradmin/standalone-base.django.html" %}
+{% load static %}
+
+{% block title %}
+    Javascript demos
+{% endblock title %}
+
+{% block page-cover-title %}
+    Javascript demos
+{% endblock page-cover-title %}
+
+{% block page-cover-content %}
+    {{ block.super }}
+    <p class="page-cover__description">
+        Code for these demos are in
+        <strong class="adminui-page-cover__strong">
+            django_cradmin/demo/cradmin_javascript_demos
+        </strong>
+    </p>
+{% endblock page-cover-content %}
+
+
+{% block content %}
+    <div class="adminui-page-section">
+        <div class="container container--tight">
+            <h2>Plain javascript demos</h2>
+            <nav class="blocklist  blocklist--tight">
+                <a class="blocklist__item blocklist__item--link"
+                        href="{% url 'cradmin_javascript_demos_html5-datepicker' %}">
+                    HTML5 date/time-picker demo
+                </a>
+                <a class="blocklist__item blocklist__item--link"
+                        href="{% url 'cradmin_javascript_demos_datetimepicker' %}">
+                    (deprecated) Date/time-picker demo
+                </a>
+                <a class="blocklist__item blocklist__item--link"
+                        href="{% url 'cradmin_javascript_demos_old_datetimepicker' %}">
+                    (deprecated) OLD date/time-picker demo
+                </a>
+                <a class="blocklist__item blocklist__item--link"
+                        href="{% url 'cradmin_javascript_demos_datalistwidgets' %}">
+                    Data list widgets demo
+                </a>
+                <a class="blocklist__item blocklist__item--link"
+                        href="{% url 'cradmin_javascript_demos_tabs' %}">
+                    Tabs demo
+                </a>
+                <a class="blocklist__item blocklist__item--link"
+                        href="{% url 'cradmin_auto_submit_form_after_countdown_demo' %}">
+                    Auto submit form after countdown widget
+                </a>
+                <a class="blocklist__item blocklist__item--link"
+                        href="{% url 'cradmin_print_on_click_demo' %}">
+                    window.print() on click widget
+                </a>
+                <a class="blocklist__item blocklist__item--link"
+                        href="{% url 'cradmin_javascript_demos_geolocation' %}">
+                    geolocation widget
+                </a>
+                <a class="blocklist__item blocklist__item--link"
+                        href="{% url 'cradmin_javascript_demos_rotating_placeholder' %}">
+                    rotating placeholder widget
+                </a>
+                <a class="blocklist__item blocklist__item--link"
+                        href="{% url 'cradmin_javascript_demos_filterlist' %}">
+                    Filterlist
+                </a>
+                <a class="blocklist__item blocklist__item--link"
+                        href="{% url 'cradmin_javascript_demos_filterlist_querystring' %}">
+                    Filterlist querystring demo
+                </a>
+            </nav>
+        </div>
+
+    </div>
+    <div class="adminui-page-section">
+        <div class="container container--tight">
+            <h2>uicontainer javascript demos</h2>
+            <nav class="blocklist  blocklist--tight">
+                <a class="blocklist__item blocklist__item--link"
+                        href="{% url 'cradmin_javascript_demos_datalistwidgets_uicontainer' %}">
+                    Data list widgets uicontainer demo
+                </a>
+                <a class="blocklist__item blocklist__item--link"
+                   href="{% url 'cradmin_javascript_demos_filterlist_uicontainer' %}">
+                    Filterlist uicontainer demo
+                </a>
+            </nav>
+        </div>
+    </div>
+{% endblock content %}

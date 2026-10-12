@@ -1,0 +1,45 @@
+/** IE hacks/workarounds
+
+IE 10/11 is still in use. Most of the theme works in IE 10, and even more
+works in IE11. Since you may not care about perfect layout in IE, we have
+selected to make some of the IE11 workarounds optional.
+
+Styleguide ie-hacks
+*/
+
+/** Vertical centering with flexbox workaround
+
+IE 11 can not center vertically in a flexbox layout
+unless the wrapping element uses ``display: flex`` or ``display: inline-flex``.
+To handle this, we provide the ``ie-hack-display-flex-wrapper`` and
+``ie-hack-display-inline-flex-wrapper`` classes.
+
+Example:: ie-hack-display-flex-wrapper
+
+    <div class="ie-hack-display-flex-wrapper" style="background-color: blue;">
+        <div style="min-height: 300px; display: flex; flex-direction: column; justify-content: center;">
+            <div style="background-color: red;">Hello</div>
+        </div>
+    </div>
+
+Example:: ie-hack-display-inline-flex-wrapper
+
+    Hello
+    <span class="ie-hack-display-inline-flex-wrapper" style="background-color: blue;">
+        <span style="width: 200px; min-height: 120px; display: inline-flex; flex-direction: column; justify-content: center;">
+            <div style="background-color: red;">cruel</div>
+        </span>
+    </span> world
+
+Styleguide ie-hacks.display-flex-wrapper
+*/
+
+.ie-hack-display-flex-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.ie-hack-display-inline-flex-wrapper {
+    display: inline-flex;
+    flex-direction: column;
+}

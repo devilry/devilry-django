@@ -1,0 +1,482 @@
+@keyframes cradminLegacyDatepickerPreviewChangeanimation {
+  from {
+    opacity: 1.0;
+  }
+
+  to {
+    opacity: 0.5;
+  }
+}
+
+.cradmin-legacy-datepicker {
+  .cradmin-legacy-datepicker-preview {
+    display: block;
+    margin-bottom: 10px;
+    margin-right: 0;
+    @media(min-width: @screen-sm-min) {
+      float: left;
+      margin-right: 12px;
+      padding-top: (@cradmin-btn-padding-base-vertical + 1px);
+    }
+
+    &.cradmin-legacy-datepicker-preview-changeanimate {
+      .animation-name(cradminLegacyDatepickerPreviewChangeanimation);
+      .animation-duration(.5s);
+      .animation-timing-function(ease-in-out);
+      .animation-direction(alternate);
+      .animation-iteration-count(4);
+    }
+  }
+  .cradmin-legacy-datepicker-triggerbutton {
+  }
+}
+
+.cradmin-legacy-datetime-selector {
+  display: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  //background: red;
+  overflow: hidden;
+
+  .cradmin-legacy-datetime-selector-backdrop {
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: @cradmin-datetimeselector-backdrop-bg;
+    display: block;
+  }
+
+  select.form-control {
+    display: inline-block;
+    width: auto;
+    &.cradmin-legacy-datetime-selector-dayselect {
+      @media (min-width: @cradmin-datetimeselector-mobile-width-breakpoint) and (min-height: @cradmin-datetimeselector-mobile-height-breakpoint) {
+        display: none;
+      }
+    }
+  }
+
+  @media (min-width: @cradmin-datetimeselector-mobile-width-breakpoint) and (min-height: @cradmin-datetimeselector-mobile-height-breakpoint) {
+    .cradmin-legacy-datetime-selector-date-label {
+      display: none;
+    }
+  }
+
+  .cradmin-legacy-datetime-selector-contentwrapper {
+    z-index: 2;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    .translate(0, 100%);
+    .transition(@cradmin-datetimeselector-transition);
+
+    .cradmin-legacy-datetime-selector-closeoverlay {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 1;
+    }
+
+    .cradmin-legacy-datetime-selector-page {
+      z-index: 2;
+      position: absolute;
+      background: @cradmin-datetimeselector-page-bg;
+      bottom: @cradmin-datetimeselector-page-bottom-xs;
+      width: 100%;
+      height: 100%;
+      left: 0;
+
+      &.cradmin-legacy-datetime-selector-dateview {
+        left: 0;
+      }
+      &.cradmin-legacy-datetime-selector-timeview {
+        display: none;
+      }
+
+
+      @media (min-width: @cradmin-datetimeselector-mobile-width-breakpoint) and (min-height: @cradmin-datetimeselector-mobile-height-breakpoint) {
+        width: @cradmin-datetimeselector-page-width;
+        height: @cradmin-datetimeselector-page-height;
+        bottom: @cradmin-datetimeselector-page-bottom;
+        margin-left: -(@cradmin-datetimeselector-page-width/2);
+
+        &.cradmin-legacy-datetime-selector-dateview {
+          left: 50%;
+        }
+
+        &.cradmin-legacy-datetime-selector-timeview {
+          display: block;
+          left: 150%;
+        }
+      }
+
+      .cradmin-legacy-datetime-selector-shortcuts {
+        position: absolute;
+        left: 0;
+        right: 0;
+        text-align: center;
+        bottom: @cradmin-datetimeselector-page1-shortcuts-bottom;
+      }
+
+      .cradmin-legacy-datetime-selector-closebutton {
+        position: absolute;
+        right: 0;
+        top: 0;
+        padding: @cradmin-datetimeselector-closebutton-padding;
+        font-size: @cradmin-datetimeselector-closebutton-font-size;
+        color: @cradmin-datetimeselector-closebutton-color;
+
+        &:hover, &:active, &:focus {
+          text-decoration: none;
+          color: @cradmin-datetimeselector-closebutton-hover-color;
+        }
+      }
+    }
+
+    .cradmin-legacy-datetime-selector-dateview {
+      padding-top: @cradmin-datetimeselector-dateview-padding-top;
+
+      .cradmin-legacy-datetime-selector-shortcuts {
+        .cradmin-legacy-datetime-selector-shortcuts-todaybutton {
+          display: none;
+        }
+
+        @media (min-width: @cradmin-datetimeselector-mobile-width-breakpoint) and (min-height: @cradmin-datetimeselector-mobile-height-breakpoint) {
+          .cradmin-legacy-datetime-selector-shortcuts-todaybutton {
+            display: inline-block;
+          }
+          .cradmin-legacy-datetime-selector-shortcuts-nowbutton {
+            display: none;
+          }
+        }
+      }
+
+      .cradmin-legacy-datetime-selector-selectors-wrapper {
+        display: table;
+        width: 100%;
+        height: 100%;
+
+        .cradmin-legacy-datetime-selector-selectors {
+          text-align: center;
+          display: table-cell;
+          vertical-align: middle;
+
+          .cradmin-legacy-datetime-selector-dateselectors {
+          }
+          .cradmin-legacy-datetime-selector-timeselectors {
+            margin-top: @cradmin-datetimeselector-horizontal-spacing;
+          }
+          .cradmin-legacy-datetime-selector-use-button {
+            margin-top: @cradmin-datetimeselector-horizontal-spacing;
+          }
+
+        }
+
+        @media (min-width: @cradmin-datetimeselector-mobile-width-breakpoint) and (min-height: @cradmin-datetimeselector-mobile-height-breakpoint) {
+          display: block;
+          height: auto;
+          .cradmin-legacy-datetime-selector-selectors {
+            display: block;
+            .cradmin-legacy-datetime-selector-timeselectors,
+            .cradmin-legacy-datetime-selector-use-button {
+              //.cradmin-sr-only();
+              display: none;
+            }
+          }
+        }
+      }
+
+      table.cradmin-legacy-datetime-selector-table {
+        width: 100%;
+        margin: 0;
+        display: none;
+        table-layout: fixed;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: @cradmin-datetimeselector-table-height;
+
+        @media (min-width: @cradmin-datetimeselector-mobile-width-breakpoint) and (min-height: @cradmin-datetimeselector-mobile-height-breakpoint) {
+          display: table;
+        }
+
+        thead {
+          height: @cradmin-datetimeselector-table-thead-height;
+          tr {
+            th {
+              padding: 0 0 6px 0;
+              text-align: center;
+              width: (100%/7);
+              vertical-align: bottom;
+            }
+          }
+        }
+        tbody {
+          tr {
+            td.cradmin-legacy-datetime-selector-daybuttoncell {
+              margin: 0;
+              background: @cradmin-datetimeselector-daybuttoncell-bg;
+              color: @cradmin-datetimeselector-daybuttoncell-color;
+              border: none;
+              height: ((@cradmin-datetimeselector-table-height - @cradmin-datetimeselector-table-thead-height)/6);
+              position: relative;
+
+              button {
+                display: block;
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+                height: ((@cradmin-datetimeselector-table-height - @cradmin-datetimeselector-table-thead-height)/6);
+                //border: 1px solid @cradmin-datetimeselector-table-bordercolor;
+                border: none;
+
+                border-radius: 0;
+                margin: 0;
+                text-align: center;
+                vertical-align: middle;
+                cursor: pointer;
+                font-weight: bold;
+                white-space: nowrap;
+
+                .cradmin-legacy-datetime-selector-daybuttoncell-label {
+                  display: block;
+                  position: absolute;
+                  bottom: 3px;
+                  left: 0;
+                  right: 0;
+                  font-size: ceil(@font-size-base * 0.66);
+                  font-weight: normal;
+
+                  &.cradmin-legacy-datetime-selector-daybuttoncell-label-today {
+                    top: 3px;
+                    bottom: auto;
+                  }
+                }
+
+                &,
+                &:active,
+                &.active,
+                &:hover {
+                  text-decoration: none;
+                }
+
+                &,
+                &:active {
+                  &:focus {
+                    // Default
+                    outline: thin dotted;
+                    // WebKit
+                    outline: 5px auto -webkit-focus-ring-color;
+                    outline-offset: -2px;
+                  }
+                }
+              }
+
+
+              &.cradmin-legacy-datetime-selector-daybuttoncell-today button {
+                background: @cradmin-datetimeselector-daybuttoncell-today-bg;
+                color: @cradmin-datetimeselector-daybuttoncell-today-color;
+              }
+
+
+              &.cradmin-legacy-datetime-selector-daybuttoncell-selected button {
+                background: @cradmin-datetimeselector-daybuttoncell-selected-bg;
+                color: @cradmin-datetimeselector-daybuttoncell-selected-color;
+              }
+
+              &.cradmin-legacy-datetime-selector-daybuttoncell-not-in-current-month button {
+                background: @cradmin-datetimeselector-daybuttoncell-not-in-current-month-bg;
+                color: @cradmin-datetimeselector-daybuttoncell-not-in-current-month-color;
+              }
+
+              &.cradmin-legacy-datetime-selector-daybuttoncell-disabled {
+                button {
+                  background: @cradmin-datetimeselector-daybuttoncell-disabled-bg;
+                  color: @cradmin-datetimeselector-daybuttoncell-disabled-color;
+                  &:hover, &:active, &:focus {
+                    cursor: not-allowed;
+                    background: @cradmin-datetimeselector-daybuttoncell-disabled-bg;
+                    color: @cradmin-datetimeselector-daybuttoncell-disabled-color;
+                  }
+                }
+                &.cradmin-legacy-datetime-selector-daybuttoncell-not-in-current-month button {
+                  background: @cradmin-datetimeselector-daybuttoncell-not-in-current-month-disabled-bg;
+                  color: @cradmin-datetimeselector-daybuttoncell-not-in-current-month-disabled-color;
+                  &:hover, &:active, &:focus {
+                    background: @cradmin-datetimeselector-daybuttoncell-not-in-current-month-disabled-bg;
+                    color: @cradmin-datetimeselector-daybuttoncell-not-in-current-month-disabled-color;
+                  }
+                }
+              }
+
+              &,
+              &.cradmin-legacy-datetime-selector-daybuttoncell-today,
+              &.cradmin-legacy-datetime-selector-daybuttoncell-selected,
+              &.cradmin-legacy-datetime-selector-daybuttoncell-not-in-current-month {
+                button:hover,
+                button:focus {
+                  background: @cradmin-datetimeselector-daybuttoncell-hover-bg;
+                  color: @cradmin-datetimeselector-daybuttoncell-hover-color;
+                }
+              }
+
+              &:first-child {
+                border-left: none;
+              }
+              &:last-child {
+                border-right: none;
+              }
+            }
+
+            &:last-child {
+              td.cradmin-legacy-datetime-selector-daybuttoncell {
+                border-bottom: none;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .cradmin-legacy-datetime-selector-timeview {
+      padding-left: @cradmin-datetimeselector-backbutton-width;
+
+      .cradmin-legacy-datetime-selector-shortcuts {
+        left: @cradmin-datetimeselector-backbutton-width;
+        right: 0;
+      }
+
+      .cradmin-legacy-datetime-selector-backbutton {
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        padding: 0;
+        width: @cradmin-datetimeselector-backbutton-width;
+        height: 100%;
+        color: @cradmin-datetimeselector-backbutton-color;
+        border-radius: 0;
+        margin: 0;
+        text-align: center;
+        vertical-align: middle;
+        cursor: pointer;
+        border-right: @cradmin-datetimeselector-backbutton-border-right;
+        background: none;
+
+        .cradmin-legacy-datetime-selector-backbutton-icon-outer-wrapper {
+          display: table;
+          width: 100%;
+          height: 100%;
+          .cradmin-legacy-datetime-selector-backbutton-icon-inner-wrapper {
+            display: table-cell;
+            vertical-align: middle;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            .cradmin-legacy-datetime-selector-backbutton-icon {
+              width: 100%;
+              font-size: @cradmin-datetimeselector-backbutton-icon-font-size;
+            }
+          }
+        }
+
+        &:hover, &:focus, &:active {
+          background: @cradmin-datetimeselector-backbutton-hover-bg;
+          color: @cradmin-datetimeselector-backbutton-hover-color;
+          text-decoration: none;
+          outline: 0;
+          background-image: none;
+          .box-shadow(none);
+        }
+      }
+
+    }
+
+    .cradmin-legacy-datetime-selector-timeview-body-wrapper {
+      display: table;
+      width: 100%;
+      height: 100%;
+      .cradmin-legacy-datetime-selector-timeview-body {
+        display: table-cell;
+        text-align: center;
+        vertical-align: middle;
+
+        .cradmin-legacy-datetime-selector-datepreview {
+          margin-bottom: @cradmin-datetimeselector-horizontal-spacing;
+        }
+        .cradmin-legacy-datetime-selector-use-button {
+          margin-left: 5px;
+          vertical-align: bottom;
+        }
+      }
+    }
+  }
+
+  &.cradmin-legacy-datetime-selector-show {
+    display: block;
+    //.cradmin-legacy-datetime-selector-backdrop {
+    //  display: block;
+    //}
+
+    &.cradmin-legacy-datetime-selector-page1 {
+      .cradmin-legacy-datetime-selector-contentwrapper {
+        .translate(0, 0);
+      }
+    }
+    &.cradmin-legacy-datetime-selector-page2 {
+      .cradmin-legacy-datetime-selector-contentwrapper {
+        // The custom translate for mobile handles the case where
+        // the user resizes the window while on page 2. Without this,
+        // they would get an empty page.
+        .translate(0, 0);
+        @media (min-width: @cradmin-datetimeselector-mobile-width-breakpoint) and (min-height: @cradmin-datetimeselector-mobile-height-breakpoint) {
+          .translate(-100%, 0);
+        }
+      }
+    }
+    &.cradmin-legacy-datetime-selector-page3 {
+      .cradmin-legacy-datetime-selector-backdrop {
+        display: none;
+      }
+      .cradmin-legacy-datetime-selector-contentwrapper {
+        // The custom translate for mobile handles the case where
+        // the user resizes the window while on page 2. Without this,
+        // they would get a sideways animation when they close page1 (since
+        // they are actually on page 2)
+        .translate(0, 100%);
+        @media (min-width: @cradmin-datetimeselector-mobile-width-breakpoint) and (min-height: @cradmin-datetimeselector-mobile-height-breakpoint) {
+          .translate(-100%, 100%);
+        }
+      }
+    }
+  }
+
+  &.cradmin-legacy-datetime-selector-has-shortcuts {
+    .cradmin-legacy-datetime-selector-contentwrapper {
+      .cradmin-legacy-datetime-selector-page {
+        @media (min-width: @cradmin-datetimeselector-mobile-width-breakpoint) and (min-height: @cradmin-datetimeselector-mobile-height-breakpoint) {
+          height: @cradmin-datetimeselector-page-height + @cradmin-datetimeselector-page1-shortcuts-height;
+        }
+      }
+      .cradmin-legacy-datetime-selector-dateview {
+        table.cradmin-legacy-datetime-selector-table {
+          bottom: @cradmin-datetimeselector-page1-shortcuts-height;
+        }
+      }
+    }
+  }
+}

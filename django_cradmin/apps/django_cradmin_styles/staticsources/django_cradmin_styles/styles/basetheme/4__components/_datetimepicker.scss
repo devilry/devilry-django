@@ -1,0 +1,517 @@
+/** Date/time picker
+
+Uses multiple related classes to provide full datetime select
+styling for various use cases.
+
+Example: {type: isolated}
+
+    <div class="datetimepicker datetimepicker--sane-max-width">
+        <div class="datetimepicker__body datetimepicker__body--outlined">
+            <div class="buttonbar buttonbar--stretch buttonbar--tinymargin">
+                <button class="buttonbar__button buttonbar__button--secondary-fill" title="Date">
+                    <span class="cricon cricon--calendar-grid" aria-hidden="true"></span>
+                    Date
+                </button>
+                <button class="buttonbar__button buttonbar__button--secondary" title="Time">
+                    <span class="cricon cricon--clock" aria-hidden="true"></span>
+                    Time
+                </button>
+            </div>
+            <div class="paginator">
+                <button class="paginator__button" title="Previous month">
+                    <span class="cricon cricon--chevron-left" aria-hidden="true"></span>
+                </button>
+                <div class="paginator__label paginator__label--xsmall">December 2017</div>
+                <button class="paginator__button" title="Next month">
+                    <span class="cricon cricon--chevron-right" aria-hidden="true"></span>
+                </button>
+            </div>
+
+            <div class="calendar-month">
+                <div class="calendar-month__header">
+                    <div class="calendar-month__header-row">
+                        <div class="calendar-month__header-day">mon</div>
+                        <div class="calendar-month__header-day">tue</div>
+                        <div class="calendar-month__header-day">wed</div>
+                        <div class="calendar-month__header-day">thu</div>
+                        <div class="calendar-month__header-day">fri</div>
+                        <div class="calendar-month__header-day">sat</div>
+                        <div class="calendar-month__header-day">sun</div>
+                    </div>
+                </div>
+                <div class="calendar-month__body">
+                    <div class="calendar-month__week">
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">27</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">28</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">29</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">30</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">31</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">1</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">2</div>
+                    </div>
+                    <div class="calendar-month__week">
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">3</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">4</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">5</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">6</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">7</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">8</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">9</div>
+                    </div>
+                    <div class="calendar-month__week">
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">10</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">11</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">12</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">13</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">14</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">15</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">16</div>
+                    </div>
+                    <div class="calendar-month__week">
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">17</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">18</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">19</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">20</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">21</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">22</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">23</div>
+                    </div>
+                    <div class="calendar-month__week">
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">24</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">25</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">26</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">27</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">28</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">29</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">30</div>
+                    </div>
+                    <div class="calendar-month__week">
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">1</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">2</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">3</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">4</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">5</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">6</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">7</div>
+                    </div>
+                </div>
+            </div>
+            <p class="datetimepicker__preview">
+                Jun 15 2018 14:33
+            </p>
+        </div>
+    </div>
+
+
+Example: Modal
+    <script>
+        function showDateTimePickerModal () {
+            document.getElementById('id_datetimepicker_modal').style.display = 'block';
+        }
+        function hideDateTimePickerModal () {
+            document.getElementById('id_datetimepicker_modal').style.display = 'none';
+        }
+    </script>
+
+    <label class="label">Select a date:</label>
+    <div class="max-width max-width--xs">
+        <div class="buttonbar">
+            <button class="buttonbar__button buttonbar__button--input-outlined buttonbar__button--grow-2 buttonbar__button--width-xsmall"
+                    onClick="showDateTimePickerModal()">
+                <span class="cricon cricon--calendar" aria-hidden="true"></span>
+                Dec 24, 2017 12:35 PM
+            </button>
+            <button type="button" class="buttonbar__button buttonbar__button--secondary-fill buttonbar__button--no-grow">
+                Now
+            </button>
+        </div>
+    </div>
+
+    <div id="id_datetimepicker_modal" class="datetimepicker datetimepicker--modal" style="display: none;">
+        <div class="datetimepicker__backdrop" onClick="hideDateTimePickerModal()"></div>
+        <div class="datetimepicker__body datetimepicker__body--modal">
+            <div class="datetimepicker__close">
+                <button type="button" aria-title="Close" onClick="hideDateTimePickerModal()">
+                    <span class="cricon cricon--close" aria-hidden="true"></span>
+                </button>
+            </div>
+
+            <div class="datetimepicker__title">
+                Select a publishing time
+            </div>
+
+            <div class="buttonbar buttonbar--stretch buttonbar--tinymargin">
+                <button class="buttonbar__button buttonbar__button--secondary-fill" title="Date">
+                    <span class="cricon cricon--calendar-grid" aria-hidden="true"></span>
+                    Date
+                </button>
+                <button class="buttonbar__button buttonbar__button--secondary" title="Time">
+                    <span class="cricon cricon--clock" aria-hidden="true"></span>
+                    Time
+                </button>
+            </div>
+            <div class="paginator">
+                <button class="paginator__button" title="Previous month">
+                    <span class="cricon cricon--chevron-left" aria-hidden="true"></span>
+                </button>
+                <div class="paginator__label paginator__label--xsmall">December 2017</div>
+                <button class="paginator__button" title="Next month">
+                    <span class="cricon cricon--chevron-right" aria-hidden="true"></span>
+                </button>
+            </div>
+
+            <div class="calendar-month">
+                <div class="calendar-month__header">
+                    <div class="calendar-month__header-row">
+                        <div class="calendar-month__header-day">mon</div>
+                        <div class="calendar-month__header-day">tue</div>
+                        <div class="calendar-month__header-day">wed</div>
+                        <div class="calendar-month__header-day">thu</div>
+                        <div class="calendar-month__header-day">fri</div>
+                        <div class="calendar-month__header-day">sat</div>
+                        <div class="calendar-month__header-day">sun</div>
+                    </div>
+                </div>
+                <div class="calendar-month__body">
+                    <div class="calendar-month__week">
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">27</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">28</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">29</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">30</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">31</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">1</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">2</div>
+                    </div>
+                    <div class="calendar-month__week">
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">3</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">4</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">5</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">6</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">7</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">8</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">9</div>
+                    </div>
+                    <div class="calendar-month__week">
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">10</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">11</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">12</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">13</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">14</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">15</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">16</div>
+                    </div>
+                    <div class="calendar-month__week">
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">17</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">18</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">19</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">20</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">21</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">22</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">23</div>
+                    </div>
+                    <div class="calendar-month__week">
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">24</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">25</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">26</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">27</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">28</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">29</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">30</div>
+                    </div>
+                    <div class="calendar-month__week">
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">1</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">2</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">3</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">4</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">5</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">6</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">7</div>
+                    </div>
+                </div>
+            </div>
+            <div class="buttonbar buttonbar--center">
+                <button class="buttonbar__button buttonbar__button--compact">
+                    Today
+                </button>
+            </div>
+            <p class="datetimepicker__preview">
+                Jun 15 2018 14:33
+            </p>
+            <button class="button button--primary button--block">
+                Use
+            </button>
+        </div>
+    </div>
+
+
+Example: {type: isolated} Dropdown - looks exactly the same as modal on small displays
+    <script>
+        function showDateTimePickerDropwdown () {
+            document.getElementById('id_datetimepicker_dropdown').style.display = 'block';
+        }
+        function hideDateTimePickerDropdown () {
+            document.getElementById('id_datetimepicker_dropdown').style.display = 'none';
+        }
+    </script>
+
+    <label class="label">Select a date:</label>
+    <div class="max-width max-width--xs">
+        <div class="buttonbar buttonbar--nomargin">
+            <button class="buttonbar__button buttonbar__button--input-outlined buttonbar__button--grow-2 buttonbar__button--width-xsmall"
+                    onClick="showDateTimePickerDropwdown()">
+                <span class="cricon cricon--calendar" aria-hidden="true"></span>
+                Dec 24, 2017 12:35 PM
+            </button>
+            <button type="button" class="buttonbar__button buttonbar__button--secondary-fill buttonbar__button--no-grow">
+                Now
+            </button>
+        </div>
+    </div>
+    <div id="id_datetimepicker_dropdown" class="datetimepicker datetimepicker--dropdown" style="display: none;">
+        <div class="datetimepicker__body datetimepicker__body--dropdown">
+            <div class="datetimepicker__close">
+                <button type="button" aria-title="Close" onClick="hideDateTimePickerDropdown()">
+                    <span class="cricon cricon--close" aria-hidden="true"></span>
+                </button>
+            </div>
+
+            <div class="datetimepicker__title">
+                Select a publishing time
+            </div>
+
+            <div class="buttonbar buttonbar--stretch buttonbar--tinymargin">
+                <button class="buttonbar__button buttonbar__button--secondary-fill" title="Date">
+                    <span class="cricon cricon--calendar-grid" aria-hidden="true"></span>
+                    Date
+                </button>
+                <button class="buttonbar__button buttonbar__button--secondary" title="Time">
+                    <span class="cricon cricon--clock" aria-hidden="true"></span>
+                    Time
+                </button>
+            </div>
+            <div class="paginator">
+                <button class="paginator__button" title="Previous month">
+                    <span class="cricon cricon--chevron-left" aria-hidden="true"></span>
+                </button>
+                <div class="paginator__label paginator__label--xsmall">December 2017</div>
+                <button class="paginator__button" title="Next month">
+                    <span class="cricon cricon--chevron-right" aria-hidden="true"></span>
+                </button>
+            </div>
+
+            <div class="calendar-month">
+                <div class="calendar-month__header">
+                    <div class="calendar-month__header-row">
+                        <div class="calendar-month__header-day">mon</div>
+                        <div class="calendar-month__header-day">tue</div>
+                        <div class="calendar-month__header-day">wed</div>
+                        <div class="calendar-month__header-day">thu</div>
+                        <div class="calendar-month__header-day">fri</div>
+                        <div class="calendar-month__header-day">sat</div>
+                        <div class="calendar-month__header-day">sun</div>
+                    </div>
+                </div>
+                <div class="calendar-month__body">
+                    <div class="calendar-month__week">
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">27</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">28</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">29</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">30</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">31</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">1</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">2</div>
+                    </div>
+                    <div class="calendar-month__week">
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">3</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">4</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">5</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">6</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">7</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">8</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">9</div>
+                    </div>
+                    <div class="calendar-month__week">
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">10</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">11</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">12</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">13</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">14</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">15</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">16</div>
+                    </div>
+                    <div class="calendar-month__week">
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">17</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">18</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">19</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">20</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">21</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">22</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">23</div>
+                    </div>
+                    <div class="calendar-month__week">
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">24</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">25</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">26</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">27</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">28</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">29</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day">30</div>
+                    </div>
+                    <div class="calendar-month__week">
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">1</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">2</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">3</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">4</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">5</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">6</div>
+                        <div tabindex="0" aria-role="button" class="calendar-month__day calendar-month__day--muted">7</div>
+                    </div>
+                </div>
+            </div>
+            <div class="buttonbar buttonbar--center">
+                <button class="buttonbar__button buttonbar__button--compact">
+                    Today
+                </button>
+            </div>
+            <p class="datetimepicker__preview">
+                Jun 15 2018 14:33
+            </p>
+            <button class="button button--primary button--block">
+                Use
+            </button>
+        </div>
+    </div>
+
+    <p>
+        We need some content below the dropdown to allow it do grow downwards.
+        This is usually not a problem if shown in the middle
+        of a page etc.
+    </p>
+    <p>
+        Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.
+    </p>
+    <p>
+        Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean lacinia bibendum nulla sed consectetur. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla. Donec sed odio dui. Nulla vitae elit libero, a pharetra augue.
+    </p>
+    <p>
+        Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean lacinia bibendum nulla sed consectetur. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla. Donec sed odio dui. Nulla vitae elit libero, a pharetra augue.
+    </p>
+    <p>
+        Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean lacinia bibendum nulla sed consectetur. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla. Donec sed odio dui. Nulla vitae elit libero, a pharetra augue.
+    </p>
+
+Styleguide components.datetimepicker
+*/
+.datetimepicker {
+    &--modal, &--dropdown {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    &--modal {
+        z-index: $level-4;
+        @include min-width(md) {
+            padding: $spacing--small;
+        }
+    }
+
+    &--dropdown {
+        z-index: $level-3;
+        @include min-width(md) {
+            position: relative;
+            overflow: visible;
+        }
+    }
+
+    &__backdrop {
+        @extend .backdrop;
+        @extend %animation-fade-in;
+    }
+
+    &__body {
+        width: 100%;
+
+        &--outlined {
+            padding: $unit;
+            background-color: $color-light;
+            border: $border-style--small;
+            border-radius: $border-radius;
+        }
+
+        &--modal, &--dropdown {
+            background-color: $color-light;
+            position: relative;
+            overflow: hidden;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 100%;
+            width: 100%;
+            padding: $spacing--small;
+        }
+
+        &--modal {
+            z-index: $level-4;
+            @include min-width(md) {
+                margin-left: auto;
+                margin-right: auto;
+                margin-bottom: $spacing;
+                width: map-get($breakpoints, xs);
+                max-width: 100%;
+                height: auto;
+                left: auto;
+                right: auto;
+                bottom: auto;
+                box-shadow: $shadow-level-3;
+            }
+        }
+
+        &--dropdown {
+            z-index: $level-3;
+            @include min-width(md) {
+                overflow: visible;
+                position: absolute;
+                bottom: auto;
+                height: auto;
+                width: 100%;
+                max-width: map-get($breakpoints, xs);
+                margin-bottom: $spacing;
+                border-radius: $border-radius;
+                box-shadow: $shadow-level-3;
+            }
+        }
+    }
+
+    &__title {
+        margin-bottom: $spacing;
+        @include font(base, bold);
+        @include font-size(medium);
+    }
+
+    &__close {
+        position: absolute;
+        top: $spacing--small;
+        right: $spacing--small;
+    }
+
+    &__preview {
+        margin-top: $spacing;
+        margin-bottom: $spacing--small;
+        color: $color-muted;
+        text-align: center;
+        @include font(base, bold);
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    &--sane-max-width {
+        max-width: map-get($breakpoints, xs);
+    }
+}

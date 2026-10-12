@@ -1,0 +1,132 @@
+{% extends "django_cradmin/standalone-base.django.html" %}
+
+
+{% block head %}
+    {{ block.super }}
+    {% block uimock-styles %}
+        <style type="text/css">
+            .uimock-notes {
+                display: none;
+                position: fixed;
+                z-index: 50000;
+                background-color: #fff;
+                border-left: 3px solid #000;
+                top: 0;
+                bottom: 0;
+                right: 0;
+                height: 100%;
+                width: 500px;
+                max-width: 100%;
+                padding: 15px;
+                overflow-y: auto;
+            }
+
+            .uimock-notes--show {
+                display: block;
+            }
+
+            .uimock-notes__header {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: nowrap;
+                justify-content: space-between;
+            }
+
+            .uimock-notes__title {
+                flex: 0 1 auto;
+            }
+
+            .uimock-notes__close {
+                flex: 0 0 auto;
+            }
+
+            .uimock-toggle-notes-button {
+                z-index: 49000;
+                position: fixed;
+                bottom: 0;
+                right: 0;
+                height: 50px;
+                width: 50px;
+                background-color: #222;
+                color: #ddd;
+                display: none;
+                justify-content: center;
+                align-items: center;
+            }
+            .uimock-toggle-notes-button--show {
+                display: flex;
+            }
+            .uimock-toggle-notes-button:hover {
+                background-color: #000;
+                color: #fff;
+            }
+        </style>
+    {% endblock uimock-styles %}
+
+    {% block uimock-javascript %}
+        <script>
+            window.cradminUiMock = {
+                hasNotes: function () {
+                    var notes = document.getElementById('id_cradmin_uimock_notes');
+                    return notes.innerHTML.trim() !== '';
+                },
+
+                toggleNotes: function () {
+                    var nodesModal = document.getElementById('id_cradmin_uimock_notes_modal');
+                    nodesModal.classList.toggle('uimock-notes--show')
+                },
+
+                onLoad: function () {
+                    if (window.cradminUiMock.hasNotes()) {
+                        var showButton = document.getElementById('id_cradmin_uimock_toggle_notes_button');
+                        showButton.classList.add('uimock-toggle-notes-button--show')
+                    }
+                }
+            }
+
+            if (document.readyState !== 'loading'){
+                window.cradminUiMock.onLoad();
+            } else {
+                document.addEventListener('DOMContentLoaded', function() {
+                    window.cradminUiMock.onLoad()
+                });
+            }
+        </script>
+    {% endblock uimock-javascript %}
+{% endblock head %}
+
+{% block header %}{% endblock header %}
+
+{% block page-cover %}{% endblock page-cover %}
+
+{% block body %}
+    {{ block.super }}
+
+    {% block uimock-notes-wrapper %}
+        {% block uimock-notes-modal %}
+            <div class="uimock-notes" id="id_cradmin_uimock_notes_modal">
+                <div class="uimock-notes__header">
+                    <div class="uimock-notes__title">
+                        <h2>Notes</h2>
+                    </div>
+                    <div class="uimock-notes__close">
+                        <button type="button" aria-title="Close" onclick="window.cradminUiMock.toggleNotes()">
+                            <span class="cricon cricon--close" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="id_cradmin_uimock_notes">{% block notes %}{% endblock %}</div>
+            </div>
+        {% endblock uimock-notes-modal %}
+
+        {% block uimock-notes-button %}
+            <button id="id_cradmin_uimock_toggle_notes_button"
+                    class="uimock-toggle-notes-button"
+                    onclick="window.cradminUiMock.toggleNotes()">
+                <span class="screenreader-only">Show notes</span>
+                <span class="cricon cricon--comments" aria-hidden="true"></span>
+            </button>
+        {% endblock uimock-notes-button %}
+    {% endblock uimock-notes-wrapper %}
+{% endblock body %}

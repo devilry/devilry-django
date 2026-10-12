@@ -1,0 +1,239 @@
+/* Horizontal form field wrapper
+
+Same concept as `fieldwrapper`, but this layout puts the label and form field on the same line.
+
+Example: {type: isolated} Basics
+
+    <div class="horizontal-fieldwrapper">
+        <div class="horizontal-fieldwrapper__label">
+            <label class="label" for="id_name">
+                Name
+            </label>
+        </div>
+        <div class="horizontal-fieldwrapper__body">
+            <input id="id_name" class="input"
+                type="text" placeholder="I set the standard" />
+            <p class="help-text">
+                Vestibulum id ligula porta felis euismod semper.
+                Nullam id dolor id nibh ultricies vehicula ut id elit.
+            </p>
+        </div>
+    </div>
+
+    <div class="horizontal-fieldwrapper">
+        <div class="horizontal-fieldwrapper__label">
+            <label class="label" for="id_email">
+                Email
+            </label>
+        </div>
+        <div class="horizontal-fieldwrapper__body">
+            <input id="id_email" type="email" placeholder="email" class="input" />
+            <p class="help-text">
+                Vestibulum id ligula porta felis euismod semper.
+                Nullam id dolor id nibh ultricies vehicula ut id elit.
+            </p>
+        </div>
+    </div>
+
+
+Example: {type: isolated} --compact
+
+    <div class="horizontal-fieldwrapper horizontal-fieldwrapper--compact">
+        <div class="horizontal-fieldwrapper__label">
+            <label class="label">
+                Name
+            </label>
+        </div>
+        <div class="horizontal-fieldwrapper__body">
+            <input type="text" placeholder="name" class="input" />
+            <p class="help-text">
+                Vestibulum id ligula porta felis euismod semper.
+                Nullam id dolor id nibh ultricies vehicula ut id elit.
+            </p>
+        </div>
+    </div>
+
+    <div class="horizontal-fieldwrapper horizontal-fieldwrapper--compact">
+        <div class="horizontal-fieldwrapper__label">
+            <label class="label">
+                Email
+            </label>
+        </div>
+        <div class="horizontal-fieldwrapper__body">
+            <input type="email" placeholder="email" class="input" />
+        </div>
+    </div>
+
+
+Example: {type: isolated} Various input/field styles
+    <div class="horizontal-fieldwrapper">
+        <div class="horizontal-fieldwrapper__label">
+            <label class="label">
+                normal/default input
+            </label>
+        </div>
+        <div class="horizontal-fieldwrapper__body">
+            <input type="email" class="input" />
+        </div>
+    </div>
+
+    <div class="horizontal-fieldwrapper">
+        <div class="horizontal-fieldwrapper__label">
+            <label class="label">
+                input--outlined
+            </label>
+        </div>
+        <div class="horizontal-fieldwrapper__body">
+            <input type="email" class="input input--outlined" />
+        </div>
+    </div>
+
+    <div class="horizontal-fieldwrapper">
+        <div class="horizontal-fieldwrapper__label">
+            <label class="label">
+                textarea
+            </label>
+        </div>
+        <div class="horizontal-fieldwrapper__body">
+            <textarea class="input"></textarea>
+        </div>
+    </div>
+
+
+    <div class="horizontal-fieldwrapper">
+        <div class="horizontal-fieldwrapper__label horizontal-fieldwrapper__label--for-underlined">
+            <label class="label">
+                input--underlined
+            </label>
+        </div>
+        <div class="horizontal-fieldwrapper__body">
+            <input class="input input--underlined"
+                type="text" placeholder="I set the standard" />
+            <p class="help-text">
+                Notice how we add --for-underlined variant for the label wrapper div.
+            </p>
+        </div>
+    </div>
+
+Example: {type: isolated} 20% / 80%
+
+    <div class="horizontal-fieldwrapper horizontal-fieldwrapper--20-80">
+        <div class="horizontal-fieldwrapper__label">
+            <label class="label">
+                Email
+            </label>
+        </div>
+        <div class="horizontal-fieldwrapper__body">
+            <input type="email" placeholder="email" class="input" />
+        </div>
+    </div>
+
+
+Example: {type: isolated} 40% / 60%
+
+    <div class="horizontal-fieldwrapper horizontal-fieldwrapper--40-60">
+        <div class="horizontal-fieldwrapper__label">
+            <label class="label">
+                Email
+            </label>
+        </div>
+        <div class="horizontal-fieldwrapper__body">
+            <input type="email" placeholder="email" class="input" />
+        </div>
+    </div>
+
+
+Example: {type: isolated} 50% / 50%
+
+    <div class="horizontal-fieldwrapper horizontal-fieldwrapper--50-50">
+        <div class="horizontal-fieldwrapper__label">
+            <label class="label">
+                Email
+            </label>
+        </div>
+        <div class="horizontal-fieldwrapper__body">
+            <input type="email" placeholder="email" class="input" />
+        </div>
+    </div>
+
+Styleguide form.8:horizontal-fieldwrapper
+*/
+.horizontal-fieldwrapper {
+    $__root: &;
+
+    @extend %clearfix;
+    margin-bottom: $vertical-rythm--spacing;
+
+    @include min-width(md) {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    &__label {
+        @include min-width(md) {
+            width: 30%;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            text-align: left;
+            align-items: center;
+            @include form-element-mixin(base);
+        }
+
+        &--for-underlined {
+            @include min-width(md) {
+                @include form-element-mixin(xsmall);
+            }
+        }
+    }
+
+    &__body {
+        @include min-width(md) {
+            width: 70%;
+        }
+    }
+
+    &--compact {
+        margin-bottom: $vertical-rythm;
+    }
+
+    &--20-80 {
+        #{$__root}__label {
+            @include min-width(md) {
+                width: 20%;
+            }
+        }
+        #{$__root}__body {
+            @include min-width(md) {
+                width: 80%;
+            }
+        }
+    }
+
+    &--40-60 {
+        #{$__root}__label {
+            @include min-width(md) {
+                width: 40%;
+            }
+        }
+        #{$__root}__body {
+            @include min-width(md) {
+                width: 60%;
+            }
+        }
+    }
+
+    &--50-50 {
+        #{$__root}__label {
+            @include min-width(md) {
+                width: 50%;
+            }
+        }
+        #{$__root}__body {
+            @include min-width(md) {
+                width: 50%;
+            }
+        }
+    }
+}

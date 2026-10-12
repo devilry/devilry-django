@@ -1,0 +1,563 @@
+/* Icons
+
+Example: Arrows and chevrons
+
+    <ul class="sg-icon-grid">
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--arrow-up" aria-hidden="true"></span>
+            <code>cricon cricon--arrow-up</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--arrow-down" aria-hidden="true"></span>
+            <code>cricon cricon--arrow-down</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--arrow-left" aria-hidden="true"></span>
+            <code>cricon cricon--arrow-left</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--arrow-right" aria-hidden="true"></span>
+            <code>cricon cricon--arrow-right</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--chevron-up" aria-hidden="true"></span>
+            <code>cricon cricon--chevron-up</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--chevron-down" aria-hidden="true"></span>
+            <code>cricon cricon--chevron-down</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--chevron-left" aria-hidden="true"></span>
+            <code>cricon cricon--chevron-left</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--chevron-right" aria-hidden="true"></span>
+            <code>cricon cricon--chevron-right</code>
+        </li>
+    </ul>
+
+Example: UI
+
+    <ul class="sg-icon-grid">
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--plus" aria-hidden="true"></span>
+            <code>cricon cricon--plus</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--minus" aria-hidden="true"></span>
+            <code>cricon cricon--minus</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--pencil" aria-hidden="true"></span>
+            <code>cricon cricon--pencil</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--edit" aria-hidden="true"></span>
+            <code>cricon cricon--edit</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--trash" aria-hidden="true"></span>
+            <code>cricon cricon--trash</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--check" aria-hidden="true"></span>
+            <code>cricon cricon--check</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--search" aria-hidden="true"></span>
+            <code>cricon cricon--search</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--close" aria-hidden="true"></span>
+            <code>cricon cricon--close</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--user" aria-hidden="true"></span>
+            <code>cricon cricon--user</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--calendar" aria-hidden="true"></span>
+            <code>cricon cricon--calendar</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--calendar-grid" aria-hidden="true"></span>
+            <code>cricon cricon--calendar-grid</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--clock" aria-hidden="true"></span>
+            <code>cricon cricon--clock</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--flag" aria-hidden="true"></span>
+            <code>cricon cricon--flag</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--ellipsis-horizontal" aria-hidden="true"></span>
+            <code>cricon cricon--ellipsis-horizontal</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--download" aria-hidden="true"></span>
+            <code>cricon cricon--download</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--file" aria-hidden="true"></span>
+            <code>cricon cricon--file</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--bars" aria-hidden="true"></span>
+            <code>cricon cricon--bars</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--info" aria-hidden="true"></span>
+            <code>cricon cricon--info</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--help" aria-hidden="true"></span>
+            <code>cricon cricon--help</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--warning" aria-hidden="true"></span>
+            <code>cricon cricon--warning</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--settings" aria-hidden="true"></span>
+            <code>cricon cricon--settings</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--external-link" aria-hidden="true"></span>
+            <code>cricon cricon--external-link</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--comment" aria-hidden="true"></span>
+            <code>cricon cricon--comment</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--comments" aria-hidden="true"></span>
+            <code>cricon cricon--comments</code>
+        </li>
+    </ul>
+
+Example: Social
+
+    <ul class="sg-icon-grid">
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--facebook" aria-hidden="true"></span>
+            <code>cricon cricon--facebook</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--twitter" aria-hidden="true"></span>
+            <code>cricon cricon--twitter</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--instagram" aria-hidden="true"></span>
+            <code>cricon cricon--instagram</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--youtube" aria-hidden="true"></span>
+            <code>cricon cricon--youtube</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--snapchat" aria-hidden="true"></span>
+            <code>cricon cricon--snapchat</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--podcast" aria-hidden="true"></span>
+            <code>cricon cricon--podcast</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--email" aria-hidden="true"></span>
+            <code>cricon cricon--email</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--phone" aria-hidden="true"></span>
+            <code>cricon cricon--phone</code>
+        </li>
+    </ul>
+
+Example: Map
+
+    <ul class="sg-icon-grid">
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--map-marker" aria-hidden="true"></span>
+            <code>cricon cricon--map-marker</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--location-arrow" aria-hidden="true"></span>
+            <code>cricon cricon--location-arrow</code>
+        </li>
+    </ul>
+
+Example: E-commerce
+
+    <ul class="sg-icon-grid">
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--shopping-cart" aria-hidden="true"></span>
+            <code>cricon cricon--shopping-cart</code>
+        </li>
+    </ul>
+
+Example: Text editing
+
+    <ul class="sg-icon-grid">
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--list-ul" aria-hidden="true"></span>
+            <code>cricon cricon--list-ul</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--list-ol" aria-hidden="true"></span>
+            <code>cricon cricon--list-ol</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--bold" aria-hidden="true"></span>
+            <code>cricon cricon--bold</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--italic" aria-hidden="true"></span>
+            <code>cricon cricon--italic</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--image" aria-hidden="true"></span>
+            <code>cricon cricon--image</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--video" aria-hidden="true"></span>
+            <code>cricon cricon--video</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--text" aria-hidden="true"></span>
+            <code>cricon cricon--text</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--cut" aria-hidden="true"></span>
+            <code>cricon cricon--cut</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--copy" aria-hidden="true"></span>
+            <code>cricon cricon--copy</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--paste" aria-hidden="true"></span>
+            <code>cricon cricon--paste</code>
+        </li>
+    </ul>
+
+
+Example: Color variants
+
+    <ul class="sg-icon-grid">
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--arrow-right" aria-hidden="true"></span>
+            <code>Default (no extra css class needed)</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--arrow-right cricon--color-primary" aria-hidden="true"></span>
+            <code>cricon--color-primary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--arrow-right cricon--color-secondary" aria-hidden="true"></span>
+            <code>cricon--color-secondary</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--arrow-right cricon--color-light" aria-hidden="true"></span>
+            <code>cricon--color-light</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--arrow-right cricon--color-success" aria-hidden="true"></span>
+            <code>cricon--color-success</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--arrow-right cricon--color-info" aria-hidden="true"></span>
+            <code>cricon--color-info</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--arrow-right cricon--color-warning" aria-hidden="true"></span>
+            <code>cricon--color-warning</code>
+        </li>
+    </ul>
+
+
+
+Example: {type: isolated} Size variants
+
+    <ul class="sg-icon-grid">
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--arrow-right" aria-hidden="true"></span>
+            <code>Default (no extra css class needed - same as the size of the parent element)</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--arrow-right cricon--size-xxsmall" aria-hidden="true"></span>
+            <code>cricon--size-xxsmall</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--arrow-right cricon--size-xsmall" aria-hidden="true"></span>
+            <code>cricon--size-xsmall</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--arrow-right cricon--size-small" aria-hidden="true"></span>
+            <code>cricon--size-small</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--arrow-right cricon--size-medium" aria-hidden="true"></span>
+            <code>cricon--size-medium</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--arrow-right cricon--size-large" aria-hidden="true"></span>
+            <code>cricon--size-large</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--arrow-right cricon--size-xlarge" aria-hidden="true"></span>
+            <code>cricon--size-xlarge</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--arrow-right cricon--size-xxlarge" aria-hidden="true"></span>
+            <code>cricon--size-xxlarge</code>
+        </li>
+        <li class="sg-icon-grid__item">
+            <span class="cricon cricon--arrow-right cricon--size-xxxlarge" aria-hidden="true"></span>
+            <code>cricon--size-xxxlarge</code>
+        </li>
+    </ul>
+
+
+Example: Fixed width
+
+    <p>Just like the size variants, just add <code>-fw</code> at the end</p>
+
+    <br>
+    <strong>xxsmall</strong>
+    <div>
+        <span class="cricon cricon--warning  cricon--size-xxsmall cricon--size-xxsmall-fw" style="background:MistyRose"></span>
+        <code>cricon cricon--warning  cricon--size-xxsmall cricon--size-xxsmall-fw</code>
+    </div>
+    <div>
+        <span class="cricon cricon--info  cricon--size-xxsmall cricon--size-xxsmall-fw" style="background:MistyRose"></span>
+        <code>cricon cricon--info  cricon--size-xxsmall cricon--size-xxsmall-fw</code>
+    </div>
+    <div>
+        <span class="cricon cricon--settings  cricon--size-xxsmall cricon--size-xxsmall-fw" style="background:MistyRose"></span>
+        <code>cricon cricon--settings  cricon--size-xxsmall cricon--size-xxsmall-fw</code>
+    </div>
+
+    <br>
+    <strong>xsmall</strong>
+    <div>
+        <span class="cricon cricon--warning  cricon--size-xxsmall cricon--size-xsmall-fw" style="background:MistyRose"></span>
+        <code>cricon cricon--warning  cricon--size-xxsmall cricon--size-xsmall-fw</code>
+    </div>
+    <div>
+        <span class="cricon cricon--info  cricon--size-xxsmall cricon--size-xsmall-fw" style="background:MistyRose"></span>
+        <code>cricon cricon--info  cricon--size-xxsmall cricon--size-xsmall-fw</code>
+    </div>
+    <div>
+        <span class="cricon cricon--settings  cricon--size-xxsmall cricon--size-xsmall-fw" style="background:MistyRose"></span>
+        <code>cricon cricon--settings  cricon--size-xxsmall cricon--size-xsmall-fw</code>
+    </div>
+
+    <br>
+    <strong>small</strong>
+    <div>
+        <span class="cricon cricon--warning cricon--size-small cricon--size-small-fw" style="background:MistyRose"></span>
+        <code>cricon cricon--warning cricon--size-small cricon--size-small-fw</code>
+    </div>
+    <div>
+        <span class="cricon cricon--info cricon--size-small cricon--size-small-fw" style="background:MistyRose"></span>
+        <code>cricon cricon--info cricon--size-small cricon--size-small-fw</code>
+    </div>
+    <div>
+        <span class="cricon cricon--settings cricon--size-small cricon--size-small-fw" style="background:MistyRose"></span>
+        <code>cricon cricon--settings cricon--size-small cricon--size-small-fw</code>
+    </div>
+
+    <br>
+    <strong>medium</strong>
+    <div>
+        <span class="cricon cricon--warning cricon--size-medium cricon--size-medium-fw" style="background:MistyRose"></span>
+        <code>cricon cricon--warning cricon--size-medium cricon--size-medium-fw</code>
+    </div>
+    <div>
+        <span class="cricon cricon--info cricon--size-medium cricon--size-medium-fw" style="background:MistyRose"></span>
+        <code>cricon cricon--info cricon--size-medium cricon--size-medium-fw</code>
+    </div>
+    <div>
+        <span class="cricon cricon--settings cricon--size-medium cricon--size-medium-fw" style="background:MistyRose"></span>
+        <code>cricon cricon--settings cricon--size-medium cricon--size-medium-fw</code>
+    </div>
+
+    <br>
+    <strong>large</strong>
+    <div>
+        <span class="cricon cricon--warning cricon--size-large cricon--size-large-fw" style="background:MistyRose"></span>
+        <code>cricon cricon--warning cricon--size-large cricon--size-large-fw</code>
+    </div>
+    <div>
+        <span class="cricon cricon--info cricon--size-large cricon--size-large-fw" style="background:MistyRose"></span>
+        <code>cricon cricon--info cricon--size-large cricon--size-large-fw</code>
+    </div>
+    <div>
+        <span class="cricon cricon--settings cricon--size-large cricon--size-large-fw" style="background:MistyRose"></span>
+        <code>cricon cricon--settings cricon--size-large cricon--size-large-fw</code>
+    </div>
+
+    <br>
+    <strong>xlarge</strong>
+    <div>
+        <span class="cricon cricon--warning cricon--size-xlarge cricon--size-xlarge-fw" style="background:MistyRose"></span>
+        <code>cricon cricon--warning cricon--size-xlarge cricon--size-xlarge-fw</code>
+    </div>
+    <div>
+        <span class="cricon cricon--info cricon--size-xlarge cricon--size-xlarge-fw" style="background:MistyRose"></span>
+        <code>cricon cricon--info cricon--size-xlarge cricon--size-xlarge-fw</code>
+    </div>
+    <div>
+        <span class="cricon cricon--settings cricon--size-xlarge cricon--size-xlarge-fw" style="background:MistyRose"></span>
+        <code>cricon cricon--settings cricon--size-xlarge cricon--size-xlarge-fw</code>
+    </div>
+
+    <br>
+    <strong>xxlarge</strong>
+    <div>
+        <span class="cricon cricon--warning cricon--size-xxlarge cricon--size-xxlarge-fw" style="background:MistyRose"></span>
+        <code>cricon cricon--warning cricon--size-xxlarge cricon--size-xxlarge-fw</code>
+    </div>
+    <div>
+        <span class="cricon cricon--info cricon--size-xxlarge cricon--size-xxlarge-fw" style="background:MistyRose"></span>
+        <code>cricon cricon--info cricon--size-xxlarge cricon--size-xxlarge-fw</code>
+    </div>
+    <div>
+        <span class="cricon cricon--settings cricon--size-xxlarge cricon--size-xxlarge-fw" style="background:MistyRose"></span>
+        <code>cricon cricon--settings cricon--size-xxlarge cricon--size-xxlarge-fw</code>
+    </div>
+
+    <br>
+    <strong>xxxlarge</strong>
+    <div>
+        <span class="cricon cricon--warning cricon--size-xxxlarge cricon--size-xxxlarge-fw" style="background:MistyRose"></span>
+        <code>cricon cricon--warning cricon--size-xxxlarge cricon--size-xxxlarge-fw</code>
+    </div>
+    <div>
+        <span class="cricon cricon--info cricon--size-xxxlarge cricon--size-xxxlarge-fw" style="background:MistyRose"></span>
+        <code>cricon cricon--info cricon--size-xxxlarge cricon--size-xxxlarge-fw</code>
+    </div>
+    <div>
+        <span class="cricon cricon--settings cricon--size-xxxlarge cricon--size-xxxlarge-fw" style="background:MistyRose"></span>
+        <code>cricon cricon--settings cricon--size-xxxlarge cricon--size-xxxlarge-fw</code>
+    </div>
+
+Styleguide 4:cricon
+*/
+
+.cricon {
+    @each $icon-name in $cricon-default-icon-names {
+        &--#{$icon-name}:before {
+            @include cricon-icon($icon-name);
+        }
+    }
+    @if $cricon-extra-icon-names != null {
+        @each $icon-name in $cricon-extra-icon-names {
+            &--#{$icon-name}:before {
+                @include cricon-icon($icon-name);
+            }
+        }
+    }
+
+    &--hidden {
+        visibility: hidden;
+    }
+
+    &--color-primary {
+        &:before {
+            @include cricon-color-primary();
+        }
+    }
+    &--color-secondary {
+        &:before {
+            @include cricon-color-secondary();
+        }
+    }
+    &--color-success {
+        &:before {
+            @include cricon-color-success();
+        }
+    }
+    &--color-info {
+        &:before {
+            @include cricon-color-info();
+        }
+    }
+    &--color-warning {
+        &:before {
+            @include cricon-color-warning();
+        }
+    }
+    &--color-light {
+        &:before {
+            @include cricon-color-light();
+        }
+    }
+
+    &--size-xxsmall {
+        &:before {
+            @include cricon-size(xxsmall);
+        }
+        &-fw:before {
+            @include cricon-fixed-width(xxsmall);
+        }
+    }
+    &--size-xsmall {
+        &:before {
+            @include cricon-size(xsmall);
+        }
+        &-fw:before {
+            @include cricon-fixed-width(xsmall);
+        }
+    }
+    &--size-small {
+        &:before {
+            @include cricon-size(small);
+        }
+        &-fw:before {
+            @include cricon-fixed-width(small);
+        }
+    }
+    &--size-medium {
+        &:before {
+            @include cricon-size(medium);
+        }
+        &-fw:before {
+            @include cricon-fixed-width(medium);
+        }
+    }
+    &--size-large {
+        &:before {
+            @include cricon-size(large);
+        }
+        &-fw:before {
+            @include cricon-fixed-width(large);
+        }
+    }
+    &--size-xlarge {
+        &:before {
+            @include cricon-size(xlarge);
+        }
+        &-fw:before {
+            @include cricon-fixed-width(xlarge);
+        }
+    }
+    &--size-xxlarge {
+        &:before {
+            @include cricon-size(xxlarge);
+        }
+        &-fw:before {
+            @include cricon-fixed-width(xxlarge);
+        }
+    }
+    &--size-xxxlarge {
+        &:before {
+            @include cricon-size(xxxlarge);
+        }
+        &-fw:before {
+            @include cricon-fixed-width(xxxlarge);
+        }
+    }
+}

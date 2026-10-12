@@ -1,0 +1,34 @@
+{% extends "django_cradmin/base.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+
+{% block title %}
+    {{ pagetitle }}
+{% endblock title %}
+
+{% block page-cover-title %}
+    {{ pagetitle }}
+{% endblock page-cover-title %}
+
+{% block content %}
+    <div class="adminui-page-section  adminui-page-section--center  adminui-page-section--focus">
+        <div class="container">
+            {% block deletequestion %}
+                <p class="{% cradmin_test_css_class 'confirm-message' %}">
+                    {{ confirm_message }}
+                </p>
+            {% endblock deletequestion %}
+            {% block delete-form %}
+                <form action="{{ request.build_absolute_uri }}" method="post" class="django-cradmin-form">
+                    {% csrf_token %}
+                    <button type="submit" class="button  button--primary-fill">
+                        {{ delete_button_label }}
+                    </button>
+                    <button type="button" class="button" onclick="history.back();return false;">
+                        {{ cancel_button_label }}
+                    </button>
+                </form>
+            {% endblock delete-form%}
+        </div>
+    </div>
+{% endblock content %}

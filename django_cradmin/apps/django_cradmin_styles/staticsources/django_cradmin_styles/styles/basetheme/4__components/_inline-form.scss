@@ -1,0 +1,16 @@
+/** Inline form
+
+Example:
+
+    This is a
+    <form class="inline-form">
+        <button class="button" type="button">Test</button>
+    </form> of an inline form.
+
+Styleguide components.inline-form
+*/
+.inline-form {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}

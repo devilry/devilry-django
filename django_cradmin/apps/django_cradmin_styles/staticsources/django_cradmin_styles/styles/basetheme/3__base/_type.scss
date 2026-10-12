@@ -1,0 +1,266 @@
+/* Headers
+
+Make sure headers represent semantic hierarchy of the page. For pure styling use these classes instead of ruining the hierarchy: `.h1`, `.h2`, `.h3`, `.h4`
+
+Example: {type: isolated}
+    <h1>Header 1</h1>
+    <h2>Header 2</h2>
+    <h3>Header 3</h3>
+    <h4>Header 4</h4>
+
+
+Example: {type: isolated} --spaced - for usage outside of page-sections
+
+    <!--
+    You should normally use a page-section for each heading, and have one heading
+    in each page-section, but if you need to have multiple headings in a single
+    container etc., use --spaced
+    -->
+
+    <h1 class="h1 h1--spaced">Header 1</h1>
+    <h2 class="h2 h2--spaced">Header 2</h2>
+    <h3 class="h3 h3--spaced">Header 3</h3>
+    <h4 class="h4 h4--spaced">Header 4</h4>
+
+
+Styleguide type.3:headers
+*/
+
+// h1,
+// .h1,
+// %h1,
+h2,
+.h2,
+%h2,
+h3,
+.h3,
+%h3 {
+    @include font(header, bold);
+    margin: 0;
+    margin-bottom: vertical-space($spacing);
+
+    overflow-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+}
+
+
+h1,
+.h1,
+%h1 {
+    @include font(header, bold);
+    @include font-size(xxxlarge);
+    @include hyphens;
+
+    strong { // TODO?
+        @include font(header, bold);
+        font-style: italic;
+        white-space: nowrap;
+    }
+}
+
+h2,
+.h2,
+%h2 {
+    @include font-size(xlarge);
+
+    strong {
+        @include font(header, bold);
+    }
+}
+
+h3,
+.h3,
+%h3 {
+    @include font-size(large);
+
+    margin-bottom: vertical-space($spacing--small);
+
+    @include min-width(md) {
+        margin-bottom: vertical-space($spacing--small);
+    }
+
+    strong {
+        @include font(header, bold);
+    }
+}
+
+h4,
+.h4,
+%h4 {
+    @include font(base, bold);
+    @include font-size(small);
+
+    word-wrap: break-word;
+    margin: 0;
+    margin-bottom: vertical-space($spacing--small);
+
+    @include min-width(md) {
+        margin-bottom: vertical-space($spacing--small);
+    }
+}
+
+.h1,  %h1,
+.h2,  %h2,
+.h3,  %h3,
+.h4,  %h4 {
+    &--spaced {
+        margin-top: vertical-space($spacing);
+    }
+}
+
+.type-xxlarge {
+    @include font-size(xxlarge);
+}
+
+// TODO: Is this a good rule?
+p:not(:empty) + h2,
+p:not(:empty) + h3,
+p:not(:empty) + h4,
+ul + h2,
+ul + h3,
+ul + h4 {
+    margin-top: vertical-space($spacing, 1.2);
+}
+
+
+/* Paragraphs
+
+Example: Default paragraphs
+    <p>Lorem Ipsum's father was with Lee Harvey Oswald prior to Oswald's being, you know, shot. I think the only difference between me and the other placeholder text is that I’m more honest and my words are more beautiful. An ‘extremely credible source’ has called my office and told me that Barack Obama’s placeholder text is a fraud. I’m the best thing that ever happened to placeholder text.</p>
+    <p>Look at that text! Would anyone use that? Can you imagine that, the text of your next webpage?!</p>
+    <p>The best taco bowls are made in Trump Tower Grill. I love Hispanics! Lorem Ispum is a choke artist. It chokes!</p>
+
+Example: Tight paragraphs
+    <p class="paragraph paragraph--tight">Lorem Ipsum's father was with Lee Harvey Oswald prior to Oswald's being, you know, shot. I think the only difference between me and the other placeholder text is that I’m more honest and my words are more beautiful. An ‘extremely credible source’ has called my office and told me that Barack Obama’s placeholder text is a fraud. I’m the best thing that ever happened to placeholder text.</p>
+    <p class="paragraph paragraph--tight">Look at that text! Would anyone use that? Can you imagine that, the text of your next webpage?!</p>
+    <p class="paragraph paragraph--tight">The best taco bowls are made in Trump Tower Grill. I love Hispanics! Lorem Ispum is a choke artist. It chokes!</p>
+
+Example: Extra tight paragraphs
+    <p class="paragraph paragraph--xtight">Lorem Ipsum's father was with Lee Harvey Oswald prior to Oswald's being, you know, shot. I think the only difference between me and the other placeholder text is that I’m more honest and my words are more beautiful. An ‘extremely credible source’ has called my office and told me that Barack Obama’s placeholder text is a fraud. I’m the best thing that ever happened to placeholder text.</p>
+    <p class="paragraph paragraph--xtight">Look at that text! Would anyone use that? Can you imagine that, the text of your next webpage?!</p>
+    <p class="paragraph paragraph--xtight">The best taco bowls are made in Trump Tower Grill. I love Hispanics! Lorem Ispum is a choke artist. It chokes!</p>
+
+Example: Paragraphs without margin
+    <p class="paragraph paragraph--no-margin">Lorem Ipsum's father was with Lee Harvey Oswald prior to Oswald's being, you know, shot. I think the only difference between me and the other placeholder text is that I’m more honest and my words are more beautiful. An ‘extremely credible source’ has called my office and told me that Barack Obama’s placeholder text is a fraud. I’m the best thing that ever happened to placeholder text.</p>
+    <p class="paragraph paragraph--no-margin">Look at that text! Would anyone use that? Can you imagine that, the text of your next webpage?!</p>
+    <p class="paragraph paragraph--no-margin">The best taco bowls are made in Trump Tower Grill. I love Hispanics! Lorem Ispum is a choke artist. It chokes!</p>
+
+Example: Other elements styled as paragraphs
+    <ul>
+        <li class="paragraph">Lorem Ipsum's father was with Lee Harvey Oswald prior to Oswald's being, you know, shot. I think the only difference between me and the other placeholder text is that I’m more honest and my words are more beautiful. An ‘extremely credible source’ has called my office and told me that Barack Obama’s placeholder text is a fraud. I’m the best thing that ever happened to placeholder text.</li>
+        <li class="paragraph">Look at that text! Would anyone use that? Can you imagine that, the text of your next webpage?!</li>
+        <li class="paragraph">The best taco bowls are made in Trump Tower Grill. I love Hispanics! Lorem Ispum is a choke artist. It chokes!</li>
+    </ul>
+
+Styleguide type.4:paragraphs
+*/
+p,
+.paragraph {
+    @include font(base, normal);
+    margin-bottom: vertical-space($spacing);
+
+    &:empty {
+        display: none;
+    }
+}
+
+.paragraph {
+    display: block;
+    &--tight {
+        margin-bottom: vertical-space($spacing--small);
+    }
+    &--xtight {
+        margin-bottom: vertical-space($unit);
+    }
+    &--no-margin {
+        margin-bottom: 0;
+    }
+}
+
+/** Preamble
+
+Example: Preamble
+    <p class="preamble">
+        We are going to make placeholder text great again.
+        Greater than ever before. Lorem Ipsum's father was
+        with Lee Harvey Oswald prior to Oswald's being, you know, shot.
+    </p>
+
+Styleguide type.5:preamble
+*/
+.preamble {
+    @include font(base, bold);
+
+    &:only-child {
+        margin: 0;
+    }
+}
+
+.normal {
+    @include font(base, normal);
+    @include font-size(small);
+}
+
+.no-break {
+    white-space: nowrap;
+}
+
+/* Other type styles
+
+Example: {type: isolated} Strong, italic, muted, alignments, small caps
+    <p><strong>Strong text</strong></p>
+    <p class="italic">Italic text</p>
+    <p class="text-muted">Muted text.</p>
+    <p class="text-center">Centered text</p>
+    <p class="text-right">Right aligned text</p>
+    <p><strong class="text-smallcaps">Small capsed text</strong> can be useful to introduse a paragraph sometimes</p>
+
+Styleguide type.6:other
+*/
+strong,
+.strong,
+b {
+    @include font(base, bold);
+}
+
+.italic {
+    font-style: italic;
+}
+
+.text-muted,
+%text-muted {
+    color: $color-muted;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-smallcaps,
+%text-smallcaps {
+    @include spaced-text;
+    @include font-size(smallcaps);
+    @include font(base, bold);
+
+    &--thin {
+        @include font(base, light);
+    }
+}
+
+.time-stamp {
+    @include font(mono, normal);
+    @include font-size(xsmall);
+    display: block;
+    color: $color-muted;
+    margin-bottom: vertical-space(2);
+    border: 0;
+}

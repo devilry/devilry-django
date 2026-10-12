@@ -1,0 +1,42 @@
+.cradmin-legacy-page-header-outer {
+  padding: @cradmin-page-header-padding-top 0 @cradmin-page-header-padding-bottom 0;
+  background: @cradmin-page-header-bg;
+  color: @cradmin-page-header-color;
+  border: none;
+  margin: @cradmin-page-header-margin;
+
+  .cradmin-legacy-page-header-inner {
+    h1 {
+      padding: 0;
+      margin: 0;
+      font-size: @cradmin-page-header-h1-font-size;
+      font-weight: bold;
+      vertical-align: middle;
+      line-height: @cradmin-page-header-h1-line-height;
+    }
+
+    p {
+      margin: 0;
+    }
+  }
+
+  // Use this for all except the primary header if you have multiple
+  // page header blocks on a single page. In that
+  // case, the heading tag should be a H2.
+  &.cradmin-legacy-page-header-outer-secondary {
+    padding: @cradmin-page-header-secondary-padding-top 0 @cradmin-page-header-secondary-padding-bottom 0;
+    background: @cradmin-page-header-secondary-bg;
+    color: @cradmin-page-header-secondary-color;
+    border: none;
+    margin: @cradmin-page-header-secondary-margin;
+
+    h2 {
+      padding: 0;
+      margin: 0;
+      font-size: @cradmin-page-header-secondary-h2-font-size;
+      font-weight: bold;
+      vertical-align: middle;
+      line-height: @cradmin-page-header-secondary-h2-line-height;
+    }
+  }
+}

@@ -1,0 +1,23 @@
+.hidden-xs {
+    @media(max-width: (map-get($breakpoints, md) - 1px)) {
+        display: none !important;
+    }
+}
+
+.hidden-xs-md {
+    @media(max-width: (map-get($breakpoints, lg) - 1px)) {
+        display: none !important;
+    }
+}
+
+.visible-xs-only {
+    @include min-width(md) {
+        display: none !important;
+    }
+}
+
+.visible-xs-md-only {
+    @include min-width(lg) {
+        display: none !important;
+    }
+}

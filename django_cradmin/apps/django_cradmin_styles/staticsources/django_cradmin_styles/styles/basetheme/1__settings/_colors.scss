@@ -1,0 +1,100 @@
+/* Colors
+
+## Primary
+<ul class="sg-colors">
+    <li class="sg-colors__item  sg-colors__item--primary--base"></li>
+    <li class="sg-colors__item  sg-colors__item--primary--dark"></li>
+</ul>
+
+## Secondary
+<ul class="sg-colors">
+    <li class="sg-colors__item  sg-colors__item--secondary--base"></li>
+    <li class="sg-colors__item  sg-colors__item--secondary--dark"></li>
+</ul>
+
+## Neutral shades
+<ul class="sg-colors">
+    <li class="sg-colors__item  sg-colors__item--neutral--xlight"></li>
+    <li class="sg-colors__item  sg-colors__item--neutral--light"></li>
+    <li class="sg-colors__item  sg-colors__item--neutral--base"></li>
+    <li class="sg-colors__item  sg-colors__item--neutral--dark"></li>
+    <li class="sg-colors__item  sg-colors__item--neutral--xdark"></li>
+</ul>
+
+## Additional colors
+<ul class="sg-colors">
+    <li class="sg-colors__item  sg-colors__item--success"></li>
+    <li class="sg-colors__item  sg-colors__item--info"></li>
+</ul>
+
+Styleguide basic.1:colors
+*/
+
+// NEVER use these variables. Use the $colors map, and override the entire
+// $colors map to change colors.
+$__color-primary-base: #57917E;
+$__color-secondary-base: #58758D;
+$__color-neutral-base: mix(#f5f4f0, #393939, 50%);
+$__color-warning-base: mix(red, $__color-neutral-base, 60%);
+$__color-success-base: mix(green, $__color-neutral-base, 60%);
+$__color-info-base: mix(#ffce00, $__color-neutral-base, 90%);
+
+// Default colors.
+// These act as fallback for $colors.
+// Can not be overridden, but you can use the provided `deep-map-merge()` function
+// for things like theming (E.g.: `$colors: deep-map-merge($theme-base-colors, $local-colors)`).
+$default-colors: (
+    primary: (
+        base: $__color-primary-base,
+        dark: shade($__color-primary-base, 20%)
+    ),
+    secondary: (
+        base: $__color-secondary-base,
+        dark: shade($__color-secondary-base, 20%)
+    ),
+    neutral: (
+        xlight: tint($__color-neutral-base, 91%),
+        verylight: tint($__color-neutral-base, 75%),
+        light: tint($__color-neutral-base, 50%),
+        base: $__color-neutral-base,
+        dark: shade($__color-neutral-base, 20%),
+        xdark: shade($__color-neutral-base, 80%)
+    ),
+    warning: (
+        base: $__color-warning-base,
+        dark: shade($__color-warning-base, 20%)
+    ),
+    success: (
+        base: $__color-success-base,
+        dark: shade($__color-success-base, 20%)
+    ),
+    info: (
+        light: tint($__color-info-base, 50%),
+        base: $__color-info-base,
+        dark: shade($__color-info-base, 20%)
+    ),
+    contrast: (
+        black: #fff,
+        white: #000
+    )
+);
+
+$colors: null !default;
+
+$color-light: #fff !default;
+$color-dark: color(neutral, xdark) !default;
+$color-warning: color(warning) !default;
+$color-success: color(success) !default;
+$color-info: color(info) !default;
+
+// Specific colors.
+// Variables are there to be reused, so being to specific or creating to many will create the opposite situation
+$color-background: color(neutral, xlight) !default;
+$color-text: $color-dark !default;
+$color-muted: tint($color-text, 26%) !default;
+$color-links: color(secondary, base) !default;
+$color-links--hover: shade(color(secondary, base), 35%) !default;
+
+// Used by the get-background-color() function to determine the variant of the
+// provided color to use.
+$use-dark-colorvariants-for-backgrounds: true !default;

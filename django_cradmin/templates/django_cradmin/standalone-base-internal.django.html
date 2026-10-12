@@ -1,0 +1,146 @@
+{% comment %}
+    Base template for all django_cradmin templates.
+
+    You should extend this directly for standalone pages like
+    login and error pages. For pages that require a role,
+    you should extend ``base.django.html`` instead.
+{% endcomment %}{% spaceless %}
+    {% load static %}
+    {% load cradmin_tags %}
+    {% load cradmin_javascriptregistry_tags %}
+{% endspaceless %}<!DOCTYPE html>
+<html lang="{% block html-element-lang %}en{% endblock %}" class="{% block html-element-class %}{% endblock %}" {% block html-element-extra-attributes %}{% endblock %}>
+    <head>
+        {% block head %}
+            {% block meta %}
+                <meta charset="utf-8">
+                <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                {% block extra_meta %}{% endblock extra_meta %}
+            {% endblock meta %}
+
+            {% comment %}
+                The title tag contains two blocks:
+
+                - ``title``: Overridden per page.
+                - ``title-pre`` and ``title-post``: Typically overridden by overriding ``standalone-base.django.html``
+                  to provide some common prefix/postfix for the the title tag for the entire site.
+            {% endcomment %}
+            <title>{% block title-pre %}{% endblock %}{% block title %}{% endblock %}{% block title-post %}{% endblock %}</title>
+
+            {% block styles %}
+                <link href='{% cradmin_theme_staticpath %}' rel="stylesheet">
+            {% endblock styles %}
+
+            {% block javascriptregistry-head %}
+                {% cradmin_javascriptregistry_head %}
+            {% endblock javascriptregistry-head %}
+        {% endblock head %}
+    </head>
+    <body {% block body-attributes %}
+            {# NOTE: We probably want to deprecate these bodyclass blocks and solve it some other way #}
+            class="
+                {% block global-bodyclass %}
+                    {% comment %}
+                        Use this block to set css classes for the entire site.
+                        Do not override this block in views - only override this
+                        when you override the standalone-base.django.html template.
+                    {% endcomment %}
+                {% endblock global-bodyclass %}
+                {% block bodyclass %}
+                {% endblock bodyclass %}
+            "
+            {% endblock body-attributes %}>
+        {% block global-pre-body %}
+            {% comment %}
+                This block is here to be overridden in standalone-base.django.html
+                and base.django.html. It should be used to add some global component
+                before the body, such as a global navigation header.
+
+                This block is not intended to be, and should never be overridden in app views.
+            {% endcomment %}
+        {% endblock global-pre-body %}
+
+        {% block body %}
+            <div class="{{ cradmin_viewport_layout_bem_block|default:'fill-viewport-layout' }}">
+                <div class="{{ cradmin_viewport_layout_bem_block|default:'fill-viewport-layout' }}__content">
+                    {% block header %}
+                        {% comment %}
+                            A common header for many pages. This is not part of the ``<main>``
+                            content of the page, so you should not add your H1 here.
+                        {% endcomment %}
+                        {% cradmin_render_default_header %}
+                    {% endblock header %}
+
+                    {% block main %}
+                        <main {% block main-attributes %}role="main"{% endblock %}>
+                            {% block main-content %}
+                                {% block breadcrumbs-above-page-cover %}
+                                    {% cradmin_render_breadcrumb_item_list location='above-page-cover' %}
+                                {% endblock breadcrumbs-above-page-cover %}
+
+                                {% block page-cover %}
+                                    <header class="
+                                            {% block page-cover-bem-block %}{% cradmin_page_cover_bem_block %}{% endblock %}
+                                            {% block page-cover-bem-variant %}{% endblock %}
+                                            {% cradmin_test_css_class 'page-cover' %}">
+                                        {% block page-cover-content %}
+                                            <h1 class="
+                                                    {% block page-cover-title-bem-block %}{% cradmin_page_cover_bem_block %}__title{% endblock %}
+                                                    {% block page-cover-title-bem-variant %}{% endblock %}
+                                                    {% cradmin_test_css_class 'primary-h1' %}">
+                                                {% block page-cover-title %}{% endblock page-cover-title %}
+                                            </h1>
+                                        {% endblock page-cover-content %}
+                                    </header>
+                                {% endblock page-cover %}
+
+                                {% block breadcrumbs-below-page-cover %}
+                                    {% cradmin_render_breadcrumb_item_list location='below-page-cover' %}
+                                {% endblock breadcrumbs-below-page-cover %}
+
+                                {% block messages %}
+                                    {% include "django_cradmin/include/messages.django.html" %}
+                                {% endblock messages %}
+
+                                {% block content %}{% endblock %}
+                            {% endblock main-content %}
+                        </main>
+                    {% endblock main %}
+                </div>
+
+                {% block footerlayout %}
+                    <div class="{{ cradmin_viewport_layout_bem_block|default:'fill-viewport-layout' }}__footer">
+                        {% block footer %}
+                            {% cradmin_render_default_footer %}
+                        {% endblock footer %}
+                    </div>
+                {% endblock footerlayout %}
+            </div>
+
+            {% block toggleable-menu %}
+                {% comment %}
+                    If you have a toggleable menu, put the hidden part of the menu in this block.
+                    The button that toggles the menu is typically added to the ``header`` block.
+                {% endcomment %}
+                {% cradmin_render_default_expandable_menu %}
+            {% endblock toggleable-menu %}
+        {% endblock body %}
+
+        {% block global-post-body %}
+            {% comment %}
+                This block is here to be overridden in standalone-base.django.html
+                and base.django.html. It should be used to add some global component
+                after the body, such as a global footer header.
+
+                This block is not intended to be, and should never be overridden in app views.
+            {% endcomment %}
+        {% endblock global-post-body %}
+
+        {% block javascriptregistry-end-of-body %}
+            {% cradmin_javascriptregistry_end_of_body %}
+        {% endblock javascriptregistry-end-of-body %}
+
+        {% block end-of-body %}{% endblock end-of-body %}
+    </body>
+</html>

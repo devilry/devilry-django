@@ -1,0 +1,171 @@
+/** Time display
+
+Example: {type: isolated}
+
+    <span class="timedisplay">
+        <span class="timedisplay__number">
+            12
+        </span>
+        <span class="timedisplay__separator">:</span>
+        <span class="timedisplay__number">
+            30
+        </span>
+        <span class="timedisplay__separator">:</span>
+        <span class="timedisplay__number">
+            56
+        </span>
+    </span>
+
+Example: {type: isolated} Can be centered
+
+    <p class="text-center">
+        <span class="timedisplay">
+            <span class="timedisplay__number">
+                12
+            </span>
+            <span class="timedisplay__separator">:</span>
+            <span class="timedisplay__number">
+                30
+            </span>
+            <span class="timedisplay__separator">:</span>
+            <span class="timedisplay__number">
+                56
+            </span>
+        </span>
+    </p>
+
+Example: {type: isolated} --medium
+
+    <span class="timedisplay timedisplay--medium">
+        <span class="timedisplay__number">
+            12
+        </span>
+        <span class="timedisplay__separator">:</span>
+        <span class="timedisplay__number">
+            30
+        </span>
+        <span class="timedisplay__separator">:</span>
+        <span class="timedisplay__number">
+            56
+        </span>
+    </span>
+
+Example: {type: isolated} --large
+
+    <span class="timedisplay timedisplay--large">
+        <span class="timedisplay__number">
+            12
+        </span>
+        <span class="timedisplay__separator">:</span>
+        <span class="timedisplay__number">
+            30
+        </span>
+        <span class="timedisplay__separator">:</span>
+        <span class="timedisplay__number">
+            56
+        </span>
+    </span>
+
+
+Example: {type: isolated} --xlarge
+
+    <span class="timedisplay timedisplay--xlarge">
+        <span class="timedisplay__number">
+            12
+        </span>
+        <span class="timedisplay__separator">:</span>
+        <span class="timedisplay__number">
+            30
+        </span>
+        <span class="timedisplay__separator">:</span>
+        <span class="timedisplay__number">
+            56
+        </span>
+    </span>
+
+Example: {type: isolated} As part of a time picker
+
+    <div style="width: 400px; max-width: 100%;">
+        <div class="paragraph text-center">
+            <span class="timedisplay timedisplay--xlarge">
+                <span class="timedisplay__number">
+                    12
+                </span>
+                <span class="timedisplay__separator">:</span>
+                <span class="timedisplay__number">
+                    30
+                </span>
+                <span class="timedisplay__separator">:</span>
+                <span class="timedisplay__number">
+                    56
+                </span>
+            </span>
+        </div>
+        <label class="label">
+            Hours:
+            <input class="range-input" type="range" min="0" max="23" value="12">
+        </label>
+        <label class="label">
+            Minutes:
+            <input class="range-input" type="range" min="0" max="59" value="30">
+        </label>
+        <label class="label">
+            Seconds:
+            <input class="range-input" type="range" min="0" max="59" value="56">
+        </label>
+    </div>
+
+Styleguide components.timepicker
+*/
+.timedisplay {
+    $__root: &;
+    display: inline-flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    @include font-size(small);
+    cursor: default;
+
+    &__number, &__separator {
+        display: block;
+    }
+
+    &__separator {
+        color: color(secondary);
+        padding: 0 $unit;
+    }
+
+    &__number {
+        background-color: color(secondary);
+        color: $color-light;
+        text-align: center;
+        width: 40px;
+        padding: $unit 0;
+    }
+
+    &--medium {
+        @include font-size(medium);
+        #{$__root}__number {
+            width: 50px;
+        }
+    }
+
+    &--large {
+        @include font-size(large);
+        #{$__root}__number {
+            width: 65px;
+        }
+    }
+
+    &--xlarge {
+        @include font-size(large);
+        @include min-width(md) {
+            @include font-size(xlarge);
+        }
+        #{$__root}__number {
+            width: 65px;
+            @include min-width(md) {
+                width: 80px;
+            }
+        }
+    }
+}

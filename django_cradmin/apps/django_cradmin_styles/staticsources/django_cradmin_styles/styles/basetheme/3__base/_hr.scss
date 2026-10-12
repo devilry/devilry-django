@@ -1,0 +1,19 @@
+hr,
+.separator {
+    margin: 0 0 vertical-space($spacing--large);
+    padding: 0;
+    border: 0;
+    border-top: $border-style;
+}
+
+.separator--light {
+    border-color: $color-light;
+}
+
+.separator--large {
+    border-top-width: $unit;
+}
+
+.separator--no-space {
+    margin: 0;
+}

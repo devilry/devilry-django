@@ -1,0 +1,76 @@
+{% extends "django_cradmin/base.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+
+{% block bodyclass %}
+    {{ block.super }}
+    django-cradmin-listbuilderview-page
+{% endblock %}
+
+{% block title %}
+    {{ pagetitle }}
+{% endblock title %}
+
+{% block page-cover-title %}
+    {% block heading %}
+            {{ pageheading }}
+        {% endblock heading %}
+{% endblock page-cover-title %}
+
+{% block content %}
+    {% block listbuilderview_pre %}
+        {% if pre_include_template %}
+            {% include pre_include_template %}
+        {% endif %}
+    {% endblock listbuilderview_pre %}
+    {% block listbuilderview_buttons %}
+        {% if buttons_include_template %}
+            <p class="django-cradmin-listbuilderview-buttons">
+                {% include buttons_include_template %}
+            </p>
+        {% endif %}
+    {% endblock listbuilderview_buttons %}
+
+    {% block list %}
+        <div class="django-cradmin-listfilter-target"
+                 id="django_cradmin_listbuilderview_listwrapper"
+                 aria-live="polite">
+            {% block listbuilder_list_live_area %}
+                {% if listbuilder_list.has_items %}
+                    {% block listbuilder_list_live_area_has_items %}
+                        {% cradmin_render_renderable listbuilder_list %}
+                        {% block pager %}
+                            {% include "django_cradmin/viewhelpers/listbuilderview/includes/loadmorepager.django.html" %}
+                        {% endblock pager %}
+                    {% endblock listbuilder_list_live_area_has_items %}
+                {% else %}
+                    {% block no-items-wrapper %}
+                        <div class="adminui-page-section{% cradmin_test_css_class 'cradmin-no-items-message' %}">
+                            <div class="container">
+                                <p>
+                                    {% block no-items-paragraph-contents %}
+                                        {{ no_items_message }}
+                                    {% endblock no-items-paragraph-contents %}
+                                </p>
+                            </div>
+                        </div>
+                    {% endblock no-items-wrapper %}
+                {% endif %}
+            {% endblock listbuilder_list_live_area %}
+        </div>
+    {% endblock list %}
+    {% block listbuilderview_post %}
+        {% if post_include_template %}
+            {% include post_include_template %}
+        {% endif %}
+    {% endblock listbuilderview_post %}
+{% endblock content %}
+
+{% block outside-bodycontentwrapper %}
+    {{ block.super }}
+    {% if enable_previews %}
+        <div django-cradmin-page-preview-wrapper>
+            {% include "django_cradmin/pagepreview/includes/pagepreview-fullsize-iframe-wrapper.django.html" %}
+        </div>
+    {% endif %}
+{% endblock outside-bodycontentwrapper %}

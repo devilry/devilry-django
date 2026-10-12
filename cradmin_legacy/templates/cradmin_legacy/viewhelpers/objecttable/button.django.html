@@ -1,0 +1,10 @@
+<{{ button_element }}
+        {% for attribute in attributes %}
+            {{ attribute|safe }}
+        {% endfor %}
+        >
+    {% if icon %}
+        <span class="{{ icon }}"></span>
+    {% endif %}
+    {{ label }}
+</{{ button_element }}>

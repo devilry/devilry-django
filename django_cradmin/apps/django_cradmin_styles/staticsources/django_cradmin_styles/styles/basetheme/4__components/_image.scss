@@ -1,0 +1,219 @@
+/* Images
+
+Example: {type: isolated} Left
+    <figure class="image  image--left">
+        <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Sir_Winston_Leonard_Spencer_Churchill_by_Ambrose_McEvoy.jpg/493px-Sir_Winston_Leonard_Spencer_Churchill_by_Ambrose_McEvoy.jpg"
+            alt="Winston churchill"
+            class="image__image"
+        />
+        <figcaption class="image__caption">
+            <p class="image__text">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis imperdiet massa tincidunt nunc pulvinar sapien et ligula. Viverra suspendisse potenti nullam ac tortor vitae. Vestibulum lectus mauris ultrices eros in. Libero enim sed faucibus turpis in eu mi bibendum neque. Ultrices neque ornare aenean euismod elementum nisi.
+            </p>
+        </figcaption>
+    </figure>
+
+Example: {type: isolated} Tight
+    <figure class="image  image--tight">
+        <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Blenheim_Palace_from_the_Water_Terraces_October_2016.jpg/1280px-Blenheim_Palace_from_the_Water_Terraces_October_2016.jpg"
+            alt="Blenheim Palace"
+            class="image__image"
+        />
+        <figcaption class="image__caption">
+            <p class="image__text">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Augue neque gravida in fermentum. Id leo in vitae turpis massa sed.
+            </p>
+        </figcaption>
+    </figure>
+
+Example: {type: isolated} Full
+    <div style="min-height: 700px"> <!-- this div wrapper is just to make it render nicely in the styleguide -->
+    <figure class="image  image--full">
+        <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Blenheim_Palace_from_the_Water_Terraces_October_2016.jpg/1280px-Blenheim_Palace_from_the_Water_Terraces_October_2016.jpg"
+            alt="Something here"
+            class="image__image"
+        />
+        <figcaption class="image__caption">
+            <p class="image__text">Quis imperdiet massa tincidunt nunc.</p>
+        </figcaption>
+    </figure>
+    </div>
+
+Styleguide layout.image
+*/
+
+.image {
+    $this: &;
+
+    &__text {
+        margin: 0;
+    }
+
+    &--tight {
+        @include container(tight);
+        margin-top: vertical-space($spacing);
+        margin-bottom: vertical-space($spacing, 2);
+
+        #{$this}__image {
+            @include min-width(lg) {
+                margin-left: -($spacing--large);
+                margin-right: -($spacing--large);
+                width: calc(100% + #{$spacing--large * 2});
+                max-width: calc(100% + #{$spacing--large * 2});
+            }
+        }
+
+        #{$this}__caption {
+            @include font-size(xsmall);
+            padding-bottom: $spacing--small;
+            border-bottom: $border-width--small solid color(neutral, light);
+        }
+    }
+
+    &--left,
+    &--right {
+        @extend %clearfix;
+        @include container(tight);
+        margin-bottom: vertical-space($spacing, 1.5);
+
+        #{$this}__image {
+            max-height: 200px;
+            max-width: 40%;
+        }
+
+        #{$this}__text {
+            @include font-size(medium);
+        }
+    }
+
+    &--left {
+        #{$this}__image {
+            float: left;
+            margin-right: $spacing;
+
+            @include min-width(md) {
+                margin-left: -($spacing--large);
+            }
+        }
+    }
+
+    &--right {
+        #{$this}__image {
+            float: right;
+            margin-left: $spacing;
+
+            @include min-width(md) {
+                margin-right: -($spacing--large);
+            }
+        }
+
+        #{$this}__text {
+            @include hyphens;
+        }
+    }
+
+    //&--float-left,
+    //&--float-right {
+    //    @include container(tight);
+    //    margin-bottom: -(vertical-space($spacing, 1.5));
+    //
+    //    #{$this}__caption {
+    //        @include font-size(xsmall);
+    //        padding-bottom: $spacing--small;
+    //        border-bottom: $border-width--small solid color(neutral, light);
+    //    }
+    //
+    //    #{$this}__float {
+    //        max-width: 40%;
+    //    }
+    //
+    //    #{$this}__image {
+    //        max-height: 200px;
+    //    }
+    //}
+    //
+    //&--float-left {
+    //    #{$this}__float {
+    //        float: left;
+    //        margin-right: $spacing;
+    //
+    //        @include min-width(md) {
+    //            margin-left: -($spacing--large);
+    //        }
+    //    }
+    //}
+    //
+    //&--float-right {
+    //    #{$this}__float {
+    //        float: right;
+    //        margin-left: $spacing;
+    //
+    //        @include min-width(md) {
+    //            margin-right: -($spacing--large);
+    //        }
+    //    }
+    //
+    //    #{$this}__text {
+    //        @include hyphens;
+    //    }
+    //}
+
+    &--nomargin {
+      margin-bottom: 0;
+    }
+
+    &--full {
+        position: relative;
+        height: 100%;
+        max-height: 70vh;
+        overflow: hidden;
+        margin-top: vertical-space($spacing);
+        margin-bottom: vertical-space($spacing, 2);
+
+        #{$this}__image {
+            display: block;
+            width: 100%;
+
+            @supports (object-fit: cover) {
+                position: relative;
+                height: 100%;
+                object-fit: cover;
+            }
+        }
+
+        #{$this}__caption {
+            position: absolute;
+            width: 100%;
+            bottom: 0;
+            color: $color-light;
+            padding: vertical-space($spacing--small) $spacing--small;
+
+            @include min-width(md) {
+                padding: vertical-space($spacing) $spacing--large;
+            }
+        }
+
+        #{$this}__text {
+            @include font(header);
+            @include font-size(large);
+            position: relative;
+            display: inline-block;
+            padding: vertical-space($spacing--small) $spacing--small;
+            color: $color-light;
+            background-color: color(primary);
+
+            @include min-width(md) {
+                max-width: 50%;
+                padding: vertical-space($spacing) $spacing;
+                @include font-size(xxlarge);
+            }
+
+            @include min-width(xl) {
+                padding: vertical-space($spacing * 1.2) $spacing * 1.5;
+            }
+        }
+    }
+}

@@ -1,0 +1,12 @@
+{% load cradmin_legacy_tags %}
+
+<div id="{{ me.get_dom_id_prefix }}"
+     cradmin-legacy-listfilter={{ me.get_angularjs_options_json|safe }}>
+    <ol class="{{ me.get_css_classes_string }}">
+        {% for renderable in me.iter_renderables %}
+            <li>
+                {% cradmin_render_renderable renderable %}
+            </li>
+        {% endfor %}
+    </ol>
+</div>

@@ -1,0 +1,178 @@
+$fa-font-path: "#{$media-path}/cradmin_fontawesome/webfonts";
+
+@import "../../../cradmin_fontawesome/scss/fontawesome.scss";
+@import "../../../cradmin_fontawesome/scss/fa-solid.scss";
+@import "../../../cradmin_fontawesome/scss/fa-brands";
+
+
+$cricon-font-awesome-free-icon-map: (
+    plus: $fa-var-plus,
+    minus: $fa-var-minus,
+    edit: $fa-var-edit,
+    pencil: $fa-var-pencil-alt,
+    trash: $fa-var-trash,
+
+    arrow-up: $fa-var-arrow-up,
+    arrow-down: $fa-var-arrow-down,
+    arrow-left: $fa-var-arrow-left,
+    arrow-right: $fa-var-arrow-right,
+    chevron-up: $fa-var-chevron-up,
+    chevron-down: $fa-var-chevron-down,
+    chevron-left: $fa-var-chevron-left,
+    chevron-right: $fa-var-chevron-right,
+
+    check: $fa-var-check,
+    search: $fa-var-search,
+    close: $fa-var-times,
+    user: $fa-var-user,
+    clock: $fa-var-clock,
+    calendar: $fa-var-calendar,
+    calendar-grid: $fa-var-calendar-alt,
+    flag: $fa-var-flag,
+    ellipsis-horizontal: $fa-var-ellipsis-h,
+    download: $fa-var-download,
+    file: $fa-var-file,
+    info: $fa-var-info,
+    help: $fa-var-info-circle,
+    warning: $fa-var-exclamation-triangle,
+    settings: $fa-var-cog,
+    bars: $fa-var-bars,
+    external-link: $fa-var-external-link-alt,
+
+    podcast: $fa-var-podcast,
+    email: $fa-var-envelope,
+    phone: $fa-var-phone,
+
+    map-marker: $fa-var-map-marker-alt,
+    location-arrow: $fa-var-location-arrow,
+
+    list-ul: $fa-var-list-ul,
+    list-ol: $fa-var-list-ol,
+    bold: $fa-var-bold,
+    italic: $fa-var-italic,
+    image: $fa-var-image,
+    video: $fa-var-video,
+    text: $fa-var-paragraph,
+    shopping-cart: $fa-var-shopping-cart,
+    comment: $fa-var-comment,
+    comments: $fa-var-comments,
+
+    cut: $fa-var-cut,
+    copy: $fa-var-copy,
+    paste: $fa-var-paste
+);
+
+$cricon-font-awesome-brand-icon-map: (
+    facebook: $fa-var-facebook-square,
+    twitter: $fa-var-twitter,
+    instagram: $fa-var-instagram,
+    youtube: $fa-var-youtube,
+    snapchat: $fa-var-snapchat-ghost
+);
+
+@mixin cricon-fixed-width($size) {
+    $width-base: cricon-get-fixed-width-for-font-size($size, base);
+    $width-xs: cricon-get-fixed-width-for-font-size($size, xs);
+    $width-md: cricon-get-fixed-width-for-font-size($size, md);
+    $width-lg: cricon-get-fixed-width-for-font-size($size, lg);
+    $width-xl: cricon-get-fixed-width-for-font-size($size, xl);
+    width: $width-base;
+    @if ($width-xs) {
+        @include min-width(xs) {
+            width: $width-xs;
+        }
+    }
+    @if ($width-md) {
+        @include min-width(md) {
+            width: $width-md;
+        }
+    }
+    @if ($width-lg) {
+        @include min-width(lg) {
+            width: $width-lg;
+        }
+    }
+    @if ($width-xl) {
+        @include min-width(xl) {
+            width: $width-xl;
+        }
+    }
+}
+
+@mixin cricon-size($size) {
+    @include font-size($size, true);
+}
+
+@mixin cricon-icon($name) {
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    line-height: 1;
+    font-weight: 900;
+
+    $content: null;
+    $content-free: map-get($cricon-font-awesome-free-icon-map, $name);
+    $content-brand: map-get($cricon-font-awesome-brand-icon-map, $name);
+    @if $content-free != null {
+        $content: $content-free;
+        font-family: 'Font Awesome 5 Free';
+    }
+    @else if $content-brand != null {
+        $content: $content-brand;
+        font-family: 'Font Awesome 5 Brands';
+    }
+    @if $content != null {
+        content: fa-content($content);
+    }
+}
+
+@mixin cricon-clear-icon($name) {
+    content: '';
+    width: auto;
+}
+
+@mixin cricon-color-text() {
+    color: $color-text;
+}
+
+@mixin cricon-color-primary() {
+    color: color(primary);
+}
+
+@mixin cricon-color-link() {
+    color: $color-links;
+}
+
+@mixin cricon-color-link-hover() {
+    color: $color-links--hover;
+}
+
+@mixin cricon-color-secondary() {
+    color: color(secondary);
+}
+
+@mixin cricon-color-light() {
+    color: $color-light;
+}
+
+@mixin cricon-color-success() {
+    color: color(success);
+}
+
+@mixin cricon-color-info() {
+    color: color(info);
+}
+
+@mixin cricon-color-warning() {
+    color: color(warning);
+}
+
+@mixin cricon-icon-checkbox-check() {
+    @include cricon-icon(check);
+    font-size: 14px;
+    margin-top: -6px;
+    margin-left: -7px;
+}

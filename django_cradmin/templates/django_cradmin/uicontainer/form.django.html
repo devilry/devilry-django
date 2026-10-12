@@ -1,0 +1,10 @@
+{% extends "django_cradmin/uicontainer/container.django.html" %}
+
+{% block outer_wrapper_attributes %}
+    {{ block.super }}{% if me.action_is_redirect_to_self %} action="{{ request.get_full_path }}"{% endif %}{% if me.disable_submit_on_enter %} data-ievv-jsbase-widget="cradmin-disable-form-submit-on-enter" {% endif %}
+{% endblock outer_wrapper_attributes %}
+
+{% block content %}
+    {% csrf_token %}
+    {{ block.super }}
+{% endblock content %}

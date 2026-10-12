@@ -1,0 +1,77 @@
+{% extends "cradmin_legacy/base.django.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load cradmin_legacy_icon_tags %}
+
+{% block bodyclass %}
+    {{ block.super }}
+    cradmin-legacy-formview-page
+{% endblock %}
+
+{% block title %}
+    {{ pagetitle }}
+{% endblock title %}
+
+{% block pageheader-inner %}
+    <h1>
+        {% block heading %}
+            {{ pageheading }}
+        {% endblock heading %}
+    </h1>
+{% endblock pageheader-inner %}
+
+{% block content %}
+    {% block pre_form %}{% endblock pre_form %}
+    {% block form %}
+        <div class="container">
+            {% crispy form formhelper %}
+        </div>
+
+        {% comment %}
+            NOTE: This will probably break when https://github.com/maraujop/django-crispy-forms/issues/263 is fixed
+        {% endcomment %}
+        {{ form.media }}
+    {% endblock form %}
+    {% block post_form %}{% endblock post_form %}
+{% endblock content %}
+
+{% block outside-bodycontentwrapper %}
+    {{ block.super }}
+    {% if enable_modelchoicefield_support %}
+        <div class="cradmin-legacy-floating-fullsize-iframe-wrapper cradmin-legacy-modelchoicefield-iframe-wrapper"
+             cradmin-legacy-model-choice-field-iframe-wrapper="{{ fieldid }}">
+            <a href="#" class="cradmin-legacy-floating-fullsize-iframe-closebutton"
+                    cradmin-legacy-model-choice-field-iframe-closebutton>
+                <span aria-hidden="true"
+                        class="{% cradmin_icon 'close-overlay-right-to-left' %}
+                            cradmin-legacy-floating-fullsize-iframe-closebutton-icon"></span>
+                <span class="sr-only">{% trans "Close window" %}</span>
+            </a>
+            <div class="cradmin-legacy-floating-fullsize-content">
+                <div class="ng-hide cradmin-legacy-floating-fullsize-loadspinner"
+                        cradmin-legacy-model-choice-field-load-spinner>
+                    <span class="{% cradmin_icon 'loadspinner' %}"></span>
+                </div>
+                <div class="cradmin-legacy-floating-fullsize-iframe-inner"
+                        cradmin-legacy-model-choice-field-iframe-wrapper-inner>
+                    <iframe cradmin-legacy-model-choice-field-iframe></iframe>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    {% block handle_preview %}
+        {% if show_preview %}
+            <div cradmin-legacy-page-preview-wrapper>
+                {% include "cradmin_legacy/pagepreview/includes/pagepreview-fullsize-iframe-wrapper.django.html" %}
+                <div cradmin-legacy-page-preview-open-on-page-load='{
+                    "urls": [
+                        {
+                            "label": "unused",
+                            "url": "{{ preview_url }}"
+                        }
+                    ]
+                }'></div>
+            </div>
+        {% endif %}
+    {% endblock handle_preview %}
+{% endblock outside-bodycontentwrapper %}

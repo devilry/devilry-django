@@ -1,0 +1,8 @@
+{% load cradmin_legacy_tags %}
+
+<a href="{% block linkurl %}{{ me.get_url }}{% endblock %}"
+        class="{{ me.get_css_classes_string }}">
+    {% block content %}
+        {% cradmin_render_renderable me.inneritem %}
+    {% endblock content %}
+</a>

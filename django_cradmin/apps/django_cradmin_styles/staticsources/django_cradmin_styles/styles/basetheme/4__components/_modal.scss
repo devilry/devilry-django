@@ -1,0 +1,272 @@
+/* Modal
+
+Example: {type: isolated} Tight modal (modal--tight)
+
+    <div class="modal modal--tight">
+        <div class="modal__backdrop"></div>
+
+        <div class="modal__content">
+            <div class="modal__close">
+                <button type="button" aria-title="Close">
+                    <span class="cricon cricon--close" aria-hidden="true"></span>
+                </button>
+            </div>
+
+            <div class="modal__title">
+                <h2>The title</h2>
+            </div>
+
+            <p>
+                <strong>The modal content.</strong>
+                Nulla vitae elit libero, a pharetra augue. Duis mollis, est non commodo luctus,
+                nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis
+                consectetur purus sit amet fermentum.
+            </p>
+        </div>
+    </div>
+
+    <p>
+        <strong>Should be behind the modal.</strong>
+        Maecenas faucibus mollis interdum. Cras mattis
+        consectetur purus sit amet fermentum. Morbi leo
+        risus, porta ac consectetur ac, vestibulum at eros.
+        Sed posuere consectetur est at lobortis. Morbi leo
+        risus, porta ac consectetur ac, vestibulum at eros.
+        Curabitur blandit tempus porttitor. Nullam quis
+        risus eget urna mollis ornare vel eu leo.
+    </p>
+
+
+Example: {type: isolated} Normal/default sized modal
+
+    <div class="modal">
+        <div class="modal__backdrop"></div>
+
+        <div class="modal__content">
+            <div class="modal__close">
+                <button type="button" aria-title="Close">
+                    <span class="cricon cricon--close" aria-hidden="true"></span>
+                </button>
+            </div>
+
+            <div class="modal__title">
+                <h2>The title</h2>
+            </div>
+
+            <p>
+                <strong>The modal content.</strong>
+                Nulla vitae elit libero, a pharetra augue. Duis mollis, est non commodo luctus,
+                nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis
+                consectetur purus sit amet fermentum.
+            </p>
+        </div>
+    </div>
+
+    <p>
+        <strong>Should be behind the modal.</strong>
+        Maecenas faucibus mollis interdum. Cras mattis
+        consectetur purus sit amet fermentum. Morbi leo
+        risus, porta ac consectetur ac, vestibulum at eros.
+        Sed posuere consectetur est at lobortis. Morbi leo
+        risus, porta ac consectetur ac, vestibulum at eros.
+        Curabitur blandit tempus porttitor. Nullam quis
+        risus eget urna mollis ornare vel eu leo.
+    </p>
+
+
+Example: {type: isolated} Wide modal (modal--wide)
+
+    <div class="modal modal--wide">
+        <div class="modal__backdrop"></div>
+
+        <div class="modal__content">
+            <div class="modal__close">
+                <button type="button" aria-title="Close">
+                    <span class="cricon cricon--close" aria-hidden="true"></span>
+                </button>
+            </div>
+
+            <div class="modal__title">
+                <h2>The title</h2>
+            </div>
+
+            <p>
+                <strong>The modal content.</strong>
+                Nulla vitae elit libero, a pharetra augue. Duis mollis, est non commodo luctus,
+                nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis
+                consectetur purus sit amet fermentum.
+            </p>
+        </div>
+    </div>
+
+    <p>
+        <strong>Should be behind the modal.</strong>
+        Maecenas faucibus mollis interdum. Cras mattis
+        consectetur purus sit amet fermentum. Morbi leo
+        risus, porta ac consectetur ac, vestibulum at eros.
+        Sed posuere consectetur est at lobortis. Morbi leo
+        risus, porta ac consectetur ac, vestibulum at eros.
+        Curabitur blandit tempus porttitor. Nullam quis
+        risus eget urna mollis ornare vel eu leo.
+    </p>
+
+
+Example: {type: isolated} Extra wide modal (modal--xwide)
+
+    <div class="modal modal--xwide">
+        <div class="modal__backdrop"></div>
+
+        <div class="modal__content">
+            <div class="modal__close">
+                <button type="button" aria-title="Close">
+                    <span class="cricon cricon--close" aria-hidden="true"></span>
+                </button>
+            </div>
+
+            <div class="modal__title">
+                <h2>The title</h2>
+            </div>
+
+            <p>
+                <strong>The modal content.</strong>
+                Nulla vitae elit libero, a pharetra augue. Duis mollis, est non commodo luctus,
+                nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis
+                consectetur purus sit amet fermentum.
+            </p>
+        </div>
+    </div>
+
+    <p>
+        <strong>Should be behind the modal.</strong>
+        Maecenas faucibus mollis interdum. Cras mattis
+        consectetur purus sit amet fermentum. Morbi leo
+        risus, porta ac consectetur ac, vestibulum at eros.
+        Sed posuere consectetur est at lobortis. Morbi leo
+        risus, porta ac consectetur ac, vestibulum at eros.
+        Curabitur blandit tempus porttitor. Nullam quis
+        risus eget urna mollis ornare vel eu leo.
+    </p>
+
+
+Example: {type: isolated} (Almost) Full page width modal (modal--fullwidth)
+
+    <div class="modal modal--fullwidth">
+        <div class="modal__backdrop"></div>
+
+        <div class="modal__content">
+            <div class="modal__close">
+                <button type="button" aria-title="Close">
+                    <span class="cricon cricon--close" aria-hidden="true"></span>
+                </button>
+            </div>
+
+            <div class="modal__title">
+                <h2>The title</h2>
+            </div>
+
+            <p>
+                <strong>The modal content.</strong>
+                Nulla vitae elit libero, a pharetra augue. Duis mollis, est non commodo luctus,
+                nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis
+                consectetur purus sit amet fermentum.
+            </p>
+        </div>
+    </div>
+
+    <p>
+        <strong>Should be behind the modal.</strong>
+        Maecenas faucibus mollis interdum. Cras mattis
+        consectetur purus sit amet fermentum. Morbi leo
+        risus, porta ac consectetur ac, vestibulum at eros.
+        Sed posuere consectetur est at lobortis. Morbi leo
+        risus, porta ac consectetur ac, vestibulum at eros.
+        Curabitur blandit tempus porttitor. Nullam quis
+        risus eget urna mollis ornare vel eu leo.
+    </p>
+
+Styleguide components.modal
+*/
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: $level-4;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+
+    padding: $spacing--small;
+
+    &__backdrop {
+        @extend .backdrop;
+
+        @extend %animation-fade-in;
+    }
+
+    &__content {
+        position: relative;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: $spacing;
+        z-index: $level-4;
+        top: 0;
+        width: 700px;
+        max-width: 100%;
+        overflow: hidden;
+
+        box-shadow: $shadow-level-3;
+        background-color: $color-light;
+
+        padding: $spacing;
+
+        @include min-width(md) {
+            padding: $spacing--large;
+        }
+
+        &:focus {
+            outline: 0;
+        }
+
+        transform-origin: left top;
+
+        &--animate {
+            transition: transform 300ms $swift-out, opacity 300ms cubic-bezier(0, 1, 0, 1);
+        }
+    }
+
+    &__title {
+        margin-bottom: $spacing--large;
+    }
+
+    &__close {
+        position: absolute;
+        top: $spacing;
+        right: $spacing;
+    }
+
+    &--tight {
+        .modal__content {
+            width: 460px;
+        }
+    }
+
+    &--wide {
+        .modal__content {
+            width: 900px;
+        }
+    }
+
+    &--xwide {
+        .modal__content {
+            width: 1200px;
+        }
+    }
+
+    &--fullwidth {
+        .modal__content {
+            width: 98%;
+        }
+    }
+}

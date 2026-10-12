@@ -1,0 +1,23 @@
+{% extends "cradmin_register_account/base.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+
+
+{% block title %}
+    {% trans "Check your email" %}
+{% endblock title %}
+
+{% block page-cover-title %}
+    {% trans "Check your email" %}
+{% endblock page-cover-title %}
+
+{% block content %}
+    <div class="adminui-page-section  adminui-page-section--tight{% cradmin_test_css_class 'page-content' %}">
+        <p>
+            {% trans "We have sent you an email. Click the link in the email to activate your account." %}
+        </p>
+        <p>
+            {% trans "If you do not see the email, check your junk folder." %}
+        </p>
+    </div>
+{% endblock content %}

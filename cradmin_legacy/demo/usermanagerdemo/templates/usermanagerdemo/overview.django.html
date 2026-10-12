@@ -1,0 +1,46 @@
+{% extends "cradmin_legacy/base.django.html" %}
+{% load static %}
+{% load i18n %}
+
+
+{% block title %}
+    {% trans "Account overview" %}
+{% endblock title %}
+
+{% block pageheader-inner %}
+    <h1>
+        {% trans "Account overview" %}
+    </h1>
+{% endblock pageheader-inner %}
+
+{% block content %}
+    <div class="container cradmin-legacy-container-focus">
+        {% with user=request.cradmin_role %}
+            <h2>
+                {% trans "Personal info" %}
+            </h2>
+            <div class="panel panel-default">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th>{% trans "Username" %}</th>
+                            <td>{{ user.username }}</td>
+                        </tr>
+                        <tr>
+                            <th>{% trans "Email" %}</th>
+                            <td>{{ user.email }}</td>
+                        </tr>
+                        <tr>
+                            <th>{% trans "First name" %}</th>
+                            <td>{{ user.first_name }}</td>
+                        </tr>
+                        <tr>
+                            <th>{% trans "Last name" %}</th>
+                            <td>{{ user.last_name }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        {% endwith %}
+    </div>
+{% endblock content %}

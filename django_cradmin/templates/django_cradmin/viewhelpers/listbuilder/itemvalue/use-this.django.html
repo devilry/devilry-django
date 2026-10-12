@@ -1,0 +1,20 @@
+{% extends "django_cradmin/viewhelpers/listbuilder/itemvalue/titledescription.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+
+{% block end-of-content %}
+    {% block buttons %}
+        <p class="django-cradmin-listbuilder-itemvalue-usethis-buttons">
+            {% block usethis-button %}
+                <button type="button"
+                        class="btn btn-default django-cradmin-listbuilder-itemvalue-usethis-usethis-button"
+                        django-cradmin-use-this={{ use_this_directive_options_json|safe }}
+                        aria-label='{% block usethis-button-arialabel %}{% blocktrans with title=me.get_title %}Select "{{ title }}"{% endblocktrans %}{% endblock %}'>
+                    {% block usethis-button-content %}
+                        {% trans "Select" context "listbuilder-usethis" %}
+                    {% endblock usethis-button-content %}
+                </button>
+            {% endblock usethis-button %}
+        </p>
+    {% endblock buttons %}
+{% endblock end-of-content %}

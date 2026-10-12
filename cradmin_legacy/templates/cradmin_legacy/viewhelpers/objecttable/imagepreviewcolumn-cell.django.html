@@ -1,0 +1,7 @@
+{% load i18n %}
+{% load cradmin_legacy_image_tags %}
+{% if imageurl == None %}
+    <em class="text-muted">{% trans "(None)" %}</em>
+{% else %}
+    <img src="{% cradmin_transform_image_using_imagetype imageurl=imageurl imagetype=preview_imagetype fallbackoptions=preview_fallbackoptions %}">
+{% endif %}

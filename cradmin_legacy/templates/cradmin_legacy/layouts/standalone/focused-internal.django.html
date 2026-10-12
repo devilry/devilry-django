@@ -1,0 +1,55 @@
+{% extends "cradmin_legacy/standalone-base.django.html" %}
+{% comment %}
+    Extends the standalone-base template to provide a layout
+    suitable for pages with a single purpose such as login,
+    reset password, accept invite, etc.
+
+    ## Usage
+
+    ```
+    {% extends "cradmin_legacy/standalone-base.django.html" %}
+    {% load crispy_forms_tags %}
+    {% load i18n %}
+
+    {% block pageheader-inner %}
+        <h1>My cool page</h1>
+    {% endblock pageheader-inner %}
+
+    {% block content %}
+        Some content here!
+    {% endblock content %}
+    ```
+{% endcomment %}
+
+{% block bodyclass %}
+    {{ block.super }}
+    cradmin-legacy-focusedpage-body
+{% endblock bodyclass %}
+
+{% block body %}
+    <div id="cradmin_legacy_focusedlayout_wrapper"
+         class="{% block wrapperclass %}cradmin-legacy-focusedpage-wrapper{% endblock %}">
+
+        {% block messages %}
+            <div id="cradmin_legacy_messages_standalone_wrapper">
+                {% include "cradmin_legacy/include/messages.django.html" %}
+            </div>
+        {% endblock messages %}
+
+        {% block innerwrapper_pre %}{% endblock innerwrapper_pre %}
+
+        <div class="cradmin-legacy-focusedpage-wrapper-inner">
+            {% block pageheader %}
+                <div class="page-header">
+                    {% block pageheader-inner %}{% endblock pageheader-inner %}
+                </div>
+            {% endblock pageheader %}
+
+            <div id="cradmin_legacy_focusedlayout_content" class="cradmin-legacy-focusedpage-content">
+                {% block content %}{% endblock content %}
+            </div>
+        </div>
+
+        {% block innerwrapper_post %}{% endblock innerwrapper_post %}
+    </div>
+{% endblock body %}

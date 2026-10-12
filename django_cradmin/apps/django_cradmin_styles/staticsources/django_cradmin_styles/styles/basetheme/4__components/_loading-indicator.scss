@@ -1,0 +1,136 @@
+/* Loading indicator.
+
+Shows a loading indicator after a 0.1 second delay.
+The delay is to avoid flickering
+when there is no need to show a loading indicator.
+
+Example:
+    <span class="loading-indicator">
+        <span class="loading-indicator__indicator"></span>
+        <span class="loading-indicator__indicator"></span>
+        <span class="loading-indicator__indicator"></span>
+        <span class="loading-indicator__text">
+            Loading...
+        </span>
+    </span>
+
+Example: Centered
+    <div class="text-center">
+        <span class="loading-indicator">
+            <span class="loading-indicator__indicator"></span>
+            <span class="loading-indicator__indicator"></span>
+            <span class="loading-indicator__indicator"></span>
+            <span class="loading-indicator__text">
+                Loading...
+            </span>
+        </span>
+    </div>
+
+Example: Light
+    <div class="text-center" style="background-color: #000; padding: 20px;">
+        <span class="loading-indicator">
+            <span class="loading-indicator__indicator loading-indicator__indicator--light"></span>
+            <span class="loading-indicator__indicator loading-indicator__indicator--light"></span>
+            <span class="loading-indicator__indicator loading-indicator__indicator--light"></span>
+            <span class="loading-indicator__text">
+                Loading...
+            </span>
+        </span>
+    </div>
+
+
+Example: With label instead of text (text is only visible to screenreaders)
+    <span class="loading-indicator">
+        <span class="loading-indicator__indicator"></span>
+        <span class="loading-indicator__indicator"></span>
+        <span class="loading-indicator__indicator"></span>
+        <span class="loading-indicator__label">
+            Loading...
+        </span>
+    </span>
+
+Example: Centered - With label instead of text (text is only visible to screenreaders)
+    <div class="text-center">
+        <span class="loading-indicator">
+            <span class="loading-indicator__indicator"></span>
+            <span class="loading-indicator__indicator"></span>
+            <span class="loading-indicator__indicator"></span>
+            <span class="loading-indicator__label">
+                Loading...
+            </span>
+        </span>
+    </div>
+
+Example: Light - With label instead of text (text is only visible to screenreaders)
+    <div class="text-center" style="background-color: #000; padding: 20px;">
+        <span class="loading-indicator">
+            <span class="loading-indicator__indicator loading-indicator__indicator--light"></span>
+            <span class="loading-indicator__indicator loading-indicator__indicator--light"></span>
+            <span class="loading-indicator__indicator loading-indicator__indicator--light"></span>
+            <span class="loading-indicator__label loading-indicator__label--light">
+                Loading...
+            </span>
+        </span>
+    </div>
+
+
+Styleguide components.loading-indicator
+*/
+$__loading-indicator-show-delay: 0.1s;
+
+.loading-indicator {
+    display: inline-block;
+
+    &__indicator {
+        display: inline-block;
+        margin-left: $unit;
+        background-color: color(primary);
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        opacity: 0;
+        animation: loading-indicator__indicator__animation 1.8s infinite ease-in-out;
+
+        &:nth-child(1) {
+            margin-left: 0;
+            animation-delay: ($__loading-indicator-show-delay);
+        }
+        &:nth-child(2) {
+            animation-delay: ($__loading-indicator-show-delay + 0.15s);
+        }
+        &:nth-child(3) {
+            animation-delay: ($__loading-indicator-show-delay + 0.30s);
+        }
+
+        &--light {
+            background-color: $color-light;
+        }
+    }
+
+    &__text {
+        @include screenreader-only();
+    }
+
+    &__label {
+        display: block;
+        margin-top: $spacing--small;
+        @include font(base, bold);
+        @include font-size(small);
+
+        &--light {
+            color: $color-light;
+        }
+    }
+}
+
+
+@keyframes loading-indicator__indicator__animation {
+    0%,
+    80%,
+    100% {
+        opacity: .8;
+    }
+    40% {
+        opacity: 0;
+    }
+}

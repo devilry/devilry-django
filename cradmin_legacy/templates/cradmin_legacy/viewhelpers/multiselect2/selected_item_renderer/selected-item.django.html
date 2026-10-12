@@ -1,0 +1,42 @@
+{% load cradmin_legacy_icon_tags %}
+
+<div class="{{ me.get_css_classes_string }}">
+    {% block title %}
+        <h3 class="cradmin-legacy-multiselect2-target-selected-item-title">
+            {% block title-content %}
+                {{ me.get_title }}
+            {% endblock title-content %}
+        </h3>
+    {% endblock title %}
+    {% block below-title %}{% endblock below-title %}
+
+    {% block description %}
+        {% if me.get_description %}
+            <p class="cradmin-legacy-multiselect2-target-selected-item-description">
+                {% block description-content %}
+                    {{ me.get_description }}
+                {% endblock description-content %}
+            </p>
+        {% endif %}
+    {% endblock description %}
+    {% block below-description %}{% endblock below-description %}
+
+    {% block input-field %}
+        <input type="hidden" name="{{ me.get_inputfield_name }}"
+               value="{{ me.get_inputfield_value }}">
+    {% endblock input-field %}
+
+    {% block deselect-button %}
+        <button type="button"
+                class="{{ me.get_deselect_button_cssclasses_string }}"
+                aria-label='{{ me.get_deselectbutton_aria_label }}'
+                ng-click="deselect()">
+            {% block deselect-button-content %}
+                {% block deselect-button-icon %}
+                    <span class="{% cradmin_icon 'select-right' %} hidden-xs"></span>
+                {% endblock deselect-button-icon %}
+                {{ me.get_deselectbutton_text }}
+            {% endblock deselect-button-content %}
+        </button>
+    {% endblock deselect-button %}
+</div>

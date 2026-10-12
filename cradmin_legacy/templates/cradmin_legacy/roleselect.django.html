@@ -1,0 +1,30 @@
+{% extends "cradmin_legacy/layouts/standalone/focused.django.html" %}
+{% load i18n %}
+{% load cradmin_legacy_tags %}
+
+{% block title %}{{ pagetitle }}{% endblock title %}
+
+{% block pageheader-inner %}
+    <h1>{{ pagetitle }}</h1>
+{% endblock pageheader-inner %}
+
+{% block content %}
+    <ul class="{{ list_cssclass }}">
+        {% for role in roles %}
+            <li>
+                <a href="{% cradmin_rolefrontpage_url role %}">
+                    <h2 class="cradmin-legacy-roleselect-role-title">
+                        {% cradmin_titletext_for_role role %}
+                    </h2>
+                    {% cradmin_descriptionhtml_for_role role as descriptionhtml %}
+                    {% if descriptionhtml %}
+                        <div class="cradmin-legacy-roleselect-role-description">
+                            {{ descriptionhtml }}
+                        </div>
+                    {% endif %}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+    {% include "cradmin_legacy/viewhelpers/includes/pager.django.html" %}
+{% endblock content %}

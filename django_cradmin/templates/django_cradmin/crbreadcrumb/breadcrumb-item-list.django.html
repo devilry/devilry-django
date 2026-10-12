@@ -1,0 +1,13 @@
+{% load cradmin_tags %}
+
+{% block outer %}
+    <nav class="{{ me.css_classes }}">
+        {% block items %}
+            {% for breadcrumb_item in me.iter_breadcrumb_list_renderables %}
+                {% block item %}
+                    {% cradmin_render_renderable breadcrumb_item %}
+                {% endblock item %}
+            {% endfor %}
+        {% endblock items %}
+    </nav>
+{% endblock outer %}

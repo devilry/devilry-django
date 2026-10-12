@@ -1,0 +1,15 @@
+.backdrop {
+    // &.ng-enter {
+        @extend %animation-fade-in;
+    // }
+    &.ng-leave {
+        @extend %animation-fade-out;
+    }
+    position: fixed;
+    z-index: $level-2;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(color(neutral, xlight), 0.9);
+}

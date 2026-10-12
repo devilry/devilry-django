@@ -1,0 +1,18 @@
+{% extends "django_cradmin/viewhelpers/uimock/base.django.html" %}
+{% load cradmin_uimock_tags %}
+
+
+{% block content %}
+    <div class="adminui-page-section adminui-page-section--center-md">
+        <div class="container">
+            <div class="box box--warning">
+                {% if mockname %}
+                    <p>No mock named <code>{{ mockname }}</code>.</p>
+                    <p>Go to <a href="{% cradmin_uimock_url %}">index</a></p>
+                {% else %}
+                    This mock does not have a <code>index.django.html</code> template.
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}

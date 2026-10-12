@@ -1,0 +1,188 @@
+.cradmin-legacy-floating-fullsize-iframe-wrapper  {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: @cradmin-floating-iframe-zindex;
+  background: @cradmin-floating-iframe-backdrop-bg;
+  .css3-transition(all @cradmin-floating-iframe-showhide-transition-duration ease-in-out);
+  .css3-transform(translate(-100%, 0));
+
+  &.cradmin-legacy-floating-fullsize-iframe-wrapper-show {
+    .css3-transform(translate(0, 0));
+  }
+
+  &.cradmin-legacy-floating-fullsize-iframe-wrapper-with-navbar {
+    .cradmin-legacy-floating-fullsize-content {
+      .cradmin-legacy-floating-fullsize-iframe-navbar {
+        display: block;
+      }
+      .cradmin-legacy-floating-fullsize-iframe-inner {
+        top: @cradmin-floating-iframe-navbar-height;
+      }
+    }
+  }
+
+
+  a.cradmin-legacy-floating-fullsize-iframe-closebutton  {
+    position: absolute;
+    display: block;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    text-align: center;
+    z-index: (@cradmin-floating-iframe-zindex + 2);
+    width: @cradmin-floating-iframe-closebutton-width;
+    background: @cradmin-floating-iframe-closebutton-bg;
+    color: @cradmin-floating-iframe-closebutton-color;
+    text-decoration: none;
+    .css3-transition(all @cradmin-floating-iframe-closebutton-transition-duration ease-in-out);
+
+    .cradmin-legacy-floating-fullsize-iframe-closebutton-icon {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      margin-top: -(@cradmin-floating-iframe-closebutton-icon-font-size/2);
+      font-size: @cradmin-floating-iframe-closebutton-icon-font-size;
+    }
+
+    &:hover, &:focus {
+      background: @cradmin-floating-iframe-closebutton-hover-bg;
+      color: @cradmin-floating-iframe-closebutton-hover-color;
+      text-decoration: none;
+    }
+  }
+
+  .cradmin-legacy-floating-fullsize-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: @cradmin-floating-iframe-closebutton-width;
+    bottom: 0;
+    background: @cradmin-floating-iframe-content-bg;
+
+    .cradmin-legacy-floating-fullsize-loadspinner {
+      color: #ccc;
+      font-size: 50px;
+      text-align: center;
+      padding-top: 55px;
+      background: @cradmin-floating-iframe-backdrop-bg;
+      z-index: (@cradmin-floating-iframe-zindex + 1);
+    }
+
+    .cradmin-legacy-floating-fullsize-iframe-navbar {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: (@cradmin-floating-iframe-zindex + 1);
+      nav.cradmin-legacy-menu {
+        .cradminLegacyMenuVertical(
+          @cradmin-floating-iframe-navbar-height,
+          @cradmin-menu-vertical-desktop-item-padding,
+          @cradmin-floating-iframe-navbar-height);
+      }
+    }
+
+    .cradmin-legacy-floating-fullsize-iframe-inner {
+      overflow: hidden;
+      //-webkit-overflow-scrolling: touch;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+
+      //.style-scrollbar(@cradmin-floating-iframe-scrollbar-width,
+      //  @cradmin-floating-iframe-scrollbar-track-bg,
+      //  @cradmin-floating-iframe-scrollbar-thumb-bg,
+      //  @cradmin-floating-iframe-scrollbar-thumb-hover-bg);
+
+      iframe {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        //height: 10px; // NOTE: This is just the default until the javascript resizes this
+        height: 100%;
+        width: 100%;
+        border: none;
+      }
+    }
+  }
+
+
+  &.cradmin-legacy-modelchoicefield-iframe-wrapper {
+    .cradmin-legacy-floating-fullsize-content {
+      background: @cradmin-bodybg;
+    }
+  }
+}
+
+//#cradmin_legacy_bodycontentwrapper.cradmin-legacy-floating-fullsize-iframe-bodycontentwrapper {
+  //.css3-transition(all @cradmin-floating-iframe-showhide-transition-duration ease-in-out);
+  //position: relative;
+  //&.cradmin-legacy-floating-fullsize-iframe-bodycontentwrapper-push {
+    //.css3-transform(translate((100%-@cradmin-floating-iframe-closebutton-width), 0));
+    //.css3-transform(translate((60%), 0));
+  //}
+//}
+
+
+body.cradmin-legacy-formview-page {
+  @media (min-width: @screen-md-min) {
+    .cradmin-legacy-floating-fullsize-iframe-wrapper {
+      .css3-transform(translate(-100%, 0));
+
+      &.cradmin-legacy-floating-fullsize-iframe-wrapper-show {
+        .css3-transform(translate(0, 0));
+      }
+
+      a.cradmin-legacy-floating-fullsize-iframe-closebutton {
+        width: auto;
+        left: (@screen-md-min - 70px);
+        text-align: left;
+        .cradmin-legacy-floating-fullsize-iframe-closebutton-icon {
+          padding-left: 20px;
+        }
+      }
+
+      .cradmin-legacy-floating-fullsize-content {
+        top: 0;
+        left: 0;
+        width: (@screen-md-min - 70px);
+        right: auto;
+      }
+    }
+
+    //#cradmin_legacy_bodycontentwrapper.cradmin-legacy-floating-fullsize-iframe-bodycontentwrapper {
+      //&.cradmin-legacy-floating-fullsize-iframe-bodycontentwrapper-push {
+      //  .css3-transform(translate((@screen-sm-min - 70px), 0));
+      //}
+    //}
+  }
+
+  @media (min-width: @screen-lg-min) {
+    .cradmin-legacy-floating-fullsize-iframe-wrapper {
+      a.cradmin-legacy-floating-fullsize-iframe-closebutton {
+        left: (@screen-lg-min - 70px);
+      }
+
+      .cradmin-legacy-floating-fullsize-content {
+        width: (@screen-lg-min - 70px);
+      }
+    }
+  }
+}
+
+
+//.cradmin-legacy-within-iframe {
+//  .style-scrollbar(@cradmin-floating-iframe-scrollbar-width,
+//    @cradmin-floating-iframe-scrollbar-track-bg,
+//    @cradmin-floating-iframe-scrollbar-thumb-bg,
+//    @cradmin-floating-iframe-scrollbar-thumb-hover-bg);
+//}

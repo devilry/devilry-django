@@ -1,0 +1,159 @@
+/* Tabs
+
+http://simplyaccessible.com/article/danger-aria-tabs/
+
+Example: {type: isolated} Simple example
+
+    <nav class="tabs__tab-list">
+        <a class="tabs__tab  tabs__tab--active"
+           href="#ipa"
+           id="tab-ipa"
+           data-ievv-jsbase-widget="cradmin-tab-button">
+            India Pale Ale (IPA)
+        </a>
+        <a class="tabs__tab"
+           href="#gueuze"
+           id="tab-gueuze"
+           data-ievv-jsbase-widget="cradmin-tab-button">
+            Gueuze
+        </a>
+        <a class="tabs__tab"
+           href="#imperial-stout"
+           id="tab-imperial-stout"
+           data-ievv-jsbase-widget="cradmin-tab-button">
+            Imperial Stout
+        </a>
+    </nav>
+
+    <div class="tabs__panel"
+             id="ipa"
+             data-ievv-jsbase-widget="cradmin-tab-panel">
+        <div class="container">
+            <h2>India Pale Ale (IPA)</h2>
+            ...
+        </div>
+    </div>
+    <div class="tabs__panel"
+             id="gueuze"
+             data-ievv-jsbase-widget="cradmin-tab-panel">
+        <div class="container">
+            <h2>Gueuze</h2>
+            ...
+        </div>
+    </div>
+    <div class="tabs__panel"
+             id="imperial-stout"
+             data-ievv-jsbase-widget="cradmin-tab-panel">
+        <div class="container">
+            <h2>Imperial Stout</h2>
+            ...
+        </div>
+    </div>
+
+
+Example: {type: isolated} Styling using sections
+
+    <div class="adminui-page-section">
+        <div class="container">
+            <nav class="tabs__tab-list">
+                <a class="tabs__tab  tabs__tab--active"
+                   href="#ipa"
+                   id="tab-ipa"
+                   data-ievv-jsbase-widget="cradmin-tab-button">
+                    India Pale Ale (IPA)
+                </a>
+                <a class="tabs__tab"
+                   href="#gueuze"
+                   id="tab-gueuze"
+                   data-ievv-jsbase-widget="cradmin-tab-button">
+                    Gueuze
+                </a>
+                <a class="tabs__tab"
+                   href="#imperial-stout"
+                   id="tab-imperial-stout"
+                   data-ievv-jsbase-widget="cradmin-tab-button">
+                    Imperial Stout
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <section class="adminui-page-section  tabs__panel"
+             id="ipa"
+             data-ievv-jsbase-widget="cradmin-tab-panel">
+        <div class="container">
+            <h2>India Pale Ale (IPA)</h2>
+            ...
+        </div>
+    </section>
+    <section class="adminui-page-section  tabs__panel"
+             id="gueuze"
+             data-ievv-jsbase-widget="cradmin-tab-panel">
+        <div class="container">
+            <h2>Gueuze</h2>
+            ...
+        </div>
+    </section>
+    <section class="adminui-page-section  tabs__panel"
+             id="imperial-stout"
+             data-ievv-jsbase-widget="cradmin-tab-panel">
+        <div class="container">
+            <h2>Imperial Stout</h2>
+            ...
+        </div>
+    </section>
+
+Styleguide components.tabs
+*/
+
+.tabs {
+    &__tab-list {
+        position: relative;
+        display: flex;
+        border-bottom: $border-width solid color(secondary, dark);
+
+        &:after {
+            @include full-width;
+            content: '';
+            position: absolute;
+            display: block;
+            height: $border-width;
+            bottom: -($border-width);
+            background-color: color(secondary, dark);
+        }
+    }
+
+    &__tab {
+        @include font(base, bold);
+        display: block;
+        text-align: center;
+        padding: vertical-space() $spacing;
+        border: 0;
+        border-top-left-radius: $border-radius;
+        border-top-right-radius: $border-radius;
+        margin-right: $border-width;
+
+        &:hover,
+        &:focus {
+            color: $color-text;
+            background-color: color(neutral);
+        }
+
+        &--active {
+            &,
+            &:hover,
+            &:focus {
+                color: color-contrast(color(secondary, dark));
+                background-color: color(secondary, dark);
+            }
+        }
+    }
+
+    &__panel {
+        display: none;
+
+        &--active {
+            display: block;
+        }
+    }
+}

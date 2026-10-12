@@ -1,0 +1,20 @@
+{% extends "django_cradmin/viewhelpers/formview/standalone_form_view.django.html" %}
+
+{% load i18n %}
+
+{% block subtitle %}
+    {% trans "Find your account" %}
+{% endblock subtitle %}
+
+{% block page-cover-title %}
+    {% trans "Find your account" %}
+{% endblock page-cover-title %}
+
+{% block page-cover-content %}
+    {{ block.super }}
+    <p>{% trans "Type in your email-address" %}</p>
+{% endblock page-cover-content %}
+
+{% block content %}
+    {{ block.super }}
+{% endblock content %}

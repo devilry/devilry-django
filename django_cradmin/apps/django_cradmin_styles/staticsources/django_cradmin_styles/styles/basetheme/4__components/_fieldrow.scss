@@ -1,0 +1,93 @@
+/* Field row
+
+**NOTE:** This should probably replace the splits in base.form.
+
+Example: {type: isolated}
+    <div class="container">
+        <div class="fieldrow">
+            <label class="fieldrow__column">
+                First name
+                <input type="text" class="input input--outlined">
+            </label>
+            <label class="fieldrow__column">
+                Last name
+                <input type="text" class="input input--outlined">
+            </label>
+        </div>
+        <div class="fieldrow">
+            <label class="fieldrow__column fieldrow__column--xtight">
+                Postcode
+                <input type="text" class="input input--outlined">
+            </label>
+            <label class="fieldrow__column fieldrow__column--wide">
+                City
+                <input type="text" class="input input--outlined">
+            </label>
+        </div>
+        <div class="fieldrow">
+            <label class="fieldrow__column fieldrow__column--xtight">
+                xtight
+                <input type="text" class="input input--outlined">
+            </label>
+            <label class="fieldrow__column fieldrow__column--tight">
+                tight
+                <input type="text" class="input input--outlined">
+            </label>
+            <label class="fieldrow__column">
+                default
+                <input type="text" class="input input--outlined">
+            </label>
+            <label class="fieldrow__column fieldrow__column--wide">
+                wide
+                <input type="text" class="input input--outlined">
+            </label>
+            <label class="fieldrow__column fieldrow__column--xwide">
+                xwide
+                <input type="text" class="input input--outlined">
+            </label>
+        </div>
+    </div>
+
+Styleguide components.fieldrow
+*/
+
+.fieldrow {
+    display: block;
+    @include min-width(md) {
+        display: flex;
+        align-items: stretch;
+        flex-flow: row;
+        width: 100%;
+    }
+
+    &__column {
+        @include min-width(md) {
+            flex: 3 3 0;
+
+            margin-left: $spacing--small;
+            margin-right: $spacing--small;
+            &:first-child {
+                margin-left: 0;
+            }
+            &:last-child {
+                margin-right: 0;
+            }
+
+            &--xtight {
+                flex: 1 1 0;
+            }
+
+            &--tight {
+                flex: 2 2 0;
+            }
+
+            &--wide {
+                flex: 4 4 0;
+            }
+
+            &--xwide {
+                flex: 5 5 0;
+            }
+        }
+    }
+}

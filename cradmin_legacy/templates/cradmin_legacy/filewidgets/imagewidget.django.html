@@ -1,0 +1,45 @@
+{% load i18n %}
+{% load cradmin_legacy_image_tags %}
+{% load cradmin_legacy_icon_tags %}
+
+<div class="cradmin-legacy-imagewidget cradmin-legacy-filewidget {% if clearable %}cradmin-legacy-filewidget-clearable{% endif %}"
+        cradmin-legacy-image-preview
+        ng-controller="CradminFileFieldController">
+    <div class="cradmin-legacy-imagewidget-preview-and-clear"
+            ng-show="cradmin_filefield_has_value">
+        <div class="cradmin-legacy-imagewidget-preview-and-clear-inner">
+            {% if imageurl %}
+                <img src="{% cradmin_transform_image_using_imagetype imageurl=imageurl imagetype=preview_imagetype fallbackoptions=preview_fallback_options %}"
+                     cradmin-legacy-image-preview-img
+                     style="{{ preview_css_styles }}">
+            {% else %}
+                {# Used for the preview - hidden before we have a preview #}
+                <img cradmin-legacy-image-preview-img
+                     style="{{ preview_css_styles }}">
+            {% endif %}
+
+            {% if clearable %}
+                <div class="cradmin-legacy-filewidget-clear">
+                    <input type="hidden" name="{{ clear_checkbox_name }}"
+                           ng-value="cradmin_filefield_clearcheckbox_value">
+                    <button type="button" class="btn btn-danger btn-sm"
+                            ng-click="cradminClearFileField()">
+                        <span class="sr-only">{% trans "Remove image" %}</span>
+                        <span class="{% cradmin_icon 'x' %}"></span>
+                    </button>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="cradmin-legacy-filewidget-field-and-overlay-wrapper" cradmin-legacy-filefield-overlay>
+        {% include "django/forms/widgets/input.html" %}
+        <a class="btn btn-default cradmin-legacy-filewidget-fieldoverlay" href="#">
+            {% if imageurl %}
+                {% trans "Replace image ..." %}
+            {% else %}
+                {% trans "Select an image ..." %}
+            {% endif %}
+        </a>
+    </div>
+</div>

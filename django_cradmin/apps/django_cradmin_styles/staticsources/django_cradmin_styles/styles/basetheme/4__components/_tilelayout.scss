@@ -1,0 +1,270 @@
+/* TileLayout
+
+Example: Baisc Tile layout
+    <nav class="tilelayout">
+        <div class="tilelayout__content">
+            <a href="" class="tilelayout__item  tilelayout__item--wide">
+                <h2 class="tilelayout__title">Duis mollis, est non commodo luctus</h2>
+                <p class="tilelayout__description">– Duis mollis, est non commodo luctus</p>
+            </a>
+
+            <a href="" class="tilelayout__item  tilelayout__item--large  tilelayout__item--image"
+               style="background-image: url('http://media.djangopony.com/img/magic-pony-django-wallpaper.png')">
+                <h2 class="tilelayout__title">luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Maecenas faucibus mollis interdum.</h2>
+                <p class="tilelayout__description">luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit</p>
+            </a>
+
+            <a href="" class="tilelayout__item  tilelayout__item--purple">
+                <h2 class="tilelayout__title">luctus, nisi erat porttitor ligula, eget lacinia odio sem nec</h2>
+                <p class="tilelayout__description">luctus, nisi erat porttitor ligula, eget lacinia odio sem nec eli</p>
+            </a>
+
+            <a href="" class="tilelayout__item  tilelayout__item--green">
+                <h2 class="tilelayout__title">– luctus, nisi erat porttitor l</h2>
+                <p class="tilelayout__description">luctus, nisi erat portt</p>
+            </a>
+
+            <a href="" class="tilelayout__item  tilelayout__item--medium  tilelayout__item--image"
+               style="background-image: url('http://media.djangopony.com/img/magic-pony-django-wallpaper.png')">
+                <h2 class="tilelayout__title">– luctus, nisi erat porttitor ligula, eget</h2>
+                <p class="tilelayout__description">luctus, nisi er</p>
+            </a>
+
+            <a href="" class="tilelayout__item  tilelayout__item--image"
+               style="background-image: url('http://media.djangopony.com/img/magic-pony-django-wallpaper.png')">
+                <h2 class="tilelayout__title">– luctus, nisi erat porttitor ligula</h2>
+                <p class="tilelayout__description">luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Maecenas faucibus mollis interdum.</p>
+            </a>
+
+            <a href="" class="tilelayout__item  tilelayout__item--large  tilelayout__item--image"
+               style="background-image: url('http://media.djangopony.com/img/magic-pony-django-wallpaper.png')">
+                <h2 class="tilelayout__title">luctus, nisi erat porttitor ligula, eget lacinia odio sem nec el</h2>
+                <p class="tilelayout__description">luctus, nisi erat porttitor ligul</p>
+            </a>
+
+            <a href="" class="tilelayout__item">
+                <h2 class="tilelayout__title">luctus, nisi erat porttitor ligula</h2>
+                <p class="tilelayout__description">luctus, nisi erat porttito</p>
+            </a>
+
+            <a href="" class="tilelayout__item tilelayout__item--blue">
+                <h2 class="tilelayout__title">– luctus, nisi erat porttitor ligula</h2>
+                <p class="tilelayout__description">luctus, nisi erat</p>
+            </a>
+
+            <a href="" class="tilelayout__item  tilelayout__item--green">
+                <h2 class="tilelayout__title">– luctus, nisi erat porttito</h2>
+                <p class="tilelayout__description">luctus, nisi erat portt</p>
+            </a>
+        </div>
+    </nav>
+
+
+Styleguide components.tilelayout
+ */
+
+
+@mixin tilelayout-color-variant($color) {
+    background-color: $color;
+    &,
+    &:hover,
+    &:focus {
+        color: color-contrast($color);
+    }
+}
+
+.tilelayout {
+    $this: &;
+    padding-top: vertical-space($spacing);
+    padding-bottom: vertical-space($spacing);
+    // background-color: color(secondary, dark);
+    background-color: $color-light;
+
+    @include min-width(md) {
+        margin-top: vertical-space($spacing--large, 2);
+        margin-bottom: vertical-space($spacing--large, 2);
+        padding-top: vertical-space($spacing--large, 2);
+        padding-bottom: vertical-space($spacing--large, 2);
+    }
+
+    &--no-wrapping-layout {
+        padding: 0 $border-width--small * 2;
+        margin: 0;
+
+        @include min-width(md) {
+            padding: 0 $border-width--small * 2;
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        #{$this}__content {
+            padding: 0;
+            max-width: none;
+        }
+    }
+
+    &__content {
+        // @include container(xwide);
+        @include container(xwide);
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        grid-gap: vertical-space($spacing--small);
+
+        @include min-width(xs) {
+            padding: 0 $spacing--small;
+        }
+
+        @include min-width(md) {
+            grid-template-columns: repeat(2, 1fr);
+            padding: 0 $spacing--small;
+        }
+
+        @include min-width(lg) {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+
+    &__title {
+        position: relative;
+        margin: 0 0 vertical-space(1);
+    }
+
+    &__description {
+        @include font-size(small);
+        position: relative;
+        margin: 0;
+    }
+
+    &__item {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: flex-start;
+        min-height: vertical-space(260px);
+        padding: vertical-space($spacing);
+        border: 0;
+        border-radius: $border-radius;
+        color: $color-light;
+        background-color: color(primary);
+        overflow: hidden;
+
+        transition: transform 100ms ease-in;
+
+        &:hover,
+        &:focus {
+            color: $color-light;
+            box-shadow: $shadow-level-1;
+            will-change: transform;
+            transform: translateY(-2px);
+            transition: transform 200ms $swift-out;
+        }
+
+        &:active {
+            transform: none;
+        }
+
+        &--wide {
+            @include min-width(lg) {
+                grid-column: span 4;
+            }
+
+            #{$this}__title {
+                max-width: 1000px;
+                hyphens: none;
+
+                @include min-width(lg) {
+                    @include font-size(xxxlarge);
+                }
+            }
+
+            #{$this}__description {
+                max-width: 1000px;
+            }
+        }
+
+        &--large {
+            @include min-width(lg) {
+                grid-column: span 2;
+                grid-row: span 2;
+            }
+
+            #{$this}__title {
+                @include min-width(lg) {
+                    @include font-size(xxxlarge);
+                }
+            }
+        }
+
+        &--medium {
+            @include min-width(lg) {
+                grid-column: span 2;
+            }
+        }
+
+        &--image {
+            position: relative;
+            background-size: cover;
+            text-shadow: 0 2px 20px rgba(black, 0.4);
+
+            &:before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                opacity: 0.6;
+                background-image: linear-gradient(rgba(black, 0.6), rgba(black, 1));
+
+                @supports (mix-blend-mode: multiply) {
+                    opacity: 0.5;
+                    mix-blend-mode: multiply;
+                }
+            }
+        }
+
+        &--primary {
+            @include tilelayout-color-variant(color(primary))
+        }
+        &--primary-dark {
+            @include tilelayout-color-variant(color(primary, dark))
+        }
+        &--secondary {
+            @include tilelayout-color-variant(color(secondary))
+        }
+        &--secondary-dark {
+            @include tilelayout-color-variant(color(secondary, dark))
+        }
+        &--neutral {
+            @include tilelayout-color-variant(color(neutral))
+        }
+        &--neutral-dark {
+            @include tilelayout-color-variant(color(neutral, dark))
+        }
+        &--warning {
+            @include tilelayout-color-variant(color(warning))
+        }
+        &--warning-dark {
+            @include tilelayout-color-variant(color(warning, dark))
+        }
+        &--success {
+            @include tilelayout-color-variant(color(success))
+        }
+        &--success-dark {
+            @include tilelayout-color-variant(color(success, dark))
+        }
+        &--info {
+            @include tilelayout-color-variant(color(info))
+        }
+        &--info-dark {
+            @include tilelayout-color-variant(color(info, dark))
+        }
+        &--link {
+            @include tilelayout-color-variant($color-links)
+        }
+    }
+}
+
+.tilelayout-edge-to-edge-container {
+    padding: 0 $spacing--small;
+}

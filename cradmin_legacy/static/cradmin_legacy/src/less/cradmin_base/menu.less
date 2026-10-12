@@ -1,0 +1,167 @@
+nav.cradmin-legacy-menu {
+  background: @cradmin-menu-bg;
+
+  .cradmin-legacy-menu-content {
+    display: none;
+    background: @cradmin-menu-bg;
+    &.cradmin-legacy-menu-content-display {
+      display: block;
+    }
+
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      li.cradmin-legacy-menu-item {
+        .cradmin-legacy-menu-activeitemwrapper {
+          font-size: @font-size-base;
+          margin: 0;
+          padding: 0;
+          border: none;
+          line-height: @line-height-base;
+        }
+
+        a {
+          display: block;
+          color: @cradmin-menu-color;
+          padding: 10px 16px 10px 16px;
+          transition: @cradmin-menu-hover-transition;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+          line-height: @line-height-base;
+          text-decoration: none;
+          &:hover {
+            text-decoration: none;
+            color: @cradmin-menu-hover-color;
+          }
+        }
+
+        &.cradmin-legacy-menu-activeitem {
+          .cradmin-legacy-menu-activeitemwrapper > a,
+          & > a {
+            color: @cradmin-menu-active-color;
+            font-weight: bold;
+            text-decoration: none;
+          }
+        }
+
+        &.cradmin-legacy-menu-expandeditem {
+          & > a {
+            color: @cradmin-menu-expandeditem-color;
+          }
+
+          .cradmin-legacy-menu-childitems ul {
+            padding-left: 15px;
+          }
+        }
+      }
+    }
+  }
+
+  .cradmin-legacy-menu-mobileheader {
+    .cradmin-legacy-menu-mobiletoggle {
+      display: block;
+      text-align: center;
+      width: 100%;
+      border: none;
+      text-transform: uppercase;
+      font-weight: bold;
+      line-height: @cradmin-menu-mobiletoggle-height;
+      height: @cradmin-menu-mobiletoggle-height;
+
+      border-radius: 0;
+      cursor: pointer;
+      text-decoration: none;
+      color: @cradmin-menu-mobiletoggle-color;
+      background-color: @cradmin-menu-mobiletoggle-bg;
+
+      &:hover,
+      &.cradmin-legacy-menu-mobile-toggle-button-expanded {
+        color: @cradmin-menu-mobiletoggle-hover-color;
+        background-color: @cradmin-menu-mobiletoggle-hover-bg;
+        outline: none;
+        text-decoration: none;
+      }
+    }
+  }
+
+  @media (min-width: @screen-md-min) {
+    .cradmin-legacy-menu-mobileheader {
+      display: none;
+    }
+    .cradmin-legacy-menu-content {
+      display: block;
+    }
+  }
+}
+
+nav#cradmin_legacy_mainmenu.cradmin-legacy-menu {
+  @media (min-width: @screen-md-min) {
+    .cradmin-legacy-menu-content {
+      ul {
+        &.cradmin-legacy-menu-content-header {
+          background: @cradmin-mainmenu-header-bg;
+        }
+        &.cradmin-legacy-menu-content-footer {
+          background: @cradmin-mainmenu-footer-bg;
+        }
+      }
+    }
+  }
+}
+
+.cradminLegacyMenuVertical (@desktop-height, @desktop-itempadding, @mobiletoggle-height) {
+  .cradmin-legacy-menu-mobileheader {
+    .cradmin-legacy-menu-mobiletoggle {
+      line-height: @mobiletoggle-height;
+      height: @mobiletoggle-height;
+    }
+  }
+
+  @media (min-width: @screen-md-min) {
+    height: @desktop-height;
+
+    .cradmin-legacy-menu-content {
+      display: block;
+      height: @desktop-height;
+
+      ul {
+        display: inline-block;
+        height: @desktop-height;
+        li.cradmin-legacy-menu-item {
+          display: inline-block;
+          height: @desktop-height;
+          a {
+            height: @desktop-height;
+            line-height: @desktop-height;
+            display: block;
+            padding: @desktop-itempadding;
+          }
+          &.cradmin-legacy-menu-activeitem {
+            .cradmin-legacy-menu-activeitemwrapper > a,
+            & > a {
+              font-weight: normal;
+            }
+          }
+        }
+
+        &.cradmin-legacy-menu-content-footer {
+          margin: 0;
+          float: right;
+        }
+      }
+    }
+  }
+}
+
+nav.cradmin-legacy-menu.cradmin-legacy-menu-vertical {
+  .cradminLegacyMenuVertical(
+    @cradmin-menu-vertical-desktop-height,
+    @cradmin-menu-vertical-desktop-item-padding,
+    @cradmin-menu-mobiletoggle-height);
+}
+
+#cradmin_legacy_mainmenu_backdrop {
+  display: none;
+}

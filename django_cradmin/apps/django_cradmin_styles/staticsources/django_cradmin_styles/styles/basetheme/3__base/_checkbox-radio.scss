@@ -1,0 +1,414 @@
+/* Checkbox
+
+### These are the modifiers:
+- `inline` - Removes margin underneath so it flows better with text
+- `block` - Make it 100% width
+- `light` - Make it light, only use on darker backgrounds
+- `spaceless` - Remove spaces to the right and underneath
+
+Example: Checkbox default
+    <label class="checkbox">
+        <input type="checkbox">
+        <span class="checkbox__control-indicator"></span>
+        Yes
+    </label>
+    <label class="checkbox">
+        <input type="checkbox">
+        <span class="checkbox__control-indicator"></span>
+        No
+    </label>
+
+Example: Checkbox light
+    <label class="checkbox  checkbox--light">
+        <input type="checkbox">
+        <span class="checkbox__control-indicator"></span>
+        Yes
+    </label>
+    <label class="checkbox  checkbox--light">
+        <input type="checkbox">
+        <span class="checkbox__control-indicator"></span>
+        No
+    </label>
+
+Example: Checkbox block
+    <label class="checkbox  checkbox--block">
+        <input type="checkbox">
+        <span class="checkbox__control-indicator"></span>
+        Yes
+    </label>
+    <label class="checkbox  checkbox--block">
+        <input type="checkbox">
+        <span class="checkbox__control-indicator"></span>
+        No
+    </label>
+
+Example: Checkbox inline
+    <p>
+        Look, I'm mixed with
+        <label class="checkbox  checkbox--inline">
+            <input type="checkbox">
+            <span class="checkbox__control-indicator"></span>
+            Yes
+        </label>
+        <label class="checkbox  checkbox--inline">
+            <input type="checkbox">
+            <span class="checkbox__control-indicator"></span>
+            No
+        </label>
+        text
+    </p>
+
+Example: {type: isolated} In a group with label and aria
+    <p class="label" id="id_label">Which of these are true?</p>
+    <label class="checkbox  checkbox--block" id="id_choice1_label">
+        <input type="checkbox" name="thechoices"
+            aria-labelledby="id_label id_choice1_label">
+        <span class="checkbox__control-indicator"></span>
+        The earth is round
+    </label>
+    <label class="checkbox  checkbox--block" id="id_choice2_label">
+        <input type="checkbox" name="thechoices"
+            aria-labelledby="id_label id_choice2_label">
+        <span class="checkbox__control-indicator"></span>
+        The earth is a disc that rides on the back of a giant turtle
+    </label>
+    <label class="checkbox  checkbox--block" id="id_choice3_label">
+        <input type="checkbox" name="thechoices"
+            aria-labelledby="id_label id_choice3_label">
+        <span class="checkbox__control-indicator"></span>
+        Armageddon is coming
+    </label>
+
+
+Example: Disabled
+    <label class="checkbox  checkbox--block">
+        <input type="checkbox">
+        <span class="checkbox__control-indicator"></span>
+        Enabled 1
+    </label>
+    <label class="checkbox  checkbox--block">
+        <input type="checkbox" disabled checked>
+        <span class="checkbox__control-indicator"></span>
+        Disabled 1
+    </label>
+    <label class="checkbox  checkbox--block">
+        <input type="checkbox">
+        <span class="checkbox__control-indicator"></span>
+        Enabled 2
+    </label>
+    <label class="checkbox  checkbox--block">
+        <input type="checkbox" disabled>
+        <span class="checkbox__control-indicator"></span>
+        Disabled 2
+    </label>
+
+
+Styleguide form.4:checkbox
+*/
+
+/* Radio
+
+### These are the modifiers:
+- `inline` - Removes margin underneath so it flows better with text
+- `block` - Make it 100% width
+- `light` - Make it light, only use on darker backgrounds
+- `spaceless` - Remove spaces to the right and underneath
+
+Example: Radio default
+    <label class="radio">
+        <input type="radio" name="styleguide">
+        <span class="radio__control-indicator"></span>
+        Yes
+    </label>
+    <label class="radio">
+        <input type="radio" name="styleguide">
+        <span class="radio__control-indicator"></span>
+        No
+    </label>
+
+Example: Radio light
+    <label class="radio  radio--light">
+        <input type="radio" name="styleguide">
+        <span class="radio__control-indicator"></span>
+        Yes
+    </label>
+    <label class="radio  radio--light">
+        <input type="radio" name="styleguide">
+        <span class="radio__control-indicator"></span>
+        No
+    </label>
+
+Example: Radio block
+    <label class="radio  radio--block">
+        <input type="radio" name="styleguide">
+        <span class="radio__control-indicator"></span>
+        Yes
+    </label>
+    <label class="radio  radio--block">
+        <input type="radio" name="styleguide">
+        <span class="radio__control-indicator"></span>
+        No
+    </label>
+
+Example: Radio inline
+    <p>
+        Look, I'm mixed with
+        <label class="radio  radio--inline">
+            <input type="radio" name="styleguide">
+            <span class="radio__control-indicator"></span>
+            Yes
+        </label>
+        <label class="radio  radio--inline">
+            <input type="radio" name="styleguide">
+            <span class="radio__control-indicator"></span>
+            No
+        </label>
+        text
+    </p>
+
+
+Example: {type: isolated} In a group with label and aria
+    <div role="radiogroup" aria-describedby="id_label">
+        <p class="label" id="id_label">Are you good?</p>
+        <label class="radio  radio--block">
+            <input type="radio" name="myradio">
+            <span class="radio__control-indicator"></span>
+            Yes
+        </label>
+        <label class="radio  radio--block">
+            <input type="radio" name="myradio">
+            <span class="radio__control-indicator"></span>
+            No
+        </label>
+    </div>
+
+
+Example: {type: isolated} With label and aria - without a wrapper element
+    <p class="label" id="id_label">Are you good?</p>
+    <label class="radio  radio--block" id="id_myradio1_label">
+        <input type="radio" name="myradio"
+            aria-labelledby="id_label id_myradio1_label">
+        <span class="radio__control-indicator"></span>
+        Yes
+    </label>
+    <label class="radio  radio--block" id="id_myradio2_label">
+        <input type="radio" name="myradio"
+            aria-labelledby="id_label id_myradio2_label">
+        <span class="radio__control-indicator"></span>
+        No
+    </label>
+
+
+Example: Disabled
+    <label class="radio  radio--block">
+        <input type="radio" name="styleguide">
+        <span class="radio__control-indicator"></span>
+        Enabled option 1
+    </label>
+    <label class="radio  radio--block">
+        <input type="radio" name="styleguide">
+        <span class="radio__control-indicator"></span>
+        Enabled option 2
+    </label>
+    <label class="radio  radio--block">
+        <input type="radio" name="styleguide" disabled>
+        <span class="radio__control-indicator"></span>
+        Disabled option
+    </label>
+
+Example: Radio button variant
+    <div class="buttonbar">
+        <label class="radio radio--button buttonbar__button buttonbar__button--primary-fill">
+            <input type="radio" name="styleguide">
+            Yes
+        </label>
+        <label class="radio radio--button buttonbar__button buttonbar__button--primary">
+            <input type="radio" name="styleguide">
+            maybe
+        </label>
+        <label class="radio radio--button buttonbar__button buttonbar__button--primary">
+            <input type="radio" name="styleguide">
+            No
+        </label>
+    </div>
+
+Styleguide form.4:radio
+*/
+.radio,
+.checkbox {
+    @extend %user-select-none; // This makes it respond faster for some reason
+
+    position: relative;
+    display: inline-block;
+    padding-left: $indention;
+    margin-bottom: $vertical-rythm;
+    margin-right: $spacing;
+    cursor: pointer;
+    clear: left;
+
+    input[type='radio'],
+    input[type='checkbox'] {
+        position: absolute;
+        opacity: 0;
+        z-index: -1; // Put the input behind the label so it doesn't overlay text
+
+        // Checked state
+        &:checked ~ .radio__control-indicator,
+        &:checked ~ .checkbox__control-indicator {
+            &:before {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        &:focus ~ .checkbox__control-indicator,
+        &:focus ~ .radio__control-indicator {
+            border-color: color(primary, dark);
+        }
+
+        &:disabled {
+            & ~ .radio__control-indicator,
+            & ~ .checkbox__control-indicator {
+                border-color: color(neutral);
+                background-color: color(neutral, light);
+            }
+        }
+    }
+
+    &:hover {
+        .checkbox__control-indicator,
+        .radio__control-indicator {
+            border-color: color(primary);
+        }
+    }
+
+    &__control-indicator {
+        position: absolute;
+        display: block;
+        user-select: none;
+        top: -0.1em;
+        left: 0;
+        width: $unit * 4;
+        height: $unit * 4;
+
+        background-color: $color-light;
+        border: $border-width solid color(neutral);
+
+        @include min-width(xs) {
+            top: 0.05em;
+        }
+
+
+        &:before {
+            content: '';
+
+            position: absolute;
+            top: 50%;
+            left: 50%;
+
+            opacity: 0;
+            transform: scale(0);
+            transition: transform 100ms $swift-out;
+        }
+    }
+
+    &--inline {
+        margin-bottom: 0;
+    }
+
+    &--spaceless {
+        margin-right: 0;
+        margin-bottom: 0;
+    }
+
+    &--light {
+        .radio__control-indicator,
+        .checkbox__control-indicator {
+            border: 0;
+            @include cricon-color-primary();
+        }
+
+        &:hover {
+            .radio__control-indicator,
+            .checkbox__control-indicator {
+                background-color: color(secondary, dark);
+                @include cricon-color-light();
+            }
+
+            .radio__control-indicator:before {
+                background-color: $color-light;
+            }
+        }
+
+
+        input[type='radio']:focus ~ .radio__control-indicator,
+        input[type='checkbox']:focus ~ .checkbox__control-indicator {
+            box-shadow: 0 0 0 $border-width rgba($color-light, 0.4);
+        }
+    }
+
+    &--block {
+        display: block;
+    }
+
+    .select {
+        margin-top: -5px;
+        margin-bottom: -5px;
+    }
+}
+
+.checkbox {
+    padding-left: $indention;
+
+    &__control-indicator {
+        top: -0.1em;
+        width: $unit * 5;
+        height: $unit * 5;
+        line-height: 1;
+
+        // When $border-radius it too high, checkboxes look like
+        // radio buttons unless we do something like this
+        border-radius: min($border-radius, 5px);
+
+        border: $border-width solid color(neutral);
+        background-color: $color-light;
+
+        @include min-width(xs) {
+            top: -0.1em;
+        }
+
+        &:before {
+            @include cricon-icon-checkbox-check();
+        }
+    }
+
+    &--light {
+        .checkbox__control-indicator {
+            background-color: $color-light;
+        }
+    }
+}
+
+.radio {
+    $this: &;
+
+    &__control-indicator {
+        border-radius: 50%;
+
+        &:before {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            margin-left: -4px;
+            margin-top: -4px;
+            background-color: color(secondary, dark);
+        }
+    }
+    &--button {
+        #{$this}__control-indicator {
+            display: none;
+        }
+    }
+}

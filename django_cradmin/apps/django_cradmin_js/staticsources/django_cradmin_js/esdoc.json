@@ -1,0 +1,34 @@
+{
+  "destination": "built_docs",
+  "excludes": [
+    "__tests__.+$",
+    "__mocks__.+$"
+  ],
+  "includes": [
+    "\\.(js|es6|jsx)$"
+  ],
+  "plugins": [
+    {
+      "name": "esdoc-importpath-plugin",
+      "option": {
+        "replaces": [
+          {
+            "from": "^source/",
+            "to": "lib/"
+          },
+          {
+            "from": ".jsx",
+            "to": ""
+          },
+          {
+            "from": ".js",
+            "to": ""
+          }
+        ]
+      }
+    }
+  ],
+  "index": "esdoc/index.md",
+  "source": "source",
+  "title": "django_cradmin javascript"
+}

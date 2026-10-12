@@ -1,0 +1,24 @@
+{% load i18n %}
+{% load cradmin_legacy_tags %}
+
+<div id="id_cradmin_modelmultichoicefieldwrapper_{{ fieldname }}"
+        cradmin-legacy-model-choice-field-wrapper="{{ selectview_url }}"
+        class="cradmin-legacy-modelmultichoicefield-wrapper">
+
+    {% block input %}
+        <input type="{{ rendered_input_type }}" value="{{ fieldvalue }}"
+               id="{{ fieldid }}" name="{{ fieldname }}"
+               cradmin-legacy-model-choice-field-input>
+    {% endblock input %}
+
+    {% block preview %}
+        {% cradmin_render_renderable preview_list %}
+    {% endblock preview %}
+
+    {% block selectbutton %}
+        <button class="btn btn-default" type="button"
+                cradmin-legacy-model-choice-field-changebegin-button>
+            {{ selectbutton_text }}
+        </button>
+    {% endblock selectbutton %}
+</div>

@@ -1,0 +1,12 @@
+{% extends "cradmin_email/html_message_base.django.html" %}
+{% load i18n %}
+{% load cradmin_email_tags %}
+{% block contents %}
+    {% blocktrans with sitename=DJANGO_CRADMIN_SITENAME user=user %}We received a request to reset the password for your {{ sitename }} account, {{ user }}.{% endblocktrans %}<br><br>
+
+    {% trans "If you made this request, click the button below. If you did not make this request, you can ignore this email." %}<br><br>
+
+    {% cradmin_email_primary_buttonlink reset_url %}
+        {% trans "Reset your password" %}
+    {% end_cradmin_email_primary_buttonlink %}
+{% endblock contents %}
