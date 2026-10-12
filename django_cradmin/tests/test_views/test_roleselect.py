@@ -3,9 +3,25 @@ from django.utils.html import format_html
 import htmls
 from unittest import mock
 from django.test import TestCase, RequestFactory
-from mock_django.query import QuerySetMock
 
 from django_cradmin.views.roleselect import RoleSelectView
+
+
+def QuerySetMock(model, *items):
+    """
+    Minimal replacement for ``mock_django.query.QuerySetMock``.
+    """
+    queryset = mock.MagicMock()
+    if model is not None:
+        queryset.model = model
+    queryset.__iter__.side_effect = lambda: iter(items)
+    queryset.__len__.return_value = len(items)
+    queryset.__getitem__.side_effect = lambda index: items[index]
+    queryset.count.return_value = len(items)
+    queryset.exists.return_value = bool(items)
+    queryset.first.return_value = items[0] if items else None
+    queryset.all.return_value = queryset
+    return queryset
 
 
 class TestRoleSelectView(TestCase):

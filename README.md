@@ -141,6 +141,12 @@ to remove all the files.
 ```bash
 source .venv/bin/activate   # enable virtualenv
 pytest devilry
+
+# cradmin_legacy and django_cradmin are not included in the repo, but tests 
+# are run separately to avoid issues with tests being affected by the devilry-settings used.
+# The tests are mostly just kept for history-purposes.
+pytest cradming_legacy
+pytest django_cradmin 
 ```
 
 

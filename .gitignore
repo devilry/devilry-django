@@ -67,3 +67,4 @@ dump.rdb
 # Ignore local test reports (pytest --html=testreport.ignore.html)
 *.ignore.html
 /__pycache__/
+/test_django_media_root/

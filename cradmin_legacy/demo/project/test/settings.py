@@ -40,7 +40,6 @@ INSTALLED_APPS = (
     "cradmin_legacy.apps.cradmin_email.tests.cradmin_email_testapp",
     # Required by django cradmin
     "crispy_forms",
-    "sorl.thumbnail",  # Required by cradmin_imagearchive
     # Demo apps
     "cradmin_legacy.demo.webdemo",
     "cradmin_legacy.demo.polls_demo",
@@ -48,6 +47,14 @@ INSTALLED_APPS = (
     "cradmin_legacy.demo.listfilterdemo",
     "cradmin_legacy.demo.multiselect2demo",
 )
+
+# sorl-thumbnail is optional (only used by cradmin_imagearchive, which Devilry does not use).
+try:
+    import sorl.thumbnail  # noqa: F401
+except ImportError:
+    pass
+else:
+    INSTALLED_APPS += ("sorl.thumbnail",)
 
 MIDDLEWARE = (
     "django.contrib.sessions.middleware.SessionMiddleware",
