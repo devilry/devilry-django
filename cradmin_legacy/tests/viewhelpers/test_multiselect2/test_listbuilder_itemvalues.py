@@ -3,17 +3,14 @@ import json
 import htmls
 from django import test
 
-from cradmin_legacy import python2_compatibility
 from cradmin_legacy.viewhelpers.multiselect2 import listbuilder_itemvalues
-from cradmin_legacy.python2_compatibility import mock
+from unittest import mock
 
 
 class TestItemValue(test.TestCase):
     def test_title(self):
         mockvalue = mock.MagicMock()
         mockvalue.__str__.return_value = "testvalue"
-        if python2_compatibility.is_python2():
-            mockvalue.__unicode__.return_value = "testvalue"
 
         selector = htmls.S(listbuilder_itemvalues.ItemValue(value=mockvalue).render())
         self.assertEqual(
@@ -47,8 +44,6 @@ class TestItemValue(test.TestCase):
     def test_selectbutton_aria_label(self):
         mockvalue = mock.MagicMock()
         mockvalue.__str__.return_value = "testvalue"
-        if python2_compatibility.is_python2():
-            mockvalue.__unicode__.return_value = "testvalue"
 
         selector = htmls.S(listbuilder_itemvalues.ItemValue(value=mockvalue).render())
         self.assertEqual(
@@ -108,8 +103,6 @@ class TestManyToManySelect(test.TestCase):
     def test_sanity(self):
         mockvalue = mock.MagicMock()
         mockvalue.__str__.return_value = "testvalue"
-        if python2_compatibility.is_python2():
-            mockvalue.__unicode__.return_value = "testvalue"
         mockvalue.pk = "unused"
         selector = htmls.S(listbuilder_itemvalues.ManyToManySelect(value=mockvalue).render())
         self.assertEqual(
@@ -129,8 +122,6 @@ class TestManyToManySelect(test.TestCase):
         mockvalue = mock.MagicMock()
         mockvalue.pk = "unused"
         mockvalue.__str__.return_value = "testvalue"
-        if python2_compatibility.is_python2():
-            mockvalue.__unicode__.return_value = "testvalue"
         selector = htmls.S(listbuilder_itemvalues.ManyToManySelect(value=mockvalue, target_dom_id="testid").render())
         directiveoptions = json.loads(
             selector.one("button.cradmin-legacy-multiselect2-itemvalue-button")["cradmin-legacy-multiselect2-select"]

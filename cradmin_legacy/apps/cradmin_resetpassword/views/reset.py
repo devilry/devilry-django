@@ -7,7 +7,7 @@ from django.utils.translation import gettext_lazy
 from django import forms
 from django.views.generic import FormView
 
-from django_cradmin.apps.cradmin_generic_token_with_metadata.models import (
+from cradmin_legacy.apps.cradmin_generic_token_with_metadata.models import (
     GenericTokenWithMetadata,
     GenericTokenExpiredError,
 )

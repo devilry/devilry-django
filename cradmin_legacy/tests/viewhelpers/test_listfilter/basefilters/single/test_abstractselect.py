@@ -1,7 +1,7 @@
 import htmls
 from django.test import TestCase
 
-from cradmin_legacy.python2_compatibility import mock
+from unittest import mock
 from cradmin_legacy.viewhelpers.listfilter.base.abstractfilterlist import AbstractFilterList
 from cradmin_legacy.viewhelpers.listfilter.basefilters.single.abstractselect import AbstractSelectFilter
 

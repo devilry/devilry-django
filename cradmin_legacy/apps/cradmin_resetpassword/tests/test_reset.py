@@ -5,9 +5,9 @@ from django.urls import reverse
 from django.test import TestCase, RequestFactory
 from django.utils import timezone
 import htmls
-from cradmin_legacy.python2_compatibility import mock
+from unittest import mock
 from cradmin_legacy.apps.cradmin_resetpassword.views.reset import ResetPasswordView
-from django_cradmin.apps.cradmin_generic_token_with_metadata.models import GenericTokenWithMetadata
+from cradmin_legacy.apps.cradmin_generic_token_with_metadata.models import GenericTokenWithMetadata
 from cradmin_legacy.tests.helpers import create_user
 
 

@@ -2,7 +2,7 @@ from django.test import TestCase
 from model_bakery import baker
 
 from cradmin_legacy import datetimeutils
-from cradmin_legacy.python2_compatibility import mock
+from unittest import mock
 from cradmin_legacy.tests.viewhelpers.cradmin_viewhelpers_testapp.models import FilterTestModel
 from cradmin_legacy.viewhelpers import listfilter
 

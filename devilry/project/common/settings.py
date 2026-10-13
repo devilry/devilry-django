@@ -63,7 +63,9 @@ INSTALLED_APPS = [
     "cradmin_legacy.apps.cradmin_authenticate",
     "devilry.devilry_resetpassword",
     "cradmin_legacy.apps.cradmin_resetpassword",
-    "django_cradmin.apps.cradmin_generic_token_with_metadata",
+    # Provides the email base templates and template tags used by the cradmin_resetpassword emails.
+    "cradmin_legacy.apps.cradmin_email",
+    "cradmin_legacy.apps.cradmin_generic_token_with_metadata",
     "devilry.apps.core.apps.CoreAppConfig",
     "devilry.devilry_account.apps.AccountAppConfig",
     "devilry.devilry_markup",

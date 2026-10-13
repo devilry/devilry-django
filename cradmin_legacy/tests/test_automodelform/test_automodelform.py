@@ -6,10 +6,10 @@ from django.core.files.base import ContentFile
 from model_bakery import baker
 
 from cradmin_legacy import automodelform
-from cradmin_legacy.apps.cradmin_imagearchive.tests.helpers import create_image
+from cradmin_legacy.tests.helpers import create_image
 from cradmin_legacy.tests.test_automodelform.cradmin_automodelform_testapp.models import AutoFormTestModel
 from cradmin_legacy import datetimeutils
-from cradmin_legacy.python2_compatibility import mock
+from unittest import mock
 
 
 class TestModelForm(test.TestCase):

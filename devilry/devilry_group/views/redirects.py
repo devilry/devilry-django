@@ -1,9 +1,9 @@
+from cradmin_legacy import crapp
 from cradmin_legacy.crinstance import reverse_cradmin_url
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.translation import gettext
 from django.views import View
-from django_cradmin import crapp
 
 from devilry.apps.core.models.assignment import Assignment
 from devilry.apps.core.models.assignment_group import AssignmentGroup

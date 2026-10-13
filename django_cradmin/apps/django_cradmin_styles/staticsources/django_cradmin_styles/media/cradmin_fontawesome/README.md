@@ -1,1 +1,0 @@
-See django_cradmin/apps/django_cradmin_styles/staticsources/django_cradmin_styles/styles/cradmin_fontawesome/README.md.

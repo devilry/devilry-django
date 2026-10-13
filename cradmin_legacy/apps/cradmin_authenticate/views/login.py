@@ -100,8 +100,8 @@ class UsernameLoginForm(AbstractLoginForm):
 
 class EmailLoginForm(AbstractLoginForm):
     """
-    This form is used for email-based login along with the
-    :class:`cradmin_legacy.apps.cradmin_authenticate.backends.EmailAuthBackend`.
+    This form is used for email-based login along with an email authentication backend
+    (Devilry uses :class:`devilry.devilry_account.authbackend.default.EmailAuthBackend`).
 
     This requires adding ``CRADMIN_LEGACY_USE_EMAIL_AUTH_BACKEND = True`` to your ``settings.py``.
 

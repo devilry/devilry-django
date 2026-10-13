@@ -2,8 +2,7 @@ import htmls
 from django import test
 from django.http import QueryDict
 
-from cradmin_legacy import python2_compatibility
-from cradmin_legacy.python2_compatibility import mock
+from unittest import mock
 from cradmin_legacy.viewhelpers.multiselect2 import manytomanywidget
 
 
@@ -151,8 +150,6 @@ class TestWidget(test.TestCase):
         mockmodelobject = mock.MagicMock()
         mockmodelobject.pk = 1
         mockmodelobject.__str__.return_value = "testvalue"
-        if python2_compatibility.is_python2():
-            mockmodelobject.__unicode__.return_value = "testvalue"
         mockqueryset.filter.return_value = [mockmodelobject]
         selector = htmls.S(
             manytomanywidget.Widget(queryset=mockqueryset, selectview_url="/test").render(

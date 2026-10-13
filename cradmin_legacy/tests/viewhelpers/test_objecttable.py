@@ -1,5 +1,5 @@
 import htmls
-from cradmin_legacy.python2_compatibility import mock
+from unittest import mock
 from django.test import TestCase, RequestFactory
 
 from cradmin_legacy.tests.viewhelpers.cradmin_viewhelpers_testapp.models import TestModel

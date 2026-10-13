@@ -98,7 +98,7 @@ ievv = "ievv_opensource.ievvtasks_common.cli:cli"
 path = "devilry/__init__.py"
 
 [tool.hatch.build]
-packages = ["/devilry", "/cradmin_legacy", "/django_cradmin"]
+packages = ["/devilry", "/cradmin_legacy"]
 exclude = [
     "node_modules",
     "/devilry/devilry_theme3/staticsources",

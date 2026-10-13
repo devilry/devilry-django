@@ -1,6 +1,6 @@
 from django.utils.html import format_html
 import htmls
-from cradmin_legacy.python2_compatibility import mock
+from unittest import mock
 from django.test import TestCase, RequestFactory
 
 from cradmin_legacy.views.roleselect import RoleSelectView

@@ -1,17 +1,14 @@
 import htmls
 from django import test
 
-from cradmin_legacy import python2_compatibility
 from cradmin_legacy.viewhelpers.multiselect2 import selected_item_renderer
-from cradmin_legacy.python2_compatibility import mock
+from unittest import mock
 
 
 class TestSelectedItem(test.TestCase):
     def test_title(self):
         mockvalue = mock.MagicMock()
         mockvalue.__str__.return_value = "testvalue"
-        if python2_compatibility.is_python2():
-            mockvalue.__unicode__.return_value = "testvalue"
         selector = htmls.S(selected_item_renderer.SelectedItem(value=mockvalue).render())
         self.assertEqual(
             "testvalue", selector.one(".cradmin-legacy-multiselect2-target-selected-item-title").alltext_normalized
@@ -57,7 +54,5 @@ class TestSelectedItem(test.TestCase):
     def test_deselectbutton_aria_label(self):
         mockvalue = mock.MagicMock()
         mockvalue.__str__.return_value = "testvalue"
-        if python2_compatibility.is_python2():
-            mockvalue.__unicode__.return_value = "testvalue"
         selector = htmls.S(selected_item_renderer.SelectedItem(value=mockvalue).render())
         self.assertEqual('Deselect "testvalue"', selector.one("button")["aria-label"])

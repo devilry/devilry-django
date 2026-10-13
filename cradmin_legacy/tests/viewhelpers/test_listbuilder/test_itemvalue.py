@@ -1,10 +1,8 @@
+from unittest import mock
+
 import htmls
 from django import test
-from django.core.files.base import ContentFile
-from model_bakery import baker
 
-from cradmin_legacy.apps.cradmin_imagearchive.tests.helpers import create_image
-from cradmin_legacy.python2_compatibility import mock
 from cradmin_legacy.viewhelpers import listbuilder
 
 
@@ -184,78 +182,3 @@ class TestEditDeleteWithPreview(test.TestCase):
             'View "testvalue"',
             selector.one(".cradmin-legacy-listbuilder-itemvalue-editdelete-previewbutton")["aria-label"],
         )
-
-
-class TestEditDeleteWithArchiveImage(test.TestCase):
-    def test_without_archiveimage(self):
-        class MyEditDeleteWithArchiveImage(listbuilder.itemvalue.EditDeleteWithArchiveImage):
-            def get_archiveimage(self):
-                return None
-
-        rendered = MyEditDeleteWithArchiveImage(value="testvalue").render(request=mock.MagicMock())
-        selector = htmls.S(rendered)
-        self.assertFalse(selector.exists(".cradmin-legacy-listbuilder-itemvalue-editdelete-imagewrapper"))
-
-    def test_with_archiveimage(self):
-        class MyEditDeleteWithArchiveImage(listbuilder.itemvalue.EditDeleteWithArchiveImage):
-            def get_archiveimage(self):
-                archiveimage = baker.make("cradmin_imagearchive.ArchiveImage")
-                archiveimage.image.save("testimage.png", ContentFile(create_image(200, 100)))
-                return archiveimage
-
-        mockrequest = mock.MagicMock()
-        mockrequest.build_absolute_uri.return_value = "test"
-        rendered = MyEditDeleteWithArchiveImage(value="testvalue").render(request=mockrequest)
-        selector = htmls.S(rendered)
-        self.assertTrue(selector.exists(".cradmin-legacy-listbuilder-itemvalue-editdelete-imagewrapper"))
-
-
-class TestEditDeleteWithArchiveImageAndView(test.TestCase):
-    def test_preview_label(self):
-        class MyEditDeleteWithArchiveImageAndView(listbuilder.itemvalue.EditDeleteWithArchiveImageAndPreview):
-            def get_archiveimage(self):
-                return None
-
-        mockrequest = mock.MagicMock()
-        mockrequest.cradmin_app.reverse_appurl.return_value = "/preview"
-        rendered = MyEditDeleteWithArchiveImageAndView(value="testvalue").render(request=mockrequest)
-        selector = htmls.S(rendered)
-        self.assertEqual(
-            "View", selector.one(".cradmin-legacy-listbuilder-itemvalue-editdelete-previewbutton").alltext_normalized
-        )
-
-    def test_preview_aria_label(self):
-        class MyEditDeleteWithArchiveImageAndView(listbuilder.itemvalue.EditDeleteWithArchiveImageAndPreview):
-            def get_archiveimage(self):
-                return None
-
-        mockrequest = mock.MagicMock()
-        mockrequest.cradmin_app.reverse_appurl.return_value = "/preview"
-        rendered = MyEditDeleteWithArchiveImageAndView(value="testvalue").render(request=mockrequest)
-        selector = htmls.S(rendered)
-        self.assertEqual(
-            'View "testvalue"',
-            selector.one(".cradmin-legacy-listbuilder-itemvalue-editdelete-previewbutton")["aria-label"],
-        )
-
-    def test_without_archiveimage(self):
-        class MyEditDeleteWithArchiveImageAndView(listbuilder.itemvalue.EditDeleteWithArchiveImageAndPreview):
-            def get_archiveimage(self):
-                return None
-
-        rendered = MyEditDeleteWithArchiveImageAndView(value="testvalue").render(request=mock.MagicMock())
-        selector = htmls.S(rendered)
-        self.assertFalse(selector.exists(".cradmin-legacy-listbuilder-itemvalue-editdelete-imagewrapper"))
-
-    def test_with_archiveimage(self):
-        class MyEditDeleteWithArchiveImageAndView(listbuilder.itemvalue.EditDeleteWithArchiveImageAndPreview):
-            def get_archiveimage(self):
-                archiveimage = baker.make("cradmin_imagearchive.ArchiveImage")
-                archiveimage.image.save("testimage.png", ContentFile(create_image(200, 100)))
-                return archiveimage
-
-        mockrequest = mock.MagicMock()
-        mockrequest.build_absolute_uri.return_value = "test"
-        rendered = MyEditDeleteWithArchiveImageAndView(value="testvalue").render(request=mockrequest)
-        selector = htmls.S(rendered)
-        self.assertTrue(selector.exists(".cradmin-legacy-listbuilder-itemvalue-editdelete-imagewrapper"))

@@ -3,7 +3,7 @@ import htmls
 
 from cradmin_legacy.renderable import AbstractRenderableWithCss
 from cradmin_legacy.viewhelpers import listbuilder
-from cradmin_legacy.python2_compatibility import mock
+from unittest import mock
 
 
 class MinimalRenderable(AbstractRenderableWithCss):

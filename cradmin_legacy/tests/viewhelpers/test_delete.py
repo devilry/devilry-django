@@ -1,4 +1,4 @@
-from cradmin_legacy.python2_compatibility import mock
+from unittest import mock
 import htmls
 from django.test import TestCase
 from django.test.client import RequestFactory
