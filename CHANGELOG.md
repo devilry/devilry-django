@@ -1,3 +1,12 @@
+## 6.7.0 (2026-10-13)
+
+### Fix
+
+- Translations
+- Ensure switching to back and forth between grading plugins resets the configuration values. Refs: #1346
+- Show number of items
+- improved handling of benign authentication errors
+
 ## 6.6.3 (2026-09-02)
 
 ### Fix
