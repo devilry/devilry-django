@@ -1,0 +1,14 @@
+.. _6.7.0changelog:
+
+############################
+What is new in Devilry 6.7.0
+############################
+
+
+Updates/changes
+###############
+
+- Fix: Better authentication error handling.
+- Fix: Add counters to selected items in multiselect-views.
+- Fix: Grading configuration gets reset when plugin changes.
+- Fix: Dependency cleanup.
