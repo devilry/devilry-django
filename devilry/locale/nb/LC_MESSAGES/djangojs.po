@@ -6,11 +6,13 @@
 # Espen Angell Kristiansen <espen@appresso.no>, 2015
 # Tone Angell Kristiansen <tone@appresso.no>, 2015
 # Tor Ivar Johansen <tor@appresso.no>, 2015
+#: devilry_theme3/staticsources/devilry_theme3/bower_components/jquery/dist-module/jquery.module.min.js:2
+#: devilry_theme3/staticsources/devilry_theme3/bower_components/jquery/dist/jquery.min.js:2
 msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-28 11:52+0100\n"
+"POT-Creation-Date: 2026-10-13 12:58+0200\n"
 "PO-Revision-Date: 2022-03-01 15:06+0100\n"
 "Last-Translator: Tor Ivar Johansen <tor@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"

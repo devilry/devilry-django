@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-24 13:50+0100\n"
+"POT-Creation-Date: 2026-10-13 12:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1213,7 +1213,7 @@ msgstr ""
 #: devilry_admin/templates/devilry_admin/assignment/students/overview.django.html:38
 #: devilry_admin/templates/devilry_admin/period/manage_tags/tag-item-value.django.html:52
 #: devilry_admin/templates/devilry_admin/period/students/overview.django.html:39
-#: devilry_admin/views/assignment/examiners/add_groups_to_examiner.py:14
+#: devilry_admin/views/assignment/examiners/add_groups_to_examiner.py:17
 msgid "Add students"
 msgstr ""
 
@@ -2029,7 +2029,7 @@ msgstr ""
 
 #: devilry_admin/templates/devilry_admin/assignment/students/delete_groups.django.html:7
 #: devilry_admin/templates/devilry_admin/assignment/students/delete_groups.django.html:23
-#: devilry_admin/views/assignment/students/delete_groups.py:136
+#: devilry_admin/views/assignment/students/delete_groups.py:139
 msgid "Delete students"
 msgstr ""
 
@@ -2178,7 +2178,7 @@ msgstr ""
 
 #: devilry_admin/templates/devilry_admin/assignment/students/overview.django.html:43
 #: devilry_admin/templates/devilry_admin/period/manage_tags/tag-item-value.django.html:65
-#: devilry_admin/views/assignment/examiners/remove_groups_from_examiner.py:14
+#: devilry_admin/views/assignment/examiners/remove_groups_from_examiner.py:17
 msgid "Remove students"
 msgstr ""
 
@@ -2994,18 +2994,18 @@ msgctxt "admin examiner selfassign setting"
 msgid "Examiner self-assign disabled."
 msgstr ""
 
-#: devilry_admin/views/assignment/examiners/add_groups_to_examiner.py:27
+#: devilry_admin/views/assignment/examiners/add_groups_to_examiner.py:30
 msgid ""
 "All students registered on this assignment has already been added to this "
 "examiner."
 msgstr ""
 
-#: devilry_admin/views/assignment/examiners/add_groups_to_examiner.py:55
+#: devilry_admin/views/assignment/examiners/add_groups_to_examiner.py:58
 #, python-format
 msgid "Added %(count)s students."
 msgstr ""
 
-#: devilry_admin/views/assignment/examiners/add_groups_to_examiner.py:58
+#: devilry_admin/views/assignment/examiners/add_groups_to_examiner.py:61
 #, python-format
 msgid "Added %(groupcount)s project group with %(studentcount)s students."
 msgid_plural ""
@@ -3105,16 +3105,16 @@ msgid ""
 "assignments."
 msgstr ""
 
-#: devilry_admin/views/assignment/examiners/remove_groups_from_examiner.py:25
+#: devilry_admin/views/assignment/examiners/remove_groups_from_examiner.py:28
 msgid "No students to remove."
 msgstr ""
 
-#: devilry_admin/views/assignment/examiners/remove_groups_from_examiner.py:51
+#: devilry_admin/views/assignment/examiners/remove_groups_from_examiner.py:54
 #, python-format
 msgid "Removed %(count)s students."
 msgstr ""
 
-#: devilry_admin/views/assignment/examiners/remove_groups_from_examiner.py:54
+#: devilry_admin/views/assignment/examiners/remove_groups_from_examiner.py:57
 #, python-format
 msgid "Removed %(groupcount)s project group with %(studentcount)s students."
 msgid_plural ""
@@ -3138,42 +3138,46 @@ msgstr ""
 msgid "Must be larger than the minimum number of points required to pass."
 msgstr ""
 
-#: devilry_admin/views/assignment/gradingconfiguration.py:35
+#: devilry_admin/views/assignment/gradingconfiguration.py:29
+msgid "Points awarded for passing grade must be at least 1."
+msgstr ""
+
+#: devilry_admin/views/assignment/gradingconfiguration.py:36
 msgctxt "assignment config"
 msgid "Examiner chooses"
 msgstr ""
 
-#: devilry_admin/views/assignment/gradingconfiguration.py:41
+#: devilry_admin/views/assignment/gradingconfiguration.py:42
 msgctxt "assignment config"
 msgid "Students see"
 msgstr ""
 
-#: devilry_admin/views/assignment/gradingconfiguration.py:46
+#: devilry_admin/views/assignment/gradingconfiguration.py:48
 msgctxt "assignment config"
 msgid "Minimum number of points required to pass"
 msgstr ""
 
-#: devilry_admin/views/assignment/gradingconfiguration.py:98
+#: devilry_admin/views/assignment/gradingconfiguration.py:124
 msgctxt "assignment config"
 msgid "Points awarded for passing grade"
 msgstr ""
 
-#: devilry_admin/views/assignment/gradingconfiguration.py:101
+#: devilry_admin/views/assignment/gradingconfiguration.py:127
 msgctxt "assignment config"
 msgid "Maximum number of points"
 msgstr ""
 
-#: devilry_admin/views/assignment/gradingconfiguration.py:103
+#: devilry_admin/views/assignment/gradingconfiguration.py:129
 msgctxt "assignment config"
 msgid "The maximum number of points possible for this assignment."
 msgstr ""
 
-#: devilry_admin/views/assignment/gradingconfiguration.py:111
+#: devilry_admin/views/assignment/gradingconfiguration.py:137
 msgctxt "assignment config"
 msgid "Edit grading configuration"
 msgstr ""
 
-#: devilry_admin/views/assignment/gradingconfiguration.py:153
+#: devilry_admin/views/assignment/gradingconfiguration.py:179
 #: devilry_admin/views/common/bulkimport_users_common.py:18
 #: devilry_cradmin/devilry_listbuilder/assignmentgroup.py:360
 #: devilry_group/templates/devilry_group/feedbackfeed_guidelines.django.html:67
@@ -3181,7 +3185,7 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: devilry_admin/views/assignment/gradingconfiguration.py:175
+#: devilry_admin/views/assignment/gradingconfiguration.py:201
 msgid "Saved Grading configuration for assignment"
 msgstr ""
 
@@ -3337,49 +3341,49 @@ msgctxt "devilry_admin assignment examiner statistics"
 msgid "Not corrected"
 msgstr ""
 
-#: devilry_admin/views/assignment/students/create_groups.py:38
+#: devilry_admin/views/assignment/students/create_groups.py:39
 #, python-format
 msgctxt "admin create_groups"
 msgid "Select students from %(subject)s %(period)s"
 msgstr ""
 
-#: devilry_admin/views/assignment/students/create_groups.py:49
+#: devilry_admin/views/assignment/students/create_groups.py:50
 #, python-format
 msgctxt "admin create_groups"
 msgid "Select students from %(assignment)s"
 msgstr ""
 
-#: devilry_admin/views/assignment/students/create_groups.py:59
+#: devilry_admin/views/assignment/students/create_groups.py:60
 msgctxt "admin create_groups_accumulated_score_on_assignments"
 msgid "Add students based on their total score"
 msgstr ""
 
-#: devilry_admin/views/assignment/students/create_groups.py:65
+#: devilry_admin/views/assignment/students/create_groups.py:66
 msgctxt "admin create_groups_accumulated_score_on_assignments"
 msgid ""
 "Add students based on their total score across assignments you select from "
 "this semester."
 msgstr ""
 
-#: devilry_admin/views/assignment/students/create_groups.py:74
+#: devilry_admin/views/assignment/students/create_groups.py:75
 #, python-format
 msgctxt "admin create_group"
 msgid "Add students to %(assignment)s"
 msgstr ""
 
-#: devilry_admin/views/assignment/students/create_groups.py:79
+#: devilry_admin/views/assignment/students/create_groups.py:80
 msgctxt "admin create_group"
 msgid "Add students"
 msgstr ""
 
-#: devilry_admin/views/assignment/students/create_groups.py:84
+#: devilry_admin/views/assignment/students/create_groups.py:85
 msgctxt "admin create_group"
 msgid ""
 "Please select how you would like to add students. You will get a preview of "
 "your choice on the next page before any students are added."
 msgstr ""
 
-#: devilry_admin/views/assignment/students/create_groups.py:133
+#: devilry_admin/views/assignment/students/create_groups.py:134
 msgctxt "admin create_groups"
 msgid ""
 "Oups! Something went wrong. This may happen if someone edited students on "
@@ -3387,36 +3391,36 @@ msgid ""
 "try again."
 msgstr ""
 
-#: devilry_admin/views/assignment/students/create_groups.py:226
+#: devilry_admin/views/assignment/students/create_groups.py:227
 #, python-format
 msgid "All students on %(assignment)s"
 msgstr ""
 
-#: devilry_admin/views/assignment/students/create_groups.py:227
+#: devilry_admin/views/assignment/students/create_groups.py:228
 #, python-format
 msgid "Students with passing grade on %(assignment)s"
 msgstr ""
 
-#: devilry_admin/views/assignment/students/create_groups.py:228
+#: devilry_admin/views/assignment/students/create_groups.py:229
 #, python-format
 msgid "All students on %(period)s"
 msgstr ""
 
-#: devilry_admin/views/assignment/students/create_groups.py:243
-#: devilry_admin/views/assignment/students/create_groups.py:248
+#: devilry_admin/views/assignment/students/create_groups.py:244
+#: devilry_admin/views/assignment/students/create_groups.py:249
 #, python-format
 msgctxt "admin create_groups"
 msgid "Confirm that you want to add the following students to %(assignment)s"
 msgstr ""
 
-#: devilry_admin/views/assignment/students/create_groups.py:337
-#: devilry_admin/views/assignment/students/create_groups.py:355
+#: devilry_admin/views/assignment/students/create_groups.py:338
+#: devilry_admin/views/assignment/students/create_groups.py:358
 msgctxt "admin create_groups"
 msgid "Add students"
 msgstr ""
 
-#: devilry_admin/views/assignment/students/create_groups.py:373
-#: devilry_admin/views/assignment/students/create_groups.py:378
+#: devilry_admin/views/assignment/students/create_groups.py:376
+#: devilry_admin/views/assignment/students/create_groups.py:381
 #, python-format
 msgctxt "admin create_groups"
 msgid "Select the students you want to add to %(assignment)s"
@@ -3489,52 +3493,52 @@ msgctxt "admin create_groups_accumulated_score_on_assignments"
 msgid "%(num_relatedstudents)s student(s) added to %(assignment_long_name)s"
 msgstr ""
 
-#: devilry_admin/views/assignment/students/delete_groups.py:64
+#: devilry_admin/views/assignment/students/delete_groups.py:65
 msgctxt "admin delete_groups"
 msgid "Manually"
 msgstr ""
 
-#: devilry_admin/views/assignment/students/delete_groups.py:67
+#: devilry_admin/views/assignment/students/delete_groups.py:68
 msgctxt "admin delete_groups"
 msgid "You can delete some students on this assignment, or all of them"
 msgstr ""
 
-#: devilry_admin/views/assignment/students/delete_groups.py:75
+#: devilry_admin/views/assignment/students/delete_groups.py:76
 #, python-format
 msgctxt "admin delete_groups"
 msgid "Students that failed %(assignment)s"
 msgstr ""
 
-#: devilry_admin/views/assignment/students/delete_groups.py:80
+#: devilry_admin/views/assignment/students/delete_groups.py:81
 #, python-format
 msgctxt "admin delete_groups"
 msgid "Delete students that did not pass %(assignment)s"
 msgstr ""
 
-#: devilry_admin/views/assignment/students/delete_groups.py:90
-#: devilry_admin/views/assignment/students/delete_groups.py:96
+#: devilry_admin/views/assignment/students/delete_groups.py:91
+#: devilry_admin/views/assignment/students/delete_groups.py:97
 #, python-format
 msgctxt "admin delete_group"
 msgid "Delete students from %(assignment)s"
 msgstr ""
 
-#: devilry_admin/views/assignment/students/delete_groups.py:103
+#: devilry_admin/views/assignment/students/delete_groups.py:104
 msgctxt "admin delete_group"
 msgid ""
 "Please select how you would like to delete students. You will get a preview "
 "of your choice on the next page before any students are deleted."
 msgstr ""
 
-#: devilry_admin/views/assignment/students/delete_groups.py:139
+#: devilry_admin/views/assignment/students/delete_groups.py:142
 msgid "Delete the following students:"
 msgstr ""
 
-#: devilry_admin/views/assignment/students/delete_groups.py:182
+#: devilry_admin/views/assignment/students/delete_groups.py:185
 #, python-format
 msgid "Deleted %(count)s students from this assignment."
 msgstr ""
 
-#: devilry_admin/views/assignment/students/delete_groups.py:219
+#: devilry_admin/views/assignment/students/delete_groups.py:222
 msgctxt "admin delete_groups"
 msgid ""
 "Oups! Something went wrong. This may happen if someone edited students on "
@@ -3542,20 +3546,20 @@ msgid ""
 "try again."
 msgstr ""
 
-#: devilry_admin/views/assignment/students/delete_groups.py:308
-#: devilry_admin/views/assignment/students/delete_groups.py:313
+#: devilry_admin/views/assignment/students/delete_groups.py:311
+#: devilry_admin/views/assignment/students/delete_groups.py:316
 #, python-format
 msgctxt "admin delete_groups"
 msgid ""
 "Confirm that you want to delete students that failed %(from_assignment_name)s"
 msgstr ""
 
-#: devilry_admin/views/assignment/students/delete_groups.py:398
+#: devilry_admin/views/assignment/students/delete_groups.py:401
 msgctxt "admin delete_groups"
 msgid "Delete students"
 msgstr ""
 
-#: devilry_admin/views/assignment/students/delete_groups.py:408
+#: devilry_admin/views/assignment/students/delete_groups.py:411
 #, python-format
 msgctxt "admin delete groups confirm"
 msgid ""
@@ -5477,6 +5481,7 @@ msgid "Comment text"
 msgstr ""
 
 #: devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:248
+#, python-brace-format
 msgid "Feedback published for {} groups"
 msgstr ""
 
@@ -6186,6 +6191,7 @@ msgid "Feedback is already published!"
 msgstr ""
 
 #: devilry_group/views/examiner/feedbackfeed_examiner.py:338
+#, python-brace-format
 msgid ""
 "Give a score between {} to {} where {} is the minimum amount of points "
 "needed to pass."
@@ -6987,10 +6993,10 @@ msgid ""
 "comments or upload files after the deadline has expired."
 msgstr ""
 
-#: project/common/settings.py:172
+#: project/common/settings.py:174
 msgid "English"
 msgstr ""
 
-#: project/common/settings.py:172
+#: project/common/settings.py:174
 msgid "Norwegian Bokmal"
 msgstr ""
