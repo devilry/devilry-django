@@ -57,6 +57,35 @@ class TestAdminCommentEditHistoryView(TestCase, cradmin_testhelpers.TestCaseMixi
                 cradmin_role=testgroup, requestuser=testuser, viewkwargs={"group_comment_id": 1}
             )
 
+    def test_comment_in_another_group_raises_404(self):
+        testuser = baker.make("devilry_account.User", shortname="admin", fullname="Thor")
+        testperiod = baker.make_recipe("devilry.apps.core.period_active", admins=[testuser])
+        testgroup = baker.make("core.AssignmentGroup", parentnode__parentnode=testperiod)
+        self.__make_user_admin(user=testuser, assignment=testgroup.parentnode)
+        othergroupcomment = baker.make(
+            "devilry_group.GroupComment",
+            text="Comment in a group the requestuser has nothing to do with",
+            visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
+        with self.assertRaises(Http404):
+            self.mock_getrequest(
+                cradmin_role=testgroup, requestuser=testuser, viewkwargs={"group_comment_id": othergroupcomment.id}
+            )
+
+    def test_examiner_and_admin_visibility_comment_in_another_group_raises_404(self):
+        testuser = baker.make("devilry_account.User", shortname="admin", fullname="Thor")
+        testperiod = baker.make_recipe("devilry.apps.core.period_active", admins=[testuser])
+        testgroup = baker.make("core.AssignmentGroup", parentnode__parentnode=testperiod)
+        self.__make_user_admin(user=testuser, assignment=testgroup.parentnode)
+        othergroupcomment = baker.make(
+            "devilry_group.GroupComment",
+            visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+        )
+        with self.assertRaises(Http404):
+            self.mock_getrequest(
+                cradmin_role=testgroup, requestuser=testuser, viewkwargs={"group_comment_id": othergroupcomment.id}
+            )
+
     def test_comment_no_history_no_history_items_rendered(self):
         testuser = baker.make("devilry_account.User", shortname="admin", fullname="Thor")
         testperiod = baker.make_recipe("devilry.apps.core.period_active", admins=[testuser])

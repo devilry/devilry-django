@@ -9,11 +9,26 @@ from cradmin_legacy.viewhelpers import listbuilderview
 from cradmin_legacy.viewhelpers.listbuilder.lists import RowList
 from cradmin_legacy.viewhelpers.listbuilder.itemframe import DefaultSpacingItemFrame
 
-from devilry.apps.core.models import RelatedStudent
+from devilry.apps.core.models import Period, RelatedStudent
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin.devilry_listbuilder import user
 from devilry.devilry_admin.views.dashboard.student_feedbackfeed_wizard import filters
 from devilry.devilry_cradmin.devilry_listfilter.utils import WithResultValueRenderable
+
+
+def get_student_users_queryset_for_user(user):
+    """
+    Get a queryset of the users that the given ``user`` is allowed to look up
+    in the student feedbackfeed wizard.
+
+    This is the users that are :class:`devilry.apps.core.models.RelatedStudent`
+    within a :class:`devilry.apps.core.models.Period` where the given ``user``
+    is admin - the same students they can see in the period admin student list.
+    """
+    relatedstudent_ids = RelatedStudent.objects.filter(
+        period__in=Period.objects.filter_user_is_admin(user=user)
+    ).values_list("user_id", flat=True)
+    return get_user_model().objects.filter(id__in=relatedstudent_ids)
 
 
 class UserItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
@@ -82,8 +97,10 @@ class UserListView(listbuilderview.FilterListMixin, listbuilderview.View):
         filterlist.append(filters.UserSearchExtension())
 
     def get_unfiltered_queryset_for_role(self, role):
-        relatedstudent_ids = RelatedStudent.objects.all().values_list("user_id", flat=True)
-        queryset = get_user_model().objects.filter(id__in=relatedstudent_ids).order_by("username")
+        # NOTE: ``role`` is always None in the dashboard cradmin instance (it has no
+        #       roleclass), and the instance gives access to any authenticated user.
+        #       The permission check must therefore be done on self.request.user.
+        queryset = get_student_users_queryset_for_user(user=self.request.user).order_by("username")
 
         # Set unfiltered count on self.
         self.num_total = queryset.count()

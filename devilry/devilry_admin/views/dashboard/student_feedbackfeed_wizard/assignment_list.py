@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 
-from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models.functions import Lower, Concat
+from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext, gettext_lazy
 
 from cradmin_legacy.crinstance import reverse_cradmin_url
@@ -15,6 +15,9 @@ from devilry.apps.core import models as core_models
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin import devilry_listfilter
 from devilry.devilry_admin.views.dashboard.student_feedbackfeed_wizard import filters
+from devilry.devilry_admin.views.dashboard.student_feedbackfeed_wizard.student_list import (
+    get_student_users_queryset_for_user,
+)
 from devilry.devilry_cradmin.devilry_listfilter.utils import WithResultValueRenderable
 
 
@@ -88,13 +91,18 @@ class StudentAssignmentGroupListView(listbuilderview.FilterListMixin, listbuilde
 
     def dispatch(self, request, *args, **kwargs):
         self.user_id = kwargs.get("user_id")
+
+        # Ensure the requesting user is admin for a period where the requested user is
+        # a student. Without this, the displayname of any user in the system is exposed
+        # through the page title/heading below.
+        self.student_user = get_object_or_404(get_student_users_queryset_for_user(user=request.user), id=self.user_id)
+
         self.assignment_queryset = core_models.Assignment.objects.prefetch_point_to_grade_map().all()
         return super(StudentAssignmentGroupListView, self).dispatch(request, *args, **kwargs)
 
     @property
     def user_displayname(self):
-        user = get_user_model().objects.get(id=self.user_id)
-        return user.get_short_name()
+        return self.student_user.get_short_name()
 
     def get_pagetitle(self):
         return gettext("Assignments for %(user_shortname)s") % {"user_shortname": self.user_displayname}

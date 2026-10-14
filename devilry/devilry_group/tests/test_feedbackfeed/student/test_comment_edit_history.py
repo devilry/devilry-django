@@ -26,13 +26,29 @@ class TestStudentCommentEditHistoryView(TestCase, cradmin_testhelpers.TestCaseMi
     def test_comment_not_visible_to_everyone_raises_404(self):
         candidate = baker.make("core.Candidate", relatedstudent=baker.make("core.RelatedStudent"))
         groupcomment = baker.make(
-            "devilry_group.GroupComment", visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS
+            "devilry_group.GroupComment",
+            feedback_set__group=candidate.assignment_group,
+            visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
         )
         with self.assertRaises(Http404):
             self.mock_http200_getrequest_htmls(
                 cradmin_role=candidate.assignment_group,
                 requestuser=candidate.relatedstudent.user,
                 viewkwargs={"group_comment_id": groupcomment.id},
+            )
+
+    def test_comment_in_another_group_raises_404(self):
+        candidate = baker.make("core.Candidate", relatedstudent=baker.make("core.RelatedStudent"))
+        othergroupcomment = baker.make(
+            "devilry_group.GroupComment",
+            text="Comment in a group the requestuser has nothing to do with",
+            visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
+        with self.assertRaises(Http404):
+            self.mock_getrequest(
+                cradmin_role=candidate.assignment_group,
+                requestuser=candidate.relatedstudent.user,
+                viewkwargs={"group_comment_id": othergroupcomment.id},
             )
 
     def test_missing_comment_id_in_kwargs(self):

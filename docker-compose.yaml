@@ -5,7 +5,7 @@ services:
     image: "postgres:16"
     ports:
       # Set on purpose to match django-dbdev setup in developsettings_common.py
-      - "23419:5432"
+      - "23455:5432"
     volumes:
       - "devilry-django-dev-pgdata-${DEVENV:-0}:/data/postgres"
     environment:
@@ -85,7 +85,7 @@ services:
     container_name: "devilry-django-dev-redis"
     image: "redis:7"
     ports:
-      - "36314:6379"
+      - "36316:6379"
     volumes:
       - "devilry-django-dev-redisdata-${DEVENV:-0}:/data"
 

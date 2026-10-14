@@ -24,7 +24,7 @@ MEDIA_ROOT = join(developfilesdir, "filestore")
 DATABASES = {
     "default": dj_database_url.parse(
         # The default should match postgres in docker-compose.yaml
-        os.environ.get("DATABASE_URL", "postgres://dbdev:dbdev@localhost:23419/dbdev")
+        os.environ.get("DATABASE_URL", "postgres://dbdev:dbdev@localhost:23455/dbdev")
     )
 }
 

@@ -55,11 +55,15 @@ class CommentHistoryView(listbuilderview.View):
         except group_models.GroupComment.DoesNotExist:
             raise Http404()
 
-        # If the comment is private, only the user that created the comment can access the history view.
-        if (
-            self.group_comment.visibility == group_models.GroupComment.VISIBILITY_PRIVATE
-            and self.group_comment.user != request.user
-        ):
+        # Check that the cradmin role and the AssignmentGroup is the same. The subclasses
+        # scope get_queryset_for_role() to the cradmin role, but the comment itself is
+        # rendered by get_current_group_comment_renderable() below no matter what the
+        # edit history contains - so the comment must be scoped here as well.
+        if self.group_comment.feedback_set.group_id != request.cradmin_role.id:
+            raise Http404()
+
+        # Checks if comment is visible to user
+        if not self.group_comment.visible_to_user(request.user):
             raise Http404()
         return super(CommentHistoryView, self).dispatch(request, *args, **kwargs)
 

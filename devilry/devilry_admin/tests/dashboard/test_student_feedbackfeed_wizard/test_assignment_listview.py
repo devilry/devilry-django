@@ -1,5 +1,6 @@
 from django import test
 from django.conf import settings
+from django.http import Http404
 from django.template import defaultfilters
 from django.utils import timezone
 
@@ -18,10 +19,44 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
+    def __make_candidate(self, group, user):
+        """
+        Make a Candidate with a RelatedStudent within the period of the given ``group``,
+        which is the only way candidates are created in production.
+        """
+        return baker.make(
+            "core.Candidate",
+            assignment_group=group,
+            relatedstudent=baker.make("core.RelatedStudent", user=user, period=group.parentnode.parentnode),
+        )
+
     def test_title(self):
         testuser = baker.make(settings.AUTH_USER_MODEL, shortname="testuser@example.com", fullname="Test User")
-        mockresponse = self.mock_http200_getrequest_htmls(viewkwargs={"user_id": testuser.id})
+        baker.make("core.RelatedStudent", user=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            requestuser=baker.make(settings.AUTH_USER_MODEL, is_superuser=True), viewkwargs={"user_id": testuser.id}
+        )
         self.assertEqual(mockresponse.selector.one("title").alltext_normalized, "Assignments for testuser@example.com")
+
+    def test_404_if_requestuser_is_not_admin_for_any_period_where_user_is_student(self):
+        testuser = baker.make(settings.AUTH_USER_MODEL, shortname="testuser@example.com", fullname="Test User")
+        baker.make("core.RelatedStudent", user=testuser)
+        with self.assertRaises(Http404):
+            self.mock_getrequest(requestuser=baker.make(settings.AUTH_USER_MODEL), viewkwargs={"user_id": testuser.id})
+
+    def test_404_if_user_is_not_a_student_anywhere(self):
+        testuser = baker.make(settings.AUTH_USER_MODEL, shortname="testuser@example.com", fullname="Test User")
+        with self.assertRaises(Http404):
+            self.mock_getrequest(
+                requestuser=baker.make(settings.AUTH_USER_MODEL, is_superuser=True),
+                viewkwargs={"user_id": testuser.id},
+            )
+
+    def test_404_if_user_id_does_not_exist(self):
+        with self.assertRaises(Http404):
+            self.mock_getrequest(
+                requestuser=baker.make(settings.AUTH_USER_MODEL, is_superuser=True), viewkwargs={"user_id": 1234567}
+            )
 
     def test_user_can_only_see_assignments_where_user_is_admin_on_subject(self):
         adminuser = baker.make(settings.AUTH_USER_MODEL)
@@ -47,8 +82,8 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
             parentnode__long_name="Inaccessible Assignment",
             parentnode__parentnode__parentnode=testsubject2,
         )
-        baker.make("core.Candidate", assignment_group=testgroup1, relatedstudent__user=testuser)
-        baker.make("core.Candidate", assignment_group=testgroup2, relatedstudent__user=testuser)
+        self.__make_candidate(group=testgroup1, user=testuser)
+        self.__make_candidate(group=testgroup2, user=testuser)
         selector = self.mock_http200_getrequest_htmls(
             requestuser=adminuser, viewkwargs={"user_id": testuser.id}
         ).selector
@@ -79,8 +114,8 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
         testgroup2 = baker.make(
             "core.AssignmentGroup", parentnode__long_name="Inaccessible Assignment", parentnode__parentnode=testperiod2
         )
-        baker.make("core.Candidate", assignment_group=testgroup1, relatedstudent__user=testuser)
-        baker.make("core.Candidate", assignment_group=testgroup2, relatedstudent__user=testuser)
+        self.__make_candidate(group=testgroup1, user=testuser)
+        self.__make_candidate(group=testgroup2, user=testuser)
         selector = self.mock_http200_getrequest_htmls(
             requestuser=adminuser, viewkwargs={"user_id": testuser.id}
         ).selector
@@ -464,8 +499,8 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
                     parentnode__long_name="Accessible Assignment",
                     parentnode__parentnode__parentnode=testsubject,
                 )
-                baker.make("core.Candidate", assignment_group=testgroup, relatedstudent__user=testuser)
-        with self.assertNumQueries(8):
+                self.__make_candidate(group=testgroup, user=testuser)
+        with self.assertNumQueries(7):
             selector = self.mock_http200_getrequest_htmls(
                 requestuser=adminuser, viewkwargs={"user_id": testuser.id}
             ).selector

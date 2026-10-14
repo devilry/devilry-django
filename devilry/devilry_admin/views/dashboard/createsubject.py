@@ -1,5 +1,6 @@
 from crispy_forms import layout
 from django import forms
+from django.core.exceptions import PermissionDenied
 from django.utils.translation import gettext_lazy
 from cradmin_legacy import crapp
 from cradmin_legacy import crinstance
@@ -41,6 +42,16 @@ class CreateView(crudbase.OnlySaveButtonMixin, CreateUpdateMixin, create.CreateV
     form_class = CreateForm
     model = Subject
     template_name = "devilry_cradmin/viewhelpers/devilry_createview_with_backlink.django.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        # NOTE: ``role`` is always None in the dashboard cradmin instance (it has no
+        #       roleclass), and the instance gives access to any authenticated user.
+        #       The permission check must therefore be done on request.user. Creating
+        #       a course is a superuser operation - the same check as the one guarding
+        #       the link to this view in devilry_admin/dashboard/overview.django.html.
+        if not request.user.is_superuser:
+            raise PermissionDenied("Only superusers can create courses.")
+        return super(CreateView, self).dispatch(request, *args, **kwargs)
 
     def get_pagetitle(self):
         return gettext_lazy("Create new course")

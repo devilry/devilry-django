@@ -39,6 +39,47 @@ class TestExaminerCommentEditHistoryView(TestCase, cradmin_testhelpers.TestCaseM
                 cradmin_role=testgroup, requestuser=testuser, viewkwargs={"group_comment_id": 1}
             )
 
+    def test_comment_in_another_group_raises_404(self):
+        testuser = baker.make("devilry_account.User", shortname="admin", fullname="Thor")
+        testgroup = baker.make("core.AssignmentGroup")
+        self.__make_examiner(user=testuser)
+        othergroupcomment = baker.make(
+            "devilry_group.GroupComment",
+            text="Comment in a group the requestuser has nothing to do with",
+            visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+        )
+        with self.assertRaises(Http404):
+            self.mock_getrequest(
+                cradmin_role=testgroup, requestuser=testuser, viewkwargs={"group_comment_id": othergroupcomment.id}
+            )
+
+    def test_examiner_and_admin_visibility_comment_in_own_group_is_rendered(self):
+        testuser = baker.make("devilry_account.User", shortname="admin", fullname="Thor")
+        testgroup = baker.make("core.AssignmentGroup")
+        baker.make("core.Examiner", assignmentgroup=testgroup, relatedexaminer__user=testuser)
+        groupcomment = baker.make(
+            "devilry_group.GroupComment",
+            feedback_set__group=testgroup,
+            visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup, requestuser=testuser, viewkwargs={"group_comment_id": groupcomment.id}
+        )
+        self.assertTrue(mockresponse.selector.exists(".devilry-comment-history-no-items"))
+
+    def test_examiner_and_admin_visibility_comment_in_another_group_raises_404(self):
+        testuser = baker.make("devilry_account.User", shortname="admin", fullname="Thor")
+        testgroup = baker.make("core.AssignmentGroup")
+        baker.make("core.Examiner", assignmentgroup=testgroup, relatedexaminer__user=testuser)
+        othergroupcomment = baker.make(
+            "devilry_group.GroupComment",
+            visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+        )
+        with self.assertRaises(Http404):
+            self.mock_getrequest(
+                cradmin_role=testgroup, requestuser=testuser, viewkwargs={"group_comment_id": othergroupcomment.id}
+            )
+
     def test_comment_no_history_no_history_items_rendered(self):
         testuser = baker.make("devilry_account.User", shortname="admin", fullname="Thor")
         testgroup = baker.make("core.AssignmentGroup")
