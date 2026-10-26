@@ -1,0 +1,11 @@
+.. _6.7.1changelog:
+
+############################
+What is new in Devilry 6.7.1
+############################
+
+
+Updates/changes
+###############
+
+- Fix: Various permission check improvements.
