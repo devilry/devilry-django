@@ -1,3 +1,9 @@
+## 6.7.1 (2026-10-26)
+
+### Fix
+
+- Various permission check improvements.
+
 ## 6.7.0 (2026-10-13)
 
 ### Fix
